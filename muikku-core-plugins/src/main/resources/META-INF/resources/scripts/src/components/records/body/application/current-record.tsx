@@ -5,17 +5,17 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/application-list.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import Material from './current-record/material';
 
 import '~/sass/elements/workspace-activity.scss';
 import '~/sass/elements/assignment.scss';
-import '~/sass/elements/text.scss';
+import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/journal.scss';
-import '~/sass/elements/rich-text.scss';
+
 import ApplicationList, { ApplicationListItem, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
 import { StatusType } from '~/reducers/base/status';
 
@@ -61,16 +61,16 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
     let workspaceEvaluation = this.props.records.current.workspace.studentAssessments.assessments.length &&
       this.props.records.current.workspace.studentAssessments.assessments[0].verbalAssessment ?
         <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessments.assessments[0].verbalAssessment}} 
-        className={`text rich-text text--studies-workspace-literal-assessment state-${assesmentStateClassName}`}/> : null;
+        className={`rich-text application-sub-panel__text application-sub-panel__text--course-evaluation state-${assesmentStateClassName}`}/> : null;
     
     return <div className="application-sub-panel">
-      <div className="application-sub-panel__header application-sub-panel__header--studies-detailed-info text text--studies-header" key={this.props.records.current.workspace.id}>
+      <div className="application-sub-panel__header application-sub-panel__header--studies-detailed-info" key={this.props.records.current.workspace.id}>
         {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
       </div>
       <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
+        {workspaceEvaluation}      
         <ApplicationList>
-          {workspaceEvaluation}
-          <div className="application-list__header application-list__header--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
+          <div className="application-list__header-container"><h3 className="application-list__header">{this.props.i18n.text.get("plugin.records.assignments.title")}</h3></div>
           {this.props.records.current.materials.map((material)=>{
             return <Material key={material.id} material={material} i18n={this.props.i18n}
              grades={this.props.records.grades} workspace={this.props.records.current.workspace}
@@ -78,21 +78,20 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
           })}
         </ApplicationList>
           
-          {this.props.records.current.journals.length ? <div className="application-list">
-          <div className="application-list__header application-list__header--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.studydiary.title")}</div>
-            <div className="application-list_item-wrapper">
-              {this.props.records.current.journals.map((journal)=>{
-                return <ApplicationListItem className="journal journal--studies" key={journal.id}>
-                  <ApplicationListItemHeader modifiers="journal">
-                    <div className="text text--studies-journal-entry-title">{journal.title}</div>
-                    <div className="text text--studies-journal-entry-time">{this.props.i18n.time.format(journal.created, "L LT")}</div>
-                  </ApplicationListItemHeader>
-                  <ApplicationListItemBody className="application-list__item-body application-list__item-body--journal rich-text" dangerouslySetInnerHTML={{__html: journal.content}}></ApplicationListItemBody>
-                </ApplicationListItem>
+        {this.props.records.current.journals.length ? <div className="application-list">
+            <div className="application-list__header-container"><h3 className="application-list__header">{this.props.i18n.text.get("plugin.records.studydiary.title")}</h3></div>
+          <div className="application-list_item-wrapper">
+            {this.props.records.current.journals.map((journal)=>{
+              return <ApplicationListItem className="journal journal--studies" key={journal.id}>
+                <ApplicationListItemHeader modifiers="journal">
+                  <div className="journal__entry-title">{journal.title}</div>
+                  <div className="journal__entry-time">{this.props.i18n.time.format(journal.created, "L LT")}</div>
+                </ApplicationListItemHeader>
+                <ApplicationListItemBody className="application-list__item-body application-list__item-body--journal rich-text" dangerouslySetInnerHTML={{__html: journal.content}}></ApplicationListItemBody>
+              </ApplicationListItem>
             })}
           </div>
-        </div> : null}
-        
+        </div> : null}        
       </div>
           
     </div>

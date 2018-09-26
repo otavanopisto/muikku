@@ -8,7 +8,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/workspace-activity.scss';
 import '~/sass/elements/file-uploader.scss';
@@ -46,9 +46,9 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
   }
   
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
-    return <div className="text text--list-item-type-title">
-      <span className="text text--workspace-assesment-description">{props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}</span>
-      <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))} className="text text--evaluation-request icon-assessment-pending"></span>
+    return <div className="application-list__header-secondary">
+      <span>{props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}</span>
+      <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))} className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending"></span>
     </div>
   }
   
@@ -60,10 +60,10 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
     transferCredit.gradingScaleIdentifier,
     transferCredit.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
-  return <div className="text text--list-item-type-title">
-    <span className="text text--workspace-assesment-description">{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
+  return <div className="application-list__header-secondary">
+    <span>{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
     <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
-      getShortenGradeExtension(grade.grade)} className={`text text--workspace-credit-grade ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
+      getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
       {shortenGrade(grade.grade)}
     </span>
   </div>
@@ -81,10 +81,10 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
       assessment.gradeSchoolDataSource,
       assessment.gradeIdentifier].join('-');
     let grade = props.records.grades[gradeId];
-    return <span className="text text--list-item-type-title">
-      <span className="text text--workspace-assesment-description">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))}</span>
+    return <span className="application-list__header-secondary">
+      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated)) +
-        getShortenGradeExtension(grade.grade)} className={`text text--workspace-assesment-grade ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
+        getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge--course ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
         {shortenGrade(grade.grade)}
       </span>
     </span>
@@ -92,9 +92,9 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
     (workspace.studentAssessments.assessmentState === "incomplete" || workspace.studentAssessments.assessmentState === "fail")){
     let status = props.i18n.text.get(workspace.studentAssessments.assessmentState === "incomplete" ?
     		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
-    return <span className="text text--list-item-type-title">
-      <span className="text text--workspace-assesment-description">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate))}</span>
-      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`text text--workspace-assesment-grade ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+    return <span className="application-list__header-secondary">
+      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate))}</span>
+      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
       {status[0].toLocaleUpperCase()}
     </span>
   </span>
@@ -121,7 +121,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         trailWidth: 1,
         svgStyle: {width: "100%", height: "4px"},
         text: {
-          className: "text workspace-activity__progressbar-label",
+          className: "workspace-activity__progressbar-label",
           style: {
             left: workspace.studentActivity.evaluablesDonePercent === 0 ? "0%" : null,
             right: workspace.studentActivity.evaluablesDonePercent === 0 ? null : 100 - workspace.studentActivity.evaluablesDonePercent +  "%"
@@ -141,7 +141,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         trailWidth: 1,
         svgStyle: {width: "100%", height: "4px"},
         text: {
-          className: "text workspace-activity__progressbar-label",
+          className: "workspace-activity__progressbar-label",
           style: {
             left: workspace.studentActivity.exercisesDonePercent === 0 ? "0%" : null,
             right: workspace.studentActivity.exercisesDonePercent === 0 ? null : 100 - workspace.studentActivity.exercisesDonePercent + "%"
@@ -186,7 +186,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.records.studyStartDate ? 
+          <span>{this.props.records.studyStartDate ? 
             this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>
         </div>
       </div>
@@ -194,7 +194,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.records.studyEndDate ? "plugin.records.studyEndDateLabel" :
           "plugin.records.studyTimeEndLabel")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.records.studyEndDate || this.props.records.studyTimeEnd ? 
+          <span>{this.props.records.studyEndDate || this.props.records.studyTimeEnd ? 
             this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : "-"}</span>
         </div>
       </div>
@@ -206,11 +206,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           let records = data.records;      
 
           return <div className="react-required-container" key={data.user.id}>
-          <div className="application-sub-panel__header text text--studies-header">{user.studyProgrammeName}</div>
+          <div className="application-sub-panel__header">{user.studyProgrammeName}</div>
           <div className="application-sub-panel__body">
             {records.length ? records.map((record, index)=>{
               return <ApplicationList key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <div className="application-list__header"><h3 className="text text--studies-list-header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}  
+                {record.groupCurriculumIdentifier ? <div className="application-list__header-container"><h3 className="application-list__header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}  
                   {record.workspaces.map((workspace)=>{
                     //Do we want an special way to display all these different states? passed is very straightforward but failed and
                     //incomplete might be difficult to understand
@@ -224,8 +224,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     }
                     return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <ApplicationListItemHeader modifiers="course" key={workspace.id}>
-                        <span className="text text--course-icon icon-books"></span>
-                        <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
+                        <span className="application-list__header-icon icon-books"></span>
+                        <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
                         {getAssessments(this.props, workspace)}
                         {getActivity(this.props, workspace)}
@@ -233,12 +233,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     </ApplicationListItem>
                   })}
                 {record.transferCredits.length ? 
-                  <div className="application-list__header"><h3 className="text text--studies-list-header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
+                  <div className="application-list__header-container"><h3 className="application-list__header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
                     {record.transferCredits.map((credit)=>{
                       return <ApplicationListItem className="course course--credits" key={credit.date}>
                         <ApplicationListItemHeader modifiers="course">
-                          <span className="text text--transfer-credit-icon icon-books"></span>  
-                          <span className="text text--list-item-title">{credit.courseName}</span>
+                          <span className="application-list__header-icon icon-books"></span>  
+                          <span className="application-list__header-primary">{credit.courseName}</span>
                           {getTransferCreditValue(this.props, credit)}
                         </ApplicationListItemHeader>
                       </ApplicationListItem>
@@ -260,7 +260,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     {studentRecords}    
     
     <div className="application-sub-panel">
-      <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
+      <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
       <div className="application-sub-panel__body">
       {this.props.records.files.length ?
         <ApplicationList className="uploaded-files text">

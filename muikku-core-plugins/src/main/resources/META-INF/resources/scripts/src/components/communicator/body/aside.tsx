@@ -33,29 +33,9 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
         })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.settings.topic")} className="item-list--settings">
-        <NavigationElement icon="settings" isActive={false} onClick={this.props.openSignatureDialog}>{this.props.i18n.text.get('plugin.communicator.settings.signatures')}</NavigationElement>
+        <NavigationElement icon="settings" isActive={false} onClick={this.props.openSignatureDialog}>{this.props.i18n.text.get('plugin.communicator.settings.signature')}</NavigationElement>
       </NavigationTopic>
     </Navigation>
-//    return <div className="item-list item-list--aside-navigation">
-//      <span className="text item-list__title">{this.props.i18n.text.get("plugin.communicator.folders.title")}</span>
-//     
-//      {this.props.messages.navigation.map((item)=>{
-//        let style: any = {};
-//        if (item.color){
-//          style.color = item.color;
-//        }
-//        
-//        return <Link key={item.id} className={`item-list__item ${this.props.messages.location === item.location ? "active" : ""}`} href={`#${item.location}`}>
-//          <span className={`item-list__icon icon-${item.icon}`} style={style}></span>
-//          <span className="item-list__text-body text">
-//            {item.text(this.props.i18n)}
-//          </span>
-//          {item.type === "label" ? <LabelUpdateDialog label={item}>
-//            <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label" icon="edit"/>
-//          </LabelUpdateDialog> : null}
-//        </Link>
-//      })}
-//    </div>
   }
 }
 

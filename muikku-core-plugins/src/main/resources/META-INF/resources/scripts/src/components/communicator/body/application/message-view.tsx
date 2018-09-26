@@ -11,7 +11,7 @@ import Message from './message-view/message';
 import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
 
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/label.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/message.scss';

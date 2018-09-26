@@ -8,7 +8,7 @@
 
 @import "../base/breakpoints";
 @import "../base/vars";
-
+@import "../base/colors";
 
 .screen-container {
   align-items: center;
@@ -16,6 +16,28 @@
   justify-content: center;
   width: 100%;
   overflow: visible;
+}
+
+.screen-container__header {
+  color: $color-frontpage-text-title;
+  font-family: $text-branded-font-family;
+  font-size: 1.7rem;
+  font-weight: 300;
+  margin-bottom: 20px;
+  text-align: left;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 1.8rem;
+  }
+    
+  @include breakpoint($breakpoint-pad) {
+    font-size: 2rem;
+    font-weight: 200;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 2.375rem;
+  }  
 }
 
 .screen-container__wrapper {
@@ -43,3 +65,5 @@
      height: 100%;
   }
 }
+
+

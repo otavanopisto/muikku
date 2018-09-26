@@ -3,7 +3,7 @@ import * as React from 'react';
 import ScreenContainer from '~/components/general/screen-container';
 
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/panel.scss';
 
@@ -27,12 +27,12 @@ class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {
       <ScreenContainer fullHeight={true}>
         <div className="ordered-container ordered-container--error-panels">
           <div className="ordered-container__item ordered-container__item--error">
-            <div className="text text--error-title">
-              <span className="text__panel-icon text__panel-icon--error icon-error"></span>
-              <span className="text__panel-title">{this.props.error.title}</span>
+            <div className="ordered-container__error-title">
+              <span className="ordered-container__item-header-icon ordered-container__item-header-icon--error icon-error"></span>
+              <span>{this.props.error.title}</span>
             </div>
             <div className="panel panel--error">
-              <div className="text text--error-body">{this.props.error.description}</div>
+              <div className="panel__error-body ">{this.props.error.description}</div>
             </div>
           </div>
         </div>

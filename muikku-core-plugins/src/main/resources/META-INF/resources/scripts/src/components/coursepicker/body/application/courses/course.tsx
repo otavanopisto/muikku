@@ -45,15 +45,15 @@ class Course extends React.Component<CourseProps, CourseState>{
     //you can move the toggle expanded function wherever you want that you need the action to be triggered
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
-        <span className="text text--course-icon icon-books"></span>
-        <span className="text text--list-item-title">{this.props.course.name} {this.props.course.nameExtension ? "(" + this.props.course.nameExtension + ")" : null}</span>
-        {this.props.course.feeInfo && this.props.course.feeInfo.evaluationHasFee ? <span className="text text--course-has-fees icon-coin-euro" title={this.props.i18n.text.get("plugin.coursepicker.course.evaluationhasfee")}/> : null}
-        <span className="text text--list-item-type-title">{this.props.course.educationTypeName}</span>
+        <span className="application-list__header-icon icon-books"></span>
+        <span className="application-list__header-primary">{this.props.course.name} {this.props.course.nameExtension ? "(" + this.props.course.nameExtension + ")" : null}</span>
+        {this.props.course.feeInfo && this.props.course.feeInfo.evaluationHasFee ? <span className="application-list__fee-indicatoricon-coin-euro" title={this.props.i18n.text.get("plugin.coursepicker.course.evaluationhasfee")}/> : null}
+        <span className="application-list__header-secondary">{this.props.course.educationTypeName}</span>
       </ApplicationListItemHeader>        
       {this.state.expanded ?
         <div>
           <ApplicationListItemBody className="application-list__item-body--course">
-            <article className="text text--coursepicker-course-description rich-text" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
+            <article className="rich-text" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
             <Button buttonModifiers={["primary-function-content ", "coursepicker-course-action"]} href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>

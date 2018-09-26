@@ -6,7 +6,8 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
-import '~/sass/elements/text.scss';
+
+import '~/sass/elements/article.scss';
 import '~/sass/elements/announcement.scss';
 import '~/sass/elements/rich-text.scss';
 
@@ -31,19 +32,19 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
       return (null)      
     }        
     return (
-      <section className="articles">
-        <article className="articles__page">
-          <header className="text text--announcement-caption">{this.props.announcement.caption}</header>
+      <section>
+        <article className="article">
+          <header className="article__header">{this.props.announcement.caption}</header>
           {this.props.announcement.workspaces.length ? <div className="labels">
             {this.props.announcement.workspaces.map((workspace)=>
               <span className="label" key={workspace.id}>
                 <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
               </span>
             )}
           </div> : null}
-          <div className="text text-announcement-date">{this.props.i18n.time.format(this.props.announcement.startDate)}</div>
-          <section className="text text--announcement-content rich-text" dangerouslySetInnerHTML={{__html: this.props.announcement.content}}></section>
+          <div>{this.props.i18n.time.format(this.props.announcement.startDate)}</div>
+          <section className="article__body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcement.content}}></section>
         </article>
       </section>      
     );

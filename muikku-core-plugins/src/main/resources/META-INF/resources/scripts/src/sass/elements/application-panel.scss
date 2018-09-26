@@ -15,6 +15,7 @@
 }
 
 .application-panel__container {
+  @include text;
   display: flex;
   flex-direction: column;
   max-width: $breakpoint-max-usable-screen;
@@ -51,10 +52,16 @@
   }
 }
 
-.application-panel__header-title {
+.application-panel__header-title-container {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+}
+
+.application-panel__header-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-transform: uppercase;
 }
 
 .application-panel__header-actions {
@@ -91,6 +98,42 @@
   overflow: hidden;
   width: 100%;
 }  
+  
+  
+.application-panel__tool--current-folder {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+ 
+.application-panel__tool-icon {
+  font-size: 1rem;
+  height: auto;
+  padding: 0 5px 0 0;
+  width: 22px;
+}
+ 
+.application-panel__tool-title {
+  display: inline-block;
+  font-size: 1rem;
+  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+ 
   
 .application-panel__toolbar-actions-main {
   align-items: center;
@@ -185,7 +228,7 @@
 
 // Profile
 .application-panel--profile {
-  
+
   .application-panel__helper-container {
     display: block;
     

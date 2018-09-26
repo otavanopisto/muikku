@@ -29,7 +29,7 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
 
           <div className="ordered-container__item ordered-container__item--otavan-opisto-social-media">
             <div className="ordered-container__item-subcontainer ordered-container__item-subcontainer--otavan-opisto-social-media">
-              <h2 className="text text--branded text--otavan-opisto-info-title">
+              <h2 className="ordered-container__subcontainer-header--social-media">
                 {this.props.i18n.text.get( 'plugin.organization.some.title' )}
               </h2>
               <ButtonSocial className="icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"/>
@@ -42,7 +42,7 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
 
           <div className="ordered-container__item ordered-container__item--otavan-opisto-description">
             <div className="ordered-container__item-subcontainer ordered-container__item-subcontainer--otavan-opisto-description">
-              <div className="text text--branded text--otavan-opisto-info-description rich-text"
+              <div className="ordered-container__subcontainer-content ordered-container__subcontainer-content--otavan-opisto-description"
                 dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get( 'plugin.organization.description')}}>
               </div>
               <Button href="http://www.otavanopisto.fi" target="top" buttonModifiers={["branded", "frontpage-website"]}>

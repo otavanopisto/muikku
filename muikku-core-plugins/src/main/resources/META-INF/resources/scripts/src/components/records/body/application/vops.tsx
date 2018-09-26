@@ -5,7 +5,7 @@ import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import { VOPSType } from '~/reducers/main-function/vops';

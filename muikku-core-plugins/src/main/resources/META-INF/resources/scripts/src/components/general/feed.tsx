@@ -27,7 +27,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
         return <li className="feed__item" key={entry.link}>
           <span className="feed__item-description">
             <a href={entry.link} target="top">{entry.title}</a>
-            <span className="rich-text" dangerouslySetInnerHTML={{__html: entry.description}}/>
+            <span dangerouslySetInnerHTML={{__html: entry.description}}/>
           </span>
           <span className="feed__item-date">{this.props.i18n.time.format(entry.publicationDate)}</span>
         </li>

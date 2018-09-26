@@ -88,6 +88,29 @@
   }
 }
 
+.link--privacy-policy {
+  color: $color-default;
+  text-transform: uppercase;
+
+  &:hover,
+  &:active {
+    color: $color-default;
+  }
+}
+
+.link--plagscan-logo {
+  border: 0;
+}
+
+.link--plagscan-privacy-policy {
+  color: $color-default;
+
+  &:hover,
+  &:active {
+    color: $color-default;
+  }
+}
+
 .link--icon {
   @include prefix(font-smoothing, webkit moz o ms, antialiased);
   font-family: muikku;
@@ -97,6 +120,11 @@
   font-weight: normal;
   speak: none;
   text-transform: none;
+}
+
+.link--selected {
+  color: $color-text-link-selected;
+  font-weight: 600;  
 }
 
 .link--highlight {

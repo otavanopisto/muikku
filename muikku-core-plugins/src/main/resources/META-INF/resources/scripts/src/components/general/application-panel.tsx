@@ -172,7 +172,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
         
         <div className="application-panel__header">
         {this.props.title ? 
-          <div className="application-panel__header-title">{this.props.title}</div>
+          <div className="application-panel__header-title-container">{this.props.title}</div>
         : null}
         {this.props.icon ? 
           <div className="application-panel__header-actions">{this.props.icon}</div>

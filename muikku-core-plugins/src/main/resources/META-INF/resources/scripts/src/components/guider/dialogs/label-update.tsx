@@ -15,7 +15,7 @@ import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType,
 import GuiderLabelShareDialog from './label-share';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
-
+import '~/sass/elements/glyph.scss';
 import '~/sass/elements/color-picker.scss';
 
 const KEYCODES = {
@@ -139,8 +139,8 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
-            <div className="text text--label-update-dialog-icon" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
-              <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+            <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
+              <span className={`glyph icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
             </div>
             {this.state.displayColorPicker ? <div className="color-picker">
               <div className="color-picker-overlay" onClick={ this.onHandleClose }/>

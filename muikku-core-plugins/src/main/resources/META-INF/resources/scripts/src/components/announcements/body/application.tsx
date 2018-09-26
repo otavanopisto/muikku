@@ -7,11 +7,11 @@ import Link from '~/components/general/link';
 import {StateType} from '~/reducers';
 
 import {i18nType} from '~/reducers/base/i18n';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 
 {/* Reading panel's css */}
-
+import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/reading-panel.scss';
 import '~/sass/elements/loaders.scss';
 
@@ -25,7 +25,7 @@ interface AnnouncementsApplicationState {
 
 class AnnouncementsApplication extends React.Component<AnnouncementsApplicationProps, AnnouncementsApplicationState>{
   render(){
-        let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcements.pageTitle')}</h2>
+        let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.announcements.pageTitle')}</h2>
         return (<div>
           <ReadingPanel modifier="announcement" title={title} asideAfter={this.props.aside} >
             <Announcements/>

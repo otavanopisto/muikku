@@ -27,7 +27,7 @@
   justify-content: center;
   position: relative;
   width: 180px;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: 250px;
     width: 250px;
@@ -52,7 +52,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: $color-default;
-    font-family: 'muikku' !important;
+    font-family: "muikku";
     font-size: 65px;
     font-style: normal;
     font-variant: normal;
@@ -69,3 +69,14 @@
   padding-bottom: 12px;    
 }
 
+
+.profile-element__title {
+  font-size: 1.6rem;
+  font-weight: 100;
+  padding-bottom: 20px;
+}
+
+.profile_element-label {
+  font-weight: 600;
+  padding-bottom: 2px;
+}

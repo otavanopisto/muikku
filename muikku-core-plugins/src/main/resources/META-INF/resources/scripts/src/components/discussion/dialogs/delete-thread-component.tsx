@@ -1,5 +1,5 @@
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
@@ -64,7 +64,7 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
     }
   }
   render(){
-    let content = (closeDialog: ()=>any) => <div className="text text--delete-area">
+    let content = (closeDialog: ()=>any) => <div>
       {
         this.props.reply ? 
         this.props.i18n.text.get('plugin.discussion.removeReply.text') :

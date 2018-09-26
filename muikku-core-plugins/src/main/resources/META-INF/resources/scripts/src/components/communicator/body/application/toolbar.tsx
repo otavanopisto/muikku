@@ -18,8 +18,9 @@ import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
+import '~/sass/elements/glyph.scss';
 import '~/sass/elements/form-elements.scss';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
@@ -107,9 +108,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           <ApplicationPanelToolbarActionsMain>         
             <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick}/>
           
-            <div className="text text--main-function-current-folder">
-              <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
-              <span className="text__current-folder-title">{"  " + currentLocation.text(this.props.i18n)}</span>
+            <div className="application-panel__tool--current-folder">
+              <span className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+              <span className="application-panel__tool-title">{"  " + currentLocation.text(this.props.i18n)}</span>
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
                 <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
               </LabelUpdateDialog> : null}
@@ -133,7 +134,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                 return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""}`}
                   onClick={!isSelected ? this.props.addLabelToCurrentMessageThread.bind(null, label) : this.props.removeLabelFromCurrentMessageThread.bind(null, label)}>
                   <span className="link__icon icon-tag" style={{color: label.color}}></span>
-                  <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
+                  <span className="link--selected">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
                 </Link>);
               }))
             }>
@@ -165,9 +166,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     let isUnreadOrInboxOrLabel:boolean = (this.props.messages.location === "unread" || this.props.messages.location === "inbox" || this.props.messages.location.startsWith("label"));
     
     return <ApplicationPanelToolbar>
-      <div className="text text--main-function-current-folder">
-        <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
-        <span className="text__current-folder-title">{"  " + currentLocation.text(this.props.i18n)}</span>
+      <div className="application-panel__tool--current-folder">
+        <span className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+        <span className="application-panel__tool-title">{"  " + currentLocation.text(this.props.i18n)}</span>
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
           <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
          </LabelUpdateDialog> : null}
@@ -195,7 +196,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
             onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessageThreads.bind(null, label) : this.props.removeLabelFromSelectedMessageThreads.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
-            <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
+            <span className="link__selected">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
           </Link>);
         }))
       }>
