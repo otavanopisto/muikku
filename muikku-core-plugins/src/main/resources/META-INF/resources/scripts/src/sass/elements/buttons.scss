@@ -912,10 +912,11 @@
   }
 }
 
-.button--profile-image-edit {
+.button--profile-image-edit, .button--profile-image-delete {
   position: absolute;
   bottom: 0;
-  width: 100%;
+  left: 0;
+  width: 50%;
   color: white;
   background-color: rgba(0, 0, 0, 0.5);
   padding: 10px 20px;
@@ -923,6 +924,10 @@
   .icon {
   	padding-right: 5px;
   }
+}
+
+.button--profile-image-delete {
+  left: 50%;
 }
 
 .button--profile {

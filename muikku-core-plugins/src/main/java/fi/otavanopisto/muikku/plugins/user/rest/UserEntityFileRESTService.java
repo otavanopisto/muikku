@@ -167,7 +167,7 @@ public class UserEntityFileRESTService extends PluginRESTService {
   }
   
   @DELETE
-  @Path("/user/{USERENTITYID}/identifier/{IDENTIFIER}")
+  @Path("/{USERENTITYID}/identifier/{IDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE)
   public Response deleteFile(@PathParam("USERENTITYID") Long userEntityId, @PathParam("IDENTIFIER") String identifier, @Context Request request) {
 	// Check if the file exist
@@ -201,7 +201,7 @@ public class UserEntityFileRESTService extends PluginRESTService {
 	
 	userEntityFileController.deleteUserEntityFile(userEntityFile);
 	
-    return Response.ok().build();
+    return Response.noContent().build();
   }
 
   private RestUserEntityFile createRestModel(UserEntityFile userEntityFile) {

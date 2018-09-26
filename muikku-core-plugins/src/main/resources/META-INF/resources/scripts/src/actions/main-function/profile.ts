@@ -272,7 +272,7 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
     try {
       for (let i = 0;  i < allImagesToDelete.length; i++) {
         let identifier = `profile-image-${allImagesToDelete[i]}`;
-        
+        await promisify(mApi().user.files.identifier.del(state.status.userId, identifier), 'callback')();
       }
       
       dispatch(updateStatusHasImage(false));
@@ -280,6 +280,7 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
       if (!(err instanceof MApiError)){
         throw err;
       }
+      console.log(err);
       dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG failed to delete profile image"), 'error'));
     }
   }
