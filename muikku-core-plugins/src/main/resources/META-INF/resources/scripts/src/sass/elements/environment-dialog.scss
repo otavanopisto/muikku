@@ -16,10 +16,10 @@
   right: 0;
   top: 0;
   z-index: 9999;
-  
+
   &.visible {
     opacity: 1;
-    
+
     .env-dialog__wrapper {
       bottom: 0;
     }
@@ -48,17 +48,17 @@
   flex-direction: column;
   font-family: $text-font-family;
   height: 100%;
-  overflow: auto;  
+  overflow: auto;
   width: 100%; 
-  
+
   @include breakpoint($breakpoint-desktop) {
     max-width: 760px;
-    overflow: initial; 
+    overflow: initial;
   }
-  
+
   @include breakpoint($breakpoint-desktop-xl) { 
     max-width: 830px;
-  }   
+  }
 }
 
 .env-dialog__header {
@@ -71,7 +71,7 @@
     font-size: $dialog-title-desktop-font-size;
   }
 
-  @include breakpoint($breakpoint-pad) {  
+  @include breakpoint($breakpoint-pad) {
     left: 15px;
   }
 }
@@ -80,7 +80,7 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 0 10px;     
+  padding: 0 10px;
 }
 
 .env-dialog__footer {
@@ -93,17 +93,17 @@
   justify-content: flex-end;
 
   .button {
-    margin: 0 0 0 10px;         
-  } 
-  
+    margin: 0 0 0 10px;
+  }
+
   @include breakpoint($breakpoint-desktop) {
     justify-content: flex-start;
-    
+
     .button {
-      margin: 0 10px 0 0;         
+      margin: 0 10px 0 0;
     }
   }
-}  
+}
 
 .env-dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
@@ -124,9 +124,9 @@
 .env-dialog__title {
   font-weight: 500;
   position: relative;
-  text-align: center;   
+  text-align: center;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-desktop) {
     text-align: left; 
   }
@@ -147,7 +147,7 @@
 .env-dialog__row---new-discussion-options {
   display: flex;
   flex-flow: column wrap;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
   }
@@ -156,7 +156,7 @@
 .env-dialog__row--new-announcement-options {
   display: flex;
   flex-direction: column;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-direction: initial;
   }
@@ -173,31 +173,31 @@
   .cke {
     flex-grow: 1;
   }
-   
+
   textarea {
     // This is needed for the bottom margins to work on main functions
     min-height: 210px;
   }
-  
+
   &:not(:first-child) {
 
     @include breakpoint($breakpoint-pad) {
       margin-left: 20px;
-    }  
+    }
   }
 }
 
 .env-dialog__form-element-container--datepicker {
   flex-grow: 0;
-    
+
   &:not(:first-child) {
     @include breakpoint($breakpoint-pad) {
       margin-left: 0;
-    }  
+    }
   }
 }
 
-.env-dialog__label {   
+.env-dialog__label {
   align-items: center;
   color: $color-text-default;
   display: flex;
@@ -208,7 +208,7 @@
   font-size: $text-mobile-font-size;
   font-weight: 400;
   padding: 5px 10px 5px 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -226,10 +226,10 @@
   padding: 2px 4px;
   position: relative;
   white-space: nowrap;
-  
+
   @include breakpoint($breakpoint-desktop) {
     height: 32px;
-    margin: 2px 4px 2px 0;  
+    margin: 2px 4px 2px 0;
   }
 }
 
@@ -319,10 +319,10 @@ label {
   content: "\e639";
   font-family: muikku;
   font-size: .875rem;
-} 
+}
 
 .env-dialog__input--date-picker {
-  width: 100%;  
+  width: 100%;
 }
 
 .env-dialog__select {
@@ -333,7 +333,7 @@ label {
   font-size: $text-mobile-font-size;
   padding: 3px 6px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -345,10 +345,10 @@ label {
   display: inline-block;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  height: 100px;  
+  height: 100px;
   padding: 8px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
