@@ -56,9 +56,10 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
       return NavigationRules.ACCESS_DENIED;
     }
     
+    workspaceChatSettings = true;
+
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
-    
     WorkspaceEntityFile customFrontImage = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-cropped");
     hasCustomFrontPageImage = customFrontImage != null;
     customFrontPageImageUrl = hasCustomFrontPageImage ? 
@@ -88,7 +89,12 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
     return hasCustomFrontPageImage;
   }
 
+  public boolean getWorkspaceChatSettings() {
+    return workspaceChatSettings;
+  }
+  
   private Long workspaceEntityId;
   private String customFrontPageImageUrl;
   private boolean hasCustomFrontPageImage;
+  private boolean workspaceChatSettings;
 }

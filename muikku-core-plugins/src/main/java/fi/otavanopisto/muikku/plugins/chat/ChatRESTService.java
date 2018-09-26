@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -30,13 +31,19 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings_;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
+import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -78,6 +85,12 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private ChatSyncController chatSyncController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
+  
+  @Inject
+  private WorkspaceEntity workspaceEntity;
     
   @GET
   @Path("/prebind")
@@ -286,5 +299,43 @@ public class ChatRESTService extends PluginRESTService {
 	  chatController.updateUserChatSettings(findUserChatSettings, visibility);
 	}
 	return Response.ok(userChatSettings).build(); 
+  }
+  
+  @GET
+  @Path("/workspaceChatSettings/{WorkspaceIdentifier}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response workspaceChatSettingsGet(@PathParam("WorkspaceIdentifier") Long workspaceEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+  }
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId); 
+    Workspace c = workspaceController.findWorkspace(workspaceEntity);
+    String workspaceChatSettings = workspaceEntity.getIdentifier();
+    
+  return Response.ok(workspaceChatSettings).build();
+  }
+  @PUT
+  @Path("/workspaceChatSettings/{WorkspaceIdentifier}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceIdentifier") Long workspaceEntityId, WorkspaceChatSettings workspaceChatSettings) {
+  if (!sessionController.isLoggedIn()) {
+    return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+  }
+
+  // chatSyncController.syncStudent(userIdentifier);
+  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId); 
+  String workspaceIdentifier = workspaceEntity.getIdentifier();
+  
+  WorkspaceChatStatus status = workspaceChatSettings.getStatus();
+  WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceIdentifier);
+    
+  if (findWorkspaceChatSettings == null) {
+    chatController.createWorkspaceChatSettings(workspaceIdentifier, status);
+
+  } else {
+    chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
+  }
+  return Response.ok(workspaceChatSettings).build(); 
   }
 }

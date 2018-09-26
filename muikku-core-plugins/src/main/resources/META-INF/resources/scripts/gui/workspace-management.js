@@ -1,6 +1,14 @@
 (function() {
   'use strict';
-  
+	   renderDustTemplate('workspace/workspace-chat-settings.dust', {}, $.proxy(function (text) {
+		   $('.workspace-chat-settings').html(text);
+		   
+		  
+	   }, this));
+	   console.log(mApi());
+   	console.log(mApi().chat.workspaceChatSettings);
+
+	   
   $.widget("custom.workspaceFrontpageImage", {
     options: {
       workspaceEntityId: null
@@ -12,7 +20,7 @@
       var file = event.target.files[0];
       var formData = new FormData($('.workspace-frontpage-image-form')[0]);
       var workspaceId = this.options.workspaceEntityId;
-      
+
       // Upload source image
       
       $.ajax({
@@ -27,6 +35,7 @@
               fileIdentifier: 'workspace-frontpage-image-original'
             })
             .callback($.proxy(function(err, result) {
+            	
 
               // Create cropping dialog
               
@@ -108,6 +117,54 @@
     }
   });
   
+  
+  $.widget("custom.workspaceChatSettings", {
+	  options: {
+	      workspaceEntityId: null,
+	      },
+	    _create: function() {
+	      var workspaceIdentifier = this.options.workspaceEntityId;
+	      console.log(this);
+	      mApi().chat.workspaceChatSettings.read(workspaceIdentifier).callback($.proxy(function (err, workspaceChatSettings) {
+	        if (err) { 
+	          $('.notification-queue').notificationQueue('notification', 'error', err);
+	          return;
+	        }
+	        
+	        mApi().chat.workspaceChatSettings.read(workspaceIdentifier).callback($.proxy(function (err, workspaceChatSettings) {
+	        	
+	          var data = {};
+	          if (workspaceChatSettings == null || workspaceChatSettings == null){
+	          	workspaceChatSettings.status === "DISABLED"
+	            data.disabled_selected = "selected";
+	            this._setStatus("DISABLED");
+	          }
+	          if (workspaceChatSettings && workspaceChatSettings.options === "ENABLED") {
+	            data.enabled_selected = "selected";
+	          }
+	          if (workspaceChatSettings && workspaceChatSettings.options === "DISABLED"){
+	            data.disabled_selected = "selected";
+	          }
+	          renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
+	            this.element.html(text);
+	            this.element.find("select").on('change', $.proxy(function(event) {
+	            	console.log(event.target.value);
+	              this._setStatus(event.target.value);
+	              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.chat.visibilityChange"));
+	            }, this));
+	          }, this));
+	        }, this));
+	      }, this));
+	    },
+	    
+	    _setStatus: function(status, workspaceEntityId) {		  
+	      var workspaceIdentifier = this.options.workspaceEntityId;
+	      mApi().chat.workspaceChatSettings.update({status: status, workspaceEntityId: workspaceIdentifier}).callback($.proxy(function () {
+	        location.reload();
+	      }, this));
+	    }
+	  });
+  
   $.widget("custom.workspaceManagement", {
     options: {
       workspaceEntityId: null,
@@ -130,7 +187,7 @@
     },
     
     _create: function () {
-      
+
       this.element.on("click", ".copy-workspace-link", $.proxy(this._onCopyCourseClick, this));
       
       this.element.on("click", ".workspace-management-image-delete", $.proxy(this._onWorkspaceFrontPageImageDeleteClick, this));
@@ -469,6 +526,7 @@
         }        
       }, this));
       
+      
       async.series(operations, function (err, results) {
         loader.remove();
         if (err) {
@@ -493,6 +551,10 @@
       $(evaluationLink).attr('target', '_blank');
     }
     
+    $('.workspace-chat-settings').workspaceChatSettings({
+        workspaceEntityId: workspaceEntityId
+      });
+    
     $('.workspace-frontpage-image-uploader').workspaceFrontpageImage({
       workspaceEntityId: workspaceEntityId
     });
@@ -500,6 +562,7 @@
       $('.workspace-frontpage-image-input').click();
     }, this));
     
+ 
   });
 
 }).call(this);
