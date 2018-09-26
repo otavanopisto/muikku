@@ -29,7 +29,7 @@ export interface InputContactsAutofillState {
   selectedItems: ContactRecepientType[],
   textInput: string,
   autocompleteOpened: boolean,
-  fieldHeight?: number,
+
   isFocused: boolean
 }
 
@@ -42,7 +42,8 @@ function checkHasPermission(which: boolean, defaultValue?: boolean){
 
 export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
   private blurTimeout:NodeJS.Timer;
-  
+  private selectedHeight:number;
+
   constructor(props: InputContactsAutofillProps){
     super(props);
     
@@ -51,17 +52,17 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       selectedItems: props.selectedItems || [],
       textInput: "",
       autocompleteOpened: false,
-      fieldHeight: undefined,
+
       isFocused: this.props.autofocus === true
     }
     
     this.blurTimeout = null;
-    
+    this.selectedHeight= null;
     this.onInputChange = this.onInputChange.bind(this);
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
-    this.setHeight = this.setHeight.bind(this);
+    this.setBodyMargin = this.setBodyMargin.bind(this);
     this.onDelete = this.onDelete.bind(this);
   }
   componentWillReceiveProps(nextProps: InputContactsAutofillProps){
@@ -69,11 +70,18 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       this.setState({selectedItems: nextProps.selectedItems})
     }
   }
-  setHeight(){
-    let fieldHeight = (this.refs["taginput"] as TagInput).getHeight();
-    if (fieldHeight !== this.state.fieldHeight){
-      this.setState({fieldHeight});
-    }
+    
+  setBodyMargin() {
+    let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
+    let prevSelectedHeight= this.selectedHeight;
+    let currentBodyMargin = parseFloat(document.body.style.marginBottom);       
+    let defaultBodyMargin = currentBodyMargin - prevSelectedHeight;
+    
+    if (selectedHeight !== this.selectedHeight){
+      let bodyMargin = defaultBodyMargin + selectedHeight + "px";        
+        document.body.style.marginBottom = bodyMargin;
+        this.selectedHeight = selectedHeight;
+      }
   }
   onInputBlur(e: React.FocusEvent<any>){
     this.blurTimeout = setTimeout(()=>this.setState({isFocused: false}), 100);
@@ -126,11 +134,14 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.setState({
       selectedItems: nfilteredValue,
       isFocused: true
-    }, this.setHeight);
+    }, this.setBodyMargin
+    );
+
     this.props.onChange(nfilteredValue);
   }
   onAutocompleteItemClick(item: ContactRecepientType, selected: boolean){
     clearTimeout(this.blurTimeout);
+    this.setBodyMargin;
     if (!selected){
       let nvalue = this.state.selectedItems.concat([item]);
       this.setState({
@@ -138,14 +149,21 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         autocompleteOpened: false,
         textInput: "",
         isFocused: true
-      }, this.setHeight);
+      }, this.setBodyMargin
+      );
       this.props.onChange(nvalue);
     } else {
       this.setState({isFocused: true});
     }
   }
+  
+  componentDidMount () {
+    let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
+    this.selectedHeight = selectedHeight;        
+  }
+  
   render(){
-    let selectedItems = this.state.selectedItems.map((item)=>{
+    let selectedItems = this.state.selectedItems.map((item)=>{      
       if (item.type === "user" || item.type === "staff"){
         return {
           node: <span className="autocomplete__selected-item">
@@ -202,7 +220,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     });
     
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
-      opened={this.state.autocompleteOpened} pixelsOffset={this.state.fieldHeight} modifier={this.props.modifier}>
+      opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
       <TagInput ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
         placeholder={this.props.placeholder}

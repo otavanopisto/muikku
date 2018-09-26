@@ -19,19 +19,19 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
   private static final long serialVersionUID = -4395949418454232657L;
 
   public WorkspaceMaterialReply create(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, Long userEntityId, Long numberOfTries, Date created, Date lastModified, Date submitted, Date withdrawn) {
-		WorkspaceMaterialReply workspaceMaterialReply = new WorkspaceMaterialReply();
-		
-		workspaceMaterialReply.setWorkspaceMaterial(workspaceMaterial);
-		workspaceMaterialReply.setUserEntityId(userEntityId);
-		workspaceMaterialReply.setNumberOfTries(numberOfTries);
-		workspaceMaterialReply.setCreated(created);
-		workspaceMaterialReply.setLastModified(lastModified);
-		workspaceMaterialReply.setState(state);
-		workspaceMaterialReply.setSubmitted(submitted);
-		workspaceMaterialReply.setWithdrawn(withdrawn);
-		
-		return persist(workspaceMaterialReply);
-	}
+    WorkspaceMaterialReply workspaceMaterialReply = new WorkspaceMaterialReply();
+
+    workspaceMaterialReply.setWorkspaceMaterial(workspaceMaterial);
+    workspaceMaterialReply.setUserEntityId(userEntityId);
+    workspaceMaterialReply.setNumberOfTries(numberOfTries);
+    workspaceMaterialReply.setCreated(created);
+    workspaceMaterialReply.setLastModified(lastModified);
+    workspaceMaterialReply.setState(state);
+    workspaceMaterialReply.setSubmitted(submitted);
+    workspaceMaterialReply.setWithdrawn(withdrawn);
+
+    return persist(workspaceMaterialReply);
+  }
 
   public WorkspaceMaterialReply findByWorkspaceMaterialAndUserEntityId(WorkspaceMaterial workspaceMaterial, Long userEntityId) {
     EntityManager entityManager = getEntityManager();
