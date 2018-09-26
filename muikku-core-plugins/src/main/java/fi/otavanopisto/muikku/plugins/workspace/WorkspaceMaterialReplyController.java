@@ -83,11 +83,7 @@ public class WorkspaceMaterialReplyController {
   public List<WorkspaceMaterialReply> listWorkspaceMaterialRepliesByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
     return workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
   }
-  
-  public List<WorkspaceMaterialReply> listWorkspaceMaterialRepliesByUserEntity(UserEntity userEntity) {
-    return workspaceMaterialReplyDAO.listByUserEntity(userEntity);
-  }
-  
+
   public void deleteWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply) {
     workspaceMaterialReplyDAO.delete(workspaceMaterialReply);
   }
