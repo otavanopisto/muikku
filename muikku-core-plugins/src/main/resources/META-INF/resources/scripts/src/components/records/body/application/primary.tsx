@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
-import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records/records';
+import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records';
 import {StateType} from '~/reducers';
 import '~/sass/elements/form-elements.scss';
 

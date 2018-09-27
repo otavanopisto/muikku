@@ -141,6 +141,7 @@ public class SessionBackingBean {
         
         studyStartDate = user.getStudyStartDate();
         studyTimeEnd = user.getStudyTimeEnd();
+        studyEndDate = user.getStudyEndDate();
         studyTimeLeftStr = "";
 
         if (studyTimeEnd != null) {
@@ -366,6 +367,10 @@ public class SessionBackingBean {
 		  public String getStudyTimeEnd() {
 		    return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()).toString() : "";
 		  }
+		  
+		  public String getStudyEndDate() {
+			return studyEndDate != null ? Date.from(studyEndDate.toInstant()).toString() : "";
+		  }
 
 		  public String getStudyTimeLeftStr() {
 		    return studyTimeLeftStr != null ? studyTimeLeftStr : "";
@@ -376,6 +381,7 @@ public class SessionBackingBean {
 	  private String addresses;
 	  private String phoneNumbers;
 	  private OffsetDateTime studyStartDate;
+	  private OffsetDateTime studyEndDate;
 	  private OffsetDateTime studyTimeEnd;
 	  private String studyTimeLeftStr;
 }

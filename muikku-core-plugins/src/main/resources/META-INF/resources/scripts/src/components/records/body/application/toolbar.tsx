@@ -10,7 +10,7 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import {StateType} from '~/reducers';
-import {RecordsType} from '~/reducers/main-function/records/records';
+import {RecordsType} from '~/reducers/main-function/records';
 
 interface StudiesToolbarProps {
   i18n: i18nType,

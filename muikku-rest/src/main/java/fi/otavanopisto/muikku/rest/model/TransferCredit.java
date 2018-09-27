@@ -8,7 +8,7 @@ public class TransferCredit {
   }
 
   public TransferCredit(String identifier, String studentIdentifier, OffsetDateTime date, String gradeIdentifier,
-      String gradingScaleIdentifier, String verbalAssessment, String assessorIdentifier, String courseName,
+      String gradingScaleIdentifier, String grade, String gradingScale, Boolean passed, String verbalAssessment, String assessorIdentifier, String courseName,
       Integer courseNumber, Double length, String lengthUnitIdentifier, String schoolIdentifier, String subjectIdentifier,
       String curriculumIdentifier) {
     super();
@@ -17,6 +17,9 @@ public class TransferCredit {
     this.date = date;
     this.gradeIdentifier = gradeIdentifier;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
+    this.grade = grade;
+    this.gradingScale = gradingScale;
+    this.passed = passed;
     this.verbalAssessment = verbalAssessment;
     this.assessorIdentifier = assessorIdentifier;
     this.courseName = courseName;
@@ -140,11 +143,38 @@ public class TransferCredit {
     this.curriculumIdentifier = curriculumIdentifier;
   }
 
+  public String getGrade() {
+	return grade;
+  }
+
+  public void setGrade(String grade) {
+	this.grade = grade;
+  }
+
+  public String getGradingScale() {
+	return gradingScale;
+  }
+
+  public void setGradingScale(String gradingScale) {
+	this.gradingScale = gradingScale;
+  }
+
+  public Boolean getPassed() {
+	return passed;
+  }
+
+  public void setPassed(Boolean passed) {
+	this.passed = passed;
+  }
+
   private String identifier;
   private String studentIdentifier;
   private OffsetDateTime date;
   private String gradeIdentifier;
   private String gradingScaleIdentifier;
+  private String grade;
+  private String gradingScale;
+  private Boolean passed;
   private String verbalAssessment;
   private String assessorIdentifier;
   private String courseName;

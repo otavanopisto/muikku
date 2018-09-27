@@ -11,6 +11,9 @@ export interface TransferCreditType {
   date: string,
   gradeIdentifier: string,
   gradingScaleIdentifier: string,
+  grade: string,
+  gradingScale: string,
+  passed: boolean,
   identifier: string,
   length: number,
   lengthUnitIdentifier: string,
@@ -110,6 +113,7 @@ export interface MaterialEvaluationType {
   grade: string,
   gradeIdentifier: string,
   gradeSchoolDataSource: string,
+  gradingScale: string,
   verbalAssessment: string,
   passed: boolean
 }
@@ -128,10 +132,6 @@ export type CurrentStudentUserAndWorkspaceStatusType = "WAIT" | "LOADING" | "REA
 export interface RecordsType {
   userData: AllStudentUsersDataType,
   userDataStatus: AllStudentUsersDataStatusType,
-  studyStartDate: string,
-  studyTimeEnd: string,
-  studyEndDate: string,
-  grades: RecordsGradesType,
   files: Array<UserFileType>,
   currentStatus: CurrentStudentUserAndWorkspaceStatusType,
   current?: CurrentRecordType,
@@ -145,11 +145,7 @@ export default function records(state: RecordsType={
     userData: [],
     userDataStatus: "WAIT",
     location: null,
-    files: (window as any).FILES,
-    grades: (window as any).GRADES,
-    studyStartDate: (window as any).STUDY_START_DATE || null,
-    studyTimeEnd: (window as any).STUDY_TIME_END || null,
-    studyEndDate: (window as any).STUDY_END_DATE || null,
+    files: [],
     current: null,
     currentStatus: "WAIT",
     curriculums: []
@@ -177,6 +173,10 @@ export default function records(state: RecordsType={
   } else if (action.type === "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE"){
     return Object.assign({}, state, {
       current: action.payload
+    });
+  } else if (action.type === "UPDATE_RECORDS_SET_FILES"){
+    return Object.assign({}, state, {
+      files: action.payload
     });
   }
   return state;
