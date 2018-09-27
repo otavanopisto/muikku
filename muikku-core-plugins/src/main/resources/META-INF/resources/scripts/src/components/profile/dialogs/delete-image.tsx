@@ -36,11 +36,11 @@ class DeleteImageDialog extends React.Component<DeleteImageDialogProps, DeleteIm
         <span>{this.props.i18n.text.get('plugin.profile.deleteImage.dialog.description')}</span>
       </div>;
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="env-dialog__actions">
-        <Button buttonModifiers="dialog-execute" onClick={this.delete.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.profile.deleteImage.dialog.button.okLabel')}
+      return <div className="dialog__button-set">
+        <Button buttonModifiers={["fatal","standard-ok"]} onClick={this.delete.bind(this, closeDialog)}>
+          {this.props.i18n.text.get('plugin.profile.deleteImage.dialog.button.deleteLabel')}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
+        <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog}>
           {this.props.i18n.text.get('plugin.profile.deleteImage.dialog.button.cancelLabel')}
         </Button>
       </div>

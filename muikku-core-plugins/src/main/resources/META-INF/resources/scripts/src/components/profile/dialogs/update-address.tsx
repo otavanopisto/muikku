@@ -118,11 +118,11 @@ class UpdateAddressDialog extends React.Component<UpdateAddressDialogProps, Upda
         </form>
       </div>;
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="env-dialog__actions">
-        <Button buttonModifiers="dialog-execute" onClick={this.update.bind(this, closeDialog)} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.button.sendLabel')}
+      return <div className="dialog__button-set">
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)} disabled={this.state.locked}>
+          {this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.button.saveLabel')}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+        <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.button.cancelLabel')}
         </Button>
       </div>

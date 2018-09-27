@@ -27,7 +27,7 @@
   -webkit-touch-callout: none;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: $button-desktop-font-size;  
+    font-size: $button-desktop-font-size;
   }
 }
 
@@ -353,6 +353,7 @@
   }
 }
 
+// Button that appears inside views component
 .button--primary-function-content {
   background-color: $color-button-primary-background;
   color: $color-button-primary-text;
@@ -366,6 +367,23 @@
   &:active,
   &.active {
     background-color: darken($color-button-primary-background, 20%);
+  }
+}
+
+// Button that is used to save views form information
+.button--primary-function-save {
+  background-color: $color-button-primary-save-background;
+  color: $color-button-primary-save-text;
+  display: inline-flex;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-primary-save-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-primary-save-background, 20%);
   }
 }
 
@@ -935,11 +953,4 @@
 
 .button--profile-image-delete {
   left: 50%;
-}
-
-.button--profile {
-  width: auto;
-  display: inline-block;
-  color: $color-primary-contrast;
-  background-color: $color-primary;
 }
