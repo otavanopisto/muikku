@@ -757,10 +757,10 @@
 
   @include breakpoint($breakpoint-pad) {
     background-color: $color-main-function-button-pill-prev-page-background;
+    border-radius: 10px;
     color: $color-main-function-button-pill-prev-page-text;
     display: inline-flex;
     margin-left: 10px;
-    border-radius: 10px;
     vertical-align: top;
 
     &:hover,
