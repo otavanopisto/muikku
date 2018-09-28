@@ -46,6 +46,10 @@ export interface UploadProfileImageTriggerType {
   }):AnyActionType
 }
 
+export interface DeleteProfileImageTriggerType {
+  ():AnyActionType
+}
+
 export interface SET_PROFILE_USER_PROPERTY extends SpecificActionType<"SET_PROFILE_USER_PROPERTY", {
   key: string,
   value: string
@@ -210,6 +214,8 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
   }
 }
 
+const imageSizes = [96, 256];
+
 let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileImage(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
@@ -230,11 +236,10 @@ let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileIma
         src: data.croppedB64
       })();
       
-      let sizes = [96, 256];
       let done = 0;
 
-      for (let i = 0;  i < sizes.length; i++) {
-        let size = sizes[i];
+      for (let i = 0;  i < imageSizes.length; i++) {
+        let size = imageSizes[i];
         await promisify (mApi().user.files
           .create({
             contentType: 'image/jpeg',
@@ -250,10 +255,35 @@ let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileIma
       
       data.success && data.success();
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.changeImage.dialog.notif.error'), 'error'));
       data.fail && data.fail();
     }
   }
 }
 
-export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, uploadProfileImage};
+let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileImage(){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+    let allImagesToDelete = ['original', ...imageSizes];
+    
+    try {
+      for (let i = 0;  i < allImagesToDelete.length; i++) {
+        let identifier = `profile-image-${allImagesToDelete[i]}`;
+        await promisify(mApi().user.files.identifier.del(state.status.userId, identifier), 'callback')();
+      }
+      
+      dispatch(updateStatusHasImage(false));
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      console.log(err);
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG failed to delete profile image"), 'error'));
+    }
+  }
+}
+
+export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, uploadProfileImage, deleteProfileImage};
