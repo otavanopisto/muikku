@@ -1,5 +1,5 @@
 import { UserWithSchoolDataType, UserFileType } from "~/reducers/main-function/user-index";
-import { WorkspaceType } from "~/reducers/main-function/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { CourseCurriculumFilterListType } from "~/reducers/main-function/courses";
 

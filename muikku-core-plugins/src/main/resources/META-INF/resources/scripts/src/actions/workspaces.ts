@@ -1,8 +1,8 @@
-import actions from '../base/notifications';
+import actions from './base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {WorkspaceListType, ShortWorkspaceType} from '~/reducers/main-function/workspaces';
+import {WorkspaceListType, ShortWorkspaceType, WorkspaceType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 
 export interface LoadWorkspacesFromServerTriggerType {
@@ -11,6 +11,7 @@ export interface LoadWorkspacesFromServerTriggerType {
 
 export type UPDATE_WORKSPACES = SpecificActionType<"UPDATE_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", ShortWorkspaceType>;
+export type SET_CURRENT_WORKSPACE = SpecificActionType<"SET_CURRENT_WORKSPACE", WorkspaceType>;
 
 export type ACTIONS = UPDATE_WORKSPACES | UPDATE_LAST_WORKSPACE
 

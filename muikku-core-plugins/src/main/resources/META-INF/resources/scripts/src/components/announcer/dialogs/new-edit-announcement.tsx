@@ -11,7 +11,7 @@ import { AnnouncementType } from '~/reducers/main-function/announcements';
 import { AnyActionType } from '~/actions';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
-import { WorkspaceType } from '~/reducers/main-function/workspaces';
+import { WorkspaceType } from '~/reducers/workspaces';
 import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/main-function/user-index';
 import { createAnnouncement, CreateAnnouncementTriggerType,
   updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';

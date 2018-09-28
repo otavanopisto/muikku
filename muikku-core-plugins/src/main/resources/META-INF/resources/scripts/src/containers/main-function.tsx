@@ -13,7 +13,7 @@ import titleActions from '~/actions/base/title';
 
 import IndexBody from '../components/index/body';
 import { loadAnnouncementsAsAClient } from '~/actions/main-function/announcements';
-import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions/main-function/workspaces';
+import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions/workspaces';
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 
 import CousePickerBody from '../components/coursepicker/body';

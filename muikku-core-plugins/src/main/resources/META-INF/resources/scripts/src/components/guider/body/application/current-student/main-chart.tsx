@@ -4,7 +4,7 @@ import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {StateType} from '~/reducers';
 import WorkspaceFilter from './filters/workspace-filter';
-import {WorkspaceListType, WorkspaceType, WorkspaceActivityStatisticsType} from '~/reducers/main-function/workspaces';
+import {WorkspaceListType, WorkspaceType, WorkspaceActivityStatisticsType} from '~/reducers/workspaces';
 import GraphFilter from './filters/graph-filter';
 import '~/sass/elements/chart.scss';
 

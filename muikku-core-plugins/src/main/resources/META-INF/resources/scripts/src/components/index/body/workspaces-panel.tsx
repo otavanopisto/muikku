@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
-import {WorkspaceListType, WorkspaceType} from '~/reducers/main-function/workspaces';
+import {WorkspaceListType, WorkspaceType} from '~/reducers/workspaces';
 import {StateType} from '~/reducers';
 import Panel from '~/components/general/panel';
 

@@ -1,6 +1,6 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/main-function/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import {StateType} from '~/reducers';

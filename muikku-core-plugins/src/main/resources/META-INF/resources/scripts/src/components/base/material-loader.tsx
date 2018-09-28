@@ -13,7 +13,7 @@ import { MaterialType, MaterialCompositeRepliesType } from '~/reducers/main-func
 
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
-import { WorkspaceType } from '~/reducers/main-function/workspaces';
+import { WorkspaceType } from '~/reducers/workspaces';
 import promisify from '~/util/promisify';
 
 import '~/sass/elements/rich-text.scss';

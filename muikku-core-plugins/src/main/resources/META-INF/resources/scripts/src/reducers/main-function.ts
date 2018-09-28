@@ -7,7 +7,7 @@ import websocket from './util/websocket';
 
 import messages from './main-function/messages';
 import announcements from './main-function/announcements';
-import workspaces from './main-function/workspaces';
+import workspaces from './workspaces';
 
 import courses from './main-function/courses';
 

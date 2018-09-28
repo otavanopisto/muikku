@@ -16,6 +16,8 @@ export interface StatusType {
   isActiveUser: boolean,
   isStudent: boolean,
   profile: ProfileStatusType,
+  currentWorkspaceId?: string,
+  currentWorkspaceName?: string,
   hasImage: boolean,
   imgVersion: number
 }
@@ -41,6 +43,8 @@ export default function status(state: StatusType={
   isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER,
   profile: (<any>window).PROFILE_DATA,
   isStudent: (<any>window).MUIKKU_IS_STUDENT,
+  currentWorkspaceId: (<any>window).WORKSPACE_ID,
+  currentWorkspaceName: (<any>window).WORKSPACE_NAME,
   hasImage: false,
   imgVersion: 0
 }, action: ActionType): StatusType{

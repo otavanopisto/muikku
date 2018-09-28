@@ -8,7 +8,15 @@
     <script defer="defer" jsf:name="scripts/dist/vendor.js" />
     <script defer="defer" jsf:name="scripts/dist/workspace.js" />
     <script>
-	  WORKSPACE_ID = "ID_HERE"; //With this you can get the workspace as http://dev.muikkuverkko.fi/rest/workspace/workspaces/285/
+      MUIKKU_PERMISSIONS.WORKSPACE_HOME_VISIBLE = #{workspaceBackingBean.homeVisible};
+	  MUIKKU_PERMISSIONS.WORKSPACE_GUIDES_VISIBLE = #{workspaceBackingBean.guidesVisible};
+	  MUIKKU_PERMISSIONS.WORKSPACE_MATERIALS_VISIBLE = #{workspaceBackingBean.materialsVisible};
+	  MUIKKU_PERMISSIONS.WORKSPACE_DISCUSSIONS_VISIBLE = #{workspaceBackingBean.discussionsVisible};
+	  MUIKKU_PERMISSIONS.WORKSPACE_USERS_VISIBLE = #{workspaceBackingBean.usersVisible};
+	  MUIKKU_PERMISSIONS.WORKSPACE_JOURNAL_VISIBLE = #{workspaceBackingBean.journalVisible};
+	  
+	  WORKSPACE_ID = '#{workspaceBackingBean.workspaceEntityId}'; //With this you can get the workspace as http://dev.muikkuverkko.fi/rest/workspace/workspaces/285/
+	  WORKSPACE_NAME = '#{workspaceBackingBean.workspaceName}';
     </script>
   </ui:define>
   

@@ -3,7 +3,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType, UserFileType} from '~/reducers/main-function/user-index';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType } from 'reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType } from 'reducers/workspaces';
 import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records';
 import { StateType } from '~/reducers';
 

@@ -99,12 +99,14 @@ export type WorkspaceListType = Array<WorkspaceType>;
 
 export interface WorkspacesType {
   workspaces: WorkspaceListType,
-  lastWorkspace?: ShortWorkspaceType
+  lastWorkspace?: ShortWorkspaceType,
+  currentWorkspace?: WorkspaceType
 }
 
 export default function workspaces(state: WorkspacesType={
   workspaces: [],
-  lastWorkspace: null
+  lastWorkspace: null,
+  currentWorkspace: null
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_WORKSPACES'){
     return <WorkspacesType>Object.assign({}, state, {
@@ -113,6 +115,10 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === 'UPDATE_LAST_WORKSPACE'){
     return Object.assign({}, state, {
       lastWorkspace: <ShortWorkspaceType>action.payload
+    });
+  } else if (action.type === 'SET_CURRENT_WORKSPACE'){
+    return Object.assign({}, state, {
+      currentWorkspace: <WorkspaceType>action.payload
     });
   }
   return state;

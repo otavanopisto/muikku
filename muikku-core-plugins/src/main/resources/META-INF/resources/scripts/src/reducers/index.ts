@@ -10,7 +10,7 @@ import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
-import {WorkspacesType} from './main-function/workspaces';
+import {WorkspacesType} from './workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
