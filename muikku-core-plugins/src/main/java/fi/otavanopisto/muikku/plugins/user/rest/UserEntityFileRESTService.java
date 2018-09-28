@@ -186,16 +186,12 @@ public class UserEntityFileRESTService extends PluginRESTService {
 		return Response.status(Status.FORBIDDEN).build();
 	}
 	EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUserEntity);
-	boolean isOwnerOfTheFileAndFileIsPublic = userEntity.getId().equals(loggedUserEntity.getId()) && userEntityFile.getVisibility() == UserEntityFileVisibility.PUBLIC;
+	boolean isOwnerOfTheFile = userEntity.getId().equals(loggedUserEntity.getId());
 	boolean isAdministrator = environmentUser != null && environmentUser.getRole() != null && environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR;
-	boolean isStaff = environmentUser != null && environmentUser.getRole() != null && (
-			environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.MANAGER ||
-			environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.TEACHER ||
-			environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDY_GUIDER ||
-			environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER
-	);
-	boolean isStaffAndFileIsAccessibleByStaff = isStaff && userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF;
-	if (!isOwnerOfTheFileAndFileIsPublic && !isAdministrator && !isStaffAndFileIsAccessibleByStaff) {
+	boolean isStaff = environmentUser != null && environmentUser.getRole() != null && environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT;
+	boolean isStaffAndFileIsAccessibleByStaff = isStaff && (
+			userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF || userEntityFile.getVisibility() == UserEntityFileVisibility.PUBLIC);
+	if (!isOwnerOfTheFile && !isAdministrator && !isStaffAndFileIsAccessibleByStaff) {
 		return Response.status(Status.FORBIDDEN).build();
 	}
 	

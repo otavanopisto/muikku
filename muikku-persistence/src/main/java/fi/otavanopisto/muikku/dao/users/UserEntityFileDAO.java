@@ -44,7 +44,7 @@ public class UserEntityFileDAO extends CoreDAO<UserEntityFile> {
   }
   
   public void delete(UserEntityFile userEntityFile) {
-    getEntityManager().remove(userEntityFile);
+    super.delete(userEntityFile);
   }
 
   public UserEntityFile findByUserEntityAndIdentifier(UserEntity userEntity, String identifier) {
