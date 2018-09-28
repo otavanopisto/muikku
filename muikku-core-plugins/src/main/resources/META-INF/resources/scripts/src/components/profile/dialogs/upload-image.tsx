@@ -106,11 +106,11 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
       </div>
     </div>;
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="env-dialog__actions">
-        <Button buttonModifiers="dialog-execute" onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
+      return <div className="dialog__button-set">
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changeImage.dialog.saveButton.label')}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+        <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changeImage.dialog.cancelButton.label')}
         </Button>
       </div>
