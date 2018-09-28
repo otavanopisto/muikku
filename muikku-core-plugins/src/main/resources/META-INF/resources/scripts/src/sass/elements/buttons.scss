@@ -21,13 +21,13 @@
   padding: 5px 10px;
   text-decoration: none;
   text-overflow: ellipsis;
-  text-transform: uppercase; 
+  text-transform: uppercase;
   white-space: nowrap;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: $button-desktop-font-size;  
+    font-size: $button-desktop-font-size;
   }
 }
 
@@ -353,6 +353,7 @@
   }
 }
 
+// Button that appears inside views component
 .button--primary-function-content {
   background-color: $color-button-primary-background;
   color: $color-button-primary-text;
@@ -366,6 +367,23 @@
   &:active,
   &.active {
     background-color: darken($color-button-primary-background, 20%);
+  }
+}
+
+// Button that is used to save views form information
+.button--primary-function-save {
+  background-color: $color-button-primary-save-background;
+  color: $color-button-primary-save-text;
+  display: inline-flex;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-primary-save-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-primary-save-background, 20%);
   }
 }
 
@@ -412,7 +430,6 @@
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
-  justify-content: center;
   background-color: $color-button-pill-background;
   border-radius: 100%;
   color: $color-button-pill-text;
@@ -420,14 +437,15 @@
   display: inline-flex;
   font-size: $button-pill-mobile-font-size;
   height: $button-pill-mobile-size;
+  justify-content: center;
   overflow: hidden;
   position: relative;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  width: $button-pill-mobile-size;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  width: $button-pill-mobile-size;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $button-pill-desktop-font-size;
@@ -705,12 +723,12 @@
 
 .button-pill--go-back {
   background-color: $color-main-function-button-pill-go-back-background;
+  border-radius: 10px;
   color: $color-main-function-button-pill-go-back-text;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   margin-right: 10px;
-  border-radius: 10px;
   vertical-align: top;
 
   &:hover,
@@ -739,10 +757,10 @@
 
   @include breakpoint($breakpoint-pad) {
     background-color: $color-main-function-button-pill-prev-page-background;
+    border-radius: 10px;
     color: $color-main-function-button-pill-prev-page-text;
     display: inline-flex;
     margin-left: 10px;
-    border-radius: 10px;
     vertical-align: top;
 
     &:hover,
@@ -935,11 +953,4 @@
 
 .button--profile-image-delete {
   left: 50%;
-}
-
-.button--profile {
-  width: auto;
-  display: inline-block;
-  color: $color-primary-contrast;
-  background-color: $color-primary;
 }
