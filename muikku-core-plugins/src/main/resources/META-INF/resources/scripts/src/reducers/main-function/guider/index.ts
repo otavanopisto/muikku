@@ -61,7 +61,8 @@ export interface GuiderStudentUserProfileType {
   hops: HOPSDataType,
   lastLogin: LastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,
-  workspaces: WorkspaceListType
+  workspaces: WorkspaceListType,
+  logins: string[]
 }
 
 export interface GuiderType {

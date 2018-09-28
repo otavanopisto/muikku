@@ -296,7 +296,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       <div className="env-dialog__row" key="4">    
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>          
-          <CKEditor width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+          <CKEditor width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div>       
       </div>

@@ -25,17 +25,17 @@
   font-weight: 400;
   padding: 10px 0 0 5px;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     background: none;
     font-size: 1.375rem;
     font-weight: 300;
     padding: 0 2px 0.4rem;
-  }    
+  }
 }
 
 .ordered-container--frontpage-studying,
-.ordered-container--frontpage-news-and-events {  
+.ordered-container--frontpage-news-and-events {
   .ordered-container__item {
     margin-bottom: calc(2 * #{$ordered-container-item-gutter});
   }
@@ -43,11 +43,11 @@
 
 .ordered-container--frontpage-otavan-opisto-info {
   justify-content: center;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
   }
-  
+
   @include breakpoint($breakpoint-desktop) {
     justify-content: flex-start;
   }
@@ -57,13 +57,13 @@
   flex-flow: column nowrap;
   height: 100%;
   padding: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
-  
+
   @include breakpoint($breakpoint-pad){
     flex-flow: row wrap;
     height: auto;
     padding: calc(#{$navbar-desktop-height} * 1.5) 0 10px;
   }
-  
+
   @include breakpoint($breakpoint-desktop){
     flex-flow: row nowrap;
     padding: calc(#{$navbar-desktop-height} * 1.5) 10px 10px;
@@ -91,13 +91,13 @@
   font-weight: 400;
   padding: 10px 0 0 5px;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     background: none;
     font-size: 1.375rem;
     font-weight: 300;
     padding: 0 2px 0.4rem;
-  }  
+  }
 }
 
 .ordered-container__item-header-icon {
@@ -111,39 +111,43 @@
   padding: 7px;
   text-align: center;
   vertical-align: middle;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
   }
 }
 
 .ordered-container__item-header-text {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 300;
+  margin: 0 0 0 10px;
   text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+  }
 }
- 
-  
+
 .ordered-container__item-header-icon--continue-studies {
   background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
   color: $color-index-text-for-panels-title-continue-studies-icon-color;
 }
-  
+
 .ordered-container__item-header-icon--workspaces {
   background-color: $color-index-text-for-panels-title-workspaces-icon-background;
   color: $color-index-text-for-panels-title-workspaces-icon-color;
 }
-  
+
 .ordered-container__item-header-icon--latest-messages {
   background-color: $color-index-text-for-panels-title-latest-messages-icon-background;
   color: $color-index-text-for-panels-title-latest-messages-icon-color;
 }
-  
+
 .ordered-container__item-header-icon--important {
   background-color: $color-index-text-for-panels-title-important-icon-background;
   color: $color-index-text-for-panels-title-important-icon-color;
 }
-  
+
 .ordered-container__item-header-icon--announcements {
   background-color: $color-index-text-for-panels-title-announcements-icon-background;
   color: $color-index-text-for-panels-title-announcements-icon-color;
@@ -152,15 +156,14 @@
 .ordered-container__item-header-icon--error {
   background-color: $color-fatal;
   color: $color-default;
-} 
- 
- 
+}
+
 .ordered-container__item-subcontainer {
   text-align: center;
-  
+
   @include breakpoint($breakpoint-desktop) {
     text-align: left;
-  } 
+  }
 }
 
 .ordered-container__subcontainer-content {
@@ -169,16 +172,16 @@
   font-size: $text-mobile-font-size;
   font-weight: 400;
   line-height: 1.375rem;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
- 
+
   p {
     margin: 0 0 1.15rem;
   }
 }
-  
+
 .ordered-container__item-subcontainer--otavan-opisto-social-media {
   margin-top: 1.5rem;
 
@@ -189,11 +192,11 @@
 
 .ordered-container__item-subcontainer--otavan-opisto-description {
   margin-top: 1.5rem;
-  
+
   @include breakpoint($breakpoint-desktop) {
     margin-top: 0;
   }
-} 
+}
 
 .ordered-container__subcontainer-content--otavan-opisto-description {
   font-size: 1rem;
@@ -225,7 +228,7 @@
     margin: 0 $ordered-container-item-gutter 0 0;
     order: 1;
   }
-  
+
   // Secondary school card (Nettiperuskoulu)
   .ordered-container__item--secondary-school {
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
@@ -234,7 +237,7 @@
     margin: 0 0 0 $ordered-container-item-gutter;
     order: 2;
   }
-  
+
   // Open materials card (Aineopiskelu)
   .ordered-container__item--open-materials {
     flex-basis: 100%;
@@ -242,7 +245,7 @@
     flex-shrink: 1;
     order: 3;
   }
-  
+
   // Events card
   .ordered-container__item--frontpage-events {
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
@@ -251,7 +254,7 @@
     padding: 0 $ordered-container-item-gutter 0 0;
     order: 1;
   }
-  
+
   // News card
   .ordered-container__item--frontpage-news {
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
@@ -260,7 +263,7 @@
     padding: 0 0 0 $ordered-container-item-gutter;
     order: 2;
   }
-  
+
   // Images card
   .ordered-container__item--frontpage-images {
     align-self: flex-start;
@@ -271,7 +274,7 @@
     order: 3;
     overflow: hidden; // This prevents slick carousel to reserve 100% fill entire container some reason!
   }
-  
+
   // Blogs card
   .ordered-container__item--frontpage-blogs {
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
@@ -281,7 +284,7 @@
     order: 4;
   }
 }
- 
+
 @include breakpoint($breakpoint-desktop) {
   .ordered-container__item--upper-secondary-school {
     flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
@@ -289,14 +292,14 @@
     flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter 0 0;
   }
-  
+
   .ordered-container__item--secondary-school {
     flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter;
   }
-  
+
   .ordered-container__item--open-materials {
     flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
     flex-grow: 1;
@@ -310,14 +313,14 @@
   flex-grow: 1;
   flex-shrink: 0;
   order: 1;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-basis: 50%;
     flex-grow: 1;
     flex-shrink: 1;
     order: 1;
   }
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 30%;
     flex-grow: 0;
@@ -331,14 +334,14 @@
   flex-grow: 1;
   flex-shrink: 0;
   order: 3;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-basis: 50%;
     flex-grow: 1;
     flex-shrink: 1;
     order: 2;
   }
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 100%;
     flex-grow: 1;
@@ -360,7 +363,7 @@
     flex-shrink: 0;
     order: 3;
   }
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 70%;
     flex-grow: 1;
@@ -377,7 +380,7 @@
   flex-shrink: 1;
   flex-flow: column nowrap;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
@@ -385,7 +388,7 @@
     padding: 0;
   }
 
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(33% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
@@ -398,7 +401,7 @@
 .ordered-container__item--continue-studies {
   // Inherit everything for mobile from ordered-container_item
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex-basis: calc(50% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
@@ -406,7 +409,7 @@
     padding: 0 10px;
   }
 
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(100% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
@@ -418,8 +421,8 @@
 // Index panels - Workspaces
 .ordered-container__item--workspaces {
   // Inherit everything for mobile from ordered-container_item
-  
-  @include breakpoint($breakpoint-pad){
+
+  @include breakpoint($breakpoint-pad) {
     flex-basis: calc(50% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
@@ -427,7 +430,7 @@
     padding: 0 10px;
   }
 
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(100% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
@@ -441,15 +444,15 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  
-  @include breakpoint($breakpoint-pad){
+
+  @include breakpoint($breakpoint-pad) {
     flex-basis: calc(50% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
     padding: 0 10px;
   }
-  
-  @include breakpoint($breakpoint-desktop){
+
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(33% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
@@ -467,15 +470,15 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  
-  @include breakpoint($breakpoint-pad){
+
+  @include breakpoint($breakpoint-pad) {
     flex-basis: calc(50% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
     padding: 0 10px;
   }
-  
-  @include breakpoint($breakpoint-desktop){
+
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(33% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
@@ -498,26 +501,25 @@
 // Index panels - Container for all 5 panels to adjust bottom maregin
 .ordered-container__item--index-panel-container {
   margin: 0 0 1rem;
-  
-  @include breakpoint($breakpoint-pad){
+
+  @include breakpoint($breakpoint-pad) {
     margin: 0 0 1.5rem;
   }
 }
 
 // Error panels
-
 .ordered-container--error-panels {
   flex-flow: column nowrap;
   height: 100%;
   padding: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
-  
-  @include breakpoint($breakpoint-pad){
+
+  @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
     height: auto;
     padding: calc(#{$navbar-desktop-height} * 1.5) 0 10px;
   }
-  
-  @include breakpoint($breakpoint-desktop){
+
+  @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
     padding: calc(#{$navbar-desktop-height} * 1.5) 10px 10px;
   }
@@ -527,8 +529,8 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  
-  @include breakpoint($breakpoint-pad){
+
+  @include breakpoint($breakpoint-pad) {
     padding: 0 10px;
   }
 }

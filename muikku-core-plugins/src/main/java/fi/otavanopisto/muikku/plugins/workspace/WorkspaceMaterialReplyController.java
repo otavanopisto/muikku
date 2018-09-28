@@ -22,7 +22,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 public class WorkspaceMaterialReplyController {
   
   @Inject
-	private WorkspaceMaterialReplyDAO workspaceMaterialReplyDAO;
+  private WorkspaceMaterialReplyDAO workspaceMaterialReplyDAO;
   
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
@@ -72,7 +72,7 @@ public class WorkspaceMaterialReplyController {
   private void appendVisibleWorkspaceMaterials(List<WorkspaceMaterial> materials, WorkspaceNode workspaceNode) {
     List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentAndHidden(workspaceNode, Boolean.FALSE);
     for (WorkspaceNode childNode : childNodes) {
-      if (childNode instanceof WorkspaceMaterial) { 
+      if (childNode instanceof WorkspaceMaterial) {
         materials.add((WorkspaceMaterial) childNode);
       }
       
@@ -83,9 +83,9 @@ public class WorkspaceMaterialReplyController {
   public List<WorkspaceMaterialReply> listWorkspaceMaterialRepliesByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
     return workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
   }
-  
+
   public void deleteWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply) {
-    workspaceMaterialReplyDAO.delete(workspaceMaterialReply); 
+    workspaceMaterialReplyDAO.delete(workspaceMaterialReply);
   }
 
   public void incWorkspaceMaterialReplyTries(WorkspaceMaterialReply workspaceMaterialReply) {
