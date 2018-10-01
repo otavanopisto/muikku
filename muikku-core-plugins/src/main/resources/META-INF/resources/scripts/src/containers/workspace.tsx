@@ -13,6 +13,7 @@ import titleActions from '~/actions/base/title';
 
 import WorkspaceHomeBody from '~/components/workspace/workspaceHome';
 import { RouteComponentProps } from 'react-router';
+import { setCurrentWorkspace } from '~/actions/workspaces';
 
 interface WorkspaceProps {
   store: Store<StateType>,
@@ -36,6 +37,8 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.onHashChange = this.onHashChange.bind(this);
     this.renderWorkspaceHome = this.renderWorkspaceHome.bind(this);
     
+    props.store.dispatch(setCurrentWorkspace(props.store.getState().status.currentWorkspaceId) as Action);
+    
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
   loadlib(url: string){
@@ -57,7 +60,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.websocket.restoreEventListeners();
       
       let state = this.props.store.getState();
-      this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName + ' - ' + state.i18n.text.get('plugin.site.title')));
+      this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
     }
     
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]}/>

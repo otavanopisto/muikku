@@ -2,7 +2,7 @@ import actions from './base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {WorkspaceListType, ShortWorkspaceType, WorkspaceType} from '~/reducers/workspaces';
+import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentActivityType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 
 export interface LoadWorkspacesFromServerTriggerType {
@@ -51,6 +51,30 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
     }
   }
 }
+  
+export interface SetCurrentWorkspaceTriggerType {
+  (workspaceId: number):AnyActionType
+}
+  
+let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(workspaceId){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let workspace:WorkspaceType;
+      let activity:WorkspaceStudentActivityType;
+      [workspace, activity] = await Promise.all([promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')(), null]) as any
+      workspace.studentActivity = activity;
+      dispatch({
+        type: 'SET_CURRENT_WORKSPACE',
+        payload: workspace
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG plugin.workspace.errormessage.workspaceLoadFailed"), 'error'));
+    }
+  }
+}
 
-export default {loadWorkspacesFromServer, loadLastWorkspaceFromServer}
-export {loadWorkspacesFromServer, loadLastWorkspaceFromServer}
+export default {loadWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace}
+export {loadWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace}

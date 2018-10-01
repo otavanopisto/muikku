@@ -16,7 +16,7 @@ export interface StatusType {
   isActiveUser: boolean,
   isStudent: boolean,
   profile: ProfileStatusType,
-  currentWorkspaceId?: string,
+  currentWorkspaceId?: number,
   currentWorkspaceName?: string,
   hasImage: boolean,
   imgVersion: number

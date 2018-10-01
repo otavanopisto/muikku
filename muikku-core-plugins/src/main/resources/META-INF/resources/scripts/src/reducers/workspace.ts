@@ -5,6 +5,8 @@ import i18n from './base/i18n';
 import title from './base/title';
 import websocket from './util/websocket';
 
+import workspaces from './workspaces';
+
 import {combineReducers} from 'redux';
 
 export default combineReducers({
@@ -13,5 +15,7 @@ export default combineReducers({
   locales,
   status,
   websocket,
-  title
+  title,
+  
+  workspaces
 });
