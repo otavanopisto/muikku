@@ -24,6 +24,8 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -67,6 +69,9 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
   @Inject
   private Logger logger;
   
+  @Inject
+  private ActivityLogController activityLogController;
+  
   @Override
   public boolean isActive(){
     return active;
@@ -102,6 +107,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
 
       if (studentEntity != null) {
+        logger.log(Level.SEVERE, String.format("4 Fired", studentIdentifier.toId()));
         User student = userController.findUserByIdentifier(studentIdentifier);
         
         // Do not notify students that have no study start date set or have started their studies within the last 60 days
@@ -133,6 +139,8 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
         studyTimeLeftNotificationController.createStudyTimeNotification(studentIdentifier);
       } else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
+        activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_STUDYTIME);
+        logger.log(Level.SEVERE, String.format("1 Fired ended", studentIdentifier.toId()));
       }
     }
   }

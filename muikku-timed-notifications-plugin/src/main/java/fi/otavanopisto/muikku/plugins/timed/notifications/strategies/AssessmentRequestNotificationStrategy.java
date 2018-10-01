@@ -24,6 +24,8 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -72,6 +74,9 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   @Inject
   private Logger logger;
   
+  @Inject
+  private ActivityLogController activityLogController;
+  
   @Override
   public long getDuration() {
     return NOTIFICATION_CHECK_FREQ;
@@ -113,6 +118,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
     for (SchoolDataIdentifier studentIdentifier : studentIdentifiers) {
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
+        logger.log(Level.SEVERE, String.format("1 Fired", studentIdentifier.toId()));
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("locale", studentLocale);
@@ -127,6 +133,8 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
           "assesmentrequest"
         );
         assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
+        activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_ASSESMENTREQUEST);
+        logger.log(Level.SEVERE, String.format("1 Fired Ended", studentIdentifier.toId()));
       }
       else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
