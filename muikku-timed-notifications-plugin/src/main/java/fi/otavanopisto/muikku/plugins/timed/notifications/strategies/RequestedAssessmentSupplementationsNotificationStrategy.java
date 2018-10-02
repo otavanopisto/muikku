@@ -26,8 +26,6 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
-import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
@@ -85,9 +83,6 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
   
   @Inject
   private Logger logger;
-  
-  @Inject
-  private ActivityLogController activityLogController;
   
   @Override
   public boolean isActive(){
@@ -210,7 +205,6 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
             // Store notification to avoid duplicates in the future
             
             requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);
-            activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_SUPPLEMENTATIONREQUEST);
           } else {
             logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity or workspace was not found", studentIdentifier.toId()));
           }
