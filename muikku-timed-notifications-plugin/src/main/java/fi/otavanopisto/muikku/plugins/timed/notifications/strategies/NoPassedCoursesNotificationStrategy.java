@@ -87,7 +87,6 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     List<SchoolDataIdentifier> studentsToNotify = getStudentsToNotify();
 
     for (SchoolDataIdentifier studentIdentifier : studentsToNotify) {
-      logger.log(Level.SEVERE, String.format("2 Fired", studentIdentifier.toId()));
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
@@ -105,7 +104,6 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
         );
         noPassedCoursesNotificationController.createNoPassedCoursesNotification(studentIdentifier);
         activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_NOPASSEDCOURSES);
-        logger.log(Level.SEVERE, String.format("2 Fired Ended", studentIdentifier.toId()));
       } else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
       }

@@ -107,7 +107,6 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
 
       if (studentEntity != null) {
-        logger.log(Level.SEVERE, String.format("4 Fired", studentIdentifier.toId()));
         User student = userController.findUserByIdentifier(studentIdentifier);
         
         // Do not notify students that have no study start date set or have started their studies within the last 60 days
@@ -137,10 +136,9 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
           "studytime"
         );
         studyTimeLeftNotificationController.createStudyTimeNotification(studentIdentifier);
+        activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_STUDYTIME);
       } else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
-        activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_STUDYTIME);
-        logger.log(Level.SEVERE, String.format("1 Fired ended", studentIdentifier.toId()));
       }
     }
   }

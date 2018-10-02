@@ -191,7 +191,6 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
 
           Workspace workspace = workspaceController.findWorkspace(workspaceIdentifier);
           if (workspace != null) {
-            logger.log(Level.SEVERE, String.format("3 Fired", studentIdentifier.toId()));
             String workspaceName = StringUtils.isBlank(workspace.getNameExtension()) ? workspace.getName() : String.format("%s (%s)", workspace.getName(), workspace.getNameExtension()); 
             Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
             Map<String, Object> templateModel = new HashMap<>();
@@ -212,7 +211,6 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
             
             requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);
             activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_SUPPLEMENTATIONREQUEST);
-            logger.log(Level.SEVERE, String.format("3 Fired ended", studentIdentifier.toId()));
           } else {
             logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity or workspace was not found", studentIdentifier.toId()));
           }
