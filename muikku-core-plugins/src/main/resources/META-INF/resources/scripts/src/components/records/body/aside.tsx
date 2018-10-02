@@ -8,19 +8,47 @@ import '~/sass/elements/item-list.scss';
 import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records/records';
 import {StateType} from '~/reducers';
 
+import NavigationMenu, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
+
 interface NavigationProps {
   i18n: i18nType,
   location: TranscriptOfRecordLocationType
 }
 
 interface NavigationState {
-
 }
 
 class Navigation extends React.Component<NavigationProps, NavigationState> {
-  render() {
 
-    return <div className="item-list item-list--aside-navigation"></div>
+  constructor(props: NavigationProps){
+    super(props);
+  }
+  
+  render() {
+    
+    let sections = [
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.records"),
+                      hash: "records"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.hops"),
+                      hash: "hops"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.vops"),
+                      hash: "vops"
+                    }
+                  ]        
+    
+    return ( 
+      <NavigationMenu>
+          {sections.map((item, index)=>{
+            return <NavigationElement isActive={this.props.location === item.hash} hash={item.hash} key={index}
+            >{item.name}</NavigationElement> 
+          })}
+      </NavigationMenu>    
+    )
   }
 }
 

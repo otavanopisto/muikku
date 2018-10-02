@@ -7,7 +7,6 @@ import CurrentRecord from './application/current-record';
 import Vops from './application/vops';
 import Hops from './application/hops';
 import {StateType} from '~/reducers';
-import PrimaryOption from './application/primary';
 import Toolbar from './application/toolbar';
 
 interface StudiesApplicationProps {
@@ -24,13 +23,9 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
   }
   
   render(){
-    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.records.pageTitle')}</h2>
-    let primaryOption  = <PrimaryOption />
-    let toolbar = <Toolbar />      
-
-      
+    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.records.pageTitle')}</h2>  
     return (<div>
-      <ApplicationPanel modifier="records" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
+      <ApplicationPanel modifier="records" title={title} asideBefore={this.props.aside}>
         <Records/>
         <CurrentRecord/>
         <Vops/>

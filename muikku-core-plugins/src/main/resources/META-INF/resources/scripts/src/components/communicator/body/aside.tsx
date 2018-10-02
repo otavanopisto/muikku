@@ -17,8 +17,7 @@ interface NavigationProps {
   openSignatureDialog: ()=>any
 }
 
-interface NavigationState {
-  
+interface NavigationState { 
 }
 
 class NavigationAside extends React.Component<NavigationProps, NavigationState> {

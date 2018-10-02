@@ -47,7 +47,6 @@ interface NavigationElementProps {
 }
 
 interface NavigationElementState {
-  
 }
 
 export class NavigationElement extends React.Component<NavigationElementProps, NavigationElementState> {

@@ -28,6 +28,8 @@ function loadCurrentLocation(){
     store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());
   } else if (!givenLocation){
     store.dispatch(<Action>setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), originalData.i, parseInt(originalData.w)));
+  } else if (givenLocation === "records"){
+    store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());    
   } else if (givenLocation === "vops"){
     store.dispatch(<Action>setLocationToVopsInTranscriptOfRecords());
     store.dispatch(<Action>updateVops());
