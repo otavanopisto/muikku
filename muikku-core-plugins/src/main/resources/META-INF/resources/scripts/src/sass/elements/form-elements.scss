@@ -67,12 +67,17 @@
   flex-grow: 1;
   flex-shrink: 1;
 }
+
 .form-element--coursepicker-toolbar {
   display: flex;  
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-} 
+}
+
+.form-element--profile {
+  margin: 10px 0 0;
+}
 
 .form-element__input {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
@@ -111,8 +116,6 @@
 
 .form-element__input--label {
   display: block;
-  margin-bottom: 24px;
-  text-align: center;
 }
 
 .form-element__input--main-function-search {

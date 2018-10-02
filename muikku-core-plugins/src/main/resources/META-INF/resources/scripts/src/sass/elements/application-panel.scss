@@ -225,15 +225,21 @@
   }
 } 
 
+
+// Profile
 .application-panel--profile {
+
   .application-panel__helper-container {
     display: block;
     
     @include breakpoint($breakpoint-pad) {
       display: flex;
-      align-items: center;
       justify-content: center;
-      flex-basis: 300px;
+      flex-basis: 294px;
     }
+  }
+  
+  .application-panel__content {
+    padding: 10px 0 0;
   }
 }

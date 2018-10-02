@@ -14,7 +14,7 @@
   padding: 0;
 }
 
-html, body, #app, #root {
+html {
   height: 100%;
   width: 100%;
 }
@@ -40,7 +40,6 @@ li {
 a {
   color: $color-link-default-text;
   text-decoration: none;
-  font-family: $text-font-family;
 }
 
 dl {

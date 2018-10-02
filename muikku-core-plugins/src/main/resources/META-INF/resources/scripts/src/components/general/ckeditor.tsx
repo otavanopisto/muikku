@@ -17,7 +17,6 @@ interface CKEditorProps {
   onChange(arg: string):any,
   children?: string,
   autofocus?: boolean,
-  growReference?: string
 }
 
 interface CKEditorState {
@@ -43,36 +42,15 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     
     this.cancelNextChangeTrigger = false;
   }
+  
   resize(width: number | string, height: number | string){
-    let actualHeight:number | string;
-    if (height === "grow"){
-      let computedStyle = getComputedStyle(getCKEDITOR().instances[this.name].container.$, null);
-      let ckeditorHeight = parseInt(computedStyle.getPropertyValue("height")) -
-          parseInt(computedStyle.getPropertyValue("padding-top")) -
-          parseInt(computedStyle.getPropertyValue("padding-top"));
-      
-      let growReference:HTMLElement = $(this.refs["ckeditor"]).closest(this.props.growReference)[0];
-      let wholeHeight = growReference.offsetHeight;
-      let remainingHeight = wholeHeight;
-      Array.from(growReference.childNodes).forEach((node: HTMLElement)=>{
-        let nComputedStyle = getComputedStyle(node, null);
-        remainingHeight -= parseInt(nComputedStyle.getPropertyValue("height")) +
-          parseInt(nComputedStyle.getPropertyValue("margin-top")) +
-          parseInt(nComputedStyle.getPropertyValue("margin-bottom"));
-      });
-      
-      actualHeight = remainingHeight + ckeditorHeight - 9;
-    } else {
-      actualHeight = height;
-    }
     
-    if (actualHeight !== this.height || this.width !== width){
-      getCKEDITOR().instances[this.name].resize(width, actualHeight);
-    }
+    getCKEDITOR().instances[this.name].resize(width, height);
     
     this.width = width;
-    this.height = actualHeight;
+    this.height = height;
   }
+  
   componentDidMount(){
     let extraConfig: any = {
       height: 0,
@@ -129,10 +107,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().instances[this.name].destroy();
   }
   componentWillReceiveProps(nextProps: CKEditorProps){
-//    if (!equals(nextProps.configuration, this.props.configuration)){
-//      getCKEDITOR().replace(this.name, {...this.props.configuration,
-//        contentCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"})
-//    }    
     if (nextProps.children !== this.currentData){
       if (!((nextProps.children[nextProps.children.length - 1] === "\n" && nextProps.children.substr(0, nextProps.children.length - 1) === this.currentData) ||
           (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === nextProps.children))){

@@ -23,6 +23,7 @@ interface UploadImageDialogProps {
   
   b64?: string,
   file?: File,
+  src?: string,
   
   isOpen: boolean,
   onClose: ()=>any
@@ -56,8 +57,8 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
     this.setState({locked: true});
     this.props.uploadProfileImage({
       croppedB64: this.retriever.getAsDataURL(),
-      originalB64: this.props.b64,
-      file: this.props.file,
+      originalB64: !this.props.src ? this.props.b64 : null,
+      file: !this.props.src ? this.props.file : null,
       success: ()=>{
         closeDialog();
         this.setState({locked: false});
@@ -88,7 +89,8 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-      <ImageEditor className="image-editor--profile" onInitializedGetRetriever={this.getRetriever} dataURL={this.props.b64} onLoadError={this.showLoadError} ratio={1}
+      <ImageEditor className="image-editor--profile" onInitializedGetRetriever={this.getRetriever}
+       dataURL={this.props.src || this.props.b64} onLoadError={this.showLoadError} ratio={1}
        scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={250}/>
       <div className="dialog__image-tools">
         <div className="dialog__slider">
@@ -104,11 +106,11 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
       </div>
     </div>;
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="env-dialog__actions">
-        <Button buttonModifiers="dialog-execute" onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
+      return <div className="dialog__button-set">
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changeImage.dialog.saveButton.label')}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+        <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changeImage.dialog.cancelButton.label')}
         </Button>
       </div>

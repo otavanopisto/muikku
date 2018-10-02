@@ -4,6 +4,7 @@
 @import "../base/breakpoints";
 
 .profile-element {
+  padding: 0 10px;
   width: 100%;
 }
 
@@ -11,6 +12,7 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  margin: 10px 0;
   min-width: 250px;
   position: relative;
   width: 100%;
@@ -19,11 +21,17 @@
 .profile-element__user-picture {
   align-items: center;
   background-color: $color-profile-empty-image-base;  
+  background-size: contain;
   display: flex;
-  height: 250px;
+  height: 180px;
   justify-content: center;
   position: relative;
-  width: 250px;
+  width: 180px;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 250px;
+    width: 250px;
+  }
   
   input {
     cursor: pointer;
@@ -44,7 +52,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: $color-default;
-    font-family: 'muikku' !important;
+    font-family: "muikku";
     font-size: 65px;
     font-style: normal;
     font-variant: normal;

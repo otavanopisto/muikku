@@ -17,6 +17,15 @@
   width: 100%;
 }
 
+.footer__container--plagscan {
+  background-color: $color-footer-plagscan-background;
+  display: inline-flex;
+  justify-content: center;
+  max-width: $breakpoint-max-usable-screen;
+  position: relative;
+  width: 100%;
+}
+
 .footer__item {
   flex-basis: auto;
   flex-grow: 1;
@@ -38,6 +47,25 @@
   }
 }
 
+.footer__item--plagscan {
+  align-items: center;
+  display: flex;
+  font-size: $text-mobile-font-size;
+  font-weight: 300;
+  justify-content: flex-start;
+  padding: 20px 30px;
+
+  img {
+    height: 30px;
+    width: auto;
+  }
+}
+
+.footer__item--plagscan-text {
+  color: $color-default;
+  margin: 0 5px 0 10px;
+}
+
 .footer__header {
   color: $color-frontpage-text-contact-us;
   font-size: 1.6rem;
@@ -52,8 +80,8 @@
 .footer__subitem {
   color: $color-frontpage-text-contact-us-information;
   font-size: $text-mobile-font-size;
-  margin-bottom: 0.875rem;
-  margin-top: 0.875rem;
+  margin-bottom: 0.55rem;
+  margin-top: 0.55rem;
   
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -62,6 +90,10 @@
   * {
     margin-right: 0.625rem;
   }
+}
+
+.footer__subitem--privacy-policy {
+  margin-top: 1rem;
 }
 
 .footer__item--logos {

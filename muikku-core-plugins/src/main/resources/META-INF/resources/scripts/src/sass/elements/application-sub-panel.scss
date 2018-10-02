@@ -292,6 +292,7 @@
 }
 
 .application-sub-panel__text--course-evaluation {
+
   &.state-PASSED {
     border-left: 3px solid $color-grade-passed;
   }

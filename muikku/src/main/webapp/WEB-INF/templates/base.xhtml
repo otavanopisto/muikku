@@ -43,6 +43,7 @@
   	  ANNOUNCER_CAN_PUBLISH_GROUPS: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
       
       COMMUNICATOR_GROUP_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')},
+      COMMUNICATOR_WORKSPACE_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_WORKSPACE_MESSAGING')},
 
       AREA_PERMISSIONS: #{sessionBackingBean.areaPermissions},
       LOCK_STICKY_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_LOCK_OR_STICKIFY_MESSAGES')},

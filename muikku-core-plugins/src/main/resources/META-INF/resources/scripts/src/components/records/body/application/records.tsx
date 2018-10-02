@@ -63,7 +63,7 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
   return <div className="application-list__header-secondary">
     <span>{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
     <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
-      getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge  ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
+      getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
       {shortenGrade(grade.grade)}
     </span>
   </div>
@@ -84,7 +84,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
     return <span className="application-list__header-secondary">
       <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated)) +
-        getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge  ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
+        getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge--course ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
         {shortenGrade(grade.grade)}
       </span>
     </span>
@@ -94,7 +94,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
     		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
     return <span className="application-list__header-secondary">
       <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate))}</span>
-      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`application-list__indicator-badge  ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
       {status[0].toLocaleUpperCase()}
     </span>
   </span>
