@@ -10,8 +10,10 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/indicator.scss';
 import Dropdown from '~/components/general/dropdown';
-import { WorkspaceType, WorkspaceAssessementState } from '~/reducers/workspaces';
+import { WorkspaceType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
+import EvaluationRequestDialog from './evaluation-request-dialog';
+import EvaluationCancelDialog from './evaluation-cancel-dialog';
 
 interface ItemDataElement {
   modifier: string,
@@ -35,10 +37,11 @@ interface WorkspaceNavbarProps {
 }
 
 interface WorkspaceNavbarState {
-  
+  requestEvaluationOpen: boolean,
+  requestCancelOpen: boolean
 }
 
-function getTextForAssessmentState(state: WorkspaceAssessementState, i18n: i18nType){
+function getTextForAssessmentState(state: WorkspaceAssessementStateType, i18n: i18nType){
   let text;
   switch(state){
   case "unassessed":
@@ -58,6 +61,34 @@ function getTextForAssessmentState(state: WorkspaceAssessementState, i18n: i18nT
 }
 
 class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNavbarState> {
+  constructor(props: WorkspaceNavbarProps){
+    super(props);
+    
+    this.state = {
+      requestEvaluationOpen: false,
+      requestCancelOpen: false
+    }
+    
+    this.onRequestEvaluationOrCancel = this.onRequestEvaluationOrCancel.bind(this);
+  }
+  onRequestEvaluationOrCancel(state: string){
+    let text;
+    switch(state){
+    case "pending":
+    case "pending_pass":
+    case "pending_fail":
+      this.setState({
+        requestCancelOpen: true
+      });
+      break;
+    case "unassessed":
+    default:
+      this.setState({
+        requestEvaluationOpen: true
+      });
+      break;
+    }
+  }
   render(){
     const itemData: ItemDataElement[] = [{
       modifier: "home",
@@ -114,16 +145,16 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     modifier: "assessment-request",
     //TODO add the styles for the following "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete"
     //with the required happy or unhappy faces
-    item: (<Dropdown key="assessment-request" modifier="assessment" items={[
-        closeDropdown=><Link>{getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}</Link>
-      ]}>
-      <Link title={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
+    item: (<Dropdown openByHover key="assessment-request" modifier="assessment"
+        content={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}>
+      <Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)} title={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
         className={`link link--icon link--full link--workspace-navbar link--workspace-navbar-${this.props.currentWorkspace.studentAssessments.assessmentState} 
           icon icon-assessment-${this.props.currentWorkspace.studentAssessments.assessmentState}`}></Link>
     </Dropdown>)
   } : null;
   
-  let assessmentRequestMenuItem = assessmentRequestItem ? (<Link className="link link--full link--menu link--assessment-request">
+  let assessmentRequestMenuItem = assessmentRequestItem ? (<Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)}
+      className="link link--full link--menu link--assessment-request">
     <span className={`link__icon icon-assessment-${this.props.currentWorkspace.studentAssessments.assessmentState}`}/>
     <span className="link--menu__text">{getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}</span>
   </Link>) : null;
@@ -236,7 +267,12 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
         {item.badge ? <span className="indicator indicator--workspace">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         <span className="link--menu__text">{this.props.i18n.text.get(item.text)}</span>
       </Link>
-    }))}/>
+    }))} extraContent={[
+      <EvaluationRequestDialog isOpen={this.state.requestEvaluationOpen}
+        key="evaluation-request-dialog" onClose={()=>this.setState({requestEvaluationOpen: false})}/>,
+      <EvaluationCancelDialog isOpen={this.state.requestCancelOpen}
+        key="evaluation-cancel-dialog" onClose={()=>this.setState({requestCancelOpen: false})}/>
+    ]}/>
   }
 }
 

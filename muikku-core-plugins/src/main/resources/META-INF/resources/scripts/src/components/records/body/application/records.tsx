@@ -16,7 +16,7 @@ import '~/sass/elements/file-uploader.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementState } from '~/reducers/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
@@ -39,7 +39,7 @@ interface RecordsState {
 let storedCurriculumIndex:any = {};
 
 function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: WorkspaceType){
-  let assesmentState:WorkspaceAssessementState;
+  let assesmentState:WorkspaceAssessementStateType;
   let assesmentDate:string;
   if (workspace.studentAssessments && workspace.studentAssessments.assessmentState){
     assesmentState = workspace.studentAssessments.assessmentState;

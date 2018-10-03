@@ -14,7 +14,8 @@ interface NavbarProps {
   menuItems: (React.ReactElement<any>)[],
   defaultOptions: (React.ReactElement<any>)[],
   navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>,
-  mobileTitle?: string
+  mobileTitle?: string,
+  extraContent?: any
 }
 
 interface NavbarState {
@@ -71,6 +72,7 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
               </nav>
               <Menu open={this.state.isMenuOpen} onClose={this.closeMenu}
                 items={this.props.menuItems} modifier={this.props.modifier} navigation={this.props.navigation}/>
+              {this.props.extraContent}
             </div>
             );
   }
