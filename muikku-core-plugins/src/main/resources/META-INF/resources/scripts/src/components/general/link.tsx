@@ -146,6 +146,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     let elementProps:LinkProps  = Object.assign({}, this.props);
     delete elementProps["disablePropagation"];
     delete elementProps["disabled"];
+    delete elementProps["to"];
     delete elementProps["openInNewTab"];
     
     return <Element {...elementProps}

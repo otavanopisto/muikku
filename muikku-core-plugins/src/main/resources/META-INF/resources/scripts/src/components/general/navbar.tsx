@@ -13,7 +13,7 @@ interface NavbarProps {
   })[],
   menuItems: (React.ReactElement<any>)[],
   defaultOptions: (React.ReactElement<any>)[],
-  navigation?: React.ReactElement<any>,
+  navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>,
   mobileTitle?: string
 }
 

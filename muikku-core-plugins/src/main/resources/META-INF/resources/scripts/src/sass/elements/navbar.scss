@@ -55,7 +55,7 @@
   }
 }
   
-.navbar--main-function .navbar__logo {
+.navbar--main-function .navbar__logo, .navbar--workspace .navbar__logo {
 
   @include breakpoint($breakpoint-desktop) {
     background: url("/gfx/oo-branded-site-logo-text-white.png") no-repeat left center;
@@ -128,6 +128,7 @@
 @include breakpoint($breakpoint-pad) {
   
   .navbar--main-function .navbar__item--menu-button,
+  .navbar--workspace .navbar__item--menu-button,
   .navbar__mobile-title {
     display: none;
   }
@@ -145,7 +146,13 @@
   .navbar__item--guider,
   .navbar__item--records,
   .navbar__item--evaluation,
-  .navbar__item--announcer  {
+  .navbar__item--announcer,
+  .navbar__item--help,
+  .navbar__item--materials,
+  .navbar__item--discussion,
+  .navbar__item--journal,
+  .navbar__item--assessment-request,
+  .navbar__item--workspace-management {
     display: inline-block;
     width: $navbar-desktop-item-width;
   }

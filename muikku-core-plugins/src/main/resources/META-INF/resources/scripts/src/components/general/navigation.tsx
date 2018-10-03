@@ -1,6 +1,7 @@
 import Link from "~/components/general/link";
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
+import "~/sass/elements/item-list.scss";
 
 interface NavigationProps {
   
@@ -20,6 +21,7 @@ export default class Navigation extends React.Component<NavigationProps, Navigat
 
 interface NavigationTopicProps {
   name?: string,
+  icon?: string,
   className?: string
 }
 
@@ -29,13 +31,20 @@ interface NavigationTopicState {
 
 export class NavigationTopic extends React.Component<NavigationTopicProps, NavigationTopicState> {
   render(){
-    return <div className={this.props.className}>{this.props.name ? <span className="item-list__title">{this.props.name}</span> : null}{this.props.children}</div>
+    return <div className={this.props.className}>
+      {this.props.name ? <span className="item-list__title">
+        {this.props.icon ? <span className={`item-list__icon icon icon-${this.props.icon}`}/> : null}
+        {this.props.name}
+      </span> : null}
+      {this.props.children}
+    </div>
   }
 }
 
 interface NavigationElementProps {
   isActive: boolean,
   hash?: string,
+  href?: string,
   onClick?: ()=>any,
   children: string,
   icon?: string,
@@ -65,7 +74,7 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
     }
     
     return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`}
-      href={this.props.hash ? "#" + this.props.hash : null} onClick={this.props.onClick}>
+      href={this.props.hash ? "#" + this.props.hash : null} to={this.props.href} onClick={this.props.onClick}>
       {this.props.icon ? <span className={`item-list__icon icon-${this.props.icon}`} style={{color: this.props.iconColor}}></span> : null}
       <span className="item-list__text-body">
         {this.props.children}

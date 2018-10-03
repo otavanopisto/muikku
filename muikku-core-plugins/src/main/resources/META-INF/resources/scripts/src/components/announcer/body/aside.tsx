@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import { AnnouncementsType, AnnouncerNavigationItemType } from '~/reducers/main-function/announcements';

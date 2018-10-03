@@ -2,7 +2,7 @@ import actions from './base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentActivityType} from '~/reducers/workspaces';
+import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 
 export interface LoadWorkspacesFromServerTriggerType {
@@ -60,9 +60,12 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let workspace:WorkspaceType;
-      let activity:WorkspaceStudentActivityType;
-      [workspace, activity] = await Promise.all([promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')(), null]) as any
-      workspace.studentActivity = activity;
+      let assesments:WorkspaceStudentAssessmentsType;
+      let status = getState().status;
+      [workspace, assesments] = await Promise.all([promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')(),
+                                                 status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? promisify(mApi().workspace.workspaces
+                                                     .students.assessments.read(workspaceId, status.userSchoolDataIdentifier), 'callback')() : null]) as any
+      workspace.studentAssessments = assesments;
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',
         payload: workspace

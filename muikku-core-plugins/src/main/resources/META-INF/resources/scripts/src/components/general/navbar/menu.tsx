@@ -22,7 +22,7 @@ interface MenuProps {
   onClose: ()=>any,
   items: Array<React.ReactElement<any>>,
   modifier: string,
-  navigation?: React.ReactElement<any>,
+  navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>,
   status: StatusType,
   i18n: i18nType,
   logout: LogoutTriggerType
@@ -147,7 +147,9 @@ class Menu extends React.Component<MenuProps, MenuState> {
                   <Link className="menu__header__button--close icon-arrow-left"></Link>
                 </div>
                 <div className="menu__body">
-                  {this.props.navigation ? <div className="menu__extras">{this.props.navigation}</div> : null}
+                  {this.props.navigation ? (this.props.navigation instanceof Array ? 
+                      this.props.navigation.map((n, i)=><div className="menu__extras" key={i}>{n}</div>): 
+                      <div className="menu__extras">{this.props.navigation}</div>) : null}
                   <ul className="menu__items">
                     {this.props.items.map((item, index)=>{
                       if (!item){

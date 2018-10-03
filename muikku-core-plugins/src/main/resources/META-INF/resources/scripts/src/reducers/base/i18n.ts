@@ -22,10 +22,6 @@ export default function i18n(state={
   text: {
     get(key: string, ...args: (string | number)[]): string{
       let text = getLocaleText(key, args);
-      if (text){
-        text = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-      }
-      
       return text;
     }
   },

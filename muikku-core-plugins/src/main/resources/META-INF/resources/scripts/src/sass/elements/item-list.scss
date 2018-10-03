@@ -16,6 +16,11 @@
   display: block;
   font-weight: 600;
   padding: 12px 0;
+  
+  .item-list__icon {
+  	display: inline-block;
+  	padding: 0 5px 0 0;
+  }
 }
   
 // Item-list items BASE
