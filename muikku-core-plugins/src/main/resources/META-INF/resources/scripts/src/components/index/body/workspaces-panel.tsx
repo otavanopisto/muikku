@@ -51,7 +51,7 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    workspaces: state.workspaces.workspaces
+    workspaces: state.workspaces.userWorkspaces
   }
 };
 

@@ -11,7 +11,6 @@ import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
 import {WorkspacesType} from './workspaces';
-import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records';
@@ -33,7 +32,6 @@ export interface StateType {
   messages?: MessagesType,
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
-  courses?: CoursesType,
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,

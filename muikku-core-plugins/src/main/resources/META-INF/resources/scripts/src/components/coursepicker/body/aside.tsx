@@ -6,13 +6,13 @@ import * as queryString from 'query-string';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { CoursesType, CourseEducationFilterType, CourseCurriculumFilterType } from '~/reducers/main-function/courses';
 import { StateType } from '~/reducers';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
+import { WorkspacesType, WorkspaceEducationFilterType, WorkspaceCurriculumFilterType } from '~/reducers/workspaces';
 
 interface NavigationAsideProps {
   i18n: i18nType,
-  courses: CoursesType
+  workspaces: WorkspacesType
 }
 
 interface NavigationAsideState {
@@ -24,8 +24,8 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
 
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
-        {this.props.courses.avaliableFilters.educationTypes.map( ( educationType: CourseEducationFilterType ) => {
-          let isActive = this.props.courses.activeFilters.educationFilters.includes( educationType.identifier );
+        {this.props.workspaces.avaliableFilters.educationTypes.map( ( educationType: WorkspaceEducationFilterType ) => {
+          let isActive = this.props.workspaces.activeFilters.educationFilters.includes( educationType.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).filter( ( i: string ) => i !== educationType.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).concat( educationType.identifier ) } ), { arrayFormat: 'bracket' } ) )
@@ -33,8 +33,8 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
         })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
-        {this.props.courses.avaliableFilters.curriculums.map( ( curriculum: CourseCurriculumFilterType ) => {
-          let isActive = this.props.courses.activeFilters.curriculumFilters.includes( curriculum.identifier );
+        {this.props.workspaces.avaliableFilters.curriculums.map( ( curriculum: WorkspaceCurriculumFilterType ) => {
+          let isActive = this.props.workspaces.activeFilters.curriculumFilters.includes( curriculum.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).filter( ( c: string ) => c !== curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).concat( curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) );
@@ -48,7 +48,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
 function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n,
-    courses: state.courses
+    workspaces: state.workspaces
   }
 };
 

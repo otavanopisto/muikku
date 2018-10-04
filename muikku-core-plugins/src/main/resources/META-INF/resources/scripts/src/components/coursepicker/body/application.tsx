@@ -11,12 +11,12 @@ import * as queryString from 'query-string';
 
 import '~/sass/elements/link.scss';
 import {StateType} from '~/reducers';
-import { CoursesType, CoursesBaseFilterType } from '~/reducers/main-function/courses';
+import { WorkspaceBaseFilterType, WorkspacesType } from '~/reducers/workspaces';
 
 interface CoursepickerApplicationProps {
   aside: React.ReactElement<any>,
   i18n: i18nType,
-  courses: CoursesType
+  workspaces: WorkspacesType
 }
 
 interface CoursepickerApplicationState {
@@ -45,8 +45,8 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.coursepicker.pageTitle')}</h2>
     let toolbar = <Toolbar/>
     let primaryOption = <div className="form-element"> 
-      <select className="form-element__select form-element__select--main-action" value={this.props.courses.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
-        {this.props.courses.avaliableFilters.baseFilters.map((filter: CoursesBaseFilterType)=>{
+      <select className="form-element__select form-element__select--main-action" value={this.props.workspaces.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
+        {this.props.workspaces.avaliableFilters.baseFilters.map((filter: WorkspaceBaseFilterType)=>{
           return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option> 
         })} 
       </select>
@@ -62,7 +62,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    courses: state.courses
+    workspaces: state.workspaces
   }
 };
 

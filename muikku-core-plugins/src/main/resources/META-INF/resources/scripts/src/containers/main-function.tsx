@@ -13,13 +13,13 @@ import titleActions from '~/actions/base/title';
 
 import IndexBody from '../components/index/body';
 import { loadAnnouncementsAsAClient } from '~/actions/main-function/announcements';
-import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions/workspaces';
+import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 
 import CousePickerBody from '../components/coursepicker/body';
 import { loadUserIndexBySchoolData, loadUserIndex } from '~/actions/main-function/user-index';
-import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
-import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
+import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer } from '~/actions/workspaces';
+import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import { UserType } from '~/reducers/main-function/user-index';
 
 import CommunicatorBody from '../components/communicator/body';
@@ -162,13 +162,13 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
   }
   loadCoursePickerData(originalData:any){
-    let filters:CoursesActiveFiltersType = {
+    let filters:WorkspacesActiveFiltersType = {
       educationFilters: originalData.e || [],
       curriculumFilters: originalData.c || [],
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
     }
-    this.props.store.dispatch(loadCoursesFromServer(filters) as Action);
+    this.props.store.dispatch(loadWorkspacesFromServer(filters) as Action);
   }
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
@@ -198,8 +198,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
       
-      this.props.store.dispatch(loadAvaliableEducationFiltersFromServer() as Action);
-      this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
       
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
       
@@ -234,7 +234,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       
       this.props.store.dispatch(loadAnnouncementsAsAClient() as Action);
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
-      this.props.store.dispatch(loadWorkspacesFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
     }
@@ -358,7 +358,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
       
-      this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
       
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));

@@ -4,48 +4,48 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 
 import {AnyActionType} from '~/actions';
-import { CoursesActiveFiltersType, CoursesStateType, WorkspaceCourseListType, CoursesPatchType, CoursesType } from '~/reducers/main-function/courses';
 import { StateType } from '~/reducers';
+import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType } from '~/reducers/workspaces';
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
 
-export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
-  let courses:CoursesType = state.courses;
+  let workspaces:WorkspacesType = state.workspaces;
   let hasEvaluationFees:boolean = state.userIndex && 
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees
   
   //Avoid loading courses again for the first time if it's the same location
-  if (initial && filters === courses.activeFilters && courses.state === "READY"){
+  if (initial && filters === workspaces.activeFilters && workspaces.state === "READY"){
     return;
   }
   
-  let actualFilters = filters || courses.activeFilters;
+  let actualFilters = filters || workspaces.activeFilters;
   
-  let coursepickerNextState:CoursesStateType;
+  let workspacesNextstate:WorkspacesStateType;
   //If it's for the first time
   if (initial){
     //We set this state to loading
-    coursepickerNextState = "LOADING";
+    workspacesNextstate = "LOADING";
   } else {
     //Otherwise we are loading more
-    coursepickerNextState = "LOADING_MORE";
+    workspacesNextstate = "LOADING_MORE";
   }
   
-  let newCoursesPropsWhileLoading:CoursesPatchType = {
-    state: coursepickerNextState,
+  let newWorkspacesPropsWhileLoading:WorkspacesPatchType = {
+    state: workspacesNextstate,
     activeFilters: actualFilters
   }
   
   dispatch({
-    type: "UPDATE_COURSES_ALL_PROPS",
-    payload: newCoursesPropsWhileLoading
+    type: "UPDATE_WORKSPACES_ALL_PROPS",
+    payload: newWorkspacesPropsWhileLoading
   });
   
   //Generate the api query, our first result in the messages that we have loaded
-  let firstResult = initial ? 0 : courses.courses.length + 1;
+  let firstResult = initial ? 0 : workspaces.availableWorkspaces.length + 1;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
@@ -76,39 +76,39 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   }
   
   try {
-    let nCourses:WorkspaceCourseListType = <WorkspaceCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+    let nWorkspaces:WorkspaceListType = <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
   
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
-    nCourses = nCourses || [];
-    let hasMore:boolean = nCourses.length === MAX_LOADED_AT_ONCE + 1;
+    nWorkspaces = nWorkspaces || [];
+    let hasMore:boolean = nWorkspaces.length === MAX_LOADED_AT_ONCE + 1;
     
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
-    let actualCourses = nCourses.concat([]);
+    let actualWorkspaces = nWorkspaces.concat([]);
     if (hasMore){
       //we got to get rid of that extra loaded message
-      actualCourses.pop();
+      actualWorkspaces.pop();
     }
     
     //Create the payload for updating all the coursepicker properties
     if (hasEvaluationFees){
-      actualCourses = await Promise.all(actualCourses.map(async (course)=>{
-        return Object.assign(course, {
-          feeInfo: await promisify(mApi().workspace.workspaces.feeInfo.read(course.id), 'callback')()
+      actualWorkspaces = await Promise.all(actualWorkspaces.map(async (workspace)=>{
+        return Object.assign(workspace, {
+          feeInfo: await promisify(mApi().workspace.workspaces.feeInfo.read(workspace.id), 'callback')()
         });
       }));
     }
     
-    let payload:CoursesPatchType = {
+    let payload:WorkspacesPatchType = {
       state: "READY",
-      courses: (concat ? courses.courses.concat(actualCourses) : actualCourses),
+      availableWorkspaces: (concat ? workspaces.availableWorkspaces.concat(actualWorkspaces) : actualWorkspaces),
       hasMore
     }
     
     //And there it goes
     dispatch({
-      type: "UPDATE_COURSES_ALL_PROPS",
+      type: "UPDATE_WORKSPACES_ALL_PROPS",
       payload
     });
   } catch (err){
@@ -118,8 +118,8 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     //Error :(
     dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.coursepicker.errormessage.courseLoad"), 'error'));
     dispatch({
-      type: "UPDATE_COURSES_STATE",
-      payload: <CoursesStateType>"ERROR"
+      type: "UPDATE_WORKSPACES_STATE",
+      payload: <WorkspacesStateType>"ERROR"
     });
   }
 }
