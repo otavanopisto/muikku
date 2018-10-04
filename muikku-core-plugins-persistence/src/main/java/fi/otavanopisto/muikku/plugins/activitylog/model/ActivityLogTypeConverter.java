@@ -17,7 +17,7 @@ public class ActivityLogTypeConverter implements AttributeConverter<ActivityLogT
           return 2;
         case EVALUATION_GOTPASSED:
           return 3;
-        case SESSION_LOGEDIN:
+        case SESSION_LOGGEDIN:
           return 4;
         case WORKSPACE_VISIT:
           return 5;
@@ -54,7 +54,7 @@ public class ActivityLogTypeConverter implements AttributeConverter<ActivityLogT
         case 3:
           return ActivityLogType.EVALUATION_GOTPASSED;
         case 4:
-          return ActivityLogType.SESSION_LOGEDIN;
+          return ActivityLogType.SESSION_LOGGEDIN;
         case 5:
           return ActivityLogType.WORKSPACE_VISIT;
         case 6:

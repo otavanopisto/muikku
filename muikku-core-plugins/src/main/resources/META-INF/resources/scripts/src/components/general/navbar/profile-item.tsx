@@ -38,11 +38,13 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       },
       {
         icon: "forgotpassword",
-        text: 'plugin.profileBadge.links.userGuide'
+        text: 'plugin.profileBadge.links.userGuide',
+        href: "https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials"
       },
       {
         icon: "helpdesk",
-        text: 'plugin.profileBadge.links.helpdesk'
+        text: 'plugin.profileBadge.links.helpdesk',
+        href: "mailto:helpdesk@muikkuverkko.fi"
       },
       {
         icon: "signout",
@@ -59,11 +61,11 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         </Link>}
       })}>
       <Link className="button-pill button-pill--profile">
-        <object className="button-image"
-         data={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)}
-         type="image/jpeg">
-          <span className="button-pill__icon icon-user"></span>
-        </object>
+        {
+          this.props.status.hasImage ? 
+            <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
+              <div className="button-image"><span className="button-pill__icon icon-user"/></div>
+        }
       </Link>
     </Dropdown>
   }

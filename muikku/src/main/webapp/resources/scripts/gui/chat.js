@@ -2,8 +2,9 @@
   'use strict';
   
   /* global converse */
-  
+
   mApi().chat.status.read().callback(function(err, result) {
+	  
     if (result && result.enabled) {
       converse.initialize({
         bosh_service_url : '/http-bind/',
@@ -21,7 +22,8 @@
         auto_list_rooms: true,
         i18n: getLocale() === "fi" ? "fi" : "en",
         hide_occupants:true,
-        limit_room_controls:true
+        limit_room_controls:true,
+        show_checkbox_persistent: CREATE_PERMANENT_CHATROOM
       });
     }
   });

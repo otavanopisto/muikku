@@ -116,7 +116,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       to: this.state.selectedItems,
       subject: this.state.subject,
       text: ((this.props.signature && this.state.includesSignature) ? 
-        (this.state.text + "<i class='mf-signature'>" + this.props.signature.signature + "</i>"):
+        (this.state.text + '<i class="mf-signature">' + this.props.signature.signature + '</i>'):
         this.state.text),
       success: ()=>{
         closeDialog();
@@ -160,12 +160,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
         </div> 
         </div>
-        ),
+        ),        
       (
       <div className="env-dialog__row" key="3">     
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>
-          <CKEditor width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+          <CKEditor width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div> 
       </div>
@@ -173,9 +173,11 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       (this.props.signature ? <div key="4" className="env-dialog__row env-dialog__row--communicator-signature">
         <input className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</span>
+        <span className="env-dialog__input-description">
+          <i className="mf-signature" dangerouslySetInnerHTML={{__html: this.props.signature.signature}}/>
+        </span>
       </div> : null)
     ]
-       
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="env-dialog__actions">

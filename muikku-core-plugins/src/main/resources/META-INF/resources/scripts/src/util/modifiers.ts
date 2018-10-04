@@ -127,14 +127,14 @@ export function getName(user: UserType | UserWithSchoolDataType){
   return user.firstName + (user.lastName ? " " + user.lastName : "");
 }
 
-export function getUserImageUrl(user: UserType | number, size?: number, version?: number){
+export function getUserImageUrl(user: UserType | number, type?: number | string, version?: number){
   let id:Number;
   if (typeof user === "number"){
     id = user;
   } else {
     id = user.id;
   }
-  return `/rest/user/files/user/${id}/identifier/profile-image-${size || 96}?v=${version || 1}`
+  return `/rest/user/files/user/${id}/identifier/profile-image-${type || 96}?v=${version || 1}`
 }
 
 export function shortenGrade(grade: string){
@@ -165,22 +165,13 @@ export function hashCode(str: string) {
 export function resize(img: HTMLImageElement, width: number, mimeType?: string, quality?: number) {
   let canvas = document.createElement('canvas');
   let ctx = canvas.getContext("2d");
-  let oc = document.createElement('canvas');
-  let octx = oc.getContext('2d');
   
   // set size proportional to image
   canvas.width = width;
-  canvas.height = canvas.width * (img.height / img.width);;
-
-  oc.width = img.width * 0.5;
-  oc.height = img.height * 0.5;
-  octx.drawImage(img, 0, 0, oc.width, oc.height);
-
-  // step 2
-  octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+  canvas.height = canvas.width * (img.height / img.width);
 
   // step 3, resize to final size
-  ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
+  ctx.drawImage(img, 0, 0, img.width, img.height,
   0, 0, canvas.width, canvas.height);
   
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);

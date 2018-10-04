@@ -19,7 +19,7 @@ interface UpdateUsernamePasswordDialogProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
   profile: ProfileType,
-  
+
   displayNotification: DisplayNotificationTriggerType,
   loadProfileUsername: LoadProfileUsernameTriggerType
 }
@@ -35,10 +35,10 @@ interface UpdateUsernamePasswordDialogState {
 class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswordDialogProps, UpdateUsernamePasswordDialogState> {
   constructor(props: UpdateUsernamePasswordDialogProps){
     super(props);
-    
+
     this.update = this.update.bind(this);
     this.updateField = this.updateField.bind(this);
-    
+
     this.state = {
       username: "",
       oldPassword: "",
@@ -116,32 +116,33 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-        {this.props.i18n.text.get('plugin.profile.changePassword.dialog.desription')}
-        <br/>
-        <br/>
+        <p>{this.props.i18n.text.get('plugin.profile.changePassword.dialog.desription')}</p>
         <form>
-          <div className="form-element">
+          <div className="form-element form-element--profile">
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.usernameField.label')}</label>
             <input type="text" className="form-element__input form-element__input--profile" value={this.state.username} onChange={this.updateField.bind(this, "username")}/>
-            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.usernameField.label')}</label>
-        
+          </div>
+          <div className="form-element form-element--profile">
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.oldPasswordField.label')}</label>    
             <input type="password" className="form-element__input form-element__input--profile" value={this.state.oldPassword} onChange={this.updateField.bind(this, "oldPassword")}/>
-            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.oldPasswordField.label')}</label>
-            
+          </div>          
+          <div className="form-element form-element--profile">
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField1.label')}</label>            
             <input type="password" className="form-element__input form-element__input--profile" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")}/>
-            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField1.label')}</label>
-            
+          </div>
+          <div className="form-element form-element--profile">
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>            
             <input type="password" className={`form-element__input form-element__input--profile ${this.state.newPassword !== this.state.newPasswordConfirm ? "form-element__input--profile-wrong" : ""}`}
               value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")}/>
-            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>
           </div>
         </form>
       </div>;
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="env-dialog__actions">
-        <Button buttonModifiers="dialog-execute" onClick={this.update.bind(this, closeDialog)} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.sendLabel')}
+      return <div className="dialog__button-set">
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)} disabled={this.state.locked}>
+          {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.saveLabel')}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+        <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.cancelLabel')}
         </Button>
       </div>

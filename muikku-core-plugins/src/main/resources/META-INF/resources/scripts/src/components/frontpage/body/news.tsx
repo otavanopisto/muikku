@@ -43,8 +43,6 @@ export default class FrontpageNews extends React.Component<FrontpageNewsProps, F
           </div>
         </div>
 
-
-
         <div className="ordered-container__item ordered-container__item--frontpage-images">
           <div className="card">
             <Carousel>

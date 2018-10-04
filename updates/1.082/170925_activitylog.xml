@@ -7,10 +7,12 @@
       userEntityId bigint not null,
       type integer not null,
       timestamp datetime not null,
-      workspaceId bigint null default null,
-      contextId bigint null default null,
+      workspaceEntityId bigint,
+      contextId bigint,
       primary key (id)
     );
   </sql>
+  <sql>create index ind_activitylog_user on ActivityLog (userEntityId);</sql>
+  <sql>create index ind_activitylog_workspace on ActivityLog (workspaceEntityId);</sql>
   
 </update>

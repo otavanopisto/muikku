@@ -6,7 +6,6 @@ import { StatusType } from '~/reducers/base/status';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { ProfileType } from '~/reducers/main-function/profile';
-import Moment from '~/lib/moment';
 import { saveProfileProperty, SaveProfilePropertyTriggerType } from '~/actions/main-function/profile';
 import { bindActionCreators } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
@@ -70,14 +69,14 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     if (nextProps.profile.properties['profile-vacation-start'] && 
         this.props.profile.properties['profile-vacation-start'] !== nextProps.profile.properties['profile-vacation-start']){
       this.setState({
-        profileVacationStart: Moment(nextProps.profile.properties['profile-vacation-start'])
+        profileVacationStart: moment(nextProps.profile.properties['profile-vacation-start'])
       });
     }
     
     if (nextProps.profile.properties['profile-vacation-end'] && 
         this.props.profile.properties['profile-vacation-end'] !== nextProps.profile.properties['profile-vacation-end']){
       this.setState({
-        profileVacationEnd: Moment(nextProps.profile.properties['profile-vacation-end'])
+        profileVacationEnd: moment(nextProps.profile.properties['profile-vacation-end'])
       });
     }
     
@@ -104,7 +103,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     let cb = ()=>{
       done++;
       if (totals === done){
-        this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'info')
+        this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success')
       }
     }
     if (this.props.profile.properties['profile-vacation-start'] !== this.state.profileVacationStart){
@@ -145,31 +144,33 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
         <div className="profile-element__item">
           <UpdateUsernamePasswordDialog>
-            <Button buttonModifiers="profile">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
+            <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
           </UpdateUsernamePasswordDialog>
         </div>
 
         {this.props.status.isStudent ? <div className="profile-element__item">
           <UpdateAddressDialog>
-            <Button buttonModifiers="profile">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
+            <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
           </UpdateAddressDialog>
         </div> : <form>
           <div className="profile-element__item">
             <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
-            <input className="form-element__input" type="text" autoComplete="tel-national" size={20} onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
+            <input className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
           </div>
           <div className="profile-element__item">
             <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
-            <DatePicker className="form-element__input" selected={this.state.profileVacationStart} onChange={this.handleDateChange.bind(this, "profileVacationStart")}
-             locale={this.props.i18n.time.getLocale()}/>
+            <DatePicker className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationStart")}
+             maxDate={this.state.profileVacationEnd || null} 
+             locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationStart}/>
           </div>
           <div className="profile-element__item">
             <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
-            <DatePicker className="form-element__input" selected={this.state.profileVacationEnd} onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
-             locale={this.props.i18n.time.getLocale()}/>
+            <DatePicker className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
+             minDate={this.state.profileVacationStart || null}
+             locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>
            </div>
           <div className="profile-element__item">
-            <Button buttonModifiers="profile" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+            <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
           </div>
         </form>}
     </div>);

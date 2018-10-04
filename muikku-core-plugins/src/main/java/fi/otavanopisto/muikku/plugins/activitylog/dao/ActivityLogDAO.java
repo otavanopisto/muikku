@@ -24,7 +24,7 @@ public class ActivityLogDAO extends CorePluginsDAO<ActivityLog>{
     activityLog.setUserEntityId(userEntityId);
     activityLog.setActivityLogType(type);
     activityLog.setTimestamp(new Date());
-    activityLog.setWorkspaceId(workspaceEntityId);
+    activityLog.setWorkspaceEntityId(workspaceEntityId);
     activityLog.setContextId(contextId);
     return persist(activityLog);
   }
@@ -40,9 +40,9 @@ public class ActivityLogDAO extends CorePluginsDAO<ActivityLog>{
     predicates.add(criteriaBuilder.greaterThan(root.get(ActivityLog_.timestamp), from));
     predicates.add(criteriaBuilder.lessThan(root.get(ActivityLog_.timestamp), to));
     if(workspaceEntityId == null)
-      predicates.add(criteriaBuilder.isNull(root.get(ActivityLog_.workspaceId)));
+      predicates.add(criteriaBuilder.isNull(root.get(ActivityLog_.workspaceEntityId)));
     else
-      predicates.add(criteriaBuilder.equal(root.get(ActivityLog_.workspaceId), workspaceEntityId));
+      predicates.add(criteriaBuilder.equal(root.get(ActivityLog_.workspaceEntityId), workspaceEntityId));
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     criteria.orderBy(criteriaBuilder.asc(root.get(ActivityLog_.timestamp)));
     return entityManager.createQuery(criteria).getResultList();
@@ -55,7 +55,7 @@ public class ActivityLogDAO extends CorePluginsDAO<ActivityLog>{
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
     Root<ActivityLog> root = criteria.from(ActivityLog.class);
-    criteria.multiselect(root.get(ActivityLog_.workspaceId)).distinct(true);
+    criteria.multiselect(root.get(ActivityLog_.workspaceEntityId)).distinct(true);
     criteria.where(criteriaBuilder.equal(root.get(ActivityLog_.userEntityId), userEntityId));
     return entityManager.createQuery(criteria).getResultList();
   }

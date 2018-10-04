@@ -18,27 +18,6 @@
   }
 }
 
-.message--unread {
-  background: $color-message-unread-background;
-  border-top: 3px solid $color-default;
-  
-  &.selected {
-    background: $color-application-list-item-background-selected;
-  }
-  
-  @include breakpoint($breakpoint-pad) {
-    border-width: 1px;
-    
-    &.selected {
-      background: $color-message-unread-background;
-    }
-  }
-  
-  .text--list-item-title {
-    font-weight: 700;
-  }
-}
-
 .message__select-container {
   align-items: center;
   display: flex;

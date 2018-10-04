@@ -8,10 +8,10 @@
   height: 100%;
   width: 100%;
   overflow: visible;
-  
-  &::-webkit-scrollbar { 
-    display: none; 
-  } 
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .application-list__header-container {
@@ -19,7 +19,7 @@
   display: flex;
   flex-flow: row nowrap;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0;
   }
@@ -37,7 +37,7 @@
   flex-shrink: 1;
   font-size: 1rem;
   font-weight: 600;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
     font-weight: 400;
@@ -54,7 +54,6 @@
   margin-right: 10px;
 }
 
-
 .application-list__header-primary {
   display: flex;
   flex-basis: 0;
@@ -65,19 +64,21 @@
   word-wrap: break-word;
 }
 
+.application-list__header-primary--highlight {
+  font-weight: 700;
+}
+
 .application-list__header-helper {
   color: $color-default-helper;
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-basis: auto;
     padding: 0 0 0 15px;
   }
 }
-
-
 
 .application-list__header-secondary {
   align-items: center;
@@ -87,16 +88,15 @@
   flex-shrink: 1;
   font-size: $text-capitalized-mobile-font-size;
   justify-content: flex-end;
+  margin: 0 0 0 15px;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-capitalized-desktop-font-size;
   }
 }
 
-
 // Shit shit shit. This is not really a duplicate, but something about studies. TODO: find out where it belongs and name it accordingly
-
 
 .application-list__indicator-badge {
   align-items: center;
@@ -106,10 +106,10 @@
   font-size: 1rem;
   height: 1.875rem;
   justify-content: center;
-  margin: 0 0 0 15px;
+  margin: 0 0 0 10px;
   text-align: center;
   width: 1.875rem;
-  
+
   &.state-PASSED {
     background: $color-grade-passed;
   }
@@ -117,21 +117,23 @@
   &.state-FAILED {
     background: $color-grade-failed;
   }
-  
+
   &.state-INCOMPLETE {
     background: $color-grade-incomplete;
-  }  
-  
-}
+  }
 
-.application-list__indicator-badge--task-evaluation {
-  margin: 0 15px 0 0;
-  
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
-} 
+}
 
+.application-list__indicator-badge--course {
+  margin: 0 0 0 10px;
+}
+
+.application-list__indicator-badge--task {
+  margin: 0 10px 0 0;
+}
 
 .application-list__indicator-badge--evaluation-request {
   background-color: $color-evaluation-request;
@@ -148,12 +150,10 @@
   font-weight: 600;
   margin-left: 5px;
 }
-  
+
 .application-list__header-item-body {
   display: inline-block;
 }
-
-
 
 .application-list__item-content-wrapper {
   align-items: flex-start;
@@ -165,19 +165,17 @@
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   background-color: $color-application-list-item-background;
   position: relative;
- 
-  &.hover, 
+
+  &.hover,
   &:hover {
-  	// background-color: $color-application-list-item-background-hover;
-  }
- 
-  &.active, 
-  &:active {
-  	// background-color: $color-application-list-item-background-active;
+  // background-color: $color-application-list-item-background-hover;
   }
 
-  // Selected application-list item with separate styles for mobile and desktop
-  
+  &.active,
+  &:active {
+  // background-color: $color-application-list-item-background-active;
+  }
+
   &.selected {
     background-color: $color-application-list-item-background-selected;
 
@@ -185,48 +183,63 @@
       background-color: $color-label-mobile-selected-background;
     }
 
-    .text,
     .glyph,
-    .link {
+    .link,
+    .application-list__header-primary,
+    .application-list__header-item-date,
+    .application-list__header-item-body {
       color: $color-default;
     }
-    
+
     .label__text {
       color: $color-default-contrast;
     }
-  
+
     .text--item-counter {
       color: $color-default-contrast;
     }
-    
+
     @include breakpoint($breakpoint-pad) {
       background-color: $color-default;
-      border-radius: 3px;
-      
-      .text,
-      .label__text {
+
+      .label__text,
+      .application-list__header-primary,
+      .application-list__header-item-date,
+      .application-list__header-item-body {
         color: $color-default-contrast;
       }
-      
-      .text--list-item-helper-title {
-        color: $color-default-helper;
-      }
-      
+
       .link {
         color: $color-text-link;
       }
-      
+
       .label {
         background: $color-label-background;
       }
-      
+
       &.announcement--environment .glyph {
         color: $color-announcement-environment;
       }
-      
+
       &.announcement--workspace .glyph {
         color: $color-announcement-workspace;
       }
+    }
+  }
+}
+
+.application-list__item--highlight {
+  background-color: $color-message-unread-background;
+
+  @include breakpoint($breakpoint-pad) {
+    border-top: solid 1px $color-default;
+  }
+
+  &.selected {
+    background-color: $color-application-list-item-background-selected;
+
+    @include breakpoint($breakpoint-pad) {
+      background-color: $color-message-unread-background;
     }
   }
 }
@@ -235,7 +248,7 @@
   padding: 0;
 }
 
-.application-list-document-short {  
+.application-list-document-short {
   padding: 10px 0 0;
 }
 
@@ -243,7 +256,7 @@
   font-weight: 600;
 }
 
-.application-list-document {  
+.application-list-document {
   line-height: 1.5rem;
   margin: 20px 0 0;
 }
@@ -259,7 +272,7 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
-  
+
   @include breakpoint($breakpoint-mobile-xl) {
     justify-content: flex-end;
   }
@@ -276,22 +289,20 @@
   padding: 0 4px;
 }
 
-
 .application-list__item-counter-title {
   font-size: 0.8125rem;
   padding: 0 3px 0 0;
 }
 
-
 .application-list__item-content-aside {
   display: none;
-  
+
   input {
     -webkit-appearance: none;
     -moz-appearance: none;
     align-items: center;
     appearance: none;
-    border: solid 1px $color-main-function-application-list-item-checkbox-border;
+    border: solid 2px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
     display: flex;
     height: 1rem;
@@ -301,7 +312,7 @@
 
   input:checked {
     background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border: solid 1px $color-main-function-application-list-item-checkbox-checked-background;
+    border: solid 2px $color-main-function-application-list-item-checkbox-checked-background;
   }
 
   input:checked::after {
@@ -310,7 +321,7 @@
     font-family: muikku;
     font-size: .875rem;
   }
-  
+
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
     display: flex;
@@ -383,20 +394,17 @@
   flex-flow: row wrap;
 }
 
-
-
-
 .application-list__item-content-header {
   font-size: 1rem;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.125rem; 
+    font-size: 1.125rem;
   }
-}  
+}
 
 .application-list__item-content-body {
-  padding: 0 10px;  
+  padding: 0 10px;
 }
 
 .application-list__item-meta {
@@ -405,10 +413,9 @@
   width: 100%;
 }
 
-
 .application-list__item-footer {
   align-items: center;
-  display: flex;   
+  display: flex;
   padding: 0;
 }
 
@@ -418,7 +425,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: flex-start;
-  
+
   @include breakpoint($breakpoint-mobile-xl) {
     justify-content: flex-end;
   }
@@ -428,9 +435,9 @@
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 0;
-  font-size: 0.8125rem;  
+  font-size: 0.8125rem;
   padding: 0 0 7px;
-  
+
   @include breakpoint($breakpoint-mobile-xl) {
     flex-basis: auto;
     flex-grow: 1;
@@ -447,7 +454,7 @@
   font-size: 0.8125rem;
   justify-content: flex-end;
   text-align: right;
-  
+
   @include breakpoint($breakpoint-mobile-xl) {
     max-width: 250px;
   }
@@ -460,30 +467,27 @@
 }
 
 .application-list__item-header-main-content {
-  display: inline-block;      
+  display: inline-block;
 }
 
 .application-list__item-header-main-content--discussion-message-creator {
   font-size: 0.875rem;
   font-weight: 600;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
     font-weight: 400;
-  }  
+  }
 }
 
 .application-list__item-header-main-content--communicator-sender {
   font-weight: 600;
-      
+
   &::after {
     content: ">";
     margin: 0 10px;
   }
 }
-
-
-
 
 .application-list__item-header-aside {
   align-items: center;
@@ -491,14 +495,12 @@
   justify-content: flex-end;
 }
 
-
-
 .application-list--open {
   -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;
   overflow-y: auto;
-  
-   &::-webkit-scrollbar { 
+
+  &::-webkit-scrollbar {
     display: none; 
   }
 }
@@ -520,15 +522,15 @@
 
 .application-list__header-container--discussion {
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0 0;
   }
 }
 
-.application-list__item--discussion-message {  
+.application-list__item--discussion-message {
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 20px 0;
   }
@@ -540,7 +542,7 @@
   max-height: 5rem;
   overflow: hidden;
   position: relative;
-  text-overflow: ellipsis;  
+  text-overflow: ellipsis;
   width: 100%;
 }
 
@@ -554,17 +556,16 @@
   bottom: 0;
   content: "";
   height: 4rem;
-  left: 0;    
+  left: 0;
   position: absolute;
   width: 100%;
 }
 
-
-.application-list__item--discussion-reply {  
+.application-list__item--discussion-reply {
   border-top: 5px solid $color-message-border;
   margin: 10px 0 0;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     margin: 0;
     padding: 20px 0;
@@ -573,7 +574,7 @@
 
 .application-list__item--discussion-reply-of-reply {
   padding: 10px 10px 10px 30px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0 20px 55px;
   }
@@ -600,18 +601,18 @@
 .application-list__item--workspace-announcement,
 .application-list__item--environment-announcement {
   padding: 10px 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 15px 0;
   }
-    
+
   .glyph::before {
     color: $color-announcement-workspace-icon;
   }
 }
 
-.application-list__item--environment-announcement { 
-   
+.application-list__item--environment-announcement {
+
   .glyph::before {
     color: $color-announcement-environment-icon;
   }
@@ -624,7 +625,7 @@
 
 .application-list__item--workspace-announcement:first-child,
 .application-list__item--environment-announcement:first-child {
-  
+
   .application-list__item-header {
     background-color: $color-announcement-open-header-background;
   }
@@ -635,39 +636,33 @@
 }
 
 // Communicator
-
-.application-list__item--communicator-message {  
+.application-list__item--communicator-message {
   border-bottom: 5px solid $color-message-border;
   padding: 10px 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 15px 0;
   }
-  
+
   &:last-child {
     border: 0;
   }
 }
 
 .application-list__item-header--communicator-message-thread {
-	align-items: flex-start;
+  align-items: flex-start;
   flex-direction: column;
 }
 
 .application-list__item:first-child {
-  
+
   .application-list__item-header--communicator-message-thread {
     background-color: $color-message-open-header-background;
   }
 }
 
-
 .application-list__item-body--communicator-message {
   margin: 5px 0; 
-}
-
-.application-list__item-footer--communicator-message-labels {
-  
 }
 
 .application-list__item-footer--communicator-message-thread-actions {
@@ -675,19 +670,18 @@
 }
 
 // Coursepicker
-
 .application-list__item-header--course {
   cursor: pointer;
   padding: 10px 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 15px 0;
   }
-} 
+}
 
 .application-list__item-body--course {
   padding: 0 0 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0 0 15px;
   }
@@ -695,7 +689,7 @@
 
 .application-list__item-footer--course {
   padding: 0 0 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0 0 15px;
   }
@@ -710,12 +704,11 @@
 .application-list__header-container--studies-detailed-info {
   padding: 10px 0;
   font-size: 1.125rem;
-    
+
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0;
   }
 }
-
 
 .application-list__fee-indicator {
   color: $color-course-icon;
@@ -726,10 +719,7 @@
   font-size: 1.25rem;
   justify-content: flex-end;
   margin-right: 10px;
-}  
-
-
-
+}
 
 .application-list__item-header--studies-assignment {
   cursor: pointer;

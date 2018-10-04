@@ -45,7 +45,12 @@ export interface MessageThreadType {
   threadLatestMessageDate: string,
   unreadMessagesInThread: boolean,
   userGroupRecipients?: UserGroupListType,
-  workspaceRecipients?: WorkspaceListType
+  workspaceRecipients?: Array<{
+    archetype: string,
+    workspaceEntityId: number,
+    workspaceExtension?: string,
+    workspaceName: string
+  }>
 }
 export interface MessageThreadUpdateType {
   communicatorMessageId?: number,
@@ -82,6 +87,7 @@ export interface MessageType {
   workspaceRecipients: Array<{
     archetype: string,
     workspaceEntityId: number,
+    workspaceExtension?: string,
     workspaceName: string
   }>
 }
