@@ -43,12 +43,12 @@ public class ActivityLog {
     this.timestamp = timestamp;
   }
   
-  public Long getWorkspaceId() {
-    return workspaceId;
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
   }
   
-  public void setWorkspaceId(Long workspaceId) {
-    this.workspaceId = workspaceId;
+  public void setWorkspaceEntityId(Long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
   }
   
   public Long getContextId() {
@@ -68,6 +68,7 @@ public class ActivityLog {
   private Long userEntityId;
   
   @NotNull
+  @Column (nullable = false)
   @Convert(converter = ActivityLogTypeConverter.class)
   private ActivityLogType type;
   
@@ -77,7 +78,7 @@ public class ActivityLog {
   private Date timestamp;
   
   @Column
-  private Long workspaceId;
+  private Long workspaceEntityId;
   
   @Column
   private Long contextId;

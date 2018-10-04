@@ -16,7 +16,7 @@ public class LoginListener {
   
   public void onLogin(@Observes LoginEvent loginEvent){
     loginDetailController.log(loginEvent);
-    activityLogController.createActivityLog(loginEvent.getUserEntityId(), ActivityLogType.SESSION_LOGEDIN);
+    activityLogController.createActivityLog(loginEvent.getUserEntityId(), ActivityLogType.SESSION_LOGGEDIN);
   }
   
 }
