@@ -38,8 +38,20 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
                     {
                       name: this.props.i18n.text.get("plugin.records.category.vops"),
                       hash: "vops"
-                    }
-                  ]        
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.yo"),
+                      hash: "yo"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.statistics"),
+                      hash: "statistics"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.summary"),
+                      hash: "summary"
+                    }                    
+                    ]        
     
     return ( 
       <NavigationMenu>
