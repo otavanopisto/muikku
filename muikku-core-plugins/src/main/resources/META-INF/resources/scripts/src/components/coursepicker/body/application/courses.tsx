@@ -33,11 +33,11 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
     super(props);
     
     //once this is in state READY only then a loading more event can be triggered
-    this.statePropertyLocation = "coursepickerCoursesState";
+    this.statePropertyLocation = "workspacesState";
     //it will only call the function if this is true
-    this.hasMorePropertyLocation = "coursepickerHasMore";
+    this.hasMorePropertyLocation = "workspacesHasMore";
     //this is the function that will be called
-    this.loadMoreTriggerFunctionLocation = "loadMoreCoursesFromServer";
+    this.loadMoreTriggerFunctionLocation = "loadMoreWorkspacesFromServer";
   }
 
   render(){
