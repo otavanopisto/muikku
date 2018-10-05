@@ -89,8 +89,6 @@ public class ChatRESTService extends PluginRESTService {
   @Inject
   private WorkspaceController workspaceController;
   
-  @Inject
-  private WorkspaceEntity workspaceEntity;
     
   @GET
   @Path("/prebind")
@@ -302,39 +300,42 @@ public class ChatRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspaceChatSettings/{WorkspaceIdentifier}")
+  @Path("/workspaceChatSettings/{WorkspaceEntityId}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response workspaceChatSettingsGet(@PathParam("WorkspaceIdentifier") Long workspaceEntityId) {
+  public Response workspaceChatSettingsGet(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettings workspaceChatSettings) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
   }
-
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId); 
-    Workspace c = workspaceController.findWorkspace(workspaceEntity);
-    String workspaceChatSettings = workspaceEntity.getIdentifier();
     
-  return Response.ok(workspaceChatSettings).build();
+   
+
+    
+  return Response.ok(workspaceEntityId).build();
   }
   @PUT
-  @Path("/workspaceChatSettings/{WorkspaceIdentifier}")
+  @Path("/workspaceChatSettings/{WorkspaceEntityId}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceIdentifier") Long workspaceEntityId, WorkspaceChatSettings workspaceChatSettings) {
+  public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettings workspaceChatSettings) {
   if (!sessionController.isLoggedIn()) {
     return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
   }
 
-  // chatSyncController.syncStudent(userIdentifier);
-  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId); 
-  String workspaceIdentifier = workspaceEntity.getIdentifier();
-  
+  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);   
   WorkspaceChatStatus status = workspaceChatSettings.getStatus();
-  WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceIdentifier);
+  WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
     
   if (findWorkspaceChatSettings == null) {
-    chatController.createWorkspaceChatSettings(workspaceIdentifier, status);
+    chatController.createWorkspaceChatSettings(workspaceEntityId, status);
 
   } else {
     chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
+    
+  }
+  
+  if (status == WorkspaceChatStatus.ENABLED) {
+    chatSyncController.syncWorkspace(workspaceEntity);
+  } else {
+    chatSyncController.removeWorkspaceChatRoom(workspaceEntity);
   }
   return Response.ok(workspaceChatSettings).build(); 
   }

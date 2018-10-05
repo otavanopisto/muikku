@@ -31,28 +31,22 @@ public class SyncStudentEventHandler {
   private ChatSyncController chatSyncController;
   
   @Inject
-  private UserEntityController userEntityController;
-  
-  @Inject
   private WorkspaceEntityController workspaceEntityController;
   
   public synchronized void onSchoolDataWorkspaceUserDiscoveredEvent(@Observes SchoolDataWorkspaceUserDiscoveredEvent event) {
     //kun kurssille pelmahtaa uusi opiskelija
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     
-    String userIdentifier = userEntity.getDefaultIdentifier();
-    String userDataSource = userEntity.getDefaultSchoolDataSource().getIdentifier();
+    String userIdentifier = event.getUserIdentifier();
+    String userDataSource = event.getUserDataSource();
     SchoolDataIdentifier user = new SchoolDataIdentifier(userIdentifier, userDataSource);
     chatSyncController.syncStudent(user);
   }
 
  
   public synchronized void onSchoolDataWorkspaceUserRemovedEvent(@Observes SchoolDataWorkspaceUserRemovedEvent event) {
-    //kun kurssilta poistuu joku opiskelija
-    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
-    
-    String userIdentifier = userEntity.getDefaultIdentifier();
-    String userDataSource = userEntity.getDefaultSchoolDataSource().getIdentifier();
+    //kun kurssilta poistuu joku opiskelija    
+    String userIdentifier = event.getUserIdentifier();
+    String userDataSource = event.getUserDataSource();
     SchoolDataIdentifier user = new SchoolDataIdentifier(userIdentifier, userDataSource);
     String workspaceDataSource = event.getWorkspaceDataSource();
     String workspaceIdentifier = event.getWorkspaceIdentifier();

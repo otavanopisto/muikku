@@ -5,8 +5,6 @@
 		   
 		  
 	   }, this));
-	   console.log(mApi());
-   	console.log(mApi().chat.workspaceChatSettings);
 
 	   
   $.widget("custom.workspaceFrontpageImage", {
@@ -123,18 +121,18 @@
 	      workspaceEntityId: null,
 	      },
 	    _create: function() {
-	      var workspaceIdentifier = this.options.workspaceEntityId;
+	      var workspaceEntityId = this.options.workspaceEntityId;
 	      console.log(this);
-	      mApi().chat.workspaceChatSettings.read(workspaceIdentifier).callback($.proxy(function (err, workspaceChatSettings) {
+	      mApi().chat.workspaceChatSettings.read(workspaceEntityId).callback($.proxy(function (err, workspaceChatSettings) {
 	        if (err) { 
 	          $('.notification-queue').notificationQueue('notification', 'error', err);
 	          return;
 	        }
 	        
-	        mApi().chat.workspaceChatSettings.read(workspaceIdentifier).callback($.proxy(function (err, workspaceChatSettings) {
+	        mApi().chat.workspaceChatSettings.read(workspaceEntityId).callback($.proxy(function (err, workspaceChatSettings) {
 	        	
 	          var data = {};
-	          if (workspaceChatSettings == null || workspaceChatSettings == null){
+	          if (workspaceChatSettings == null){
 	          	workspaceChatSettings.status === "DISABLED"
 	            data.disabled_selected = "selected";
 	            this._setStatus("DISABLED");
@@ -148,9 +146,7 @@
 	          renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
 	            this.element.html(text);
 	            this.element.find("select").on('change', $.proxy(function(event) {
-	            	console.log(event.target.value);
 	              this._setStatus(event.target.value);
-	              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.chat.visibilityChange"));
 	            }, this));
 	          }, this));
 	        }, this));
@@ -158,9 +154,8 @@
 	    },
 	    
 	    _setStatus: function(status, workspaceEntityId) {		  
-	      var workspaceIdentifier = this.options.workspaceEntityId;
-	      mApi().chat.workspaceChatSettings.update({status: status, workspaceEntityId: workspaceIdentifier}).callback($.proxy(function () {
-	        location.reload();
+	      workspaceEntityId = this.options.workspaceEntityId;
+	      mApi().chat.workspaceChatSettings.update(workspaceEntityId, {status: status, workspaceEntityId: workspaceEntityId}).callback($.proxy(function () {
 	      }, this));
 	    }
 	  });

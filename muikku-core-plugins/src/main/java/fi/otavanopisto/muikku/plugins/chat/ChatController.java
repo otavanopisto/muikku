@@ -10,6 +10,8 @@ import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 
 
 public class ChatController {
@@ -19,7 +21,7 @@ public class ChatController {
   @Inject
   private WorkspaceChatSettingsDAO workspaceChatSettingsDAO;
   @Inject
-  private WorkspaceEntity workspaceEntity;
+  private WorkspaceEntityController workspaceEntityController;
   
   public UserChatSettings findUserChatSettings(SchoolDataIdentifier userIdentifier) {
     return userChatSettingsDAO.findByUser(userIdentifier);
@@ -33,14 +35,12 @@ public class ChatController {
     return userChatSettingsDAO.updateVisibility(settings, visibility);
   }
   
-  public WorkspaceChatSettings findWorkspaceChatSettings(String workspaceIdentifier) {
-    workspaceIdentifier = workspaceEntity.getIdentifier();
-    return workspaceChatSettingsDAO.findByWorkspace(workspaceIdentifier);
+  public WorkspaceChatSettings findWorkspaceChatSettings(Long workspaceEntityId) {
+    return workspaceChatSettingsDAO.findByWorkspace(workspaceEntityId);
   }
 
-  public WorkspaceChatSettings createWorkspaceChatSettings(String workspaceIdentifier, WorkspaceChatStatus status) {
-    workspaceIdentifier = workspaceEntity.getIdentifier();
-    return workspaceChatSettingsDAO.create(workspaceIdentifier, status);
+  public WorkspaceChatSettings createWorkspaceChatSettings(Long workspaceEntity, WorkspaceChatStatus status) {    
+    return workspaceChatSettingsDAO.create(workspaceEntity, status);
   }
 
   public WorkspaceChatSettings updateWorkspaceChatSettings(WorkspaceChatSettings settings, WorkspaceChatStatus status) {

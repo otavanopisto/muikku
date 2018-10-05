@@ -38,6 +38,7 @@ import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.MUCRoomEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.UserEntity;
+import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -76,6 +77,9 @@ public class ChatSyncController {
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private ChatController chatController;
 
 
   public void syncStudent(SchoolDataIdentifier studentIdentifier){
@@ -137,8 +141,7 @@ public class ChatSyncController {
       for (WorkspaceEntity usersWorkspace : usersWorkspaces) {
         MUCRoomEntity chatRoomEntity = client.getChatRoom(usersWorkspace.getIdentifier());
         Workspace workspace = workspaceController.findWorkspace(usersWorkspace);
-        Set<SchoolDataIdentifier> curriculumIds = workspace.getCurriculumIdentifiers();
-        List<SchoolDataIdentifier> curriculumIdentifiers = new ArrayList<SchoolDataIdentifier>(curriculumIds);
+        Set<SchoolDataIdentifier> curriculumIdentifiers = workspace.getCurriculumIdentifiers();
         boolean hasCorrectCurriculums = true;
           
         for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
@@ -153,26 +156,29 @@ public class ChatSyncController {
           } 
              
         }
-        
-        if (hasCorrectCurriculums) {
-        
-          if (chatRoomEntity == null) {
-            logger.log(Level.INFO, "Syncing chat workspace " + usersWorkspace.getUrlName());
-            if (userIdentifier == null) {
-              logger.log(Level.WARNING, "Invalid workspace identifier " + userIdentifier + ", skipping...");
-              continue;
-            }
+        WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(usersWorkspace.getId());
+       
+        if (workspaceChatSettings.getStatus() != null && workspaceChatSettings.getStatus().equals("ENABLED")) {
+          if (hasCorrectCurriculums) {
+          
+            if (chatRoomEntity == null) {
+              logger.log(Level.INFO, "Syncing chat workspace " + usersWorkspace.getUrlName());
+              if (userIdentifier == null) {
+                logger.log(Level.WARNING, "Invalid workspace identifier " + userIdentifier + ", skipping...");
+                continue;
+              }
             
-            String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+              String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
               
-            String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
+              String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
               
-            chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
-            chatRoomEntity.setPersistent(true);
-            chatRoomEntity.setLogEnabled(true);
-            client.createChatRoom(chatRoomEntity);
-          }  
-        } 
+              chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
+              chatRoomEntity.setPersistent(true);
+              chatRoomEntity.setLogEnabled(true);
+              client.createChatRoom(chatRoomEntity);
+            }  
+          } 
+        }
         EnvironmentUser workspaceUserRole = environmentUserController.findEnvironmentUserByUserEntity(userEntityController.findUserEntityByUser(user)); 
         EnvironmentRoleEntity role = workspaceUserRole.getRole();
         if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
@@ -224,6 +230,83 @@ public class ChatSyncController {
     String jid = userSchoolDataSource + "-" + userIdentifier;
     
     client.deleteMember(roomName, jid);
+  }
+  
+  public void removeWorkspaceChatRoom(WorkspaceEntity workspaceEntity) {
+    
+    String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
+    if (openfireToken == null) {
+      logger.log(Level.INFO, "No openfire token set, skipping room sync");
+      return;
+    }
+
+    String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
+    if (openfireUrl == null) {
+      logger.log(Level.INFO, "No openfire url set, skipping room sync");
+      return;
+    }
+
+    String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
+    if (openfirePort == null) {
+      logger.log(Level.INFO, "No openfire port set, skipping room sync");
+      return;
+    }
+    if (!StringUtils.isNumeric(openfirePort)) {
+      logger.log(Level.WARNING, "Invalid openfire port, skipping room sync");
+      return;
+    }
+
+    AuthenticationToken token = new AuthenticationToken(openfireToken);
+    RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
+    
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+    String roomName = workspace.getIdentifier();
+    
+    client.deleteChatRoom(roomName);
+  }
+  
+ public void syncWorkspace(WorkspaceEntity workspaceEntity) {
+    
+    String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
+    if (openfireToken == null) {
+      logger.log(Level.INFO, "No openfire token set, skipping room sync");
+      return;
+    }
+
+    String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
+    if (openfireUrl == null) {
+      logger.log(Level.INFO, "No openfire url set, skipping room sync");
+      return;
+    }
+
+    String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
+    if (openfirePort == null) {
+      logger.log(Level.INFO, "No openfire port set, skipping room sync");
+      return;
+    }
+    if (!StringUtils.isNumeric(openfirePort)) {
+      logger.log(Level.WARNING, "Invalid openfire port, skipping room sync");
+      return;
+    }
+
+    AuthenticationToken token = new AuthenticationToken(openfireToken);
+    RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
+    
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    
+
+    String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+    
+    String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
+    MUCRoomEntity chatRoomEntity = client.getChatRoom(workspace.getIdentifier());
+
+    chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
+    chatRoomEntity.setPersistent(true);
+    chatRoomEntity.setLogEnabled(true);
+    client.createChatRoom(chatRoomEntity);
   }
 }   
 
