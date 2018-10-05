@@ -61,22 +61,22 @@ public class UserTestsBase extends AbstractUITest {
         .build();
       
       login();
-      waitForPresent(".ordered-container__item--workspaces .text__panel-title");
-      String worspaceTitleText = getWebDriver().findElement(By.cssSelector(".ordered-container__item--workspaces .text__panel-title")).getText();
+      waitForPresent(".ordered-container__item--workspaces .ordered-container__item-header-text");
+      String worspaceTitleText = getWebDriver().findElement(By.cssSelector(".ordered-container__item--workspaces .ordered-container__item-header-text")).getText();
       if(worspaceTitleText.equalsIgnoreCase("Työtilat")) {
         waitAndClick(".button-pill--current-language");
         waitForPresent(".dropdown--language-picker");
-        waitForPresent(".ordered-container__item--workspaces .text__panel-title");
+        waitForPresent(".ordered-container__item--workspaces .ordered-container__item-header-text");
         waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
-        waitForPresent(".ordered-container__item--workspaces .text__panel-title");
-        assertTextIgnoreCase(".ordered-container__item--workspaces .text__panel-title", "Workspaces");
+        waitForPresent(".ordered-container__item--workspaces .ordered-container__item-header-text");
+        assertTextIgnoreCase(".ordered-container__item--workspaces .ordered-container__item-header-text", "Workspaces");
       }else {
         waitAndClick(".button-pill--current-language");
         waitForPresent(".dropdown--language-picker");
         waitForPresent(".ordered-container__item--workspaces .text__panel-title");
         waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
-        waitForPresent(".ordered-container__item--workspaces .text__panel-title");
-        assertTextIgnoreCase(".ordered-container__item--workspaces .text__panel-title", "Työtilat");
+        waitForPresent(".ordered-container__item--workspaces .ordered-container__item-header-text");
+        assertTextIgnoreCase(".ordered-container__item--workspaces .ordered-container__item-header-text", "Työtilat");
       }
     }finally {
       mockBuilder.wiremockReset();
@@ -118,8 +118,8 @@ public class UserTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       navigate("/profile", false);
-      waitForPresentAndVisible(".text--profile-student-header");
-      assertTextIgnoreCase(".text--profile-student-header", "admin user");
+      waitForPresentAndVisible(".profile-element__title");
+      assertTextIgnoreCase(".profile-element__title", "admin user");
       waitForPresentAndVisible(".application-panel__main-container .profile-element__item .profile-user-data");
       assertTextIgnoreCase(".application-panel__main-container .profile-element__item .profile-user-data", "admin@example.com");
       
@@ -132,8 +132,8 @@ public class UserTestsBase extends AbstractUITest {
       assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(3) > label", "Loma loppuu");
       assertVisible("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
       
-      assertTextIgnoreCase("form .button--profile", "Tallenna");
-      assertVisible("form .button--profile");
+      assertTextIgnoreCase("form .button--primary-function-save", "Tallenna");
+      assertVisible("form .button--primary-function-save");
     }finally {
       mockBuilder.wiremockReset();
     }
@@ -164,13 +164,13 @@ public class UserTestsBase extends AbstractUITest {
       
       waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(1) > input", "121212");    
       waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(2) .react-datepicker__input-container input", "19.04.2018");
-      waitAndClick(".text--profile-student-header");
+      waitAndClick(".profile-element__title");
       waitAndClick("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
       waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input", "19.04.2030");
-      waitAndClick(".text--profile-student-header");
-      click("form .button--profile");
-      click("form .button--profile");
-      waitForPresentAndVisible(".notification-queue__item--info");
+      waitAndClick(".profile-element__title");
+      click("form .button--primary-function-save");
+      click("form .button--primary-function-save");
+      waitForPresentAndVisible(".notification-queue__item--success");
       navigate("/", false);
       logout();
       mockBuilder.mockLogin(student);
