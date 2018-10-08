@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  
+  <sql>
+    create table ActivityLog (
+      id bigint not null auto_increment,
+      userEntityId bigint not null,
+      type integer not null,
+      timestamp datetime not null,
+      workspaceEntityId bigint,
+      contextId bigint,
+      primary key (id)
+    );
+  </sql>
+  <sql>create index ind_activitylog_user on ActivityLog (userEntityId);</sql>
+  <sql>create index ind_activitylog_workspace on ActivityLog (workspaceEntityId);</sql>
+  
+</update>

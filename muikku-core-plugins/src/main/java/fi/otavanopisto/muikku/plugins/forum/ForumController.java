@@ -17,6 +17,8 @@ import fi.otavanopisto.muikku.controller.ResourceRightsController;
 import fi.otavanopisto.muikku.model.security.ResourceRights;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.otavanopisto.muikku.plugins.forum.dao.ForumAreaDAO;
 import fi.otavanopisto.muikku.plugins.forum.dao.ForumAreaGroupDAO;
@@ -73,6 +75,9 @@ public class ForumController {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private ActivityLogController activityLogController;
   
   private String clean(String html) {
     Document doc = Jsoup.parse(html);
@@ -147,6 +152,7 @@ public class ForumController {
   }
 
   public ForumThread createForumThread(ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
+    activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWTHREAD);
     return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
@@ -166,11 +172,11 @@ public class ForumController {
       forumThreadReplyDAO.updateParentReply(reply, null);
     }  
     
-  	for (ForumThreadReply reply : replies) {
-  	  forumThreadReplyDAO.delete(reply);
-  	}
-	
-  	forumThreadDAO.delete(thread);
+    for (ForumThreadReply reply : replies) {
+      forumThreadReplyDAO.delete(reply);
+    }
+    
+    forumThreadDAO.delete(thread);
   }
 
   public ForumThreadReply createForumThreadReply(ForumThread thread, String message, ForumThreadReply parentReply) {
@@ -180,6 +186,7 @@ public class ForumController {
     } else {
       ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), parentReply);
       forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
+      activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWMESSAGE);
       return reply;
     }
   }
