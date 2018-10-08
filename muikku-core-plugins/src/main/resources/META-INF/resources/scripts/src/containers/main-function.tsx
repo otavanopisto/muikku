@@ -185,7 +185,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(updateAllStudentUsersAndSetViewToRecords() as Action);
     } else if (!givenLocation){
       this.props.store.dispatch(setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), originalData.i, parseInt(originalData.w)) as Action);
-    } else if (givenLocation === "vops"){
+    } else if (givenLocation === "vops"){ 
       this.props.store.dispatch(setLocationToVopsInTranscriptOfRecords() as Action);
       this.props.store.dispatch(updateVops() as Action);
     } else if (givenLocation === "hops"){

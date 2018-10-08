@@ -77,18 +77,22 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let assesments:WorkspaceStudentAssessmentsType;
       let feeInfo:WorkspaceFeeInfoType;
       let assessmentRequests:Array<WorkspaceAssessmentRequestType>;
+      let activity:WorkspaceStudentActivityType;
       let status = getState().status;
-      [workspace, assesments, feeInfo, assessmentRequests] = await Promise.all([workspace ? workspace : promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')(),
+      [workspace, assesments, feeInfo, assessmentRequests, activity] = await Promise.all([workspace ? workspace : promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')(),
                                                  status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? promisify(mApi().workspace.workspaces
                                                      .students.assessments.read(workspaceId, status.userSchoolDataIdentifier), 'callback')() : null,
                                                  status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? 
                                                       promisify(mApi().workspace.workspaces.feeInfo.read(workspaceId), 'callback')() : null,
                                                  status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? 
                                                      promisify(mApi().assessmentrequest.workspace.assessmentRequests.read(workspaceId, {
-                                                       studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')() : null]) as any
+                                                       studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')() : null,
+                                                 promisify(mApi().guider.workspaces.activity.read(workspaceId), 'callback')()]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
+      workspace.studentActivity = activity;
+      
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',
         payload: workspace
