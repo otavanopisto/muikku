@@ -2,8 +2,6 @@
   'use strict';
 	   renderDustTemplate('workspace/workspace-chat-settings.dust', {}, $.proxy(function (text) {
 		   $('.workspace-chat-settings').html(text);
-		   
-		  
 	   }, this));
 
 	   
@@ -119,46 +117,48 @@
   $.widget("custom.workspaceChatSettings", {
 	  options: {
 	      workspaceEntityId: null,
-	      },
-	    _create: function() {
-	      var workspaceEntityId = this.options.workspaceEntityId;
-	      console.log(this);
+	  },
+	  _create: function() {
+	    var workspaceEntityId = this.options.workspaceEntityId;
+	    mApi().chat.workspaceChatSettings.read(workspaceEntityId).callback($.proxy(function (err, workspaceChatSettings) {
+	      if (err) { 
+	        $('.notification-queue').notificationQueue('notification', 'error', err);
+          return;
+	      }
+	      
 	      mApi().chat.workspaceChatSettings.read(workspaceEntityId).callback($.proxy(function (err, workspaceChatSettings) {
-	        if (err) { 
-	          $('.notification-queue').notificationQueue('notification', 'error', err);
-	          return;
-	        }
-	        
-	        mApi().chat.workspaceChatSettings.read(workspaceEntityId).callback($.proxy(function (err, workspaceChatSettings) {
 	        	
-	          var data = {};
-	          if (workspaceChatSettings == null){
-	          	workspaceChatSettings.status === "DISABLED"
-	            data.disabled_selected = "selected";
-	            this._setStatus("DISABLED");
-	          }
-	          if (workspaceChatSettings && workspaceChatSettings.options === "ENABLED") {
-	            data.enabled_selected = "selected";
-	          }
-	          if (workspaceChatSettings && workspaceChatSettings.options === "DISABLED"){
-	            data.disabled_selected = "selected";
-	          }
-	          renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
-	            this.element.html(text);
-	            this.element.find("select").on('change', $.proxy(function(event) {
-	              this._setStatus(event.target.value);
-	            }, this));
+	        var data = {};
+	        if (workspaceChatSettings == null){
+	        	workspaceChatSettings.status === "DISABLED"
+	          data.disabled_selected = "selected";
+	          this._setStatus("DISABLED");
+	        }
+	        if (workspaceChatSettings && workspaceChatSettings.options === "ENABLED") {
+	          data.enabled_selected = "selected";
+	        }
+	        if (workspaceChatSettings && workspaceChatSettings.options === "DISABLED"){
+	          data.disabled_selected = "selected";
+	        }
+	        renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
+	          this.element.html(text);
+	            
+	          $(".save").on('click', $.proxy(function() {
+	            var value = this.element.find("select").val()
+	            this._setStatus(value);
+	             
 	          }, this));
 	        }, this));
 	      }, this));
-	    },
+	    }, this));
+	  },
 	    
-	    _setStatus: function(status, workspaceEntityId) {		  
-	      workspaceEntityId = this.options.workspaceEntityId;
-	      mApi().chat.workspaceChatSettings.update(workspaceEntityId, {status: status, workspaceEntityId: workspaceEntityId}).callback($.proxy(function () {
-	      }, this));
-	    }
-	  });
+	  _setStatus: function(status, workspaceEntityId) {		  
+	    workspaceEntityId = this.options.workspaceEntityId;
+	    mApi().chat.workspaceChatSettings.update(workspaceEntityId, {status: status, workspaceEntityId: workspaceEntityId}).callback($.proxy(function () {
+	  }, this));
+	}
+});
   
   $.widget("custom.workspaceManagement", {
     options: {
