@@ -32,7 +32,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick("a.button.button--primary-function");
         waitForPresent(".env-dialog__body .autocomplete--new-message input.env-dialog__input");
         sendKeys(".env-dialog__body .autocomplete--new-message input.env-dialog__input", "Test");
-        waitAndClick(".text--recepient-autocomplete");
+        waitAndClick(".autocomplete__recipient");
         waitForPresentAndVisible(".env-dialog__input--new-message-title");
 //      TODO: Recipient input hijacks input after first letter. What do?  
         sendKeys(".env-dialog__input--new-message-title", "T");
@@ -42,16 +42,16 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForNotVisible(".env-dialog__wrapper");
         getWebDriver().get("about:blank");
         navigate("/communicator#sent", false);
-        waitForPresent(".application-list__item-body--communicator-message .text--communicator-item-body");
-        assertText(".application-list__item-body--communicator-message .text--communicator-item-body", "T");
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
         logout();
         mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
-        waitForPresent(".application-list__item-header--communicator-message .text--list-item-title>span");
-        assertText(".application-list__item-header--communicator-message .text--list-item-title>span", "Admin User");
-        waitForPresent(".application-list__item-body--communicator-message .text--communicator-item-body");
-        assertText(".application-list__item-body--communicator-message .text--communicator-item-body", "T");
+        waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "T");
       }finally{
         deleteCommunicatorMessages();
       }
@@ -106,10 +106,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         login();
         navigate("/communicator", false);
         waitAndClick("div.application-list__item.message");
-        waitForPresent(".text--communicator-message-caption");
-        assertText(".text--communicator-message-caption", "Test caption");
-        waitForPresent(".text--communicator-message-content");
-        assertText(".text--communicator-message-content", "Test content.");
+        waitForPresent(".application-list__item-content-header");
+        assertText(".application-list__item-content-header", "Test caption");
+        waitForPresent(".application-list__item-content-body");
+        assertText(".application-list__item-content-body", "Test content.");
       }finally{
         deleteCommunicatorMessages(); 
       }
@@ -246,16 +246,16 @@ public class CommunicatorTestsBase extends AbstractUITest {
 
         waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
         waitAndClick(".button-pill--label");
-        waitAndClick("a.link--communicator-label span.text");
+        waitAndClick("a.link--communicator-label");
         waitAndClick(".button-pill--label");
         waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
         assertTextIgnoreCase(".application-list__item-footer--communicator-message-labels .label__text", "test");
         
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
-        waitForPresent(".application-list__item-header--communicator-message .text--list-item-title");
-        assertText(".application-list__item-header--communicator-message .text--list-item-title", "Student Tester");
-        waitForPresent(".application-list__item-body--communicator-message .text--communicator-item-body");
-        assertText(".application-list__item-body--communicator-message .text--communicator-item-body", "Another one");
+        waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary span");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary span", "Student Tester");
+        waitForPresent(".application-list__item-body--communicator-message span");
+        assertText(".application-list__item-body--communicator-message span", "Another one");
       }finally{
         deleteCommunicatorUserLabels(admin.getId());
         deleteCommunicatorMessages();
@@ -281,9 +281,9 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-edit");
 
-        waitForPresentAndVisible(".form-element__input--label");
-        clearElement(".form-element__input--label");
-        sendKeys(".form-element__input--label", "Dun dun duun");
+        waitForPresentAndVisible(".form-element__input--communicator-label-name");
+        clearElement(".form-element__input--communicator-label-name");
+        sendKeys(".form-element__input--communicator-label-name", "Dun dun duun");
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--communicator");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
@@ -350,7 +350,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
         sleep(500);
         waitAndClick(".button-pill--label");
-        waitAndClick("a.link--communicator-label span.text");
+        waitAndClick("a.link--communicator-label");
         sleep(500);
         waitAndClick(".button-pill--label");
         waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
@@ -385,8 +385,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".button-pill__icon.icon-delete");
         assertGoesAway(".application-list__item-content-aside .message__select-container input:first-child", 5);
         navigate("/communicator#trash", false);
-        waitForPresent(".application-list__item-body--communicator-message .text--communicator-item-body");
-        assertText(".application-list__item-body--communicator-message .text--communicator-item-body", "Test caption");
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test caption");
       }finally{
         deleteCommunicatorMessages();
       }

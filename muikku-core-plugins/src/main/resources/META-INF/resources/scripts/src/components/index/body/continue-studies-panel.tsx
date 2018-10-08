@@ -21,7 +21,7 @@ interface ContinueStudiesPanelProps {
 }
 
 interface ContinueStudiesPanelState {
-  
+
 }
 
 class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, ContinueStudiesPanelState> {
@@ -30,7 +30,7 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
       return null;
     } else if (!this.props.lastWorkspace){
       return null;
-    }    
+    }
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--continue-studies">
       <div className="ordered-container__item-header">
         <span className="ordered-container__item-header-icon ordered-container__item-header-icon--continue-studies icon-revert"></span>

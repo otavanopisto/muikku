@@ -43,10 +43,10 @@ public class GuiderTestsBase extends AbstractUITest {
       waitAndClick(".application-panel__toolbar .form-element--guider-toolbar input.form-element__input--main-function-search");
       sendKeys(".application-panel__toolbar .form-element--guider-toolbar input.form-element__input--main-function-search", "Second User");
       waitUntilElementCount(".application-list .user--guider", 1);
-      waitForPresent(".application-list .user--guider .application-list__item-header .text--student-name");
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header .text--student-name", "Second User");
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header .text--list-item-helper-title", "te...@example.com");
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header .text--list-item-type-title", "Test Study Programme");
+      waitForPresent(".application-list__item-header .application-list__header-primary span");
+      assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "Second User");
+      assertTextIgnoreCase(".application-list .application-list__item-header .application-list__header-helper", "te...@example.com");
+      assertTextIgnoreCase(".application-list .application-list__item-header .application-list__header-secondary", "Test Study Programme");
     } finally {
       deleteWorkspace(workspace.getId());
       deleteWorkspace(workspace2.getId());
@@ -77,7 +77,9 @@ public class GuiderTestsBase extends AbstractUITest {
       navigate("/guider", false);
       waitAndClick("div.application-panel__helper-container a.item-list__item");
       waitUntilElementCount(".application-list .user--guider", 1);
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-content-main .text--student-name", "Test Student");
+      waitForPresent(".application-list__item-header .application-list__header-primary span");
+      assertTextIgnoreCase(".application-list__item-header .application-list__header-primary span", "Test Student");
+      assertCount(".application-list__item-header .application-list__header-primary", 1);
     } finally {
       deleteWorkspace(workspace2.getId());
       deleteWorkspace(workspace.getId());
