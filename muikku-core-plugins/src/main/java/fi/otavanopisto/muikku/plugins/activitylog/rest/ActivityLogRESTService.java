@@ -3,9 +3,9 @@ package fi.otavanopisto.muikku.plugins.activitylog.rest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -34,16 +34,13 @@ public class ActivityLogRESTService extends PluginRESTService {
   private static final long serialVersionUID = 6892435956970819197L;
   
   @Inject
-  private Logger logger;
-  
-  @Inject
   private ActivityLogController activityLogController;
   
   //TODO permissions? which ones?
   @GET
   @Path("/user/{USERENTITYID}/workspace/")
-  @RESTPermit(handling=Handling.INLINE)
-  public Response listWorkspaceActivityLogs(@PathParam("USERENTITYID") Long userEntityId,
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listUserWorkspaceActivityLogs(@PathParam("USERENTITYID") Long userEntityId,
       @QueryParam("workspaceEntityId") Long workspaceEntityId,
       @QueryParam("from") String from,
       @QueryParam("to") String to) {
@@ -57,7 +54,37 @@ public class ActivityLogRESTService extends PluginRESTService {
     catch (ParseException e) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    List<ActivityLog> workspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, workspaceEntityId, beginDate, endDate);
-    return Response.ok(workspaceActivityLogs).build();
+    List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, workspaceEntityId, beginDate, endDate);
+    return Response.ok(userWorkspaceActivityLogs).build();
+  }
+  
+  @GET
+  @Path("/user/{USERENTITYID}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listUserActivityLogs(@PathParam("USERENTITYID") Long userEntityId,
+      @QueryParam("from") String from,
+      @QueryParam("to") String to) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    Date beginDate;
+    Date endDate;
+    try {
+      beginDate = sdf.parse(from);
+      endDate = sdf.parse(to);
+    }
+    catch (ParseException e) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    List<Long> userWorkspacesWithActivities = activityLogController.listWorkspacesWithActivityLogsByUserId(userEntityId);
+    Map<String, List<ActivityLog>> userActivities = new HashMap<String, List<ActivityLog>>();
+    
+    List<ActivityLog> userGeneralActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, null, beginDate, endDate);
+    userActivities.put("general", userGeneralActivityLogs);
+    
+    for(Long workspaceEntityId: userWorkspacesWithActivities) {
+      List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, workspaceEntityId, beginDate, endDate);
+      userActivities.put(workspaceEntityId.toString(), userWorkspaceActivityLogs);
+    }
+    return Response.ok(userActivities).build();
   }
 }

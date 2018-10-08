@@ -55,8 +55,13 @@ public class ActivityLogDAO extends CorePluginsDAO<ActivityLog>{
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
     Root<ActivityLog> root = criteria.from(ActivityLog.class);
-    criteria.multiselect(root.get(ActivityLog_.workspaceEntityId)).distinct(true);
-    criteria.where(criteriaBuilder.equal(root.get(ActivityLog_.userEntityId), userEntityId));
+    criteria.select(root.get(ActivityLog_.workspaceEntityId));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(ActivityLog_.userEntityId), userEntityId),
+        criteriaBuilder.isNotNull(root.get(ActivityLog_.workspaceEntityId))
+    ));
+    criteria.groupBy(root.get(ActivityLog_.workspaceEntityId));
     return entityManager.createQuery(criteria).getResultList();
   }
 }
