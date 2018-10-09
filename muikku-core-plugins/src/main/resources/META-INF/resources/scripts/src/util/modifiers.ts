@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { UserType, UserWithSchoolDataType } from '~/reducers/main-function/user-index';
+import { UserType, UserWithSchoolDataType } from '~/reducers/user-index';
 
 function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");

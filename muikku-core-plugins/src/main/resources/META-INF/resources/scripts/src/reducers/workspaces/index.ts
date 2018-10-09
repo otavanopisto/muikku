@@ -1,4 +1,5 @@
 import {ActionType} from '~/actions';
+import { UserStaffType } from '~/reducers/user-index';
 
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
@@ -141,7 +142,8 @@ export interface WorkspaceType {
   activityStatistics?: WorkspaceActivityStatisticsType,
   feeInfo?: WorkspaceFeeInfoType,
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
-  additionalInfo?: WorkspaceAdditionalInfoType
+  additionalInfo?: WorkspaceAdditionalInfoType,
+  staffMembers?: Array<UserStaffType>
 }
 
 export interface WorkspaceUpdateType {
@@ -159,6 +161,18 @@ export interface WorkspaceUpdateType {
   access?: string,
   curriculumIdentifiers?: Array<string>,
   subjectIdentifier?: string | number,
+      
+  canSignup?: boolean,
+  isCourseMember?: boolean,
+  educationTypeName?: string,
+  studentActivity?: WorkspaceStudentActivityType,
+  forumStatistics?: WorkspaceForumStatisticsType,
+  studentAssessments?: WorkspaceStudentAssessmentsType,
+  activityStatistics?: WorkspaceActivityStatisticsType,
+  feeInfo?: WorkspaceFeeInfoType,
+  assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
+  additionalInfo?: WorkspaceAdditionalInfoType,
+  staffMembers?: Array<UserStaffType>
 }
 
 export interface ShortWorkspaceType {

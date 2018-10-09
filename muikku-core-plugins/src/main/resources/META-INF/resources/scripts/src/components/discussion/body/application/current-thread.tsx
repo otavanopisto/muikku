@@ -1,4 +1,4 @@
-import { UserIndexType } from "~/reducers/main-function/user-index";
+import { UserIndexType } from "~/reducers/user-index";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion";

@@ -17,10 +17,10 @@ import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/act
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 
 import CousePickerBody from '../components/coursepicker/body';
-import { loadUserIndexBySchoolData, loadUserIndex } from '~/actions/main-function/user-index';
+import { loadUserIndexBySchoolData, loadUserIndex } from '~/actions/user-index';
 import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer } from '~/actions/workspaces';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
-import { UserType } from '~/reducers/main-function/user-index';
+import { UserType } from '~/reducers/user-index';
 
 import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';

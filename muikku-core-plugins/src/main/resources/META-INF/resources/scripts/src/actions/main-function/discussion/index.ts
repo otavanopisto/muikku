@@ -4,7 +4,7 @@ import notificationActions from '~/actions/base/notifications';
 import mApi, { MApiError } from '~/lib/mApi';
 import {DiscussionAreaListType, DiscussionAreaType, DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType,
   DiscussionThreadListType, DiscussionThreadReplyListType, DiscussionThreadReplyType, DiscussionAreaUpdateType} from "~/reducers/main-function/discussion";
-import { loadUserIndex } from "~/actions/main-function/user-index";
+import { loadUserIndex } from "~/actions/user-index";
 import { StateType } from "~/reducers";
 
 const MAX_LOADED_AT_ONCE = 30;

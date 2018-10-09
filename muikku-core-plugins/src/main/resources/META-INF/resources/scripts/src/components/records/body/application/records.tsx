@@ -17,7 +17,7 @@ import { RecordsType, TransferCreditType } from '~/reducers/main-function/record
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
 import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
-import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
+import { UserWithSchoolDataType } from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
