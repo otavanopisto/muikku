@@ -115,6 +115,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -558,47 +559,53 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{ID}/additionalInfo")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceAdditionalInfo(@PathParam("ID") Long workspaceEntityId) {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.VIEW_WORKSPACE_DETAILS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
+	schoolDataBridgeSessionController.startSystemSession();
+	try {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
 
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    if (workspace == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
     
-    String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
+      String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
+      
+      EducationType educationTypeObject = workspace.getEducationTypeIdentifier() == null ? null : courseMetaController.findEducationType(workspace.getEducationTypeIdentifier());
+      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
     
-    Map<String, Object> result= new HashMap<>();
-    result.put("beginDate", workspace.getBeginDate());
-    result.put("endDate", workspace.getEndDate());
-    result.put("viewLink", workspace.getViewLink());
-    result.put("workspaceTypeId", typeId);
-    if (typeId != null) {
-      WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId()); 
-      result.put("workspaceType", workspaceType.getName());
-    } else {
-      result.put("workspaceType", null);
-    }
+      Map<String, Object> result= new HashMap<>();
+      result.put("beginDate", workspace.getBeginDate());
+      result.put("endDate", workspace.getEndDate());
+      result.put("viewLink", workspace.getViewLink());
+      result.put("workspaceTypeId", typeId);
+      result.put("educationType", educationTypeObject);
+      result.put("subject", subjectObject);
+      if (typeId != null) {
+        WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId()); 
+        result.put("workspaceType", workspaceType.getName());
+      } else {
+        result.put("workspaceType", null);
+      }
     
-    CourseLengthUnit lengthUnit = null;
-    if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
-      lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
-    }
+      CourseLengthUnit lengthUnit = null;
+      if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
+        lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
+      }
     
-    result.put("courseLengthSymbol", lengthUnit);
-    if (lengthUnit != null) {
-      result.put("courseLength", workspace.getLength());
-    } else {
-      result.put("courseLength", null);
-    }
+      result.put("courseLengthSymbol", lengthUnit);
+      if (lengthUnit != null) {
+        result.put("courseLength", workspace.getLength());
+      } else {
+        result.put("courseLength", null);
+      }
 
-    return Response.ok(result).build();
+      return Response.ok(result).build(); 
+	} finally {
+	  schoolDataBridgeSessionController.endSystemSession();
+	}
   }
   
   @GET
