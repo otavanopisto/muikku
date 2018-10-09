@@ -2,7 +2,7 @@ import actions, { displayNotification } from '../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType} from '~/reducers/workspaces';
+import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
 
@@ -28,6 +28,11 @@ export interface UPDATE_WORKSPACES_ALL_PROPS extends
   SpecificActionType<"UPDATE_WORKSPACES_ALL_PROPS", WorkspacesPatchType>{}
 export interface UPDATE_WORKSPACES_STATE extends 
   SpecificActionType<"UPDATE_WORKSPACES_STATE", WorkspacesStateType>{}
+export interface UPDATE_WORKSPACE extends 
+  SpecificActionType<"UPDATE_WORKSPACE", {
+  original: WorkspaceType,
+  update: WorkspaceUpdateType
+}>{}
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -69,29 +74,52 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
 export interface SetCurrentWorkspaceTriggerType {
   (workspaceId: number):AnyActionType
 }
+
+function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
+  if (!conditional){
+    return null;
+  }
+  if (existantValue){
+    return null;
+  }
   
+  return otherwise();
+}
+
 let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(workspaceId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let current:WorkspaceType = getState().workspaces.currentWorkspace;
+    if (current && current.id === workspaceId){
+      return;
+    }
+    
     try {
       let workspace:WorkspaceType = getState().workspaces.userWorkspaces.find(w=>w.id === workspaceId) || getState().workspaces.availableWorkspaces.find(w=>w.id === workspaceId);
       let assesments:WorkspaceStudentAssessmentsType;
       let feeInfo:WorkspaceFeeInfoType;
       let assessmentRequests:Array<WorkspaceAssessmentRequestType>;
       let activity:WorkspaceStudentActivityType;
+      let additionalInfo:WorkspaceAdditionalInfoType;
       let status = getState().status;
-      [workspace, assesments, feeInfo, assessmentRequests, activity] = await Promise.all([workspace ? workspace : promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')(),
-                                                 status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? promisify(mApi().workspace.workspaces
-                                                     .students.assessments.read(workspaceId, status.userSchoolDataIdentifier), 'callback')() : null,
-                                                 status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? 
-                                                      promisify(mApi().workspace.workspaces.feeInfo.read(workspaceId), 'callback')() : null,
-                                                 status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? 
-                                                     promisify(mApi().assessmentrequest.workspace.assessmentRequests.read(workspaceId, {
-                                                       studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')() : null,
-                                                 promisify(mApi().guider.workspaces.activity.read(workspaceId), 'callback')()]) as any
+      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo] = await Promise.all([
+                                                 reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')()),
+                                                 reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+                                                     workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
+                                                     .students.assessments.read(workspaceId, status.userSchoolDataIdentifier), 'callback')()),
+                                                 reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+                                                     workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.read(workspaceId), 'callback')()),
+                                                 reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
+                                                     workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.read(workspaceId, {
+                                                       studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')()),
+                                                 reuseExistantValue(true, workspace && workspace.studentActivity,
+                                                     ()=>promisify(mApi().guider.workspaces.activity.read(workspaceId), 'callback')()),
+                                                 reuseExistantValue(true, workspace && workspace.additionalInfo,
+                                                     ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(workspaceId), 'callback')())]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
       workspace.studentActivity = activity;
+      workspace.additionalInfo = additionalInfo;
       
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',
@@ -219,6 +247,10 @@ export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (callback?: (curriculums: WorkspaceCurriculumFilterListType)=>any):AnyActionType
 }
 
+export interface UpdateWorkspaceTriggerType {
+  (workspace?: WorkspaceType, update?: WorkspaceUpdateType):AnyActionType
+}
+
 let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType= function loadWorkspacesFromServer(filters){
   return loadWorkspacesHelper.bind(this, filters, true);
 }
@@ -279,5 +311,45 @@ let signupIntoWorkspace:SignupIntoWorkspaceTriggerType = function signupIntoWork
   }
 }
 
+let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(original, update){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let actualOriginal:WorkspaceType = {...original};
+    delete actualOriginal["studentActivity"];
+    delete actualOriginal["forumStatistics"];
+    delete actualOriginal["studentAssessments"];
+    delete actualOriginal["activityStatistics"];
+    delete actualOriginal["feeInfo"];
+    delete actualOriginal["assessmentRequests"];
+    delete actualOriginal["additionalInfo"];
+    
+    dispatch({
+      type: 'UPDATE_WORKSPACE',
+      payload: {
+        original,
+        update
+      }
+    });
+    
+    try {
+      await promisify(mApi().workspace.workspaces.update(original.id,
+        Object.assign(actualOriginal, update)), 'callback')();
+    } catch (err){
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: {
+          original,
+          update: actualOriginal
+        }
+      });
+      
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
-  signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace}
+  signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
+  updateWorkspace}

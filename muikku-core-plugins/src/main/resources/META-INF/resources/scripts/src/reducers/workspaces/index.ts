@@ -80,6 +80,35 @@ export interface WorkspaceAssessmentRequestType {
   userEntityId: number
 }
 
+export interface WorkspaceAdditionalInfoType {
+  beginDate: string,
+  endDate: string,
+  viewLink: string,
+  workspaceTypeId?: string,
+  workspaceType?: string,
+  courseLengthSymbol?: {
+    id: string,
+    name: string,
+    schoolDataSource: string,
+    symbol: string
+  },
+  courseLength?: string,
+  subject?: {
+    code: string,
+    identifier: string,
+    name: string,
+    schoolDataSource: string
+  },
+  educationType?: {
+    identifier: {
+      dataSource: string,
+      identifier: string
+    },
+    name: string,
+    schoolDataSource: string
+  }
+}
+
 export interface WorkspaceType {
   archived: boolean,
   description: string,
@@ -111,7 +140,25 @@ export interface WorkspaceType {
   studentAssessments?: WorkspaceStudentAssessmentsType,
   activityStatistics?: WorkspaceActivityStatisticsType,
   feeInfo?: WorkspaceFeeInfoType,
-  assessmentRequests?: Array<WorkspaceAssessmentRequestType>
+  assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
+  additionalInfo?: WorkspaceAdditionalInfoType
+}
+
+export interface WorkspaceUpdateType {
+  archived?: boolean,
+  description?: string,
+  hasCustomImage?: boolean,
+  id?: number,
+  lastVisit?: string,
+  materialDefaultLicense?: string,
+  name?: string,
+  nameExtension?: string | null,
+  numVisits?: number,
+  published?: boolean,
+  urlName?: string,
+  access?: string,
+  curriculumIdentifiers?: Array<string>,
+  subjectIdentifier?: string | number,
 }
 
 export interface ShortWorkspaceType {
@@ -278,6 +325,26 @@ export default function workspaces(state: WorkspacesType={
     return Object.assign({}, state, {
       state: action.payload
     });
+  } else if (action.type === "UPDATE_WORKSPACE"){
+    let newCurrent = state.currentWorkspace;
+    if (newCurrent && newCurrent.id === action.payload.original.id){
+      newCurrent = {...newCurrent, ...action.payload.update};
+    }
+    return Object.assign({}, state, {
+      currentWorkspace: newCurrent,
+      availableWorkspaces: state.availableWorkspaces.map(w=>{
+        if (w.id === action.payload.original.id){
+          return {...w, ...action.payload.update};
+        }
+        return w;
+      }),
+      userWorkspaces: state.userWorkspaces.map(w=>{
+        if (w.id === action.payload.original.id){
+          return {...w, ...action.payload.update};
+        }
+        return w;
+      })
+    })
   }
   return state;
 }
