@@ -3,7 +3,6 @@
 @import "../base/breakpoints";
 @import "../base/mixins";
 
-
 .hero {
   @include text;
   background: url("/gfx/oo-branded-site-header-background-mobile.jpg") no-repeat center center $color-hero-default-background;
