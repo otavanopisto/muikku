@@ -18,9 +18,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLog;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -36,14 +40,28 @@ public class ActivityLogRESTService extends PluginRESTService {
   @Inject
   private ActivityLogController activityLogController;
   
+  @Inject
+  private SessionController sessionController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+  
   //TODO permissions? which ones?
   @GET
   @Path("/user/{USERENTITYID}/workspace/")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserWorkspaceActivityLogs(@PathParam("USERENTITYID") Long userEntityId,
       @QueryParam("workspaceEntityId") Long workspaceEntityId,
       @QueryParam("from") String from,
       @QueryParam("to") String to) {
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     Date beginDate;
     Date endDate;
@@ -54,16 +72,24 @@ public class ActivityLogRESTService extends PluginRESTService {
     catch (ParseException e) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, workspaceEntityId, beginDate, endDate);
+    
+    List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntityId, workspaceEntityId, beginDate, endDate);
     return Response.ok(userWorkspaceActivityLogs).build();
   }
   
   @GET
   @Path("/user/{USERENTITYID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserActivityLogs(@PathParam("USERENTITYID") Long userEntityId,
       @QueryParam("from") String from,
       @QueryParam("to") String to) {
+    
+    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     Date beginDate;
     Date endDate;
@@ -78,12 +104,15 @@ public class ActivityLogRESTService extends PluginRESTService {
     List<Long> userWorkspacesWithActivities = activityLogController.listWorkspacesWithActivityLogsByUserId(userEntityId);
     Map<String, List<ActivityLog>> userActivities = new HashMap<String, List<ActivityLog>>();
     
-    List<ActivityLog> userGeneralActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, null, beginDate, endDate);
+    List<ActivityLog> userGeneralActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntityId, null, beginDate, endDate);
     userActivities.put("general", userGeneralActivityLogs);
     
     for(Long workspaceEntityId: userWorkspacesWithActivities) {
-      List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, workspaceEntityId, beginDate, endDate);
-      userActivities.put(workspaceEntityId.toString(), userWorkspaceActivityLogs);
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (userEntityId.equals(sessionController.getLoggedUserEntity().getId()) || sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
+        List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntityId, workspaceEntityId, beginDate, endDate);
+        userActivities.put(workspaceEntityId.toString(), userWorkspaceActivityLogs);
+      }
     }
     return Response.ok(userActivities).build();
   }

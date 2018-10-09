@@ -22,15 +22,15 @@ public class ActivityLogController {
     return activityLogDAO.create(userEntityId, type, workspaceEntityId, contextId);
   }
   
-  public List<ActivityLog> listActivityLogsByUserEntityIdAndworkspaceEntityId(Long userEntityId, Long workspaceEntityId){
-    return listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, workspaceEntityId, new Date(0));
+  public List<ActivityLog> listActivityLogsByUserEntityIdAndWorkspaceEntityId(Long userEntityId, Long workspaceEntityId){
+    return listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntityId, workspaceEntityId, new Date(0));
   }
   
-  public List<ActivityLog> listActivityLogsByUserEntityIdAndworkspaceEntityId(Long userEntityId, Long workspaceEntityId, Date from){
-    return listActivityLogsByUserEntityIdAndworkspaceEntityId(userEntityId, workspaceEntityId, from, new Date());
+  public List<ActivityLog> listActivityLogsByUserEntityIdAndWorkspaceEntityId(Long userEntityId, Long workspaceEntityId, Date from){
+    return listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntityId, workspaceEntityId, from, new Date());
   }
   
-  public List<ActivityLog> listActivityLogsByUserEntityIdAndworkspaceEntityId(Long userEntityId, Long workspaceEntityId, Date from, Date to){
+  public List<ActivityLog> listActivityLogsByUserEntityIdAndWorkspaceEntityId(Long userEntityId, Long workspaceEntityId, Date from, Date to){
     return activityLogDAO.listActivityLogs(userEntityId, workspaceEntityId, from, to);
   }
   
