@@ -29,12 +29,12 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
     this.props.updateWorkspace(this.props.workspace, {published: !this.props.workspace.published})
   }
   render(){
-    //Remove the paddingTop style as you add proper classs names with proper styles
+    //Remove the paddingTop style as you add proper class names with proper styles
     return <div style={{paddingTop:"4.2rem"}}>
-      <header className="flex-row workspace-header-wrapper" style={
+      <header className="workspace-header-wrapper" style={
           {backgroundImage:this.props.workspace && this.props.workspace.hasCustomImage ? 
             `url(/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped)` : "url(/gfx/workspace-default-header.jpg)"}}>
-        <div className="workspace-header-container lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16 no-margin-bottom">
+        <div className="workspace-header-container">
           <h1 className="workspace-title">{this.props.workspace && this.props.workspace.name}</h1>
           {this.props.workspace && this.props.workspace.educationTypeName ? <div className="workspace-study-level-indicator indicator1">
             <div className="workspace-study-level-text">{this.props.workspace.educationTypeName}</div>
@@ -44,15 +44,15 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
           {this.props.workspace && this.props.workspace.studentActivity  ? <ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/> : null}
         </div>
       </header>
-      <section className="flex-row">
-        <div className="workspace-meta-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+      <section className="">
+        <div className="workspace-meta-wrapper">
           <div className="workspace-meta-item-wrapper">
             <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseLengthLabel')}</span>
             <span className="workspace-meta-desc">
               {this.props.workspace ? this.props.i18n.text.get('plugin.workspace.index.courseLength',
                   this.props.workspace.additionalInfo.courseLength,
                   this.props.workspace.additionalInfo.courseLengthSymbol.symbol) : null}
-            </span> 
+            </span>
             </div>
             <div className="workspace-meta-item-wrapper">
               <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseSubjectLabel')}</span>
@@ -62,7 +62,7 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
               <div className="workspace-meta-item-wrapper">
                 <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseTypeLabel')}</span>
                 <span className="workspace-meta-desc">{this.props.workspace.additionalInfo.workspaceType}</span>
-              </div> 
+              </div>
             : null}
             {this.props.workspace && this.props.workspace.additionalInfo.beginDate && this.props.workspace.additionalInfo.endDate ? 
               <div className="workspace-meta-item-wrapper">
@@ -75,7 +75,7 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
               </div>
             : null}
             {this.props.workspace && this.props.status.permissions.WORKSPACE_CAN_PUBLISH ? 
-              <div className="workspace-publication-container sm-flex-hide" onClick={this.toggleWorkspacePublished}>
+              <div className="workspace-publication-container" onClick={this.toggleWorkspacePublished}>
                 <Button buttonModifiers={this.props.workspace.published ? "workspace-unpublish" : "workspace-publish"}>
                   {this.props.i18n.text.get(this.props.workspace.published ? 'plugin.workspace.index.unpublish' : 'plugin.workspace.index.publish')}
                 </Button>
