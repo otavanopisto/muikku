@@ -13,6 +13,18 @@ export type UPDATE_RECORDS_LOCATION = SpecificActionType<"UPDATE_RECORDS_LOCATIO
 export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS = SpecificActionType<"UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS", CurrentStudentUserAndWorkspaceStatusType>;
 export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE = SpecificActionType<"UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE", CurrentRecordType>;
 
+
+export interface SetLocationToStatisticsInTranscriptOfRecordsTriggerType {
+  ():AnyActionType
+}
+export interface SetLocationToSummaryInTranscriptOfRecordsTriggerType {
+  ():AnyActionType
+}
+
+export interface SetLocationToYoInTranscriptOfRecordsTriggerType {
+  ():AnyActionType
+}
+
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
   ():AnyActionType
 }
@@ -300,7 +312,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       })()
       
       ]);
-      
+     
       dispatch({
         type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE",
         payload: {
@@ -327,6 +339,28 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
   }
 }
 
+let setLocationToStatisticsInTranscriptOfRecords:SetLocationToStatisticsInTranscriptOfRecordsTriggerType = function setLocationToStatisticsInTranscriptOfRecords(){
+  return {
+    type: "UPDATE_RECORDS_LOCATION",
+    payload: <TranscriptOfRecordLocationType>"statistics"
+  };
+}
+
+
+let setLocationToSummaryInTranscriptOfRecords:SetLocationToSummaryInTranscriptOfRecordsTriggerType = function setLocationToSummaryInTranscriptOfRecords(){
+  return {
+    type: "UPDATE_RECORDS_LOCATION",
+    payload: <TranscriptOfRecordLocationType>"summary"
+  };
+}
+
+let setLocationToYoInTranscriptOfRecords:SetLocationToYoInTranscriptOfRecordsTriggerType = function setLocationToYoInTranscriptOfRecords(){
+  return {
+    type: "UPDATE_RECORDS_LOCATION",
+    payload: <TranscriptOfRecordLocationType>"yo"
+  };
+}
+
 let setLocationToVopsInTranscriptOfRecords:SetLocationToVopsInTranscriptOfRecordsTriggerType = function setLocationToVopsInTranscriptOfRecords(){
   return {
     type: "UPDATE_RECORDS_LOCATION",
@@ -342,6 +376,6 @@ let setLocationToHopsInTranscriptOfRecords:SetLocationToHopsInTranscriptOfRecord
 }
 
 export default {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords}
+  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords,setLocationToYoInTranscriptOfRecords,setLocationToSummaryInTranscriptOfRecords,setLocationToStatisticsInTranscriptOfRecords}
 export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords}
+  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords,setLocationToYoInTranscriptOfRecords,setLocationToSummaryInTranscriptOfRecords,setLocationToStatisticsInTranscriptOfRecords}

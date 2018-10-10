@@ -8,10 +8,12 @@ import * as queryString from 'query-string';
 import mainFunctionDefault from '~/util/base-main-function';
 
 import titleActions from '~/actions/base/title';
-import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records/records';
+import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords } from '~/actions/main-function/records/records';
 import { loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
+import { updateSummary } from '~/actions/main-function/records/summary';
+
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
@@ -29,12 +31,21 @@ function loadCurrentLocation(){
   } else if (!givenLocation){
     store.dispatch(<Action>setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), originalData.i, parseInt(originalData.w)));
   } else if (givenLocation === "records"){
-    store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());    
+    store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());
   } else if (givenLocation === "vops"){
     store.dispatch(<Action>setLocationToVopsInTranscriptOfRecords());
     store.dispatch(<Action>updateVops());
   } else if (givenLocation === "hops"){
     store.dispatch(<Action>setLocationToHopsInTranscriptOfRecords());
+    store.dispatch(<Action>updateHops());
+  } else if (givenLocation === "yo"){
+    store.dispatch(<Action>setLocationToYoInTranscriptOfRecords());
+    store.dispatch(<Action>updateHops());
+  } else if (givenLocation === "summary"){
+    store.dispatch(<Action>setLocationToSummaryInTranscriptOfRecords());
+    store.dispatch(<Action>updateSummary());
+  } else if (givenLocation === "statistics"){
+    store.dispatch(<Action>setLocationToStatisticsInTranscriptOfRecords());
     store.dispatch(<Action>updateHops());
   }
 }
