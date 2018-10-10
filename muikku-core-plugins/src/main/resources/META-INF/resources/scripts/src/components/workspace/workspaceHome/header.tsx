@@ -22,7 +22,7 @@ interface WorkspaceHomeHeaderState {
 class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, WorkspaceHomeHeaderState> {
   constructor(props: WorkspaceHomeHeaderProps){
     super(props);
-    
+
     this.toggleWorkspacePublished = this.toggleWorkspacePublished.bind(this);
   }
   toggleWorkspacePublished(){
@@ -45,43 +45,41 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
         </div>
       </header>
       <section className="">
-        <div className="workspace-meta-wrapper">
-          <div className="workspace-meta-item-wrapper">
-            <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseLengthLabel')}</span>
-            <span className="workspace-meta-desc">
-              {this.props.workspace ? this.props.i18n.text.get('plugin.workspace.index.courseLength',
-                  this.props.workspace.additionalInfo.courseLength,
-                  this.props.workspace.additionalInfo.courseLengthSymbol.symbol) : null}
-            </span>
-            </div>
-            <div className="workspace-meta-item-wrapper">
-              <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseSubjectLabel')}</span>
-              <span className="workspace-meta-desc">{this.props.workspace ? this.props.workspace.additionalInfo.subject.name : null}</span> 
-            </div>
-            {this.props.workspace && this.props.workspace.additionalInfo.workspaceType ? 
-              <div className="workspace-meta-item-wrapper">
-                <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseTypeLabel')}</span>
-                <span className="workspace-meta-desc">{this.props.workspace.additionalInfo.workspaceType}</span>
-              </div>
-            : null}
-            {this.props.workspace && this.props.workspace.additionalInfo.beginDate && this.props.workspace.additionalInfo.endDate ? 
-              <div className="workspace-meta-item-wrapper">
-                <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseDatesLabel')}</span>
-                <span className="workspace-meta-desc workspace-duration">
-                  {this.props.i18n.text.get('plugin.workspace.index.courseDates',
-                      this.props.i18n.time.format(this.props.workspace.additionalInfo.beginDate),
-                      this.props.i18n.time.format(this.props.workspace.additionalInfo.endDate))}
-                </span> 
-              </div>
-            : null}
-            {this.props.workspace && this.props.status.permissions.WORKSPACE_CAN_PUBLISH ? 
-              <div className="workspace-publication-container" onClick={this.toggleWorkspacePublished}>
-                <Button buttonModifiers={this.props.workspace.published ? "workspace-unpublish" : "workspace-publish"}>
-                  {this.props.i18n.text.get(this.props.workspace.published ? 'plugin.workspace.index.unpublish' : 'plugin.workspace.index.publish')}
-                </Button>
-              </div>
-            : null}
+        <div className="workspace-meta-item-wrapper">
+          <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseLengthLabel')}</span>
+          <span className="workspace-meta-desc">
+            {this.props.workspace ? this.props.i18n.text.get('plugin.workspace.index.courseLength',
+                this.props.workspace.additionalInfo.courseLength,
+                this.props.workspace.additionalInfo.courseLengthSymbol.symbol) : null}
+          </span>
           </div>
+          <div className="workspace-meta-item-wrapper">
+            <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseSubjectLabel')}</span>
+            <span className="workspace-meta-desc">{this.props.workspace ? this.props.workspace.additionalInfo.subject.name : null}</span>
+          </div>
+          {this.props.workspace && this.props.workspace.additionalInfo.workspaceType ? 
+            <div className="workspace-meta-item-wrapper">
+              <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseTypeLabel')}</span>
+              <span className="workspace-meta-desc">{this.props.workspace.additionalInfo.workspaceType}</span>
+            </div>
+          : null}
+          {this.props.workspace && this.props.workspace.additionalInfo.beginDate && this.props.workspace.additionalInfo.endDate ? 
+            <div className="workspace-meta-item-wrapper">
+              <span className="workspace-meta-title">{this.props.i18n.text.get('plugin.workspace.index.courseDatesLabel')}</span>
+              <span className="workspace-meta-desc workspace-duration">
+                {this.props.i18n.text.get('plugin.workspace.index.courseDates',
+                    this.props.i18n.time.format(this.props.workspace.additionalInfo.beginDate),
+                    this.props.i18n.time.format(this.props.workspace.additionalInfo.endDate))}
+              </span>
+            </div>
+          : null}
+          {this.props.workspace && this.props.status.permissions.WORKSPACE_CAN_PUBLISH ? 
+            <div className="workspace-publication-container" onClick={this.toggleWorkspacePublished}>
+              <Button buttonModifiers={this.props.workspace.published ? "workspace-unpublish" : "workspace-publish"}>
+                {this.props.i18n.text.get(this.props.workspace.published ? 'plugin.workspace.index.unpublish' : 'plugin.workspace.index.publish')}
+              </Button>
+            </div>
+          : null}
         </section>
     </div>
   }
