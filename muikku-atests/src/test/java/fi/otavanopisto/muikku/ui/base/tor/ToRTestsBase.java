@@ -84,15 +84,15 @@ public class ToRTestsBase extends AbstractUITest {
       login();
       
       navigate("/records", false);
-      waitForPresent(".application-list__item-header--course .text--list-item-title");
-      assertText(".application-list__item-header--course .text--list-item-title", "testcourses (test extension)");
+      waitForPresent(".application-list__item-header--course .application-list__header-primary");
+      assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
       
-      waitForPresent(".application-list__item-header--course .text--workspace-assesment-grade");
-      assertText(".application-list__item-header--course .text--workspace-assesment-grade", "E");
+      waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
+      assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
       
-      waitAndClick(".application-list__item-header--course .text--list-item-title");
-      waitForPresent(".text--studies-workspace-literal-assessment");
-      assertText(".text--studies-workspace-literal-assessment", "Test evaluation.");
+      waitAndClick(".application-list__item-header--course .application-list__header-primary");
+      waitForPresent(".application-sub-panel__text--course-evaluation");
+      assertText(".application-sub-panel__text--course-evaluation", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());

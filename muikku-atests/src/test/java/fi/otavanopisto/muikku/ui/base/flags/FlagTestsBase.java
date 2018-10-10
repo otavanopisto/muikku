@@ -90,9 +90,9 @@ public class FlagTestsBase extends AbstractUITest {
       click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a");
       
       waitUntilElementCount(".user--guider", 1);
-      assertTextIgnoreCase(".application-list__item-header > .text--list-item-title > .text--student-name", "Second User");
-      assertTextIgnoreCase(".application-list__item-header > .text--list-item-title .text--list-item-helper-title", "te...@example.com");
-      assertTextIgnoreCase(".application-list__item-footer .labels .label .label__text", "Test Flaggi");      
+      assertTextIgnoreCase(".user--guider .application-list__header-primary span", "Second User");
+      assertTextIgnoreCase(".user--guider .application-list__header-helper", "te...@example.com");
+      assertTextIgnoreCase(".application-list__item-footer .labels .label", "Test Flaggi");      
     } finally {
       deleteFlags();
       deleteWorkspaces();
@@ -128,10 +128,10 @@ public class FlagTestsBase extends AbstractUITest {
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
-      waitForPresentAndVisible("input.form-element--guider-label-name");
-      click("input.form-element--guider-label-name");
-      selectAllAndClear("input.form-element--guider-label-name");
-      sendKeys("input.form-element--guider-label-name", "Edited title");
+      waitForPresentAndVisible("input.form-element__input--guider-label-name");
+      click("input.form-element__input--guider-label-name");
+      selectAllAndClear("input.form-element__input--guider-label-name");
+      sendKeys("input.form-element__input--guider-label-name", "Edited title");
       waitForPresentAndVisible("textarea.form-element__textarea");
       click("textarea.form-element__textarea");
       selectAllAndClear("textarea.form-element__textarea");
@@ -139,7 +139,7 @@ public class FlagTestsBase extends AbstractUITest {
 
       waitAndClick(".button--standard-ok");
       
-      waitForNotVisible(".dialog--guider dialog--visible");
+      waitForNotVisible(".dialog--guider");
       waitForPresentAndVisible(".application-panel__helper-container .icon-flag");
       waitForPresentAndVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
       assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");      
@@ -225,24 +225,14 @@ public class FlagTestsBase extends AbstractUITest {
       waitForPresentAndVisible(".autocomplete--guider .env-dialog__input");
       click(".autocomplete--guider .env-dialog__input");
       sendKeys(".autocomplete--guider .env-dialog__input", "test");
-      waitForPresentAndVisible(".autocomplete__list .autocomplete__list__item .text--recepient-autocomplete b");      
-      waitAndClick(".autocomplete__list .autocomplete__list__item .text--recepient-autocomplete b");
+      waitForPresentAndVisible(".glyph--autocomplete-recipient");      
+      waitAndClick(".glyph--autocomplete-recipient");
       waitAndClick("body > div:nth-child(11) > div > div > div.dialog__footer > div > a.button.button--success.button--standard-ok");
       waitForPresentAndVisible(".button--guider-share-label");
       waitForNotVisible("body > div:nth-child(11)");
       waitAndClick("body > div:nth-child(10) > div > div > div.dialog__footer > div > a.button.button--success.button--standard-ok");    
       waitForNotVisible("body > div:nth-child(10)");
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
-      click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
-      waitForPresentAndVisible(".button--guider-share-label");
-      click(".button--guider-share-label");
-      
-      waitForPresentAndVisible(".text--recepient-tag");
-      assertText(".text--recepient-tag", "Test Person");
-
-      waitAndClick("body > div:nth-child(11) > div > div > div.dialog__footer > div > a.button.button--cancel.button--standard-cancel");
-      waitForNotVisible("body > div:nth-child(11) > div");
-      waitAndClick(".button--standard-cancel");
       
       logout();
       mockBuilder.mockLogin(testPerson);
