@@ -26,11 +26,12 @@
 }
 
 .panel__content {
-  @include text;  
+  @include text;
   margin: 12px;
 }
 
 .panel__empty {
+  line-height: 1.375rem;
   padding: 10px;
 }
 
@@ -44,15 +45,12 @@
   }
 }
 
-
-
 .panel__content-highlight {
   display: inline;
   font-style: italic;
   font-weight: 600;
   margin: 0 5px 0 0;
 }
-
 
 .panel--studies-ended {
   width: 100%;
