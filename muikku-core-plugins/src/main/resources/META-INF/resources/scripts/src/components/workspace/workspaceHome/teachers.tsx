@@ -5,13 +5,34 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { getUserImageUrl } from "~/util/modifiers";
 import Button from "~/components/general/button";
+import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
+import { StatusType } from "~/reducers/base/status";
 
 interface WorkspaceTeachersProps {
   workspace: WorkspaceType,
-  i18n: i18nType
+  i18n: i18nType,
+  status: StatusType
 }
 
 interface WorkspaceTeachersState {
+}
+
+function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: WorkspaceType, html?: boolean){
+  if (!workspace){
+    return ""
+  }
+  
+  let text = workspace.name + workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "";
+  let pretext = "";
+  if (html){
+    let url = window.location.href;
+    let arr = url.split("/");
+    let server = arr[0] + "//" + arr[2];
+    
+    text = '<a href="' + server + status.contextPath + "/workspace/" + workspace.urlName + '">' + text + "</a></p>";
+    pretext = "</p><p> ";
+  }
+  return pretext + i18n.text.get("plugin.workspace.index.newMessageCaption", text);
 }
 
 class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, WorkspaceTeachersState> {
@@ -41,10 +62,15 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
             {teacher.properties['profile-vacation-period'] ?
               <div className="workspace-teacher-info vacation-period">{this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")} {teacher.properties['profile-vacation-period']}
             </div> : null}
-            <Button buttonModifiers="message">
-              <span className="icon icon-envelope"></span>
-              {this.props.i18n.text.get("plugin.workspace.index.message.label")}
-            </Button>
+            <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
+                type: "staff",
+                value: teacher
+              }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
+                initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
+                <Button buttonModifiers="message">
+                  <span className="icon icon-envelope"></span>
+                  {this.props.i18n.text.get("plugin.workspace.index.message.label")}
+                </Button></CommunicatorNewMessage>
           </div>
         </div>) : 
         <div className="workspace-teachers-empty">{this.props.i18n.text.get("plugin.workspace.index.teachersEmpty")}</div>}
@@ -56,7 +82,8 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    workspace: state.workspaces.currentWorkspace
+    workspace: state.workspaces.currentWorkspace,
+    status: state.status
   }
 };
 

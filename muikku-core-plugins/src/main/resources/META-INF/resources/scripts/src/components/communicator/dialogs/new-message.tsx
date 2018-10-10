@@ -9,7 +9,7 @@ import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messa
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import {MessageSignatureType} from '~/reducers/main-function/messages';
-import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/user-index';
+import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, ContactRecepientType } from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
@@ -39,24 +39,24 @@ const extraPlugins = {
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
 
-type SelectedItemListType = Array<WorkspaceRecepientType | UserRecepientType | UserGroupRecepientType>;
-
 interface CommunicatorNewMessageProps {
   children: React.ReactElement<any>,
   replyThreadId?: number,
   replyToAll?: boolean,
   messageId?: number,
-  initialSelectedItems?: SelectedItemListType,
+  extraNamespace?: string,
+  initialSelectedItems?: Array<ContactRecepientType>,
   i18n: i18nType,
   signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType,
   initialSubject?: string,
+  initialMessage?: string,
   status: StatusType
 }
 
 interface CommunicatorNewMessageState {
   text: string,
-  selectedItems: SelectedItemListType,
+  selectedItems: Array<ContactRecepientType>,
   subject: string,
   locked: boolean,
   includesSignature: boolean
@@ -72,7 +72,7 @@ function getStateIdentifier(props: CommunicatorNewMessageProps){
 
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
   constructor(props: CommunicatorNewMessageProps){
-    super(props, "communicator-new-message");
+    super(props, "communicator-new-message" + (props.extraNamespace ? "-" + props.extraNamespace : ""));
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setSelectedItems = this.setSelectedItems.bind(this);
@@ -83,7 +83,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
     this.state = this.getRecoverStoredState({
-      text: "",
+      text: props.initialMessage || "",
       selectedItems: props.initialSelectedItems || [],
       subject: props.initialSubject || "",
       locked: false,
@@ -92,9 +92,9 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
   }
   checkAgainstStoredState(){
     this.checkAgainstDefaultState({
-      text: "",
+      text: this.props.initialMessage || "",
       selectedItems: this.props.initialSelectedItems || [],
-      subject: "",
+      subject: this.props.initialSubject || "",
       locked: false,
       includesSignature: true
     }, getStateIdentifier(this.props));
@@ -102,7 +102,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
   onCKEditorChange(text: string){
     this.setStateAndStore({text}, getStateIdentifier(this.props));
   }
-  setSelectedItems(selectedItems: SelectedItemListType){
+  setSelectedItems(selectedItems: Array<ContactRecepientType>){
     this.setStateAndStore({selectedItems}, getStateIdentifier(this.props));
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
@@ -121,7 +121,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       success: ()=>{
         closeDialog();
         this.setStateAndClear({
-          text: "",
+          text: this.props.initialMessage || "",
           selectedItems: this.props.initialSelectedItems || [],
           subject: this.props.initialSubject || "",
           locked: false
@@ -205,7 +205,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    signature: state.messages.signature,
+    signature: state.messages && state.messages.signature,
     status: state.status
   }
 };
