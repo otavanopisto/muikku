@@ -19,7 +19,7 @@ interface UpdateUsernamePasswordDialogProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
   profile: ProfileType,
-  
+
   displayNotification: DisplayNotificationTriggerType,
   loadProfileUsername: LoadProfileUsernameTriggerType
 }
@@ -35,10 +35,10 @@ interface UpdateUsernamePasswordDialogState {
 class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswordDialogProps, UpdateUsernamePasswordDialogState> {
   constructor(props: UpdateUsernamePasswordDialogProps){
     super(props);
-    
+
     this.update = this.update.bind(this);
     this.updateField = this.updateField.bind(this);
-    
+
     this.state = {
       username: "",
       oldPassword: "",
@@ -138,11 +138,11 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
         </form>
       </div>;
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="env-dialog__actions">
-        <Button buttonModifiers="dialog-execute" onClick={this.update.bind(this, closeDialog)} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.sendLabel')}
+      return <div className="dialog__button-set">
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)} disabled={this.state.locked}>
+          {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.saveLabel')}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+        <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.cancelLabel')}
         </Button>
       </div>

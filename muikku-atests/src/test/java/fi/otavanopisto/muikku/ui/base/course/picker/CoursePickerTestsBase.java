@@ -145,8 +145,8 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitAndSendKeys(".application-panel__toolbar-actions-main input", "pot");
         waitAndSendKeys(".application-panel__toolbar-actions-main input", "ato");
         waitUntilElementCount(".application-list__item-header--course", 1);
-        waitForPresentAndVisible(".application-list__item-header--course .text--list-item-title");
-        assertTextIgnoreCase(".application-list__item-header--course .text--list-item-title", "potato course (test extension)");
+        waitForPresentAndVisible(".application-list__item-header--course .application-list__header-primary");
+        assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "potato course (test extension)");
       } finally {
         deleteWorkspace(workspace1.getId());
         deleteWorkspace(workspace2.getId());
@@ -182,8 +182,8 @@ public class CoursePickerTestsBase extends AbstractUITest {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a:nth-child(3)");
-        waitForPresentAndVisible(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title");
-        assertTextIgnoreCase(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title", "testcourse 7 (test extension)");
+        waitForPresentAndVisible(".application-list__item-header--course .application-list__header-primary");
+        assertTextIgnoreCase(".application-list__item-header--course .application-list__header-primary", "testcourse 7 (test extension)");
       } finally {
         deleteWorkspace(workspace1.getId());
         deleteWorkspace(workspace2.getId());

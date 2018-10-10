@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
@@ -30,10 +32,25 @@ public class WorkspaceMaterialReplyController {
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
   
+  @Inject
+  private ActivityLogController activityLogController;
+  
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+  
   public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, 
       UserEntity userEntity, Long numberOfTries, Date created, Date lastModified) {
     Date submitted = state == WorkspaceMaterialReplyState.SUBMITTED ? new Date() : null;
     Date withdrawn = state == WorkspaceMaterialReplyState.WITHDRAWN ? new Date() : null;
+    WorkspaceRootFolder root = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    switch (workspaceMaterial.getAssignmentType()) {
+    case EVALUATED:
+      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_ASSIGNMENTDONE, root.getWorkspaceEntityId(), null);
+    break;
+    case EXERCISE:
+      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_EXERCISEDONE, root.getWorkspaceEntityId(), null);
+    break;
+    }
     return workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), numberOfTries, created, lastModified, submitted, withdrawn);
   }
   
@@ -82,10 +99,6 @@ public class WorkspaceMaterialReplyController {
 
   public List<WorkspaceMaterialReply> listWorkspaceMaterialRepliesByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
     return workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
-  }
-  
-  public List<WorkspaceMaterialReply> listWorkspaceMaterialRepliesByUserEntity(UserEntity userEntity) {
-    return workspaceMaterialReplyDAO.listByUserEntity(userEntity);
   }
   
   public void deleteWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply) {

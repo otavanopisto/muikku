@@ -144,13 +144,13 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
         <div className="profile-element__item">
           <UpdateUsernamePasswordDialog>
-            <Button buttonModifiers="profile">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
+            <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
           </UpdateUsernamePasswordDialog>
         </div>
 
         {this.props.status.isStudent ? <div className="profile-element__item">
           <UpdateAddressDialog>
-            <Button buttonModifiers="profile">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
+            <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
           </UpdateAddressDialog>
         </div> : <form>
           <div className="profile-element__item">
@@ -170,7 +170,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
              locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>
            </div>
           <div className="profile-element__item">
-            <Button buttonModifiers="profile" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+            <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
           </div>
         </form>}
     </div>);

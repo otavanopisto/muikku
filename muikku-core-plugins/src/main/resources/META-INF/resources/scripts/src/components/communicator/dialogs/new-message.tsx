@@ -160,12 +160,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
         </div> 
         </div>
-        ),
+        ),        
       (
       <div className="env-dialog__row" key="3">     
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>
-          <CKEditor width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+          <CKEditor width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div> 
       </div>
@@ -178,7 +178,6 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         </span>
       </div> : null)
     ]
-       
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="env-dialog__actions">

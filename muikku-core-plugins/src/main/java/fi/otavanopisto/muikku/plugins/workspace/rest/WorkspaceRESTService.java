@@ -2714,7 +2714,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     if (userIdentifier == null) {
-      return Response.status(Status.NOT_IMPLEMENTED).entity("User does not exist").build();
+      return Response.status(Status.NOT_FOUND).entity("User does not exist").build();
     }
     
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
