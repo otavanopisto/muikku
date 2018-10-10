@@ -27,6 +27,10 @@ public interface User extends SchoolDataEntity {
   public String getLastName();
 
   public void setLastName(String lastName);
+  
+  public String getSsn();
+  
+  public void setSsn(String ssn);
 
   public String getDisplayName();
   

@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,45 @@ public class VopsLister {
   private int numCourses = 0;
   private int numMandatoryCourses = 0;
   private boolean optedIn = true;
+  
+  public static class Result {
+    private Result(
+      List<VopsRow> rows,
+      int numCourses,
+      int numMandatoryCourses,
+      boolean optedIn
+    ) {
+      this.rows = rows;
+      this.numCourses = numCourses;
+      this.numMandatoryCourses = numMandatoryCourses;
+      this.optedIn = optedIn;
+    }
+    
+    public List<VopsRow> getRows() {
+      return rows;
+    }
+
+    public int getNumCourses() {
+      return numCourses;
+    }
+
+    public int getNumMandatoryCourses() {
+      return numMandatoryCourses;
+    }
+
+    public boolean isOptedIn() {
+      return optedIn;
+    }
+
+    private List<VopsRow> rows;
+    private int numCourses;
+    private int numMandatoryCourses;
+    private boolean optedIn;
+  }
+  
+  static public Result notOptedInResult() {
+    return new Result(Collections.emptyList(), 0, 0, false);
+  }
   
   public VopsLister(List<Subject> subjects, TranscriptOfRecordsController vopsController, User student,
       List<TransferCredit> transferCredits, SchoolDataIdentifier curriculumIdentifier,
@@ -367,16 +407,12 @@ public class VopsLister {
   
   private Map<GradingScaleItemCoordinates, GradingScaleItem> gradingScaleCache = new HashMap<>();
   
-  public List<VopsRow> getRows() {
-    return rows;
+  public Result getResult() {
+    return new Result(
+      rows,
+      numCourses,
+      numMandatoryCourses,
+      optedIn);
   }
-  public int getNumCourses() {
-    return numCourses;
-  }
-  public int getNumMandatoryCourses() {
-    return numMandatoryCourses;
-  }
-  public boolean isOptedIn() {
-    return optedIn;
-  }
+  
 }
