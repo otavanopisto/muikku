@@ -6,7 +6,7 @@ import { MessageThreadListType, MessageThreadExpandedType, MessagesStateType, Me
 import { displayNotification } from '~/actions/base/notifications';
 import { hexToColorInt, colorIntToHex } from '~/util/modifiers';
 import { getApiId, loadMessagesHelper, setLabelStatusCurrentMessage, setLabelStatusSelectedMessages } from './helpers';
-import { ContactRecepientType } from '~/reducers/main-function/user-index';
+import { ContactRecepientType } from '~/reducers/user-index';
 import { StatusType } from '~/reducers/base/status';
 
 export interface UpdateMessageThreadsCountTriggerType {

@@ -13,10 +13,10 @@ import { GuiderUserLabelType } from '~/reducers/main-function/guider';
 import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
 
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import { StaffRecepientType, UserIndexType, UserType } from '~/reducers/main-function/user-index';
+import { StaffRecepientType, UserIndexType, UserType } from '~/reducers/user-index';
 import promisify from '~/util/promisify';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
-import { loadUserIndexBySchoolData, LoadUserIndexBySchoolDataTriggerType } from '~/actions/main-function/user-index';
+import { loadUserIndexBySchoolData, LoadUserIndexBySchoolDataTriggerType } from '~/actions/user-index';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 

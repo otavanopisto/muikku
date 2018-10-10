@@ -9,7 +9,7 @@ import { AnnouncementsType } from './main-function/announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
-import {UserIndexType} from './main-function/user-index';
+import {UserIndexType} from './user-index';
 import {WorkspacesType} from './workspaces';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';

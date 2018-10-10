@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UserWithSchoolDataType, StudentUserAddressType } from "~/reducers/main-function/user-index";
+import { UserWithSchoolDataType, StudentUserAddressType } from "~/reducers/user-index";
 import { StateType } from "reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";

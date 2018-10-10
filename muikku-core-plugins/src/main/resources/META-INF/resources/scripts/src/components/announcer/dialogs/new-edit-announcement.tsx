@@ -5,14 +5,14 @@ import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/environment-dialog';
-import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
+import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/user-index';
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/main-function/announcements';
 import { AnyActionType } from '~/actions';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { WorkspaceType } from '~/reducers/workspaces';
-import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/main-function/user-index';
+import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/user-index';
 import { createAnnouncement, CreateAnnouncementTriggerType,
   updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';
 import {StateType} from '~/reducers';

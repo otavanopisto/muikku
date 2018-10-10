@@ -25,7 +25,7 @@ import MainChart from './current-student/main-chart';
 import {AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
   addFileToCurrentStudent} from '~/actions/main-function/guider';
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
-import {UserFileType} from '~/reducers/main-function/user-index';
+import {UserFileType} from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import {GuiderType, GuiderStudentUserProfileLabelType} from '~/reducers/main-function/guider';
 

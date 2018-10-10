@@ -5,6 +5,7 @@ import {AnyActionType, SpecificActionType} from '~/actions';
 import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
+import { UserStaffType } from '~/reducers/user-index';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -72,7 +73,11 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
 }
   
 export interface SetCurrentWorkspaceTriggerType {
-  (workspaceId: number):AnyActionType
+  (data?: {
+    workspaceId: number,
+    success?: (workspace: WorkspaceType)=>any,
+    fail?: ()=>any
+  }):AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -86,15 +91,16 @@ function reuseExistantValue(conditional: boolean, existantValue: any, otherwise:
   return otherwise();
 }
 
-let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(workspaceId){
+let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let current:WorkspaceType = getState().workspaces.currentWorkspace;
-    if (current && current.id === workspaceId){
+    if (current && current.id === data.workspaceId){
+      data.success && data.success(current);
       return;
     }
     
     try {
-      let workspace:WorkspaceType = getState().workspaces.userWorkspaces.find(w=>w.id === workspaceId) || getState().workspaces.availableWorkspaces.find(w=>w.id === workspaceId);
+      let workspace:WorkspaceType = getState().workspaces.userWorkspaces.find(w=>w.id === data.workspaceId) || getState().workspaces.availableWorkspaces.find(w=>w.id === data.workspaceId);
       let assesments:WorkspaceStudentAssessmentsType;
       let feeInfo:WorkspaceFeeInfoType;
       let assessmentRequests:Array<WorkspaceAssessmentRequestType>;
@@ -102,19 +108,19 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let additionalInfo:WorkspaceAdditionalInfoType;
       let status = getState().status;
       [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo] = await Promise.all([
-                                                 reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')()),
+                                                 reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
                                                      workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
-                                                     .students.assessments.read(workspaceId, status.userSchoolDataIdentifier), 'callback')()),
+                                                     .students.assessments.read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-                                                     workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.read(workspaceId), 'callback')()),
+                                                     workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-                                                     workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.read(workspaceId, {
+                                                     workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.read(data.workspaceId, {
                                                        studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')()),
                                                  reuseExistantValue(true, workspace && workspace.studentActivity,
-                                                     ()=>promisify(mApi().guider.workspaces.activity.read(workspaceId), 'callback')()),
+                                                     ()=>promisify(mApi().guider.workspaces.activity.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(true, workspace && workspace.additionalInfo,
-                                                     ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(workspaceId), 'callback')())]) as any
+                                                     ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(data.workspaceId), 'callback')())]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
@@ -125,11 +131,14 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
         type: 'SET_CURRENT_WORKSPACE',
         payload: workspace
       });
+      
+      data.success && data.success(workspace);
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG plugin.workspace.errormessage.workspaceLoadFailed"), 'error'));
+      data.fail && data.fail();
     }
   }
 }
@@ -248,7 +257,11 @@ export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
 }
 
 export interface UpdateWorkspaceTriggerType {
-  (workspace?: WorkspaceType, update?: WorkspaceUpdateType):AnyActionType
+  (workspace: WorkspaceType, update: WorkspaceUpdateType):AnyActionType
+}
+
+export interface LoadStaffMembersOfWorkspaceTriggerType {
+  (workspace: WorkspaceType):AnyActionType
 }
 
 let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType= function loadWorkspacesFromServer(filters){
@@ -350,6 +363,32 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(origin
   }
 }
 
+let loadStaffMembersOfWorkspace:LoadStaffMembersOfWorkspaceTriggerType = function loadStaffMembersOfWorkspace(workspace){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let staffMembers = <Array<UserStaffType>>(await promisify(mApi().user.staffMembers.read({
+        workspaceEntityId: workspace.id,
+        properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
+      }), 'callback')());
+      
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: {
+          original: workspace,
+          update: {
+            staffMembers
+          }
+        }
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load teachers'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
-  updateWorkspace}
+  updateWorkspace, loadStaffMembersOfWorkspace}

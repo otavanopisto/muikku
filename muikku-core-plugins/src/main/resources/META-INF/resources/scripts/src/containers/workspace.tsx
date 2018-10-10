@@ -13,7 +13,7 @@ import titleActions from '~/actions/base/title';
 
 import WorkspaceHomeBody from '~/components/workspace/workspaceHome';
 import { RouteComponentProps } from 'react-router';
-import { setCurrentWorkspace } from '~/actions/workspaces';
+import { setCurrentWorkspace, loadStaffMembersOfWorkspace } from '~/actions/workspaces';
 
 interface WorkspaceProps {
   store: Store<StateType>,
@@ -37,8 +37,6 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.onHashChange = this.onHashChange.bind(this);
     this.renderWorkspaceHome = this.renderWorkspaceHome.bind(this);
     
-    props.store.dispatch(setCurrentWorkspace(props.store.getState().status.currentWorkspaceId) as Action);
-    
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
   loadlib(url: string){
@@ -61,6 +59,11 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
+      this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId, success: (workspace)=>{
+        if (!workspace.staffMembers){
+          this.props.store.dispatch(loadStaffMembersOfWorkspace(workspace) as Action)
+        }
+      }}) as Action);
     }
     
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]}/>

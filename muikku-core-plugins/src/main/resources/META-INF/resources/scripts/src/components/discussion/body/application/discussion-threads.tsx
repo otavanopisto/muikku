@@ -12,7 +12,7 @@ import '~/sass/elements/avatar.scss';
 
 
 import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
-import { UserIndexType, UserType } from '~/reducers/main-function/user-index';
+import { UserIndexType, UserType } from '~/reducers/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';

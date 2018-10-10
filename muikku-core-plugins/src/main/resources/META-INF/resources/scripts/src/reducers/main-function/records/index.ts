@@ -1,4 +1,4 @@
-import { UserWithSchoolDataType, UserFileType } from "~/reducers/main-function/user-index";
+import { UserWithSchoolDataType, UserFileType } from "~/reducers/user-index";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { WorkspaceCurriculumFilterListType } from "~/reducers/workspaces";

@@ -2,7 +2,7 @@ import actions from '../../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {UserWithSchoolDataType, UserFileType} from '~/reducers/main-function/user-index';
+import {UserWithSchoolDataType, UserFileType} from '~/reducers/user-index';
 import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType } from 'reducers/workspaces';
 import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records';
 import { StateType } from '~/reducers';

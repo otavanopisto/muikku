@@ -9,7 +9,7 @@ import messages from './main-function/messages';
 import announcements from './main-function/announcements';
 import workspaces from './workspaces';
 
-import userIndex from './main-function/user-index';
+import userIndex from './user-index';
 
 import discussion from '~/reducers/main-function/discussion';
 

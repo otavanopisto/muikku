@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { StudentUserAddressType, UserWithSchoolDataType } from "~/reducers/main-function/user-index";
+import { StudentUserAddressType, UserWithSchoolDataType } from "~/reducers/user-index";
 
 export interface ProfileType {
   properties: {

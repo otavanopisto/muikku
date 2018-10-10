@@ -2,7 +2,7 @@ import promisify, { promisifyNewConstructor } from '~/util/promisify';
 import actions from '../base/notifications';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
-import {UserType, StudentUserAddressType, UserWithSchoolDataType} from '~/reducers/main-function/user-index';
+import {UserType, StudentUserAddressType, UserWithSchoolDataType} from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import $ from '~/lib/jquery';
 import { resize } from '~/util/modifiers';
