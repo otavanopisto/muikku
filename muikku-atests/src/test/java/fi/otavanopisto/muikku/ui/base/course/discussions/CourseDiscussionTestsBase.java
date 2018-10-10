@@ -32,7 +32,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       try {
         Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
-          navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
+          navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
           waitAndClick(".di-new-message-button>span");
           waitForPresent(".di-newmessage-form-container");
           waitForPresent(".mf-textfield-subcontainer input");
@@ -72,7 +72,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       try {
         Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
         try {
-          navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
+          navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
           waitAndClick(".sm-flex-hide .di-new-area-button");
           waitAndSendKeys(".mf-textfield input", "Test area");
           click("*[name='send']");
@@ -111,7 +111,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
         try {
           DiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
           try {
-            navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
+            navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
             waitAndClick(".di-message-meta-topic>span");
             waitAndClick(".di-message-reply-link");
             addTextToCKEditor("Test reply for test.");
@@ -155,7 +155,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
           try {
             DiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
             try {
-              navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
+              navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
               waitAndClick(".di-message-meta-topic>span");
               waitAndClick(".di-remove-thread-link");
               waitAndClick(".delete-button>span");
@@ -201,7 +201,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
           try {
             DiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
             try {
-              navigate(String.format("/workspace/%s/discussions", workspace.getName()), true);
+              navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
               waitAndClick(".di-message-meta-topic>span");
               waitAndClick(".di-message-reply-link");
               addTextToCKEditor("Test reply for test.");

@@ -1,0 +1,54 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.feed {
+  color: $color-feed-default-text;
+  font-family: $text-branded-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 300;
+  list-style-type: none;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.feed__item {
+  margin-bottom: 1.25rem;
+    
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+  
+.feed__item-description {
+  display: block;
+  line-height: 1.375rem;
+  margin-bottom: .375rem;
+  width: 100%;
+
+  a {
+    @include prefix(transition, webkit ms o moz, color 0.3s);
+    color: $color-feed-default-text;
+    display: inline;
+    font-weight: 600;
+    margin-right: .375rem;
+    text-decoration: none;
+    text-transform: none;
+
+    &:hover,
+    &:active,
+    &.hover,
+    &.active {
+      color: $color-feed-item-description-active;
+    }
+  }
+}
+
+.feed__item-date {
+  color: $color-feed-default-date;
+  display: block;
+}

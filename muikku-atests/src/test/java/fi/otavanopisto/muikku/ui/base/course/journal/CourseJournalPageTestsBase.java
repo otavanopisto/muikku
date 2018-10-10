@@ -28,7 +28,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         waitForPresent(".workspace-journal-content-wrapper");
         assertVisible(".workspace-journal-teacher-tools-container");
       } finally {
@@ -56,10 +56,10 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       mockBuilder.addCourseStudent(courseId, courseStudent).build();
 
       logout();
-      mockBuilder.mockLogin(student).build();
+      mockBuilder.mockLogin(student);
       login();
       try {
-        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         waitForPresent(".workspace-journal-content-wrapper");
         assertVisible(".workspace-journal-new-entry-button");
       } finally {
@@ -85,10 +85,10 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       mockBuilder.addCourseStudent(courseId, courseStudent).build();
       
       logout();
-      mockBuilder.mockLogin(student).build();
+      mockBuilder.mockLogin(student);
       login();
       try {
-        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
         click(".workspace-journal-new-entry-button");
         addTextToCKEditor("content");
         sendKeys(".mf-textfield-subject", "title");

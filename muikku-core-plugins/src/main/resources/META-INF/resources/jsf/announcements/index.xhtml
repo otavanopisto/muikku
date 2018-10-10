@@ -1,66 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"  
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/flex-reading-view.xhtml">
-
+  template="/WEB-INF/templates/base.xhtml">
+  
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
+    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
+    <script defer="defer" jsf:name="scripts/dist/main-function.js" />
+  </ui:define>
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/main-function.css" />
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/vendor.css" />
   </ui:define>
 
-  <ui:define name="main-functionality-styles">
-    <link rel="stylesheet" type="text/css" href="/css/flex/announcement-view.css"/>
-  </ui:define>  
-
-  <ui:define name="mf-content-master"> 
-    <div id="announcements">
-      <ui:insert name="mf-content-area">
-        <div class="context-wrapper flex-row">
-          <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
-            <ui:fragment rendered="#{not empty announcementsViewBackingBean.currentAnnouncement}">
-              <article class="announcement-article">
-                <header>
-                  <h2>
-                    <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.caption}" />
-                  </h2>
-                  <div class="article-datetime">
-                    <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.startDate}">
-                      <f:convertDateTime type="date" dateStyle="short" />
-                    </h:outputText>
-                  </div>
-                  <ui:fragment rendered="#{not empty announcementsViewBackingBean.currentAnnouncementWorkspaces}">
-                    <div class="article-workspaces">
-                      <ui:repeat value="#{announcementsViewBackingBean.currentAnnouncementWorkspaces}" var="announcementWorkspace" varStatus="loop">
-                        <h:outputText value="#{announcementWorkspace.name}" />#{!loop.last ? ', ' : ''}
-                      </ui:repeat>
-                    </div>
-                  </ui:fragment>
-                </header>
-                <div class="article-context">
-                  <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.content}" escape="false" />
-                </div>
-              </article>
-            </ui:fragment>
-          </section>
-          <nav id="announcementContextNavigation" class="gc-navigation lg-flex-cell-5 md-flex-cell-6 sm-flex-hide">
-            <ui:repeat value="#{announcementsViewBackingBean.activeAnnouncements}" var="announcement">
-              <div class="gc-navigation-item">
-                <a class="gc-navigation-title" jsf:outcome="/jsf/announcements/index.jsf?announcementId=#{announcement.id}">
-                  <h:outputText value="#{announcement.caption}" />
-                </a>
-                <div class="gc-navigation-date">
-                  <h:outputText value="#{announcement.startDate}">
-                    <f:convertDateTime type="date" dateStyle="short" />
-                  </h:outputText>
-                </div>
-              </div>
-            </ui:repeat>
-          </nav>    
-        </div>
-      </ui:insert>
-    </div>
-  </ui:define>
 </ui:composition>

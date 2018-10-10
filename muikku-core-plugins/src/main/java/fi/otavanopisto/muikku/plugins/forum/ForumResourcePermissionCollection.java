@@ -82,7 +82,7 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
 
   @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER } )
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER} )
   public static final String FORUM_FINDWORKSPACE_USERSTATISTICS = "FORUM_FINDWORKSPACE_USERSTATISTICS";
 
   @Scope (PermissionScope.ENVIRONMENT)
