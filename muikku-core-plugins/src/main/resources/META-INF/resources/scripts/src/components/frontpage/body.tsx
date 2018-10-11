@@ -37,7 +37,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
 
       <Separator/>
 
-      <ScreenContainer fullHeight={false}>
+      <ScreenContainer viewModifiers="frontpage">
         <Studying i18n={this.props.i18n}/>
         <Videos/>
         <News i18n={this.props.i18n}/>

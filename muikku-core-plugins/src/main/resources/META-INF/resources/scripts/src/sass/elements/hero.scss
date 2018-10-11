@@ -33,7 +33,7 @@
 
   @include breakpoint($breakpoint-pad) {
     border: 5px solid $color-hero-workspace-background;
-    margin: calc(#{$navbar-desktop-height} * 1.5) 10px 0;
+    margin: calc(#{$navbar-desktop-height} * 1.5) auto 0;
     min-height: 196px;
     width: auto;
   }

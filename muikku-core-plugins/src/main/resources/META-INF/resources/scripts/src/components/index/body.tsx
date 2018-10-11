@@ -24,7 +24,7 @@ class IndexBody extends React.Component<{
   render(){
     return (<div>
       <MainFunctionNavbar activeTrail="index"/>
-      <ScreenContainer>
+      <ScreenContainer viewModifiers="index">
         {this.props.status.isActiveUser ? <div className="ordered-container ordered-container--index-panels">
           <div className="ordered-container__item ordered-container__item--studies">
             <div className="ordered-container">
