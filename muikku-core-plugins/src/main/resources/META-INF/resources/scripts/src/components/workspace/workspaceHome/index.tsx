@@ -1,4 +1,5 @@
 import WorkspaceNavbar from '~/components/base/workspace/navbar';
+import ScreenContainer from '~/components/general/screen-container';
 
 import * as React from 'react';
 
@@ -10,17 +11,19 @@ interface WorkspaceHomeBodyProps {
 }
 
 interface WorkspaceHomeBodyState {
-  
+
 }
 
 export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBodyProps, WorkspaceHomeBodyState> {
   render(){
     return (<div>
       <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl}/>
-      <WorkspaceHomeHeader/>
-      <section className="flex-row">
-        <WorkspaceTeachers/>
-      </section>
+      <ScreenContainer viewModifiers="workspace">
+        <WorkspaceHomeHeader/>
+        <section>
+          <WorkspaceTeachers/>
+        </section>
+      </ScreenContainer>
     </div>);
   }
 }

@@ -1,14 +1,7 @@
-//
-// Provides the max screen sizer container for insane screens
-//
-//   div.scren-container
-//    div.screen-container-wrapper
-//      (BODY)
-//
-
-@import "../base/breakpoints";
-@import "../base/vars";
 @import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
 
 .screen-container {
   align-items: center;
@@ -29,7 +22,7 @@
   @include breakpoint($breakpoint-mobile-xl) {
     font-size: 1.8rem;
   }
-    
+
   @include breakpoint($breakpoint-pad) {
     font-size: 2rem;
     font-weight: 200;
@@ -47,6 +40,22 @@
   overflow: visible;
 }
 
+.screen-container__wrapper--error {
+  
+} 
+
+.screen-container__wrapper--frontpage {
+  
+}
+
+.screen-container__wrapper--index {
+  
+}
+
+.screen-container__wrapper--workspace {
+  padding: 0 10px;
+}
+
 .screen-container__section {
   margin-top: 1.5rem;
   padding: 0 $container-mobile-gutter;
@@ -54,16 +63,5 @@
   @include breakpoint($breakpoint-pad) {
     margin-top: 4.375rem;
     padding: 0 $container-desktop-gutter;
-  }    
-}
-
-
-.screen-container--full-height {
-  height: auto;
-  
-  @include breakpoint($breakpoint-pad) {
-     height: 100%;
   }
 }
-
-

@@ -19,7 +19,7 @@ export default class FrontpageHero extends React.Component<FrontpageHeroProps, F
   render() {
     return <header className="hero hero--frontpage">
       <div className="hero__wrapper">
-        <div className="hero__item">
+        <div className="hero__item hero__item--frontpage">
           <Bubble modifier="application" title={this.props.i18n.text.get( 'plugin.header.studentApplicationBubble.title')}
             content={this.props.i18n.text.get( 'plugin.header.studentApplicationBubble.description')}>
             <Button buttonModifiers={["branded", "frontpage-bubble", "warn"]}>
@@ -27,7 +27,7 @@ export default class FrontpageHero extends React.Component<FrontpageHeroProps, F
             </Button>
           </Bubble>
         </div>
-        <div className="hero__item">
+        <div className="hero__item hero__item--frontpage">
           <div className="hero__item-logo-container">
             <img className="logo logo--muikku-verkko" src="/gfx/oo-branded-site-logo.png"></img>
             <div className="hero__header-container">
@@ -38,7 +38,7 @@ export default class FrontpageHero extends React.Component<FrontpageHeroProps, F
           </div>
           <div className="hero__description">{this.props.i18n.text.get( 'plugin.header.site.description' )}</div>
         </div>
-        <div className="hero__item">
+        <div className="hero__item hero__item--frontpage">
           <Bubble modifier="goto-materials" title={this.props.i18n.text.get( 'plugin.header.openMaterialsBubble.title' )}
             content={this.props.i18n.text.get( 'plugin.header.openMaterialsBubble.description')}>
             <Button buttonModifiers={["branded", "frontpage-bubble", "warn"]}>

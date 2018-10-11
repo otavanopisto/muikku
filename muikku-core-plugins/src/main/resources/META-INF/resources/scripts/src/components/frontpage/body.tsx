@@ -14,7 +14,6 @@ import Footer from './body/footer';
 
 import '~/sass/elements/logo.scss';
 
-
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/card.scss';
 import '~/sass/elements/buttons.scss';
@@ -27,7 +26,7 @@ interface FrontpageBodyProps {
 }
 
 interface FrontpageBodyState {
-  
+
 }
 
 class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodyState> {
@@ -35,16 +34,16 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
     return (<div>
       <FrontpageNavbar />
       <Header i18n={this.props.i18n}/>
-      
+
       <Separator/>
-      
-      <ScreenContainer fullHeight={false}>
+
+      <ScreenContainer viewModifiers="frontpage">
         <Studying i18n={this.props.i18n}/>
         <Videos/>
         <News i18n={this.props.i18n}/>
         <Organization i18n={this.props.i18n}/>
       </ScreenContainer>
-        
+
       <Footer i18n={this.props.i18n}/>
     </div>);
   }

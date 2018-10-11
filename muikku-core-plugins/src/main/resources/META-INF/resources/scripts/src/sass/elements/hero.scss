@@ -5,6 +5,9 @@
 
 .hero {
   @include text;
+}
+
+.hero--frontpage {
   background: url("/gfx/oo-branded-site-header-background-mobile.jpg") no-repeat center center $color-hero-default-background;
   background-size: cover;
   margin-top: $navbar-mobile-height;
@@ -13,6 +16,36 @@
     background-image: url("/gfx/oo-branded-site-header-background.png");
     background-size: auto;
     margin-top: $navbar-desktop-height;
+  }
+}
+
+.hero--workspace {
+  background-color: $color-hero-workspace-background;
+  background-size: cover;
+  border-bottom: 5px solid $color-hero-workspace-background;
+  border-top: 5px solid $color-hero-workspace-background;
+  display: flex;
+  flex-direction: column;
+  margin: calc(#{$navbar-mobile-height} * 1.35) auto 0;
+  max-width: 100%;
+  min-height: 150px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    border: 5px solid $color-hero-workspace-background;
+    margin: calc(#{$navbar-desktop-height} * 1.5) auto 0;
+    min-height: 196px;
+    width: auto;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    min-height: 250px;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    margin: calc(#{$navbar-desktop-height} * 1.5) auto 0;
+    max-width: calc(#{$breakpoint-max-usable-screen} - 20px);
+    min-height: 270px;
   }
 }
 
@@ -36,9 +69,13 @@
 }
 
 .hero__item {
+  
+}
+
+.hero__item--frontpage {
   padding: 0 1.5rem 1.5rem;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-basis: 33%;
     flex-grow: 1;
@@ -48,7 +85,7 @@
 
   &:nth-child(2) {
     order: -1;
-    
+
     @include breakpoint($breakpoint-pad) {
       order: initial;
     }

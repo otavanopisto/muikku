@@ -24,7 +24,7 @@ class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {
     return (<div>
       <MainFunctionNavbar/>
         
-      <ScreenContainer fullHeight={true}>
+      <ScreenContainer viewModifiers="error">
         <div className="ordered-container ordered-container--error-panels">
           <div className="ordered-container__item ordered-container__item--error">
             <div className="ordered-container__error-title">
