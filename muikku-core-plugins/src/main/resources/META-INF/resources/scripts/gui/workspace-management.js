@@ -373,7 +373,7 @@
       }, this); 
     },
     
-    _saveWorkspaceChatStatus: function (status) {
+    _saveWorkspaceChatStatus: function () {
       var chatStatus = this.element.find(".workspace-chat").val()
       var workspaceEntityId = this.options.workspaceEntityId;
 
