@@ -1,0 +1,25 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.meta {
+  @include text;
+  display: flex;
+}
+
+.meta--workspace {
+  align-items: center;
+  background: $color-meta-workspace-background;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  padding: 10px;
+}
+
+.meta__item {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+

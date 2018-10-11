@@ -55,6 +55,9 @@ $color-label-mobile-selected-background: #97e1ef;
 // Workspace
 $color-workspace: #43cd80;
 
+// Meta
+@color-meta-workspace-background: $color-default;
+
 // Signature
 $color-signature-border: #f2f2f2;
 $color-signature-background: #f8f8f8;
@@ -66,7 +69,6 @@ $color-grade-incomplete: #ea7503;
 $color-grade-passed: #2ed31c;
 $color-grade-failed: #4c4c4c;
 $color-task-evaluation: #e2ffe2;
-
 
 // Assignment & Exercise
 $color-assignment:#ce01bd;
@@ -168,7 +170,6 @@ $color-button-pill-text-disabled: $color-default;
 $color-button-pill-shadow: rgba(255, 255, 255, 0.4);
 
 // HOPS
-
 $color-hops-readable-inline-background: #ecfafe;
 
 // Label theme

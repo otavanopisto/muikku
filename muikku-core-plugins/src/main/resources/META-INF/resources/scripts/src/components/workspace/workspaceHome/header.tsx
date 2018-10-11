@@ -10,6 +10,7 @@ import { bindActionCreators } from "redux";
 import { updateWorkspace, UpdateWorkspaceTriggerType } from "~/actions/workspaces";
 
 import '~/sass/elements/hero.scss';
+import '~/sass/elements/meta.scss';
 
 interface WorkspaceHomeHeaderProps {
   workspace: WorkspaceType,
