@@ -307,9 +307,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("name", getClass().getSimpleName() + ':' + testName.getMethodName());
     capabilities.setCapability("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
     capabilities.setCapability("build", getProjectVersion());
-//    capabilities.setCapability("video-upload-on-pass", false);
-//    capabilities.setCapability("capture-html", true);
-//    capabilities.setCapability("timeZone", "Universal");
+    capabilities.setCapability("video-upload-on-pass", false);
+    capabilities.setCapability("capture-html", true);
+    capabilities.setCapability("timeZone", "Universal");
     capabilities.setCapability("seleniumVersion", System.getProperty("it.selenium.version"));
     
     if (!StringUtils.isBlank(browserResolution)) {
@@ -317,15 +317,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
  
     if (getSauceTunnelId() != null) {
-      capabilities.setCapability("tunnelIdentifier", getSauceTunnelId());
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
-//    
-//    DesiredCapabilities caps = DesiredCapabilities.chrome();
-//    caps.setCapability("platform", "Windows 10");
-//    caps.setCapability("version", "69.0");
-//    caps.setCapability("screenResolution", "1280x1024");
-//    WebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), caps);    
+    
     RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
     
     remoteWebDriver.setFileDetector(new LocalFileDetector());
