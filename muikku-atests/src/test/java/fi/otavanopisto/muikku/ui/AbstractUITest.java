@@ -317,9 +317,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       capabilities.setCapability("screenResolution", browserResolution);
     }
  
-//    if (getSauceTunnelId() != null) {
-//      capabilities.setCapability("tunnelIdentifier", getSauceTunnelId());
-//    }
+    if (getSauceTunnelId() != null) {
+      capabilities.setCapability("tunnelIdentifier", getSauceTunnelId());
+    }
 //    
 //    DesiredCapabilities caps = DesiredCapabilities.chrome();
 //    caps.setCapability("platform", "Windows 10");
