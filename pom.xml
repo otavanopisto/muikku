@@ -81,6 +81,7 @@
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
+    <module>matriculation-plugin</module>
 	</modules>
 
 	<properties>

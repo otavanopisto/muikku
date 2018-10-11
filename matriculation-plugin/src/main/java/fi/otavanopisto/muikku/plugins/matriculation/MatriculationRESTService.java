@@ -13,12 +13,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.matriculation.rest.MatriculationExamAttendance;
-import fi.otavanopisto.muikku.plugins.matriculation.rest.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
+import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.EducationTypeMappingNotSetException;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsLister;
-import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -155,6 +154,7 @@ public class MatriculationRESTService {
       resultAttendance.setRepeat(attendance.getRepeat());
       resultAttendance.setTerm(attendance.getTerm());
       resultAttendance.setStatus(attendance.getStatus());
+      resultAttendance.setYear(attendance.getYear());
       attendances.add(resultAttendance);
     }
     schoolDataEntity.setAttendances(attendances);

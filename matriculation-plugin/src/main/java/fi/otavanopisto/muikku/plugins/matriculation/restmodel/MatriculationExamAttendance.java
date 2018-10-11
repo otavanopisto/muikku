@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.matriculation.rest;
+package fi.otavanopisto.muikku.plugins.matriculation.restmodel;
 public class MatriculationExamAttendance {
 
   public String getSubject() {

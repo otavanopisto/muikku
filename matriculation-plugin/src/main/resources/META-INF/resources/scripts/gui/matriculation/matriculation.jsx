@@ -32,7 +32,7 @@ const SubjectSelect = ({i, value, onChange}) => (
       <option value="ET">Elämänkatsomustieto</option>
       <option value="YO">Yhteiskuntaoppi</option>
       <option value="KE">Kemia</option>
-      <option value="GE">Geologia</option>
+      <option value="GE">Maantiede</option>
       <option value="TT">Terveystieto</option>
       <option value="ENC">Englanti, C-taso</option>
       <option value="RAC">Ranska, C-taso</option>
@@ -113,7 +113,7 @@ const GradeSelect = ({i, value, onChange}) => (
       <option value="MAGNA_CUM_LAUDE_APPROBATUR">M (Magna cum laude approbatur)</option>
       <option value="EXIMIA_CUM_LAUDE_APPROBATUR">E (Eximia cum laude approbatur)</option>
       <option value="LAUDATUR">L (Laudatur)</option>
-      <option value="null">Ei vielä tiedossa</option>
+      <option value="UNKNOWN">Ei vielä tiedossa</option>
     </select>
   </React.Fragment>
 );
@@ -126,6 +126,7 @@ const Page2 = (props) => (
         <div className="pure-u-1-2">
           <label>Nimi</label>
           <input className="pure-u-23-24" 
+            readOnly
             type="text" 
             onChange={(e) => {props.setName(e.target.value);}}
             value={props.name}/>
@@ -133,6 +134,7 @@ const Page2 = (props) => (
         <div className="pure-u-1-2">
           <label>Henkilötunnus</label>
           <input className="pure-u-1" 
+            readOnly
             type="text" 
             onChange={(e) => {props.setSsn(e.target.value);}}
             value={props.ssn} />
@@ -140,6 +142,7 @@ const Page2 = (props) => (
         <div className="pure-u-1-2">
           <label>Sähköpostiosoite</label>
           <input className="pure-u-23-24" 
+            readOnly
             type="text" 
             onChange={(e) => {props.setEmail(e.target.value);}}
             value={props.email} />
@@ -147,6 +150,7 @@ const Page2 = (props) => (
         <div className="pure-u-1-2">
           <label>Puhelinnumero</label>
           <input className="pure-u-1" 
+            readOnly
             type="text" 
             onChange={(e) => {props.setPhone(e.target.value);}}
             value={props.phone} />
@@ -154,6 +158,7 @@ const Page2 = (props) => (
         <div className="pure-u-1-1">
           <label>Osoite</label>
           <input className="pure-u-1-1" 
+            readOnly
             type="text" 
             onChange={(e) => {props.setAddress(e.target.value);}}
             value={props.address} />
@@ -161,6 +166,7 @@ const Page2 = (props) => (
         <div className="pure-u-1-2">
           <label>Postinumero</label>
           <input className="pure-u-23-24" 
+            readOnly
             type="text" 
             onChange={(e) => {props.setPostalCode(e.target.value);}}
             value={props.postalCode} />
@@ -168,22 +174,17 @@ const Page2 = (props) => (
         <div className="pure-u-1-2">
           <label>Postitoimipaikka</label>
           <input className="pure-u-1" 
+            readOnly
             type="text" 
-            onChange={(e) => {props.setCity(e.target.value);}}
-            value={props.city} />
+            onChange={(e) => {props.setLocality(e.target.value);}}
+            value={props.locality} />
         </div>
       </div>
     </fieldset>
     <fieldset>
       <legend>Opiskelijatiedot</legend>
       <div>
-        <div className="pure-u-1-2">
-          <label>Oppijanumero</label>
-          <input className="pure-u-23-24"
-            type="text" 
-            value="12345" />
-        </div>
-        <div className="pure-u-1-2">
+        <div className="pure-u-1-1">
           <label>Ohjaaja</label>
           <input className="pure-u-1"
             type="text"
@@ -202,10 +203,10 @@ const Page2 = (props) => (
           { props.enrollAs === "UPPERSECONDARY" ?
           <React.Fragment>
             <label>Pakollisia kursseja suoritettuna</label>
-            <input className="pure-u-1" type="text" value={props.mandatoryCourses} />
+            <input className="pure-u-1" type="text" readOnly value={props.mandatoryCourses} />
           </React.Fragment> : null }
         </div>
-        {props.enrollAs === "UPPERSECONDARY" && props.mandatoryCourses < 47 ?
+        {props.enrollAs === "UPPERSECONDARY" && props.mandatoryCourses < 44 ?
           <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
            Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Jos haluat
            silti ilmoittautua ylioppilaskokeeseen, ota yhteyttä ohjaajaan.
@@ -308,19 +309,22 @@ const Page2 = (props) => (
         <div className="pure-u-1-4">
           <TermSelect 
           i={i} 
+          onChange={({target}) => {props.modifyPlannedAttendance(i, "term", target.value);}}
           value={attendance.term} 
           />
         </div>
         <div className="pure-u-1-4">
           <SubjectSelect 
-          i={i} 
-          value={attendance.subject} 
+            i={i} 
+            onChange={({target}) => {props.modifyPlannedAttendance(i, "subject", target.value);}}
+            value={attendance.subject} 
           />
         </div>
         <div className="pure-u-1-4">
           <MandatorySelect 
-          i={i} 
-          value={attendance.mandatory} 
+            i={i} 
+            onChange={({target}) => {props.modifyPlannedAttendance(i, "mandatory", target.value);}}
+            value={attendance.mandatory} 
           />
         </div>
         <div className="pure-u-1-4">
@@ -355,18 +359,20 @@ const Page3 = (props) => (
       <div className="pure-g">
         <div className="pure-u-1-2">
           <label>Suorituspaikka</label>
-          <select onChange={(ev) => {props.changeLoc(ev.target.value);}}
-                  value={props.location}
+          <select onChange={(ev) => {props.setLocation(ev.target.value);}}
+                  value={props.location == 'Otavan Opisto'
+                         ? 'Otavan Opisto'
+                         : ''}
                   className="pure-u-23-24">
             <option>Otavan Opisto</option>
-            <option>Muu</option>
+            <option value="">Muu</option>
           </select>
         </div>
         <div className="pure-u-1-2">
           {props.location !== "Otavan Opisto" ?
           <React.Fragment>
             <label>&nbsp;</label>
-            <input type="text" placeholder="Kirjoita tähän oppilaitoksen nimi" className="pure-u-1" />
+            <input type="text" placeholder="Kirjoita tähän oppilaitoksen nimi" value={props.location} onChange={(ev) => {props.setLocation(ev.target.value);}}className="pure-u-1" />
           </React.Fragment>: null}
         </div>
         {props.location !== "Otavan Opisto" ?
@@ -376,22 +382,29 @@ const Page3 = (props) => (
           </div>: null}
         <div className="pure-u-1-1">
           <label>Lisätietoa ohjaajalle</label>
-          <textarea rows={5} className="pure-u-1-1" />
+          <textarea
+            value={props.message}
+            onChange={({target}) => {props.setMessage(target.value);}}
+            rows={5}
+            className="pure-u-1-1" />
         </div>
         <div className="pure-u-1-1">
           <label>Julkaisulupa</label>
-          <select className="pure-u-1">
-            <option>Haluan nimeni julkaistavan valmistujalistauksissa</option>
-            <option>En halua nimeäni julkaistavan valmistujaislistauksissa</option>
+          <select
+            value={props.canPublishName}
+            onChange={({target}) => {props.setCanPublishName(target.value);}}
+            className="pure-u-1">
+            <option value="true">Haluan nimeni julkaistavan valmistujalistauksissa</option>
+            <option value="false">En halua nimeäni julkaistavan valmistujaislistauksissa</option>
           </select>
         </div>
         <div className="pure-u-1-2">
           <label>Nimi</label>
-          <input readOnly={true} className="pure-u-23-24" type="text" value="Olli Oppija" />
+          <input readOnly={true} className="pure-u-23-24" type="text" value={props.name} />
         </div>
         <div className="pure-u-1-2">
           <label>Päivämäärä</label>
-          <input readOnly={true} className="pure-u-1" type="text" value="13.8.2018" />
+          <input readOnly={true} className="pure-u-1" type="text" value={props.date} />
         </div>
       </div>
     </fieldset>
@@ -417,6 +430,7 @@ class App extends React.Component {
 
   constructor() {
     super({});
+    const date = new Date();
     this.state = {
       page: 1,
       name: "",
@@ -436,20 +450,20 @@ class App extends React.Component {
       initialized: false,
       enrolledAttendances: [],
       plannedAttendances: [],
-      finishedAttendances: []
+      finishedAttendances: [],
+      canPublishName: "true",
+      date: date.getDate() + "."
+            + date.getMonth() + "."
+            + date.getFullYear()
     };
   }
 
   componentDidMount() {
     fetch(`/rest/matriculation/initialData/${MUIKKU_LOGGED_USER}`)
       .then((response) => {
-        console.log("gotten response");
-        console.log(response);
         return response.json();
       })
       .then((data) => {
-        console.log("data");
-        console.log(data);
         this.setState(data);
         this.setState({initialized: true});
       });
@@ -567,14 +581,14 @@ class App extends React.Component {
           phone: this.state.phone,
           address: this.state.address,
           postalCode: this.state.postalCode,
-          city: this.state.city,
-          nationalStudentNumber: this.state.nationalStudentNumber,
+          city: this.state.locality,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
           numMandatoryCourses: this.state.numMandatoryCourses,
           location: this.state.location,
           message: this.state.message,
           studentId: this.state.studentId,
+          canPublishName: this.state.canPublishName === 'true',
           attendances: ([
             ...this.state.enrolledAttendances,
             ...this.state.plannedAttendances,
@@ -624,7 +638,7 @@ class App extends React.Component {
                   setPhone={(value) => { this.setState({phone : value}); }}
                   setAddress={(value) => { this.setState({address : value}); }}
                   setPostalCode={(value) => { this.setState({postalCode : value}); }}
-                  setCity={(value) => { this.setState({city : value}); }}
+                  setLocality={(value) => { this.setState({locality : value}); }}
                   setNationalStudentNumber={(value) => { this.setState({nationalStudentNumber : value}); }}
                   setGuider={(value) => { this.setState({guider : value}); }}
                   setEnrollAs={(value) => { this.setState({enrollAs : value}); }}
@@ -646,8 +660,9 @@ class App extends React.Component {
               : null }
           { this.state.page === 3
               ? <Page3 {...this.state}
-                location={this.state.location} 
                 setLocation={(location) => {this.setState({location});}}
+                setMessage={(message) => {this.setState({message});}}
+                setCanPublishName={(canPublishName) => {this.setState({canPublishName});}}
                 submit={() => {this.submit();}}
                 setPage={(page) => {this.setState({page});}}
                 />

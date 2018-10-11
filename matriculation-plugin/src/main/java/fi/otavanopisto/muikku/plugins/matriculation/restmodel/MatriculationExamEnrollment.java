@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.matriculation.rest;
+package fi.otavanopisto.muikku.plugins.matriculation.restmodel;
 
 import java.util.List;
 

@@ -25,3 +25,7 @@
     </div>
   </div>
 {/files}
+
+{?matriculation}
+<a href="/jsf/matriculation">Ylioppilaskirjoituksiin ilmoittautuminen</a>
+{/matriculation} 

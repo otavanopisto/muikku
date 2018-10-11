@@ -72,7 +72,7 @@ var SubjectSelect = function SubjectSelect(_ref) {
     value: "KE"
   }, "Kemia"), React.createElement("option", {
     value: "GE"
-  }, "Geologia"), React.createElement("option", {
+  }, "Maantiede"), React.createElement("option", {
     value: "TT"
   }, "Terveystieto"), React.createElement("option", {
     value: "ENC"
@@ -189,7 +189,7 @@ var GradeSelect = function GradeSelect(_ref5) {
   }, "E (Eximia cum laude approbatur)"), React.createElement("option", {
     value: "LAUDATUR"
   }, "L (Laudatur)"), React.createElement("option", {
-    value: "null"
+    value: "UNKNOWN"
   }, "Ei viel\xE4 tiedossa")));
 };
 
@@ -200,6 +200,7 @@ var Page2 = function Page2(props) {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "Nimi"), React.createElement("input", {
     className: "pure-u-23-24",
+    readOnly: true,
     type: "text",
     onChange: function onChange(e) {
       props.setName(e.target.value);
@@ -209,6 +210,7 @@ var Page2 = function Page2(props) {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "Henkil\xF6tunnus"), React.createElement("input", {
     className: "pure-u-1",
+    readOnly: true,
     type: "text",
     onChange: function onChange(e) {
       props.setSsn(e.target.value);
@@ -218,6 +220,7 @@ var Page2 = function Page2(props) {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "S\xE4hk\xF6postiosoite"), React.createElement("input", {
     className: "pure-u-23-24",
+    readOnly: true,
     type: "text",
     onChange: function onChange(e) {
       props.setEmail(e.target.value);
@@ -227,6 +230,7 @@ var Page2 = function Page2(props) {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "Puhelinnumero"), React.createElement("input", {
     className: "pure-u-1",
+    readOnly: true,
     type: "text",
     onChange: function onChange(e) {
       props.setPhone(e.target.value);
@@ -236,6 +240,7 @@ var Page2 = function Page2(props) {
     className: "pure-u-1-1"
   }, React.createElement("label", null, "Osoite"), React.createElement("input", {
     className: "pure-u-1-1",
+    readOnly: true,
     type: "text",
     onChange: function onChange(e) {
       props.setAddress(e.target.value);
@@ -245,6 +250,7 @@ var Page2 = function Page2(props) {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "Postinumero"), React.createElement("input", {
     className: "pure-u-23-24",
+    readOnly: true,
     type: "text",
     onChange: function onChange(e) {
       props.setPostalCode(e.target.value);
@@ -254,19 +260,14 @@ var Page2 = function Page2(props) {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "Postitoimipaikka"), React.createElement("input", {
     className: "pure-u-1",
+    readOnly: true,
     type: "text",
     onChange: function onChange(e) {
-      props.setCity(e.target.value);
+      props.setLocality(e.target.value);
     },
-    value: props.city
+    value: props.locality
   })))), React.createElement("fieldset", null, React.createElement("legend", null, "Opiskelijatiedot"), React.createElement("div", null, React.createElement("div", {
-    className: "pure-u-1-2"
-  }, React.createElement("label", null, "Oppijanumero"), React.createElement("input", {
-    className: "pure-u-23-24",
-    type: "text",
-    value: "12345"
-  })), React.createElement("div", {
-    className: "pure-u-1-2"
+    className: "pure-u-1-1"
   }, React.createElement("label", null, "Ohjaaja"), React.createElement("input", {
     className: "pure-u-1",
     type: "text",
@@ -288,8 +289,9 @@ var Page2 = function Page2(props) {
   }, props.enrollAs === "UPPERSECONDARY" ? React.createElement(React.Fragment, null, React.createElement("label", null, "Pakollisia kursseja suoritettuna"), React.createElement("input", {
     className: "pure-u-1",
     type: "text",
+    readOnly: true,
     value: props.mandatoryCourses
-  })) : null), props.enrollAs === "UPPERSECONDARY" ? React.createElement("div", {
+  })) : null), props.enrollAs === "UPPERSECONDARY" && props.mandatoryCourses < 44 ? React.createElement("div", {
     style: {
       margin: "1rem",
       padding: "0.5rem",
@@ -415,16 +417,28 @@ var Page2 = function Page2(props) {
       className: "pure-u-1-4"
     }, React.createElement(TermSelect, {
       i: i,
+      onChange: function onChange(_ref13) {
+        var target = _ref13.target;
+        props.modifyPlannedAttendance(i, "term", target.value);
+      },
       value: attendance.term
     })), React.createElement("div", {
       className: "pure-u-1-4"
     }, React.createElement(SubjectSelect, {
       i: i,
+      onChange: function onChange(_ref14) {
+        var target = _ref14.target;
+        props.modifyPlannedAttendance(i, "subject", target.value);
+      },
       value: attendance.subject
     })), React.createElement("div", {
       className: "pure-u-1-4"
     }, React.createElement(MandatorySelect, {
       i: i,
+      onChange: function onChange(_ref15) {
+        var target = _ref15.target;
+        props.modifyPlannedAttendance(i, "mandatory", target.value);
+      },
       value: attendance.mandatory
     })), React.createElement("div", {
       className: "pure-u-1-4"
@@ -447,7 +461,7 @@ var Page2 = function Page2(props) {
       border: "1px solid red",
       backgroundColor: "pink"
     }
-  }, "Olet valinnut aineet, jotka j\xE4rjestet\xE4\xE4n samana p\xE4iv\xE4n\xE4. Jos siit\xE4 huolimatta haluat osallistua n\xE4ihin aineisiin, ota yhteytt\xE4 ohjaajaan.") : null, React.createElement("a", {
+  }, "Olet valinnut aineet, joita ei voi valita samanaikaisesti. Jos siit\xE4 huolimatta haluat osallistua n\xE4ihin aineisiin, ota yhteytt\xE4 ohjaajaan.") : null, React.createElement("a", {
     href: "javascript:void(0)",
     onClick: function onClick() {
       props.setPage(1);
@@ -473,15 +487,21 @@ var Page3 = function Page3(props) {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "Suorituspaikka"), React.createElement("select", {
     onChange: function onChange(ev) {
-      props.changeLoc(ev.target.value);
+      props.setLocation(ev.target.value);
     },
-    value: props.location,
+    value: props.location == 'Otavan Opisto' ? 'Otavan Opisto' : '',
     className: "pure-u-23-24"
-  }, React.createElement("option", null, "Otavan Opisto"), React.createElement("option", null, "Muu"))), React.createElement("div", {
+  }, React.createElement("option", null, "Otavan Opisto"), React.createElement("option", {
+    value: ""
+  }, "Muu"))), React.createElement("div", {
     className: "pure-u-1-2"
   }, props.location !== "Otavan Opisto" ? React.createElement(React.Fragment, null, React.createElement("label", null, "\xA0"), React.createElement("input", {
     type: "text",
     placeholder: "Kirjoita t\xE4h\xE4n oppilaitoksen nimi",
+    value: props.location,
+    onChange: function onChange(ev) {
+      props.setLocation(ev.target.value);
+    },
     className: "pure-u-1"
   })) : null), props.location !== "Otavan Opisto" ? React.createElement("div", {
     style: {
@@ -494,26 +514,40 @@ var Page3 = function Page3(props) {
   }, "Jos haluat suorittaa kokeen muualla, siit\xE4 on sovittava ensin kyseisen oppilaitoksen kanssa.") : null, React.createElement("div", {
     className: "pure-u-1-1"
   }, React.createElement("label", null, "Lis\xE4tietoa ohjaajalle"), React.createElement("textarea", {
+    value: props.message,
+    onChange: function onChange(_ref16) {
+      var target = _ref16.target;
+      props.setMessage(target.value);
+    },
     rows: 5,
     className: "pure-u-1-1"
   })), React.createElement("div", {
     className: "pure-u-1-1"
   }, React.createElement("label", null, "Julkaisulupa"), React.createElement("select", {
+    value: props.canPublishName,
+    onChange: function onChange(_ref17) {
+      var target = _ref17.target;
+      props.setCanPublishName(target.value);
+    },
     className: "pure-u-1"
-  }, React.createElement("option", null, "Haluan nimeni julkaistavan valmistujalistauksissa"), React.createElement("option", null, "En halua nime\xE4ni julkaistavan valmistujaislistauksissa"))), React.createElement("div", {
+  }, React.createElement("option", {
+    value: "true"
+  }, "Haluan nimeni julkaistavan valmistujalistauksissa"), React.createElement("option", {
+    value: "false"
+  }, "En halua nime\xE4ni julkaistavan valmistujaislistauksissa"))), React.createElement("div", {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "Nimi"), React.createElement("input", {
     readOnly: true,
     className: "pure-u-23-24",
     type: "text",
-    value: "Olli Oppija"
+    value: props.name
   })), React.createElement("div", {
     className: "pure-u-1-2"
   }, React.createElement("label", null, "P\xE4iv\xE4m\xE4\xE4r\xE4"), React.createElement("input", {
     readOnly: true,
     className: "pure-u-1",
     type: "text",
-    value: "13.8.2018"
+    value: props.date
   })))), React.createElement("a", {
     href: "javascript:void(0)",
     onClick: function onClick() {
@@ -532,8 +566,8 @@ var Page3 = function Page3(props) {
   }, "Hyv\xE4ksy ilmoittautuminen"));
 };
 
-var Page4 = function Page4(_ref13) {
-  _objectDestructuringEmpty(_ref13);
+var Page4 = function Page4(_ref18) {
+  _objectDestructuringEmpty(_ref18);
 
   return React.createElement("div", null, React.createElement("p", null, "Ilmoittautumisesi ylioppilaskirjoituksiin on l\xE4hetetty onnistuneesti. Saat lomakkeesta kopion s\xE4hk\xF6postiisi."), React.createElement("p", null, "Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteytt\xE4."));
 };
@@ -549,6 +583,7 @@ function (_React$Component) {
     _classCallCheck(this, App);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(App).call(this, {}));
+    var date = new Date();
     _this.state = {
       page: 1,
       name: "",
@@ -568,7 +603,9 @@ function (_React$Component) {
       initialized: false,
       enrolledAttendances: [],
       plannedAttendances: [],
-      finishedAttendances: []
+      finishedAttendances: [],
+      canPublishName: "true",
+      date: date.getDate() + "." + date.getMonth() + "." + date.getFullYear()
     };
     return _this;
   }
@@ -579,13 +616,8 @@ function (_React$Component) {
       var _this2 = this;
 
       fetch("/rest/matriculation/initialData/".concat(MUIKKU_LOGGED_USER)).then(function (response) {
-        console.log("gotten response");
-        console.log(response);
         return response.json();
       }).then(function (data) {
-        console.log("data");
-        console.log(data);
-
         _this2.setState(data);
 
         _this2.setState({
@@ -752,14 +784,14 @@ function (_React$Component) {
           phone: this.state.phone,
           address: this.state.address,
           postalCode: this.state.postalCode,
-          city: this.state.city,
-          nationalStudentNumber: this.state.nationalStudentNumber,
+          city: this.state.locality,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
           numMandatoryCourses: this.state.numMandatoryCourses,
           location: this.state.location,
           message: this.state.message,
           studentId: this.state.studentId,
+          canPublishName: this.state.canPublishName === 'true',
           attendances: _toConsumableArray(this.state.enrolledAttendances).concat(_toConsumableArray(this.state.plannedAttendances), _toConsumableArray(this.state.finishedAttendances)).map(function (attendance) {
             return {
               subject: attendance.subject,
@@ -838,9 +870,9 @@ function (_React$Component) {
             postalCode: value
           });
         },
-        setCity: function setCity(value) {
+        setLocality: function setLocality(value) {
           _this3.setState({
-            city: value
+            locality: value
           });
         },
         setNationalStudentNumber: function setNationalStudentNumber(value) {
@@ -903,10 +935,19 @@ function (_React$Component) {
         },
         conflictingAttendances: this.isConflictingAttendances()
       })) : null, this.state.page === 3 ? React.createElement(Page3, _extends({}, this.state, {
-        location: this.state.location,
         setLocation: function setLocation(location) {
           _this3.setState({
             location: location
+          });
+        },
+        setMessage: function setMessage(message) {
+          _this3.setState({
+            message: message
+          });
+        },
+        setCanPublishName: function setCanPublishName(canPublishName) {
+          _this3.setState({
+            canPublishName: canPublishName
           });
         },
         submit: function submit() {
