@@ -33,6 +33,8 @@ import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
@@ -132,7 +134,10 @@ public class Evaluation2RESTService {
 
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
-
+  
+  @Inject
+  private ActivityLogController activityLogController;
+  
   @DELETE
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/evaluationdata")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -665,7 +670,10 @@ public class Evaluation2RESTService {
     if (workspaceAssessment != null) {
       gradingController.deleteWorkspaceAssessment(workspaceIdentifier, userIdentifier, workspaceAssessment.getIdentifier());
     }
-
+    
+    //Log SupplementationRequest event
+    activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.EVALUATION_GOTINCOMPLETED, workspaceEntityId, null);
+    
     // SupplementationRequest to RestSupplementationRequest
     
     RestSupplementationRequest restSupplementationRequest = new RestSupplementationRequest(
@@ -734,7 +742,7 @@ public class Evaluation2RESTService {
     if (workspaceMaterialEvaluation != null) {
       evaluationController.deleteWorkspaceMaterialEvaluation(workspaceMaterialEvaluation);
     }
-
+    
     // SupplementationRequest to RestSupplementationRequest
     
     RestSupplementationRequest restSupplementationRequest = new RestSupplementationRequest(
@@ -828,6 +836,14 @@ public class Evaluation2RESTService {
     // Notification
     
     sendAssessmentNotification(workspaceEntity, workspaceAssessment, assessingUserEntity, userEntity, workspace, gradingScaleItem.getName());
+    
+    // Log workspace assessment event
+    if (gradingScaleItem.isPassingGrade()) {
+      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.EVALUATION_GOTPASSED, workspaceEntity.getId(), null);
+    }
+    else {
+      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.EVALUATION_GOTFAILED, workspaceEntity.getId(), null);
+    }
     
     // Back to rest
     

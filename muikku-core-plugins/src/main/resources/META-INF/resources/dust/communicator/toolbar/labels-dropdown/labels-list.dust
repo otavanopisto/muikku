@@ -1,0 +1,11 @@
+{#labels}
+  <div class="dropdown-item">
+    <a data-index="{$idx}" data-id="{id}"
+      class="communicator link link-full communicator-link-label communicator-toolbar-labels-dropdown-interact-toggle-label">
+      <span class="icon icon-tag" {?color}style="color:{@color color="{color}"/}"{/color}></span>
+      <span class="text">
+        {name}
+      </span>
+    </a>
+  </div>
+{/labels}

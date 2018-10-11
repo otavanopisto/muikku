@@ -191,7 +191,7 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>plugin</artifactId>
     </dependency>
-
+    
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>rest</artifactId>
@@ -276,17 +276,6 @@
     </profile>
 
     <profile>
-      <id>google-calendar-plugin</id>
-      <dependencies>
-        <dependency>
-          <groupId>fi.otavanopisto.muikku</groupId>
-          <artifactId>google-calendar-plugin</artifactId>
-          <version>1.1.105-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
       <id>atests-plugin</id>
       <dependencies>
         <dependency>
@@ -325,17 +314,6 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>facebook-oauth-plugin</artifactId>
-          <version>1.1.105-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>calendar-plugin</id>
-      <dependencies>
-        <dependency>
-          <groupId>fi.otavanopisto.muikku</groupId>
-          <artifactId>calendar-plugin</artifactId>
           <version>1.1.105-SNAPSHOT</version>
         </dependency>
       </dependencies>

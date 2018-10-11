@@ -7,7 +7,7 @@ export deploy_snapshot=false
 export deploy_release=false
 
 if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "devel" ]]; then
-  export test_suite="phantom"
+  export test_suite="headless"
   export run_tests="true"
 fi;
 

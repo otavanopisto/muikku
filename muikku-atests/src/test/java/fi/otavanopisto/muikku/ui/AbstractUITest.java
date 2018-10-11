@@ -30,6 +30,7 @@ import org.junit.runners.model.Statement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
@@ -41,8 +42,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -80,8 +79,10 @@ import fi.otavanopisto.muikku.atests.StudentFlag;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
+import static java.lang.Math.toIntExact;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -168,8 +169,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       return TestEnvironments.Browser.SAFARI;
     case "chrome":
       return TestEnvironments.Browser.CHROME;
-    case "phantomjs":
-      return TestEnvironments.Browser.PHANTOMJS;
+    case "chrome_headless":
+      return TestEnvironments.Browser.CHROME_HEADLESS;
     default:
       return null;
     } 
@@ -310,6 +311,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return remoteWebDriver; 
 
   }
+
+  protected WebDriver createLocalDriver() {
+    switch (getBrowser()) {
+      case "chrome":
+        return createChromeDriver();
+      case "chrome_headless":
+        return createChromeHeadlessDriver();
+      case "firefox":
+        return createFirefoxDriver();
+    }
+    
+    throw new RuntimeException(String.format("Unknown browser %s", getBrowser()));
+  }
   
   protected RemoteWebDriver createChromeDriver() {
     ChromeOptions options = new ChromeOptions();
@@ -326,46 +340,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return firefoxDriver;
   }
   
-  public static List<String[]> getDefaultSauceBrowsers() {
-    return Arrays.asList(new String[][] {
-    // ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
-    // ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
-    ((String[]) new String[] { "chrome", "41.0", "Linux", null }) });
-  }
-  
-  public static List<String[]> getAllSauceBrowsers() {
-    return Arrays.asList(new String[][] {
-      ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10", "1280x1024"}),
-      ((String[]) new String[] { "internet explorer", "11.0", "Windows 10", "1280x1024"}),
-      ((String[]) new String[] { "internet explorer", "10.0", "Windows 8", "1280x1024"}),
-      ((String[]) new String[] { "firefox", "41.0", "Windows 8.1", "1280x1024"}),
-      ((String[]) new String[] { "safari", "8.0", "OS X 10.10", "1280x1024" }),
-      ((String[]) new String[] { "safari", "8.1", "OS X 10.11", null }),
-      ((String[]) new String[] { "chrome", "45.0", "Linux", null }) 
-      });
-  }
-  
+  protected WebDriver createChromeHeadlessDriver() {
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.addArguments("--headless");
+    chromeOptions.addArguments("--disable-gpu");
 
-  protected WebDriver createLocalDriver() {
-    switch (getBrowser()) {
-      case "chrome":
-        return createChromeDriver();
-      case "phantomjs":
-        return createPhantomJsDriver();
-      case "firefox":
-        return createFirefoxDriver();
+    WebDriver driver = new ChromeDriver(chromeOptions);
+    if(getBrowserDimensions() != null) {
+      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("length"))));      
+    }else {
+      driver.manage().window().setSize(new Dimension(1280, 1024));
     }
-    
-    throw new RuntimeException(String.format("Unknown browser %s", getBrowser()));
-  }
-  
-  protected WebDriver createPhantomJsDriver() {
-    DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
-    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, ".phantomjs/bin/phantomjs");
-    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "Accept-Language", "fi_FI");
-    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] { "--ignore-ssl-errors=true", "--webdriver-loglevel=NONE", "--load-images=false" } );
-    PhantomJSDriver driver = new PhantomJSDriver(desiredCapabilities);
-    driver.manage().window().setSize(new Dimension(1280, 1024));
     return driver;
   }
   
@@ -441,7 +426,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent(selector);
     waitForVisible(selector);
   }
-   
+  
+  protected void refresh() {
+    getWebDriver().navigate().refresh();
+  }
+  
   protected void takeScreenshot() throws WebDriverException, IOException {
     takeScreenshot(new File("target", testName.getMethodName() + ".png"));
   }
@@ -595,6 +584,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     click(selector);
   }
   
+  protected void scrollToEnd() {
+    ((JavascriptExecutor) getWebDriver()).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+  }
+  
   protected void waitScrollAndClick(String selector) {
     waitForPresent(selector);
     scrollIntoView(selector);
@@ -614,6 +607,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     selectField.selectByValue(value);
   }
   
+  protected void selectFinnishLocale() {
+    waitForPresent("a.button-pill--current-language>span");
+    String localeText = getElementText("a.button-pill--current-language>span");
+    if(localeText.equalsIgnoreCase("EN")) {
+      waitAndClick(".button-pill--current-language");
+      waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
+      waitUntilContentChanged("a.button-pill--current-language>span", "EN");
+    }  
+  }
+  
+  protected String getElementText(String selector) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    return element.getText();
+  }
+  
   protected void assertText(String selector, String text) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(text, element.getText());
@@ -624,7 +632,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
   }
-
+  
+  protected void assertTextStartsWith(String selector, String text) {
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertTrue(StringUtils.startsWithIgnoreCase(actual, text));
+  }
+  
   protected void assertNotTextIgnoreCase(String selector, String text) {
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertNotEquals(text, actual);
@@ -641,7 +654,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void clearElement(String selector) {
     getWebDriver().findElement(By.cssSelector(selector)).clear();
   }
-  
+
+  protected void selectAllAndClear(String selector) {
+    getWebDriver().findElement(By.cssSelector(selector)).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+    getWebDriver().findElement(By.cssSelector(selector)).sendKeys(Keys.BACK_SPACE);
+  }
   
   protected void waitUntilTextRemovedFromElement(final String selector, String textToRemove) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
@@ -737,6 +754,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
   
+  protected void clickOnBullshitElement(String selector) {
+    Actions action = new Actions(getWebDriver());
+    action.moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().build().perform();
+  }
+
+  
   protected boolean waitUntilElementCount(final String selector, final int count) {
     WebDriver driver = getWebDriver();
     return new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
@@ -799,13 +822,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
-    navigate("/login?authSourceId=1", true);
-    waitForPresent("main.content");
+    navigate("/login?authSourceId=1", false);
+    waitForPresentAndVisible(".navbar .button-pill--profile");
   }
   
   protected void login() {
-    navigate("/login?authSourceId=1", true);
-    waitForPresent(".logged-user");
+    navigate("/login?authSourceId=1", false);
+    waitForPresentAndVisible(".navbar .button-pill--profile");
   }
   
   protected void loginStudent1() throws JsonProcessingException, Exception {
@@ -816,7 +839,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
     TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", true);
+    navigate("/login?authSourceId=1", false);
     waitForPresent(".index");
   }
   
@@ -828,22 +851,42 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
     webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", true);
+    navigate("/login?authSourceId=1", false);
     waitForPresent(".index");
   }
   
   protected void logout() {
-    navigate("/", true);
-    waitAndClick("a.lu-action-signout");
-    waitForPresent("body");    
+    navigate("/", false);
+    waitAndClick(".navbar .button-pill--profile");
+    waitAndClick("body a.link--profile > span.icon-signout+span");
+    waitForPresent("body");
   }
-  
+  @Deprecated
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
     PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier), name, description);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Workspace payload = new Workspace(null, name, null, "PYRAMUS", identifier, published);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces");
+    
+    response.then()
+      .statusCode(200);
+      
+    Workspace workspace = objectMapper.readValue(response.asString(), Workspace.class);
+    assertNotNull(workspace);
+    assertNotNull(workspace.getId());
+    
+    return workspace;
+  }
+  
+  protected Workspace createWorkspace(Course course, Boolean published) throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    Workspace payload = new Workspace(null, course.getName(), null, "PYRAMUS", String.valueOf(course.getId()), published);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
@@ -989,6 +1032,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
+  protected void cleanUpDiscussions() {
+    asAdmin()
+      .delete("/test/discussion/cleanup")
+      .then()
+      .statusCode(204);
+  }
+  
   protected DiscussionThread createDiscussionThread(Long groupId, Long discussionId, String title, String message, Boolean sticky, Boolean locked) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
@@ -1015,9 +1065,24 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }  
 
+  protected void reindex() {
+    asAdmin().get("/test/reindex").then().statusCode(200);    
+  }
+
+  protected void mockImport() {
+    asAdmin().get("/test/mockimport").then().statusCode(200);    
+  }
+  
   protected void deleteWorkspace(Long id) {
     asAdmin()
       .delete("/test/workspaces/{WORKSPACEID}", id)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void deleteWorkspaces() {
+    asAdmin()
+      .delete("/test/workspaces")
       .then()
       .statusCode(204);
   }
@@ -1185,6 +1250,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return result.getId();
   }
   
+  protected void deleteFlags() {
+    asAdmin()
+      .delete("/test/flags")
+      .then()
+      .statusCode(204);
+  }
+  
   protected void deleteFlag(Long flagId) {
     asAdmin()
       .delete("/test/flags/{FLAGID}", flagId)
@@ -1273,6 +1345,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .perform();
   }
   
+  protected void addToEndCKEditor(String text) {
+      waitForPresentAndVisible(".cke_contents");
+      getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
+      String gotoEnd = Keys.chord(Keys.CONTROL, Keys.END);
+      waitForPresentAndVisible(".cke_contents_ltr");
+      getWebDriver().findElement(By.cssSelector(".cke_contents_ltr")).sendKeys(gotoEnd);
+      sendKeys(".cke_contents_ltr", text);
+      getWebDriver().switchTo().defaultContent();
+  }
+  
   protected void addTextToCKEditor(String text) {
     waitForPresent(".cke_wysiwyg_frame");
     if (StringUtils.equals(getBrowser(), "phantomjs") ) {
@@ -1331,7 +1413,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   enum RoleType {
     PSEUDO, ENVIRONMENT, WORKSPACE
   }
-
+  
   private String sessionId;
   private WebDriver webDriver;
 

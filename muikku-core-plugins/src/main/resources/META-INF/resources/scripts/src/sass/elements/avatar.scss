@@ -1,0 +1,69 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+
+.avatar-container {
+  align-items: center;
+  border-radius: 100%;
+  color: $color-default;
+  display: flex;
+  font-family: $text-font-family;
+  height: $avatar-size;
+  justify-content: center;
+  width: $avatar-size;
+}
+
+
+.avatar {
+  align-items: center;
+  border-radius: 100%;
+  color: $color-environment-link-icon-color;
+  display: flex;
+  font-size: $avatar-font-size;
+  height: $avatar-size;
+  justify-content: center;
+  width: $avatar-size;
+}
+
+.avatar--category-1 {
+  background-color: $color-main-function-category-1;
+}
+
+.avatar--category-2 {
+  background-color: $color-main-function-category-2;
+}
+
+.avatar--category-3 {
+  background-color: $color-main-function-category-3;
+}
+
+.avatar--category-4 {
+  background-color: $color-main-function-category-4;
+}
+
+.avatar--category-5 {
+  background-color: $color-main-function-category-5;
+}
+
+.avatar--category-6 {
+  background-color: $color-main-function-category-6;
+}
+
+.avatar--category-7 {
+  background-color: $color-main-function-category-7;
+}
+
+.avatar--category-8 {
+  background-color: $color-main-function-category-8;
+}
+
+.avatar--category-9 {
+  background-color: $color-main-function-category-9;
+}
+
+.avatar--category-10 {
+  background-color: $color-main-function-category-10;
+}
+

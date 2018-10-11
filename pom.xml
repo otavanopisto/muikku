@@ -55,10 +55,8 @@
     <module>muikku-elastic-search</module>
     <module>muikku-core-plugins-persistence</module>
     <module>muikku-forum-plugin-rest-model</module>
-    <module>muikku-calendar</module>
 		<module>muikku-hsqldb-plugin</module>
 		<module>muikku-google-oauth</module>
-		<module>muikku-google-calendar</module>
 		<module>muikku-facebook-oauth</module>
 		<module>muikku-pyramus-oauth</module>
 		<module>muikku-h2db-plugin</module>
