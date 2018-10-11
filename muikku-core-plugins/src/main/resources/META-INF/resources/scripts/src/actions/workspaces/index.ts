@@ -334,6 +334,7 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(origin
     delete actualOriginal["feeInfo"];
     delete actualOriginal["assessmentRequests"];
     delete actualOriginal["additionalInfo"];
+    delete actualOriginal["staffMembers"];
     
     dispatch({
       type: 'UPDATE_WORKSPACE',
