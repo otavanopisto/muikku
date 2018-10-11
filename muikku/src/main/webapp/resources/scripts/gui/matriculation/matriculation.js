@@ -31,7 +31,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 function _objectDestructuringEmpty(obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); }
 
 var Page1 = function Page1(props) {
-  return React.createElement("div", null, React.createElement("p", null, "T\xE4h\xE4n tulee ohjeita lomakkeen t\xE4ytt\xE4misest\xE4."), React.createElement("p", null, "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit. Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. Donec ultricies nisl ut felis, suspendisse potenti. Lorem ipsum ligula ut hendrerit mollis, ipsum erat vehicula risus, eu suscipit sem libero nec erat. Aliquam erat volutpat. Sed congue augue vitae neque. Nulla consectetuer porttitor pede. Fusce purus morbi tortor magna condimentum vel, placerat id blandit sit amet tortor."), React.createElement("p", null, "Mauris sed libero. Suspendisse facilisis nulla in lacinia laoreet, lorem velit accumsan velit vel mattis libero nisl et sem. Proin interdum maecenas massa turpis sagittis in, interdum non lobortis vitae massa. Quisque purus lectus, posuere eget imperdiet nec sodales id arcu. Vestibulum elit pede dictum eu, viverra non tincidunt eu ligula."), React.createElement("a", {
+  return React.createElement("div", null, React.createElement("p", null, "Ilmoittautuminen ylioppilaskirjoituksiin on nyt auki. Voit ilmoittautua yo-kirjoituksiin, jos t\xE4yt\xE4t abistatuksen. Lue lis\xE4\xE4 tiedotteesta."), React.createElement("p", null, "T\xE4yt\xE4 puuttuvat tiedot huolellisesti ja tarkista lomake ennen sen l\xE4hett\xE4mist\xE4."), React.createElement("p", null, "Ilmoittautuminen sulkeutuu:"), React.createElement("ul", null, React.createElement("li", null, "Kev\xE4\xE4n kirjoitusten osalta 20.11."), React.createElement("li", null, "Syksyn kirjoitusten osalta 20.5.")), React.createElement("p", null, "Jos sinulla on kysytt\xE4v\xE4\xE4, ota yhteytt\xE4 Riikka Turpeiseen (riikka.turpeinen@otavanopisto.fi)"), React.createElement("a", {
     href: "javascript:void(0)",
     onClick: function onClick() {
       props.setPage(2);
@@ -314,17 +314,29 @@ var Page2 = function Page2(props) {
       className: "pure-u-1-4"
     }, React.createElement(SubjectSelect, {
       i: i,
-      value: attendance.subject
+      value: attendance.subject,
+      onChange: function onChange(_ref6) {
+        var target = _ref6.target;
+        props.modifyEnrolledAttendance(i, "subject", target.value);
+      }
     })), React.createElement("div", {
       className: "pure-u-1-4"
     }, React.createElement(MandatorySelect, {
       i: i,
-      value: attendance.mandatory
+      value: attendance.mandatory,
+      onChange: function onChange(_ref7) {
+        var target = _ref7.target;
+        props.modifyEnrolledAttendance(i, "mandatory", target.value);
+      }
     })), React.createElement("div", {
       className: "pure-u-1-4"
     }, React.createElement(RepeatSelect, {
       i: i,
-      value: attendance.repeat
+      value: attendance.repeat,
+      onChange: function onChange(_ref8) {
+        var target = _ref8.target;
+        props.modifyEnrolledAttendance(i, "repeat", target.value);
+      }
     })), React.createElement("div", {
       className: "pure-u-1-4"
     }, React.createElement("button", {
@@ -348,22 +360,38 @@ var Page2 = function Page2(props) {
       className: "pure-u-1-5"
     }, React.createElement(TermSelect, {
       i: i,
-      value: attendance.term
+      value: attendance.term,
+      onChange: function onChange(_ref9) {
+        var target = _ref9.target;
+        props.modifyFinishedAttendance(i, "term", target.value);
+      }
     })), React.createElement("div", {
       className: "pure-u-1-5"
     }, React.createElement(SubjectSelect, {
       i: i,
-      value: attendance.subject
+      value: attendance.subject,
+      onChange: function onChange(_ref10) {
+        var target = _ref10.target;
+        props.modifyFinishedAttendance(i, "subject", target.value);
+      }
     })), React.createElement("div", {
       className: "pure-u-1-5"
     }, React.createElement(MandatorySelect, {
       i: i,
-      value: attendance.mandatory
+      value: attendance.mandatory,
+      onChange: function onChange(_ref11) {
+        var target = _ref11.target;
+        props.modifyFinishedAttendance(i, "mandatory", target.value);
+      }
     })), React.createElement("div", {
       className: "pure-u-1-5"
     }, React.createElement(GradeSelect, {
       i: i,
-      value: attendance.grade
+      value: attendance.grade,
+      onChange: function onChange(_ref12) {
+        var target = _ref12.target;
+        props.modifyFinishedAttendance(i, "grade", target.value);
+      }
     })), React.createElement("div", {
       className: "pure-u-1-5"
     }, React.createElement("button", {
@@ -504,10 +532,10 @@ var Page3 = function Page3(props) {
   }, "Hyv\xE4ksy ilmoittautuminen"));
 };
 
-var Page4 = function Page4(_ref6) {
-  _objectDestructuringEmpty(_ref6);
+var Page4 = function Page4(_ref13) {
+  _objectDestructuringEmpty(_ref13);
 
-  return React.createElement("div", null, "Ilmoittautumisesi on l\xE4hetetty hyv\xE4ksytt\xE4v\xE4ksi. Jos haluat peruuttaa ilmoittautumisesi, ota yhteytt\xE4 XXX.");
+  return React.createElement("div", null, React.createElement("p", null, "Ilmoittautumisesi ylioppilaskirjoituksiin on l\xE4hetetty onnistuneesti. Saat lomakkeesta kopion s\xE4hk\xF6postiisi."), React.createElement("p", null, "Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteytt\xE4."));
 };
 
 var App =
@@ -550,7 +578,7 @@ function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      fetch("/rest/matriculation/initialData/PYRAMUS-STUDENT-4").then(function (response) {
+      fetch("/rest/matriculation/initialData/".concat(MUIKKU_LOGGED_USER)).then(function (response) {
         console.log("gotten response");
         console.log(response);
         return response.json();
@@ -580,6 +608,15 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "modifyEnrolledAttendance",
+    value: function modifyEnrolledAttendance(i, param, value) {
+      var enrolledAttendances = this.state.enrolledAttendances;
+      enrolledAttendances[i][param] = value;
+      this.setState({
+        enrolledAttendances: enrolledAttendances
+      });
+    }
+  }, {
     key: "deleteEnrolledAttendance",
     value: function deleteEnrolledAttendance(i) {
       var enrolledAttendances = this.state.enrolledAttendances;
@@ -604,6 +641,15 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "modifyFinishedAttendance",
+    value: function modifyFinishedAttendance(i, param, value) {
+      var finishedAttendances = this.state.finishedAttendances;
+      finishedAttendances[i][param] = value;
+      this.setState({
+        finishedAttendances: finishedAttendances
+      });
+    }
+  }, {
     key: "deleteFinishedAttendance",
     value: function deleteFinishedAttendance(i) {
       var finishedAttendances = this.state.finishedAttendances;
@@ -622,6 +668,15 @@ function (_React$Component) {
         mandatory: false,
         status: "PLANNED"
       });
+      this.setState({
+        plannedAttendances: plannedAttendances
+      });
+    }
+  }, {
+    key: "modifyPlannedAttendance",
+    value: function modifyPlannedAttendance(i, param, value) {
+      var plannedAttendances = this.state.plannedAttendances;
+      plannedAttendances[i][param] = value;
       this.setState({
         plannedAttendances: plannedAttendances
       });
@@ -836,6 +891,15 @@ function (_React$Component) {
         },
         deleteFinishedAttendance: function deleteFinishedAttendance(i) {
           _this3.deleteFinishedAttendance(i);
+        },
+        modifyEnrolledAttendance: function modifyEnrolledAttendance(i, param, value) {
+          _this3.modifyEnrolledAttendance(i, param, value);
+        },
+        modifyPlannedAttendance: function modifyPlannedAttendance(i, param, value) {
+          _this3.modifyPlannedAttendance(i, param, value);
+        },
+        modifyFinishedAttendance: function modifyFinishedAttendance(i, param, value) {
+          _this3.modifyFinishedAttendance(i, param, value);
         },
         conflictingAttendances: this.isConflictingAttendances()
       })) : null, this.state.page === 3 ? React.createElement(Page3, _extends({}, this.state, {

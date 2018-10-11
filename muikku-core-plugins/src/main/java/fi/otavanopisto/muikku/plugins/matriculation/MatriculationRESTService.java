@@ -29,6 +29,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
 
 @Path("/matriculation")
 @Produces("application/json")
@@ -51,7 +52,7 @@ public class MatriculationRESTService {
   private TranscriptOfRecordsController torController;
   
   @GET
-  @RESTPermitUnimplemented
+  @RESTPermit(MatriculationPermissions.MATRICULATION_GET_EXAM)
   @Path("/currentExam")
   public Response fetchCurrentExam() {
     MatriculationExam exam = matriculationSchoolDataBridge.getMatriculationExam();
@@ -59,7 +60,7 @@ public class MatriculationRESTService {
   }
   
   @GET
-  @RESTPermitUnimplemented
+  @RESTPermit(MatriculationPermissions.MATRICULATION_GET_INITIALDATA)
   @Path("/initialData/{USERID}")
   public Response fetchInitialData(@PathParam("USERID") String userId) {
     MatriculationExamInitialData result = new MatriculationExamInitialData();
@@ -123,9 +124,9 @@ public class MatriculationRESTService {
   }
   
   @POST
-  @RESTPermitUnimplemented
+  @RESTPermit(MatriculationPermissions.MATRICULATION_SEND_ENROLLMENT)
   @Path("/enrollments")
-  public Response postMatriculationForm(MatriculationExamEnrollment enrollment) {
+  public Response sendEnrollment(MatriculationExamEnrollment enrollment) {
     fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment 
       schoolDataEntity = matriculationSchoolDataBridge.createMatriculationExamEnrollment();
     schoolDataEntity.setId(null);

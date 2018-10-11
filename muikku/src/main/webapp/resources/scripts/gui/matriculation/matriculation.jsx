@@ -1,8 +1,13 @@
 const Page1 = (props) => (
   <div>
-    <p>Tähän tulee ohjeita lomakkeen täyttämisestä.</p>
-    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit. Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. Donec ultricies nisl ut felis, suspendisse potenti. Lorem ipsum ligula ut hendrerit mollis, ipsum erat vehicula risus, eu suscipit sem libero nec erat. Aliquam erat volutpat. Sed congue augue vitae neque. Nulla consectetuer porttitor pede. Fusce purus morbi tortor magna condimentum vel, placerat id blandit sit amet tortor.</p>
-    <p>Mauris sed libero. Suspendisse facilisis nulla in lacinia laoreet, lorem velit accumsan velit vel mattis libero nisl et sem. Proin interdum maecenas massa turpis sagittis in, interdum non lobortis vitae massa. Quisque purus lectus, posuere eget imperdiet nec sodales id arcu. Vestibulum elit pede dictum eu, viverra non tincidunt eu ligula.</p>
+    <p>Ilmoittautuminen ylioppilaskirjoituksiin on nyt auki. Voit ilmoittautua yo-kirjoituksiin, jos täytät abistatuksen. Lue lisää tiedotteesta.</p>
+    <p>Täytä puuttuvat tiedot huolellisesti ja tarkista lomake ennen sen lähettämistä.</p>
+    <p>Ilmoittautuminen sulkeutuu:</p>
+    <ul>
+      <li>Kevään kirjoitusten osalta 20.11.</li>
+      <li>Syksyn kirjoitusten osalta 20.5.</li>
+    </ul>
+    <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavanopisto.fi)</p>
     <a href="javascript:void(0)" onClick={() => {props.setPage(2);}} className="pure-button pure-button-primary" >
       Seuraava sivu
     </a>
@@ -200,7 +205,7 @@ const Page2 = (props) => (
             <input className="pure-u-1" type="text" value={props.mandatoryCourses} />
           </React.Fragment> : null }
         </div>
-        {props.enrollAs === "UPPERSECONDARY" ?
+        {props.enrollAs === "UPPERSECONDARY" && props.mandatoryCourses < 47 ?
           <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
            Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Jos haluat
            silti ilmoittautua ylioppilaskokeeseen, ota yhteyttä ohjaajaan.
@@ -218,13 +223,25 @@ const Page2 = (props) => (
       {props.enrolledAttendances.map((attendance, i) =>
       <React.Fragment key={i}>
         <div className="pure-u-1-4">
-          <SubjectSelect i={i} value={attendance.subject} />
+          <SubjectSelect
+            i={i}
+            value={attendance.subject}
+            onChange={({target}) => {props.modifyEnrolledAttendance(i, "subject", target.value);}}
+            />
         </div>
         <div className="pure-u-1-4">
-          <MandatorySelect i={i} value={attendance.mandatory} />
+          <MandatorySelect
+            i={i}
+            value={attendance.mandatory}
+            onChange={({target}) => {props.modifyEnrolledAttendance(i, "mandatory", target.value);}}
+          />
         </div>
         <div className="pure-u-1-4">
-          <RepeatSelect i={i} value={attendance.repeat} />
+          <RepeatSelect
+            i={i}
+            value={attendance.repeat}
+            onChange={({target}) => {props.modifyEnrolledAttendance(i, "repeat", target.value);}}
+          />
         </div>
         <div className="pure-u-1-4">
           <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
@@ -244,16 +261,32 @@ const Page2 = (props) => (
       {props.finishedAttendances.map((attendance, i) =>
       <React.Fragment key={i}>
         <div className="pure-u-1-5">
-          <TermSelect i={i} value={attendance.term} />
+          <TermSelect
+            i={i}
+            value={attendance.term} 
+            onChange={({target}) => {props.modifyFinishedAttendance(i, "term", target.value);}}
+          />
         </div>
         <div className="pure-u-1-5">
-          <SubjectSelect i={i} value={attendance.subject} />
+          <SubjectSelect 
+            i={i} 
+            value={attendance.subject} 
+            onChange={({target}) => {props.modifyFinishedAttendance(i, "subject", target.value);}}
+          />
         </div>
         <div className="pure-u-1-5">
-          <MandatorySelect i={i} value={attendance.mandatory} />
+          <MandatorySelect 
+            i={i} 
+            value={attendance.mandatory} 
+            onChange={({target}) => {props.modifyFinishedAttendance(i, "mandatory", target.value);}}
+          />
         </div>
         <div className="pure-u-1-5">
-          <GradeSelect i={i} value={attendance.grade} />
+          <GradeSelect 
+            i={i} 
+            value={attendance.grade} 
+            onChange={({target}) => {props.modifyFinishedAttendance(i, "grade", target.value);}}
+          />
         </div>
         <div className="pure-u-1-5">
           <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
@@ -273,13 +306,22 @@ const Page2 = (props) => (
       {props.plannedAttendances.map((attendance, i) =>
       <React.Fragment key={i}>
         <div className="pure-u-1-4">
-          <TermSelect i={i} value={attendance.term} />
+          <TermSelect 
+          i={i} 
+          value={attendance.term} 
+          />
         </div>
         <div className="pure-u-1-4">
-          <SubjectSelect i={i} value={attendance.subject} />
+          <SubjectSelect 
+          i={i} 
+          value={attendance.subject} 
+          />
         </div>
         <div className="pure-u-1-4">
-          <MandatorySelect i={i} value={attendance.mandatory} />
+          <MandatorySelect 
+          i={i} 
+          value={attendance.mandatory} 
+          />
         </div>
         <div className="pure-u-1-4">
           <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
@@ -295,7 +337,7 @@ const Page2 = (props) => (
     </fieldset>
     {props.conflictingAttendances ?
       <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} >
-      Olet valinnut aineet, jotka järjestetään samana päivänä. Jos siitä huolimatta haluat osallistua näihin aineisiin, ota yhteyttä ohjaajaan.
+      Olet valinnut aineet, joita ei voi valita samanaikaisesti. Jos siitä huolimatta haluat osallistua näihin aineisiin, ota yhteyttä ohjaajaan.
       </div>: null}
     <a href="javascript:void(0)" onClick={() => {props.setPage(1);}} className="pure-button" >
       Edellinen sivu
@@ -366,8 +408,8 @@ const Page3 = (props) => (
 
 const Page4 = ({}) => (
   <div>
-    Ilmoittautumisesi on lähetetty hyväksyttäväksi. Jos haluat peruuttaa
-    ilmoittautumisesi, ota yhteyttä XXX.
+    <p>Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.</p>
+    <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
   </div>
 );
 
@@ -399,7 +441,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/rest/matriculation/initialData/PYRAMUS-STUDENT-4")
+    fetch(`/rest/matriculation/initialData/${MUIKKU_LOGGED_USER}`)
       .then((response) => {
         console.log("gotten response");
         console.log(response);
@@ -424,6 +466,12 @@ class App extends React.Component {
     this.setState({enrolledAttendances});
   }
 
+  modifyEnrolledAttendance(i, param, value) {
+    const enrolledAttendances = this.state.enrolledAttendances;
+    enrolledAttendances[i][param] = value;
+    this.setState({enrolledAttendances});
+  }
+
   deleteEnrolledAttendance(i) {
     const enrolledAttendances = this.state.enrolledAttendances;
     enrolledAttendances.splice(i, 1);
@@ -442,6 +490,12 @@ class App extends React.Component {
     this.setState({finishedAttendances});
   }
 
+  modifyFinishedAttendance(i, param, value) {
+    const finishedAttendances = this.state.finishedAttendances;
+    finishedAttendances[i][param] = value;
+    this.setState({finishedAttendances});
+  }
+
   deleteFinishedAttendance(i) {
     const finishedAttendances = this.state.finishedAttendances;
     finishedAttendances.splice(i, 1);
@@ -456,6 +510,12 @@ class App extends React.Component {
       mandatory: false,
       status: "PLANNED"
     });
+    this.setState({plannedAttendances});
+  }
+
+  modifyPlannedAttendance(i, param, value) {
+    const plannedAttendances = this.state.plannedAttendances;
+    plannedAttendances[i][param] = value;
     this.setState({plannedAttendances});
   }
 
@@ -578,6 +638,9 @@ class App extends React.Component {
                   deleteEnrolledAttendance={(i) => {this.deleteEnrolledAttendance(i);}}
                   deletePlannedAttendance={(i) => {this.deletePlannedAttendance(i);}}
                   deleteFinishedAttendance={(i) => {this.deleteFinishedAttendance(i);}}
+                  modifyEnrolledAttendance={(i, param, value) => {this.modifyEnrolledAttendance(i, param, value);}}
+                  modifyPlannedAttendance={(i, param, value) => {this.modifyPlannedAttendance(i, param, value);}}
+                  modifyFinishedAttendance={(i, param, value) => {this.modifyFinishedAttendance(i, param, value);}}
                   conflictingAttendances={this.isConflictingAttendances()}
                 />
               : null }

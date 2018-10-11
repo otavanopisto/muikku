@@ -10,6 +10,9 @@
     <script defer="defer" jsf:name="/scripts/gui/matriculation/matriculation.js"/>
     <link rel="stylesheet" jsf:name="/scripts/gui/matriculation/pure.css" />
     <link rel="stylesheet" jsf:name="/scripts/gui/matriculation/index.css" />
+    <script type="application/javascript">
+      var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
+    </script>
   </h:head>
   <body>
 		<div id="react-root"></div>
