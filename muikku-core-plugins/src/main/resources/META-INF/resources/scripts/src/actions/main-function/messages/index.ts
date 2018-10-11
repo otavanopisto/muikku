@@ -6,7 +6,7 @@ import { MessageThreadListType, MessageThreadExpandedType, MessagesStateType, Me
 import { displayNotification } from '~/actions/base/notifications';
 import { hexToColorInt, colorIntToHex } from '~/util/modifiers';
 import { getApiId, loadMessagesHelper, setLabelStatusCurrentMessage, setLabelStatusSelectedMessages } from './helpers';
-import { ContactRecepientType } from '~/reducers/user-index';
+import { ContactRecepientType, UserStaffType } from '~/reducers/user-index';
 import { StatusType } from '~/reducers/base/status';
 
 export interface UpdateMessageThreadsCountTriggerType {
@@ -200,8 +200,8 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
     caption: message.subject,
     content: message.text,
     categoryName: "message",
-    recipientIds: message.to.filter( x => x.type === "user" ).map( x => x.value.id ),
-    recipientGroupIds: message.to.filter( x => x.type === "usergroup" ).map( x => x.value.id ),
+    recipientIds: message.to.filter(x => x.type === "user" || x.type === "staff").map(x => ((<UserStaffType>x.value).userEntityId) || x.value.id),
+    recipientGroupIds: message.to.filter( x => x.type === "usergroup" ).map(x => x.value.id),
     recipientStudentsWorkspaceIds: recepientWorkspaces,
     recipientTeachersWorkspaceIds: recepientWorkspaces
   };

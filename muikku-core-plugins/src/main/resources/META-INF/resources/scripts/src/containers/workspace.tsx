@@ -64,6 +64,10 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
           this.props.store.dispatch(loadStaffMembersOfWorkspace(workspace) as Action)
         }
       }}) as Action);
+      
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
     }
     
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]}/>
