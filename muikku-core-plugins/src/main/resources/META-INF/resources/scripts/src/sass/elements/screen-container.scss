@@ -1,14 +1,7 @@
-//
-// Provides the max screen sizer container for insane screens
-//
-//   div.scren-container
-//    div.screen-container-wrapper
-//      (BODY)
-//
-
-@import "../base/breakpoints";
-@import "../base/vars";
 @import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
 
 .screen-container {
   align-items: center;
