@@ -122,13 +122,11 @@
 	    mApi().chat.workspaceChatSettings.read(workspaceEntityId).callback($.proxy(function (err, workspaceChatSettings) {
 	      if (err) { 
 	        $('.notification-queue').notificationQueue('notification', 'error', err);
-          return;
+	        return;
 	      }	        	
 	      var data = {};
 	      if (workspaceChatSettings === null){
-	        workspaceChatSettings.status === "DISABLED"
 	        data.disabled_selected = "selected";
-	        this._setStatus("DISABLED");
 	      }
 	      if (workspaceChatSettings && workspaceChatSettings.options === "ENABLED") {
 	        data.enabled_selected = "selected";
@@ -138,13 +136,11 @@
 	      }
 	      renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
 	        this.element.html(text);
-	        
-	         
 	      }, this));
 	    }, this));
 	  },
-  });
-  
+	});
+
   $.widget("custom.workspaceManagement", {
     options: {
       workspaceEntityId: null,
@@ -378,11 +374,11 @@
     },
     
     _saveWorkspaceChatStatus: function (status) {
-      var status = this.element.find(".workspace-chat").val()
+      var chatStatus = this.element.find(".workspace-chat").val()
       var workspaceEntityId = this.options.workspaceEntityId;
 
       return $.proxy(function (callback) {
-        mApi().chat.workspaceChatSettings.update(workspaceEntityId, {status: status, workspaceEntityId: workspaceEntityId})
+        mApi().chat.workspaceChatSettings.update(workspaceEntityId, {status: chatStatus, workspaceEntityId: workspaceEntityId})
         .callback($.proxy(function (err) {
           callback(err);
         }), this);
