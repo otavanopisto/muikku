@@ -27,17 +27,17 @@ public class WorkspaceChatSettingsDAO extends CorePluginsDAO<WorkspaceChatSettin
     return settings;
   }
   
-  public List<WorkspaceChatSettings> listAll(String WorkspaceEntityId, WorkspaceChatStatus workspaceChatStatus) {
-	EntityManager entityManager = getEntityManager(); 
+  public List<WorkspaceChatSettings> listAll(String WorkspaceEntityId) {
+    EntityManager entityManager = getEntityManager(); 
 	    
-	CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-	CriteriaQuery<WorkspaceChatSettings> criteria = criteriaBuilder.createQuery(WorkspaceChatSettings.class);
-	Root<WorkspaceChatSettings> root = criteria.from(WorkspaceChatSettings.class);
-	criteria.select(root);
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceChatSettings> criteria = criteriaBuilder.createQuery(WorkspaceChatSettings.class);
+    Root<WorkspaceChatSettings> root = criteria.from(WorkspaceChatSettings.class);
+    criteria.select(root);
 	
-	TypedQuery<WorkspaceChatSettings> query = entityManager.createQuery(criteria);
+    TypedQuery<WorkspaceChatSettings> query = entityManager.createQuery(criteria);
 	
-	return query.getResultList();
+    return query.getResultList();
   }
   
   public WorkspaceChatSettings findByWorkspace(Long workspaceEntityId) {

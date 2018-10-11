@@ -44,6 +44,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -185,8 +186,8 @@ public class ChatRESTService extends PluginRESTService {
     SchoolDataIdentifier identifier = sessionController.getLoggedUser();
     
     if (identifier == null) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
-      }
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
+    }
 	  
     String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
     
@@ -206,7 +207,7 @@ public class ChatRESTService extends PluginRESTService {
       UserChatVisibility visibility = userChatSettings.getVisibility();
     	
       if (visibility == UserChatVisibility.VISIBLE_TO_ALL) {
-    	chatEnabled = true;
+        chatEnabled = true;
       }
     } 
     
@@ -224,9 +225,9 @@ public class ChatRESTService extends PluginRESTService {
   }
 
   private XmppCredentials computeXmppCredentials(
-      PrivateKey privateKey,
-      Instant now,
-      String userIdentifierString
+    PrivateKey privateKey,
+    Instant now,
+    String userIdentifierString
   ) throws InvalidKeyException, SignatureException, NoSuchAlgorithmException {
     String tokenString = now.getEpochSecond() + "," + userIdentifierString;
     byte[] hash = DigestUtils.sha256(tokenString);
@@ -269,74 +270,77 @@ public class ChatRESTService extends PluginRESTService {
   public Response chatSettingsGet() {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-	}
+    }
 
-	SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();	  
-	UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();	  
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
 	  
-	return Response.ok(userChatSettings).build();
+    return Response.ok(userChatSettings).build();
   }
   @PUT
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE)
   public Response createOrUpdateUserChatSettings(UserChatSettings userChatSettings) {
-	if (!sessionController.isLoggedIn()) {
-	  return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-	}
-	 SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
 
-	 chatSyncController.syncStudent(userIdentifier);
+    chatSyncController.syncStudent(userIdentifier);
 
-  UserChatVisibility visibility = userChatSettings.getVisibility();
-	UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);
+    UserChatVisibility visibility = userChatSettings.getVisibility();
+    UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);
 	  
-	if (findUserChatSettings == null) {
-	  chatController.createUserChatSettings(userIdentifier, visibility);
+    if (findUserChatSettings == null) {
+      chatController.createUserChatSettings(userIdentifier, visibility);
 
-	} else {
-	  chatController.updateUserChatSettings(findUserChatSettings, visibility);
-	}
-	return Response.ok(userChatSettings).build(); 
+    } else {
+	    chatController.updateUserChatSettings(findUserChatSettings, visibility);
+	  }
+    return Response.ok(userChatSettings).build(); 
   }
   
   @GET
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response workspaceChatSettingsGet(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettings workspaceChatSettings) {
+  public Response workspaceChatSettingsGet(@PathParam("WorkspaceEntityId") Long workspaceEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-  }
+    }
     
-   
-
-    
-  return Response.ok(workspaceEntityId).build();
+    return Response.ok(workspaceEntityId).build();
   }
   @PUT
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
   @RESTPermit(handling = Handling.INLINE)
   public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettings workspaceChatSettings) {
-  if (!sessionController.isLoggedIn()) {
-    return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-  }
-
-  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);   
-  WorkspaceChatStatus status = workspaceChatSettings.getStatus();
-  WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
     
-  if (findWorkspaceChatSettings == null) {
-    chatController.createWorkspaceChatSettings(workspaceEntityId, status);
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);   
 
-  } else {
-    chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
-  }
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+
+    WorkspaceChatStatus status = workspaceChatSettings.getStatus();
+    WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
+    
+    if (findWorkspaceChatSettings == null) {
+      chatController.createWorkspaceChatSettings(workspaceEntityId, status);
+
+    } else {
+      chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
+    
+    }
   
-  if (status == WorkspaceChatStatus.ENABLED) {
-    chatSyncController.syncWorkspace(workspaceEntity);
-  } else {
-    chatSyncController.removeWorkspaceChatRoom(workspaceEntity);
-  }
-  return Response.ok(workspaceChatSettings).build(); 
+    if (status == WorkspaceChatStatus.ENABLED) {
+      chatSyncController.syncWorkspace(workspaceEntity);
+    } else {
+      chatSyncController.removeWorkspaceChatRoom(workspaceEntity);
+    }
+    return Response.ok(workspaceChatSettings).build(); 
   }
 }

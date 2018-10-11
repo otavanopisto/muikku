@@ -1,5 +1,5 @@
 <div class="workspace-chat-settings">
-  <select>
+  <select class="workspace-chat">
     <option value="DISABLED" {disabled_selected}>
       {#localize key="plugin.workspace.management.chatSetting.disabled"/}
     </option>

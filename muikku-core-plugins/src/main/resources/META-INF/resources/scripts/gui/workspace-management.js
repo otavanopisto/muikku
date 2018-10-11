@@ -1,10 +1,9 @@
 (function() {
   'use strict';
-	   renderDustTemplate('workspace/workspace-chat-settings.dust', {}, $.proxy(function (text) {
-		   $('.workspace-chat-settings').html(text);
-	   }, this));
-
-	   
+  renderDustTemplate('workspace/workspace-chat-settings.dust', {}, $.proxy(function (text) {
+    $('.workspace-chat-settings').html(text);
+	}, this));
+  
   $.widget("custom.workspaceFrontpageImage", {
     options: {
       workspaceEntityId: null
@@ -116,7 +115,7 @@
   
   $.widget("custom.workspaceChatSettings", {
 	  options: {
-	      workspaceEntityId: null,
+	    workspaceEntityId: null,
 	  },
 	  _create: function() {
 	    var workspaceEntityId = this.options.workspaceEntityId;
@@ -124,41 +123,27 @@
 	      if (err) { 
 	        $('.notification-queue').notificationQueue('notification', 'error', err);
           return;
+	      }	        	
+	      var data = {};
+	      if (workspaceChatSettings === null){
+	        workspaceChatSettings.status === "DISABLED"
+	        data.disabled_selected = "selected";
+	        this._setStatus("DISABLED");
 	      }
-	      
-	      mApi().chat.workspaceChatSettings.read(workspaceEntityId).callback($.proxy(function (err, workspaceChatSettings) {
-	        	
-	        var data = {};
-	        if (workspaceChatSettings == null){
-	        	workspaceChatSettings.status === "DISABLED"
-	          data.disabled_selected = "selected";
-	          this._setStatus("DISABLED");
-	        }
-	        if (workspaceChatSettings && workspaceChatSettings.options === "ENABLED") {
-	          data.enabled_selected = "selected";
-	        }
-	        if (workspaceChatSettings && workspaceChatSettings.options === "DISABLED"){
-	          data.disabled_selected = "selected";
-	        }
-	        renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
-	          this.element.html(text);
-	            
-	          $(".save").on('click', $.proxy(function() {
-	            var value = this.element.find("select").val()
-	            this._setStatus(value);
-	             
-	          }, this));
-	        }, this));
+	      if (workspaceChatSettings && workspaceChatSettings.options === "ENABLED") {
+	        data.enabled_selected = "selected";
+	      }
+	      if (workspaceChatSettings && workspaceChatSettings.options === "DISABLED"){
+	        data.disabled_selected = "selected";
+	      }
+	      renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
+	        this.element.html(text);
+	        
+	         
 	      }, this));
 	    }, this));
 	  },
-	    
-	  _setStatus: function(status, workspaceEntityId) {		  
-	    workspaceEntityId = this.options.workspaceEntityId;
-	    mApi().chat.workspaceChatSettings.update(workspaceEntityId, {status: status, workspaceEntityId: workspaceEntityId}).callback($.proxy(function () {
-	  }, this));
-	}
-});
+  });
   
   $.widget("custom.workspaceManagement", {
     options: {
@@ -392,6 +377,18 @@
       }, this); 
     },
     
+    _saveWorkspaceChatStatus: function (status) {
+      var status = this.element.find(".workspace-chat").val()
+      var workspaceEntityId = this.options.workspaceEntityId;
+
+      return $.proxy(function (callback) {
+        mApi().chat.workspaceChatSettings.update(workspaceEntityId, {status: status, workspaceEntityId: workspaceEntityId})
+        .callback($.proxy(function (err) {
+          callback(err);
+        }), this);
+      }, this); 
+    },
+    
     _createDeleteWorkspaceMaterialProducer: function (id) {
       return $.proxy(function (callback) {
         mApi().workspace.workspaces.materialProducers
@@ -521,7 +518,8 @@
         }        
       }, this));
       
-      
+      operations.push(this._saveWorkspaceChatStatus(status));
+
       async.series(operations, function (err, results) {
         loader.remove();
         if (err) {
@@ -547,8 +545,8 @@
     }
     
     $('.workspace-chat-settings').workspaceChatSettings({
-        workspaceEntityId: workspaceEntityId
-      });
+      workspaceEntityId: workspaceEntityId
+    });
     
     $('.workspace-frontpage-image-uploader').workspaceFrontpageImage({
       workspaceEntityId: workspaceEntityId

@@ -39,6 +39,7 @@ import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.MUCRoomEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -158,7 +159,7 @@ public class ChatSyncController {
         }
         WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(usersWorkspace.getId());
        
-        if (workspaceChatSettings.getStatus() != null && workspaceChatSettings.getStatus().equals("ENABLED")) {
+        if (workspaceChatSettings.getStatus() != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
           if (hasCorrectCurriculums) {
           
             if (chatRoomEntity == null) {
