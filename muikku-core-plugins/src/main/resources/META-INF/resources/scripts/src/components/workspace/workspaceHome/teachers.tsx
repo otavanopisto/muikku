@@ -22,7 +22,7 @@ function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: Work
     return ""
   }
   
-  let text = workspace.name + workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "";
+  let text = workspace.name + (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "");
   let pretext = "";
   if (html){
     let url = window.location.href;
@@ -30,7 +30,7 @@ function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: Work
     let server = arr[0] + "//" + arr[2];
     
     text = '<a href="' + server + status.contextPath + "/workspace/" + workspace.urlName + '">' + text + "</a></p>";
-    pretext = "</p><p> ";
+    pretext = "<p> </p>\n\n<p>";
   }
   return pretext + i18n.text.get("plugin.workspace.index.newMessageCaption", text);
 }
@@ -44,7 +44,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
       <h1 className="workspace-block-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</h1>
       <div className="workspace-teachers-container">
         {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? this.props.workspace.staffMembers.map((teacher)=>
-          <div className="workspace-teacher">
+          <div className="workspace-teacher" key={teacher.userEntityId}>
             <div className="workspace-teacher-profile-picture">
             <object data={getUserImageUrl(teacher.userEntityId)} type="image/jpeg">
               <img src="/gfx/default-user-picture.jpg" />
