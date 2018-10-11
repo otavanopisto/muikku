@@ -276,34 +276,56 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return System.getProperty("it.platform");
   }
   
-  protected RemoteWebDriver createSauceWebDriver() throws MalformedURLException {
-    final DesiredCapabilities capabilities = new DesiredCapabilities();
-    final String seleniumVersion = System.getProperty("it.selenium.version");
-    
-    final String browser = getBrowser();
+  protected WebDriver createSauceWebDriver() throws MalformedURLException {
+//    final DesiredCapabilities capabilities = new DesiredCapabilities();
+    DesiredCapabilities capabilities = null;
+    switch (getBrowser()) {
+    case "chrome":
+      capabilities = DesiredCapabilities.chrome();
+      break;
+    case "microsoftedge":
+      capabilities = DesiredCapabilities.edge();
+      break;
+    case "firefox":
+      capabilities = DesiredCapabilities.firefox();
+      break;
+    case "internet explorer":
+      capabilities = DesiredCapabilities.internetExplorer();
+      break;
+    case "safari":
+      capabilities = DesiredCapabilities.safari();
+      break;
+    default:
+      capabilities = DesiredCapabilities.chrome();
+  }
+  
     final String browserVersion = getBrowserVersion();
     final String browserResolution = getBrowserResolution();
     final String platform = getSaucePlatform();
     
-    capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
     capabilities.setCapability(CapabilityType.VERSION, browserVersion);
     capabilities.setCapability(CapabilityType.PLATFORM, platform);
     capabilities.setCapability("name", getClass().getSimpleName() + ':' + testName.getMethodName());
     capabilities.setCapability("tags", Arrays.asList( String.valueOf( getTestStartTime() ) ) );
     capabilities.setCapability("build", getProjectVersion());
-    capabilities.setCapability("video-upload-on-pass", false);
-    capabilities.setCapability("capture-html", true);
-    capabilities.setCapability("timeZone", "Universal");
-    capabilities.setCapability("seleniumVersion", seleniumVersion);
+//    capabilities.setCapability("video-upload-on-pass", false);
+//    capabilities.setCapability("capture-html", true);
+//    capabilities.setCapability("timeZone", "Universal");
+    capabilities.setCapability("seleniumVersion", System.getProperty("it.selenium.version"));
     
     if (!StringUtils.isBlank(browserResolution)) {
       capabilities.setCapability("screenResolution", browserResolution);
     }
-    
-    if (getSauceTunnelId() != null) {
-      capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
-    }
-    
+ 
+//    if (getSauceTunnelId() != null) {
+//      capabilities.setCapability("tunnelIdentifier", getSauceTunnelId());
+//    }
+//    
+//    DesiredCapabilities caps = DesiredCapabilities.chrome();
+//    caps.setCapability("platform", "Windows 10");
+//    caps.setCapability("version", "69.0");
+//    caps.setCapability("screenResolution", "1280x1024");
+//    WebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), caps);    
     RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
     
     remoteWebDriver.setFileDetector(new LocalFileDetector());
