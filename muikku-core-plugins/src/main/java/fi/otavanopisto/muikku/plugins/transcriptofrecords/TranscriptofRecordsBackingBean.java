@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +38,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/records/", to = "/jsf/records/index.jsf")
+@Join(path = "/records", to = "/jsf/records/index.jsf")
 @LoggedIn
 public class TranscriptofRecordsBackingBean {
   
@@ -164,20 +163,20 @@ public class TranscriptofRecordsBackingBean {
     return transcriptOfRecordsController.shouldShowStudies(user);
   }
   
-  public Date getStudyStartDate() {
-    return studyStartDate != null ? Date.from(studyStartDate.toInstant()) : null;
+  public String getStudyStartDate() {
+    return studyStartDate != null ? studyStartDate.toString() : null;
   }
 
-  public Date getStudyTimeEnd() {
-    return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()) : null;
+  public String getStudyTimeEnd() {
+    return studyTimeEnd != null ? studyTimeEnd.toString() : null;
   }
 
   public String getStudyTimeLeftStr() {
     return studyTimeLeftStr;
   }
   
-  public Date getStudyEndDate() {
-    return studyEndDate != null ? Date.from(studyEndDate.toInstant()) : null;
+  public String getStudyEndDate() {
+    return studyEndDate != null ? studyEndDate.toString() : null;
   }
 
   private String grades;

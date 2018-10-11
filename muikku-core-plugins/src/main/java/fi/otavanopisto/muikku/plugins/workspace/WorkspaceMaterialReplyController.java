@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
@@ -22,7 +24,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 public class WorkspaceMaterialReplyController {
   
   @Inject
-	private WorkspaceMaterialReplyDAO workspaceMaterialReplyDAO;
+  private WorkspaceMaterialReplyDAO workspaceMaterialReplyDAO;
   
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
@@ -30,10 +32,25 @@ public class WorkspaceMaterialReplyController {
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
   
+  @Inject
+  private ActivityLogController activityLogController;
+  
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+  
   public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, 
       UserEntity userEntity, Long numberOfTries, Date created, Date lastModified) {
     Date submitted = state == WorkspaceMaterialReplyState.SUBMITTED ? new Date() : null;
     Date withdrawn = state == WorkspaceMaterialReplyState.WITHDRAWN ? new Date() : null;
+    WorkspaceRootFolder root = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    switch (workspaceMaterial.getAssignmentType()) {
+    case EVALUATED:
+      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_ASSIGNMENTDONE, root.getWorkspaceEntityId(), null);
+    break;
+    case EXERCISE:
+      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_EXERCISEDONE, root.getWorkspaceEntityId(), null);
+    break;
+    }
     return workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), numberOfTries, created, lastModified, submitted, withdrawn);
   }
   
@@ -72,7 +89,7 @@ public class WorkspaceMaterialReplyController {
   private void appendVisibleWorkspaceMaterials(List<WorkspaceMaterial> materials, WorkspaceNode workspaceNode) {
     List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentAndHidden(workspaceNode, Boolean.FALSE);
     for (WorkspaceNode childNode : childNodes) {
-      if (childNode instanceof WorkspaceMaterial) { 
+      if (childNode instanceof WorkspaceMaterial) {
         materials.add((WorkspaceMaterial) childNode);
       }
       
@@ -85,7 +102,7 @@ public class WorkspaceMaterialReplyController {
   }
   
   public void deleteWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply) {
-    workspaceMaterialReplyDAO.delete(workspaceMaterialReply); 
+    workspaceMaterialReplyDAO.delete(workspaceMaterialReply);
   }
 
   public void incWorkspaceMaterialReplyTries(WorkspaceMaterialReply workspaceMaterialReply) {

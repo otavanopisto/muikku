@@ -32,7 +32,7 @@ public class ToRTestsBase extends AbstractUITest {
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
-      TestEnvironments.Browser.PHANTOMJS
+      TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void recordsWorkspaceEvaluationTest() throws Exception {
@@ -80,17 +80,19 @@ public class ToRTestsBase extends AbstractUITest {
         .mockCourseAssessments(courseStudent, admin);
       
       logout();
-      mockBuilder.mockLogin(student).build();
+      mockBuilder.mockLogin(student);
       login();
       
-      navigate("/records/", true);
-      waitForPresent("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
-      assertText("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long", "testcourses (test extension)");
-      waitAndClick("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
-      waitForPresent(".tr-evaluation-verbal .content");
-      assertText(".tr-evaluation-verbal .content", "Test evaluation.");
-      waitForPresent(".tr-item-details .tr-item-description-title .grade");
-      assertText(".tr-item-details .tr-item-description-title .grade", "Excellent");
+      navigate("/records", false);
+      waitForPresent(".application-list__item-header--course .application-list__header-primary");
+      assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
+      
+      waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
+      assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
+      
+      waitAndClick(".application-list__item-header--course .application-list__header-primary");
+      waitForPresent(".application-sub-panel__text--course-evaluation");
+      assertText(".application-sub-panel__text--course-evaluation", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -144,10 +146,10 @@ public class ToRTestsBase extends AbstractUITest {
         "EVALUATED");
       try{        
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
   
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -167,9 +169,9 @@ public class ToRTestsBase extends AbstractUITest {
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
-        mockBuilder.mockLogin(admin).build();
+        mockBuilder.mockLogin(admin);
         login();
-        navigate(String.format("/evaluation2"), true);
+        navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
         waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
@@ -190,10 +192,10 @@ public class ToRTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
         
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
         
-        navigate("/records/", true);
+        navigate("/records/", false);
         waitForPresent("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
         waitAndClick("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
         waitForPresent(".records .tr-task-evaluated-grade");

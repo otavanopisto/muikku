@@ -1,0 +1,55 @@
+//This one also uses a hack to access the data in the dom
+//please replace it with the following procedure
+//1. Create a rest endpoint to get the permissions list
+//2. in the main file gather those permissions... etc..., eg. index.ts make a call
+//3. dispatch the action to this same reducer and gather the action here
+//4. it works :D
+import $ from '~/lib/jquery';
+import {ActionType} from "~/actions";
+
+export interface StatusType {
+  loggedIn: boolean,
+  userId: number,
+  permissions: any,
+  contextPath: string,
+  userSchoolDataIdentifier: string,
+  isActiveUser: boolean,
+  isStudent: boolean,
+  profile: ProfileStatusType,
+  hasImage: boolean,
+  imgVersion: number
+}
+
+export interface ProfileStatusType {
+  displayName: string,
+  loggedUserName: string,
+  emails: Array<string>,
+  addresses: Array<string>,
+  phoneNumbers: Array<string>,
+  studyTimeLeftStr: string,
+  studyStartDate: string,
+  studyTimeEnd: string
+}
+
+export default function status(state: StatusType={
+  loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,
+  userId: (<any>window).MUIKKU_LOGGED_USER_ID,
+  permissions: (<any>window).MUIKKU_PERMISSIONS,
+  contextPath: (<any>window).CONTEXTPATH,
+  userSchoolDataIdentifier: (<any>window).MUIKKU_LOGGED_USER,
+  isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER,
+  profile: (<any>window).PROFILE_DATA,
+  isStudent: (<any>window).MUIKKU_IS_STUDENT,
+  hasImage: false,
+  imgVersion: 0
+}, action: ActionType): StatusType{
+  if (action.type === "LOGOUT"){
+    $('#logout').click();
+    return state;
+  } else if (action.type === "UPDATE_STATUS_PROFILE"){
+    return {...state, profile: action.payload};
+  } else if (action.type === "UPDATE_STATUS_HAS_IMAGE"){
+    return {...state, hasImage: action.payload, imgVersion: ++state.imgVersion};
+  }
+  return state;
+}

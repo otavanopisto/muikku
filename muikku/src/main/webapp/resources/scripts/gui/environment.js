@@ -1,3 +1,6 @@
+//DEPRECATED, this behaviour is specific to certain components, in this case
+//this will be used by the main-function widget and it'll be in charge of doing such changes
+//please remove it and all its references once the changes are done over all the codebase.
 (function() {
   'use strict';
 
@@ -47,15 +50,15 @@
     }
   }
 
-  $(document).on("Communicator:newmessagereceived", function (event, data) {
+  $(document).muikkuWebSocket("addEventListener", "Communicator:newmessagereceived", function () {
     reloadMessageCount();
   });
   
-  $(document).on("Communicator:messageread", function (event) {
+  $(document).muikkuWebSocket("addEventListener", "Communicator:messageread", function () {
     reloadMessageCount();
   });
   
-  $(document).on("Communicator:threaddeleted", function (event) {
+  $(document).muikkuWebSocket("addEventListener", "Communicator:threaddeleted", function () {
     reloadMessageCount();
   });
   

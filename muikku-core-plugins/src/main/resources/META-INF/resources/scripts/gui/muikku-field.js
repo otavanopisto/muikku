@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   
-  $(document).on('workspace:field-answer-error', function (event, data) {
+  $(document).muikkuWebSocket("addEventListener", 'workspace:field-answer-error', function (data) {
     try {
       var message = $.parseJSON(data);
       $('.notification-queue').notificationQueue('notification', 'error', message.error);
@@ -726,7 +726,7 @@
         $(this.element).on("input", $.proxy(this._onInput, this));
       }
       
-      $(document).on('workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
+      $(document).muikkuWebSocket("addEventListener", 'workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
       
       this.readonly(this.options.readonly);
     },
@@ -876,7 +876,7 @@
       }
     },
     
-    _onFieldAnswerSaved: function (event, data) {
+    _onFieldAnswerSaved: function (data) {
       var message = $.parseJSON(data);
       
       if (this._saveFailedTimeoutId != null) {

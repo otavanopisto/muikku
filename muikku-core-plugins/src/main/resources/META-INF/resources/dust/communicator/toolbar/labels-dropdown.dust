@@ -1,0 +1,10 @@
+<div class="communicator dropdown communicator-dropdown-labels" id="communicator-toolbar-labels-dropdown">
+  <div class="dropdown-container">
+    <input class="form-field" id="communicator-toolbar-labels-dropdown-input" type="text" placeholder='{#localize key="plugin.communicator.label.create.textfield.placeholder"/}' />
+    <div class="dropdown-item">
+      <span class="communicator link link-full communicator-link-new communicator-toolbar-labels-dropdown-interact-create-label">{#localize key="plugin.communicator.label.create"/}</span>
+    </div>
+    
+    <div class="embbed embbed-full" data-controller-widget="communicator-toolbar-labels-dropdown-labels-list"></div>
+  </div>
+</div>
