@@ -6,7 +6,6 @@
 .env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   @include text;
-  background-color: $color-overlay-background;
   bottom: 0;
   display: block;
   left: 0;
@@ -29,6 +28,7 @@
 .env-dialog__wrapper {
   background-color: $color-application-dialog-background-color;
   border-top: 1px solid $color-application-dialog-border-color;
+  box-shadow: $env-dialog-box-shadow;
   display: flex;
   justify-content: center;
   position: absolute;
