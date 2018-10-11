@@ -14,6 +14,7 @@ cache:
   - muikku-atests/.cargo
 addons:
   sauce_connect: true
+    no_ssl_bump_domains: "127.0.0.1,localhost,dev.muikku.fi"
   chrome: stable
   hosts:
   - dev.muikku.fi
