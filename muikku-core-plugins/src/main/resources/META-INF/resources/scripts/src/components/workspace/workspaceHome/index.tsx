@@ -10,7 +10,7 @@ interface WorkspaceHomeBodyProps {
 }
 
 interface WorkspaceHomeBodyState {
-  
+
 }
 
 export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBodyProps, WorkspaceHomeBodyState> {
@@ -18,7 +18,7 @@ export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBody
     return (<div>
       <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl}/>
       <WorkspaceHomeHeader/>
-      <section className="flex-row">
+      <section>
         <WorkspaceTeachers/>
       </section>
     </div>);
