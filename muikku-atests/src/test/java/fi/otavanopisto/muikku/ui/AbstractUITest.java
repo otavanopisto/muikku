@@ -319,7 +319,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     if (getSauceTunnelId() != null) {
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
-    
+//    
     RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
     
     remoteWebDriver.setFileDetector(new LocalFileDetector());
