@@ -15,3 +15,4 @@ if [[ $run_tests == "true" ]]; then
       fi;
     done;
   fi;
+fi;
