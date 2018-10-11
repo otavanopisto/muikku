@@ -277,7 +277,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected WebDriver createSauceWebDriver() throws MalformedURLException {
-//    final DesiredCapabilities capabilities = new DesiredCapabilities();
     DesiredCapabilities capabilities = null;
     switch (getBrowser()) {
     case "chrome":
@@ -319,6 +318,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
  
     if (getSauceTunnelId() != null) {
       capabilities.setCapability("tunnelIdentifier", getSauceTunnelId());
+      capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
 //    
 //    DesiredCapabilities caps = DesiredCapabilities.chrome();

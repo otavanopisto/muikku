@@ -13,6 +13,7 @@ cache:
   - $HOME/.m2
   - muikku-atests/.cargo
 addons:
+  sauce_connect: true
   chrome: stable
   hosts:
   - dev.muikku.fi
