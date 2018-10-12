@@ -114,9 +114,10 @@ public class GuiderTestsBase extends AbstractUITest {
       .build();
     try {
       navigate("/guider", false);
-      waitAndClick(".application-list .user--guider .application-list__item-header--student .text--list-item-title");
-      scrollToEnd();
+      waitAndClick(".application-list__header-primary>span");
       waitForPresent(".file-uploader>input");
+      scrollIntoView(".file-uploader>input");
+
       File testFile = getTestFile();
       sendKeys(".file-uploader>input", testFile.getAbsolutePath());
       waitForPresent("a.uploaded-files__item-title");
