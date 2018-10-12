@@ -76,9 +76,9 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       let data = getCKEDITOR().instances[this.name].getData();
       if (data !== this.currentData){
         let avoidChange = false;
-        if (data[data.length - 1] === "\n" && data.substr(0, data.length - 1) === this.currentData){
+        if (data[data.length - 1] === "\n" && data.substr(0, data.length - 1).replace(/\s/g," ") === this.currentData.replace(/\s/g," ")){
           avoidChange = true;
-        } else if (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === data){
+        } else if (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1).replace(/\s/g," ") === data.replace(/\s/g," ")){
           avoidChange = true
         }
         this.currentData = data;

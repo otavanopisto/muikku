@@ -232,10 +232,14 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
 
       let state = getState();
       let status: StatusType = state.status;
+      
+      if (!state.messages){
+        return;
+      }
 
       //This as in the main thread list will check wheter the message was sent and we are in the inbox or unreadlocation, that will work if
       //and only if one of the receivers is us, otherwise it's always active for when a message is sent
-      const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
+      const isInboxOrUnread = state.messages && state.messages.location === "inbox" || state.messages.location === "unread"
       const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && result.recipients
         .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
       const weAreInSentLocation = state.messages.location === "sent";

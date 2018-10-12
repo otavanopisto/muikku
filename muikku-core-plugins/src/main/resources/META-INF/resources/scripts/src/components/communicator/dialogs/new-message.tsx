@@ -71,6 +71,7 @@ function getStateIdentifier(props: CommunicatorNewMessageProps){
 }
 
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
+  private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
   constructor(props: CommunicatorNewMessageProps){
     super(props, "communicator-new-message" + (props.extraNamespace ? "-" + props.extraNamespace : ""));
     
@@ -100,6 +101,10 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     }, getStateIdentifier(this.props));
   }
   onCKEditorChange(text: string){
+    if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll){
+      this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
+      return;
+    }
     this.setStateAndStore({text}, getStateIdentifier(this.props));
   }
   setSelectedItems(selectedItems: Array<ContactRecepientType>){
@@ -120,6 +125,10 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         this.state.text),
       success: ()=>{
         closeDialog();
+        this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
+        setTimeout(()=>{
+          this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
+        }, 100);
         this.setStateAndClear({
           text: this.props.initialMessage || "",
           selectedItems: this.props.initialSelectedItems || [],
@@ -139,8 +148,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     this.setState({includesSignature: !this.state.includesSignature});
   }
   clearUp(){
+    this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
+    setTimeout(()=>{
+      this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
+    }, 100);
     this.setStateAndClear({
-      text: "",
+      text: this.props.initialMessage || "",
       selectedItems: this.props.initialSelectedItems || [],
       subject: this.props.initialSubject || "",
       locked: false
