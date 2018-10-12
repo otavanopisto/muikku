@@ -29,6 +29,7 @@
   margin: calc(#{$navbar-mobile-height} * 1.35) auto 0;
   max-width: 100%;
   min-height: 150px;
+  position: relative;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
@@ -47,6 +48,18 @@
     max-width: calc(#{$breakpoint-max-usable-screen} - 20px);
     min-height: 270px;
   }
+}
+
+.hero__workspace-title {
+  background: $color-default;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  display: block;
+  font-weight: 300;
+  left: 0;
+  padding: 10px 15px 10px 10px;
+  position: absolute;
+  top: 40px;
 }
 
 .hero__wrapper {
