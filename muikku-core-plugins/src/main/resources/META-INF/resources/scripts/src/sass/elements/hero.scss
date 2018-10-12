@@ -20,12 +20,15 @@
 }
 
 .hero--workspace {
+  align-items: flex-start;
   background-color: $color-hero-workspace-background;
+  background-position: center center;
   background-size: cover;
   border-bottom: 5px solid $color-hero-workspace-background;
   border-top: 5px solid $color-hero-workspace-background;
   display: flex;
-  flex-direction: column;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
   margin: calc(#{$navbar-mobile-height} * 1.35) auto 0;
   max-width: 100%;
   min-height: 150px;
@@ -34,6 +37,7 @@
 
   @include breakpoint($breakpoint-pad) {
     border: 5px solid $color-hero-workspace-background;
+    justify-content: center;
     margin: calc(#{$navbar-desktop-height} * 1.5) auto 0;
     min-height: 196px;
     width: auto;
@@ -51,15 +55,45 @@
 }
 
 .hero__workspace-title {
-  background: $color-default;
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border-bottom-right-radius: 2px;
+    border-top-right-radius: 2px;
+    display: flex;
+    font-size: 1.5rem;
+    font-weight: 300;
+    padding: 10px 15px 10px 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1.7rem;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    font-size: 2rem;
+  }
+}
+
+.hero__workspace-name-extension {
+  background: $color-hero-workspace-name-extension-background;
   border-bottom-right-radius: 2px;
   border-top-right-radius: 2px;
-  display: block;
+  font-size: 1rem;
   font-weight: 300;
-  left: 0;
-  padding: 10px 15px 10px 10px;
-  position: absolute;
-  top: 40px;
+  margin: 0 0 10px;
+  padding: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    margin: 10px 0 0;
+    padding: 5px 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1.25rem;
+  }
 }
 
 .hero__wrapper {
@@ -70,7 +104,7 @@
   max-width: $breakpoint-max-usable-screen;
   padding: 1.5rem 0 0;
   position: relative;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-flow: row nowrap;
     padding: 2.5rem .5rem;

@@ -53,7 +53,10 @@
 }
 
 .screen-container__wrapper--workspace {
-  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 10px;
+  }
 }
 
 .screen-container__section {
