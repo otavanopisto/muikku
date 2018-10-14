@@ -83,16 +83,16 @@ public class MatriculationExamInitialData {
   }
 
 
-  String name;
-  String ssn;
-  String email;
-  String phone;
-  String address;
-  String postalCode;
-  String locality;
-  String guidanceCounselor;
-  Integer mandatoryCourses;
-  Long studentId;
+  private String name;
+  private String ssn;
+  private String email;
+  private String phone;
+  private String address;
+  private String postalCode;
+  private String locality;
+  private String guidanceCounselor;
+  private Integer mandatoryCourses;
+  private Long studentId;
 
 }
 

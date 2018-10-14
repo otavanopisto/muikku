@@ -1,9 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
 public interface MatriculationExam {
-
-  long getStarts();
-  
-  long getEnds();
-
+  public long getStarts();
+  public long getEnds();
 }
