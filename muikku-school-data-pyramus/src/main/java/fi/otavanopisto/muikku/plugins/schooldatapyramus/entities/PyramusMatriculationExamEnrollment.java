@@ -2,13 +2,12 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
 
-/**
- * @author Ilmo Euro
- *
- */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class PyramusMatriculationExamEnrollment
     implements MatriculationExamEnrollment {
 

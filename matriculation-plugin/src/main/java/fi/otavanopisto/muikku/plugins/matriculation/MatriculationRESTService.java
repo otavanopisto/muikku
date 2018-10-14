@@ -19,7 +19,7 @@ import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamE
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.EducationTypeMappingNotSetException;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsLister;
-import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataBridge;
+import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
@@ -38,7 +38,7 @@ import fi.otavanopisto.security.rest.RESTPermit;
 public class MatriculationRESTService {
 
   @Inject
-  private MatriculationSchoolDataBridge matriculationSchoolDataBridge;
+  private MatriculationSchoolDataController matriculationController;
   
   @Inject
   private UserController userController;
@@ -59,7 +59,7 @@ public class MatriculationRESTService {
   @RESTPermit(MatriculationPermissions.MATRICULATION_GET_EXAM)
   @Path("/currentExam")
   public Response fetchCurrentExam() {
-    MatriculationExam exam = matriculationSchoolDataBridge.getMatriculationExam();
+    MatriculationExam exam = matriculationController.getMatriculationExam();
     return Response.ok(exam).build();
   }
   
@@ -132,7 +132,7 @@ public class MatriculationRESTService {
   }
 
   private long getStudentIdFromIdentifier(SchoolDataIdentifier identifier) {
-    return matriculationSchoolDataBridge.getStudentId(identifier);
+    return matriculationController.getStudentId(identifier);
   }
   
   @POST
@@ -140,7 +140,7 @@ public class MatriculationRESTService {
   @Path("/enrollments")
   public Response sendEnrollment(MatriculationExamEnrollment enrollment) {
     fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment 
-      schoolDataEntity = matriculationSchoolDataBridge.createMatriculationExamEnrollment();
+      schoolDataEntity = matriculationController.createMatriculationExamEnrollment();
 
     SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
     if (loggedUser == null) {
@@ -172,7 +172,7 @@ public class MatriculationRESTService {
     List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance> attendances = new ArrayList<>();
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
       fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance resultAttendance
-        = matriculationSchoolDataBridge.createMatriculationExamAttendance();
+        = matriculationController.createMatriculationExamAttendance();
       resultAttendance.setSubject(attendance.getSubject());
       resultAttendance.setGrade(attendance.getGrade());
       resultAttendance.setMandatory(attendance.getMandatory());
@@ -183,7 +183,7 @@ public class MatriculationRESTService {
       attendances.add(resultAttendance);
     }
     schoolDataEntity.setAttendances(attendances);
-    matriculationSchoolDataBridge.submitMatriculationExamEnrollment(schoolDataEntity);
+    matriculationController.submitMatriculationExamEnrollment(schoolDataEntity);
     return Response.ok().build();
   }
 

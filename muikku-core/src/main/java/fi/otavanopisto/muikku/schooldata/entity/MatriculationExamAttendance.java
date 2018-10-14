@@ -1,5 +1,8 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class MatriculationExamAttendance {
 
   public String getSubject() {
