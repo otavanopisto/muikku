@@ -128,7 +128,6 @@ const Page2 = (props) => (
           <input className="pure-u-23-24" 
             readOnly
             type="text" 
-            onChange={(e) => {props.setName(e.target.value);}}
             value={props.name}/>
         </div>
         <div className="pure-u-1-2">
@@ -136,7 +135,6 @@ const Page2 = (props) => (
           <input className="pure-u-1" 
             readOnly
             type="text" 
-            onChange={(e) => {props.setSsn(e.target.value);}}
             value={props.ssn} />
         </div>
         <div className="pure-u-1-2">
@@ -144,7 +142,6 @@ const Page2 = (props) => (
           <input className="pure-u-23-24" 
             readOnly
             type="text" 
-            onChange={(e) => {props.setEmail(e.target.value);}}
             value={props.email} />
         </div>
         <div className="pure-u-1-2">
@@ -152,7 +149,6 @@ const Page2 = (props) => (
           <input className="pure-u-1" 
             readOnly
             type="text" 
-            onChange={(e) => {props.setPhone(e.target.value);}}
             value={props.phone} />
         </div>
         <div className="pure-u-1-1">
@@ -160,7 +156,6 @@ const Page2 = (props) => (
           <input className="pure-u-1-1" 
             readOnly
             type="text" 
-            onChange={(e) => {props.setAddress(e.target.value);}}
             value={props.address} />
         </div>
         <div className="pure-u-1-2">
@@ -168,7 +163,6 @@ const Page2 = (props) => (
           <input className="pure-u-23-24" 
             readOnly
             type="text" 
-            onChange={(e) => {props.setPostalCode(e.target.value);}}
             value={props.postalCode} />
         </div>
         <div className="pure-u-1-2">
@@ -176,7 +170,6 @@ const Page2 = (props) => (
           <input className="pure-u-1" 
             readOnly
             type="text" 
-            onChange={(e) => {props.setLocality(e.target.value);}}
             value={props.locality} />
         </div>
       </div>
@@ -188,7 +181,8 @@ const Page2 = (props) => (
           <label>Ohjaaja</label>
           <input className="pure-u-1"
             type="text"
-            value={props.guidanceCounselor} />
+            onChange={({target}) => {props.setGuider(target.value);}}
+            value={props.guider} />
         </div>
 
         <div className="pure-u-1-2">
@@ -632,19 +626,8 @@ class App extends React.Component {
               : null }
           { this.state.page === 2
               ? <Page2 {...this.state}
-                  setName={(value) => { this.setState({name : value}); }}
-                  setSsn={(value) => { this.setState({ssn : value}); }}
-                  setEmail={(value) => { this.setState({email : value}); }}
-                  setPhone={(value) => { this.setState({phone : value}); }}
-                  setAddress={(value) => { this.setState({address : value}); }}
-                  setPostalCode={(value) => { this.setState({postalCode : value}); }}
-                  setLocality={(value) => { this.setState({locality : value}); }}
-                  setNationalStudentNumber={(value) => { this.setState({nationalStudentNumber : value}); }}
                   setGuider={(value) => { this.setState({guider : value}); }}
                   setEnrollAs={(value) => { this.setState({enrollAs : value}); }}
-                  setNumMandatoryCourses={(value) => { this.setState({numMandatoryCourses : value}); }}
-                  enrollAs={this.state.enrollAs} 
-                  setSchoolType={(enrollAs) => {this.setState({enrollAs});}}
                   setPage={(page) => {this.setState({page});}}
                   newEnrolledAttendance={() => {this.newEnrolledAttendance();}}
                   newPlannedAttendance={() => {this.newPlannedAttendance();}}
