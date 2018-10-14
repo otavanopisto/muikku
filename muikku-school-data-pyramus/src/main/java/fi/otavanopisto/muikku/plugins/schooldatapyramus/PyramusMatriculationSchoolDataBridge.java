@@ -7,6 +7,8 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatricul
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataBridge;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
@@ -16,6 +18,9 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
 
   @Inject
   private PyramusClient pyramusClient;
+  
+  @Inject
+  private PyramusIdentifierMapper pyramusIdentifierMapper;
 
   @Override
   public String getSchoolDataSource() {
@@ -43,6 +48,15 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
   @Override
   public MatriculationExamAttendance createMatriculationExamAttendance() {
     return new MatriculationExamAttendance();
+  }
+
+  @Override
+  public Long getStudentId(SchoolDataIdentifier studentIdentifier) {
+    if (!getSchoolDataSource().equals(studentIdentifier.getDataSource())) {
+      throw new SchoolDataBridgeException("Invalid data source");
+    }
+    String identifier = studentIdentifier.getIdentifier();
+    return pyramusIdentifierMapper.getPyramusStudentId(identifier);
   }
 
 }

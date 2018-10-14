@@ -8,6 +8,8 @@ public interface MatriculationSchoolDataBridge {
 
 	public String getSchoolDataSource();
 	
+	public Long getStudentId(SchoolDataIdentifier studentIdentifier);
+	
 	public MatriculationExam getMatriculationExam();
 	
 	public MatriculationExamEnrollment createMatriculationExamEnrollment();

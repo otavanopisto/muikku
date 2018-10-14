@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.matriculation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -130,8 +131,8 @@ public class MatriculationRESTService {
     return Response.ok(result).build();
   }
 
-  private Long getStudentIdFromIdentifier(SchoolDataIdentifier identifier) {
-    return Long.valueOf(identifier.getIdentifier().split("-")[1]);
+  private long getStudentIdFromIdentifier(SchoolDataIdentifier identifier) {
+    return matriculationSchoolDataBridge.getStudentId(identifier);
   }
   
   @POST
@@ -145,8 +146,8 @@ public class MatriculationRESTService {
     if (loggedUser == null) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
-    long userId = getStudentIdFromIdentifier(loggedUser);
-    if (userId != enrollment.getStudentId()) {
+    Long userId = getStudentIdFromIdentifier(loggedUser);
+    if (!Objects.equals(userId, enrollment.getStudentId())) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
 
