@@ -53,9 +53,6 @@
         case 'hops-form':
           this._loadHopsForm();
           break;
-        case 'matriculation-enrollment':
-          this._loadMatriculationEnrollment();
-          break;
         default :
           alert('Unknown category');
       }
@@ -91,14 +88,6 @@
           this.element.find('form').submit(this._submitHops.bind(this));
         }).bind(this));
       }).bind(this));
-    },
-
-    _loadMatriculationEnrollment : function () {
-      this.element.addClass('loading');
-      this._clear();
-      var reactRoot = document.createElement('div');
-      this.element.appendChild(reactRoot);
-      ReactDOM.render(MatriculationEnrollmentForm, reactRoot);
     },
 
     _submitHops : function (e) {
@@ -343,7 +332,7 @@
             // Can't use mApi here because the endpoint might not exist
             $.get("/rest/matriculation/currentExam")
               .done(function(data) {render(data);})
-              .fail(function(data) {render(null);});
+              .fail(function() {render(null);});
           }
         }, this));
     },
