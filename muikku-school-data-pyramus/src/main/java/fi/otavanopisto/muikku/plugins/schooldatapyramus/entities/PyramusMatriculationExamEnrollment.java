@@ -5,6 +5,10 @@ import java.util.List;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
 
+/**
+ * @author Ilmo Euro
+ *
+ */
 public class PyramusMatriculationExamEnrollment
     implements MatriculationExamEnrollment {
 
@@ -117,6 +121,16 @@ public class PyramusMatriculationExamEnrollment
   public void setEnrollAs(String enrollAs) {
     this.enrollAs = enrollAs;
   }
+  
+  @Override
+  public boolean isRestartExam() {
+    return restartExam;
+  }
+
+  @Override
+  public void setRestartExam(boolean restartExam) {
+    this.restartExam = restartExam;
+  }
 
   @Override
   public int getNumMandatoryCourses() {
@@ -136,6 +150,16 @@ public class PyramusMatriculationExamEnrollment
   @Override
   public void setLocation(String location) {
     this.location = location;
+  }
+  
+  @Override
+  public boolean isCanPublishName() {
+    return canPublishName;
+  }
+
+  @Override
+  public void setCanPublishName(boolean canPublishName) {
+    this.canPublishName = canPublishName;
   }
 
   @Override
@@ -189,8 +213,10 @@ public class PyramusMatriculationExamEnrollment
   public String nationalStudentNumber;
   public String guider;
   public String enrollAs;
+  public boolean restartExam;
   public int numMandatoryCourses;
   public String location;
+  public boolean canPublishName;
   public String message;
   public Long studentId;
   public String state;

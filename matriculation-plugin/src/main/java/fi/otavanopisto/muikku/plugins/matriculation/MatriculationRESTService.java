@@ -139,8 +139,10 @@ public class MatriculationRESTService {
     schoolDataEntity.setNationalStudentNumber(enrollment.getNationalStudentNumber());
     schoolDataEntity.setGuider(enrollment.getGuider());
     schoolDataEntity.setEnrollAs(enrollment.getEnrollAs());
+    schoolDataEntity.setRestartExam(enrollment.isRestartExam());
     schoolDataEntity.setNumMandatoryCourses(enrollment.getNumMandatoryCourses());
     schoolDataEntity.setLocation(enrollment.getLocation());
+    schoolDataEntity.setCanPublishName(enrollment.isCanPublishName());
     schoolDataEntity.setMessage(enrollment.getMessage());
     schoolDataEntity.setStudentId(enrollment.getStudentId());
     schoolDataEntity.setState("PENDING");

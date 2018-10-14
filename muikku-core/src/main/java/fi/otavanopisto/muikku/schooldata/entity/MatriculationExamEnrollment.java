@@ -25,10 +25,14 @@ public interface MatriculationExamEnrollment {
   public void setGuider(String guider);
   public String getEnrollAs();
   public void setEnrollAs(String enrollAs);
+  boolean isRestartExam();
+  void setRestartExam(boolean restartExam);
   public int getNumMandatoryCourses();
   public void setNumMandatoryCourses(int numMandatoryCourses);
   public String getLocation();
   public void setLocation(String location);
+  boolean isCanPublishName();
+  void setCanPublishName(boolean canPublishName);
   public String getMessage();
   public void setMessage(String message);
   public Long getStudentId();

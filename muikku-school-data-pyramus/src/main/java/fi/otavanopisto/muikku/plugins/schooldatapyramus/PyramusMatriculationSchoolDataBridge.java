@@ -4,7 +4,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExam;
-import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataBridge;
@@ -43,7 +42,7 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
 
   @Override
   public MatriculationExamAttendance createMatriculationExamAttendance() {
-    return new PyramusMatriculationExamAttendance();
+    return new MatriculationExamAttendance();
   }
 
 }
