@@ -25,6 +25,7 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -50,6 +51,9 @@ public class MatriculationRESTService {
   @Inject
   private TranscriptOfRecordsController torController;
   
+  @Inject
+  private SessionController sessionController;
+  
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_GET_EXAM)
   @Path("/currentExam")
@@ -67,7 +71,11 @@ public class MatriculationRESTService {
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
     }
-    long studentId = Long.valueOf(identifier.getIdentifier().split("-")[1]);
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    if (!identifier.equals(loggedUser)) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+    long studentId = getStudentIdFromIdentifier(identifier);
     User user = userController.findUserByIdentifier(identifier);
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
@@ -121,6 +129,10 @@ public class MatriculationRESTService {
     
     return Response.ok(result).build();
   }
+
+  private Long getStudentIdFromIdentifier(SchoolDataIdentifier identifier) {
+    return Long.valueOf(identifier.getIdentifier().split("-")[1]);
+  }
   
   @POST
   @RESTPermit(MatriculationPermissions.MATRICULATION_SEND_ENROLLMENT)
@@ -128,6 +140,16 @@ public class MatriculationRESTService {
   public Response sendEnrollment(MatriculationExamEnrollment enrollment) {
     fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment 
       schoolDataEntity = matriculationSchoolDataBridge.createMatriculationExamEnrollment();
+
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    if (loggedUser == null) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    long userId = getStudentIdFromIdentifier(loggedUser);
+    if (userId != enrollment.getStudentId()) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+
     schoolDataEntity.setId(null);
     schoolDataEntity.setName(enrollment.getName());
     schoolDataEntity.setSsn(enrollment.getSsn());
