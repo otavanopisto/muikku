@@ -93,39 +93,6 @@ public class LoginDetailController {
     
     return null;
   }
-
-  public List<LoginDetails> getLogins(SchoolDataIdentifier userIdentifier, Date from, Date to) {
-	List<LoginDetails> result = new ArrayList<>();
-	    
-	HashMap<String, Object> query = new HashMap<String, Object>();
-	query.put("userIdentifier", userIdentifier.toId());
-	LogProvider provider = getProvider(LOG_PROVIDER);
-	    
-    if (provider != null) {
-      ArrayList<HashMap<String,Object>> logEntries = provider.getLogEntriesOn(COLLECTION_NAME, query, from, to);
-      if (logEntries != null) {
-        for (HashMap<String,Object> logEntry : logEntries) {
-          if (StringUtils.equals((String) logEntry.get("eventType"), "login")) {
-            String userIdentifierId = (String) logEntry.get("userIdentifier");
-            String authenticationProvder = (String) logEntry.get("authenticationProvder");
-            String address = (String) logEntry.get("address");
-            Long time = NumberUtils.createLong((String) logEntry.get("time"));
-            
-            if (!StringUtils.equals(userIdentifierId, userIdentifier.toId())) {
-              logger.severe(String.format("Query returned login details for userIdentifer %s instead of requested %s", userIdentifierId, userIdentifier.toId()));
-              continue;
-            }
-            result.add(new LoginDetails(userIdentifier, authenticationProvder, address, time != null ? new Date(time) : null));
-          }
-        }
-      } else {
-        logger.severe(String.format("Could not list user's last logins log provider returned null"));
-      }
-    } else {
-      logger.severe(String.format("Could not list user's last logins because log provider %s could not be found", LOG_PROVIDER));
-    }
-	  return result;
-  }
   
   private LogProvider getProvider(String name) {
     Iterator<LogProvider> providers = logProviders.iterator();

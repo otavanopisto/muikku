@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.logindetails;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -62,33 +61,6 @@ public class LoginDetailsRESTService extends AbstractRESTService {
       result.add(new LoginDetailsRestModel(loginDetails.getUserIdentifier().toId(), loginDetails.getAuthenticationProvder(), loginDetails.getAddress(), loginDetails.getTime()));
     }
     
-    return Response.ok(result).build();
-  }
-  
-  @GET
-  @Path("/students/{STUDENTIDENTIFIER}/loginson")
-  @RESTPermit (handling = Handling.INLINE)
-  public Response listLogins(@PathParam ("STUDENTIDENTIFIER") String studentId, @QueryParam ("from") Date from, @QueryParam ("to") Date to) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
-      if (!sessionController.hasEnvironmentPermission(LoginDetailsPermissions.LIST_USER_LOGIN_DETAILS)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    
-    List<Date> result = new ArrayList<>();
-    List<LoginDetails> Logins = loginDetailController.getLogins(studentIdentifier, from, to);
-    for (LoginDetails loginDetails : Logins) {
-      result.add(loginDetails.getTime());
-    }
     return Response.ok(result).build();
   }
 }

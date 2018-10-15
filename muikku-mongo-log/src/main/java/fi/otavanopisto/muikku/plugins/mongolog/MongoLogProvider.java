@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.mongolog;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -111,30 +110,6 @@ public class MongoLogProvider implements LogProvider {
       return results;
     } catch (Exception e) {
       logger.warning("Connection to mongoDB timed out!, disabling logging to mongoDB");
-      enabled = false;
-      return null;
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public ArrayList<HashMap<String, Object>> getLogEntriesOn(String collection, Map<String, Object> query, Date from, Date to) {
-    if (!enabled) {
-      return null;
-    }
-    
-    try {
-      DBCollection c = db.getCollection(collection);
-      BasicDBObject queryObject = new BasicDBObject();
-      queryObject.putAll(query);
-      queryObject.put("time", new BasicDBObject("$gt", String.valueOf((long)from.getTime()/1000)).append("$lt", String.valueOf((long)to.getTime()/1000)));
-      DBCursor cursor = c.find(queryObject).sort(new BasicDBObject("time", -1));
-      ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
-      while (cursor.hasNext()) {
-        results.add((HashMap<String, Object>) cursor.next().toMap());
-      }
-      return results;
-    } catch (Exception e) {
       enabled = false;
       return null;
     }

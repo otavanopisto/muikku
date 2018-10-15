@@ -3,17 +3,17 @@ import * as React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {StateType} from '~/reducers';
+import {WorkspaceListType, ActivityLogType} from '~/reducers/main-function/workspaces';
 import WorkspaceFilter from './filters/workspace-filter';
-import {WorkspaceListType, WorkspaceType, WorkspaceActivityStatisticsType} from '~/reducers/main-function/workspaces';
 import GraphFilter from './filters/graph-filter';
 import '~/sass/elements/chart.scss';
 
 let AmCharts: any = null;
 
 interface CurrentStudentStatisticsProps {
+  activityLogs: Array<ActivityLogType>,
   i18n: i18nType,
-  workspaces: WorkspaceListType,
-  logins: Array<string>
+  workspaces: WorkspaceListType
 }
 
 interface CurrentStudentStatisticsState {
@@ -23,10 +23,27 @@ interface CurrentStudentStatisticsState {
   filteredGraphs: string[]
 }
 
+interface MainChartData {
+  EVALUATION_REQUESTED?: number,
+  EVALUATION_GOTINCOMPLETED?: number,
+  EVALUATION_GOTFAILED?: number,
+  EVALUATION_GOTPASSED?: number,
+  SESSION_LOGGEDIN?: number,
+  WORKSPACE_VISIT?: number,
+  MATERIAL_EXERCISEDONE?: number,
+  MATERIAL_ASSIGNMENTDONE?: number,
+  FORUM_NEWMESSAGE?: number,
+  FORUM_NEWTHREAD?: number,
+  NOTIFICATION_ASSESMENTREQUEST?: number,
+  NOTIFICATION_NOPASSEDCOURSES?: number,
+  NOTIFICATION_SUPPLEMENTATIONREQUEST?: number,
+  NOTIFICATION_STUDYTIME?: number
+}
+
 enum Graph {
-  LOGINS = "logins",
-  ASSIGNMENTS = "assignments",
-  EXERCISES = "exercises"
+  SESSION_LOGGEDIN = "logins",
+  MATERIAL_ASSIGNMENTDONE = "assignments",
+  MATERIAL_EXERCISEDONE = "exercises"
 }
 
 var ignoreZoomed: boolean = true;
@@ -148,41 +165,70 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
     //NOTE: The unused data can be cut here. (Option 1)
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
-    let chartDataMap = new Map<string, {logins?: number, assignments?: number, exercises?: number}>();
-    chartDataMap.set(new Date().toISOString().slice(0, 10), {"logins": 0, "assignments": 0, "exercises": 0});
-      this.props.logins.map((login)=>{
-        let date = login.slice(0, 10);
-        let entry = chartDataMap.get(date);
-        if (entry == null)
-          entry = {"logins": 1};
-        else
-        entry.logins++;
+    let chartDataMap = new Map<string, MainChartData>();
+    chartDataMap.set(new Date().toISOString().slice(0, 10), {SESSION_LOGGEDIN: 0, WORKSPACE_VISIT: 0, MATERIAL_EXERCISEDONE: 0, MATERIAL_ASSIGNMENTDONE: 0, FORUM_NEWMESSAGE: 0, FORUM_NEWTHREAD: 0});
+      this.props.activityLogs.map((log)=>{
+        let date = log.timestamp.slice(0, 10);
+        let entry = chartDataMap.get(date) || {};
+        switch(log.type){
+        case "SESSION_LOGGEDIN":
+          entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
+          break;
+        case "FORUM_NEWMESSAGE":
+          entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
+          break;
+        case "FORUM_NEWTHREAD":
+          entry.FORUM_NEWTHREAD = entry.FORUM_NEWTHREAD + 1|| 1;
+          break;
+        case "NOTIFICATION_ASSESMENTREQUEST":
+          entry.NOTIFICATION_ASSESMENTREQUEST = entry.NOTIFICATION_ASSESMENTREQUEST + 1|| 1;
+          break;
+        case "NOTIFICATION_NOPASSEDCOURSES":
+          entry.NOTIFICATION_NOPASSEDCOURSES = entry.NOTIFICATION_NOPASSEDCOURSES + 1|| 1;
+          break;
+        case "NOTIFICATION_SUPPLEMENTATIONREQUEST":
+          entry.NOTIFICATION_SUPPLEMENTATIONREQUEST = entry.NOTIFICATION_SUPPLEMENTATIONREQUEST + 1|| 1;
+          break;
+        case "NOTIFICATION_STUDYTIME":
+          entry.NOTIFICATION_STUDYTIME = entry.NOTIFICATION_STUDYTIME + 1|| 1;
+          break;
+        default:
+          break;
+        }
         chartDataMap.set(date, entry);
       });
     
     let workspaces: {id: number, name: string, isEmpty: boolean}[] = [];
     this.props.workspaces.map((workspace)=>{
-      workspaces.push({id: workspace.id, name: workspace.name, isEmpty: workspace.activityStatistics.records.length == 0 });
+      workspaces.push({id: workspace.id, name: workspace.name, isEmpty: workspace.activityLogs.length == 0 });
       if (!this.state.filteredWorkspaces.includes(workspace.id)){
-        workspace.activityStatistics.records.map((record)=>{
-          let date = record.date.slice(0, 10);
-          let entry = chartDataMap.get(date);
-          if (record.type === "EVALUATED"){
-            if (entry == null)
-              entry = {"assignments": 1};
-            else if (entry.assignments == null)
-              entry = {...entry, "assignments": 1};
-            else
-              entry.assignments++;
-          }
-          
-          if (record.type === "EXERCISE"){
-            if (entry == null)
-              entry = {"exercises": 1};
-            else if (entry.exercises == null)
-              entry = {...entry, "exercises": 1};
-            else
-              entry.exercises++;
+        workspace.activityLogs.map((log)=>{
+          let date = log.timestamp.slice(0, 10);
+          let entry = chartDataMap.get(date) || {};
+          switch(log.type){
+          case "EVALUATION_REQUESTED":
+            entry.EVALUATION_REQUESTED = entry.EVALUATION_REQUESTED + 1 || 1;
+            break;
+          case "EVALUATION_GOTINCOMPLETED":
+            entry.EVALUATION_GOTINCOMPLETED = entry.EVALUATION_GOTINCOMPLETED + 1|| 1;
+            break;
+          case "EVALUATION_GOTFAILED":
+            entry.EVALUATION_GOTFAILED = entry.EVALUATION_GOTFAILED + 1|| 1;
+            break;
+          case "EVALUATION_GOTPASSED":
+            entry.EVALUATION_GOTPASSED = entry.EVALUATION_GOTPASSED + 1|| 1;
+            break;
+          case "WORKSPACE_VISIT":
+            entry.WORKSPACE_VISIT = entry.WORKSPACE_VISIT + 1|| 1;
+            break;
+          case "MATERIAL_EXERCISEDONE":
+            entry.MATERIAL_EXERCISEDONE = entry.MATERIAL_EXERCISEDONE + 1|| 1;
+            break;
+          case "MATERIAL_ASSIGNMENTDONE":
+            entry.MATERIAL_ASSIGNMENTDONE = entry.MATERIAL_ASSIGNMENTDONE + 1|| 1;
+            break;
+          default:
+            break;
           }
           chartDataMap.set(date, entry);
         })
@@ -202,49 +248,49 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
     let graphs = new Array;
-    if (!this.state.filteredGraphs.includes(Graph.LOGINS)){
+    if (!this.state.filteredGraphs.includes(Graph.SESSION_LOGGEDIN)){
       graphs.push({
-        "id": "logins",
-        "balloonText": this.props.i18n.text.get("plugin.guider.loginsTitle") + " <b>[[logins]]</b>",
+        "id": "SESSION_LOGGEDIN",
+        "balloonText": this.props.i18n.text.get("plugin.guider.loginsTitle") + " <b>[[SESSION_LOGGEDIN]]</b>",
         "fillAlphas": 0.7,
         "lineAlpha": 0.2,
         "lineColor": "#62c3eb",
-        "title": "logins",
+        "title": "SESSION_LOGGEDIN",
         "type": "column",
         "stackable": false,
         "clustered": false,
         "columnWidth": 0.6,
-        "valueField": "logins"
+        "valueField": "SESSION_LOGGEDIN"
       });
     }
     
-    if (!this.state.filteredGraphs.includes(Graph.ASSIGNMENTS)){
+    if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)){
       graphs.push({
-        "id": "assignments",
-        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[assignments]]</b>",
+        "id": "MATERIAL_ASSIGNMENTDONE",
+        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ce01bd",
-        "title": "assignments",
+        "title": "MATERIAL_ASSIGNMENTDONE",
         "type": "column",
         "clustered": false,
         "columnWidth": 0.4,
-        "valueField": "assignments"
+        "valueField": "MATERIAL_ASSIGNMENTDONE"
       });
     }
     
-    if (!this.state.filteredGraphs.includes(Graph.EXERCISES)){
+    if (!this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)){
       graphs.push({
-        "id": "exercises",
-        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[exercises]]</b>",
+        "id": "MATERIAL_EXERCISEDONE",
+        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ff9900",
-        "title": "exercises",
+        "title": "MATERIAL_EXERCISEDONE",
         "type": "column",
         "clustered": false,
         "columnWidth": 0.4,
-        "valueField": "exercises"
+        "valueField": "MATERIAL_EXERCISEDONE"
       });
     }
     
@@ -277,8 +323,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "categoryAxesSettings": {
         "minPeriod": "DD"
       },
-      "chartScrollbar": {
-        "graph": "logins",
+       "chartScrollbar": {
         "oppositeAxis": false,
         "offset": 30,
         "scrollbarHeight": 60,
@@ -312,9 +357,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       }
     };
     ignoreZoomed = true;
-    
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
-    let showGraphs: string[] = [Graph.LOGINS, Graph.ASSIGNMENTS, Graph.EXERCISES];
+    let showGraphs: string[] = [Graph.SESSION_LOGGEDIN, Graph.MATERIAL_ASSIGNMENTDONE, Graph.MATERIAL_EXERCISEDONE];
     return <div className="application-sub-panel__body">
       <div className="chart-legend">
         <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler}/>
@@ -328,9 +372,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
 
 function mapStateToProps(state: StateType){
   return {
+    activityLogs: state.guider.currentStudent.activityLogs,
     i18n: state.i18n,
-    workspaces: state.guider.currentStudent.workspaces,
-    logins: state.guider.currentStudent.logins
+    workspaces: state.guider.currentStudent.workspaces
   }
 };
 

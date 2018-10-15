@@ -6,7 +6,7 @@ import promisify from '~/util/promisify';
 import {UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, LastLoginStudentDataType} from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import {GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType} from '~/reducers/main-function/guider';
-import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, WorkspaceActivityStatisticsType, WorkspaceActivityRecordType} from '~/reducers/main-function/workspaces';
+import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/main-function/workspaces';
 import {VOPSDataType} from '~/reducers/main-function/vops';
 import {HOPSDataType} from '~/reducers/main-function/hops';
 import {StateType} from '~/reducers';
@@ -247,19 +247,18 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
                   })
                 ),
                 Promise.all(workspaces.map(async (workspace, index)=>{
-                  let activityRecords:WorkspaceActivityRecordType[] = <WorkspaceActivityRecordType[]>await promisify(mApi().workspace.workspaces.activityStatistics
-                      .read(workspace.id, {userIdentifier: id}), 'callback')();
-                    workspaces[index].activityStatistics = {records: activityRecords};
-                  })
+                  let activityLogs:ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
+                      .read(id, {workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')();
+                    workspaces[index].activityLogs = activityLogs;
+                })
                 )
               ]);
             }
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
           }),
-        //NOTE: This year span for now as a presentation of possible functionality. The logins as datasource for the chart seems to be replased later.
-        promisify(mApi().user.students.loginson.read(id, {from: new Date(new Date().getFullYear(), 0), to: new Date()}), 'callback')()
-          .then((logins: string[])=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "logins", value: logins}});
+        promisify(mApi().activitylogs.user.workspace.read(id, {from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')()
+          .then((activityLogs:ActivityLogType[])=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "activityLogs", value: activityLogs}});
         })
       ]);
       
