@@ -27,5 +27,5 @@
 {/files}
 
 {?matriculation}
-<a href="/jsf/matriculation">Ylioppilaskirjoituksiin ilmoittautuminen</a>
+<a href="/jsf/matriculation">{#localize key="plugin.records.matriculation" /}</a>
 {/matriculation} 
