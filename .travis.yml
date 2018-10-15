@@ -28,7 +28,6 @@ before_install:
 - tar xvf travis-encrypted.tar  
 - unset GEM_PATH
 - . travis-setenv.sh
-- . install_chromedriver.sh
 install:
 - . install_chromedriver.sh
 - . travis-install.sh
@@ -106,7 +105,7 @@ env:
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=indexpage
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=announcer
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=user
-#  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=discussions
+  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=discussions
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=guider
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=flags
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=tor
