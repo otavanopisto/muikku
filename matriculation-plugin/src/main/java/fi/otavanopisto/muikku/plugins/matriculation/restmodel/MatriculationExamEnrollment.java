@@ -124,12 +124,12 @@ public class MatriculationExamEnrollment {
     this.canPublishName = canPublishName;
   }
   
-  public Long getStudentId() {
-    return studentId;
+  public String getStudentIdentifier() {
+    return studentIdentifier;
   }
 
-  public void setStudentId(Long studentId) {
-    this.studentId = studentId;
+  public void setStudentIdentifier(String studentIdentifier) {
+    this.studentIdentifier = studentIdentifier;
   }
 
   public String getState() {
@@ -163,7 +163,7 @@ public class MatriculationExamEnrollment {
   private String location;
   private String message;
   private boolean canPublishName;
-  private Long studentId;
+  private String studentIdentifier;
   private String state;
   private List<MatriculationExamAttendance> attendances;
 

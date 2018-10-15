@@ -74,12 +74,12 @@ public class MatriculationExamInitialData {
     this.mandatoryCourses = mandatoryCourses;
   }
 
-  public Long getStudentId() {
-    return studentId;
+  public String getStudentIdentifier() {
+    return studentIdentifier;
   }
 
-  public void setStudentId(Long studentId) {
-    this.studentId = studentId;
+  public void setStudentIdentifier(String studentIdentifier) {
+    this.studentIdentifier = studentIdentifier;
   }
 
 
@@ -92,7 +92,7 @@ public class MatriculationExamInitialData {
   private String locality;
   private String guidanceCounselor;
   private Integer mandatoryCourses;
-  private Long studentId;
+  private String studentIdentifier;
 
 }
 

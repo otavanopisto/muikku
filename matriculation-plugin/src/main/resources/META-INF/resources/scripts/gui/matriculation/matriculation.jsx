@@ -440,7 +440,7 @@ class App extends React.Component {
       numMandatoryCourses: 0,
       location: "Otavan Opisto",
       message: "",
-      studentId: 0,
+      studentIdentifier: "",
       initialized: false,
       enrolledAttendances: [],
       plannedAttendances: [],
@@ -581,7 +581,7 @@ class App extends React.Component {
           numMandatoryCourses: this.state.numMandatoryCourses,
           location: this.state.location,
           message: this.state.message,
-          studentId: this.state.studentId,
+          studentIdentifier: this.state.studentIdentifier,
           canPublishName: this.state.canPublishName === 'true',
           attendances: ([
             ...this.state.enrolledAttendances,

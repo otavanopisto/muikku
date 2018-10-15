@@ -72,11 +72,10 @@ public class MatriculationRESTService {
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
     }
-    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
-    if (!identifier.equals(loggedUser)) {
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    if (!identifier.equals(loggedUserIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
-    long studentId = getStudentIdFromIdentifier(identifier);
     User user = userController.findUserByIdentifier(identifier);
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
@@ -116,7 +115,7 @@ public class MatriculationRESTService {
     result.setPostalCode(postalCode);
     result.setLocality(locality);
     result.setGuidanceCounselor("");
-    result.setStudentId(studentId);
+    result.setStudentIdentifier(identifier.toId());
     
     try {
       VopsLister.Result listerResult = torController.listVopsCourses(
@@ -142,15 +141,16 @@ public class MatriculationRESTService {
     fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment 
       schoolDataEntity = matriculationController.createMatriculationExamEnrollment();
 
-    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
-    if (loggedUser == null) {
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(enrollment.getStudentIdentifier());
+    if (loggedUserIdentifier == null) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
-    Long userId = getStudentIdFromIdentifier(loggedUser);
-    if (!Objects.equals(userId, enrollment.getStudentId())) {
+    if (!Objects.equals(loggedUserIdentifier, userIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
-
+    Long studentId = getStudentIdFromIdentifier(userIdentifier);
+    
     schoolDataEntity.setId(null);
     schoolDataEntity.setName(enrollment.getName());
     schoolDataEntity.setSsn(enrollment.getSsn());
@@ -167,7 +167,7 @@ public class MatriculationRESTService {
     schoolDataEntity.setLocation(enrollment.getLocation());
     schoolDataEntity.setCanPublishName(enrollment.isCanPublishName());
     schoolDataEntity.setMessage(enrollment.getMessage());
-    schoolDataEntity.setStudentId(enrollment.getStudentId());
+    schoolDataEntity.setStudentId(studentId);
     schoolDataEntity.setState("PENDING");
     List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance> attendances = new ArrayList<>();
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
