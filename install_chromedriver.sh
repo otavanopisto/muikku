@@ -1,5 +1,6 @@
 #!/bin/sh
 if [[ $test_suite = "headless" && $it_profile = "ui-it" ]]; then
+  cd ~
   wget https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip
   unzip chromedriver_linux64.zip
   sudo cp chromedriver /usr/bin/chromedriver
