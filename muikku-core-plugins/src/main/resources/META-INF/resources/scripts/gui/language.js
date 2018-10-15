@@ -1,3 +1,6 @@
+//DEPRECATED please remove once all the changes are done and remove all the references
+//in new version this uses dropdowns and a simple jsf form that can be put anywhere with
+//no specific functionality
 (function() {
   
   function openLanguageSelection() {

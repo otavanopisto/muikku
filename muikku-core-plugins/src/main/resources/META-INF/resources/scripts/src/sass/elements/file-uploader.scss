@@ -1,0 +1,64 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.file-uploader {
+  border: 2px solid $color-tertiary;
+  margin: 0 10px 20px;
+  padding: 20px;
+  position: relative;
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 20px;
+  }
+}
+
+.file-uploader__hint {
+	display: flex;
+	justify-content: center;
+}
+
+.uploaded-files {
+  padding: 0 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
+}
+
+.uploaded-files__item {
+	align-items: center;
+	display: flex;
+	padding: 14px 0;
+}
+
+.uploaded-files__item-attachment-icon {
+	display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  margin-right: 10px;
+}
+
+.uploaded-files__item-title {
+	color: $color-primary;
+	display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
+}
+
+.uploaded-files__item-delete-icon {
+	color: $color-fatal;
+	cursor: pointer;
+	display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-size: 1.25rem;
+  justify-content: flex-end;
+}
+

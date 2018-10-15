@@ -133,7 +133,7 @@ public class GuiderRESTService extends PluginRESTService {
     }
     
     WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-
+    
     return Response.ok(toRestModel(activity, assessmentState)).build();
   }
   

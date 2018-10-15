@@ -23,7 +23,7 @@
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
         ],
-        contentsCss : CONTEXTPATH +  '/css/flex/custom-ckeditor-contentcss_reading.css',
+        contentsCss : CONTEXTPATH +  '/css/deprecated/flex/custom-ckeditor-contentcss_reading.css',
         extraPlugins : {
           'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
           'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
@@ -372,8 +372,9 @@
       if ($(this._requestCard).attr('data-evaluated') == 'true') {
         var userEntityId = $(this._requestCard).attr('data-user-entity-id');
         var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+        var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
         if ($(this._requestCard).attr('data-graded') == 'true') {
-          this._loadWorkspaceAssessment(workspaceEntityId, userEntityId);
+          this._loadWorkspaceAssessment(workspaceUserEntityId);
         }
         else {
           this._loadWorkspaceSupplementationRequest(workspaceEntityId, userEntityId);
@@ -626,9 +627,9 @@
       $('.eval-modal').removeClass('no-scroll');
     },
     
-    _loadWorkspaceAssessment: function(workspaceEntityId, userEntityId) {
-      mApi().evaluation.workspace.user.assessment
-        .read(workspaceEntityId, userEntityId)
+    _loadWorkspaceAssessment: function(workspaceUserEntityId) {
+      mApi().evaluation.workspaceuser.assessment
+        .read(workspaceUserEntityId)
         .callback($.proxy(function (err, assessment) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -830,11 +831,10 @@
     },
 
     _saveWorkspaceAssessment: function() {
-      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+      var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
       var scaleAndGrade = $('#workspaceGrade').val().split('@');
-      mApi().evaluation.workspace.user.assessment
-        .create(workspaceEntityId, userEntityId, {
+      mApi().evaluation.workspaceuser.assessment
+        .create(workspaceUserEntityId, {
           assessorIdentifier: $('#workspaceAssessor').val(),
           gradingScaleIdentifier: scaleAndGrade[0],
           gradeIdentifier: scaleAndGrade[1],

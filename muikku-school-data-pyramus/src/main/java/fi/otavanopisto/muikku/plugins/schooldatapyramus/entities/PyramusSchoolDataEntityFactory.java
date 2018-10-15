@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import java.time.OffsetDateTime;
+
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
@@ -49,6 +50,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.CourseType;
+import fi.otavanopisto.pyramus.rest.model.CreditLinkCourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
 import fi.otavanopisto.pyramus.rest.model.Email;
 import fi.otavanopisto.pyramus.rest.model.PhoneNumber;
@@ -354,6 +356,32 @@ public class PyramusSchoolDataEntityFactory {
         courseAssessment.getVerbalAssessment(), courseAssessmentDate, courseAssessment.getPassing());
   }
 
+  public WorkspaceAssessment createLinkedCourseAssessment(CreditLinkCourseAssessment linkedCourseAssessment) {
+    SchoolDataIdentifier identifier = identifierMapper.getCreditLinkIdentifier(linkedCourseAssessment.getId());
+    
+    CourseAssessment courseAssessment = linkedCourseAssessment.getCredit();
+    
+    if (courseAssessment == null) {
+      logger.severe("Attempted to translate null course assessment into school data entity");
+      return null;
+    }
+    
+    SchoolDataIdentifier gradeIdentifier = identifierMapper.getGradeIdentifier(courseAssessment.getGradeId());
+    SchoolDataIdentifier gradingScaleIdentifier = identifierMapper.getGradingScaleIdentifier(courseAssessment.getGradingScaleId());
+    
+    Date courseAssessmentDate = null;
+    if (courseAssessment.getDate() != null) {
+      courseAssessmentDate = Date.from(courseAssessment.getDate().toInstant());
+    }
+    
+    return new PyramusWorkspaceAssessment(identifier.getIdentifier(),
+        identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
+        identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
+        gradeIdentifier == null ? null : gradeIdentifier.getIdentifier(),
+        gradingScaleIdentifier == null ? null : gradingScaleIdentifier.getIdentifier(),
+        courseAssessment.getVerbalAssessment(), courseAssessmentDate, courseAssessment.getPassing());
+  }
+
   public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {
     List<WorkspaceAssessment> result = new ArrayList<>();
     
@@ -553,10 +581,39 @@ public class PyramusSchoolDataEntityFactory {
         contactType != null ? contactType.getName() : null,
         email.getDefaultAddress());
   }
-  
+
   public TransferCredit createEntity(fi.otavanopisto.pyramus.rest.model.TransferCredit transferCredit) {
     SchoolDataIdentifier identifier = identifierMapper.getTransferCreditIdentifier(transferCredit.getId());
     SchoolDataIdentifier studentIdentifier = transferCredit.getStudentId() != null ? toIdentifier(identifierMapper.getStudentIdentifier(transferCredit.getStudentId())) : null;
+    SchoolDataIdentifier gradeIdentifier = transferCredit.getGradeId() != null ? identifierMapper.getGradeIdentifier(transferCredit.getGradeId()) : null;
+    SchoolDataIdentifier gradingScaleIdentifier = transferCredit.getGradingScaleId() != null ? identifierMapper.getGradingScaleIdentifier(transferCredit.getGradingScaleId()) : null;
+    SchoolDataIdentifier assessorIdentifier = transferCredit.getAssessorId() != null ? toIdentifier(identifierMapper.getStaffIdentifier(transferCredit.getAssessorId())) : null;
+    SchoolDataIdentifier lengthUnitIdentifier = transferCredit.getLengthUnitId() != null ? toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId())) : null;
+    SchoolDataIdentifier subjectIdentifier = transferCredit.getSubjectId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId())) : null;
+    SchoolDataIdentifier schoolIdentifier = transferCredit.getSchoolId() != null ? identifierMapper.getSchoolIdentifier(transferCredit.getSchoolId()) : null;
+    SchoolDataIdentifier curriculumIdentifier = transferCredit.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(transferCredit.getCurriculumId()) : null;
+    return new PyramusTransferCredit(identifier, 
+        studentIdentifier, 
+        transferCredit.getDate(), 
+        gradeIdentifier, 
+        gradingScaleIdentifier,
+        transferCredit.getVerbalAssessment(), 
+        assessorIdentifier, 
+        transferCredit.getCourseName(), 
+        transferCredit.getCourseNumber(), 
+        transferCredit.getLength(), 
+        lengthUnitIdentifier, 
+        schoolIdentifier, 
+        subjectIdentifier,
+        curriculumIdentifier,
+        transferCredit.getOptionality() == CourseOptionality.OPTIONAL ? Optionality.OPTIONAL : Optionality.MANDATORY);
+  }
+
+  public TransferCredit createLinkedTransferCredit(fi.otavanopisto.pyramus.rest.model.CreditLinkTransferCredit linkedTransferCredit) {
+    SchoolDataIdentifier identifier = identifierMapper.getCreditLinkIdentifier(linkedTransferCredit.getId());
+    SchoolDataIdentifier studentIdentifier = linkedTransferCredit.getStudentId() != null ? toIdentifier(identifierMapper.getStudentIdentifier(linkedTransferCredit.getStudentId())) : null;
+    
+    fi.otavanopisto.pyramus.rest.model.TransferCredit transferCredit = linkedTransferCredit.getCredit();
     SchoolDataIdentifier gradeIdentifier = transferCredit.getGradeId() != null ? identifierMapper.getGradeIdentifier(transferCredit.getGradeId()) : null;
     SchoolDataIdentifier gradingScaleIdentifier = transferCredit.getGradingScaleId() != null ? identifierMapper.getGradingScaleIdentifier(transferCredit.getGradingScaleId()) : null;
     SchoolDataIdentifier assessorIdentifier = transferCredit.getAssessorId() != null ? toIdentifier(identifierMapper.getStaffIdentifier(transferCredit.getAssessorId())) : null;

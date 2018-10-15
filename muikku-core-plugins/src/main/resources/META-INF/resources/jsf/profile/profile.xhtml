@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!-- <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/flex-config-view.xhtml">
+  template="/WEB-INF/templates/deprecated/flex-config-view.xhtml">
 
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
@@ -17,7 +17,7 @@
   </ui:define>
 
   <ui:define name="main-functionality-styles">
-    <link rel="stylesheet" type="text/css" href="/css/flex/profile.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/profile.css"/>
     <link rel="stylesheet" type="text/css" href="/scripts/croppie/croppie.css"/>
   </ui:define>
 
@@ -113,12 +113,17 @@
                           <div class="profile-button-wrapper">
                             <div class="save-profile-fields">#{i18n.text['plugin.profile.save.button']}</div>
                           </div>
-
                       </div>
                     </form>
                   </ui:fragment>
+                  
+                  <ui:fragment rendered="#{profileBackingBean.chatEnabled}">#{i18n.text['plugin.profile.chat.visibility']} 
+                    <div class="profile-chat-visibility">
+                    </div>
+                  </ui:fragment>
+                  
+                  
                 </div>
-
               </div>
             </section>
             <nav id="profileSectionNavigation" class="gc-navigation lg-flex-cell-5 md-flex-cell-6 sm-flex-hide">
@@ -127,11 +132,11 @@
                   <li class="profile-section-link active" data-link="personal">
                     <a jsf:outcome="profile.jsf">#{i18n.text['plugin.profile.links.personal']}</a>
                   </li>
-                  <!-- To Be Added In The Future
+                  To Be Added In The Future
                   <li class="profile-section-links">Työtilat</li>
                   <li class="profile-section-links">Suoritusrekisteri</li>
                   <li class="profile-section-links">Kaverit</li>
-                   -->
+                  
                 </ul>
               </div>
             </nav>
@@ -140,4 +145,22 @@
       </div>
     </ui:fragment>
   </ui:define>
+</ui:composition> -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/base.xhtml">
+  
+  <ui:define name="scripts">
+    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
+    <script defer="defer" jsf:name="scripts/dist/main-function.js" />
+  </ui:define>
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/main-function.css" />
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/vendor.css" />
+  </ui:define>
+
 </ui:composition>

@@ -20,6 +20,7 @@ import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 
+import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -93,6 +94,9 @@ public class CommunicatorController {
   private CommunicatorMessageRecipientWorkspaceGroupDAO communicatorMessageRecipientWorkspaceGroupDAO;
 
   @Inject
+  private TagController tagController;
+  
+  @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
   
@@ -100,6 +104,7 @@ public class CommunicatorController {
     Document doc = Jsoup.parseBodyFragment(html);
     doc = new Cleaner(
             Whitelist.relaxed()
+              .addTags("s")
               .addAttributes("a", "target")
               .addAttributes("img", "width", "height", "style")
               .addAttributes("i", "class")
@@ -123,6 +128,10 @@ public class CommunicatorController {
 
   public List<CommunicatorMessageRecipient> listReceivedItemsByUserAndRead(UserEntity userEntity, boolean read, boolean trashed) {
     return communicatorMessageRecipientDAO.listByUserAndRead(userEntity, read, trashed);
+  }
+  
+  public List<CommunicatorMessage> listThreadsByLabel(UserEntity userEntity, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listThreadsInLabelFolder(userEntity, label, firstResult, maxResults);
   }
   
   public List<CommunicatorMessage> listTrashItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
@@ -564,5 +573,15 @@ public class CommunicatorController {
     }
     return true;
   }
-  
+ 
+  public Set<String> tagIdsToStr(Set<Long> tagIds) {
+    Set<String> tagsStr = new HashSet<String>();
+    for (Long tagId : tagIds) {
+      Tag tag = tagController.findTagById(tagId);
+      if (tag != null)
+        tagsStr.add(tag.getText());
+    }
+    return tagsStr;
+  }
+
 }

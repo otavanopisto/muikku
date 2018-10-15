@@ -1,0 +1,414 @@
+// Generic
+$color-default: #fff;
+$color-default-contrast: #2c2c2c;
+$color-default-item-separator-border: #f2f2f2;
+$color-default-separator-border: #ebebeb;
+$color-default-helper: #b3b2b2;
+
+$color-inverse: $color-default-contrast;
+$color-inverse-contrast: $color-default;
+
+$color-warn: #ea7503;
+$color-warn-contrast: $color-default;
+
+$color-info: #009fe3;
+$color-info-contrast: $color-default;
+
+$color-fatal: #de3211;
+$color-fatal-contrast: $color-default;
+
+$color-error: #ff6600;
+$color-error-contrast: $color-default;
+
+$color-success: #24c118;
+$color-success-contrast: $color-default;
+
+$color-execute: #66b43b;
+$color-execute-contrast: $color-default;
+
+$color-clear: #ff6600;
+$color-clear-contrast: $color-default;
+
+$color-cancel: #7391a7;
+$color-cancel-contrast: $color-default;
+
+$color-loading: $color-inverse;
+$color-loading-contrast: $color-default;
+
+$color-primary: #009fe3;
+$color-primary-contrast: $color-default;
+
+$color-secondary: #72d200;
+$color-secondary-contrast: $color-default;
+
+$color-tertiary: #62c3eb;
+$color-tertiary-contrast: $color-default;
+
+$color-list-hover-background: #e7fffc;
+$color-list-active-background: rgba(208, 255, 249, 1);
+$color-list-selected-background: #29b0c4;
+
+// Labels
+$color-label-background: #f5f5f5;
+$color-label-mobile-selected-background: #97e1ef;
+
+// Workspace
+$color-workspace: #43cd80;
+
+// Signature
+$color-signature-border: #f2f2f2;
+$color-signature-background: #f8f8f8;
+
+// Evaluation
+$color-evaluation-request: $color-primary; 
+$color-grade-not-assessed: #b3b2b2;
+$color-grade-incomplete: #ea7503;
+$color-grade-passed: #2ed31c;
+$color-grade-failed: #4c4c4c;
+$color-task-evaluation: #e2ffe2;
+
+
+// Assignment & Exercise
+$color-assignment:#ce01bd;
+$color-exercise: #ff9900;
+
+// General
+$color-default-body: #f5f5f5;
+$color-overlay-background: rgba(0, 0, 0, 0.5);
+
+// Notification queue
+$color-notification-queue-item-container-shadow: rgba(0, 0, 0, 0.3);
+
+$color-notification-queue-item-border-color: rgba(255, 255, 255, 0.3);
+
+$color-notification-queue-item-default-background: $color-default;
+$color-notification-queue-item-default-text: $color-default-contrast;
+
+$color-notification-queue-item-primary-background: $color-primary;
+$color-notification-queue-item-primary-text: $color-primary-contrast;
+
+$color-notification-queue-item-warn-background: $color-warn;
+$color-notification-queue-item-warn-text: $color-warn-contrast;
+
+$color-notification-queue-item-info-background: $color-info;
+$color-notification-queue-item-info-text: $color-info-contrast;
+
+$color-notification-queue-item-fatal-background: $color-fatal;
+$color-notification-queue-item-fatal-text: $color-fatal-contrast;
+
+$color-notification-queue-item-error-background: $color-error;
+$color-notification-queue-item-error-text: $color-error-contrast;
+
+$color-notification-queue-item-success-background: $color-success;
+$color-notification-queue-item-success-text: $color-success-contrast;
+
+$color-notification-queue-item-loading-background: $color-loading;
+$color-notification-queue-item-loading-text: $color-loading-contrast;
+
+$color-notification-queue-item-secondary-background: $color-secondary;
+$color-notification-queue-item-secondary-text: $color-secondary-contrast;
+
+$color-notification-queue-item-inverse-background: $color-inverse;
+$color-notification-queue-item-inverse-text: $color-inverse-contrast;
+
+// Button
+$color-button-default-background: $color-default;
+$color-button-default-text: $color-default-contrast;
+
+$color-button-primary-background: $color-primary;
+$color-button-primary-text: $color-primary-contrast;
+
+$color-button-primary-save-background: $color-success;
+$color-button-primary-save-text: $color-primary-contrast;
+
+$color-button-warn-background: $color-warn;
+$color-button-warn-text: $color-warn-contrast;
+
+$color-button-info-background: $color-info;
+$color-button-info-text: $color-info-contrast;
+
+$color-button-fatal-background: $color-fatal;
+$color-button-fatal-text: $color-fatal-contrast;
+
+$color-button-error-background: $color-error;
+$color-button-error-text: $color-error-contrast;
+
+$color-button-success-background: $color-success;
+$color-button-success-text: $color-success-contrast;
+
+$color-button-execute-background: $color-execute;
+$color-button-execute-text: $color-execute-contrast;
+
+$color-button-clear-background: $color-clear;
+$color-button-clear-text: $color-clear-contrast;
+
+$color-button-cancel-background: $color-cancel;
+$color-button-cancel-text: $color-cancel-contrast;
+
+$color-button-loading-background: $color-loading;
+$color-button-loading-text: $color-loading-contrast;
+
+$color-button-secondary-background: $color-secondary;
+$color-button-secondary-text: $color-secondary-contrast;
+
+$color-button-inverse-background: $color-inverse;
+$color-button-inverse-text: $color-inverse-contrast;
+
+$color-button-disabled-background: #ccc;
+
+// Profile image button
+$color-button-profile-image-edit-delete-background: rgba(0, 0, 0, 0.5);
+$color-button-profile-image-edit-delete-hover-background: rgba(0, 0, 0, 0.9);
+
+// Button pill theme
+$color-button-pill-background: $color-primary;
+$color-button-pill-text: $color-default-contrast;
+$color-button-pill-background-disabled: #ccc;
+$color-button-pill-text-disabled: $color-default;
+$color-button-pill-shadow: rgba(255, 255, 255, 0.4);
+
+// HOPS
+
+$color-hops-readable-inline-background: #ecfafe;
+
+// Label theme
+$color-label-default: $color-inverse;
+$color-label-primary: $color-primary;
+$color-label-warn: $color-warn;
+$color-label-info: $color-info;
+$color-label-fatal: $color-fatal;
+$color-label-error: $color-error;
+$color-label-success: $color-success;
+$color-label-loading: $color-loading;
+$color-label-secondary: $color-secondary;
+$color-label-inverse: $color-default;
+
+// Text
+$color-text-default: $color-inverse;
+$color-text-link: $color-primary;
+$color-text-link-selected: $color-default;
+
+// Separator
+$color-separator-background: $color-inverse;
+
+// Navbar
+$color-navbar-default-background: #f5f5f5;
+$color-navbar-default-text: $color-inverse;
+$color-navbar-default-shadow: rgba(0, 0, 0, 0.2);
+
+// Links
+$color-link-frontpage-text: $color-inverse;
+$color-link-highlight-text: #00af00;
+$color-link-default-text: $color-primary;
+$color-link-inverse-text: $color-default;
+$color-link-default-background: rgba(0, 0, 0, 0);
+$color-link-highlight-background: rgba(0, 0, 0, 0);
+$color-link-hover-background: rgba(0, 0, 0, 0.05);
+$color-link-active-background: rgba(0, 0, 0, 0.1);
+$color-link-inverse-background: invisible;
+$color-link-application-item-footer: $color-primary;
+
+// Menu
+$color-menu-default-background: #f5f5f5;
+$color-menu-default-text: $color-inverse;
+$color-menu-default-header-background: rgba(0, 0, 0, 0.1);
+$color-menu-default-header-button-close: $color-default;
+$color-menu-default-header-button-close-background-active: rgba(255, 255, 255, 0.3);
+
+// dropdown
+$color-dropdown-default-background: #494949;
+$color-dropdown-default-text: $color-default;
+$color-dropdown-default-shadow: rgba(0, 0, 0, 0.3);
+
+// bubble
+$color-bubble-default-title: $color-primary;
+$color-bubble-default-content: $color-inverse;
+$color-bubble-default-border: #02a0e3;
+$color-bubble-default-highlight-border: $color-warn;
+$color-bubble-default-background: $color-default;
+$color-bubble-default-shadow: rgba(0, 0, 0, 0.15);
+
+// footer
+$color-footer-default-background: #454545;
+$color-footer-default-text: $color-default;
+$color-footer-plagscan-background: #2c2c2c;
+
+// card
+$color-card-default-background: $color-default;
+$color-card-default-border: #e2e3e3;
+$color-card-default-text: $color-inverse;
+
+// dialog
+$color-dialog-default-background: $color-default;
+$color-dialog-mobile-text: $color-inverse;
+$color-dialog-desktop-text: $color-default;
+$color-dialog-mobile-background: $color-default;
+$color-dialog-desktop-background: $color-primary;
+$color-dialog-default-title-text: #000;
+$color-dialog-default-shadow: rgba(0, 0, 0, 0.6);
+
+// Background
+$color-background-container-default-background: #f5f5f5;
+$color-background-container-default-text: $color-inverse;
+
+// social button
+$color-button-social-default-background: #454545;
+$color-button-social-default-text: $color-default;
+$color-button-social-highlight-background: $color-primary;
+$color-button-social-highlight-text: $color-default;
+
+// feed
+$color-feed-default-text: $color-inverse;
+$color-feed-default-date: #8c8c8c;
+$color-feed-item-description-active: $color-primary;
+
+// carousel
+$color-carousel-default-dot-background: #afafaf;
+$color-carousel-default-dot-border: $color-default;
+$color-carousel-default-dot-active-background: $color-warn;
+
+// hero
+$color-hero-default-background: #0089c6;
+
+// logo
+$color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
+
+// panel
+$color-panel-background: $color-default;
+$color-panel-border: #e2e2e2;
+$color-panel-shadow: rgba(0,0,0,0.05);
+
+// item list
+$color-item-list-item-font-color-active: #fff;
+$color-item-list-item-background: #fff;
+$color-item-list-item-background-hover: $color-list-hover-background;
+$color-item-list-item-background-active: $color-list-active-background;
+$color-item-list-item-aside-background: #f7f7f7;
+$color-item-list-item-aside-background-hover: rgba(208, 255, 249, 0.5);
+$color-item-list-item-aside-background-active: rgb(98, 174, 193);
+$color-item-list-icon-font-color: #4c4c4c;
+
+// indicator
+$color-indicator-background: $color-fatal;
+$color-indicator-text: $color-fatal-contrast;
+
+// application panel
+$color-application-panel-box-background: $color-default;
+$color-application-panel-box-border: $color-panel-border;
+
+// reading panel
+$color-reading-panel-box-background: $color-default;
+$color-reading-panel-box-border: $color-panel-border;
+
+// toc
+$color-toc-box-border: $color-panel-border;
+
+// application list
+$color-application-list-item-background: #fff;
+$color-application-list-item-fade-background: rgba(255, 255, 255, 0);
+$color-application-list-item-background-hover: $color-list-hover-background;
+$color-application-list-item-background-active: $color-list-active-background;
+$color-application-list-item-background-selected: $color-list-selected-background;
+$color-application-list-item-checkmark-selected: #fff;
+$color-application-list-item-course-border-selected: #29b0c4;
+
+// loader
+$color-loader-empty-ring: #f3f3f3;
+$color-loader-empty-rotating-piece: #3498db;
+
+// form fields
+$color-form-element-border: #62c3eb;
+$color-form-element-selected: #29b0c4;
+
+
+// form field input tag
+$color-form-element-selected-item-background:  $color-label-background;
+$color-form-element-tag-input-tag-border: #b1e8fe;
+$color-form-element-selected-item-text: $color-default-contrast;
+$color-form-element-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);
+
+// Environment dialog form elements
+$color-env-dialog-form-element-border: #f8a1ce;
+
+// autocomplete
+$color-autocomplete-list-border: #dcdcdc;
+$color-autocomplete-list-background-color: $color-default;
+$color-autocomplete-list-item-hover: #eee;
+$color-autocomplete-list-item-active: #ddd;
+$color-autocomplete-list-item-selected: #29B0C4;
+
+// Transferred from main-functions.scss
+
+// NAVBAR
+$color-environment-navbar-background: #009FE3;
+$color-environment-navbar-title: $color-default;
+$color-environment-navbar-item-menu-button: $color-default;
+
+// ICON LINKS
+$color-environment-link-icon-color: $color-default;
+$color-environment-link-icon-color-hover: $color-default;
+$color-environment-link-icon-color-active: $color-default;
+$color-environment-link-icon-border-top-color-active: rgba(255, 255, 255, 0.6);
+
+// DEFAULT LINKS
+$color-environment-link-language-background: $color-link-inverse-background;
+$color-environment-link-language-text: $color-link-inverse-text;
+$color-environment-link-language-hover-background: $color-link-hover-background;
+
+$color-environment-link-profile-menu-background: $color-link-default-background;
+$color-environment-link-profile-menu-hover-background: $color-link-hover-background;
+
+// DROPDOWN
+$color-environment-dropdown-language-picker-background: #494949;
+$color-environment-dropdown-language-picker-text: $color-default;
+$color-environment-dropdown-language-picker-shadow: rgba(0, 0, 0, 0.3);
+
+$color-environment-dropdown-profile-menu-background: $color-default;
+$color-environment-dropdown-profile-menu-text: $color-default-contrast;
+$color-environment-dropdown-profile-menu-shadow: rgba(0, 0, 0, 0.3);
+
+// BUTTONS
+$color-environment-button-pill-language-background: $color-inverse;
+$color-environment-button-pill-language-text: $color-inverse-contrast;
+
+$color-environment-button-pill-icon-search: $color-environment-navbar-background;
+$color-environment-button-pill-icon-user: #1FE00A;
+
+// MENU
+$color-environment-menu-header-background: $color-environment-navbar-background;
+$color-environment-link-menu-icon-background: $color-environment-navbar-background;
+$color-environment-link-menu-icon-color: $color-default;
+$color-environment-link-menu-profile-icon-background: $color-environment-button-pill-icon-user;
+$color-environment-link-menu-profile-icon-color: $color-environment-link-menu-icon-color;
+$color-environment-link-menu-instructions-icon-background: #E3005B;
+$color-environment-link-menu-instructions-icon-color: $color-default;
+$color-environment-link-menu-heldesk-icon-background: $color-environment-link-menu-instructions-icon-background;
+$color-environment-link-menu-helpdesk-icon-color: $color-environment-link-menu-instructions-icon-color;
+$color-environment-link-menu-logout-icon-background: #4c4c4c;
+$color-environment-link-menu-logout-icon-color: $color-default;
+$color-environment-link-menu-navicon-icon-color: $color-inverse;
+
+
+//  CATEGORIES
+$color-category-1: #0099ff; 
+$color-category-2: #ff9900;
+$color-category-3: #ff008d;
+$color-category-4: #0bf0f2;
+$color-category-5: #f00bf2;
+$color-category-6: #47ccae;
+$color-category-7: #7082b0;
+$color-category-8: #6eb5cf;
+$color-category-9: #ff0000;
+$color-category-10: #0cff00;
+$color-cagtegory-11: #000;
+
+@import "colors/frontpage";
+@import "colors/main-function";
+@import "colors/index";
+@import "colors/application-dialog";
+@import "colors/message";
+@import "colors/course";
+@import "colors/vops";
+@import "colors/announcement";
+@import "colors/pager";
+@import "colors/profile";
