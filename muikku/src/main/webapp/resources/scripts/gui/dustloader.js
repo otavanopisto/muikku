@@ -37,11 +37,15 @@ dust.onLoad = function(name, callback) {
   };
 };
 
+//DEPRECATED
 dust.filters.formatDate = function(value) {
+  console && console.warn && console.warn("formatDate is deprecated");
   return formatDate(moment(value).toDate());
 };
 
+//DEPRECATED
 dust.filters.formatTime = function(value) {
+  console && console.warn && console.warn("formatTime is deprecated");
   return formatTime(moment(value).toDate());
 };
 
@@ -60,6 +64,52 @@ dust.filters.shorten50 = function (value) {
 dust.helpers.contextPath = function(chunk, context, bodies) {
   return chunk.write(CONTEXTPATH);
 };
+
+dust.helpers.moment = function (chunk, context, bodies, params) {
+  var type = context.resolve(params.type, chunk, context) || 'format';
+  var date = context.resolve(params.date, chunk, context) || new Date();
+  var format = context.resolve(params.format, chunk, context) || 'MMM Do YYYY';
+  var input = context.resolve(params.input, chunk, context) || 1;
+  var value = context.resolve(params.value, chunk, context) || 'days';
+  var locale = getLocale();
+
+  moment.locale(locale);
+
+  switch (type) {
+    case 'format':
+      return chunk.write(moment(new Date(date)).format(format));
+      break;
+    case 'fromNow':
+      return chunk.write(moment(new Date(date)).fromNow());
+      break;
+    case 'subtract':
+      return chunk.write(moment(new Date(date)).subtract(input, value).calendar());
+      break;
+    case 'add':
+      return chunk.write(moment(new Date(date)).add(input, value).calendar());
+      break;
+  }
+};
+
+dust.helpers.color = function(chunk, context, bodies, params) {
+  var color = context.resolve(params.color, chunk, context);
+  if (!color){
+    if (console && console.warn){
+      console.warn("missing color in dust template");
+    }
+    return chunk.write("red");
+  }
+  
+  var b = (color & 255).toString(16);
+  var g = ((color >> 8) & 255).toString(16);
+  var r = ((color >> 16) & 255).toString(16);
+
+  var rStr = r.length == 1 ? "0" + r : r;
+  var gStr = g.length == 1 ? "0" + g : g;
+  var bStr = b.length == 1 ? "0" + b : b;
+  
+  return chunk.write("#" + rStr + gStr + bStr);
+}
 
 function renderDustTemplate(templateName, json, callback) {
   var base = dust.makeBase({

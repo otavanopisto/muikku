@@ -49,7 +49,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         .build();
       
       try {
-        navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/users", workspace.getUrlName()), false);
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
         assertText(".workspace-students-listing-wrapper .workspace-users-name", "Tester, Student (Test Study Programme)");
         waitForPresent(".workspace-teachers-listing-wrapper .workspace-users-name");
@@ -85,7 +85,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         .build();
       
       try {
-        navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/users", workspace.getUrlName()), false);
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-archive");
         waitAndClick(".archive-button");
@@ -126,7 +126,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         .addCourseStudent(courseId, courseStudent)
         .build();
       try {
-        navigate(String.format("/workspace/%s/users", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/users", workspace.getUrlName()), false);
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-archive");
         waitAndClick(".archive-button");

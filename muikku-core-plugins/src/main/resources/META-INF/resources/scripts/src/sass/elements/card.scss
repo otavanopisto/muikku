@@ -1,0 +1,106 @@
+//
+// A default nice looking card designed to be inside a container
+//
+// div.card
+//    img.card-image?
+//    div.card-content?
+//      div.card-title
+//      div.card-text
+//    div.card-footer?
+//
+
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.card {
+  background-color: $color-card-default-background;
+  border: solid 1px $color-card-default-border;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  font-family: $card-font-family;
+  height: 100%;
+  min-height: 45px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.card__image {
+  position: relative;
+  width: 100%;
+}
+
+.card__content {
+  color: $color-card-default-text;
+  flex-grow: 1;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  line-height: 1.2rem;
+  padding: 1.1rem;
+  position: relative;
+  text-align: left;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    line-height: 1.375rem;
+    padding: 1.6rem;
+  }
+}
+
+.card__title {
+  color: $color-frontpage-text-title;
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1;
+  overflow: hidden;
+  padding-bottom: 1.1rem;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad){
+    font-size: 1.625rem;
+    font-weight: 300;
+    padding-bottom: 1.6rem;
+  }
+}
+    
+.card__text {
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.card__footer {
+  padding: 0 1.1rem 1.1rem;
+  position: relative;
+  text-align: left;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 1.6rem 1.6rem;
+  }
+}
+ 
+.card__title--frontpage-upper-secondary-school {
+  color: $color-frontpage-card-upper-secondary-school-title;
+}
+
+.card__title--frontpage-secondary-school {
+  color: $color-frontpage-card-secondary-school-title;
+}
+
+.card__title--frontpage-open-materials {
+  color: $color-frontpage-card-open-materials-title;
+}
+
+.card--frontpage-otavan-opisto {
+  margin-bottom: 90px;
+  padding: 20px;
+}
+

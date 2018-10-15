@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.rest.model;
 
 import java.util.Date;
+import java.util.List;
+
+import fi.otavanopisto.muikku.rest.model.StudentFlag;
 
 public class Student {
 
@@ -9,7 +12,7 @@ public class Student {
 
   public Student(String id, String firstName, String lastName, String nickName, String studyProgrammeName, Boolean hasImage, String nationality, String language, String municipality, String school,
       String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier,
-      boolean updatedByStudent) {
+      boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -27,6 +30,8 @@ public class Student {
     this.studyTimeEnd = studyTimeEnd;
     this.curriculumIdentifier = curriculumIdentifier;
     this.updatedByStudent = updatedByStudent;
+    this.userEntityId = userEntityId;
+    this.setFlags(flags);
   }
   
   public String getId() {
@@ -156,6 +161,22 @@ public class Student {
   public void setUpdatedByStudent(boolean updatedByStudent) {
     this.updatedByStudent = updatedByStudent;
   }
+  
+  public List<StudentFlag> getFlags() {
+	return flags;
+  }
+
+  public void setFlags(List<StudentFlag> flags) {
+	this.flags = flags;
+  }
+
+  public Long getUserEntityId() {
+	return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+	this.userEntityId = userEntityId;
+  }
 
   private String id;
   private String firstName;
@@ -173,4 +194,6 @@ public class Student {
   private Date studyTimeEnd;
   private String curriculumIdentifier;
   private boolean updatedByStudent;
+  private Long userEntityId;
+  private List<StudentFlag> flags;
 }

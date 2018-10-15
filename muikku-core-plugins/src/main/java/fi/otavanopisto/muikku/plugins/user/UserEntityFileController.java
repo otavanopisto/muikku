@@ -28,6 +28,10 @@ public class UserEntityFileController {
     return userEntityFile;
   }
   
+  public void deleteUserEntityFile(UserEntityFile userEntityFile) {
+    userEntityFileDAO.delete(userEntityFile);
+  }
+  
   public UserEntityFile findByUserEntityAndIdentifier(UserEntity userEntity, String identifier) {
     return userEntityFileDAO.findByUserEntityAndIdentifier(userEntity, identifier);
   }

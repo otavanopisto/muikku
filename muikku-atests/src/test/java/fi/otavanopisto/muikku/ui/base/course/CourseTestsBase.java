@@ -32,7 +32,7 @@ public class CourseTestsBase extends AbstractUITest {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.className("workspace-title")).size() > 0;
       assertTrue(elementExists);
@@ -47,7 +47,7 @@ public class CourseTestsBase extends AbstractUITest {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-home-workspace")).size() > 0;
 
@@ -63,7 +63,7 @@ public class CourseTestsBase extends AbstractUITest {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-guides")).size() > 0;
 
@@ -79,7 +79,7 @@ public class CourseTestsBase extends AbstractUITest {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-materials")).size() > 0;
 
@@ -95,7 +95,7 @@ public class CourseTestsBase extends AbstractUITest {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-bubble")).size() > 0;
       
@@ -111,7 +111,7 @@ public class CourseTestsBase extends AbstractUITest {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-members")).size() > 0;
       
@@ -127,7 +127,7 @@ public class CourseTestsBase extends AbstractUITest {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-journal")).size() > 0;
       WireMock.reset();
@@ -143,7 +143,7 @@ public class CourseTestsBase extends AbstractUITest {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".workspace-title");
       assertVisible(".workspace-unpublish-button");
       assertNotVisible(".workspace-publish-button");
@@ -191,7 +191,7 @@ public class CourseTestsBase extends AbstractUITest {
       try{
         mockBuilder.mockLogin(student);
         login();
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         
         waitForElementToBePresent(By.className("workspace-title"));
         waitForPresent(".materials-progress-evaluated-status");
@@ -262,7 +262,7 @@ public class CourseTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".materials-progress-evaluated-status");
         boolean evaluatedExists = getWebDriver().findElements(By.cssSelector(".materials-progress-evaluated-status")).size() > 0;
         assertTrue(evaluatedExists);
@@ -353,17 +353,23 @@ public class CourseTestsBase extends AbstractUITest {
     .addCourseStudent(courseId, courseStudent)
     .build();
     try{
-      navigate("/profile", true);
-      waitForPresent(".profile-vacation-date");
-      sendKeys(".profile-vacation-date input[name=\"profile-vacation-start\"]", "21.12.2010");
-      sendKeys(".profile-vacation-date input[name=\"profile-vacation-end\"]", "21.12.2025");
-      waitAndClick(".save-profile-fields");
+      navigate("/profile", false);
+      waitForPresent(".profile-element__item:nth-child(2) .react-datepicker-wrapper .react-datepicker__input-container input");
+      sendKeys(".profile-element__item:nth-child(2) .react-datepicker-wrapper .react-datepicker__input-container input", "21.12.2010");
+      waitAndClick(".profile-element__title");
+      waitAndClick(".profile-element__title");
+      waitForPresent(".profile-element__item:nth-child(3) .react-datepicker-wrapper .react-datepicker__input-container input");
+      sendKeys(".profile-element__item:nth-child(3) .react-datepicker-wrapper .react-datepicker__input-container input", "21.12.2025");
+      waitAndClick(".profile-element__title");
+      waitAndClick(".profile-element__title");
+      waitAndClick(".button--primary-function-save");
       logout();
       mockBuilder.mockLogin(student);
       login();
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      selectFinnishLocale();
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".workspace-teacher-info .vacation-period");
-      assertNotTextIgnoreCase(".workspace-teacher-info .vacation-period", "Unavailable 21.12.2010 - 21.12.2025");      
+      assertTextIgnoreCase(".workspace-teacher-info .vacation-period", "Poissa 21.12.2010 - 21.12.2025");      
     }finally{
       WireMock.reset();
       deleteWorkspace(workspace.getId());  

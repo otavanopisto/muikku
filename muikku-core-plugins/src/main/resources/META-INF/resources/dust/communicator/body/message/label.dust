@@ -1,0 +1,4 @@
+<span class="communicator text communicator-text-tag">
+  <span class="icon icon-tag" style="color:{@color color="{labelColor}"/}"></span>
+  {labelName}
+</span>
