@@ -32,7 +32,6 @@
   flex-flow: column nowrap;
   flex-shrink: 1;
   justify-content: flex-end;
-  margin: calc(#{$navbar-mobile-height} * 1.35) auto 0;
   max-width: 100%;
   min-height: 150px;
   position: relative;
@@ -40,7 +39,6 @@
   @include breakpoint($breakpoint-pad) {
     border: 5px solid $color-hero-workspace-background;
     justify-content: center;
-    margin: calc(#{$navbar-desktop-height} * 1.5) auto 0;
     min-height: 196px;
     width: auto;
   }
@@ -50,7 +48,6 @@
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
-    margin: calc(#{$navbar-desktop-height} * 1.5) auto 0;
     max-width: calc(#{$breakpoint-max-usable-screen} - 20px);
     min-height: 270px;
   }
