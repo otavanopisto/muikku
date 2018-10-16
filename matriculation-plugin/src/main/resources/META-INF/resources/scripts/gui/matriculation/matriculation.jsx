@@ -425,6 +425,7 @@ class App extends React.Component {
   constructor() {
     super({});
     const date = new Date();
+    // Use strings for boolean choices because they work well with <select>s
     this.state = {
       page: 1,
       name: "",
@@ -534,6 +535,7 @@ class App extends React.Component {
   }
 
   isConflictingAttendances() {
+    // Can't enroll to two subjects that are in the same group
     const conflictingGroups = [
       ['AI', 'S2'],
       ['UE', 'ET', 'YO', 'KE', 'GE', 'TT'],
@@ -554,6 +556,15 @@ class App extends React.Component {
                 && group.includes(subject2)) {
               return true;
           }
+        }
+      }
+    }
+
+    // can't have duplicate subjects
+    for (let i=0; i<subjects.length; i++) {
+      for (let j=0; j<i; j++) {
+        if (subjects[i] == subjects[j]) {
+          return true;
         }
       }
     }
@@ -619,11 +630,13 @@ class App extends React.Component {
           ? <div class="error">{this.state.error}</div>
           : null}
         <form className="pure-form pure-form-stacked matriculation-form" onSubmit={(e) => {e.preventDefault();}}>
+          {/* Page 1 of the wizard contains an introductory text */}
           { this.state.page === 1
               ? <Page1
                 setPage={(page) => {this.setState({page});}}
                 />
               : null }
+          {/* Page 2 contains basic contact information and input for the exams the student enrolls into */}
           { this.state.page === 2
               ? <Page2 {...this.state}
                   setGuider={(value) => { this.setState({guider : value}); }}
@@ -641,6 +654,7 @@ class App extends React.Component {
                   conflictingAttendances={this.isConflictingAttendances()}
                 />
               : null }
+          {/* Page 3 contains practical choices for doing the exam (location, extra info etc) */}
           { this.state.page === 3
               ? <Page3 {...this.state}
                 setLocation={(location) => {this.setState({location});}}
