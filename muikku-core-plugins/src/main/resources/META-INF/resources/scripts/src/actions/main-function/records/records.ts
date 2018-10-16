@@ -56,7 +56,6 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       if (getState().records.userDataStatus !== "WAIT"){
         return;
       }
-      
       dispatch({
         type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
         payload: <AllStudentUsersDataStatusType>"LOADING"

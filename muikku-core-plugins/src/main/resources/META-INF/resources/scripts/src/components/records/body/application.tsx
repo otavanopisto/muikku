@@ -6,6 +6,7 @@ import Records from './application/records';
 import CurrentRecord from './application/current-record';
 import Vops from './application/vops';
 import Hops from './application/hops';
+import Summary from './application/summary';
 import {StateType} from '~/reducers';
 import Toolbar from './application/toolbar';
 
@@ -30,6 +31,7 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
         <CurrentRecord/>
         <Vops/>
         <Hops/>
+        <Summary/>
       </ApplicationPanel>
     </div>);
   }

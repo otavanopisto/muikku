@@ -36,9 +36,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     super(props);
   }    
   render(){    
-    return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>    
-      <div className="application-sub-panel"></div>
-    </BodyScrollKeeper>
+    
+      if (this.props.records.location !== "summary") {
+        return null;        
+      } else {
+        return <div className="application-sub-panel">Huuhaa</div>
+      }
   }
 }
 
