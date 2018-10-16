@@ -6,6 +6,7 @@ import title from './base/title';
 import websocket from './util/websocket';
 
 import workspaces from './workspaces';
+import announcements from './announcements';
 
 import {combineReducers} from 'redux';
 
@@ -17,5 +18,6 @@ export default combineReducers({
   websocket,
   title,
   
-  workspaces
+  workspaces,
+  announcements
 });

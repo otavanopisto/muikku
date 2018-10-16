@@ -5,7 +5,7 @@ import {StatusType} from './base/status';
 
 import {WebsocketStateType} from './util/websocket';
 
-import { AnnouncementsType } from './main-function/announcements';
+import { AnnouncementsType } from './announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';

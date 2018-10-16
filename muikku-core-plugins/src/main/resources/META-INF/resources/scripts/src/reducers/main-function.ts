@@ -6,7 +6,7 @@ import title from './base/title';
 import websocket from './util/websocket';
 
 import messages from './main-function/messages';
-import announcements from './main-function/announcements';
+import announcements from './announcements';
 import workspaces from './workspaces';
 
 import userIndex from './user-index';

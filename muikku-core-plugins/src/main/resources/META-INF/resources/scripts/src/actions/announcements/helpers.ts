@@ -1,5 +1,5 @@
 import { AnyActionType } from "~/actions";
-import { AnnouncementsType, AnnouncementsStateType, AnnouncementListType, AnnouncementsPatchType, AnnouncerNavigationItemListType, AnnouncerNavigationItemType } from "~/reducers/main-function/announcements";
+import { AnnouncementsType, AnnouncementsStateType, AnnouncementListType, AnnouncementsPatchType, AnnouncerNavigationItemListType, AnnouncerNavigationItemType } from "~/reducers/announcements";
 import { StatusType } from "~/reducers/base/status";
 import promisify from "~/util/promisify";
 import mApi, { MApiError } from '~/lib/mApi';

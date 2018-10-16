@@ -12,7 +12,7 @@ import * as queryString from 'query-string';
 import titleActions from '~/actions/base/title';
 
 import IndexBody from '../components/index/body';
-import { loadAnnouncementsAsAClient } from '~/actions/main-function/announcements';
+import { loadAnnouncementsAsAClient } from '~/actions/announcements';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 
@@ -28,9 +28,9 @@ import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMe
 import DiscussionBody from '../components/discussion/body';
 import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer} from '~/actions/main-function/discussion';
 
-import {loadAnnouncement, loadAnnouncements} from '~/actions/main-function/announcements';
+import {loadAnnouncement, loadAnnouncements} from '~/actions/announcements';
 import AnnouncementsBody from '../components/announcements/body';
-import { AnnouncementListType } from '~/reducers/main-function/announcements';
+import { AnnouncementListType } from '~/reducers/announcements';
 
 import AnnouncerBody from '../components/announcer/body';
 

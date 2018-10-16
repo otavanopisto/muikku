@@ -15,12 +15,12 @@ import '~/sass/elements/announcement.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 
-import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
+import { AnnouncementsType, AnnouncementType } from '~/reducers/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';
 import { AddToAnnouncementsSelectedTriggerType, RemoveFromAnnouncementsSelectedTriggerType,
-  removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/main-function/announcements';
+  removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/announcements';
 import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemFooter, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
 

@@ -94,7 +94,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       modifier: "home",
       trail: "index",
       text: 'plugin.workspace.dock.home',
-      href: "/workspaces/" + this.props.workspaceUrl,
+      href: "/workspace/" + this.props.workspaceUrl,
       icon: "home",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_HOME_VISIBLE
@@ -102,7 +102,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       modifier: "help",
       trail: "help",
       text: 'plugin.workspace.dock.guides',
-      href: "/workspaces/" + this.props.workspaceUrl + "/help",
+      href: "/workspace/" + this.props.workspaceUrl + "/help",
       icon: "explanation",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_GUIDES_VISIBLE
@@ -110,7 +110,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       modifier: "materials",
       trail: "materials",
       text: 'plugin.workspace.dock.materials',
-      href: "/workspaces/" + this.props.workspaceUrl + "/materials",
+      href: "/workspace/" + this.props.workspaceUrl + "/materials",
       icon: "materials",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE
@@ -118,7 +118,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       modifier: "discussions",
       trail: "discussions",
       text: 'plugin.workspace.dock.discussions',
-      href: "/workspaces/" + this.props.workspaceUrl + "/discussions",
+      href: "/workspace/" + this.props.workspaceUrl + "/discussions",
       icon: "discussion",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE
@@ -126,7 +126,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       modifier: "users",
       trail: "users",
       text: 'plugin.workspace.dock.members',
-      href: "/workspaces/" + this.props.workspaceUrl + "/users",
+      href: "/workspace/" + this.props.workspaceUrl + "/users",
       icon: "members",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_USERS_VISIBLE
@@ -134,7 +134,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       modifier: "journal",
       trail: "journal",
       text: 'plugin.workspace.dock.journal',
-      href: "/workspaces/" + this.props.workspaceUrl + "/journal",
+      href: "/workspace/" + this.props.workspaceUrl + "/journal",
       icon: "journal",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE
@@ -168,42 +168,42 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
   }> = [
     {
       modifier: "workspace-management",
-      href: "/workspaces/" + this.props.workspaceUrl + "/workspace-management",
+      href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-edit"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
       trail: "workspace-management"
     },
     {
       modifier: "workspace-announcer",
-      href: "/workspaces/" + this.props.workspaceUrl + "/announcer",
+      href: "/workspace/" + this.props.workspaceUrl + "/announcer",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-announcements"),
       visible: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL,
       trail: "workspace-announcer"
     },
     {
       modifier: "workspace-permissions",
-      href: "/workspaces/" + this.props.workspaceUrl + "/permissions",
+      href: "/workspace/" + this.props.workspaceUrl + "/permissions",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-permissions"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_PERMISSIONS,
       trail: "workspace-permissions"
     },
     {
       modifier: "workspace-materials-management",
-      href: "/workspaces/" + this.props.workspaceUrl + "/materials-management",
+      href: "/workspace/" + this.props.workspaceUrl + "/materials-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.material-management"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
       trail: "workspace-materials-management"
     },
     {
       modifier: "workspace-frontpage-management",
-      href: "/workspaces/" + this.props.workspaceUrl + "/frontpage-management",
+      href: "/workspace/" + this.props.workspaceUrl + "/frontpage-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.editIndex"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE,
       trail: "workspace-frontpage-management"
     },
     {
       modifier: "workspace-helppage-management",
-      href: "/workspaces/" + this.props.workspaceUrl + "/helppage-management",
+      href: "/workspace/" + this.props.workspaceUrl + "/helppage-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.editHelp"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_HELP,
       trail: "workspace-helppage-management"

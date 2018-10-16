@@ -7,14 +7,14 @@ import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/environment-dialog';
 import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/user-index';
 import { i18nType } from 'reducers/base/i18n';
-import { AnnouncementType } from '~/reducers/main-function/announcements';
+import { AnnouncementType } from '~/reducers/announcements';
 import { AnyActionType } from '~/actions';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { WorkspaceType } from '~/reducers/workspaces';
 import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/user-index';
 import { createAnnouncement, CreateAnnouncementTriggerType,
-  updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';
+  updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/announcements';
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
