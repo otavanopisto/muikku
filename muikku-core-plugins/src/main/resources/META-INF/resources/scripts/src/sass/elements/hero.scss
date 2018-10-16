@@ -27,13 +27,15 @@
   border-bottom: 5px solid $color-hero-workspace-background;
   border-top: 5px solid $color-hero-workspace-background;
   display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
   flex-flow: column nowrap;
+  flex-shrink: 1;
   justify-content: flex-end;
   margin: calc(#{$navbar-mobile-height} * 1.35) auto 0;
   max-width: 100%;
   min-height: 150px;
   position: relative;
-  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     border: 5px solid $color-hero-workspace-background;

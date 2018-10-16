@@ -28,7 +28,7 @@ function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: Work
     let url = window.location.href;
     let arr = url.split("/");
     let server = arr[0] + "//" + arr[2];
-    
+
     text = '<a href="' + server + status.contextPath + "/workspace/" + workspace.urlName + '">' + text + "</a></p>";
     pretext = "<p> </p>\n\n<p>";
   }
