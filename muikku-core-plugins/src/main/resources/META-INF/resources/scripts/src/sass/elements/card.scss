@@ -1,14 +1,3 @@
-//
-// A default nice looking card designed to be inside a container
-//
-// div.card
-//    img.card-image?
-//    div.card-content?
-//      div.card-title
-//      div.card-text
-//    div.card-footer?
-//
-
 @import "../base/colors";
 @import "../base/vars";
 @import "../base/mixins";
@@ -100,7 +89,6 @@
 }
 
 .card--frontpage-otavan-opisto {
-  margin-bottom: 90px;
   padding: 20px;
 }
 
