@@ -316,23 +316,10 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           } else {
-            var render = $.proxy(function(result) {
-              var matriculation = false;
-              if (result && 
-                    result.starts < new Date().getTime() &&
-                    result.ends > new Date().getTime()) {
-                matriculation = true;
-              }
-              renderDustTemplate('/records/records_studyprogrammes.dust', { students: result, files: files, matriculation: matriculation }, $.proxy(function(text) {
-                this.element.append(text);
-                this.element.removeClass('loading');
-              }, this));
-            }, this);
-            
-            // Can't use mApi here because the endpoint might not exist
-            $.get("/rest/matriculation/currentExam")
-              .done(function(data) {render(data);})
-              .fail(function() {render(null);});
+            renderDustTemplate('/records/records_studyprogrammes.dust', { students: result, files: files }, $.proxy(function(text) {
+              this.element.append(text);
+              this.element.removeClass('loading');
+            }, this));
           }
         }, this));
     },
