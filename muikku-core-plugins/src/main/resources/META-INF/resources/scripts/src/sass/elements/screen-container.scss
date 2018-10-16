@@ -34,33 +34,58 @@
 }
 
 .screen-container__wrapper {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
   height: 100%;
+  justify-content: flex-start;
   max-width: $breakpoint-max-usable-screen;
   width: 100%;
   overflow: visible;
 }
 
-.screen-container__wrapper--error {
-  
-} 
-
+// Wrapper for FRONT PAGE view
 .screen-container__wrapper--frontpage {
   
 }
 
-.screen-container__wrapper--index {
+// Wrapper for ERROR view
+.screen-container__wrapper--error {
   
 }
 
-.screen-container__wrapper--workspace {
+// Wrapper for INDEX view
+.screen-container__wrapper--index {
+  margin: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
 
-  @include breakpoint($breakpoint-pad) {
-    padding: 0 10px;
+  @include breakpoint($breakpoint-pad){
+    margin: calc(#{$navbar-desktop-height} * 1.25) auto 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop){
+
+  }
+}
+
+// Wrapper for WORKSPACE view
+.screen-container__wrapper--workspace {
+  margin: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
+
+  @include breakpoint($breakpoint-pad){
+    margin: calc(#{$navbar-desktop-height} * 1.25) auto 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop){
+
   }
 }
 
 .screen-container__section {
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin-top: 1.5rem;
+  max-width: 100%;
   padding: 0 $container-mobile-gutter;
 
   @include breakpoint($breakpoint-pad) {

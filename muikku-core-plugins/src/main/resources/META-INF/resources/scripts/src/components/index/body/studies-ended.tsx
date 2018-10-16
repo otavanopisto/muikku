@@ -17,7 +17,7 @@ interface StudiesEndedState {
 
 class StudiesEnded extends React.Component<StudiesEndedProps, StudiesEndedState> {
   render(){
-    return <div className="panel panel--studies-ended rich-text" dangerouslySetInnerHTML={{__html: this.props.i18n.text.get("plugin.frontpage.inactiveStudent.message")}}/>
+    return <div className="panel panel--studies-ended" dangerouslySetInnerHTML={{__html: this.props.i18n.text.get("plugin.frontpage.inactiveStudent.message")}}/>
   }
 }
 

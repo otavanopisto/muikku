@@ -5,34 +5,208 @@
 
 .panel {
   background-color: $color-panel-background;
-  border: none;
-  border-radius: $panel-border-radius;
   box-shadow: 0 2px 3px $color-panel-shadow;
-  display: block;
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-flow: row wrap;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+  max-width: 100%;
+  min-height: 25px;
   overflow: visible;
-  padding: 1px;
   position: relative;
-  
+
   @include breakpoint($breakpoint-pad) {
-    border: solid 1px $color-panel-border;
+    background-color: transparent;
     box-shadow: none;
+    margin: 0;
   }
 }
 
+// This is needed when 2 or more panels needs to be grouped and ordered internally without affecting external elements page flow 
+.panel-group {
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.panel-group--studies {
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: 33%;
+  }
+}
+
+.panel--studies-ended {
+  padding: 1.5rem 2rem;
+}
+
+.panel--continue-studies {
+
+}
+
+.panel--workspaces {
+
+}
+
+.panel--latest-messages {
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33%;
+    max-width: 33%;
+  }
+}
+
+.panel--announcements {
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33%;
+    max-width: 33%;
+  }
+}
+
+.panel--basic-announcements {
+  // Reserved for the future enhancements.
+  // We need a feature to separate normal and important announcements
+}
+
+.panel--important-announcements {
+  // Reserved for the future enhancements.
+  // We need a feature to separate normal and important announcements
+}
+
 .panel__header {
-  font-size: 1.125rem;
-  font-weight: 400;
-  margin: 12px;
+  align-items: center;
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 10px 10px 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 10px;
+    padding: 0;
+  }
+}
+
+.panel__header-icon {
+  border: 2px solid $color-default;
+  border-radius: 100%;
+  display: inline-block;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  padding: 7px;
+  text-align: center;
+  vertical-align: middle;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+  }
+}
+
+.panel__header-icon--continue-studies {
+  background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
+  color: $color-index-text-for-panels-title-continue-studies-icon-color;
+}
+
+.panel__header-icon--workspaces {
+  background-color: $color-index-text-for-panels-title-workspaces-icon-background;
+  color: $color-index-text-for-panels-title-workspaces-icon-color;
+}
+
+.panel__header-icon--latest-messages {
+  background-color: $color-index-text-for-panels-title-latest-messages-icon-background;
+  color: $color-index-text-for-panels-title-latest-messages-icon-color;
+}
+
+.panel__header-icon--important {
+  background-color: $color-index-text-for-panels-title-important-icon-background;
+  color: $color-index-text-for-panels-title-important-icon-color;
+}
+
+.panel__header-icon--announcements {
+  background-color: $color-index-text-for-panels-title-announcements-icon-background;
+  color: $color-index-text-for-panels-title-announcements-icon-color;
+}
+
+.panel__header-icon--error {
+  background-color: $color-fatal;
+  color: $color-default;
+}
+
+.panel__header-title {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1.25rem;
+  font-weight: 300;
+  margin: 0 0 0 10px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+  }
 }
 
 .panel__content {
   @include text;
-  margin: 12px;
+  background-color: $color-panel-background;
+  border: none;
+  border-radius: $panel-border-radius;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    border: solid 1px $color-panel-border;
+    margin: 0 10px 10px;
+  }
 }
 
 .panel__empty {
+  @include text;
+  background-color: $color-panel-background;
+  border: none;
+  border-radius: $panel-border-radius;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-style: italic;
   line-height: 1.375rem;
   padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    border: solid 1px $color-panel-border;
+    margin: 0 10px 10px;
+  }
 }
 
 .panel__error-body {
@@ -50,9 +224,4 @@
   font-style: italic;
   font-weight: 600;
   margin: 0 5px 0 0;
-}
-
-.panel--studies-ended {
-  width: 100%;
-  padding: 1.5rem 2rem;
 }
