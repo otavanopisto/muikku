@@ -51,10 +51,10 @@ public class DiscussionTestsBase extends AbstractUITest {
         sendKeys("input.env-dialog__input--new-discussion-thread-title", "Test title for discussion");
         addTextToCKEditor("Test text for discussion.");
         click("a.button--dialog-execute");
-        waitForPresent("h3.text--discussion-current-thread-title");
-        assertText("h3.text--discussion-current-thread-title", "Test title for discussion");
-        waitForPresent(".text--discussion-message-content>p");
-        assertTextIgnoreCase(".text--discussion-message-content>p", "Test text for discussion.");
+        waitForPresent("h3.application-list__header-title");
+        assertText("h3.application-list__header-title", "Test title for discussion");
+        waitForPresent(".application-list__item-body article>p");
+        assertTextIgnoreCase(".application-list__item-body article>p", "Test text for discussion.");
       }finally {
         deleteDiscussion(discussionGroup.getId(), discussion.getId());
       }
@@ -200,7 +200,7 @@ public class DiscussionTestsBase extends AbstractUITest {
             "<p>Testing testing daa daa</p>", false, false);
         try {
         navigate("/discussion", false);
-        waitAndClick(".text--list-item-title>span");
+        waitAndClick(".application-list__item-header .discussion-category>span");
         waitAndClick(".link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
         click(".button--dialog-execute");
@@ -208,10 +208,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick(".application-list .application-list__item--discussion-reply .link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply to reply.");
         click(".button--dialog-execute");
-        waitForPresentAndVisible(".application-list__item--discussion-reply-of-reply .text--discussion-message-content>p");
-        assertText(".application-list__item--discussion-reply-of-reply .text--discussion-message-content>p", "Test reply to reply.");
-        } catch (Exception e) {
-          deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
+        waitForPresentAndVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p");
+        assertText(".application-list__item--discussion-reply-of-reply .application-list__item-body article>p", "Test reply to reply.");
         } finally {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         }
@@ -248,7 +246,7 @@ public class DiscussionTestsBase extends AbstractUITest {
             "<p>Testing testing daa daa</p>", false, false);
         try {
           navigate("/discussion", false);
-          waitAndClick(".text--list-item-title>span");
+          waitAndClick(".application-list__item-header .discussion-category>span");
           waitAndClick(".link--application-list-item-footer:nth-child(2)");
           addToEndCKEditor("Test with quote.");
           waitAndClick(".button--dialog-execute");
@@ -293,20 +291,20 @@ public class DiscussionTestsBase extends AbstractUITest {
         try {
           navigate("/discussion", false);
           selectFinnishLocale();
-          waitAndClick(".text--list-item-title>span");
+          waitAndClick(".application-list__item-header .discussion-category>span");
           waitAndClick(".link--application-list-item-footer:nth-child(3)");
           waitAndClick("input.env-dialog__input--new-discussion-thread-title");
           sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
-          waitForPresentAndVisible("h3.text--discussion-current-thread-title");
+          waitForPresentAndVisible("h3.application-list__header-title");
           reloadCurrentPage();
-          waitForPresentAndVisible("h3.text--discussion-current-thread-title");
-          assertText("h3.text--discussion-current-thread-title", "Testinging");
-          waitForPresent(".text--discussion-message-content>p");
-          assertTextIgnoreCase(".text--discussion-message-content>p", "Testing testing daa daaing");
-          waitForPresent(".text--discussion-last-modifier");
-          assertTextIgnoreCase(".text--discussion-last-modifier", "Muokattu: 13.08.2018");
+          waitForPresentAndVisible("h3.application-list__header-title");
+          assertText("h3.application-list__header-title", "Testinging");
+          waitForPresent(".application-list__item-content-main .application-list__item-body article>p");
+          assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body article>p", "Testing testing daa daaing");
+          waitForPresent(".application-list__item-edited");
+          assertTextStartsWith(".application-list__item-edited", "Muokattu:");
         } finally {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         }

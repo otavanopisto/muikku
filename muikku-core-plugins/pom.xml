@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>parent</artifactId>
-      <version>1.1.105-SNAPSHOT</version>
-      <relativePath>../pom.xml</relativePath>
+    <artifactId>parent</artifactId>
+    <version>1.1.107-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>core-plugins</artifactId>
@@ -22,12 +21,12 @@
 
   <dependencies>
 
-  <!-- Servlet -->
+    <!-- Servlet -->
 
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
-        <artifactId>jboss-servlet-api_3.1_spec</artifactId>
-        <scope>provided</scope>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Faces -->
@@ -139,7 +138,7 @@
     <!-- Neko -->
 
     <dependency>
-      <groupId>net.sourceforge.nekohtml</groupId>
+        <groupId>net.sourceforge.nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
     </dependency>
 
@@ -233,30 +232,30 @@
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
     </dependency>
-
+    
     <dependency>
       <groupId>com.rometools</groupId>
       <artifactId>rome</artifactId>
     </dependency>
-
+    
     <!-- XMPP (for prebind) -->
     <!-- TODO versions in BOM -->
-    <dependency>
-      <groupId>rocks.xmpp</groupId>
-      <artifactId>xmpp-core-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>rocks.xmpp</groupId>
-      <artifactId>xmpp-extensions-client</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>rocks.xmpp</groupId>
+            <artifactId>xmpp-core-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>rocks.xmpp</groupId>
+            <artifactId>xmpp-extensions-client</artifactId>
+      </dependency>
 
   </dependencies>
-
+  
   <profiles>
     <profile>
       <id>development</id>
       <properties>
-        <frontend.environment></frontend.environment>
+        <frontend.environment />
       </properties>
     </profile>
   </profiles>
@@ -272,6 +271,7 @@
             <lifecycleMappingMetadata>
               <pluginExecutions>
                 <pluginExecution>
+
                   <pluginExecutionFilter>
                     <groupId>org.jasig.maven</groupId>
                     <artifactId>sass-maven-plugin</artifactId>
@@ -292,6 +292,7 @@
       </plugins>
     </pluginManagement>
     <plugins>
+
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
@@ -337,48 +338,52 @@
           </execution>
         </executions>
       </plugin>
-
+      
       <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.6</version>
-        <configuration>
-          <workingDirectory>src/main/resources/META-INF/resources/scripts/src/</workingDirectory>
-          <environmentVariables>
-            <NODE_ENV>${frontend.environment}</NODE_ENV>
-          </environmentVariables>
-        </configuration>
-
-        <executions>
-          <execution>
-            <id>install node and npm</id>
-            <goals>
-              <goal>install-node-and-npm</goal>
-            </goals>
-            <phase>generate-resources</phase>
-            <configuration>
-              <nodeVersion>v8.4.0</nodeVersion>
-            </configuration>
-          </execution>
-          <execution>
-            <id>npm install</id>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>META-INF/resources/scripts/src/**/*</exclude>
-          <exclude>META-INF/resources/scripts/src/*</exclude>
-          <!-- <exclude>META-INF/resources/scripts/src/node/**/*</exclude> <exclude>META-INF/resources/scripts/src/node/*</exclude> -->
-        </excludes>
-        <filtering>false</filtering>
-      </resource>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <workingDirectory>src/main/resources/META-INF/resources/scripts/src/</workingDirectory>
+                    <environmentVariables>
+                        <NODE_ENV>${frontend.environment}</NODE_ENV>
+                    </environmentVariables>   
+                </configuration>
+                
+                <executions>
+             <execution>
+                       <id>install node and npm</id>
+                       <goals>
+                          <goal>install-node-and-npm</goal>
+                       </goals>
+                       <phase>generate-resources</phase>
+                       <configuration>
+                          <nodeVersion>v8.4.0</nodeVersion>
+                       </configuration>
+                   </execution>
+                   <execution>
+                     <id>npm install</id>
+                     <goals>
+                       <goal>npm</goal>
+                     </goals>
+                   </execution>
+                </executions>
+            </plugin>
+         </plugins>
+     <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>META-INF/resources/scripts/src/**/*</exclude>
+              <exclude>META-INF/resources/scripts/src/*</exclude>
+              <!--
+              <exclude>META-INF/resources/scripts/src/node/**/*</exclude>
+              <exclude>META-INF/resources/scripts/src/node/*</exclude> 
+              -->
+            </excludes>
+            <filtering>false</filtering>
+        </resource>
     </resources>
   </build>
+
 </project>
