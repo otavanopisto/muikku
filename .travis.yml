@@ -27,9 +27,9 @@ before_install:
   -in travis-encrypted.tar.enc -out travis-encrypted.tar -d
 - tar xvf travis-encrypted.tar  
 - unset GEM_PATH
-- . install_chromedriver.sh
 - . travis-setenv.sh
 install:
+- . install_chromedriver.sh
 - . travis-install.sh
 before_script:
 - export _JAVA_OPTIONS="-Xmx2048m -Xms512m -Djava.net.preferIPv4Addresses=true -Djava.net.preferIPv4Stack=true"
@@ -93,7 +93,7 @@ env:
 # Headless
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=communicator
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course
-#  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/discussions
+  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/discussions
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/materials
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/management
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/picker
@@ -105,7 +105,7 @@ env:
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=indexpage
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=announcer
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=user
-#  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=discussions
+  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=discussions
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=guider
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=flags
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=tor
