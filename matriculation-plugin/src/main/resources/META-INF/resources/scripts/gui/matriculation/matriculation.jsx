@@ -340,7 +340,12 @@ const Page2 = (props) => (
     <a href="javascript:void(0)" onClick={() => {props.setPage(1);}} className="pure-button" >
       Edellinen sivu
     </a>
-    <a style={{marginLeft: "1rem"}} href="javascript:void(0)" onClick={() => {props.setPage(3);}} className="pure-button pure-button-primary" disabled={props.conflictingAttendances} >
+    <a
+      style={{marginLeft: "1rem"}}
+      href="javascript:void(0)"
+      onClick={() => {props.setPage(3);}}
+      className="pure-button pure-button-primary"
+      disabled={props.conflictingAttendances || (props.enrollAs === "UPPERSECONDARY" && props.mandatoryCourses < 44 )}>
       Seuraava sivu
     </a>
   </React.Fragment>
