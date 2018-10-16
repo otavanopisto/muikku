@@ -25,7 +25,3 @@
     </div>
   </div>
 {/files}
-
-{?matriculation}
-<a href="/jsf/matriculation">{#localize key="plugin.records.matriculation" /}</a>
-{/matriculation} 
