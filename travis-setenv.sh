@@ -14,7 +14,7 @@ fi;
 if [[ $TRAVIS_PULL_REQUEST != "false" && $TRAVIS_BRANCH == "master" ]]; then
   export test_suite="full"
   export run_tests="true"
-  if [[ $it_profile != "rest-it" && $browser != "phantomjs" ]]; then 
+  if [[ $it_profile != "rest-it" && $browser != "chrome_headless" ]]; then 
     export start_sc_tunnel="true"
   fi;
 fi;
@@ -36,5 +36,6 @@ if [[ $TRAVIS_PULL_REQUEST == "false" && $TRAVIS_BRANCH == "master" && $it_profi
     export deploy_release="true"
   fi;
 fi;
+
 echo "Test setup: run tests: $run_tests, test suite: $test_suite, start sauce tunnel: $start_sc_tunnel, release: $release, deploy_snapshot: $deploy_snapshot, deploy_release: $deploy_release"
 
