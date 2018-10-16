@@ -84,15 +84,15 @@ public class ToRTestsBase extends AbstractUITest {
       login();
       
       navigate("/records", false);
-      waitForPresent(".application-list__item-header--course .text--list-item-title");
-      assertText(".application-list__item-header--course .text--list-item-title", "testcourses (test extension)");
+      waitForPresent(".application-list__item-header--course .application-list__header-primary");
+      assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
       
-      waitForPresent(".application-list__item-header--course .text--workspace-assesment-grade");
-      assertText(".application-list__item-header--course .text--workspace-assesment-grade", "E");
+      waitForPresent(".application-list__item-header--course .application-list__indicator-badge--course");
+      assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
       
-      waitAndClick(".application-list__item-header--course .text--list-item-title");
-      waitForPresent(".text--studies-workspace-literal-assessment");
-      assertText(".text--studies-workspace-literal-assessment", "Test evaluation.");
+      waitAndClick(".application-list__item-header--course .application-list__header-primary");
+      waitForPresent(".application-sub-panel__text--course-evaluation");
+      assertText(".application-sub-panel__text--course-evaluation", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -195,11 +195,11 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         
-        navigate("/records/", false);
-        waitForPresent("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
-        waitAndClick("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
-        waitForPresent(".records .tr-task-evaluated-grade");
-        assertText(".records .tr-task-evaluated-grade", "Excellent");
+        navigate("/records", false);
+        waitForPresent(".application-list__header-primary");
+        waitAndClick(".application-list__header-primary");
+        waitForPresent(".application-list__indicator-badge--task");
+        assertText(".application-list__indicator-badge--task", "E");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

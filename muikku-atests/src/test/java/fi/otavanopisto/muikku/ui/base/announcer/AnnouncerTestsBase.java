@@ -45,8 +45,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".button--dialog-execute");
         waitForNotVisible(".env-dialog");
-        waitForPresent(".text--item-article-header");
-        assertTextIgnoreCase(".text--item-article-header", "Test title");
+        waitForPresent(".application-list-document-short-header");
+        assertTextIgnoreCase(".application-list-document-short-header", "Test title");
       }finally{
         deleteAnnouncements();
       }
@@ -65,7 +65,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         login();
         createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
         navigate("/announcer", false);
-        waitForPresent(".text--item-article-header");
+        waitForPresent(".application-list-document-short-header");
         waitAndClick(".announcement__select-container input");
         waitAndClick("span.button-pill__icon.icon-delete");
         waitAndClick("a.button--standard-ok");
@@ -75,8 +75,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
         navigate("/", false);
         navigate("/announcer#archived", false);
         
-        waitForPresent(".text--item-article-header");
-        assertTextIgnoreCase(".text--item-article-header", "Test title");
+        waitForPresent(".application-list-document-short-header");
+        assertTextIgnoreCase(".application-list-document-short-header", "Test title");
       }finally{
         deleteAnnouncements();
       }
@@ -129,10 +129,10 @@ public class AnnouncerTestsBase extends AbstractUITest {
         assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption", "Test title");
         waitAndClick("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption");
         
-        waitForPresent("header.text--announcement-caption");
-        assertTextIgnoreCase("header.text--announcement-caption", "Test title");
-        assertTextIgnoreCase("div.text-announcement-date", "12.11.2015");
-        assertTextIgnoreCase("section.text--announcement-content", "announcer test announcement");
+        waitForPresent(".reading-panel__main-container header.article__header");
+        assertTextIgnoreCase(".reading-panel__main-container header.article__header", "Test title");
+        assertTextIgnoreCase(".reading-panel__main-container header.article__header + div", "12.11.2015");
+        assertTextIgnoreCase(".reading-panel__main-container .article__body", "announcer test announcement");
       }finally{
         deleteAnnouncements();
       }
@@ -212,8 +212,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
       navigate("/", false);
       navigate("/announcer#past", false);
       
-      waitForPresent(".text--item-article-header");
-      assertTextIgnoreCase(".text--item-article-header", "Test title");
+      waitForPresent(".application-list-document-short-header");
+      assertTextIgnoreCase(".application-list-document-short-header", "Test title");
       navigate("/", false);
       
       waitForPresentAndVisible("div.ordered-container__item--announcements");
@@ -238,14 +238,14 @@ public class AnnouncerTestsBase extends AbstractUITest {
     createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null, null);
     try {
       navigate("/announcer", false);
-      waitForPresent(".text--item-article-header");
-      assertCount(".text--item-article-header" ,2);
+      waitForPresent(".application-list-document-short-header");
+      assertCount(".application-list-document-short-header" ,2);
       
       navigate("/", false);
       navigate("/announcer#mine", false);
-      waitForPresent(".text--item-article-header");
-      assertTextIgnoreCase(".text--item-article-header", "Test title");
-      assertCount(".text--item-article-header" ,1);
+      waitForPresent(".application-list-document-short-header");
+      assertTextIgnoreCase(".application-list-document-short-header", "Test title");
+      assertCount(".application-list-document-short-header" ,1);
     }finally{
       deleteAnnouncements();
       mockBuilder.wiremockReset();

@@ -276,16 +276,32 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return System.getProperty("it.platform");
   }
   
-  protected RemoteWebDriver createSauceWebDriver() throws MalformedURLException {
-    final DesiredCapabilities capabilities = new DesiredCapabilities();
-    final String seleniumVersion = System.getProperty("it.selenium.version");
-    
-    final String browser = getBrowser();
+  protected WebDriver createSauceWebDriver() throws MalformedURLException {
+    DesiredCapabilities capabilities = null;
+    switch (getBrowser()) {
+    case "chrome":
+      capabilities = DesiredCapabilities.chrome();
+      break;
+    case "microsoftedge":
+      capabilities = DesiredCapabilities.edge();
+      break;
+    case "firefox":
+      capabilities = DesiredCapabilities.firefox();
+      break;
+    case "internet explorer":
+      capabilities = DesiredCapabilities.internetExplorer();
+      break;
+    case "safari":
+      capabilities = DesiredCapabilities.safari();
+      break;
+    default:
+      capabilities = DesiredCapabilities.chrome();
+  }
+  
     final String browserVersion = getBrowserVersion();
     final String browserResolution = getBrowserResolution();
     final String platform = getSaucePlatform();
     
-    capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
     capabilities.setCapability(CapabilityType.VERSION, browserVersion);
     capabilities.setCapability(CapabilityType.PLATFORM, platform);
     capabilities.setCapability("name", getClass().getSimpleName() + ':' + testName.getMethodName());
@@ -294,16 +310,16 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("video-upload-on-pass", false);
     capabilities.setCapability("capture-html", true);
     capabilities.setCapability("timeZone", "Universal");
-    capabilities.setCapability("seleniumVersion", seleniumVersion);
+    capabilities.setCapability("seleniumVersion", System.getProperty("it.selenium.version"));
     
     if (!StringUtils.isBlank(browserResolution)) {
       capabilities.setCapability("screenResolution", browserResolution);
     }
-    
+ 
     if (getSauceTunnelId() != null) {
       capabilities.setCapability("tunnel-identifier", getSauceTunnelId());
     }
-    
+//    
     RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", getSauceUsername(), getSauceAccessKey())), capabilities);
     
     remoteWebDriver.setFileDetector(new LocalFileDetector());
