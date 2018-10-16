@@ -33,7 +33,6 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
     this.props.updateWorkspace(this.props.workspace, {published: !this.props.workspace.published})
   }
   render(){
-    //Remove the paddingTop style as you add proper class names with proper styles
     return <div>
       <header className="hero hero--workspace" style={
         {backgroundImage:this.props.workspace && this.props.workspace.hasCustomImage ? 

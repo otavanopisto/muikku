@@ -29,7 +29,9 @@ class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {
             <div className="panel__header-icon panel__header-icon--error icon-error"></div>
             <div className="panel__header-title">{this.props.error.title}</div>
           </div>
-          <div className="panel__error-body ">{this.props.error.description}</div>
+          <div className="panel__content panel__content--error">
+            {this.props.error.description}
+          </div>
         </div>
       </ScreenContainer>
     </div>);

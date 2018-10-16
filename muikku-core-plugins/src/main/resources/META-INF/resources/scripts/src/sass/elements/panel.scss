@@ -35,10 +35,10 @@
 .panel-group--studies {
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
+    flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
-    max-width: 50%;
+    max-width: 100%;
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -49,16 +49,14 @@
   }
 }
 
-.panel--studies-ended {
-  padding: 1.5rem 2rem;
-}
-
 .panel--continue-studies {
-
+  flex-basis: 50%;
+  flex-shrink: 0;
 }
 
 .panel--workspaces {
-
+  flex-basis: 50%;
+  flex-shrink: 0;
 }
 
 .panel--latest-messages {
@@ -106,7 +104,7 @@
   flex-flow: row nowrap;
   justify-content: flex-start;
   margin: 0;
-  padding: 10px 10px 5px;
+  padding: 5px;
 
   @include breakpoint($breakpoint-pad) {
     margin: 10px;
@@ -161,6 +159,11 @@
   color: $color-default;
 }
 
+.panel__header-icon--studies-ended {
+  background-color: $color-info;
+  color: $color-default;
+}
+
 .panel__header-title {
   @include text;
   flex-basis: auto;
@@ -191,32 +194,21 @@
   }
 }
 
-.panel__empty {
-  @include text;
-  background-color: $color-panel-background;
-  border: none;
-  border-radius: $panel-border-radius;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
+.panel__content--empty {
   font-style: italic;
-  line-height: 1.375rem;
   padding: 10px;
-
-  @include breakpoint($breakpoint-pad) {
-    border: solid 1px $color-panel-border;
-    margin: 0 10px 10px;
-  }
 }
 
-.panel__error-body {
+.panel__content--studies-ended {
+  font-style: italic;
+  line-height: 1.35rem;
   padding: 10px;
-  
-  @include breakpoint($breakpoint-pad) {
-    background: none;
-    font-weight: 300;
-    padding: 20px;
-  }
+}
+
+.panel__content--error {
+  font-style: italic;
+  line-height: 1.35rem;
+  padding: 10px;
 }
 
 .panel__content-highlight {

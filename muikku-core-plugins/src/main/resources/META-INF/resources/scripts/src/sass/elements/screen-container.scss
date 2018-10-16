@@ -51,7 +51,11 @@
 
 // Wrapper for ERROR view
 .screen-container__wrapper--error {
-  
+  margin: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
+
+  @include breakpoint($breakpoint-pad){
+    margin: calc(#{$navbar-desktop-height} * 1.25) auto 10px;
+  }  
 }
 
 // Wrapper for INDEX view
@@ -60,10 +64,6 @@
 
   @include breakpoint($breakpoint-pad){
     margin: calc(#{$navbar-desktop-height} * 1.25) auto 10px;
-  }
-
-  @include breakpoint($breakpoint-desktop){
-
   }
 }
 
