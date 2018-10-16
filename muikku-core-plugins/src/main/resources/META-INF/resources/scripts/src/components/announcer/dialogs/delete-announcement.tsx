@@ -10,8 +10,8 @@ import Link from '~/components/general/link';
 import Button from '~/components/general/button';
 import Dialog from '~/components/general/dialog';
 import { deleteSelectedAnnouncements, deleteAnnouncement,
-  DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/main-function/announcements';
-import { AnnouncementType } from 'reducers/main-function/announcements';
+  DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/announcements';
+import { AnnouncementType } from 'reducers/announcements';
 import {StateType} from '~/reducers';
 
 interface DeleteAnnouncementDialogProps {

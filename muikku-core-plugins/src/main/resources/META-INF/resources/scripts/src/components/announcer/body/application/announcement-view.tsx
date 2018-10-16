@@ -12,7 +12,7 @@ import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/article.scss';
 import '~/sass/elements/glyph.scss';
-import { AnnouncementsType } from '~/reducers/main-function/announcements';
+import { AnnouncementsType } from '~/reducers/announcements';
 
 interface MessageViewProps {
   i18n: i18nType,

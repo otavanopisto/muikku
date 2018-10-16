@@ -14,6 +14,7 @@ import titleActions from '~/actions/base/title';
 import WorkspaceHomeBody from '~/components/workspace/workspaceHome';
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace } from '~/actions/workspaces';
+import { loadAnnouncementsAsAClient } from '~/actions/announcements';
 
 interface WorkspaceProps {
   store: Store<StateType>,
@@ -64,6 +65,13 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
           this.props.store.dispatch(loadStaffMembersOfWorkspace(workspace) as Action)
         }
       }}) as Action);
+      
+      if (state.status.loggedIn && state.status.isActiveUser && state.status.permissions.WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS){
+        this.props.store.dispatch(loadAnnouncementsAsAClient({
+          hideEnvironmentAnnouncements: "false",
+          workspaceEntityId: state.status.currentWorkspaceId
+        }) as Action);
+      }
       
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");

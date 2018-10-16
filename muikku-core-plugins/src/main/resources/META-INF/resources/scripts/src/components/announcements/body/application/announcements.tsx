@@ -11,7 +11,7 @@ import '~/sass/elements/article.scss';
 import '~/sass/elements/announcement.scss';
 import '~/sass/elements/rich-text.scss';
 
-import { AnnouncementType } from '~/reducers/main-function/announcements';
+import { AnnouncementType } from '~/reducers/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';

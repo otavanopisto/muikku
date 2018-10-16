@@ -10,13 +10,13 @@ import '~/sass/elements/application-panel.scss';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
-import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
+import { AnnouncementsType, AnnouncementType } from '~/reducers/announcements';
 
 import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import NewEditAnnouncement from '../../dialogs/new-edit-announcement';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
-import { updateAnnouncement, UpdateAnnouncementTriggerType, RemoveFromAnnouncementsSelectedTriggerType, removeFromAnnouncementsSelected } from '~/actions/main-function/announcements';
+import { updateAnnouncement, UpdateAnnouncementTriggerType, RemoveFromAnnouncementsSelectedTriggerType, removeFromAnnouncementsSelected } from '~/actions/announcements';
 
 interface AnnouncerToolbarProps {
   i18n: i18nType,

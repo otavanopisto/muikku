@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
-import { AnnouncementsType, AnnouncerNavigationItemType } from '~/reducers/main-function/announcements';
+import { AnnouncementsType, AnnouncerNavigationItemType } from '~/reducers/announcements';
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/buttons.scss';
