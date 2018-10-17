@@ -295,11 +295,16 @@ public class ChatRESTService extends PluginRESTService {
       chatController.createUserChatSettings(userIdentifier, visibility);
 
     } else {
-	    chatController.updateUserChatSettings(findUserChatSettings, visibility);
-	  }
+      chatController.updateUserChatSettings(findUserChatSettings, visibility);
+    }
     return Response.ok(userChatSettings).build(); 
   }
-  
+  private WorkspaceChatSettingsRestModel restModel(WorkspaceChatSettings workspaceChatSettings) {
+    WorkspaceChatSettingsRestModel restModel = new WorkspaceChatSettingsRestModel();
+    restModel.setWorkspaceEntityId(workspaceChatSettings.getWorkspaceEntityId());
+    restModel.setChatStatus(workspaceChatSettings.getStatus());
+    return restModel;
+  }
   @GET
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
   @RESTPermit(handling = Handling.INLINE)
@@ -308,7 +313,12 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
     
-    return Response.ok(workspaceEntityId).build();
+    WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
+    
+    if (workspaceChatSettings == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(restModel(workspaceChatSettings)).build();
   }
   @PUT
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
@@ -329,10 +339,10 @@ public class ChatRESTService extends PluginRESTService {
     WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
     
     if (findWorkspaceChatSettings == null) {
-      chatController.createWorkspaceChatSettings(workspaceEntityId, status);
+      findWorkspaceChatSettings = chatController.createWorkspaceChatSettings(workspaceEntityId, status);
 
     } else {
-      chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
+      findWorkspaceChatSettings = chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
     
     }
   
@@ -341,6 +351,6 @@ public class ChatRESTService extends PluginRESTService {
     } else {
       chatSyncController.removeWorkspaceChatRoom(workspaceEntity);
     }
-    return Response.ok(workspaceChatSettings).build(); 
+    return Response.ok(restModel(findWorkspaceChatSettings)).build(); 
   }
 }

@@ -19,25 +19,13 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class WorkspaceChatSettingsDAO extends CorePluginsDAO<WorkspaceChatSettings> {
 	
-  private static final long serialVersionUID = -7830619828801454118L;
+
+  private static final long serialVersionUID = 1553231946370134647L;
 
   public WorkspaceChatSettings create(Long workspaceEntityId, WorkspaceChatStatus workspaceChatStatus) {
     WorkspaceChatSettings settings = new WorkspaceChatSettings(workspaceEntityId, workspaceChatStatus);
     getEntityManager().persist(settings);
     return settings;
-  }
-  
-  public List<WorkspaceChatSettings> listAll(String WorkspaceEntityId) {
-    EntityManager entityManager = getEntityManager(); 
-	    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<WorkspaceChatSettings> criteria = criteriaBuilder.createQuery(WorkspaceChatSettings.class);
-    Root<WorkspaceChatSettings> root = criteria.from(WorkspaceChatSettings.class);
-    criteria.select(root);
-	
-    TypedQuery<WorkspaceChatSettings> query = entityManager.createQuery(criteria);
-	
-    return query.getResultList();
   }
   
   public WorkspaceChatSettings findByWorkspace(Long workspaceEntityId) {
