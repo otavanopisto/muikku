@@ -33,11 +33,9 @@ install:
 - . travis-install.sh
 before_script:
 - export _JAVA_OPTIONS="-Xmx2048m -Xms512m -Djava.net.preferIPv4Addresses=true -Djava.net.preferIPv4Stack=true"
-- . travis-before-script.sh
 script:
 - . travis-script.sh
 after_script:
-- if [ $start_sc_tunnel = true ]; then kill -9 `cat /tmp/sc.pid`; fi;
 env:
   global:
   - secure: "aOQe+UgT52sFJnbyeYfdAcgDu910G6G1UKVV2YIOVrjtR0PvYxwztrMOZjnECBtcxAZqLCA57Ao17yuPj0LXP258jeJbufofeSYe7ZBAi5OUQCvp4UsSFMQKsglxgM6xXrpw9jhr9PJXjYpmv5oPtTynjNCQClYCMIFgPiQyXp0="
@@ -112,8 +110,6 @@ env:
 after_success:
 - . travis-after-success.sh
 after_failure:
-- if [[ $start_sc_tunnel = "true" ]]; then killall sc; fi;
-#- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 - pushd .;
 - cat muikku-atests/target/cargo/configurations/wildfly10x/log/server.log;
 notifications:
