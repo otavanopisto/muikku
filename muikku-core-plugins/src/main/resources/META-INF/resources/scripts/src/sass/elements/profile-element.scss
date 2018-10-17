@@ -32,7 +32,7 @@
     height: 250px;
     width: 250px;
   }
-  
+
   input {
     cursor: pointer;
     height: 100%;
@@ -41,12 +41,11 @@
     position: absolute;
     top: 0;
     width: 100%;
-  }  
-  
+  }
 }
 
 .profile-element__user-picture--empty {
-  
+
   &::before {
     content: "\e114";
     -webkit-font-smoothing: antialiased;
@@ -66,13 +65,12 @@
 }
 
 .profile-element__item {
-  padding-bottom: 12px;    
+  padding-bottom: 12px;
 }
-
 
 .profile-element__title {
   font-size: 1.6rem;
-  font-weight: 100;
+  font-weight: 300;
   padding-bottom: 20px;
 }
 

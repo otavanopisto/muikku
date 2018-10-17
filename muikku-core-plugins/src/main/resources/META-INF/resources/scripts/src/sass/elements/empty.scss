@@ -8,13 +8,13 @@
   justify-content: center;
   min-height: calc(100vh - 155px);
   width: 100%;
-  
+
   >* {
     font-family: $text-font-family;
     font-size: 1.2rem;
     font-weight: 300;
   }
-  
+
   @include breakpoint($breakpoint-pad) {
     min-height: 100%;
   }
