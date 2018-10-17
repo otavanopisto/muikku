@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fi.otavanopisto.muikku</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.1.105-SNAPSHOT</version>
+		<version>1.1.107-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -255,7 +255,7 @@
 	  <profile>
 	    <id>development</id>
 	    <properties>
-	      <frontend.environment></frontend.environment>
+	      <frontend.environment />
 	    </properties>
 	  </profile>
 	</profiles>

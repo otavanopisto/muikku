@@ -98,6 +98,7 @@ public class GuiderTestsBase extends AbstractUITest {
     }
   )
   public void uploadFileToStudentTest() throws Exception {
+//    TODO: Cleanup student from previous tests
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
@@ -114,9 +115,10 @@ public class GuiderTestsBase extends AbstractUITest {
       .build();
     try {
       navigate("/guider", false);
-      waitAndClick(".application-list .user--guider .application-list__item-header--student .text--list-item-title");
-      scrollToEnd();
+      waitAndClick(".application-list__header-primary>span");
       waitForPresent(".file-uploader>input");
+      scrollIntoView(".file-uploader>input");
+
       File testFile = getTestFile();
       sendKeys(".file-uploader>input", testFile.getAbsolutePath());
       waitForPresent("a.uploaded-files__item-title");
