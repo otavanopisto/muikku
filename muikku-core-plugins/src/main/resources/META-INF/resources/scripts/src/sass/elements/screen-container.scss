@@ -29,7 +29,7 @@
   @include breakpoint($breakpoint-mobile-xl) {
     font-size: 1.8rem;
   }
-    
+
   @include breakpoint($breakpoint-pad) {
     font-size: 2rem;
     font-weight: 200;

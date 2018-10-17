@@ -39,9 +39,9 @@
       EVALUATION_VIEW_INDEX: #{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')},
       ANNOUNCER_TOOL: #{sessionBackingBean.hasEnvironmentPermission('ANNOUNCER_TOOL')},
       ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
-  	  ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
-  	  ANNOUNCER_CAN_PUBLISH_GROUPS: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
-      
+      ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
+      ANNOUNCER_CAN_PUBLISH_GROUPS: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
+
       COMMUNICATOR_GROUP_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')},
       COMMUNICATOR_WORKSPACE_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_WORKSPACE_MESSAGING')},
 
@@ -111,10 +111,10 @@
 
   <!-- Language -->
   <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/language.js" />
-  
+
   <!-- JavaScript locales -->
   <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}" />
-  
+
   <!-- locales -->
   <script defer="defer" jsf:name="scripts/gui/locales.js" />
 
@@ -127,18 +127,18 @@
 <!--     <script defer="defer" src="//cdn.muikkuverkko.fi/libs/converse-muikku/1.1.5/converse-no-jquery.min.js"/> -->
 <!--     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/converse-muikku/1.1.5/converse.min.css" /> -->
   </ui:fragment>
-  
+
   <!-- Muikku icons -->
   <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.4/style.css" />
   <ui:insert name="styles"></ui:insert>
-  
+
   <!-- Here goes what a page needs, usually their controllers -->
   <ui:insert name="scripts"></ui:insert>
 </head>
 
 <body>
   <div id="app"></div>
-  
+
   <!-- TODO: please lets find a way to do this with a rest endpoint -->
   <h:form id="language-picker" style="display:none">
     <ui:repeat value="#{i18n.languages}" var="locale">
