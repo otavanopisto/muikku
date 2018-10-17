@@ -4,7 +4,6 @@ import Link from '../../general/link';
 import {MessageThreadListType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
-import Panel from '~/components/general/panel';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
@@ -17,13 +16,13 @@ interface LastMessagesPanelState {
 
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
-    return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--latest-messages">
-      <div className="ordered-container__item-header">
-        <span className="ordered-container__item-header-icon ordered-container__item-header-icon--latest-messages icon-envelope"></span>
-        <span className="ordered-container__item-header-text">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</span>
+    return (<div className="panel panel--latest-messages">
+      <div className="panel__header">
+        <div className="panel__header-icon panel__header-icon--latest-messages icon-envelope"></div>
+        <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</div>
       </div>
-      <Panel modifier="index">
-        {this.props.lastThreads.length ? (
+      {this.props.lastThreads.length ? (
+        <div className="panel__content">
           <div className="item-list item-list--panel-latest-messages">
             {this.props.lastThreads.map((thread)=>{
               return (<Link key={thread.id} className={`item-list__item item-list__item--latest-messages ${thread.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
@@ -40,10 +39,12 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
               </Link>);
             })}
           </div>
-          ) : (
-            <div className="panel__empty">{this.props.i18n.text.get("plugin.frontPage.latestMessages.noMessages")}</div>
-          )}
-      </Panel>
+        </div>
+        ) : (
+          <div className="panel__content panel__content--empty">
+            {this.props.i18n.text.get("plugin.frontPage.latestMessages.noMessages")}
+          </div>
+        )}
     </div>);
   }
 }

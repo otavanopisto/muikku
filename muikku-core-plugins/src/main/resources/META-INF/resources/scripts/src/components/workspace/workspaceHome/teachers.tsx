@@ -28,7 +28,7 @@ function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: Work
     let url = window.location.href;
     let arr = url.split("/");
     let server = arr[0] + "//" + arr[2];
-    
+
     text = '<a href="' + server + status.contextPath + "/workspace/" + workspace.urlName + '">' + text + "</a></p>";
     pretext = "<p> </p>\n\n<p>";
   }
@@ -40,7 +40,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
     super(props);
   }
   render(){
-    return <div className="workspace-frontpage-teachers lg-flex-cell-first md-flex-cell-first lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-1">
+    return <div className="workspace-frontpage-teachers>">
       <h1 className="workspace-block-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</h1>
       <div className="workspace-teachers-container">
         {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? this.props.workspace.staffMembers.map((teacher)=>

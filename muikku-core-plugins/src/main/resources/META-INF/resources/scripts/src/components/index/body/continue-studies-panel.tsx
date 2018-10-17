@@ -31,20 +31,16 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
     } else if (!this.props.lastWorkspace){
       return null;
     }
-    return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--continue-studies">
-      <div className="ordered-container__item-header">
-        <span className="ordered-container__item-header-icon ordered-container__item-header-icon--continue-studies icon-revert"></span>
-        <span className="ordered-container__item-header-text">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</span>
+    return (<div className="panel panel--continue-studies">
+      <div className="panel__header">
+        <div className="panel__header-icon panel__header-icon--continue-studies icon-revert"></div>
+        <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</div>
       </div>
-      <Panel modifier="index">
-        <h2 className="panel__header">
-          {this.props.lastWorkspace.workspaceName}
-        </h2>
-        <div className="panel__content">
-          {this.props.i18n.text.get('plugin.frontPage.latestWorkspace.material.part1')}{" "}<span className="panel__content-highlight">{this.props.lastWorkspace.materialName}.</span>{" "}
-          <Link className="panel__link" href={this.props.lastWorkspace.url}>{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.continueStudiesLink')}</Link>
-        </div>
-      </Panel>
+      <div className="panel__content">
+        <div className="panel__title">{this.props.lastWorkspace.workspaceName}</div>
+        {this.props.i18n.text.get('plugin.frontPage.latestWorkspace.material.part1')}{" "}<span className="panel__content-highlight">{this.props.lastWorkspace.materialName}.</span>{" "}
+        <Link className="panel__link" href={this.props.lastWorkspace.url}>{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.continueStudiesLink')}</Link>
+      </div>
     </div>);
   }
 }

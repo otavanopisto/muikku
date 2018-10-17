@@ -16,31 +16,30 @@
   display: block;
   font-weight: 600;
   padding: 12px 0;
-  
+
   .item-list__icon {
   	display: inline-block;
   	padding: 0 5px 0 0;
   }
 }
-  
-// Item-list items BASE
 
+// Item-list items BASE
 .item-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-  align-items: center;
+  align-items: flex-start;
   background-color: $color-item-list-item-background;
-  color: $color-text-default;    
+  color: $color-text-default;
   cursor: pointer;
   display: flex;
-  padding: 12px;
+  padding: 10px;
   position: relative;
-  
+
   &:hover, 
   &.hover {
     // background-color: $color-item-list-item-background-hover;
   }
 
-  &:active, 
+  &:active,
   &.active {
     // background-color: $color-item-list-item-background-active;
   }
@@ -53,28 +52,25 @@
 }
 
 // Item-list items in workspaces panel
-
 .item-list--panel-workspaces .item-list__item {
   @include text;
 }
 
 // Item-list items in lastest messages panel
-
 .item-list--panel-latest-messages .item-list__item {
   align-items: flex-start;
   border-top: solid 1px $color-default-item-separator-border;
-  
+
   &:first-child {
     border: 0;
   }
 }
 
 // Item-list items in announcements
-
 .item-list--panel-announcements .item-list__item {
   align-items: flex-start;
   border-top: solid 1px $color-default-item-separator-border;
-  
+
   &:first-child {
     border: 0;
   }
@@ -86,17 +82,17 @@
   border-radius: 2px;
   margin: 0 0 5px;
   padding: 8px;
-  
-  &:hover, 
+
+  &:hover,
   &.hover {
     background-color: $color-item-list-item-aside-background-hover;
   }
 
-  &:active, 
+  &:active,
   &.active {
     background-color: $color-item-list-item-aside-background-active;
     color: $color-item-list-item-font-color-active;
-  
+
     .text,
     .item-list__icon {
       color: $color-item-list-item-font-color-active;            
@@ -109,7 +105,6 @@
 }
 
 // Unread list items in index page (icons and texts)
-
 .item-list--panel-latest-messages {
 
   .item-list__item--unread .item-list__icon {
@@ -127,7 +122,7 @@
 .item-list__item--unread .item-list__text-body {
   font-weight: 600;
 }
-  
+
 // List item icons
 .item-list__icon {
   color: $color-item-list-icon-font-color;
@@ -153,9 +148,8 @@
 .item-list__item--has-workspaces .item-list__icon {
   color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
 }
-    
-// List item texts
 
+// List item texts
 .item-list__text-body {
   flex-basis: auto;
   flex-grow: 1;
@@ -163,15 +157,12 @@
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
   margin-left: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
 }
-  
+
 .item-list__text-body--multiline {
   white-space: initial;
   display: flex;
@@ -179,21 +170,19 @@
 }
 
 // List item dates
-
 .item-list__latest-message-date,
 .item-list__announcement-date {
   color: $color-index-text-panels-date-color;
   font-size: calc(#{$text-mobile-font-size} / 1.1);
   font-style: italic;
   padding: 6px 0 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: calc(#{$text-desktop-font-size} / 1.1);
   }
 }
 
 // List item labels (and similar)
-
 .item-list__announcement-workspaces {
   margin: 10px 0 0;
 }

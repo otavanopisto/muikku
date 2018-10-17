@@ -24,27 +24,14 @@ class IndexBody extends React.Component<{
   render(){
     return (<div>
       <MainFunctionNavbar activeTrail="index"/>
-      <ScreenContainer viewModifiers="index">
-        {this.props.status.isActiveUser ? <div className="ordered-container ordered-container--index-panels">
-          <div className="ordered-container__item ordered-container__item--studies">
-            <div className="ordered-container">
+        {this.props.status.isActiveUser ? <ScreenContainer viewModifiers="index">
+            <div className="panel-group panel-group--studies">
               <ContinueStudiesPanel/>
               <WorkspacesPanel/>
             </div>
-          </div>
-          <div className="ordered-container__item ordered-container__item--messages">
-            <div className="ordered-container">
-              <LastMessagesPanel/>
-            </div>
-          </div>
-          <div className="ordered-container__item ordered-container__item--announcements">
-            <div className="ordered-container">
-              <ImportantPanel/>
-              <AnnouncementsPanel/>
-            </div>
-          </div>
-        </div> : <div className="ordered-container ordered-container--index-panels"><StudiesEnded/></div>}
-      </ScreenContainer>
+            <LastMessagesPanel/>
+            <ImportantPanel/>
+            <AnnouncementsPanel/></ScreenContainer> : <ScreenContainer viewModifiers="index"><StudiesEnded/></ScreenContainer>}
       <CheckContactInfoDialog/>
     </div>);
   }
