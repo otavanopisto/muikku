@@ -43,21 +43,21 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   constructor(props: CurrentStudentProps){
     super(props);
   }
-  
+
   //TODO doesn't anyone notice that nor assesment requested, nor no passed courses etc... is available in this view
   render(){
     if (this.props.guider.currentStudent === null){
       return null;
     }
-    
+
     //Note that some properties are not available until later, that's because it does
     //step by step loading, make sure to show this in the way this is represented, ensure to have
     //a case where the property is not available
     //You can use the cheat && after the property
     //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
-        
+
     let defaultEmailAddress = this.props.guider.currentStudent.emails && this.props.guider.currentStudent.emails.find((e)=>e.defaultAddress);
-    
+
     let studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
         <object
          className="avatar-container"
@@ -73,14 +73,14 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
            {this.props.guider.currentStudent.basic.studyProgrammeName}
         </div>
       </div>
-   
+
     let studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType)=>{
       return <span className="label" key={label.id}>
         <span className="label__icon icon-flag" style={{color: label.flagColor}}></span>
         <span className="label__text">{label.flagName}</span>
       </span>
     });
-    
+
     let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
@@ -150,14 +150,14 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //later once a pattern is defined
     let studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
         <Hops data={this.props.guider.currentStudent.hops}/> : null;
-    
+
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
     let studentVops = (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
         <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
-  
+
     let studentWorkspaces = <Workspaces/>;
-    
+
     let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guider.currentStudent.basic.id}
         onFileError={(file: File, err: Error)=>{
@@ -182,7 +182,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className="file-uploader__files-container">{this.props.i18n.text.get("plugin.guider.user.details.files.empty")}</div>
       )}
     </div>
-    
+
     return <div className="react-required-container">
       <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
@@ -211,7 +211,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         {files}  
       </div>
       <div className="application-sub-panel">
-        <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
+        <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
         {this.props.guider.currentStudent.logins && this.props.guider.currentStudent.workspaces && <MainChart/>}
       </div>
       {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}

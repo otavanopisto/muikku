@@ -20,27 +20,58 @@
 }
 
 .hero--workspace {
-  align-items: flex-start;
-  background-color: $color-hero-workspace-background;
-  background-position: center center;
-  background-size: cover;
   border-bottom: 5px solid $color-hero-workspace-background;
   border-top: 5px solid $color-hero-workspace-background;
-  display: flex;
   flex-basis: 100%;
   flex-grow: 1;
-  flex-flow: column nowrap;
   flex-shrink: 1;
-  justify-content: flex-end;
+  margin: 0 0 10px;
   max-width: 100%;
-  min-height: 150px;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
     border: 5px solid $color-hero-workspace-background;
+    border-radius: $panel-border-radius;
+    margin: 10px;
+  }
+}
+
+.hero__wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
+  padding: 1.5rem 0 0;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+    padding: 2.5rem .5rem;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    padding: 4.5rem .5rem;
+  }
+}
+
+.hero__wrapper--workspace {
+  align-items: flex-start;
+  background-position: center center;
+  background-size: cover;
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-flow: column wrap;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  max-width: 100%;
+  min-height: 150px;
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
     justify-content: center;
     min-height: 196px;
-    width: auto;
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -48,7 +79,6 @@
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
-    max-width: calc(#{$breakpoint-max-usable-screen} - 20px);
     min-height: 270px;
   }
 }
@@ -77,45 +107,26 @@
 
 .hero__workspace-name-extension {
   background: $color-hero-workspace-name-extension-background;
-  border-bottom-right-radius: 2px;
-  border-top-right-radius: 2px;
   font-size: 1rem;
   font-weight: 300;
-  margin: 0 0 10px;
-  padding: 5px;
+  margin: 20px 0 0;
+  opacity: 0.9;
+  padding: 5px 10px 5px 5px;
+  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
+    border-bottom-right-radius: 2px;
+    border-top-right-radius: 2px;
     font-size: 1.125rem;
     margin: 10px 0 0;
+    opacity: 1;
     padding: 5px 10px;
+    width: auto;
   }
 
   @include breakpoint($breakpoint-desktop) {
     font-size: 1.25rem;
   }
-}
-
-.hero__wrapper {
-  align-items: center;
-  display: flex;
-  flex-flow: column nowrap;
-  margin: 0 auto;
-  max-width: $breakpoint-max-usable-screen;
-  padding: 1.5rem 0 0;
-  position: relative;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row nowrap;
-    padding: 2.5rem .5rem;
-  }
-
-  @include breakpoint($breakpoint-desktop) {
-    padding: 4.5rem .5rem;
-  }
-}
-
-.hero__wrapper--workspace {
-  
 }
 
 .hero__item--frontpage {

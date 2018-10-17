@@ -33,10 +33,10 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
     this.props.updateWorkspace(this.props.workspace, {published: !this.props.workspace.published})
   }
   render(){
-    return <header className="hero hero--workspace" style={
+    return <header className="hero hero--workspace">
+      <div className="hero__wrapper hero__wrapper--workspace" style={
       {backgroundImage:this.props.workspace && this.props.workspace.hasCustomImage ? 
-        `url(/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped)` : "url(/gfx/workspace-default-header.jpg)"}}>
-      <div className="hero__wrapper hero__wrapper--workspace">
+      `url(/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped)` : "url(/gfx/workspace-default-header.jpg)"}}>
         <h1 className="hero__workspace-title">{this.props.workspace && this.props.workspace.name}</h1>
         {this.props.workspace && this.props.workspace.educationTypeName ? <div className="workspace-study-level-indicator indicator1">
           <div className="hero__workspace-education-type">{this.props.workspace.educationTypeName}</div>
