@@ -47,13 +47,13 @@
   font-weight: 900;
   position: relative;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: 1.3rem;
     line-height: 1.3rem;
     padding: .2rem .5rem 0;
   }
-  
+
   @include breakpoint($breakpoint-desktop) {
     font-size: 1.5rem;
     line-height: 1.5rem;
@@ -63,10 +63,10 @@
 
 .bubble__content {
   color: $color-bubble-default-content;
-  font-weight: 300;
+  font-weight: 400;
   padding-top: .5rem;
   position: relative;
-  
+
   @include breakpoint($breakpoint-pad) {
     line-height: 1rem;
     min-height: 6.2rem;

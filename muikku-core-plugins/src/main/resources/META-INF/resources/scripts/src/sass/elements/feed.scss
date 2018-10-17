@@ -7,10 +7,10 @@
   color: $color-feed-default-text;
   font-family: $text-branded-font-family;
   font-size: $text-mobile-font-size;
-  font-weight: 300;
+  font-weight: 400;
   list-style-type: none;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -18,7 +18,7 @@
 
 .feed__item {
   margin-bottom: 1.25rem;
-    
+
   &:last-child {
     margin-bottom: 0;
   }
