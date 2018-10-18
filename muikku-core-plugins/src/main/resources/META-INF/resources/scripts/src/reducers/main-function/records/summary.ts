@@ -13,6 +13,7 @@ export interface SummaryType {
   value: SummaryDataType
 }
 
+
 export default function summary(state:SummaryType={
   status: "WAIT",
   value: null
