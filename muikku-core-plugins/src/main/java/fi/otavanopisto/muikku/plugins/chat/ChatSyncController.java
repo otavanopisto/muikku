@@ -261,11 +261,7 @@ public class ChatSyncController {
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
     
     
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
-    String roomName = workspace.getIdentifier();
-    
-    client.deleteChatRoom(roomName);
+    client.deleteChatRoom(workspaceEntity.getIdentifier());
   }
   
  public void syncWorkspace(WorkspaceEntity workspaceEntity) {

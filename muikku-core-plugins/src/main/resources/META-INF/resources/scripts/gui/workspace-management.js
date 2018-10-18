@@ -123,15 +123,13 @@
           return;
         }
         var data = {};
-        if (workspaceChatSettings === null){
-          data.disabled_selected = "selected";
-        }
+        
         if (workspaceChatSettings && workspaceChatSettings.chatStatus === "ENABLED") {
           data.enabled_selected = "selected";
-        }
-        if (workspaceChatSettings && workspaceChatSettings.chatStatus === "DISABLED"){
+        } else {
           data.disabled_selected = "selected";
         }
+        
         renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
           this.element.html(text);
         }, this));
