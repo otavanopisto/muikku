@@ -2,45 +2,83 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as queryString from 'query-string';
-
 import {i18nType} from '~/reducers/base/i18n';
 
-import '~/sass/elements/course.scss';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-sub-panel.scss';
-import '~/sass/elements/workspace-activity.scss';
-import '~/sass/elements/file-uploader.scss';
 
-import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
+import { RecordsType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
-import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
-
-let ProgressBarLine = require('react-progressbar.js').Line;
-
-interface RecordsProps {
+import '~/sass/elements/application-sub-panel.scss';
+interface SummaryProps {
   i18n: i18nType,
   records: RecordsType
 }
 
-interface RecordsState {
+interface SummaryState {
 }
 
-class Records extends React.Component<RecordsProps, RecordsState> {
-  constructor(props: RecordsProps){
+class Summary extends React.Component<SummaryProps, SummaryState> {
+  constructor(props: SummaryProps){
     super(props);
   }    
-  render(){    
-    
+  render(){        
       if (this.props.records.location !== "summary") {
         return null;        
       } else {
-        return <div className="application-sub-panel">Huuhaa</div>
+      return (
+        <div>
+          <h2>OTSOTS</h2>          
+          <div className="application-sub-panel">
+            <div className="application-sub-panel__header">AlaOts</div>
+            <div className="application-sub-panel__body">
+              <div className="application-sub-panel__item">
+                <div className="application-sub-panel__item-title">Ots</div>
+                <div className="application-sub-panel__item-data">data</div>
+              </div>
+              <div className="application-sub-panel__item">
+                <div className="application-sub-panel__item-title">Ots</div>
+                <div className="application-sub-panel__item-data">data</div>
+              </div>
+            </div>
+          </div>
+          <div className="application-sub-panel">
+            <div className="application-sub-panel__header">AlaOts</div>
+            <div className="application-sub-panel__body">
+              <div className="application-sub-panel__item">
+                 Laatikko
+              </div>
+              <div className="application-sub-panel__item">
+                 Toinen laatikko
+              </div>
+              <div className="application-sub-panel__item">
+                 Kolmas laatikko
+              </div>
+            </div>
+          </div>
+          <div className="application-sub-panel">
+            <div className="application-sub-panel__header">AlaOts</div>
+            <div className="application-sub-panel__body application-list">
+              <div className="application-list-item">
+                <div className="application-list-item__header">ilmoutus</div>
+                <div className="application-list-item__body">data</div>
+              </div>
+              <div className="application-list-item">
+                <div className="application-list-item__header">ilmoutus</div>
+                <div className="application-list-item__body">data</div>
+              </div>
+              <div className="application-list-item">
+                <div className="application-list-item__header">ilmoutus</div>
+                <div className="application-list-item__body">data</div>
+              </div>
+            </div>
+          </div>                                            
+           </div>        
+        )
       }
   }
 }
@@ -59,4 +97,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Records);
+)(Summary);
