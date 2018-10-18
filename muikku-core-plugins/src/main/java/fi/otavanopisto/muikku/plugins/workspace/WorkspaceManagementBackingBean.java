@@ -67,7 +67,7 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
     
     UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
     
-    if (userChatSettings.getVisibility() == UserChatVisibility.VISIBLE_TO_ALL) {
+    if (userChatSettings != null && userChatSettings.getVisibility().equals(UserChatVisibility.VISIBLE_TO_ALL)) {
       workspaceChatSettings = true;
     }
     workspaceEntityId = workspaceEntity.getId();
