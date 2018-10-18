@@ -7,6 +7,8 @@ import CurrentRecord from './application/current-record';
 import Vops from './application/vops';
 import Hops from './application/hops';
 import Summary from './application/summary';
+import Statistics from './application/statistics';
+import YO from './application/yo';
 import {StateType} from '~/reducers';
 import Toolbar from './application/toolbar';
 
@@ -32,7 +34,9 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
         <Vops/>
         <Hops/>
         <Summary/>
-      </ApplicationPanel>
+        <Statistics/>
+        <YO/>       
+        </ApplicationPanel>
     </div>);
   }
 }

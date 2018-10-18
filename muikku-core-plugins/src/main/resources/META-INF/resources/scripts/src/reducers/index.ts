@@ -2,9 +2,7 @@ import {i18nType} from './base/i18n';
 import {LocaleListType} from './base/locales';
 import {NotificationListType} from './base/notifications';
 import {StatusType} from './base/status';
-
 import {WebsocketStateType} from './util/websocket';
-
 import { AnnouncementsType } from './main-function/announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';

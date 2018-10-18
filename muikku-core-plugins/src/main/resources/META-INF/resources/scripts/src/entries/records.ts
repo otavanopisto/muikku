@@ -12,6 +12,8 @@ import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndW
 import { loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
+import { updateStatistics } from '~/actions/main-function/records/statistics';
+import { updateYO } from '~/actions/main-function/records/yo';
 import { updateSummary } from '~/actions/main-function/records/summary';
 
 
@@ -40,13 +42,13 @@ function loadCurrentLocation(){
     store.dispatch(<Action>updateHops());
   } else if (givenLocation === "yo"){
     store.dispatch(<Action>setLocationToYoInTranscriptOfRecords());
-    store.dispatch(<Action>updateHops());
+    store.dispatch(<Action>updateYO());
   } else if (givenLocation === "summary"){
     store.dispatch(<Action>setLocationToSummaryInTranscriptOfRecords());
     store.dispatch(<Action>updateSummary());
   } else if (givenLocation === "statistics"){
     store.dispatch(<Action>setLocationToStatisticsInTranscriptOfRecords());
-    store.dispatch(<Action>updateHops());
+    store.dispatch(<Action>updateStatistics());
   }
 }
 
