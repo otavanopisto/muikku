@@ -6,8 +6,6 @@ import {StatusType} from '~/reducers/base/status';
 import {AnnouncementListType, AnnouncementType} from '~/reducers/announcements';
 import {StateType} from '~/reducers';
 
-import '~/sass/elements/ordered-container.scss';
-
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/label.scss';
@@ -19,10 +17,9 @@ interface AnnouncementsPanelProps {
 }
 
 interface AnnouncementsPanelState {
-  
+
 }
 
-//TODO css get rid of ordered container
 class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
   render(){
     return (<div className="panel panel--announcements">

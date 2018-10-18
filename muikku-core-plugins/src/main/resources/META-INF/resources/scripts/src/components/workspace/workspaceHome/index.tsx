@@ -4,6 +4,7 @@ import ScreenContainer from '~/components/general/screen-container';
 import * as React from 'react';
 
 import WorkspaceHomeHeader from './header';
+import WorkspaceDescription from './description';
 import WorkspaceTeachers from './teachers';
 import WorkspaceAnnouncements from './announcements';
 
@@ -21,12 +22,11 @@ export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBody
       <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="workspace">
         <WorkspaceHomeHeader/>
-        <section>
+        <WorkspaceDescription/>
+        <div className="panel-group panel-group--workspace">
           <WorkspaceTeachers/>
-        </section>
-        <section>
           <WorkspaceAnnouncements/>
-        </section>
+        </div>
       </ScreenContainer>
     </div>);
   }

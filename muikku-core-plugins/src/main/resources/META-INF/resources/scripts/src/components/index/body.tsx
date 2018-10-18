@@ -9,7 +9,6 @@ import WorkspacesPanel from './body/workspaces-panel';
 
 import * as React from 'react';
 
-import '~/sass/elements/ordered-container.scss';
 import { StateType } from '~/reducers';
 import { Dispatch, connect } from 'react-redux';
 import { StatusType } from '~/reducers/base/status';
@@ -25,13 +24,13 @@ class IndexBody extends React.Component<{
     return (<div>
       <MainFunctionNavbar activeTrail="index"/>
         {this.props.status.isActiveUser ? <ScreenContainer viewModifiers="index">
-            <div className="panel-group panel-group--studies">
-              <ContinueStudiesPanel/>
-              <WorkspacesPanel/>
-            </div>
-            <LastMessagesPanel/>
-            <ImportantPanel/>
-            <AnnouncementsPanel/></ScreenContainer> : <ScreenContainer viewModifiers="index"><StudiesEnded/></ScreenContainer>}
+          <div className="panel-group panel-group--studies">
+            <ContinueStudiesPanel/>
+            <WorkspacesPanel/>
+          </div>
+          <LastMessagesPanel/>
+          <ImportantPanel/>
+          <AnnouncementsPanel/></ScreenContainer> : <ScreenContainer viewModifiers="index"><StudiesEnded/></ScreenContainer>}
       <CheckContactInfoDialog/>
     </div>);
   }

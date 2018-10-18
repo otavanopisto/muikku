@@ -8,6 +8,9 @@ import Button from "~/components/general/button";
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import { StatusType } from "~/reducers/base/status";
 
+import '~/sass/elements/panel.scss';
+import '~/sass/elements/item-list.scss';
+
 interface WorkspaceTeachersProps {
   workspace: WorkspaceType,
   i18n: i18nType,
@@ -21,7 +24,7 @@ function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: Work
   if (!workspace){
     return ""
   }
-  
+
   let text = workspace.name + (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "");
   let pretext = "";
   if (html){
@@ -40,10 +43,13 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
     super(props);
   }
   render(){
-    return <div className="workspace-frontpage-teachers>">
-      <h1 className="workspace-block-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</h1>
-      <div className="workspace-teachers-container">
-        {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? this.props.workspace.staffMembers.map((teacher)=>
+    return <div className="panel panel--workspace-teachers">
+      <div className="panel__header">
+        <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
+        <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</div>
+      </div>
+      {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? this.props.workspace.staffMembers.map((teacher)=>
+        <div className="panel__content">
           <div className="workspace-teacher" key={teacher.userEntityId}>
             <div className="workspace-teacher-profile-picture">
             <object data={getUserImageUrl(teacher.userEntityId)} type="image/jpeg">
@@ -71,10 +77,14 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                   <span className="icon icon-envelope"></span>
                   {this.props.i18n.text.get("plugin.workspace.index.message.label")}
                 </Button></CommunicatorNewMessage>
+            </div>
           </div>
-        </div>) : 
-        <div className="workspace-teachers-empty">{this.props.i18n.text.get("plugin.workspace.index.teachersEmpty")}</div>}
-      </div>
+        </div>
+        ) : (
+        <div className="panel__content panel__content--empty">
+          {this.props.i18n.text.get("plugin.workspace.index.teachersEmpty")}
+        </div>
+        )}
     </div>
   }
 }

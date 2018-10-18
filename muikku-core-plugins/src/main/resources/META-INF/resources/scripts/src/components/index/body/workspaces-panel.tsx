@@ -5,6 +5,8 @@ import {i18nType} from '~/reducers/base/i18n';
 import {WorkspaceListType, WorkspaceType} from '~/reducers/workspaces';
 import {StateType} from '~/reducers';
 
+import '~/sass/elements/panel.scss';
+
 interface LastMessagesPanelProps {
   i18n: i18nType,
   workspaces: WorkspaceListType

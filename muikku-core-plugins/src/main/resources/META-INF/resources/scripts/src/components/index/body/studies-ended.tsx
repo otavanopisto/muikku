@@ -5,14 +5,12 @@ import { i18nType } from "~/reducers/base/i18n";
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/panel.scss';
 
-
-
 interface StudiesEndedProps {
   i18n: i18nType
 }
 
 interface StudiesEndedState {
-  
+
 }
 
 class StudiesEnded extends React.Component<StudiesEndedProps, StudiesEndedState> {

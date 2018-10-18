@@ -1,6 +1,3 @@
-//TODO please translate this... >:c
-//You see those language strings...
-
 import Link from '../../general/link';
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
@@ -10,8 +7,7 @@ import {ShortWorkspaceType} from '~/reducers/workspaces';
 import {StateType} from '~/reducers';
 import Panel from '~/components/general/panel';
 
-import '~/sass/elements/ordered-container.scss';
-
+import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
 
 interface ContinueStudiesPanelProps {

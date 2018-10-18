@@ -3,6 +3,63 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
+// PANEL GROUPS 
+.panel-group {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-flow: row wrap;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: column nowrap;
+  }
+}
+
+.panel-group--studies {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: 33%;
+  }
+}
+
+
+.panel-group--workspace {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-width: 33%;
+    order: 2;
+  }
+}
+
+// PANELS
 .panel {
   background-color: $color-panel-background;
   box-shadow: 0 2px 3px $color-panel-shadow;
@@ -24,42 +81,20 @@
   }
 }
 
-// This is needed when 2 or more panels needs to be grouped and ordered internally without affecting external elements page flow 
-.panel-group {
-  display: flex;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
-.panel-group--studies {
-
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: 100%;
-    flex-grow: 1;
-    flex-shrink: 1;
-    max-width: 100%;
-  }
-
-  @include breakpoint($breakpoint-desktop) {
-    flex-basis: 33%;
-    flex-grow: 1;
-    flex-shrink: 1;
-    max-width: 33%;
-  }
-}
-
 .panel--continue-studies {
   flex-basis: 50%;
   flex-shrink: 0;
+  order: 1;
 }
 
 .panel--workspaces {
   flex-basis: 50%;
   flex-shrink: 0;
+  order: 2;
 }
 
 .panel--latest-messages {
+  order: 2;
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: 50%;
@@ -73,6 +108,7 @@
 }
 
 .panel--announcements {
+  order: 3;
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: 50%;
@@ -112,6 +148,7 @@
   }
 }
 
+// PANEL HEADER ICONS
 .panel__header-icon {
   border: 2px solid $color-default;
   border-radius: 100%;
@@ -133,7 +170,6 @@
   background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
   color: $color-index-text-for-panels-title-continue-studies-icon-color;
 }
-
 
 .panel__header-icon--workspaces {
   background-color: $color-index-text-for-panels-title-workspaces-icon-background;
@@ -165,6 +201,21 @@
   color: $color-default;
 }
 
+.panel__header-icon--workspace-teachers {
+  background-color: $color-workspace-text-for-panels-title-teachers-icon-background;
+  color: $color-workspace-text-for-panels-title-teachers-icon-color;
+}
+
+.panel__header-icon--workspace-announcements {
+  background-color: $color-workspace-text-for-panels-title-announcements-icon-background;
+  color: $color-workspace-text-for-panels-title-announcements-icon-color;
+}
+
+.panel__header-icon--workspace-description {
+  background-color: $color-workspace-text-for-panels-title-description-icon-background;
+  color: $color-workspace-text-for-panels-title-description-icon-color;
+}
+
 .panel__header-title {
   @include text;
   flex-basis: auto;
@@ -188,6 +239,7 @@
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
+  min-height: 2.625rem;
 
   @include breakpoint($breakpoint-pad) {
     border: solid 1px $color-panel-border;

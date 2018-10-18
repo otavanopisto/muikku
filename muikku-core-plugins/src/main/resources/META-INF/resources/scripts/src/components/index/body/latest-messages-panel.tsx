@@ -5,13 +5,15 @@ import {MessageThreadListType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
+import '~/sass/elements/panel.scss';
+
 interface LastMessagesPanelProps {
   i18n: i18nType,
   lastThreads: MessageThreadListType
 }
 
 interface LastMessagesPanelState {
-  
+
 }
 
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
