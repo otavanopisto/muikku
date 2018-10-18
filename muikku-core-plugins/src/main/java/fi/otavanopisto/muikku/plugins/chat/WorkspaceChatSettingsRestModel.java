@@ -9,10 +9,10 @@ public class WorkspaceChatSettingsRestModel {
     
   }
   
-  public WorkspaceChatSettingsRestModel(Long id, Long workspaceEntityId, WorkspaceChatStatus status) {
+  public WorkspaceChatSettingsRestModel(Long id, Long workspaceEntityId, WorkspaceChatStatus chatStatus) {
     this.id = id;
     this.workspaceEntityId = workspaceEntityId;
-    this.status = status;
+    this.chatStatus = chatStatus;
   }
 
   public Long getId() {
@@ -32,17 +32,17 @@ public class WorkspaceChatSettingsRestModel {
   }
 
   public WorkspaceChatStatus getChatStatus() {
-    return status;
+    return chatStatus;
   }
 
-  public void setChatStatus(WorkspaceChatStatus status) {
-    this.status = status;
+  public void setChatStatus(WorkspaceChatStatus chatStatus) {
+    this.chatStatus = chatStatus;
   }
 
   private Long id;
 
   private Long workspaceEntityId;
 
-  private WorkspaceChatStatus status;
+  private WorkspaceChatStatus chatStatus;
 
 }

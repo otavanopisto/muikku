@@ -374,7 +374,7 @@
     _saveWorkspaceChatStatus: function (workspaceEntityId, chatStatus) {
 
       return $.proxy(function (callback) {
-        mApi().chat.workspaceChatSettings.update(workspaceEntityId, {status: chatStatus, workspaceEntityId: workspaceEntityId})
+        mApi().chat.workspaceChatSettings.update(workspaceEntityId, {chatStatus: chatStatus, workspaceEntityId: workspaceEntityId})
         .callback($.proxy(function (err) {
           callback(err);
         }), this);
