@@ -59,10 +59,9 @@
   align-items: flex-start;
   background-position: center center;
   background-size: cover;
-  display: flex;
   flex-basis: 100%;
   flex-grow: 1;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   flex-shrink: 1;
   justify-content: flex-start;
   max-width: 100%;
@@ -108,9 +107,9 @@
 .hero__workspace-name-extension {
   background: $color-hero-workspace-name-extension-background;
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   margin: 20px 0 0;
-  opacity: 0.9;
+  opacity: 0.85;
   padding: 5px 10px 5px 5px;
   width: 100%;
 
@@ -118,6 +117,7 @@
     border-bottom-right-radius: 2px;
     border-top-right-radius: 2px;
     font-size: 1.125rem;
+    font-weight: 300;
     margin: 10px 0 0;
     opacity: 1;
     padding: 5px 10px;
