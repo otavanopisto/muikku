@@ -28,7 +28,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.announcements.title')}</div>
       </div>
       {this.props.announcements.length ? (
-        <div className="panel__content">
+        <div className="panel__body">
           <div className="item-list item-list--panel-announcements">
             {this.props.announcements.map((announcement: AnnouncementType)=>{
               let extraWorkspaces = announcement.workspaces && announcement.workspaces.length ? announcement.workspaces.length - 1 : 0;
@@ -56,7 +56,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
           </div>
         </div>
         ) : (
-          <div className="panel__content panel__content--empty">
+          <div className="panel__body panel__body--empty">
             {this.props.i18n.text.get("plugin.frontPage.announcements.noAnnouncements")}
           </div>
       )}

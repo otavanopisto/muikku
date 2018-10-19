@@ -28,7 +28,7 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
         <div className="panel__header-icon panel__header-icon--description icon-books"></div>
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</div>
       </div>
-      <div className="panel__content">
+      <div className="panel__body">
 
       </div>
     </div>);

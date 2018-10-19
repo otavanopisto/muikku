@@ -49,7 +49,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.teachersTitle')}</div>
       </div>
       {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? this.props.workspace.staffMembers.map((teacher)=>
-        <div className="panel__content">
+        <div className="panel__body">
           <div className="workspace-teacher" key={teacher.userEntityId}>
             <div className="workspace-teacher-profile-picture">
             <object data={getUserImageUrl(teacher.userEntityId)} type="image/jpeg">
@@ -81,7 +81,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
           </div>
         </div>
         ) : (
-        <div className="panel__content panel__content--empty">
+        <div className="panel__body panel__body--empty">
           {this.props.i18n.text.get("plugin.workspace.index.teachersEmpty")}
         </div>
         )}

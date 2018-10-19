@@ -29,7 +29,7 @@ class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {
             <div className="panel__header-icon panel__header-icon--error icon-error"></div>
             <div className="panel__header-title">{this.props.error.title}</div>
           </div>
-          <div className="panel__content panel__content--error">
+          <div className="panel__body panel__body--error">
             {this.props.error.description}
           </div>
         </div>

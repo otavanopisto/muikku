@@ -82,15 +82,23 @@
 }
 
 .panel--continue-studies {
-  flex-basis: 50%;
+  flex-basis: 100%;
   flex-shrink: 0;
   order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
 }
 
 .panel--workspaces {
-  flex-basis: 50%;
+  flex-basis: 100%;
   flex-shrink: 0;
   order: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
 }
 
 .panel--latest-messages {
@@ -231,7 +239,7 @@
   }
 }
 
-.panel__content {
+.panel__body {
   @include text;
   background-color: $color-panel-background;
   border: none;
@@ -247,26 +255,32 @@
   }
 }
 
-.panel__content--empty {
+.panel__body--empty {
   font-style: italic;
   padding: 10px;
 }
 
-.panel__content--studies-ended {
-  font-style: italic;
-  line-height: 1.35rem;
-  padding: 10px;
-}
-
-.panel__content--error {
+.panel__body--studies-ended {
   font-style: italic;
   line-height: 1.35rem;
   padding: 10px;
 }
 
-.panel__content-highlight {
+.panel__body--error {
+  font-style: italic;
+  line-height: 1.35rem;
+  padding: 10px;
+}
+
+.panel__body-highlight {
   display: inline;
   font-style: italic;
   font-weight: 600;
   margin: 0 5px 0 0;
+}
+
+.panel__title {
+  font-size: 1rem;
+  font-weight: 300;
+  padding: 10px;
 }

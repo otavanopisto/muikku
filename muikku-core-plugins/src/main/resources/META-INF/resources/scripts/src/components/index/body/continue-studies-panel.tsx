@@ -32,10 +32,10 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
         <div className="panel__header-icon panel__header-icon--continue-studies icon-revert"></div>
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</div>
       </div>
-      <div className="panel__content">
+      <div className="panel__body">
         <div className="panel__title">{this.props.lastWorkspace.workspaceName}</div>
-        {this.props.i18n.text.get('plugin.frontPage.latestWorkspace.material.part1')}{" "}<span className="panel__content-highlight">{this.props.lastWorkspace.materialName}.</span>{" "}
-        <Link className="panel__link" href={this.props.lastWorkspace.url}>{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.continueStudiesLink')}</Link>
+        {this.props.i18n.text.get('plugin.frontPage.latestWorkspace.material.part1')}{" "}<span className="panel__body-highlight">{this.props.lastWorkspace.materialName}.</span>{" "}
+        <Link className="link" href={this.props.lastWorkspace.url}>{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.continueStudiesLink')}</Link>
       </div>
     </div>);
   }

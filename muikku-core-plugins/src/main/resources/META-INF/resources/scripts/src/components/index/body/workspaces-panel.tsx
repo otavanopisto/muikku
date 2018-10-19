@@ -24,7 +24,7 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
           <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</div>
         </div>
         {this.props.workspaces.length ? (
-          <div className="panel__content">
+          <div className="panel__body">
             <div className="item-list item-list--panel-workspaces">
               {this.props.workspaces.map((workspace: WorkspaceType)=>{
                 return <Link key={workspace.id} className="item-list__item item-list__item--workspaces" href={`/workspace/${workspace.urlName}`}>
@@ -37,7 +37,7 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
             </div>
           </div>
         ) : (
-          <div className="panel__content panel__content--empty">
+          <div className="panel__body panel__body--empty">
             {this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.part1')}
             <Link href="/coursepicker">
               {this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.coursepicker')}

@@ -20,7 +20,7 @@ class StudiesEnded extends React.Component<StudiesEndedProps, StudiesEndedState>
         <div className="panel__header-icon panel__header-icon--studies-ended icon-permissions"></div>
         <div className="panel__header-title">{this.props.i18n.text.get("plugin.frontpage.inactiveStudent.messageTitle")}</div>
       </div>
-      <div className="panel__content panel__content--studies-ended" dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get('plugin.frontpage.inactiveStudent.messageContent')}}></div>
+      <div className="panel__body panel__body--studies-ended" dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get('plugin.frontpage.inactiveStudent.messageContent')}}></div>
     </div>
   }
 }

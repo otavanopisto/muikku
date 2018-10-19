@@ -24,7 +24,7 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</div>
       </div>
       {this.props.lastThreads.length ? (
-        <div className="panel__content">
+        <div className="panel__body">
           <div className="item-list item-list--panel-latest-messages">
             {this.props.lastThreads.map((thread)=>{
               return (<Link key={thread.id} className={`item-list__item item-list__item--latest-messages ${thread.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
@@ -43,7 +43,7 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
           </div>
         </div>
         ) : (
-          <div className="panel__content panel__content--empty">
+          <div className="panel__body panel__body--empty">
             {this.props.i18n.text.get("plugin.frontPage.latestMessages.noMessages")}
           </div>
         )}

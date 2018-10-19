@@ -31,7 +31,7 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
           <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.announcementsTitle')}</div>
         </div>
         {this.props.announcements.length ? (
-          <div className="panel__content">
+          <div className="panel__body">
             <div className="item-list item-list--panel-announcements">
               {this.props.announcements.map(a=><Link to={this.props.status.contextPath + "/workspace/" + this.props.workspace.urlName + "/announcements?announcementId=" + a.id}
                 key={a.id} as="div" className="item-list__item item-list__item--announcements">
@@ -48,7 +48,7 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
             </div>
           </div>
           ) : (
-          <div className="panel__content panel__content--empty">
+          <div className="panel__body panel__body--empty">
             {this.props.i18n.text.get("plugin.workspace.index.announcementsEmpty")}
           </div>
         )}
