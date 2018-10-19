@@ -39,7 +39,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.PHANTOMJS
+        TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void changeCourseNameTest() throws Exception {
@@ -51,7 +51,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       long courseId = 1l;
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitAndClick(".workspace-management-container input[name=\"workspaceName\"]");
         clearElement(".workspace-management-container input[name=\"workspaceName\"]");
         sendKeys(".workspace-management-container input[name=\"workspaceName\"]", "Testing course");
@@ -86,7 +86,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
         assertTextIgnoreCase(".workspace-header-wrapper .workspace-header-container h1.workspace-title", "Testing course");
       }finally{
@@ -104,7 +104,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.PHANTOMJS
+        TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void changePublishedStateTest() throws Exception {
@@ -116,12 +116,12 @@ public class CourseManagementTestsBase extends AbstractUITest {
       long courseId = 1l;
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitAndClick(".workspace-management-container .additionalinfo-data input[value=\"false\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
         
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".workspace-publication-container .workspace-publish-button");
         assertVisible(".workspace-publication-container .workspace-publish-button");
       }finally{
@@ -139,7 +139,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.PHANTOMJS
+        TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void changeAdditionalInfoTest() throws Exception {
@@ -151,7 +151,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       long courseId = 1l;
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         scrollIntoView(".additionalinfo-data input[name=\"workspaceNameExtension\"]");
         waitAndClick(".additionalinfo-data input[name=\"workspaceNameExtension\"]");
         clearElement(".additionalinfo-data input[name=\"workspaceNameExtension\"]");
@@ -185,7 +185,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         
 
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".workspace-header-wrapper .workspace-additional-info-wrapper span");
         assertTextIgnoreCase(".workspace-header-wrapper .workspace-additional-info-wrapper span", "For Test");
       }finally{
@@ -203,7 +203,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.PHANTOMJS
+        TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void changeWorkspaceTypeTest() throws Exception {
@@ -216,7 +216,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       long courseId = 1l;      
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent(".additionalinfo-data .workspace-type");
         scrollIntoView(".additionalinfo-data .workspace-type");
         selectOption(".additionalinfo-data .workspace-type", "PYRAMUS-2");
@@ -250,7 +250,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         String payload = objectMapper.writeValueAsString(new WebhookCourseUpdatePayload(course.getId()));
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".workspace-meta-wrapper .workspace-meta-item-wrapper:nth-child(3) .workspace-meta-desc");
         assertTextIgnoreCase(".workspace-meta-wrapper .workspace-meta-item-wrapper:nth-child(3) .workspace-meta-desc", "Ryhmäkurssi");
       }finally{
@@ -268,7 +268,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.PHANTOMJS
+        TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void changeLicenseTest() throws Exception {
@@ -280,14 +280,14 @@ public class CourseManagementTestsBase extends AbstractUITest {
       long courseId = 1l;
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent(".workspace-material-license select");
         scrollIntoView(".workspace-material-license select");
         selectOption(".workspace-material-license select", "cc-3.0");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
         
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".workspace-footer-license-wrapper .workspace-material-license");
         assertTextIgnoreCase(".workspace-footer-license-wrapper .workspace-material-license", "https://creativecommons.org/licenses/by-sa/3.0");
       }finally{
@@ -316,7 +316,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
       long courseId = 1l;
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent(".workspace-material-producers input");
         scrollIntoView(".workspace-material-producers input");
         sendKeys(".workspace-material-producers input", "Mr. Tester");
@@ -324,7 +324,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
         
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".workspace-material-producer");
         assertTextIgnoreCase(".workspace-material-producer", "Mr. Tester");
       }finally{

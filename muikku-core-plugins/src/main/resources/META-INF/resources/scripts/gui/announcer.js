@@ -343,6 +343,7 @@
 
       return $.proxy(function (callback) {
         // coursepicker??
+        // + I dunno...
         mApi().coursepicker.workspaces
           .read({
             search: term,

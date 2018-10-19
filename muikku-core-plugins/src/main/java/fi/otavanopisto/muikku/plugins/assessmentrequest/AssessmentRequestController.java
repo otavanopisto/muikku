@@ -12,6 +12,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -39,10 +41,15 @@ public class AssessmentRequestController {
   
   @Inject
   private GradingController gradingController;
-
+  
+  @Inject
+  private ActivityLogController activityLogController;
+  
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(WorkspaceUserEntity workspaceUserEntity, String requestText) {
     String dataSource = workspaceUserEntity.getWorkspaceEntity().getDataSource().getIdentifier();
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    
+    activityLogController.createActivityLog(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), ActivityLogType.EVALUATION_REQUESTED, workspaceEntity.getId(), null);
     
     return gradingController.createWorkspaceAssessmentRequest(
         dataSource, 

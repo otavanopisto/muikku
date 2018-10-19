@@ -1,0 +1,126 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+.hero {
+  @include text;
+  background: url("/gfx/oo-branded-site-header-background-mobile.jpg") no-repeat center center $color-hero-default-background;
+  background-size: cover;
+  margin-top: $navbar-mobile-height;
+
+  @include breakpoint($breakpoint-pad) {
+    background-image: url("/gfx/oo-branded-site-header-background.png");
+    background-size: auto;
+    margin-top: $navbar-desktop-height;
+  }
+}
+
+.hero__wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
+  padding: 1.5rem 0 0;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+    padding: 2.5rem .5rem;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    padding: 4.5rem .5rem;
+  }
+}
+
+.hero__item {
+  padding: 0 1.5rem 1.5rem;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
+  }
+
+  &:nth-child(2) {
+    order: -1;
+
+    @include breakpoint($breakpoint-pad) {
+      order: initial;
+    }
+  }
+}
+
+.hero__item-logo-container {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-flow: nowrap;
+  justify-content: center;
+
+  @include breakpoint ($breakpoint-pad) {
+    flex-direction: column;
+  }
+}
+
+.hero__header {
+  font-family: $text-branded-font-family;
+  font-size: 2rem;
+  line-height: 0.9;
+  text-align: left;
+  text-shadow: 0 5px 10px $color-frontpage-text-author-text-shadow;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 3rem;
+    text-align: center;
+  }
+}
+
+.hero__header--frontpage-muikku-author {
+  color: $color-frontpage-text-muikku-author;
+  font-size: 1.15rem;
+  font-weight: 300;
+  line-height: 1;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+  }
+}
+
+.hero__header--frontpage-muikku {
+  color: $color-frontpage-text-muikku;
+  font-weight: 900;
+}
+
+.hero__header--frontpage-verkko {
+  color: $color-frontpage-text-verkko;
+  font-weight: 200;
+  letter-spacing: 3px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 3rem;
+    letter-spacing: 5px;
+    text-indent: 7px;
+  }
+}
+
+.hero__description {
+  color: $color-frontpage-text-muikku-description;
+  font-size: 0.925rem;
+  font-weight: 300;
+  line-height: 1.2rem;
+  margin: 1rem auto 0;
+  max-width: 100%;
+  text-align: center;
+  text-shadow: 0 5px 10px $color-frontpage-text-description-text-shadow;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 20em;
+  }
+}

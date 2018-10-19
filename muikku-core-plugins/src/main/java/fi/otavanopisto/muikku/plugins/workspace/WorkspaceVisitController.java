@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceVisitDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceVisit;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -25,6 +27,9 @@ public class WorkspaceVisitController {
   private WorkspaceVisitDAO workspaceVisitDAO;
   
   @Inject
+  private ActivityLogController activityLogController;
+  
+  @Inject
   @LocalSession
   private SessionController sessionController;
   
@@ -34,6 +39,7 @@ public class WorkspaceVisitController {
       return;
     } else {
       synchronized(userEntity) {
+        activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.WORKSPACE_VISIT, workspaceEntity.getId(), null);
         WorkspaceVisit workspaceVisit = workspaceVisitDAO.lockingFindByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
         if (workspaceVisit == null) {
           workspaceVisit = workspaceVisitDAO.create(userEntity, workspaceEntity, new Date());

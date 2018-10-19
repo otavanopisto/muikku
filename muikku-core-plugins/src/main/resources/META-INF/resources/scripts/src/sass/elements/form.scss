@@ -1,0 +1,27 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.form {
+  position: relative;
+  width: 100%;
+}
+
+.form__row {
+  padding-bottom: 10px;
+  position: relative;
+  width: 100%;
+}
+
+.form__hidden {
+  display: none;
+}
+
+input,
+select,
+option,
+textarea {
+  @include text;
+}
+
