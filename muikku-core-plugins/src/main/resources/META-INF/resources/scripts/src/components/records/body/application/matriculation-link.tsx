@@ -31,10 +31,6 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
           return;
         }
         const now : Number = new Date().getTime();
-        console.log(now);
-        console.log(data.starts);
-        console.log(data.ends);
-        console.log(data.starts <= now && data.ends >= now);
         if (data && data.starts <= now && data.ends >= now) {
           this.setState({enabled: true});
         }
