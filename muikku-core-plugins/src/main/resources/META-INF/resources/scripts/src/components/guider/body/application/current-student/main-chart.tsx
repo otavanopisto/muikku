@@ -175,7 +175,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
             else
               entry.assignments++;
           }
-          
+
           if (record.type === "EXERCISE"){
             if (entry == null)
               entry = {"exercises": 1};

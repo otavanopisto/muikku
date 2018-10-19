@@ -31,7 +31,7 @@
   position: relative;
   text-align: left;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
     line-height: 1.375rem;
@@ -42,24 +42,23 @@
 .card__title {
   color: $color-frontpage-text-title;
   font-size: 1.2rem;
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1;
   overflow: hidden;
   padding-bottom: 1.1rem;
   text-overflow: ellipsis;
   text-transform: uppercase;
-  
-  @include breakpoint($breakpoint-pad){
+
+  @include breakpoint($breakpoint-pad) {
     font-size: 1.625rem;
-    font-weight: 300;
     padding-bottom: 1.6rem;
   }
 }
-    
+
 .card__text {
   font-size: $text-mobile-font-size;
   font-weight: 400;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -70,12 +69,12 @@
   position: relative;
   text-align: left;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0 1.6rem 1.6rem;
   }
 }
- 
+
 .card__title--frontpage-upper-secondary-school {
   color: $color-frontpage-card-upper-secondary-school-title;
 }
@@ -91,4 +90,3 @@
 .card--frontpage-otavan-opisto {
   padding: 20px;
 }
-

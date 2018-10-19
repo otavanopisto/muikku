@@ -33,16 +33,18 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
     this.props.updateWorkspace(this.props.workspace, {published: !this.props.workspace.published})
   }
   render(){
-    return <header className="hero hero--workspace" style={
+    return <header className="hero hero--workspace">
+      <div className="hero__wrapper hero__wrapper--workspace" style={
       {backgroundImage:this.props.workspace && this.props.workspace.hasCustomImage ? 
-        `url(/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped)` : "url(/gfx/workspace-default-header.jpg)"}}>
-      <h1 className="hero__workspace-title">{this.props.workspace && this.props.workspace.name}</h1>
-      {this.props.workspace && this.props.workspace.educationTypeName ? <div className="workspace-study-level-indicator indicator1">
-        <div className="hero__workspace-education-type">{this.props.workspace.educationTypeName}</div>
-      </div> : null}
-      {this.props.workspace && this.props.workspace.nameExtension ? 
-        <div className="hero__workspace-name-extension"><span>{this.props.workspace.nameExtension}</span></div> : null}
-      {this.props.workspace && this.props.workspace.studentActivity  ? <ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/> : null}
+      `url(/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped)` : "url(/gfx/workspace-default-header.jpg)"}}>
+        <h1 className="hero__workspace-title">{this.props.workspace && this.props.workspace.name}</h1>
+        {this.props.workspace && this.props.workspace.educationTypeName ? <div className="workspace-study-level-indicator indicator1">
+          <div className="hero__workspace-education-type">{this.props.workspace.educationTypeName}</div>
+        </div> : null}
+        {this.props.workspace && this.props.workspace.nameExtension ? 
+          <div className="hero__workspace-name-extension"><span>{this.props.workspace.nameExtension}</span></div> : null}
+        {this.props.workspace && this.props.workspace.studentActivity  ? <ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/> : null}
+      </div>
       <div className="meta meta--workspace">
         <div className="meta__item">
           <span className="meta__item-label">{this.props.i18n.text.get('plugin.workspace.index.courseLengthLabel')}</span>
