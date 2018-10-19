@@ -110,7 +110,6 @@ env:
 after_success:
 - . travis-after-success.sh
 after_failure:
-- pushd .;
 - cat muikku-atests/target/cargo/configurations/wildfly10x/log/server.log;
 notifications:
   webhooks:
