@@ -409,7 +409,7 @@
             <inherited>false</inherited>
             <configuration>
               <sassSourceDirectory>${basedir}/src/main/webapp/resources/theme-muikku/sass</sassSourceDirectory>
-              <destination>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css</destination>
+              <destination>${project.build.directory}/scss-compiled/theme-muikku/css</destination>
             </configuration>
           </execution>
         </executions>
@@ -426,6 +426,12 @@
             </manifestEntries>
           </archive>
           <classifier>${classifier}</classifier>
+          <webResources>
+            <resource>
+              <directory>target/scss-compiled</directory>
+              <targetPath>resources</targetPath>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
     </plugins>
