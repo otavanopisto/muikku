@@ -51,7 +51,6 @@ public class ActivityLogRESTService extends PluginRESTService {
   @Inject
   private UserEntityController userEntityController;
   
-  //TODO permissions? which ones?
   @GET
   @Path("/user/{USERID}/workspace/")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -89,25 +88,27 @@ public class ActivityLogRESTService extends PluginRESTService {
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
     
-    if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    
     List<Long> userWorkspacesWithActivities = activityLogController.listWorkspacesWithActivityLogsByUserId(userEntity.getId());
     Map<String, List<LogDataEntryRESTModel>> userActivities = new HashMap<String, List<LogDataEntryRESTModel>>();
     
-    List<ActivityLog> userGeneralActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntity.getId(), null, from, to);
-    userActivities.put("general", createRestModel(userGeneralActivityLogs));
-    
     for(Long workspaceEntityId: userWorkspacesWithActivities) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-      if (userEntity.getId().equals(sessionController.getLoggedUserEntity().getId()) || sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
+      if (userEntity.getId().equals(sessionController.getLoggedUserEntity().getId()) ||
+          sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS) ||
+          sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity )) {
         List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntity.getId(), workspaceEntityId, from, to);
         userActivities.put(workspaceEntityId.toString(), createRestModel(userWorkspaceActivityLogs));
       }
     }
+    
+    if (userActivities.size() == 0 &&
+        !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId()) &&
+        !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS))
+      return Response.status(Status.FORBIDDEN).build();
+    
+    List<ActivityLog> userGeneralActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntity.getId(), null, from, to);
+    userActivities.put("general", createRestModel(userGeneralActivityLogs));
+    
     return Response.ok(userActivities).build();
   }
   
