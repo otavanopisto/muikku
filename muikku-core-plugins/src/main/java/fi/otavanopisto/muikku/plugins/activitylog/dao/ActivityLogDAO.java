@@ -48,8 +48,6 @@ public class ActivityLogDAO extends CorePluginsDAO<ActivityLog>{
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  //TODO: Add date parameters?
-  //Will CriteriaQuery<Long> work?
   public List<Long> listWorkspaces(Long userEntityId) {
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
