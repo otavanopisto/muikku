@@ -5,8 +5,9 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 
 import {AnyActionType} from '~/actions';
-import { GuiderType, GuiderActiveFiltersType, GuiderStudentsStateType, GuiderStudentListType, GuiderPatchType } from '~/reducers/main-function/guider';
+import { GuiderType, GuiderActiveFiltersType, GuiderStudentsStateType, GuiderStudentListType, GuiderPatchType, GuiderStudentType } from '~/reducers/main-function/guider';
 import { StateType } from '~/reducers';
+import {ActivityLogType} from "~/reducers/main-function/workspaces";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 25;
@@ -67,33 +68,46 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
   }
   
   try {
-    let students:GuiderStudentListType = <GuiderStudentListType>await promisify(mApi().user.students.cacheClear().read(params), 'callback')();
-  
-    //TODO why in the world does the server return nothing rather than an empty array?
-    //remove this hack fix the server side
-    students = students || [];
-    let hasMore:boolean = students.length === MAX_LOADED_AT_ONCE + 1;
+    await promisify(mApi().user.students.cacheClear().read(params), 'callback')().then(async (students: GuiderStudentListType)=>{
+      await Promise.all(
+        students.map(async (student: GuiderStudentType)=>{
+          let today = new Date();
+          let monthAgo = today.getMonth() > 0 ? new Date(today.getFullYear(), today.getMonth()-1) : new Date(today.getFullYear()-1, 11);
+          let obj:any = await promisify(mApi().activitylogs.user.read(student.id, {from: monthAgo, to: today}), 'callback')()
+          let activitylogs = new Map;
+          for (let k of Object.keys(obj)) {
+            activitylogs.set(k, obj[k]);
+          }
+          student.activityLogs = activitylogs;
+        })
+      )
     
-    //This is because of the array is actually a reference to a cached array
-    //so we rather make a copy otherwise you'll mess up the cache :/
-    let actualStudents = students.concat([]);
-    if (hasMore){
-      //we got to get rid of that extra loaded message
-      actualStudents.pop();
-    }
+      //TODO why in the world does the server return nothing rather than an empty array?
+      //remove this hack fix the server side
+      students = students || [];
+      let hasMore:boolean = students.length === MAX_LOADED_AT_ONCE + 1;
     
-    //Create the payload for updating all the communicator properties
-    let payload:GuiderPatchType = {
-      state: "READY",
-      students: (concat ? guider.students.concat(actualStudents) : actualStudents),
-      hasMore
-    }
+      //This is because of the array is actually a reference to a cached array
+      //so we rather make a copy otherwise you'll mess up the cache :/
+      let actualStudents = students.concat([]);
+      if (hasMore){
+        //we got to get rid of that extra loaded message
+        actualStudents.pop();
+      }
     
-    //And there it goes
-    dispatch({
-      type: "UPDATE_GUIDER_ALL_PROPS",
-      payload
-    });
+      //Create the payload for updating all the communicator properties
+      let payload:GuiderPatchType = {
+        state: "READY",
+        students: (concat ? guider.students.concat(actualStudents) : actualStudents),
+        hasMore
+      }
+    
+      //And there it goes
+      dispatch({
+        type: "UPDATE_GUIDER_ALL_PROPS",
+        payload
+      });
+    })
   } catch (err){
     if (!(err instanceof MApiError)){
       throw err;

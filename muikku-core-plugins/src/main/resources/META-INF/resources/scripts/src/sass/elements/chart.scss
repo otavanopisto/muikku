@@ -17,6 +17,14 @@
   width: 600px;
 }
 
+.chart--activity-chart {
+  height: 36px;
+  line-height: 10;
+  width: 150px;
+  margin-top: -10px;
+  margin-bottom: -10px;
+}
+
 .chart__activator {
   background-color: $color-primary;
   border-radius: 3px;

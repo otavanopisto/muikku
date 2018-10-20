@@ -35,7 +35,8 @@ export interface GuiderActiveFiltersType {
   query: string
 }
 export interface GuiderStudentType extends UserWithSchoolDataType {
-  flags: Array<GuiderStudentUserProfileLabelType>
+  flags: Array<GuiderStudentUserProfileLabelType>,
+  activityLogs: Map<string, ActivityLogType[]>
 };
 export type GuiderStudentListType = Array<GuiderStudentType>;
 

@@ -2,6 +2,7 @@ import { UserType } from "~/reducers/main-function/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
 import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider";
+import StudentActivityChart from './student/student-activity-chart';
 
 
 import '~/sass/elements/label.scss';
@@ -25,6 +26,7 @@ export default class Student extends React.Component<StudentProps, StudentState>
     </div>}>
       <ApplicationListItemHeader>
         <span className="application-list__header-primary"><span>{getName(this.props.student as any as UserType)}</span> <span className="application-list__header-helper">{this.props.student.email}</span></span>
+        <span className="application-list__header-secondary">{<StudentActivityChart activityLogs ={this.props.student.activityLogs}/>}</span>
         <span className="application-list__header-secondary">{this.props.student.studyProgrammeName}</span>
       </ApplicationListItemHeader>
         
