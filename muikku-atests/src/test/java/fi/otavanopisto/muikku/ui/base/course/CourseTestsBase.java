@@ -354,16 +354,22 @@ public class CourseTestsBase extends AbstractUITest {
     .build();
     try{
       navigate("/profile", false);
-      waitForPresent(".profile-vacation-date");
-      sendKeys(".profile-vacation-date input[name=\"profile-vacation-start\"]", "21.12.2010");
-      sendKeys(".profile-vacation-date input[name=\"profile-vacation-end\"]", "21.12.2025");
-      waitAndClick(".save-profile-fields");
+      waitForPresent(".profile-element__item:nth-child(2) .react-datepicker-wrapper .react-datepicker__input-container input");
+      sendKeys(".profile-element__item:nth-child(2) .react-datepicker-wrapper .react-datepicker__input-container input", "21.12.2010");
+      waitAndClick(".profile-element__title");
+      waitAndClick(".profile-element__title");
+      waitForPresent(".profile-element__item:nth-child(3) .react-datepicker-wrapper .react-datepicker__input-container input");
+      sendKeys(".profile-element__item:nth-child(3) .react-datepicker-wrapper .react-datepicker__input-container input", "21.12.2025");
+      waitAndClick(".profile-element__title");
+      waitAndClick(".profile-element__title");
+      waitAndClick(".button--primary-function-save");
       logout();
       mockBuilder.mockLogin(student);
       login();
+      selectFinnishLocale();
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".workspace-teacher-info .vacation-period");
-      assertNotTextIgnoreCase(".workspace-teacher-info .vacation-period", "Unavailable 21.12.2010 - 21.12.2025");      
+      assertTextIgnoreCase(".workspace-teacher-info .vacation-period", "Poissa 21.12.2010 - 21.12.2025");      
     }finally{
       WireMock.reset();
       deleteWorkspace(workspace.getId());  
