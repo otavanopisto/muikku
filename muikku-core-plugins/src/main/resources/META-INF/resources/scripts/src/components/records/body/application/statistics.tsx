@@ -33,51 +33,8 @@ class Statistics extends React.Component<StatisticsProps, StatisticsState> {
       return (
         <div>
           <h2>OTSOTS</h2>          
-          <div className="application-sub-panel">
-            <div className="application-sub-panel__header">AlaOts</div>
-            <div className="application-sub-panel__body">
-              <div className="application-sub-panel__item">
-                <div className="application-sub-panel__item-title">Ots</div>
-                <div className="application-sub-panel__item-data">data</div>
-              </div>
-              <div className="application-sub-panel__item">
-                <div className="application-sub-panel__item-title">Ots</div>
-                <div className="application-sub-panel__item-data">data</div>
-              </div>
-            </div>
-          </div>
-          <div className="application-sub-panel">
-            <div className="application-sub-panel__header">AlaOts</div>
-            <div className="application-sub-panel__body">
-              <div className="application-sub-panel__item">
-                 Laatikko
-              </div>
-              <div className="application-sub-panel__item">
-                 Toinen laatikko
-              </div>
-              <div className="application-sub-panel__item">
-                 Kolmas laatikko
-              </div>
-            </div>
-          </div>
-          <div className="application-sub-panel">
-            <div className="application-sub-panel__header">AlaOts</div>
-            <div className="application-sub-panel__body application-list">
-              <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
-              </div>
-              <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
-              </div>
-              <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
-              </div>
-            </div>
-          </div>                                            
-           </div>        
+          <p>ei nää mitään tilastoja ole. Ei ole sellasia täällä.</p>                                 
+        </div>        
         )
       }
   }

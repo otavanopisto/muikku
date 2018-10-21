@@ -38,43 +38,38 @@ class YO extends React.Component<YOProps,YOState> {
             <div className="application-sub-panel__body">
               <div className="application-sub-panel__item">
                 <div className="application-sub-panel__item-title">Ots</div>
-                <div className="application-sub-panel__item-data">data</div>
-              </div>
-              <div className="application-sub-panel__item">
-                <div className="application-sub-panel__item-title">Ots</div>
-                <div className="application-sub-panel__item-data">data</div>
               </div>
             </div>
-          </div>
+          </div>                
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">AlaOts</div>
-            <div className="application-sub-panel__body">
-              <div className="application-sub-panel__item">
-                 Laatikko
+            <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
+              <div className="application-sub-panel__item--summarizer">
+                <div className="application-sub-panel__header">Laatikko OTS</div>               
+                <div className="application-sub-panel__body">Luatikko sis</div>
               </div>
-              <div className="application-sub-panel__item">
-                 Toinen laatikko
-              </div>
-              <div className="application-sub-panel__item">
-                 Kolmas laatikko
+              <div className="application-sub-panel__item--summarizer">
+                <div className="application-sub-panel__header">Laatikko OTS</div>
+                <div className="application-sub-panel__body">Luatikko sis</div>
               </div>
             </div>
           </div>
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">AlaOts</div>
             <div className="application-sub-panel__body application-list">
+            
               <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
+                <div className="application-list-item__header">
+                  <span className="application-list-item__header-icon icon-books"></span>
+                  <span className="application-list-item__header-primary">Gur- gurzi 123123</span>
+                </div>
               </div>
               <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
-              </div>
-              <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
-              </div>
+                <div className="application-list-item__header">
+                  <span className="application-list-item__header-icon icon-books"></span>
+                  <span className="application-list-item__header-primary">Gur- gurzi 123123</span>
+                </div>
+              </div> 
             </div>
           </div>                                            
            </div>        

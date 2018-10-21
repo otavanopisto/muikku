@@ -35,28 +35,38 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           <h2>OTSOTS</h2>          
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">AlaOts</div>
-            <div className="application-sub-panel__body">
+            <div className="application-sub-panel__body application-sub-panel__body--studies-summary-dates">
               <div className="application-sub-panel__item">
                 <div className="application-sub-panel__item-title">Ots</div>
-                <div className="application-sub-panel__item-data">data</div>
+                <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date"><span>data</span></div>
               </div>
               <div className="application-sub-panel__item">
                 <div className="application-sub-panel__item-title">Ots</div>
-                <div className="application-sub-panel__item-data">data</div>
+                <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>data</span></div>
               </div>
             </div>
           </div>
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">AlaOts</div>
-            <div className="application-sub-panel__body">
-              <div className="application-sub-panel__item">
-                 Laatikko
+            <div className="application-sub-panel__body application-sub-panel__body--studies-summary-cards">
+              <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
+                <div>Otsikko</div>
+                <div>blaablaa</div>
+                <div>6</div>            
+                <div>blaablaa</div>            
               </div>
-              <div className="application-sub-panel__item">
-                 Toinen laatikko
+              <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-activity">
+                <div>Otsikko</div>
+                <div>blaablaa</div>
+                <div>6</div>            
+                <div>blaablaa</div>            
+
               </div>
-              <div className="application-sub-panel__item">
-                 Kolmas laatikko
+              <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-returned">
+                <div>Otsikko</div>
+                <div>blaablaa</div>
+                <div>6</div>            
+                <div>blaablaa</div>            
               </div>
             </div>
           </div>
@@ -64,16 +74,22 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="application-sub-panel__header">AlaOts</div>
             <div className="application-sub-panel__body application-list">
               <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
+                <div className="application-list-item__header">
+                  <span className="application-list-item__header-icon icon-bell"></span>
+                  <span className="application-list-item__header-primary">ilmoutus</span>
+                </div>
               </div>
               <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
+                <div className="application-list-item__header">
+                  <span className="application-list-item__header-icon icon-bell"></span>
+                  <span className="application-list-item__header-primary">ilmoutus</span>
+                </div>
               </div>
               <div className="application-list-item">
-                <div className="application-list-item__header">ilmoutus</div>
-                <div className="application-list-item__body">data</div>
+                <div className="application-list-item__header">
+                  <span className="application-list-item__header-icon icon-bell"></span>
+                  <span className="application-list-item__header-primary">ilmoutus</span>
+                </div>                  
               </div>
             </div>
           </div>                                            
