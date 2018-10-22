@@ -136,6 +136,7 @@ class CurrentStudentStatistics extends React.Component<StudentActivityProps, Stu
     graphs.push({
       "valueField": "activityPoints",
       "bulletField": "bullet",
+      "bulletSize": 6,
       "balloonText": "[[bulletvalue]]",
       "showBalloon": true,
       "lineColor": color,
