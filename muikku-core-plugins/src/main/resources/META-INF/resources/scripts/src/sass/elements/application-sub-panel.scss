@@ -129,15 +129,15 @@
 }
 
 .application-sub-panel__card-item--summary-evaluated {
-  background-color: #f6fff2;
+  background-color: $color-sub-container-card-1-background;
 }
 
 .application-sub-panel__card-item--summary-activity {
-  background-color: #f3fbff;
+  background-color: $color-sub-container-card-2-background;
 }
 
 .application-sub-panel__card-item--summary-returned {
-  background-color: #faf0fa;
+  background-color: $color-sub-container-card-3-background;
 }
 
  .application-sub-panel__item-header {
