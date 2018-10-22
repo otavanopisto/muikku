@@ -117,16 +117,6 @@ public class MatriculationRESTService {
     result.setGuidanceCounselor("");
     result.setStudentIdentifier(identifier.toId());
     
-    try {
-      VopsLister.Result listerResult = torController.listVopsCourses(
-        userId,
-        identifier);
-
-      result.setMandatoryCourses(listerResult.getNumMandatoryCourses());
-    } catch (EducationTypeMappingNotSetException ex) {
-      result.setMandatoryCourses(0);
-    }
-    
     return Response.ok(result).build();
   }
 

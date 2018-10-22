@@ -187,7 +187,7 @@ const Page2 = (props) => (
 
         <div className="pure-u-1-2">
           <label>Ilmoittautuminen</label>
-          <select onChange={(ev) => {props.setSchoolType(ev.target.value);}}
+          <select onChange={({target}) => {props.setEnrollAs(target.value);}}
                   value={props.enrollAs} className="pure-u-23-24">
             <option value="UPPERSECONDARY">Lukion opiskelijana</option>
             <option value="VOCATIONAL">Ammatillisten opintojen perusteella</option>
@@ -197,10 +197,13 @@ const Page2 = (props) => (
           { props.enrollAs === "UPPERSECONDARY" ?
           <React.Fragment>
             <label>Pakollisia kursseja suoritettuna</label>
-            <input className="pure-u-1" type="text" readOnly value={props.mandatoryCourses} />
+            <input className="pure-u-1"
+                   type="text"
+                   onChange={({target}) => {props.setNumMandatoryCourses(target.value);}}
+                   value={props.numMandatoryCourses} />
           </React.Fragment> : null }
         </div>
-        {props.enrollAs === "UPPERSECONDARY" && props.mandatoryCourses < 44 ?
+        {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses < 20 ?
           <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
            Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Jos haluat
            silti ilmoittautua ylioppilaskokeeseen, ota yhteyttä ohjaajaan.
@@ -345,7 +348,7 @@ const Page2 = (props) => (
       href="javascript:void(0)"
       onClick={() => {props.setPage(3);}}
       className="pure-button pure-button-primary"
-      disabled={props.conflictingAttendances || (props.enrollAs === "UPPERSECONDARY" && props.mandatoryCourses < 44 )}>
+      disabled={props.conflictingAttendances || (props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses < 20 )}>
       Seuraava sivu
     </a>
   </React.Fragment>
@@ -646,6 +649,7 @@ class App extends React.Component {
               ? <Page2 {...this.state}
                   setGuider={(value) => { this.setState({guider : value}); }}
                   setEnrollAs={(value) => { this.setState({enrollAs : value}); }}
+                  setNumMandatoryCourses={(value) => { this.setState({numMandatoryCourses : value}); }}
                   setPage={(page) => {this.setState({page});}}
                   newEnrolledAttendance={() => {this.newEnrolledAttendance();}}
                   newPlannedAttendance={() => {this.newPlannedAttendance();}}

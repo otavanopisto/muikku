@@ -66,14 +66,6 @@ public class MatriculationExamInitialData {
     this.guidanceCounselor = guidanceCounselor;
   }
 
-  public Integer getMandatoryCourses() {
-    return mandatoryCourses;
-  }
-
-  public void setMandatoryCourses(Integer mandatoryCourses) {
-    this.mandatoryCourses = mandatoryCourses;
-  }
-
   public String getStudentIdentifier() {
     return studentIdentifier;
   }
@@ -91,7 +83,6 @@ public class MatriculationExamInitialData {
   private String postalCode;
   private String locality;
   private String guidanceCounselor;
-  private Integer mandatoryCourses;
   private String studentIdentifier;
 
 }
