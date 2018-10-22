@@ -112,11 +112,12 @@ let loadProfileUsername:LoadProfileUsernameTriggerType = function loadProfileUse
     try {
       let credentials:any = (await promisify(mApi().userplugin.credentials.read(), 'callback')());
       
-      dispatch({
-        type: "SET_PROFILE_USERNAME",
-        payload: credentials.username
-      });
-      
+      if (credentials && credentials.username) {
+        dispatch({
+          type: "SET_PROFILE_USERNAME",
+          payload: credentials.username
+        });
+      }
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
