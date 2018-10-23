@@ -65,24 +65,24 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
       text: (props.quote && props.quoteAuthor ? 
           "<blockquote><p><strong>" + props.quoteAuthor + "</strong></p>" + props.quote + "</blockquote> <p></p>" :
             "")
-    }, (props.reply && props.reply.id) || props.currentId);
+    }, props.currentId + (props.quote ? "-q" : "") + (props.reply ? "-" + props.reply.id : ""));
   }
   onCKEditorChange(text: string){
-    this.setStateAndStore({text}, (this.props.reply && this.props.reply.id) || this.props.currentId);
+    this.setStateAndStore({text}, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
   }
   checkAgainstStoredState(){
     this.checkAgainstDefaultState({
       text: (this.props.quote && this.props.quoteAuthor ? 
           "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
       ""),
-    }, (this.props.reply && this.props.reply.id) || this.props.currentId);
+    }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
   }
   clearUp(){
     this.setStateAndClear({
       text: (this.props.quote && this.props.quoteAuthor ? 
           "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
       ""),
-    }, (this.props.reply && this.props.reply.id) || this.props.currentId);
+    }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
   }
   createReply(closeDialog: ()=>any){
     this.setState({
@@ -96,7 +96,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
         this.setStateAndClear({
           text: "",
           locked: false
-        }, (this.props.reply && this.props.reply.id) || this.props.currentId);
+        }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
       },
       fail: ()=>{
         this.setState({
