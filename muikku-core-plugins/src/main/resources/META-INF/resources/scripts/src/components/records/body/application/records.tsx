@@ -235,7 +235,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 {record.transferCredits.length ? 
                   <div className="application-list__header-container"><h3 className="application-list__header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
                     {record.transferCredits.map((credit)=>{
-                      return <ApplicationListItem className="course course--credits" key={credit.date}>
+                      return <ApplicationListItem className="course course--credits" key={credit.identifier}>
                         <ApplicationListItemHeader modifiers="course">
                           <span className="application-list__header-icon icon-books"></span>  
                           <span className="application-list__header-primary">{credit.courseName}</span>
