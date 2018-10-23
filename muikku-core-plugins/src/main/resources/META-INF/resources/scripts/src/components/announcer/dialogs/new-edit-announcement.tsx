@@ -220,8 +220,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           caption: this.state.subject,
           content: this.state.text,
           publiclyVisible: this.state.currentTarget.length===0 ? true : false,
-          endDate: this.state.endDate.format("YYYY-MM-DD"),
-          startDate: this.state.startDate.format("YYYY-MM-DD"),
+          endDate: this.state.endDate && this.state.endDate.format("YYYY-MM-DD"),
+          startDate: this.state.startDate && this.state.startDate.format("YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget.filter(w=>w.type==="usergroup").map(w=>(w.value as any).id),
           workspaceEntityIds: this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id),
         },
@@ -239,8 +239,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           caption: this.state.subject,
           content: this.state.text,
           publiclyVisible: this.state.currentTarget.length===0 ? true : false,
-          endDate: this.state.endDate.format("YYYY-MM-DD"),
-          startDate: this.state.startDate.format("YYYY-MM-DD"),
+          endDate: this.state.endDate && this.state.endDate.format("YYYY-MM-DD"),
+          startDate: this.state.startDate && this.state.startDate.format("YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget.filter(w=>w.type==="usergroup").map(w=>(w.value as any).id),
           workspaceEntityIds: this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id),
         },
@@ -305,7 +305,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="env-dialog__actions">
-          <Button className="button button--dialog-execute" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
+          <Button className="button button--dialog-execute" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get(this.props.announcement ?
                 'plugin.announcer.editannouncement.button.send' : 'plugin.announcer.createannouncement.button.send')}
           </Button>

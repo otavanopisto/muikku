@@ -185,8 +185,10 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     
     if (!data.title){
+      data.fail && data.fail();
       return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.createMessage.missing.title"), 'error'));
     } else if (!data.message){
+      data.fail && data.fail();
       return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.createMessage.missing.content"), 'error'));
     }
     
