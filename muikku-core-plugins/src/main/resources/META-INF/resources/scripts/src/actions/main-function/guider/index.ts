@@ -413,7 +413,7 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
 let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function createGuiderFilterLabel(name){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     if (!name){
-      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG guider label needs a name"), 'error'));
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
     
     let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
@@ -444,7 +444,7 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
 let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(label, name, description, color){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     if (!name){
-      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG guider label needs a name"), 'error'));
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
     
     let newLabel:GuiderUserLabelType = Object.assign({}, label, {

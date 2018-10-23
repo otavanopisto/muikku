@@ -85,16 +85,16 @@ export interface CreateAnnouncementTriggerType {
 
 function validateAnnouncement(dispatch:(arg:AnyActionType)=>any, getState:()=>StateType, announcement: AnnouncementGeneratorType){
   if (!announcement.caption){
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs a caption"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.caption"), 'error'));
     return false;
   } else if (!announcement.content){
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs content"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.content"), 'error'));
     return false;
   } else if (!announcement.endDate){
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs an end date"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.startDate"), 'error'));
     return false;
   } else if (!announcement.startDate){
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs an start date"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.endDate"), 'error'));
     return false;
   }
 

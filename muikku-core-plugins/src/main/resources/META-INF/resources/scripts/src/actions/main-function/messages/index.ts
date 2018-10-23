@@ -209,13 +209,13 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
     if (!message.subject){
       message.fail && message.fail();
-      return dispatch(displayNotification(getState().i18n.text.get("TODO ERRORMSG message needs a subject"), 'error'));
+      return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createMessage.missing.subject"), 'error'));
     } else if (!message.text){
       message.fail && message.fail();
-      return dispatch(displayNotification(getState().i18n.text.get("TODO ERRORMSG message needs content"), 'error'));
+      return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createMessage.missing.content"), 'error'));
     } else if (!message.to.length){
       message.fail && message.fail();
-      return dispatch(displayNotification(getState().i18n.text.get("TODO ERRORMSG message needs recepients"), 'error'));
+      return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createMessage.missing.recipients"), 'error'));
     }
     
     try {
