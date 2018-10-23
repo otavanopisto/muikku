@@ -94,7 +94,6 @@ public class ActivityLogRESTService extends PluginRESTService {
     for(Long workspaceEntityId: userWorkspacesWithActivities) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       if (userEntity.getId().equals(sessionController.getLoggedUserEntity().getId()) ||
-          sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS) ||
           sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity )) {
         List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntity.getId(), workspaceEntityId, from, to);
         userActivities.put(workspaceEntityId.toString(), createRestModel(userWorkspaceActivityLogs));
