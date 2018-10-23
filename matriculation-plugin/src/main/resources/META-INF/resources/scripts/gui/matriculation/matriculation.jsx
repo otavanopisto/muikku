@@ -1,5 +1,6 @@
 const Page1 = (props) => (
   <div>
+    <h1>Ylioppilaskirjoituksiin ilmoittautuminen</h1>
     <p>Ilmoittautuminen ylioppilaskirjoituksiin on nyt auki. Voit ilmoittautua yo-kirjoituksiin, jos täytät abistatuksen. Lue lisää tiedotteesta.</p>
     <p>Täytä puuttuvat tiedot huolellisesti ja tarkista lomake ennen sen lähettämistä.</p>
     <p>Ilmoittautuminen sulkeutuu:</p>
@@ -7,7 +8,8 @@ const Page1 = (props) => (
       <li>Kevään kirjoitusten osalta 20.11.</li>
       <li>Syksyn kirjoitusten osalta 20.5.</li>
     </ul>
-    <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavanopisto.fi)</p>
+    <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavanopisto.fi).</p>
+    <p><b>Ilmoittautuminen on sitova.</b></p>
     <a href="javascript:void(0)" onClick={() => {props.setPage(2);}} className="pure-button pure-button-primary" >
       Seuraava sivu
     </a>
@@ -28,12 +30,21 @@ const SubjectSelect = ({i, value, onChange}) => (
       <option value="ESA">Espanja, A-taso</option>
       <option value="SAA">Saksa, A-taso</option>
       <option value="VEA">Venäjä, A-taso</option>
+      <option value="RUA">Ruotsi, A-taso</option>
+      <option value="RUB">Ruotsi, B-taso</option>
+      <option value="MAA">Matematiikka, pitkä</option>
+      <option value="MAB">Matematiikka, lyhyt</option>
       <option value="UE">Uskonto</option>
       <option value="ET">Elämänkatsomustieto</option>
       <option value="YO">Yhteiskuntaoppi</option>
       <option value="KE">Kemia</option>
       <option value="GE">Maantiede</option>
       <option value="TT">Terveystieto</option>
+      <option value="PS">Psykologia</option>
+      <option value="FI">Filosofia</option>
+      <option value="HI">Historia</option>
+      <option value="FY">Fysiikka</option>
+      <option value="BI">Biologia</option>
       <option value="ENC">Englanti, C-taso</option>
       <option value="RAC">Ranska, C-taso</option>
       <option value="ESC">Espanja, C-taso</option>
@@ -43,15 +54,6 @@ const SubjectSelect = ({i, value, onChange}) => (
       <option value="POC">Portugali, C-taso</option>
       <option value="LAC">Latina, C-taso</option>
       <option value="SMC">Saame, C-taso</option>
-      <option value="RUA">Ruotsi, A-taso</option>
-      <option value="RUB">Ruotsi, B-taso</option>
-      <option value="PS">Psykologia</option>
-      <option value="FI">Filosofia</option>
-      <option value="HI">Historia</option>
-      <option value="FY">Fysiikka</option>
-      <option value="BI">Biologia</option>
-      <option value="MAA">Matematiikka, pitkä</option>
-      <option value="MAB">Matematiikka, lyhyt</option>
     </select>
   </React.Fragment>
 );
@@ -81,7 +83,7 @@ const MandatorySelect = ({i, value, onChange}) => (
         onChange={onChange}
         className="pure-u-23-24">
       <option value="true">Pakollinen</option>
-      <option value="false">Valinnainen</option>
+      <option value="false">Ylimääräinen</option>
     </select>
   </React.Fragment>
 );
@@ -173,6 +175,14 @@ const Page2 = (props) => (
             value={props.locality} />
         </div>
       </div>
+      <div className="pure-g">
+        <div className="pure-u-1">
+          <label>Jos tietosi ovat muuttuneet, ilmoita siitä tässä</label>
+          <textarea
+            value={props.changedContactInfo}
+            onChange={({target}) => {props.setChangedContactInfo(target.value);}} />
+        </div>
+      </div>
     </fieldset>
     <fieldset>
       <legend>Opiskelijatiedot</legend>
@@ -203,7 +213,11 @@ const Page2 = (props) => (
                    value={props.numMandatoryCourses} />
           </React.Fragment> : null }
         </div>
-        {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses < 20 ?
+        {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses === "" ?
+          <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
+          Ole hyvä ja täytä suoritettujen pakollisten kurssien lukumäärä.
+          </div>: null}
+        {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses !== "" && props.numMandatoryCourses < 20 ?
           <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
            Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Jos haluat
            silti ilmoittautua ylioppilaskokeeseen, ota yhteyttä ohjaajaan.
@@ -216,7 +230,7 @@ const Page2 = (props) => (
       </div>
     </fieldset>
     <fieldset>
-      <legend>Ilmoittaudun suorittamaan kokeen seuraavissa aineissa <b>Syksyllä 2018</b></legend>
+      <legend>Ilmoittaudun suorittamaan kokeen seuraavissa aineissa <b>Keväällä 2019</b></legend>
       <div className="pure-g">
       {props.enrolledAttendances.map((attendance, i) =>
       <React.Fragment key={i}>
@@ -253,6 +267,10 @@ const Page2 = (props) => (
         Lisää uusi rivi
       </button>
     </fieldset>
+    {props.conflictingAttendances ?
+      <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} >
+      Olet valinnut aineet, joita ei voi valita samanaikaisesti. Jos siitä huolimatta haluat osallistua näihin aineisiin, ota yhteyttä ohjaajaan.
+      </div>: null}
     <fieldset>
       <legend>Olen jo suorittanut seuraavat ylioppilaskokeet</legend>
       <div className="pure-g">
@@ -336,10 +354,6 @@ const Page2 = (props) => (
         Lisää uusi rivi
       </button>
     </fieldset>
-    {props.conflictingAttendances ?
-      <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} >
-      Olet valinnut aineet, joita ei voi valita samanaikaisesti. Jos siitä huolimatta haluat osallistua näihin aineisiin, ota yhteyttä ohjaajaan.
-      </div>: null}
     <a href="javascript:void(0)" onClick={() => {props.setPage(1);}} className="pure-button" >
       Edellinen sivu
     </a>
@@ -423,6 +437,7 @@ const Page3 = (props) => (
 
 const Page4 = ({}) => (
   <div>
+    <h1>Ilmoittautuminen ylioppilaskirjoituksiin lähetetty</h1>
     <p>Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.</p>
     <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
   </div>
@@ -443,10 +458,11 @@ class App extends React.Component {
       address: "",
       postalCode: "",
       city: "",
+      changedContactInfo: "",
       nationalStudentNumber: "",
       guider: "",
       enrollAs: "UPPERSECONDARY",
-      numMandatoryCourses: 0,
+      numMandatoryCourses: "",
       location: "Otavan Opisto",
       message: "",
       studentIdentifier: "",
@@ -456,7 +472,7 @@ class App extends React.Component {
       finishedAttendances: [],
       canPublishName: "true",
       date: date.getDate() + "."
-            + date.getMonth() + "."
+            + (date.getMonth() + 1) + "."
             + date.getFullYear()
     };
   }
@@ -476,7 +492,7 @@ class App extends React.Component {
     const enrolledAttendances = this.state.enrolledAttendances;
     enrolledAttendances.push({
       subject: "AI",
-      mandatory: false,
+      mandatory: true,
       repeat: false,
       status: "ENROLLED"
     });
@@ -500,7 +516,7 @@ class App extends React.Component {
     finishedAttendances.push({
       term: "SPRING2018",
       subject: "AI",
-      mandatory: false,
+      mandatory: true,
       grade: "APPROBATUR",
       status: "FINISHED"
     });
@@ -524,7 +540,7 @@ class App extends React.Component {
     plannedAttendances.push({
       term: "SPRING2018",
       subject: "AI",
-      mandatory: false,
+      mandatory: true,
       status: "PLANNED"
     });
     this.setState({plannedAttendances});
@@ -581,6 +597,13 @@ class App extends React.Component {
   }
 
   submit() {
+    let message = this.state.message;
+    if (this.state.changedContactInfo) {
+      message = "Yhteystiedot:\n"
+        + this.state.changedContactInfo
+        + "\n\n"
+        + this.state.message;
+    }
     fetch("/rest/matriculation/enrollments", {
       method: "POST",
       headers: {
@@ -597,9 +620,9 @@ class App extends React.Component {
           city: this.state.locality,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
-          numMandatoryCourses: this.state.numMandatoryCourses,
+          numMandatoryCourses: Number(this.state.numMandatoryCourses),
           location: this.state.location,
-          message: this.state.message,
+          message: message,
           studentIdentifier: this.state.studentIdentifier,
           canPublishName: this.state.canPublishName === 'true',
           attendances: ([
@@ -631,9 +654,6 @@ class App extends React.Component {
     }
     return (
       <React.Fragment>
-        <div className="header">
-          <a href="/">Takaisin etusivulle</a>
-        </div>
         {this.state.error
           ? <div class="error">{this.state.error}</div>
           : null}
@@ -647,6 +667,7 @@ class App extends React.Component {
           {/* Page 2 contains basic contact information and input for the exams the student enrolls into */}
           { this.state.page === 2
               ? <Page2 {...this.state}
+                  setChangedContactInfo={(value) => { this.setState({changedContactInfo: value});}}
                   setGuider={(value) => { this.setState({guider : value}); }}
                   setEnrollAs={(value) => { this.setState({enrollAs : value}); }}
                   setNumMandatoryCourses={(value) => { this.setState({numMandatoryCourses : value}); }}

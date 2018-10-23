@@ -16,9 +16,6 @@ import javax.ws.rs.core.Response.Status;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.EducationTypeMappingNotSetException;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsLister;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -48,9 +45,6 @@ public class MatriculationRESTService {
   
   @Inject
   private UserEmailEntityController userEmailEntityController;
-  
-  @Inject
-  private TranscriptOfRecordsController torController;
   
   @Inject
   private SessionController sessionController;

@@ -17,6 +17,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/journal.scss';
 
 import ApplicationList, { ApplicationListItem, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
+import { MatriculationLink } from './matriculation-link';
 
 interface CurrentRecordProps {
   i18n: i18nType,
@@ -89,7 +90,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
           </div>
         </div> : null}        
       </div>
-          
+      <MatriculationLink i18n={this.props.i18n} />
     </div>
   }
 }

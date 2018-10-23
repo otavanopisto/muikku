@@ -13,7 +13,6 @@ import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
 import { HOPSDataType } from '~/reducers/main-function/hops';
 import {StateType} from '~/reducers';
-import { MatriculationLink } from './matriculation-link';
 
 interface HopsProps {
   i18n: i18nType,
@@ -47,10 +46,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return null;
     }
     
-    return <div>
-      <HopsGraph editable onHopsChange={this.setHopsToWithDelay}/>
-      <MatriculationLink i18n={this.props.i18n} />
-    </div>;
+    return <HopsGraph editable onHopsChange={this.setHopsToWithDelay}/>;
   }
 }
 
