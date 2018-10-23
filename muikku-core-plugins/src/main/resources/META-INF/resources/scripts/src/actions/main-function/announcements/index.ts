@@ -93,7 +93,7 @@ function validateAnnouncement(dispatch:(arg:AnyActionType)=>any, getState:()=>St
   } else if (!announcement.startDate){
     return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs an start date"), 'error'));
   }
-  
+
   return true;
 }
 
