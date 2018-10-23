@@ -282,7 +282,7 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
         throw err;
       }
       console.log(err);
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG failed to delete profile image"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.profileImage.remove"), 'error'));
     }
   }
 }
