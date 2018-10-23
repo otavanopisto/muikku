@@ -13,20 +13,12 @@
   background: $color-meta-workspace-background;
   flex-flow: row wrap;
   justify-content: flex-start;
-  left: 0;
-  opacity: 0.85;
-  padding: 0 0 5px 0;
-  position: absolute;
-  right: 0;
-  top: 53px;
+  padding: 5px 0 0;
 
   @include breakpoint($breakpoint-pad) {
-    left: auto;
     opacity: 1;
     padding: 10px 5px 5px;
     position: relative;
-    right: auto;
-    top: auto;
   }
 }
 

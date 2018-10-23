@@ -63,13 +63,12 @@
   flex-grow: 1;
   flex-flow: column nowrap;
   flex-shrink: 1;
-  justify-content: flex-start;
+  justify-content: center;
   max-width: 100%;
   min-height: 150px;
   padding: 0;
 
   @include breakpoint($breakpoint-pad) {
-    justify-content: center;
     min-height: 196px;
   }
 
@@ -106,22 +105,18 @@
 
 .hero__workspace-name-extension {
   background: $color-hero-workspace-name-extension-background;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
   font-size: 1rem;
   font-weight: 400;
-  margin: 20px 0 0;
-  opacity: 0.85;
   padding: 5px 10px 5px 5px;
-  width: 100%;
+  width: auto;
 
   @include breakpoint($breakpoint-pad) {
-    border-bottom-right-radius: 2px;
-    border-top-right-radius: 2px;
     font-size: 1.125rem;
     font-weight: 300;
     margin: 10px 0 0;
-    opacity: 1;
     padding: 5px 10px;
-    width: auto;
   }
 
   @include breakpoint($breakpoint-desktop) {

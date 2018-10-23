@@ -43,7 +43,7 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
         </div> : null}
         {this.props.workspace && this.props.workspace.nameExtension ? 
           <div className="hero__workspace-name-extension"><span>{this.props.workspace.nameExtension}</span></div> : null}
-        {this.props.workspace && this.props.workspace.studentActivity  ? <ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/> : null}
+        {/*{this.props.workspace && this.props.workspace.studentActivity  ? <ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/> : null} */}
       </div>
       <div className="meta meta--workspace">
         <div className="meta__item">

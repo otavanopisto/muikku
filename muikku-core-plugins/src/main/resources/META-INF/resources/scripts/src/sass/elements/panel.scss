@@ -129,6 +129,56 @@
   }
 }
 
+.panel--workspace-teachers {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: 100%;
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
+.panel--workspace-announcements {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: 100%;
+  order: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    max-width: 50%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
+.panel--workspace-description {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: 100%;
+  order: 2;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 67%;
+    max-width: 67%;
+    order: 1;
+  }
+}
+
 .panel--basic-announcements {
   // Reserved for the future enhancements.
   // We need a feature to separate normal and important announcements
