@@ -66,7 +66,7 @@ public class IndexPageTestsBase extends AbstractUITest {
   @Test
   public void loggedInIndexPageTest() throws Exception {
     Builder mockBuilder = mocker();
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     try{
       Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course, 1234").buildCourse();
       mockBuilder

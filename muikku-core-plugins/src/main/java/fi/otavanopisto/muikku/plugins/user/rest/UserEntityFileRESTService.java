@@ -181,10 +181,11 @@ public class UserEntityFileRESTService extends PluginRESTService {
 	if (loggedUserEntity == null) {
 		return Response.status(Status.FORBIDDEN).build();
 	}
-	EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUserEntity);
+	
+	EnvironmentRoleEntity environmentRoleEntity = userEntityController.getDefaultIdentifierRole(loggedUserEntity);
 	boolean isOwnerOfTheFile = userEntity.getId().equals(loggedUserEntity.getId());
-	boolean isAdministrator = environmentUser != null && environmentUser.getRole() != null && environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR;
-	boolean isStaff = environmentUser != null && environmentUser.getRole() != null && environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT;
+	boolean isAdministrator = environmentRoleEntity != null && environmentRoleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR;
+	boolean isStaff = environmentRoleEntity != null && environmentRoleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT;
 	boolean isStaffAndFileIsAccessibleByStaff = isStaff && (
 			userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF || userEntityFile.getVisibility() == UserEntityFileVisibility.PUBLIC);
 	if (!isOwnerOfTheFile && !isAdministrator && !isStaffAndFileIsAccessibleByStaff) {
