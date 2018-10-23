@@ -65,8 +65,8 @@ class Vops extends React.Component<VopsProps, VopsState> {
       <div className="vops__title text text--guider-header">{this.props.i18n.text.get("plugin.records.studyplan.title")}</div>
       <div className="vops__data">
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", this.props.data.numCourses)}</span>
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.mandatory", this.props.data.numMandatoryCourses)}</span>
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", data.numCourses)}</span>
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.mandatory", data.numMandatoryCourses)}</span>
       </div>    
       <div className="vops__legend-header" onClick={this.toggleLegend}>
         <span className={`vops__legend-arrow icon-arrow-${this.state.legendOpened ? "up" : "down"}`}></span>
@@ -125,7 +125,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
             })}
           </div>
 
-          {this.props.data.rows.map((row)=>{
+          {data.rows.map((row)=>{
             return <div className="vops__row" key={row.subjectIdentifier}>
               <div className="vops__row-item vops__row-item--text-primary">
                 {row.subject}
