@@ -58,7 +58,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.createReply = this.createReply.bind(this);
     this.clearUp = this.clearUp.bind(this);
-    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
+    this.onDialogOpen = this.onDialogOpen.bind(this);
     
     this.state = this.getRecoverStoredState({
       locked: false,
@@ -69,13 +69,6 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
   }
   onCKEditorChange(text: string){
     this.setStateAndStore({text}, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
-  }
-  checkAgainstStoredState(){
-    this.checkAgainstDefaultState({
-      text: (this.props.quote && this.props.quoteAuthor ? 
-          "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
-      ""),
-    }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
   }
   clearUp(){
     this.setStateAndClear({
@@ -94,7 +87,9 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
       success: ()=>{
         closeDialog();
         this.setStateAndClear({
-          text: "",
+          text: this.props.quote && this.props.quoteAuthor ? 
+              "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
+                "",
           locked: false
         }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
       },
@@ -106,10 +101,17 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     });
   }
   onDialogOpen(){
-    if (this.props.quote && this.state.text !== this.props.quote){
-      this.setState({
+    //Text might have not loaded if quoteAuthor or quote wasn't ready
+    if (this.props.quote && this.props.quoteAuthor && !this.state.text){
+      this.setState(this.getRecoverStoredState({
         text: "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>"
-      });
+      }, this.props.currentId + "-q" + (this.props.reply ? "-" + this.props.reply.id : "")))
+    } else {
+      this.checkStoredAgainstThisState({
+        text: this.props.quote && this.props.quoteAuthor ? 
+            "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
+              "",
+      }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
     }
   }  
   render(){
@@ -140,7 +142,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     
     return <JumboDialog modifier="reply-thread"
       title={this.props.i18n.text.get('plugin.discussion.reply.topic')}
-      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
+      content={content} footer={footer} onOpen={this.onDialogOpen}>
       {this.props.children}
     </JumboDialog>
   }

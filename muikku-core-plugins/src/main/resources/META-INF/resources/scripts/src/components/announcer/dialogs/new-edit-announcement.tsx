@@ -101,7 +101,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
   }
   checkAgainstStoredState(){
     if (this.props.announcement){
-      this.checkAgainstDefaultState({
+      this.checkStoredAgainstThisState({
         subject: this.props.announcement.caption,
         text: this.props.announcement.content,
         startDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
@@ -116,7 +116,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         this.forceRecovered();
       }
     } else {
-      this.checkAgainstDefaultState({
+      this.checkStoredAgainstThisState({
         subject: "",
         text: "",
         currentTarget: [],
