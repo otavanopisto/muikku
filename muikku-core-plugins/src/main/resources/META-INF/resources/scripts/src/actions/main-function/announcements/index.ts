@@ -91,10 +91,10 @@ function validateAnnouncement(dispatch:(arg:AnyActionType)=>any, getState:()=>St
     dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.content"), 'error'));
     return false;
   } else if (!announcement.endDate){
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.startDate"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.endDate"), 'error'));
     return false;
   } else if (!announcement.startDate){
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.endDate"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.startDate"), 'error'));
     return false;
   }
 
