@@ -7,12 +7,15 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fi.otavanopisto.muikku.matriculation.persistence.dao.SavedMatriculationEnrollmentDAO;
+import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
@@ -49,12 +52,55 @@ public class MatriculationRESTService {
   @Inject
   private SessionController sessionController;
   
+  @Inject
+  private SavedMatriculationEnrollmentDAO savedMatriculationEnrollmentDAO;
+  
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_GET_EXAM)
   @Path("/currentExam")
   public Response fetchCurrentExam() {
     MatriculationExam exam = matriculationController.getMatriculationExam();
     return Response.ok(exam).build();
+  }
+  
+  @GET
+  @RESTPermit(MatriculationPermissions.MATRICULATION_LOAD_DRAFT)
+  @Path("/savedEnrollments/{USERID}")
+  public Response fetchSavedEnrollment(@PathParam("USERID") String userId) {
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
+    if (identifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
+    }
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    if (!identifier.equals(loggedUserIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+    SavedMatriculationEnrollment savedEnrollment = savedMatriculationEnrollmentDAO.findByUser(identifier);
+    if (savedEnrollment != null) {
+      return Response.ok(savedEnrollment.getSavedEnrollmentJson()).build();
+    }
+    return Response.status(Status.NOT_FOUND).build();
+  }
+
+  @PUT
+  @RESTPermit(MatriculationPermissions.MATRICULATION_LOAD_DRAFT)
+  @Path("/savedEnrollments/{USERID}")
+  public Response saveEnrollment(@PathParam("USERID") String userId, String body) {
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
+    if (identifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
+    }
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    if (!identifier.equals(loggedUserIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+    SavedMatriculationEnrollment savedEnrollment = savedMatriculationEnrollmentDAO.findByUser(identifier);
+    if (savedEnrollment != null) {
+      savedMatriculationEnrollmentDAO.updateSavedEnrollmentJson(savedEnrollment, body);
+    } else {
+      savedEnrollment = savedMatriculationEnrollmentDAO.create(identifier, body);
+    }
+    return Response.ok(savedEnrollment).build();
   }
   
   @GET

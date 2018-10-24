@@ -12,9 +12,7 @@ import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings_;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumMessage;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-
 
 public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
 	

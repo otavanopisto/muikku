@@ -65,6 +65,11 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>core-plugins</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>matriculation-plugin-persistence</artifactId>
+    </dependency>
   </dependencies>
   
   <build>
