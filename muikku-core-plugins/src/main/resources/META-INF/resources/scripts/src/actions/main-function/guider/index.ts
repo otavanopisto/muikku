@@ -250,13 +250,13 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
                   let activityLogs:ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
                       .read(id, {workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')();
                     workspaces[index].activityLogs = activityLogs;
-                })
+                  })
                 )
               ]);
             }
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
           }),
-        promisify(mApi().activitylogs.user.workspace.read(id, {from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')()
+          promisify(mApi().activitylogs.user.workspace.read(id, {from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')()
           .then((activityLogs:ActivityLogType[])=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "activityLogs", value: activityLogs}});
         })
