@@ -1,5 +1,8 @@
 (function() {
   'use strict';
+  renderDustTemplate('workspace/workspace-chat-settings.dust', {}, $.proxy(function (text) {
+    $('.workspace-chat-settings').html(text);
+  }, this));
   
   $.widget("custom.workspaceFrontpageImage", {
     options: {
@@ -12,7 +15,6 @@
       var file = event.target.files[0];
       var formData = new FormData($('.workspace-frontpage-image-form')[0]);
       var workspaceId = this.options.workspaceEntityId;
-      
       // Upload source image
       
       $.ajax({
@@ -27,7 +29,7 @@
               fileIdentifier: 'workspace-frontpage-image-original'
             })
             .callback($.proxy(function(err, result) {
-
+            
               // Create cropping dialog
               
               renderDustTemplate('workspace/workspace-frontpage-image.dust', {}, $.proxy(function (text) {
@@ -46,7 +48,7 @@
                     $('.workspace-frontpage-image-input').val('');
                   },
                   open: function() {
-
+                    
                     // Initialize Croppie
                     
                     var rnd = Math.floor(Math.random() * 1000) + 1
@@ -69,7 +71,7 @@
                     'click': function(event) {
                       
                       // Create image
-
+                      
                       $(this).find('.workspace-frontpage-image-container').croppie('result', {
                         type: 'base64',
                         size: {width: 950, height: 240},
@@ -108,6 +110,33 @@
     }
   });
   
+  
+  $.widget("custom.workspaceChatSettings", {
+    options: {
+      workspaceEntityId: null,
+    },
+    _create: function() {
+      var workspaceEntityId = this.options.workspaceEntityId;
+     mApi().chat.workspaceChatSettings.read(workspaceEntityId).callback($.proxy(function (err, workspaceChatSettings) {
+        if (err) { 
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+          return;
+        }
+        var data = {};
+        
+        if (workspaceChatSettings && workspaceChatSettings.chatStatus === "ENABLED") {
+          data.enabled_selected = "selected";
+        } else {
+          data.disabled_selected = "selected";
+        }
+        
+        renderDustTemplate('workspace/workspace-chat-settings.dust', data, $.proxy(function (text) {
+          this.element.html(text);
+        }, this));
+      }, this));
+    },
+  });
+  
   $.widget("custom.workspaceManagement", {
     options: {
       workspaceEntityId: null,
@@ -130,7 +159,7 @@
     },
     
     _create: function () {
-      
+
       this.element.on("click", ".copy-workspace-link", $.proxy(this._onCopyCourseClick, this));
       
       this.element.on("click", ".workspace-management-image-delete", $.proxy(this._onWorkspaceFrontPageImageDeleteClick, this));
@@ -179,7 +208,7 @@
           if (details.beginDate) {
             dateField.datepicker('setDate', moment(details.beginDate).toDate());
           }
-
+          
           dateField = this.element.find('*[name="endDate"]'); 
           dateField.datepicker({
             "dateFormat": getLocaleText('datePattern')
@@ -201,7 +230,7 @@
               'ogl': false
             }
           });
-
+          
           this.element.on('submit', 'form', $.proxy(this._onFormSubmit, this));
           this.element.on('click', '.save', $.proxy(this._onSaveClick, this));
         }
@@ -215,7 +244,7 @@
           workspaceEntityId: this.options.workspaceEntityId
         });
     },
-
+    
     _addMaterialProducerElement: function (id, status, name) {
       $('<span>')
         .attr({
@@ -340,6 +369,16 @@
       }, this); 
     },
     
+    _saveWorkspaceChatStatus: function (workspaceEntityId, chatStatus) {
+
+      return $.proxy(function (callback) {
+        mApi().chat.workspaceChatSettings.update(workspaceEntityId, {chatStatus: chatStatus, workspaceEntityId: workspaceEntityId})
+        .callback($.proxy(function (err) {
+          callback(err);
+        }), this);
+      }, this); 
+    },
+    
     _createDeleteWorkspaceMaterialProducer: function (id) {
       return $.proxy(function (callback) {
         mApi().workspace.workspaces.materialProducers
@@ -349,7 +388,7 @@
           })
       }, this); 
     },
-
+    
     _onMaterialProducerKeyDown: function (event) {
       if (((event.keyCode ? event.keyCode : event.which) == 13)) {
         event.preventDefault();
@@ -401,7 +440,7 @@
                   })
                 );
               });
-
+              
               var removeOriginalCall = $.proxy(function (callback) {
                 mApi().workspace.workspaces.workspacefile
                   .del(workspaceEntityId, 'workspace-frontpage-image-original')
@@ -453,7 +492,7 @@
         .appendTo(this.element);
       
       var operations = [this._createWorkspaceUpdate(), this._createWorkspaceDetailsUpdate()];
-
+      
       this.element.find('.workspace-material-producer').each($.proxy(function (index, producer) {
         var id = $(producer).attr('data-id');
         var status = $(producer).attr('data-status');
@@ -468,6 +507,10 @@
           break;
         }        
       }, this));
+      
+      var chatStatus = this.element.find(".workspace-chat").val();
+      var workspaceEntityId = this.options.workspaceEntityId;
+      operations.push(this._saveWorkspaceChatStatus(workspaceEntityId, chatStatus));
       
       async.series(operations, function (err, results) {
         loader.remove();
@@ -493,6 +536,10 @@
       $(evaluationLink).attr('target', '_blank');
     }
     
+    $('.workspace-chat-settings').workspaceChatSettings({
+      workspaceEntityId: workspaceEntityId
+    });
+    
     $('.workspace-frontpage-image-uploader').workspaceFrontpageImage({
       workspaceEntityId: workspaceEntityId
     });
@@ -500,6 +547,7 @@
       $('.workspace-frontpage-image-input').click();
     }, this));
     
+    
   });
-
+  
 }).call(this);
