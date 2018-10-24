@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -47,6 +48,6 @@ public class SavedMatriculationEnrollment {
   @Column(nullable = false, unique = true)
   private String userIdentifier;
   
-  @Column
+  @Column(columnDefinition = "TEXT")
   private String savedEnrollmentJson;
 }
