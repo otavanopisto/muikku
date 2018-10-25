@@ -473,7 +473,8 @@ class App extends React.Component {
       canPublishName: "true",
       date: date.getDate() + "."
             + (date.getMonth() + 1) + "."
-            + date.getFullYear()
+            + date.getFullYear(),
+      lastSave: date.getTime()
     };
   }
 
@@ -485,6 +486,21 @@ class App extends React.Component {
       .then((data) => {
         this.setState(data);
         this.setState({initialized: true});
+        this.fetchSavedEnrollment();
+      });
+  }
+
+  fetchSavedEnrollment() {
+    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`)
+      .then((response) => {
+        if (response.status == 404) {
+          return "{}";
+        } else {
+          return response.json();
+        }
+      })
+      .then((data) => {
+        this.setState(data);
       });
   }
 
@@ -646,6 +662,34 @@ class App extends React.Component {
         this.setState({error: response.text()});
       }
     });
+  }
+
+  setState(state) {
+    super.setState(state);
+    if (new Date().getTime() - this.state.lastSave > 5000) {
+      fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify({
+          changedContactInfo: this.state.changedContactInfo,
+          guider: this.state.guider,
+          enrollAs: this.state.enrollAs,
+          numMandatoryCourses: this.state.numMandatoryCourses,
+          enrolledAttendances: this.state.enrolledAttendances,
+          plannedAttendances: this.state.plannedAttendances,
+          finishedAttendances: this.state.finishedAttendances
+        })
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        this.setState(data);
+      });
+      super.setState({lastSave: new Date().getTime()});
+    }
   }
 
   render() {

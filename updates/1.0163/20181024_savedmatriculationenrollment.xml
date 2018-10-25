@@ -3,7 +3,7 @@
   
   <sql>
   CREATE TABLE `SavedMatriculationEnrollment` (
-    `id` BIGINT PRIMARY KEY,
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
     `userIdentifier` VARCHAR(255) NOT NULL,
     `savedEnrollmentJson` TEXT
   )

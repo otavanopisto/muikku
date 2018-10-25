@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,6 +36,7 @@ import fi.otavanopisto.security.rest.RESTPermit;
 @Path("/matriculation")
 @Produces("application/json")
 @RestCatchSchoolDataExceptions
+@Stateless
 public class MatriculationRESTService {
 
   @Inject

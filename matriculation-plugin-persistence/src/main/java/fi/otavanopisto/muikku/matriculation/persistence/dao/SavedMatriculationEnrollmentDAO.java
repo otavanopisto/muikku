@@ -19,7 +19,7 @@ public class SavedMatriculationEnrollmentDAO extends PluginDAO<SavedMatriculatio
     return entityManager;
   }
 
-  @PersistenceContext (unitName = "muikku-core-plugins")
+  @PersistenceContext (unitName = "muikku-matriculation-plugin")
   private EntityManager entityManager;
   
   public SavedMatriculationEnrollment create(
