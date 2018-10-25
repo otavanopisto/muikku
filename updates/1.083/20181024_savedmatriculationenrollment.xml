@@ -8,4 +8,10 @@
     `savedEnrollmentJson` TEXT
   )
   </sql>
+  <sql>
+  CREATE TABLE `SentMatriculationEnrollment` (
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+    `userIdentifier` VARCHAR(255) NOT NULL
+  )
+  </sql>
 </update>

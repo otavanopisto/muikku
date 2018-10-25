@@ -74,6 +74,13 @@ public class MatriculationExamInitialData {
     this.studentIdentifier = studentIdentifier;
   }
 
+  public boolean isEnrollmentSent() {
+    return enrollmentSent;
+  }
+
+  public void setEnrollmentSent(boolean enrollmentSent) {
+    this.enrollmentSent = enrollmentSent;
+  }
 
   private String name;
   private String ssn;
@@ -84,6 +91,7 @@ public class MatriculationExamInitialData {
   private String locality;
   private String guidanceCounselor;
   private String studentIdentifier;
+  private boolean enrollmentSent;
 
 }
 

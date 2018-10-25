@@ -16,7 +16,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.matriculation.persistence.dao.SavedMatriculationEnrollmentDAO;
+import fi.otavanopisto.muikku.matriculation.persistence.dao.SentMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment;
+import fi.otavanopisto.muikku.matriculation.persistence.model.SentMatriculationEnrollment;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
@@ -56,6 +58,9 @@ public class MatriculationRESTService {
   
   @Inject
   private SavedMatriculationEnrollmentDAO savedMatriculationEnrollmentDAO;
+  
+  @Inject
+  private SentMatriculationEnrollmentDAO sentMatriculationEnrollmentDAO;
   
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_GET_EXAM)
@@ -122,6 +127,10 @@ public class MatriculationRESTService {
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
+    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(identifier);
+    if (sentEnrollment != null) {
+      result.setEnrollmentSent(true);
+    }
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
     List<UserPhoneNumber> phoneNumbers = userController.listUserPhoneNumbers(user);
@@ -182,6 +191,10 @@ public class MatriculationRESTService {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     Long studentId = getStudentIdFromIdentifier(userIdentifier);
+    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(userIdentifier);
+    if (sentEnrollment != null) {
+      return Response.status(Status.BAD_REQUEST).entity("Enrollment already sent").build();
+    }
     
     schoolDataEntity.setId(null);
     schoolDataEntity.setName(enrollment.getName());
@@ -216,6 +229,7 @@ public class MatriculationRESTService {
     }
     schoolDataEntity.setAttendances(attendances);
     matriculationController.submitMatriculationExamEnrollment(schoolDataEntity);
+    sentMatriculationEnrollmentDAO.create(userIdentifier);
     return Response.ok().build();
   }
 

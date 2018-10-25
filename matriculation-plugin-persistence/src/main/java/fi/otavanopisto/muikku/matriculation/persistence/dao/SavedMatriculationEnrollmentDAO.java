@@ -1,27 +1,18 @@
 package fi.otavanopisto.muikku.matriculation.persistence.dao;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.dao.PluginDAO;
 import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment;
 import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
-public class SavedMatriculationEnrollmentDAO extends PluginDAO<SavedMatriculationEnrollment> {
+public class SavedMatriculationEnrollmentDAO extends MatriculationPluginDAO<SavedMatriculationEnrollment> {
 
-  private static final long serialVersionUID = 1062901330769382376L;
+  private static final long serialVersionUID = 7506613764993681620L;
 
-  protected EntityManager getEntityManager() {
-    return entityManager;
-  }
-
-  @PersistenceContext (unitName = "muikku-matriculation-plugin")
-  private EntityManager entityManager;
-  
   public SavedMatriculationEnrollment create(
     SchoolDataIdentifier userIdentifier,
     String savedEnrollmentJson

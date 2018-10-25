@@ -10,7 +10,12 @@ const Page1 = (props) => (
     </ul>
     <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavanopisto.fi).</p>
     <p><b>Ilmoittautuminen on sitova.</b></p>
-    <a href="javascript:void(0)" onClick={() => {props.setPage(2);}} className="pure-button pure-button-primary" >
+    {props.enrollmentSent ?
+      <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
+        Olet jo ilmoittautunut ylioppilaskokeeseen. Jos haluat muuttaa ilmoittautumistasi,
+        ota yhteyttä ohjaajaan.
+      </div>: null}
+    <a href="javascript:void(0)" disabled={props.enrollmentSent} onClick={() => {props.setPage(2);}} className="pure-button pure-button-primary" >
       Seuraava sivu
     </a>
   </div>
@@ -704,7 +709,7 @@ class App extends React.Component {
         <form className="pure-form pure-form-stacked matriculation-form" onSubmit={(e) => {e.preventDefault();}}>
           {/* Page 1 of the wizard contains an introductory text */}
           { this.state.page === 1
-              ? <Page1
+              ? <Page1 {...this.state}
                 setPage={(page) => {this.setState({page});}}
                 />
               : null }
