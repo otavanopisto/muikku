@@ -112,11 +112,12 @@ let loadProfileUsername:LoadProfileUsernameTriggerType = function loadProfileUse
     try {
       let credentials:any = (await promisify(mApi().userplugin.credentials.read(), 'callback')());
       
-      dispatch({
-        type: "SET_PROFILE_USERNAME",
-        payload: credentials.username
-      });
-      
+      if (credentials && credentials.username) {
+        dispatch({
+          type: "SET_PROFILE_USERNAME",
+          payload: credentials.username
+        });
+      }
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
@@ -281,7 +282,7 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
         throw err;
       }
       console.log(err);
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG failed to delete profile image"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.profile.errormessage.profileImage.remove"), 'error'));
     }
   }
 }

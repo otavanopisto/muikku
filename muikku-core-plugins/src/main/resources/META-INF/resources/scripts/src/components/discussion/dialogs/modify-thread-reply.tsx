@@ -63,7 +63,7 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
     }, props.reply.id);
   }
   checkAgainstStoredState(){
-    this.checkAgainstDefaultState({
+    this.checkStoredAgainstThisState({
       text: this.props.reply.message
     }, this.props.reply.id);
   }

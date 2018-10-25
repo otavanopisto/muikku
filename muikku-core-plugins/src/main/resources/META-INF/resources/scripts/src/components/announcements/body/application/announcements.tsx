@@ -27,10 +27,10 @@ interface AnnouncementState {
 }
 
 class Announcement extends React.Component<AnnouncementProps, AnnouncementState> {
-  render(){    
+  render(){
     if (!this.props.announcement) {
-      return (null)      
-    }        
+      return (null)
+    }
     return (
       <section>
         <article className="article">

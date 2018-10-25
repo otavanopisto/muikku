@@ -185,9 +185,11 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     
     if (!data.title){
-      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion message needs a title"), 'error'));
+      data.fail && data.fail();
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.createMessage.missing.title"), 'error'));
     } else if (!data.message){
-      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion message needs a message"), 'error'));
+      data.fail && data.fail();
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.createMessage.missing.content"), 'error'));
     }
     
     try {
@@ -228,10 +230,10 @@ let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDi
     
     if (!data.title){
       data.fail && data.fail();
-      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion message needs a title"), 'error'));
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.createMessage.missing.title"), 'error'));
     } else if (!data.message){
       data.fail && data.fail();
-      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion message needs a message"), 'error'));
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.createMessage.missing.content"), 'error'));
     }
     
     try {
@@ -505,7 +507,7 @@ let createDiscussionArea:CreateDiscussionAreaTriggerType = function createDiscus
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     if (!data.name){
       data.fail && data.fail();
-      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion area needs a name"), 'error'));
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.createForumArea.missing.areaName"), 'error'));
     }
     
     try {
@@ -537,7 +539,7 @@ let updateDiscussionArea:UpdateDiscussionAreaTriggerType = function updateDiscus
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     if (!data.name){
       data.fail && data.fail();
-      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion area needs a name"), 'error'));
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.createForumArea.missing.areaName"), 'error'));
     }
     
     try {

@@ -157,7 +157,10 @@
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
   margin-left: 5px;
-
+//  overflow: hidden;
+//  text-overflow: ellipsis;
+//  white-space: nowrap;
+  
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }

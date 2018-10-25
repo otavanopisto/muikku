@@ -92,7 +92,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     }, getStateIdentifier(props));
   }
   checkAgainstStoredState(){
-    this.checkAgainstDefaultState({
+    this.checkStoredAgainstThisState({
       text: this.props.initialMessage || "",
       selectedItems: this.props.initialSelectedItems || [],
       subject: this.props.initialSubject || "",

@@ -34,7 +34,7 @@ class StudiesToolbar extends React.Component<StudiesToolbarProps, StudiesToolbar
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     
     if (history.replaceState){
-      let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
+      let canGoBack = (!document.referrer || document.referrer.indexOf(window.location.host) !== -1) && (history.length);
       if (canGoBack){
         history.back();
       } else {

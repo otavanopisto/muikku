@@ -76,7 +76,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
   }
   checkAgainstStoredState(){  
-    this.checkAgainstDefaultState({
+    this.checkStoredAgainstThisState({
       text: "",
       title: "",
       threadPinned: false,
