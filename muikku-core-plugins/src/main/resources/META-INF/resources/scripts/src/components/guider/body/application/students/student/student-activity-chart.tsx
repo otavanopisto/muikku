@@ -126,21 +126,28 @@ class CurrentStudentStatistics extends React.Component<StudentActivityProps, Stu
         data.push ({"date": key, "activityPoints": 100, "bulletvalue": value, "bullet": "round"});
     });
     
-    let color = "#23AB3C";
-    if (monthActivity < 100)
-      color = "#C91400";
-    else if (monthActivity < 200)
-      color = "#FFE001";
+    let color = "#FF0000";
+    let modifier = "";
+    if (monthActivity == 0)
+      modifier = "-empty";
+    else if (monthActivity > 200)
+      color = "#00FF00";
+    else if (monthActivity > 150)
+      color = "#80FF00";
+    else if (monthActivity > 100)
+      color = "#FFFF00";
+    else if (monthActivity > 50)
+      color = "#FF8000";
     
     let graphs = new Array;
     graphs.push({
       "valueField": "activityPoints",
       "bulletField": "bullet",
-      "bulletSize": 6,
+      "bulletSize": 4,
       "balloonText": "[[bulletvalue]]",
       "showBalloon": true,
       "lineColor": color,
-      "lineThickness": 2,
+      "lineThickness": 1,
     });
     
     let config = {
@@ -182,7 +189,7 @@ class CurrentStudentStatistics extends React.Component<StudentActivityProps, Stu
       }
     };
 
-    return <AmCharts.React className="chart chart--activity-chart" options={config}/>
+    return <AmCharts.React className={"chart chart--activity-chart" + modifier} options={config}/>
   }
 }
 
