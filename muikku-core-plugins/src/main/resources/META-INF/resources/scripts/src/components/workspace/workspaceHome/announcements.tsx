@@ -30,7 +30,7 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
           <div className="panel__header-icon panel__header-icon--workspace-announcements icon-announcer"></div>
           <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.announcementsTitle')}</div>
         </div>
-        {this.props.announcements.length ? (
+        {this.props.announcements.length && this.props.workspace ? (
           <div className="panel__body">
             <div className="item-list item-list--panel-announcements">
               {this.props.announcements.map(a=><Link to={this.props.status.contextPath + "/workspace/" + this.props.workspace.urlName + "/announcements?announcementId=" + a.id}

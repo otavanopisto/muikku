@@ -6,6 +6,7 @@ import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentAc
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType } from '~/reducers/user-index';
+import { MaterialType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -85,7 +86,7 @@ function reuseExistantValue(conditional: boolean, existantValue: any, otherwise:
     return null;
   }
   if (existantValue){
-    return null;
+    return existantValue;
   }
   
   return otherwise();
@@ -106,8 +107,9 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let assessmentRequests:Array<WorkspaceAssessmentRequestType>;
       let activity:WorkspaceStudentActivityType;
       let additionalInfo:WorkspaceAdditionalInfoType;
+      let contentDescription:MaterialType;
       let status = getState().status;
-      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo] = await Promise.all([
+      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription] = await Promise.all([
                                                  reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
                                                      workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
@@ -120,12 +122,15 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                  reuseExistantValue(true, workspace && workspace.studentActivity,
                                                      ()=>promisify(mApi().guider.workspaces.activity.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(true, workspace && workspace.additionalInfo,
-                                                     ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(data.workspaceId), 'callback')())]) as any
+                                                     ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(data.workspaceId), 'callback')()),
+                                                 reuseExistantValue(true, workspace && workspace.contentDescription,
+                                                     ()=>promisify(mApi().workspace.workspaces.description.read(data.workspaceId), 'callback')())]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
       workspace.studentActivity = activity;
       workspace.additionalInfo = additionalInfo;
+      workspace.contentDescription = contentDescription;
       
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',

@@ -4,16 +4,15 @@
 //please remove it
 
 import * as React from 'react';
-import Base from './material-loader/base';
+import Base from './base';
 
 //TODO add the scss files that are necessary to render this material page correctly...
 //this file is temporary use it to dump the content from the deprecated scss files that are necessary
 import "~/sass/elements/__ugly-material-loader-deprecated-file-mashup.scss";
-import { MaterialType, MaterialCompositeRepliesType } from '~/reducers/main-function/records';
 
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
-import { WorkspaceType } from '~/reducers/workspaces';
+import { WorkspaceType, MaterialType, MaterialCompositeRepliesType } from '~/reducers/workspaces';
 import promisify from '~/util/promisify';
 
 import '~/sass/elements/rich-text.scss';
@@ -230,7 +229,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     //more reasonable
     
     return <div className="__deprecated">
-      {this.props.material.evaluation.verbalAssessment ?
+      {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
           <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>

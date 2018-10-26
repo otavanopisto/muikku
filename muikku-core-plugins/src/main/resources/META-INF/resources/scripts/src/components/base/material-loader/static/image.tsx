@@ -10,7 +10,10 @@ interface ImageProps {
     licence: string,
     licenseUrl: string,
     source: string,
-    sourceUrl: string
+    sourceUrl: string,
+    
+    //Someone thought it was smart to set up two versions of data
+    original?: string
   },
   i18n: i18nType
 }
@@ -28,12 +31,21 @@ export default function image(props: ImageProps){
           {props.dataset.licence ? <a href={props.dataset.licenseUrl} target="_blank">{props.dataset.licence}</a> : null}
         </div>
       </div>);
-    } else if (Tag === "img" && elementProps.width){
+    }
+    
+    if (Tag === "img" && elementProps.width){
       elementProps.style = elementProps.style || {};
       elementProps.style.maxWidth = elementProps.width + "px";
       elementProps.style.width = "100%";
       elementProps.width = null;
       elementProps.height = null;
+    }
+    
+    //I don't know who thought it was a clever idea to have
+    //two alternatives of image, one with src, and another one
+    //where the source would be data-original
+    if (Tag === "img" && props.dataset.original){
+      elementProps.src = props.dataset.original;
     }
     return <Tag {...elementProps}>{children}</Tag>
   });

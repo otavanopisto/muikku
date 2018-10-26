@@ -17,7 +17,7 @@ import WordDefinition from './static/word-definition';
 import { extractDataSet, guidGenerator } from '~/util/modifiers';
 import { processMathInPage } from '~/lib/mathjax';
 import MathField from './fields/math-field';
-import { MaterialCompositeRepliesType } from '~/reducers/main-function/records';
+import { MaterialCompositeRepliesType } from '~/reducers/workspaces';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,
@@ -130,13 +130,16 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   setupEverything(props: BaseProps = this.props){
     this.elements.forEach((e)=>(this.refs["base"] as HTMLElement).appendChild(e));
     
-    $(this.elements).find("object").each((index: number, element: HTMLElement)=>{
+    $(this.elements).find("object").addBack("object").each((index: number, element: HTMLElement)=>{
       let rElement:React.ReactElement<any> = this.getObjectElement(element, props);
       let parentElement = element.parentElement;
       parentElement.removeChild(element);
       
+      let newParentElement = document.createElement('p');
+      parentElement.appendChild(newParentElement);
+      
       this.fieldRegistry.push({
-        node: parentElement,
+        node: newParentElement,
         subtree: unstable_renderSubtreeIntoContainer(
            this,
            rElement,
@@ -147,7 +150,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     });
     
     Object.keys(statics).forEach((componentKey)=>{
-      $(this.elements).find(componentKey).toArray().forEach((element: HTMLElement)=>{
+      console.log("searching for statics in", componentKey, this.elements);
+      $(this.elements).find(componentKey).addBack(componentKey).toArray().forEach((element: HTMLElement)=>{
+        console.log("found", element);
         let rElement:React.ReactElement<any> = statics[componentKey].handler({
           element,
           dataset: extractDataSet(element),
@@ -156,11 +161,14 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         let parentElement = element.parentElement;
         parentElement.removeChild(element);
         
+        let newParentElement = document.createElement('p');
+        parentElement.appendChild(newParentElement);
+        
         this.staticRegistry.push({subtree: unstable_renderSubtreeIntoContainer(
           this,
           rElement,
-          parentElement
-        ), node: parentElement, element, componentKey});
+          newParentElement
+        ), node: newParentElement, element, componentKey});
       });
     });
     

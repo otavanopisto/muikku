@@ -1,7 +1,7 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { RecordsGradesType, MaterialType } from "~/reducers/main-function/records";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { RecordsGradesType } from "~/reducers/main-function/records";
+import { WorkspaceType, MaterialType } from "~/reducers/workspaces";
 
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";

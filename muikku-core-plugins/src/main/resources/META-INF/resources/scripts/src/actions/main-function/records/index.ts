@@ -3,8 +3,8 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType, UserFileType} from '~/reducers/user-index';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType } from 'reducers/workspaces';
-import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType } from '~/reducers/workspaces';
+import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, CurrentRecordType } from '~/reducers/main-function/records';
 import { StateType } from '~/reducers';
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;

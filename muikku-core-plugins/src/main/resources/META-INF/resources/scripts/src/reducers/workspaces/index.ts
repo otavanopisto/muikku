@@ -143,7 +143,8 @@ export interface WorkspaceType {
   feeInfo?: WorkspaceFeeInfoType,
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
-  staffMembers?: Array<UserStaffType>
+  staffMembers?: Array<UserStaffType>,
+  contentDescription?: MaterialType
 }
 
 export interface WorkspaceUpdateType {
@@ -238,6 +239,118 @@ export interface WorkspacesPatchType {
   hasMore?: boolean,
   toolbarLock?: boolean
 }
+
+export interface JournalType {
+  id: number,
+  workspaceEntityId: number,
+  userEntityId: number,
+  firstName: string,
+  lastName: string,
+  content: string,
+  title: string,
+  created: string
+}
+
+export type JournalListType = Array<JournalType>;
+
+export interface MaterialAssignmentType {
+  id: number,
+  materialId: number,
+  parentId: number,
+  nextSiblingId: number,
+  hidden: boolean,
+  assignmentType: string,
+  correctAnswers: string,
+  path: string,
+  title: string
+}
+
+export interface MaterialType {
+  title: string,
+  license: string,
+  viewRestrict: string,
+  html: string,
+  currentRevision: number,
+  publishedRevision: number,
+  
+  //Standard Fields (only available when loaded through materials)
+  id?: number,
+  contentType?: string,
+  
+  //Extended Fields (only available when loaded via workspace)
+  type?: string,
+  children?: Array<MaterialContentNodeType>,
+  workspaceMaterialId?: number,
+  materialId?: number,
+  level?: number,
+  assignmentType?: string,
+  correctAnswers?: string,
+  hidden?: boolean,
+  parentId?: number,
+  path?: string,
+  viewRestricted?: boolean,
+  producers?: any,  
+  
+  //Assigned fields
+  evaluation?: MaterialEvaluationType,
+  assignment?: MaterialAssignmentType
+}
+
+export interface MaterialContentNodeType {
+  title: string,
+  type: string,
+  children: Array<MaterialContentNodeType>,
+  workspaceMaterialId: number,
+  materialId: number,
+  level: number,
+  assignmentType: string,
+  correctAnswers: string,
+  hidden: boolean,
+  parentId: number,
+  html: string,
+  currentRevision: number,
+  publishedRevision: number,
+  path: string,
+  license: string,
+  viewRestrict: string,
+  viewRestricted: boolean,
+  producers: any
+}
+
+export interface MaterialAnswerType {
+  embedId: string,
+  fieldName: string,
+  materialId: number,
+  value: string,
+  workspaceMaterialId: number
+}
+
+export interface MaterialCompositeRepliesType {
+  answers: Array<MaterialAnswerType>,
+  created: string,
+  lastModified: string,
+  state: string,
+  submitted: string,
+  withdrawn?: string
+}
+
+export interface MaterialEvaluationType {
+  id: number,
+  evaluated: string,
+  assessorEntityId: number,
+  studentEntityId: number,
+  workspaceMaterialId: number,
+  gradingScaleIdentifier: string,
+  gradingScaleSchoolDataSource: string,
+  grade: string,
+  gradeIdentifier: string,
+  gradeSchoolDataSource: string,
+  gradingScale: string,
+  verbalAssessment: string,
+  passed: boolean
+}
+
+export type MaterialListType = Array<MaterialType>;
 
 function processWorkspaceToHaveNewAssessmentStateAndDate(id: number, assessmentState: WorkspaceAssessementStateType, date: string,
     assessmentRequestObject: WorkspaceAssessmentRequestType, deleteAssessmentRequestObject:boolean, workspace: WorkspaceType){
