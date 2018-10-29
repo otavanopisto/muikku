@@ -115,11 +115,22 @@ export interface CreateGuiderFilterLabelTriggerType {
 }
 
 export interface UpdateGuiderFilterLabelTriggerType {
-  (label: GuiderUserLabelType, name: string, description: string, color: string):AnyActionType
+  (data: {
+    label: GuiderUserLabelType,
+    name: string,
+    description: string,
+    color: string,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
 }
 
 export interface RemoveGuiderFilterLabelTriggerType {
-  (label: GuiderUserLabelType):AnyActionType
+  (data: {
+    label: GuiderUserLabelType,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
 }
 
 let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file){
@@ -440,28 +451,29 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
   }
 }
 
-let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(label, name, description, color){
+let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     if (!name){
+      data.fail && data.fail();
       return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
     
-    let newLabel:GuiderUserLabelType = Object.assign({}, label, {
-      name,
-      description,
-      color
+    let newLabel:GuiderUserLabelType = Object.assign({}, data.label, {
+      name: data.name,
+      description: data.description,
+      color: data.color
     });
   
     try {
-      await promisify(mApi().user.flags.update(label.id, newLabel), 'callback')();
+      await promisify(mApi().user.flags.update(data.label.id, newLabel), 'callback')();
       dispatch({
         type: "UPDATE_GUIDER_AVAILABLE_FILTER_LABEL",
         payload: {
           labelId: newLabel.id,
           update: {
-            name,
-            description,
-            color
+            name: data.name,
+            description: data.description,
+            color: data.color
           }
         }
       });
@@ -470,36 +482,40 @@ let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function update
         payload: {
           labelId: newLabel.id,
           update: {
-            flagName: name,
-            flagColor: color
+            flagName: data.name,
+            flagColor: data.color
           }
         }
       });
+      data.success && data.success();
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
       }
+      data.fail && data.fail();
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.update"), 'error'));
     }
   }
 }
 
-let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function removeGuiderFilterLabel(label){
+let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function removeGuiderFilterLabel(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      await promisify(mApi().user.flags.del(label.id), 'callback')();
+      await promisify(mApi().user.flags.del(data.label.id), 'callback')();
       dispatch({
         type: "DELETE_GUIDER_AVAILABLE_FILTER_LABEL",
-        payload: label.id
+        payload: data.label.id
       });
       dispatch({
         type: "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS",
-        payload: label.id
+        payload: data.label.id
       });
+      data.success && data.success();
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
       }
+      data.fail && data.fail();
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.remove"), 'error'));
     }
   }
