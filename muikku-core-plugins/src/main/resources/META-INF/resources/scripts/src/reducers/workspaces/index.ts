@@ -119,6 +119,12 @@ export interface WorkspaceAdditionalInfoType {
   }
 }
 
+export interface WorkspaceMaterialProducerType {
+  id: number,
+  workspaceEntityId: number,
+  name: string
+}
+
 export interface WorkspaceType {
   archived: boolean,
   description: string,
@@ -153,6 +159,7 @@ export interface WorkspaceType {
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
+  materialProducers?: Array<WorkspaceMaterialProducerType>,
   contentDescription?: MaterialType,
   activityLogs?: ActivityLogType[]
 }
