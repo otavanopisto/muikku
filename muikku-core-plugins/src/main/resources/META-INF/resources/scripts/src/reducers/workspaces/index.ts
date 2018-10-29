@@ -58,6 +58,12 @@ export interface WorkspaceStudentAssessmentsType {
   assessments: Array<WorkspaceStudentAssessmentType>
 }
 
+export interface ActivityLogType {
+  type: String,
+  timestamp: String,
+  contextId?: number
+}
+
 export interface WorkspaceActivityRecordType {
   type: string,
   date: string
@@ -144,7 +150,8 @@ export interface WorkspaceType {
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
-  contentDescription?: MaterialType
+  contentDescription?: MaterialType,
+  activityLogs?: ActivityLogType[]
 }
 
 export interface WorkspaceUpdateType {
@@ -173,7 +180,9 @@ export interface WorkspaceUpdateType {
   feeInfo?: WorkspaceFeeInfoType,
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
-  staffMembers?: Array<UserStaffType>
+  staffMembers?: Array<UserStaffType>,
+  contentDescription?: MaterialType,
+  activityLogs?: ActivityLogType[]
 }
 
 export interface ShortWorkspaceType {

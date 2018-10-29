@@ -212,7 +212,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
       <div className="application-sub-panel">
         <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
-        {this.props.guider.currentStudent.logins && this.props.guider.currentStudent.workspaces && <MainChart/>}
+        {this.props.guider.currentStudent.activityLogs && this.props.guider.currentStudent.workspaces && <MainChart/>}
       </div>
       {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
     </div>

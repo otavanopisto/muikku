@@ -37,7 +37,8 @@ interface GuiderLabelUpdateDialogState {
   color: string,
   name: string,
   description: string,
-  removed: boolean
+  removed: boolean,
+  locked: boolean
 }
 
 class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogProps, GuiderLabelUpdateDialogState> {
@@ -60,7 +61,8 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       color: props.label.color,
       name: props.label.name,
       description: props.label.description,
-      removed: false
+      removed: false,
+      locked: false
     }
   }
   onHandleClick = () => {
@@ -106,30 +108,55 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     
   }
   update(closeDialog: ()=>any){
-    closeDialog();
+    if (this.state.locked){
+      return;
+    }
+    this.setState({
+      locked: true
+    });
+    let success = ()=>{
+      this.setState({
+        locked: false
+      });
+      closeDialog();
+    }
+    let fail = ()=>{
+      this.setState({
+        locked: false
+      });
+    }
     if ((this.state.name !== this.props.label.name ||
         this.state.color !== this.props.label.color ||
         this.state.description !== this.props.label.description) && !this.state.removed){
-      this.props.updateGuiderFilterLabel(this.props.label, this.state.name, this.state.description, this.state.color);
+      this.props.updateGuiderFilterLabel({
+        label: this.props.label,
+        name: this.state.name,
+        description: this.state.description,
+        color: this.state.color,
+        success, fail
+      });
     } else if (this.state.removed){
-      this.props.removeGuiderFilterLabel(this.props.label);
+      this.props.removeGuiderFilterLabel({
+        label: this.props.label,
+        success, fail
+      });
     }
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Button buttonModifiers={["success", "standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
+        <Button buttonModifiers={["success", "standard-ok"]} disabled={this.state.locked} onClick={this.update.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.save')}
         </Button>
-        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} disabled={this.state.locked} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
         </Button>
         <GuiderLabelShareDialog label={this.props.label}>
-          <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
+          <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed || this.state.locked} onClick={this.shareLabel}>
             {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
           </Button>
         </GuiderLabelShareDialog>
-        <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
+        <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed || this.state.locked} onClick={this.removeLabel}>
          {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
        </Button>
       </div>
