@@ -748,7 +748,7 @@ let addMessagesNavigationLabel:AddMessagesNavigationLabelTriggerType = function 
       name,
       color
     };
-    
+
     try {
       let newLabel:LabelType = <LabelType>await promisify(mApi().communicator.userLabels.create(label), 'callback')();
       dispatch({
