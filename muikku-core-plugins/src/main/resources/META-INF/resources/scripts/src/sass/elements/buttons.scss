@@ -38,9 +38,9 @@
   width: 35px;
 
   @include breakpoint($breakpoint-pad) {
-    height: auto;
+    height: 100%;
     margin: 0;
-    width: auto;
+    width: 100%;
   }
 }
 

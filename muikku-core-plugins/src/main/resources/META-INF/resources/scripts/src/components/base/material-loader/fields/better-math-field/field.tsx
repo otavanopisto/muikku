@@ -449,7 +449,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   onAceEditorInput(){
     let shouldShow = !this.aceEditor.session.getValue().length;
-    var node = this.aceEditor.renderer.emptyMessageNode;
+    let node = this.aceEditor.renderer.emptyMessageNode;
     if (!shouldShow && node) {
       this.aceEditor.renderer.scroller.removeChild(this.aceEditor.renderer.emptyMessageNode);
       this.aceEditor.renderer.emptyMessageNode = null;

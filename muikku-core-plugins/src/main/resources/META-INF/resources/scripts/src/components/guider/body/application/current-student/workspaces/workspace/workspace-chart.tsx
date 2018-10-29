@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {StateType} from '~/reducers';
-import {WorkspaceType, WorkspaceActivityStatisticsType} from '~/reducers/workspaces';
+import {WorkspaceType} from '~/reducers/workspaces';
 import GraphFilter from '../../filters/graph-filter';
 import '~/sass/elements/chart.scss';
 
@@ -19,14 +19,25 @@ interface CurrentStudentWorkspaceStatisticsState {
   filteredGraphs: string[]
 }
 
-enum Graph {
-  ASSIGNMENTS = "assignments",
-  EXERCISES = "exercises"
+interface WorkspaceChartData {
+  EVALUATION_REQUESTED?: number,
+  EVALUATION_GOTINCOMPLETED?: number,
+  EVALUATION_GOTFAILED?: number,
+  EVALUATION_GOTPASSED?: number,
+  WORKSPACE_VISIT?: number,
+  MATERIAL_EXERCISEDONE?: number,
+  MATERIAL_ASSIGNMENTDONE?: number
 }
 
-var ignoreZoomed: boolean = true;
-var zoomStartDate: Date = null;
-var zoomEndDate: Date = null;
+enum Graph {
+  WORKSPACE_VISIT = "visits",
+  MATERIAL_ASSIGNMENTDONE = "assignments",
+  MATERIAL_EXERCISEDONE = "exercises"
+}
+
+let ignoreZoomed: boolean = true;
+let zoomStartDate: Date = null;
+let zoomEndDate: Date = null;
 
 class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceStatisticsProps, CurrentStudentWorkspaceStatisticsState> {
   constructor(props: CurrentStudentWorkspaceStatisticsProps){
@@ -35,13 +46,14 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
-      amChartsLoaded: (window as any).AmCharts != null,
+      amChartsLoaded: AmCharts !== null,
       filteredGraphs: []
     };
-    if (!this.state.amChartsLoaded)
+    if (!this.state.amChartsLoaded){
       this.loadAmCharts();
-    else
+    } else {
       AmCharts = require("@amcharts/amcharts3-react");
+    }
   }
   
   loadAmCharts(){
@@ -63,7 +75,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
   
   GraphFilterHandler(graph: Graph){
     const filteredGraphs = this.state.filteredGraphs.slice();
-    var index = filteredGraphs.indexOf(graph);
+    let index = filteredGraphs.indexOf(graph);
     if (index > -1)
       filteredGraphs.splice(index, 1);
     else 
@@ -80,37 +92,34 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
   }
   
   zoomApplyHandler(e: any){
-    if (zoomStartDate != null && zoomEndDate != null)
+    if (zoomStartDate !== null && zoomEndDate !== null) {
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
+    }
   }
   
   render(){
     if (!this.state.amChartsLoaded){
       return null;
     }
+    
     //NOTE: The filtered data can be cut here. (Option 1)
-    let chartDataMap = new Map<string, {assignments?: number, exercises?: number}>();
-    chartDataMap.set(new Date().toISOString().slice(0, 10), {"assignments": 0, "exercises": 0});
-    this.props.workspace.activityStatistics.records.map((record)=>{
-      let date = record.date.slice(0, 10);
-      let entry = chartDataMap.get(date);
-      
-      if (record.type === "EVALUATED"){
-        if (entry == null)
-          entry = {"assignments": 1};
-        else if (entry.assignments == null)
-          entry = {...entry, "assignments": 1};
-        else
-          entry.assignments++;
-      }
-      
-      if (record.type === "EXERCISE"){
-        if (entry == null)
-          entry = {"exercises": 1};
-        else if (entry.exercises == null)
-          entry = {...entry, "exercises": 1};
-        else
-          entry.exercises++;
+    let chartDataMap = new Map<string, WorkspaceChartData>();
+    chartDataMap.set(new Date().toISOString().slice(0, 10), {"MATERIAL_ASSIGNMENTDONE": 0, "MATERIAL_EXERCISEDONE": 0, "WORKSPACE_VISIT": 0});
+    this.props.workspace.activityLogs.map((log)=>{
+      let date = log.timestamp.slice(0, 10);
+      let entry = chartDataMap.get(date) || {};
+      switch(log.type){
+        case "EVALUATION_REQUESTED":
+        case "EVALUATION_GOTINCOMPLETED":
+        case "EVALUATION_GOTFAILED":
+        case "EVALUATION_GOTPASSED":
+        case "WORKSPACE_VISIT":
+        case "MATERIAL_EXERCISEDONE":
+        case "MATERIAL_ASSIGNMENTDONE":
+          entry[log.type] = (entry[log.type] + 1) || 1;
+        break;
+        default:
+          break;
       }
       chartDataMap.set(date, entry);
     });
@@ -126,36 +135,51 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
     let graphs = new Array;
     
-    if (!this.state.filteredGraphs.includes(Graph.ASSIGNMENTS)){
+    if (!this.state.filteredGraphs.includes(Graph.WORKSPACE_VISIT)){
       graphs.push({
-        "id": "assignments",
-        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[assignments]]</b>",
+        "id": "WORKSPACE_VISIT",
+        "balloonText": this.props.i18n.text.get("plugin.guider.visitsTitle") + " <b>[[WORKSPACE_VISIT]]</b>",
+        "fillAlphas": 0.7,
+        "lineAlpha": 0.2,
+        "lineColor": "#43cd80",
+        "title": "WORKSPACE_VISIT",
+        "type": "column",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.6,
+        "valueField": "WORKSPACE_VISIT"
+      });
+    }
+    
+    if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)){
+      graphs.push({
+        "id": "MATERIAL_ASSIGNMENTDONE",
+        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ce01bd",
-        "title": "assignments",
+        "title": "MATERIAL_ASSIGNMENTDONE",
         "type": "column",
         "clustered": false,
         "columnWidth": 0.4,
-        "valueField": "assignments"
+        "valueField": "MATERIAL_ASSIGNMENTDONE"
       });
     }
     
-    if (!this.state.filteredGraphs.includes(Graph.EXERCISES)){
+    if (!this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)){
       graphs.push({
-        "id": "exercises",
-        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[exercises]]</b>",
+        "id": "MATERIAL_EXERCISEDONE",
+        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ff9900",
-        "title": "exercises",
+        "title": "MATERIAL_EXERCISEDONE",
         "type": "column",
         "clustered": false,
         "columnWidth": 0.4,
-        "valueField": "exercises"
+        "valueField": "MATERIAL_EXERCISEDONE"
       });
     }
-    
     let valueAxes = [{
     "stackType": (graphs.length>1)? "regular": "none",
     "unit": "",
@@ -186,7 +210,6 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
         "minPeriod": "DD"
       },
       "chartScrollbar": {
-        "graph": "logins",
         "oppositeAxis": false,
         "offset": 30,
         "scrollbarHeight": 60,
@@ -220,9 +243,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
       }
     };
     ignoreZoomed = true;
-    
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
-    let showGraphs:string[] = [Graph.ASSIGNMENTS, Graph.EXERCISES];
+    let showGraphs: string[] = [Graph.WORKSPACE_VISIT, Graph.MATERIAL_ASSIGNMENTDONE, Graph.MATERIAL_EXERCISEDONE];
     return <div className="react-required-container">
       <div className="chart-legend">
         <div className="chart-legend-filter chart-legend-filter--graph-filter">
@@ -236,7 +258,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
 
 function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   }
 };
 

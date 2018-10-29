@@ -58,6 +58,15 @@ export interface WorkspaceStudentAssessmentsType {
   assessments: Array<WorkspaceStudentAssessmentType>
 }
 
+export interface ActivityLogType {
+  type: "EVALUATION_REQUESTED" | "EVALUATION_GOTINCOMPLETED" | "EVALUATION_GOTFAILED" | "EVALUATION_GOTPASSED"
+    | "WORKSPACE_VISIT" | "MATERIAL_EXERCISEDONE" | "MATERIAL_ASSIGNMENTDONE" | "SESSION_LOGGEDIN" | "FORUM_NEWMESSAGE"
+    | "FORUM_NEWTHREAD" | "NOTIFICATION_ASSESMENTREQUEST" | "NOTIFICATION_NOPASSEDCOURSES" | "NOTIFICATION_SUPPLEMENTATIONREQUEST"
+    | "NOTIFICATION_STUDYTIME",
+  timestamp: string,
+  contextId?: number
+}
+
 export interface WorkspaceActivityRecordType {
   type: string,
   date: string
@@ -144,7 +153,8 @@ export interface WorkspaceType {
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
-  contentDescription?: MaterialType
+  contentDescription?: MaterialType,
+  activityLogs?: ActivityLogType[]
 }
 
 export interface WorkspaceUpdateType {
@@ -173,7 +183,9 @@ export interface WorkspaceUpdateType {
   feeInfo?: WorkspaceFeeInfoType,
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
-  staffMembers?: Array<UserStaffType>
+  staffMembers?: Array<UserStaffType>,
+  contentDescription?: MaterialType,
+  activityLogs?: ActivityLogType[]
 }
 
 export interface ShortWorkspaceType {
