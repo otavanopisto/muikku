@@ -50,25 +50,24 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="application-sub-panel__header">AlaOts</div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-summary-cards">
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-                <div>Otsikko</div>
-                <div>blaablaa</div>
-                <div>6</div>            
-                <div>blaablaa</div>            
-              </div>
+                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">Otsikko</div>
+                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">6</div>
+                <div className="application-sub-panel__card-body">blaablaa</div>
+              </div>                
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-activity">
-                <div>Otsikko</div>
-                <div>blaablaa</div>
-                <div>6</div>            
-                <div>blaablaa</div>            
-
-              </div>
+                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-activity">Otsikko</div>
+                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-activity">6</div>
+                <div className="application-sub-panel__card-body">blaablaa</div>
+              </div>                
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-returned">
-                <div>Otsikko</div>
-                <div>blaablaa</div>
-                <div>6</div>            
-                <div>blaablaa</div>            
+                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-returned">Otsikko</div>
+                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-returned">6</div>
+                <div className="application-sub-panel__card-body">blaablaa</div>
               </div>
-            </div>
+            </div>                
           </div>
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">AlaOts</div>

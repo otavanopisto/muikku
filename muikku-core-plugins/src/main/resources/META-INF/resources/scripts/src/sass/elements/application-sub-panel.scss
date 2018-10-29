@@ -128,17 +128,55 @@
   height: 200px;
 }
 
+.application-sub-panel__card-header {
+  display: flex;
+  font-size: 1.075rem;
+  font-weight: 600;
+  justify-content: center;
+  padding: 10px;
+  text-transform: uppercase;
+}
+
+.application-sub-panel__card-highlight {
+  display: flex;
+  font-size: 2.5rem;
+  justify-content: center;
+  padding: 10px;
+}
+
+
+.application-sub-panel__card-body {
+  display: flex;
+  justify-content: center;  
+  padding: 10px;
+}
+
 .application-sub-panel__card-item--summary-evaluated {
-  background-color: $color-sub-container-card-1-background;
+  background-color: $color-sub-panel-card-1-background;
+}
+
+.application-sub-panel__card-header--summary-evaluated, .application-sub-panel__card-highlight--summary-evaluated  {
+  color: $color-sub-panel-card-1-font-color;
 }
 
 .application-sub-panel__card-item--summary-activity {
-  background-color: $color-sub-container-card-2-background;
+  background-color: $color-sub-panel-card-2-background;
+}
+
+.application-sub-panel__card-header--summary-activity, .application-sub-panel__card-highlight--summary-activity  {
+  color: $color-sub-panel-card-2-font-color;
 }
 
 .application-sub-panel__card-item--summary-returned {
-  background-color: $color-sub-container-card-3-background;
+  background-color: $color-sub-panel-card-3-background;
 }
+
+.application-sub-panel__card-header--summary-returned, .application-sub-panel__card-highlight--summary-returned  {
+  color: $color-sub-panel-card-3-font-color;
+}
+
+
+
 
  .application-sub-panel__item-header {
    padding: 10px 0 0;
@@ -230,11 +268,11 @@
 } 
 
 .application-sub-panel__item-data--summary-start-date span {
-  background-color: $color-sub-container-data-1-background;  
+  background-color: $color-sub-panel-data-1-background;  
 }
 
 .application-sub-panel__item-data--summary-end-date span {
-  background-color: $color-sub-container-data-2-background;
+  background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }
 
