@@ -41,7 +41,7 @@ interface CommunicatorLabelUpdateDialogState {
 class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpdateDialogProps, CommunicatorLabelUpdateDialogState> {
   constructor(props: CommunicatorLabelUpdateDialogProps){
     super(props);
-    
+
     this.onColorChange = this.onColorChange.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
     this.onHandleClose = this.onHandleClose.bind(this);
@@ -50,7 +50,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     this.update = this.update.bind(this);
     this.resetState = this.resetState.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
-    
+
     this.state = {
       displayColorPicker: false,
       color: props.label.color,
@@ -113,7 +113,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     }
     let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
             <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
