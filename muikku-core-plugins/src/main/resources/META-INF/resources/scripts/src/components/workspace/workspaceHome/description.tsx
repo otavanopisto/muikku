@@ -3,9 +3,6 @@ import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-import { getUserImageUrl } from "~/util/modifiers";
-import Button from "~/components/general/button";
-import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import { StatusType } from "~/reducers/base/status";
 
 import '~/sass/elements/panel.scss';

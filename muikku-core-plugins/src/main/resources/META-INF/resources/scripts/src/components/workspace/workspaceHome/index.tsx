@@ -7,6 +7,7 @@ import WorkspaceHomeHeader from './header';
 import WorkspaceDescription from './description';
 import WorkspaceTeachers from './teachers';
 import WorkspaceAnnouncements from './announcements';
+import WorkspaceLicense from './license';
 
 interface WorkspaceHomeBodyProps {
   workspaceUrl: string
@@ -27,6 +28,7 @@ export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBody
           <WorkspaceTeachers/>
           <WorkspaceAnnouncements/>
         </div>
+        <WorkspaceLicense/>
       </ScreenContainer>
     </div>);
   }
