@@ -34,7 +34,7 @@
   padding: 10px;
   position: relative;
 
-  &:hover, 
+  &:hover,
   &.hover {
     // background-color: $color-item-list-item-background-hover;
   }
@@ -95,9 +95,17 @@
 
     .text,
     .item-list__icon {
-      color: $color-item-list-item-font-color-active;            
+      color: $color-item-list-item-font-color-active;
     }
   }
+}
+
+.item-list--aside-navigation .item-list__text-body {
+  line-height: $item-list-item-min-size;
+}
+
+.item-list--aside-navigation .item-list__icon {
+  padding: 0;
 }
 
 .item-list__item--bordered {
@@ -131,6 +139,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   font-size: $item-list-icon-font-size;
+  padding: 3px 0 0;
 }
 
 .item-list__icon--workspaces {
@@ -155,12 +164,8 @@
   flex-grow: 1;
   flex-shrink: 100;
   font-size: $text-mobile-font-size;
-  line-height: $item-list-item-min-size;
   margin-left: 5px;
-//  overflow: hidden;
-//  text-overflow: ellipsis;
-//  white-space: nowrap;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -169,7 +174,7 @@
 .item-list__text-body--multiline {
   white-space: initial;
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
 }
 
 // List item dates
