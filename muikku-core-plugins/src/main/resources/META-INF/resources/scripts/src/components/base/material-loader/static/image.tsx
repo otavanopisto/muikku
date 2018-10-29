@@ -20,7 +20,7 @@ interface ImageProps {
 
 export default function image(props: ImageProps){
   return HTMLtoReactComponent(props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-    if (Tag === "figure"){
+    if (Tag === "figure" && (props.dataset.source || props.dataset.author || props.dataset.licence)){
       children.push(<div className="image-details icon-copyright" key="details">
         <div className="image-details-container">
           <span className="image-details-label">{props.i18n.text.get("plugin.workspace.materials.detailsSourceLabel")} </span>

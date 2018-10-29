@@ -56,6 +56,24 @@ const statics:{[componentKey:string]: {
    }
 };
 
+//Fixes the html inconsitencies because
+//there are some of them which shouldn't
+//but hey that's the case
+function preprocessor($html: any): any{
+  $html.find('img').each(function(){
+    if (!$(this).parent('figure').length){
+      let elem = document.createElement('figure');
+      elem.className = 'image';
+      
+      $(this).replaceWith(elem);
+      
+      elem.appendChild(this);
+    }
+  });
+  
+  return $html;
+}
+
 export default class Base extends React.Component<BaseProps, BaseState> {
   private elements: Array<HTMLElement>;
   private fieldRegistry: {
@@ -72,7 +90,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   constructor(props: BaseProps){
     super(props);
     
-    this.elements = $(props.html).toArray() as Array<HTMLElement>;
+    this.elements = preprocessor($(props.html)).toArray() as Array<HTMLElement>;
     this.fieldRegistry = [];
     this.staticRegistry = [];
   }
@@ -85,7 +103,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   componentWillReceiveProps(nextProps: BaseProps){
     if (nextProps.html !== this.props.html){
       this.unmountEverything();
-      this.elements = $(nextProps.html).toArray() as Array<HTMLElement>;
+      this.elements = preprocessor($(nextProps.html)).toArray() as Array<HTMLElement>;
       this.setupEverything(nextProps);
       return;
     }
