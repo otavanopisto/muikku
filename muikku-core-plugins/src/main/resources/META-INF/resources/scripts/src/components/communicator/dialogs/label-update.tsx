@@ -35,7 +35,8 @@ interface CommunicatorLabelUpdateDialogState {
   displayColorPicker: boolean,
   color: string,
   name: string,
-  removed: boolean
+  removed: boolean,
+  locked: boolean
 }
 
 class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpdateDialogProps, CommunicatorLabelUpdateDialogState> {
@@ -55,7 +56,8 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
       displayColorPicker: false,
       color: props.label.color,
       name: props.label.text(props.i18n),
-      removed: false
+      removed: false,
+      locked: false
     }
   }
   onHandleClick = () => {
@@ -90,23 +92,47 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     this.setState({removed: true});
   }
   update(closeDialog: ()=>any){
-    closeDialog();
+    if (this.state.locked){
+      return;
+    }
+    this.setState({
+      locked: true
+    });
+    let success = ()=>{
+      this.setState({
+        locked: false
+      });
+      closeDialog();
+    }
+    let fail = ()=>{
+      this.setState({
+        locked: false
+      });
+    }
     if ((this.state.name !== this.props.label.text(this.props.i18n) || this.state.color !== this.props.label.color) && !this.state.removed){
-      this.props.updateMessagesNavigationLabel(this.props.label, this.state.name, this.state.color);
+      this.props.updateMessagesNavigationLabel({
+        label: this.props.label,
+        newName: this.state.name,
+        newColor: this.state.color,
+        success, fail
+      });
     } else if (this.state.removed){
-      this.props.removeMessagesNavigationLabel(this.props.label);
+      this.props.removeMessagesNavigationLabel({
+        label: this.props.label,
+        success, fail
+      });
     }
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
+        <Button buttonModifiers={["success","standard-ok"]} disabled={this.state.locked} onClick={this.update.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
         </Button>
-        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} disabled={this.state.locked} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
         </Button>
-         <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
+         <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed || this.state.locked} onClick={this.removeLabel}>
            {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}
          </Button>
       </div>
