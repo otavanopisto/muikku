@@ -195,11 +195,11 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         
-        navigate("/records/", false);
-        waitForPresent("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
-        waitAndClick("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
-        waitForPresent(".records .tr-task-evaluated-grade");
-        assertText(".records .tr-task-evaluated-grade", "Excellent");
+        navigate("/records", false);
+        waitForPresent(".application-list__header-primary");
+        waitAndClick(".application-list__header-primary");
+        waitForPresent(".application-list__indicator-badge--task");
+        assertText(".application-list__indicator-badge--task", "E");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

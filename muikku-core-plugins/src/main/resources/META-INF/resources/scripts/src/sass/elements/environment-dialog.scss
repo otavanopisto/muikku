@@ -121,17 +121,6 @@
   width: $dialog-button-close-height;
 }
 
-.env-dialog__title {
-  font-weight: 500;
-  position: relative;
-  text-align: center;
-  width: 100%;
-
-  @include breakpoint($breakpoint-desktop) {
-    text-align: left; 
-  }
-}
-
 .env-dialog__row {
   margin-top: 10px;
 }
