@@ -9,6 +9,7 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.OrganizationEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class OrganizationEntityController {
 
@@ -72,6 +73,10 @@ public class OrganizationEntityController {
   
   public List<OrganizationEntity> listByDataSourceAndArchived(SchoolDataSource schoolDataSource, Boolean archived) {
     return organizationEntityDAO.listByDataSource(schoolDataSource);
+  }
+  
+  public OrganizationEntity findBy(SchoolDataIdentifier identifier) {
+    return findByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
   }
   
   public OrganizationEntity findByDataSourceAndIdentifier(String dataSource, String identifier) {
