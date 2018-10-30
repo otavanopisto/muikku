@@ -453,7 +453,7 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
 
 let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    if (!name){
+    if (!data.name){
       data.fail && data.fail();
       return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
