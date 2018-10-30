@@ -218,7 +218,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
           delete compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
         }, 60000);
       }
-      
+
       this.setState({
         compositeReplies
       });
@@ -227,14 +227,14 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
   render(){
     //TODO remove this __deprecated container once things are done and classes are cleared up, or just change the classname to something
     //more reasonable
-    
+
     return <div className="__deprecated">
       {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
-          <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <div className="">
             <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>
        : null}
-      <div className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" onClick={this.stopPropagation}>
+      <div className="" onClick={this.stopPropagation}>
         <Base html={this.props.material.html} i18n={this.props.i18n} status={this.props.status}
          readOnly={this.props.readOnly} compositeReplies={this.props.compositeReplies || this.state.compositeReplies}/>
       </div>

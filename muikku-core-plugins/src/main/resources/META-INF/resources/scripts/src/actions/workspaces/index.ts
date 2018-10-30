@@ -6,7 +6,7 @@ import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentAc
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType } from '~/reducers/user-index';
-import { MaterialType, WorkspaceMaterialProducerType } from '~/reducers/workspaces';
+import { MaterialType, WorkspaceProducerType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -108,9 +108,9 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let activity:WorkspaceStudentActivityType;
       let additionalInfo:WorkspaceAdditionalInfoType;
       let contentDescription:MaterialType;
-      let materialProducers:Array<WorkspaceMaterialProducerType>;
+      let Producers:Array<WorkspaceProducerType>;
       let status = getState().status;
-      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, materialProducers] = await Promise.all([
+      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, Producers] = await Promise.all([
                                                  reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
                                                      workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
@@ -126,16 +126,16 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                      ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(true, workspace && workspace.contentDescription,
                                                      ()=>promisify(mApi().workspace.workspaces.description.read(data.workspaceId), 'callback')()),
-                                                 reuseExistantValue(true, workspace && workspace.materialProducers,
-                                                     ()=>promisify(mApi().workspace.workspaces.materialProducers.read(data.workspaceId), 'callback')())]) as any
+                                                 reuseExistantValue(true, workspace && workspace.Producers,
+                                                     ()=>promisify(mApi().workspace.workspaces.Producers.read(data.workspaceId), 'callback')())]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
       workspace.studentActivity = activity;
       workspace.additionalInfo = additionalInfo;
       workspace.contentDescription = contentDescription;
-      workspace.materialProducers = materialProducers;
-      
+      workspace.Producers = Producers;
+
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',
         payload: workspace

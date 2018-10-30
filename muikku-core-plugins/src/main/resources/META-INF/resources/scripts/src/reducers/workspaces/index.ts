@@ -119,7 +119,7 @@ export interface WorkspaceAdditionalInfoType {
   }
 }
 
-export interface WorkspaceMaterialProducerType {
+export interface WorkspaceProducerType {
   id: number,
   workspaceEntityId: number,
   name: string
@@ -137,19 +137,19 @@ export interface WorkspaceType {
   numVisits: number,
   published: boolean,
   urlName: string,
-  
+
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: string,
   curriculumIdentifiers?: Array<string>,
   subjectIdentifier?: string | number,
-      
+
   //These appear in certain circumstances
   //Usually available if externally loaded (eg. coursepicker)
   canSignup?: boolean,
   isCourseMember?: boolean,
   educationTypeName?: string,
-  
+
   //These are optional addons, and are usually not available
   studentActivity?: WorkspaceStudentActivityType,
   forumStatistics?: WorkspaceForumStatisticsType,
@@ -159,7 +159,7 @@ export interface WorkspaceType {
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
-  materialProducers?: Array<WorkspaceMaterialProducerType>,
+  Producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialType,
   activityLogs?: ActivityLogType[]
 }
@@ -179,7 +179,7 @@ export interface WorkspaceUpdateType {
   access?: string,
   curriculumIdentifiers?: Array<string>,
   subjectIdentifier?: string | number,
-      
+
   canSignup?: boolean,
   isCourseMember?: boolean,
   educationTypeName?: string,

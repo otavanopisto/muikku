@@ -19,7 +19,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
     if (!this.props.workspace || !this.props.workspace.materialDefaultLicense) {
       return null;
     }
-    
+
     let materialLicenseIcons = [];
     if (this.props.workspace.materialDefaultLicense && this.props.workspace.materialDefaultLicense.includes('creativecommons.org')) {
       materialLicenseIcons.push('cc');
@@ -43,14 +43,14 @@ class License extends React.Component<LicenseProps, LicenseState> {
         materialLicenseIcons.push('cc-zero');
       }
     }
-    
-    return (<div className="flex-row workspace-frontpage-footer">
-      <div className="workspace-footer-license-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-        <span className="workspace-material-license-icon-container">
+
+    return (<div className="">
+      <div className="">
+        <span className="">
           {materialLicenseIcons.map((i)=><span className={`icon-${i}`}></span>)}
         </span>
-        <span className="workspace-material-license-label">{this.props.i18n.text.get("plugin.workspace.index.licenseLabel")}:</span>
-        <span className="workspace-material-license">
+        <span className="">{this.props.i18n.text.get("plugin.workspace.index.licenseLabel")}:</span>
+        <span className="">
           <Link href={this.props.workspace.materialDefaultLicense} target="top">{this.props.workspace.materialDefaultLicense}</Link>
         </span>
       </div>
@@ -73,5 +73,3 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(License);
-          
-          
