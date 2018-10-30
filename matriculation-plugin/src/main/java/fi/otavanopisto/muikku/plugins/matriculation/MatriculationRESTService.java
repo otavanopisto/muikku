@@ -90,7 +90,7 @@ public class MatriculationRESTService {
   }
 
   @PUT
-  @RESTPermit(MatriculationPermissions.MATRICULATION_LOAD_DRAFT)
+  @RESTPermit(MatriculationPermissions.MATRICULATION_SAVE_DRAFT)
   @Path("/savedEnrollments/{USERID}")
   public Response saveEnrollment(@PathParam("USERID") String userId, String body) {
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
