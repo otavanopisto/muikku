@@ -44,7 +44,7 @@ interface GuiderLabelUpdateDialogState {
 class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogProps, GuiderLabelUpdateDialogState> {
   constructor(props: GuiderLabelUpdateDialogProps){
     super(props);
-    
+
     this.onColorChange = this.onColorChange.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
     this.onHandleClose = this.onHandleClose.bind(this);
@@ -54,7 +54,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     this.update = this.update.bind(this);
     this.resetState = this.resetState.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
-    
+
     this.state = {
       displayColorPicker: false,
       color: props.label.color,
@@ -191,7 +191,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       )
     }
     return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider" 
-     title={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.title', this.props.label.name)}
+     title={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.title')}
      content={content} footer={footer}>{this.props.children}</Dialog>
   } 
 }
