@@ -239,6 +239,10 @@ public class UserEntityController implements Serializable {
     return userEntityDAO.updateArchived(userEntity, Boolean.TRUE);
   }
   
+  public UserEntity unarchiveUserEntity(UserEntity userEntity) {
+    return userEntityDAO.updateArchived(userEntity, Boolean.FALSE);
+  }
+  
   public UserEntity markAsUpdatedByStudent(UserEntity userEntity) {
     return userEntityDAO.updateUpdatedByStudent(userEntity, Boolean.TRUE);
   }
