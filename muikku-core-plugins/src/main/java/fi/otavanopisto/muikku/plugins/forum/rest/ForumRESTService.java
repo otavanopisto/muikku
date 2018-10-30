@@ -399,7 +399,11 @@ public class ForumRESTService extends PluginRESTService {
           return Response.status(Status.BAD_REQUEST).build();
       }
       
-      Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addAttributes("a", "target")));
+      Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addTags("s")
+              .addAttributes("a", "target")
+              .addAttributes("img", "width", "height", "style")
+              .addAttributes("i", "class")
+              .addAttributes("span", "style")));
       message.outputSettings().escapeMode(EscapeMode.xhtml);
       message.select("a[target]").attr("rel", "noopener noreferer");
       ForumThread thread = forumController.createForumThread(

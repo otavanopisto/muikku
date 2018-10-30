@@ -6,7 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
-  template="/WEB-INF/templates/default.xhtml">
+  template="/WEB-INF/templates/deprecated/default.xhtml">
 
   <!-- Lets set the base body class per view -->
   <ui:param name="bodyClass" value="evaluation" />
@@ -50,8 +50,8 @@
   </ui:define>
   
   <ui:define name="viewCss">  
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/flex/evaluation.css" />  
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/muikku-file-field-component.css" /> 
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/deprecated/flex/evaluation.css" />  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/deprecated/muikku-file-field-component.css" /> 
   </ui:define>
   
   <ui:define name="sitebody">

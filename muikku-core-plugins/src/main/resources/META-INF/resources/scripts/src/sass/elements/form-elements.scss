@@ -1,0 +1,242 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.form-element {
+  width: 100%;
+  
+  label {
+    font-family: $text-font-family;
+    font-size: $text-mobile-font-size;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    @include breakpoint($breakpoint-pad) {
+      font-size: $text-desktop-font-size;
+    }
+    
+    &:first-child {
+      margin-right: 5px;
+    }
+  }
+  
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    align-items: center;
+    appearance: none;
+    border: solid 2px $color-form-element-border;
+    border-radius: 3px;
+    display: flex;
+    height: 1rem;
+    justify-content: center;
+    width: 1rem;
+  }
+  
+  input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    align-items: center;
+    appearance: none;
+    border: solid 2px $color-form-element-border;
+    border-radius: 100%;
+    display: flex;
+    height: 1rem;
+    justify-content: center;
+    width: 1rem;
+  }
+
+  input:checked {
+    background-color: $color-form-element-selected;
+    border: solid 2px $color-form-element-selected;
+  }
+
+  input:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: muikku;
+    font-size: .875rem;
+  }
+}
+
+.form-element--guider-toolbar {
+  display: flex;  
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.form-element--coursepicker-toolbar {
+  display: flex;  
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.form-element--profile {
+  margin: 10px 0 0;
+}
+
+.form-element__input {
+  @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
+  -webkit-appearance: none;  
+  border: solid 2px $color-form-element-border;
+  border-radius: 3px;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  height: 34px;
+  outline: none;
+  padding: 3px 10px;
+  resize: none;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.form-element__input--guider-label-name,
+.form-element__input--communicator-label-name {
+  width: 100%;
+}
+
+.form-element__input--forgotpassword {
+  font-size: $text-forgotpassword-font-size;
+  width: 100%;
+}
+
+.form-element__input--profile {
+  width: 100%;
+}
+
+.form-element__input--profile-wrong {
+  color: red;
+}
+
+.form-element__input--label {
+  display: block;
+}
+
+.form-element__input--main-function-search {
+  background-color: $color-default;
+  border: 2px solid $color-main-function-input-field-border;
+  border-radius: 2px;
+  border-right: 0;
+  font-size: 0.925rem;  
+  height: 35px;
+  padding: 5px 10px;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+  }
+}
+
+
+.form-element__input-decoration--main-function-search {
+  background-color: $color-main-function-input-field-decoration-background;
+  border-radius: 2px;
+  
+  &::before {
+    align-items: center;
+    color: $color-main-function-search-icon;
+    display: flex;
+    height: 35px;
+    justify-content: center;
+    width: 35px;
+    
+    @include breakpoint($breakpoint-pad) {
+      height: 40px;
+      width: 40px;
+    }
+  }
+}
+
+.form-element__select {    
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
+  background-color: transparent;
+  border: 2px solid $color-form-element-border;
+  border-radius: 2px;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  padding: 2px 25px 2px 2px;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.form-element__select--hops-selector {
+  margin-left: 5px;
+  margin-right: 5px;
+  width: auto;
+}
+
+.form-element__select--main-action {
+  display: inline-block;
+  height: 35px;
+  font-weight: 300;
+  min-width: 150px;
+  padding: 5px 25px 5px 5px;
+  text-transform: uppercase;
+  vertical-align: top;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+  }
+}
+
+.form-element__select--toolbar-selector {
+  display: inline-block;
+  height: 35px;
+  font-weight: 300;
+  margin-right: 20px;
+  max-width: 200px;
+  padding: 5px 25px 5px 5px;
+  text-transform: uppercase;
+  vertical-align: top;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+    max-width: 250px;
+  }
+}
+
+.form-element__textarea {
+  background-color: transparent;
+  border: 2px solid $color-form-element-border;
+  border-radius: 2px;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  padding: 6px;
+  margin-top: 10px;  
+  min-height: 150px;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-desktop) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.form-element__radio-option-container {
+  align-items: center;
+  display: flex;
+  padding: 10px;
+  
+  input {
+    margin-right: 5px;
+  }
+}
+
+.form-element__check-option-container {
+  align-items: center;
+  display: flex;
+  margin-right: 10px;
+  padding: 10px;
+}

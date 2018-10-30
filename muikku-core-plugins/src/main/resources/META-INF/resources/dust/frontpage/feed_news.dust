@@ -1,8 +1,0 @@
-<ul class="news-content-wrapper">
-{#entries}
-  <li>
-    <div class="feed-content"><a href="{link|s}" target="top"><div class="feed-item-title">{title}</div></a><div class="feed-item-description">{description|s}</div></div>
-    <div class="feed-content"><div class="feed-item-date">{publicationDate|formatDate}</div></div>
-  </li>
-{/entries}
-</ul>

@@ -63,10 +63,10 @@
       
       this._refreshUnreadMessagesFlappidiFlap();
       
-      $(document).on("Communicator:newmessagereceived", function (event, data) {
+      $(document).muikkuWebSocket("addEventListener", "Communicator:newmessagereceived", function (data) {
         _this._refreshUnreadMessagesFlappidiFlap();
       });
-      $(document).on("Communicator:messageread", function (event) {
+      $(document).muikkuWebSocket("addEventListener", "Communicator:messageread", function () {
         _this._refreshUnreadMessagesFlappidiFlap();
       });
     },

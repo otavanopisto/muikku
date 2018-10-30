@@ -776,24 +776,6 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(subjectArrayJson)
         .withStatus(200)));
     
-    EducationType educationType = new EducationType((long) 1, "testEduType", "ET", false);
-    String educationTypeJson = objectMapper.writeValueAsString(educationType);
-    
-    stubFor(get(urlEqualTo("/1/common/educationTypes/1"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(educationTypeJson)
-        .withStatus(200)));
-    
-    EducationType[] educationTypeArray = { educationType };
-    String educationTypeArrayJson = objectMapper.writeValueAsString(educationTypeArray);
-    
-    stubFor(get(urlEqualTo("/1/common/educationTypes"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(educationTypeArrayJson)
-        .withStatus(200)));
-    
     EducationalTimeUnit educationalTimeUnit = new EducationalTimeUnit((long) 1, "test time unit", "h", (double) 1, false);
     String eduTimeUnitJson = objectMapper.writeValueAsString(educationalTimeUnit);
     

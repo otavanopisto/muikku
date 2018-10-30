@@ -67,10 +67,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       try {
       logout();
-      mockBuilder.mockLogin(student).build();
+      mockBuilder.mockLogin(student);
       login();
     
-      navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
       waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
       
       assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -90,9 +90,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .mockStaffCompositeCourseAssessmentRequests();
       
       logout();
-      mockBuilder.mockLogin(admin).build();
+      mockBuilder.mockLogin(admin);
       login();
-      navigate(String.format("/evaluation2"), true);
+      navigate(String.format("/evaluation2"), false);
       waitAndClick(".evaluate-button");
       waitAndClick(".workspace-evaluation-form-activate-button");
       waitForNotVisible(".workspace-evaluation-form-overlay");
@@ -165,10 +165,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         "EVALUATED");
       try{        
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
   
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -188,9 +188,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
-        mockBuilder.mockLogin(admin).build();
+        mockBuilder.mockLogin(admin);
         login();
-        navigate(String.format("/evaluation2"), true);
+        navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
         waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
@@ -270,7 +270,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addStaffCompositeAssessmentRequest(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student2, admin.getId(), date.minusDays(2l))
         .mockStaffCompositeCourseAssessmentRequests();
         
-        navigate(String.format("/evaluation2"), true);
+        navigate(String.format("/evaluation2"), false);
         
         waitForPresent(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
@@ -342,10 +342,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         "EVALUATED");
       try{        
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
   
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -365,9 +365,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
-        mockBuilder.mockLogin(admin).build();
+        mockBuilder.mockLogin(admin);
         login();
-        navigate(String.format("/evaluation2"), true);
+        navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
         waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
@@ -388,9 +388,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
         
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         waitAndClick(".muikku-show-evaluation-button");
         waitForPresentAndVisible(".evaluation-container .assignment-literal-container .assignment-literal-data");
@@ -464,7 +464,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addStaffCompositeAssessmentRequest(student3.getId(), courseId, courseStudent3.getId(), "Tsadaam!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student3, admin.getId(), date.minusDays(1l))
         .mockStaffCompositeCourseAssessmentRequests();
         
-        navigate(String.format("/evaluation2"), true);
+        navigate(String.format("/evaluation2"), false);
         
         waitForPresent(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");

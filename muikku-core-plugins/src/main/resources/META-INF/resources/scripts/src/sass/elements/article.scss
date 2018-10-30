@@ -1,0 +1,19 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.article {
+  @include text;
+}
+
+.article__header {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin: 0 0 10px;
+}
+
+.article__body {
+  line-height: 1.5rem;
+  margin: 20px 0 0;
+}

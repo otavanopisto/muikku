@@ -28,10 +28,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
-      waitForPresent(".icon-cogs");
-      hoverOverElement(".icon-cogs");
-      waitAndClick(".icon-announcer");
+      navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       waitAndClick(".an-new-announcement");
       
       waitForPresent(".cke_wysiwyg_frame");
@@ -64,10 +61,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
-      waitForPresent(".icon-cogs");
-      hoverOverElement(".icon-cogs");
-      waitAndClick(".icon-announcer");
+      navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       waitAndClick(".an-new-announcement");
       
       waitForPresent("*[name='endDate']");
@@ -114,7 +108,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".workspace-announcement-title");
       assertTextIgnoreCase(".workspace-announcement-title", "Test title");
     }finally{
@@ -147,7 +141,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     try {
       login();
       
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".workspace-announcement-title");
       click(".workspace-announcement-title");
       waitForPresent("#announcements .announcement-article h2");
@@ -183,10 +177,10 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      waitForPresent("#announcements ul>li>div>a");
-      assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
-      waitForPresent("#announcements ul>li>div.fp-announcement-info-workspace");
-      assertTextIgnoreCase("#announcements ul>li>div.fp-announcement-info-workspace", "testcourse");        
+      waitForPresent(".ordered-container__item--basic-announcements .item-list--panel-announcements .item-list__item--announcements");
+      assertTextIgnoreCase(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-caption", "Test title");
+      waitForPresent(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-workspaces .label__text--announcement-workspace");
+      assertTextIgnoreCase(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-workspaces .label__text--announcement-workspace", "testcourse (test extension)");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -194,5 +188,31 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     }
   }
 
+  @SuppressWarnings("deprecation")
+  @Test
+  public void workspaceAnnouncementFrontpageListingForStudentNotEnrolledTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Long courseId = 1l;
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+   
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null, null);
+    updateAnnouncementWorkspace(announcementId, workspace.getId());
+    logout();
+    mockBuilder
+      .mockLogin(student)
+      .build();
+    try {
+      login();
+      assertNotPresent("#announcements ul>li>div>a");
+    }finally{
+      deleteAnnouncements();
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
   
 }

@@ -9,6 +9,7 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.session.SessionController;
 
 @Named
 @RequestScoped
@@ -17,6 +18,9 @@ public class FrontPageBackingBean {
   
   @Inject
   PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private SessionController sessionController;
   
   @RequestAction
   @Transactional
@@ -28,11 +32,13 @@ public class FrontPageBackingBean {
       brandedFrontPage = true;
     }
    
-    if (!brandedFrontPage) {
-      return "/index_nonbranded.jsf";
-    } else {
-      return null;
+    boolean isLoggedIn = sessionController.isLoggedIn();
+    if (!isLoggedIn && brandedFrontPage){
+      return "/index.frontpage.xhtml";
+    } else if (!isLoggedIn){
+      return "/index.frontpage.nonbranded.xhtml";
     }
+    return null;
   }
 
   public boolean isBrandedFrontPage() {

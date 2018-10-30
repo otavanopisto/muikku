@@ -165,7 +165,7 @@
           height : 500,
           language: getLocale(),
           stylesSet : 'workspace-material-styles:' + CONTEXTPATH + '/scripts/ckplugins/styles/workspace-material-styles.js',
-          contentsCss : CONTEXTPATH +  '/css/flex/custom-ckeditor-contentcss_management.css',
+          contentsCss : CONTEXTPATH +  '/css/deprecated/flex/custom-ckeditor-contentcss_management.css',
           format_tags : 'p;h3;h4',
           baseHref: this.options.materialPath + '/', 
           mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML',

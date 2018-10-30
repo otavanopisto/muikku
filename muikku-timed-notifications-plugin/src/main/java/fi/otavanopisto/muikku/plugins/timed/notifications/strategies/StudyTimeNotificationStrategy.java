@@ -24,6 +24,8 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -66,6 +68,9 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private ActivityLogController activityLogController;
   
   @Override
   public boolean isActive(){
@@ -131,6 +136,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
           "studytime"
         );
         studyTimeLeftNotificationController.createStudyTimeNotification(studentIdentifier);
+        activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_STUDYTIME);
       } else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
       }

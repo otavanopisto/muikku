@@ -24,6 +24,8 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
+import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -71,6 +73,9 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private ActivityLogController activityLogController;
   
   @Override
   public long getDuration() {
@@ -127,6 +132,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
           "assesmentrequest"
         );
         assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
+        activityLogController.createActivityLog(studentEntity.getId(), ActivityLogType.NOTIFICATION_ASSESMENTREQUEST);
       }
       else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));

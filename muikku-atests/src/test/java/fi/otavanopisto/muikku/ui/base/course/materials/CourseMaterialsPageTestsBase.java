@@ -41,7 +41,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-view");
         assertVisible("article p");
       } finally {
@@ -61,7 +61,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.PHANTOMJS
+      TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void courseFullscreenReadingButtonExistsTest() throws Exception {
@@ -80,7 +80,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
           "EXERCISE");
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".icon-fullscreen");
         assertVisible(".icon-fullscreen");
       } finally {
@@ -98,7 +98,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.PHANTOMJS
+      TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void courseMaterialManagementButtonExistsTest() throws Exception {
@@ -111,7 +111,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       maximizeWindow();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".icon-cogs");
         hoverOverElement(".icon-cogs");
         waitForPresentAndVisible(".icon-edit-materials");
@@ -134,7 +134,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".icon-cogs");
         assertPresent(".icon-cogs");
       } finally {
@@ -151,7 +151,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.PHANTOMJS,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -175,7 +175,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
             "EXERCISE");
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent("#workspaceMaterialsTOCWrapper");
           assertVisible("#workspaceMaterialsTOCWrapper");
         } finally {
@@ -197,7 +197,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.PHANTOMJS,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.SAFARI,
     }
   )
@@ -221,7 +221,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
             "EXERCISE");
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitAndClick(String.format("a[href='#page-%d']", htmlMaterial2.getId()));
           waitForPresent(String.format("a.active[href='#page-%d']", htmlMaterial2.getId()));
           assertVisible(String.format("a.active[href='#page-%d']", htmlMaterial2.getId()));
@@ -314,7 +314,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -322,7 +322,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
         waitAndSendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
         waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
         assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
         
@@ -363,9 +363,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "EXERCISE");
         logout();
         try {
-          mockBuilder.mockLogin(student).build();
+          mockBuilder.mockLogin(student);
           login();
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -373,7 +373,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
           sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
           waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
           assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
         } finally {
@@ -409,7 +409,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
@@ -417,7 +417,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
         selectOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "2");
         waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
         assertSelectedOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "dos");
       } finally {
@@ -457,7 +457,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "EXERCISE");
         
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
@@ -465,7 +465,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
           selectOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "2");
           waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
           assertSelectedOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "dos");        
         } finally {
@@ -502,14 +502,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
         assertClassNotPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
         waitAndClick(".muikku-select-field input[value=\"1\"]");
         waitClassPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
         assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true);
         
@@ -548,14 +548,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 1l, 
             "EXERCISE");
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
           assertClassNotPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
           waitAndClick(".muikku-select-field input[value=\"1\"]");
           waitClassPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
           assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true); 
         } finally {
@@ -591,14 +591,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
         assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
         waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
         waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
         assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
         
@@ -639,14 +639,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
         
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
           assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
           waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
           waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
           assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
           
@@ -684,7 +684,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
@@ -700,7 +700,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         
         waitClassPresent(".muikku-connect-field-counterpart:nth-of-type(1)", "muikku-connect-field-edited");
         waitClassPresent(".muikku-connect-field-term:nth-of-type(1)", "muikku-connect-field-edited");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
         List<WebElement> terms = findElements(".muikku-connect-field-term");
         List<WebElement> counterparts = findElements(".muikku-connect-field-counterpart");
@@ -743,7 +743,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
@@ -755,7 +755,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         dragAndDrop(".muikku-connect-field-counterpart:nth-of-type(4)", ".muikku-connect-field-counterpart:nth-of-type(5)");
         waitClassPresent(".muikku-connect-field-counterpart:nth-of-type(5)", "muikku-connect-field-edited");
         waitClassPresent(".muikku-connect-field-term:nth-of-type(5)", "muikku-connect-field-edited");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
         List<WebElement> terms = findElements(".muikku-connect-field-term");
         List<WebElement> counterparts = findElements(".muikku-connect-field-counterpart");
@@ -802,7 +802,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "EXERCISE");
         
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
@@ -810,7 +810,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 0);
           sendKeys(String.format("#page-%d .muikku-file-input-field-file-uploader-container input[type='file']", htmlMaterial.getId()), testFile.getAbsolutePath());
           waitClassPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
           assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 1);
           assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
@@ -849,7 +849,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
@@ -857,7 +857,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 0);
         sendKeys(String.format("#page-%d .muikku-file-input-field-file-uploader-container input[type='file']", htmlMaterial.getId()), testFile.getAbsolutePath());
         waitClassPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
         assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 1);
         assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
@@ -893,7 +893,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
@@ -901,7 +901,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 0);
         sendKeys(String.format("#page-%d .muikku-file-input-field-file-uploader-container input[type='file']", htmlMaterial.getId()), testFile.getAbsolutePath());
         waitClassPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
         assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 1);
         assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
@@ -948,7 +948,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "EXERCISE");
         
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
@@ -956,7 +956,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 0);
           sendKeys(String.format("#page-%d .muikku-file-input-field-file-uploader-container input[type='file']", htmlMaterial.getId()), testFile.getAbsolutePath());
           waitClassPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()), "muikku-field-saved");
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d .muikku-file-field", htmlMaterial.getId()));
           assertCount(String.format("#page-%d .muikku-file-input-field-file", htmlMaterial.getId()), 1);
           assertTextIgnoreCase(String.format("#page-%d .muikku-file-input-field-file .muikku-file-input-field-file-label a", htmlMaterial.getId()), testFile.getName());
@@ -1009,7 +1009,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           + "Eu eam dictas ceteros petentium.<br />&nbsp;</p>", 1l, 
           "EXERCISE");
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-sorter-field", htmlMaterial.getId()));
         assertVisible(String.format("#page-%d .muikku-sorter-field", htmlMaterial.getId()));
         waitForPresent(".muikku-sorter-item #MathJax-Element-1-Frame");
@@ -1057,7 +1057,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           + ",&quot;terms&quot;:[&quot;t4&quot;,&quot;t5&quot;]}]}\" /></object></p>", 1l, 
           "EXERCISE");
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-term #MathJax-Element-1-Frame", htmlMaterial.getId()));
         assertVisible(String.format("#page-%d .muikku-term #MathJax-Element-1-Frame", htmlMaterial.getId()));
         waitForAttributeToHaveValue(".muikku-term #MathJax-Element-1-Frame", "data-mathml");
@@ -1115,7 +1115,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           + "{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\" /></object></p> ", 1l, 
           "EXERCISE");
       try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
         assertVisible(String.format("#page-%d .muikku-connect-field-term #MathJax-Element-2-Frame", htmlMaterial.getId()));
         waitForAttributeToHaveValue(".muikku-connect-field-term #MathJax-Element-2-Frame", "data-mathml");
@@ -1150,7 +1150,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
-      TestEnvironments.Browser.PHANTOMJS,
+      TestEnvironments.Browser.CHROME_HEADLESS,
     }
   )
   public void courseMaterialLicenseOverrideCC010Test() throws Exception {
@@ -1168,7 +1168,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), false);
         waitForPresent(".page-license");
         click(".page-license");
         waitForPresent(".materials-management-page-license div select");
@@ -1178,7 +1178,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .publish-page", htmlMaterial1.getId()));
         waitAndClick(".ui-dialog-buttonset .publish-button");
         waitForPresent(".page-license");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format(".material-license", htmlMaterial1.getId()));
         assertTextIgnoreCase(String.format(".material-license", htmlMaterial1.getId()), "https://creativecommons.org/publicdomain/zero/1.0/");
       } finally {
@@ -1198,7 +1198,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.SAFARI,
-        TestEnvironments.Browser.PHANTOMJS,
+        TestEnvironments.Browser.CHROME_HEADLESS,
       }
     )
   public void courseMaterialLicenseOverrideCC4Test() throws Exception {
@@ -1216,7 +1216,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), false);
         waitForPresent(".page-license");
         click(".page-license");
         waitForPresent(".materials-management-page-license div select");
@@ -1226,7 +1226,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .publish-page", htmlMaterial1.getId()));
         waitAndClick(".ui-dialog-buttonset .publish-button");
         waitForPresent(".page-license");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format(".material-license", htmlMaterial1.getId()));
         assertTextIgnoreCase(String.format(".material-license", htmlMaterial1.getId()), "https://creativecommons.org/licenses/by-sa/4.0");
       } finally {
@@ -1246,7 +1246,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.SAFARI,
-        TestEnvironments.Browser.PHANTOMJS,
+        TestEnvironments.Browser.CHROME_HEADLESS,
       }
     )
   public void courseMaterialLicenseOverrideCC3Test() throws Exception {
@@ -1264,7 +1264,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), false);
         waitForPresent(".page-license");
         click(".page-license");
         waitForPresent(".materials-management-page-license div select");
@@ -1274,7 +1274,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .publish-page", htmlMaterial1.getId()));
         waitAndClick(".ui-dialog-buttonset .publish-button");
         waitForPresent(".page-license");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format(".material-license", htmlMaterial1.getId()));
         assertTextIgnoreCase(String.format(".material-license", htmlMaterial1.getId()), "https://creativecommons.org/licenses/by-sa/3.0");
       } finally {
@@ -1294,7 +1294,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.SAFARI,
-        TestEnvironments.Browser.PHANTOMJS,
+        TestEnvironments.Browser.CHROME_HEADLESS,
       }
     )
   public void courseMaterialLicenseOverrideLinkTest() throws Exception {
@@ -1312,7 +1312,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
       
       try {
-        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials-management", workspace.getUrlName()), false);
         waitForPresent(".page-license");
         click(".page-license");
         waitForPresent(".materials-management-page-license div select");
@@ -1323,7 +1323,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .publish-page", htmlMaterial1.getId()));
         waitAndClick(".ui-dialog-buttonset .publish-button");
         waitForPresent(".page-license");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format(".material-license", htmlMaterial1.getId()));
         assertTextIgnoreCase(String.format(".material-license", htmlMaterial1.getId()), "www.test.com");
       } finally {
