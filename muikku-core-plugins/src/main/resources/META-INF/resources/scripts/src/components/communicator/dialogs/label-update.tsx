@@ -124,6 +124,8 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
         label: this.props.label,
         success, fail
       });
+    } else {
+      closeDialog();
     }
   }
   render(){

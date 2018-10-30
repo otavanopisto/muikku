@@ -139,6 +139,8 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         label: this.props.label,
         success, fail
       });
+    } else {
+      closeDialog();
     }
   }
   render(){
