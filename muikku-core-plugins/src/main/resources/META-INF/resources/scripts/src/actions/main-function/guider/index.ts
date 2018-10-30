@@ -272,12 +272,12 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "activityLogs", value: activityLogs}});
         })
       ]);
-      
+
       dispatch({
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"READY"
       });
-      
+
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -425,9 +425,9 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
     if (!name){
       return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
-    
+
     let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
-    
+
     let color:number = Math.round(Math.random() * 16777215);
     let label = {
       name,
