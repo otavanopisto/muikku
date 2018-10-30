@@ -127,7 +127,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                  reuseExistantValue(true, workspace && workspace.contentDescription,
                                                      ()=>promisify(mApi().workspace.workspaces.description.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(true, workspace && workspace.Producers,
-                                                     ()=>promisify(mApi().workspace.workspaces.Producers.read(data.workspaceId), 'callback')())]) as any
+                                                     ()=>promisify(mApi().workspace.workspaces.materialProducers.read(data.workspaceId), 'callback')())]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
