@@ -67,32 +67,47 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-returned">6</div>
                 <div className="application-sub-panel__card-body">blaablaa</div>
               </div>
-            </div>                
+            </div>
           </div>
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">AlaOts</div>
             <div className="application-sub-panel__body application-list">
-              <div className="application-list-item">
-                <div className="application-list-item__header">
-                  <span className="application-list-item__header-icon icon-bell"></span>
-                  <span className="application-list-item__header-primary">ilmoutus</span>
+              <div className="application-list__item application-list__item--notification">
+                <div className="application-list__item-header">
+                  <span className="application-list__header-icon application-list__header-icon--notification-1 icon-bell"></span>                        
+                  <span className="application-list__header-primary">
+                    <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus convallis non tortor vitae dictum. Maecenas pharetra felis ut lectus pharetra pellentesque.</span>
+                  </span>
+                </div>
+                <div className="application-list__item-footer">
+                  <span>dd/mm/yyyy </span>
+               </div>
+              </div>
+              <div className="application-list__item application-list__item--notification">
+                <div className="application-list__item-header">
+                   <span className="application-list__header-icon application-list__header-icon--notification-2 icon-bell"></span>                        
+                   <span className="application-list__header-primary">
+                     <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus convallis non tortor vitae dictum. Maecenas pharetra felis ut lectus pharetra pellentesque.</span>
+                   </span>
+                 </div>
+                 <div className="application-list__item-footer">
+                   <span>dd/mm/yyyy </span>
                 </div>
               </div>
-              <div className="application-list-item">
-                <div className="application-list-item__header">
-                  <span className="application-list-item__header-icon icon-bell"></span>
-                  <span className="application-list-item__header-primary">ilmoutus</span>
-                </div>
-              </div>
-              <div className="application-list-item">
-                <div className="application-list-item__header">
-                  <span className="application-list-item__header-icon icon-bell"></span>
-                  <span className="application-list-item__header-primary">ilmoutus</span>
-                </div>                  
-              </div>
+              <div className="application-list__item application-list__item--notification">
+                  <div className="application-list__item-header">
+                    <span className="application-list__header-icon application-list__header-icon--notification-3 icon-bell"></span>                        
+                    <span className="application-list__header-primary">
+                      <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+                    </span>
+                  </div>
+                  <div className="application-list__item-footer">
+                    <span>dd/mm/yyyy </span>
+                 </div>
+               </div>
             </div>
-          </div>                                            
-           </div>        
+          </div>
+        </div>
         )
       }
   }

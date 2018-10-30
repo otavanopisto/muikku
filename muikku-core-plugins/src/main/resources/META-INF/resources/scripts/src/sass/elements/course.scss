@@ -3,6 +3,9 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+
+// OK, this is pretty similar to application-list__item--notification, we should consider if these should be combined
+
 .course {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
