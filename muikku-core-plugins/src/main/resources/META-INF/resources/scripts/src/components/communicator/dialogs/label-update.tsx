@@ -95,9 +95,6 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     if (this.state.locked){
       return;
     }
-    this.setState({
-      locked: true
-    });
     let success = ()=>{
       this.setState({
         locked: false
@@ -110,6 +107,9 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
       });
     }
     if ((this.state.name !== this.props.label.text(this.props.i18n) || this.state.color !== this.props.label.color) && !this.state.removed){
+      this.setState({
+        locked: true
+      });
       this.props.updateMessagesNavigationLabel({
         label: this.props.label,
         newName: this.state.name,
@@ -117,6 +117,9 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
         success, fail
       });
     } else if (this.state.removed){
+      this.setState({
+        locked: true
+      });
       this.props.removeMessagesNavigationLabel({
         label: this.props.label,
         success, fail

@@ -54,7 +54,6 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     this.update = this.update.bind(this);
     this.resetState = this.resetState.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
-    this.shareLabel = this.shareLabel.bind(this);
     
     this.state = {
       displayColorPicker: false,
@@ -104,16 +103,10 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   removeLabel(){
     this.setState({removed: true});
   }
-  shareLabel(){
-    
-  }
   update(closeDialog: ()=>any){
     if (this.state.locked){
       return;
     }
-    this.setState({
-      locked: true
-    });
     let success = ()=>{
       this.setState({
         locked: false
@@ -128,6 +121,9 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     if ((this.state.name !== this.props.label.name ||
         this.state.color !== this.props.label.color ||
         this.state.description !== this.props.label.description) && !this.state.removed){
+      this.setState({
+        locked: true
+      });
       this.props.updateGuiderFilterLabel({
         label: this.props.label,
         name: this.state.name,
@@ -136,6 +132,9 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         success, fail
       });
     } else if (this.state.removed){
+      this.setState({
+        locked: true
+      });
       this.props.removeGuiderFilterLabel({
         label: this.props.label,
         success, fail
@@ -152,7 +151,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
          {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
         </Button>
         <GuiderLabelShareDialog label={this.props.label}>
-          <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed || this.state.locked} onClick={this.shareLabel}>
+          <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed || this.state.locked}>
             {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
           </Button>
         </GuiderLabelShareDialog>
