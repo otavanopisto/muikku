@@ -20,7 +20,7 @@ public class RoleEntity {
   }
 
   public UserRoleType getType() {
-  	return null;
+    return null;
   }
   
   public String getName() {

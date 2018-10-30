@@ -60,7 +60,6 @@ import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserUpdatedEv
 import fi.otavanopisto.muikku.users.EnvironmentRoleEntityController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.RoleSchoolDataIdentifierController;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -127,9 +126,6 @@ public class PyramusUpdater {
   @Inject
   private OrganizationEntityController organizationEntityController;
 
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
-  
   @Inject
   private Event<SchoolDataUserUpdatedEvent> schoolDataUserUpdatedEvent;
 
@@ -1081,8 +1077,8 @@ public class PyramusUpdater {
     
     // Iterate over all discovered identifiers (students and staff members)
     for (String identifier : identifiers) {
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
-      if (userSchoolDataIdentifier == null) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
+      if (userSchoolDataIdentifier == null || userSchoolDataIdentifier.getArchived()) {
         // If no user entity can be found by the identifier, add it the the discovered identities list
         discoveredIdentifiers.add(identifier);
       } else {
@@ -1221,40 +1217,15 @@ public class PyramusUpdater {
     if (schoolDataIdentifier != null) {
       UserEntity userEntity = schoolDataIdentifier.getUserEntity();
       
-//      List<UserSchoolDataIdentifier> existingIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-
       SchoolDataIdentifier defaultIdentifier = null;
       SchoolDataUserUpdatedEvent event = new SchoolDataUserUpdatedEvent(userEntity.getId(), defaultIdentifier);
       
       event.addRemovedIdentifier(identifier, null, null);
 
-      // TODO: why are we "updating" all the existing identifiers at all?
-//      for (UserSchoolDataIdentifier existingIdentifier : existingIdentifiers) {
-//        if (!(existingIdentifier.getDataSource().getIdentifier().equals(identifier.getDataSource()) && existingIdentifier.getIdentifier().equals(identifier.getIdentifier()))) {
-//          SchoolDataIdentifier updatedIdentifier = new SchoolDataIdentifier(existingIdentifier.getIdentifier(), existingIdentifier.getDataSource().getIdentifier());
-//          SchoolDataUserEventIdentifier schoolDataUserIdentifier = event.addUpdatedIdentifier(updatedIdentifier);
-//          userEmailEntityController.getUserEmailAddresses(updatedIdentifier).forEach(email -> schoolDataUserIdentifier.addEmail(email));
-//        }
-//      }
-
       schoolDataUserUpdatedEvent.fire(event);
     }
   }
   
-//  private SchoolDataIdentifier getUserEntityEnvironmentRoleIdentifier(UserEntity userEntity) {
-//    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-//    if (environmentUser != null) {
-//      List<RoleSchoolDataIdentifier> identifiers = environmentRoleEntityController.listRoleSchoolDataIdentifiersByEnvironmentRoleEntity(environmentUser.getRole());
-//      for (RoleSchoolDataIdentifier identifier : identifiers) {
-//        if (SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE.equals(identifier.getDataSource().getIdentifier())) {
-//          return new SchoolDataIdentifier(identifier.getIdentifier(), identifier.getDataSource().getIdentifier());
-//        }
-//      }
-//    }
-//    
-//    return null;
-//  }
-//  
   public int updatePersons(int offset, int maxCourses) {
     Person[] persons = pyramusClient.get().get(String.format("/persons/persons?filterArchived=false&firstResult=%d&maxResults=%d", offset, maxCourses), Person[].class);
     if ((persons == null) || (persons.length == 0)) {

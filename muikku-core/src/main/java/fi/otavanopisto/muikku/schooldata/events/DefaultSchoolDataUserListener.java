@@ -100,15 +100,15 @@ public class DefaultSchoolDataUserListener {
           }
         }
       }
-      
+    
       // Attach discovered identities to user
       for (SchoolDataUserEventIdentifier eventIdentifier : discoveredIdentifiers) {
         SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
         
         EnvironmentRoleEntity environmentRoleEntity = eventIdentifier.getEnvironmentRoleIdentifier() == null ? null : 
-          environmentRoleEntityController.findEnvironmentRoleEntity(eventIdentifier.getEnvironmentRoleIdentifier().getDataSource(), eventIdentifier.getEnvironmentRoleIdentifier().getIdentifier());
+          environmentRoleEntityController.findBy(eventIdentifier.getEnvironmentRoleIdentifier());
         OrganizationEntity organizationEntity = eventIdentifier.getOrganizationIdentifier() == null ? null :
-          organizationEntityController.findByDataSourceAndIdentifier(eventIdentifier.getOrganizationIdentifier().getDataSource(), eventIdentifier.getOrganizationIdentifier().getIdentifier());
+          organizationEntityController.findBy(eventIdentifier.getOrganizationIdentifier());
         
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(
             identifier.getDataSource(), identifier.getIdentifier());
@@ -131,10 +131,10 @@ public class DefaultSchoolDataUserListener {
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(
             identifier.getDataSource(), identifier.getIdentifier());
         OrganizationEntity organizationEntity = eventIdentifier.getOrganizationIdentifier() == null ? null :
-          organizationEntityController.findByDataSourceAndIdentifier(eventIdentifier.getOrganizationIdentifier().getDataSource(), eventIdentifier.getOrganizationIdentifier().getIdentifier());
+          organizationEntityController.findBy(eventIdentifier.getOrganizationIdentifier());
         
         EnvironmentRoleEntity environmentRoleEntity = eventIdentifier.getEnvironmentRoleIdentifier() == null ? null : 
-          environmentRoleEntityController.findEnvironmentRoleEntity(eventIdentifier.getEnvironmentRoleIdentifier().getDataSource(), eventIdentifier.getEnvironmentRoleIdentifier().getIdentifier());
+          environmentRoleEntityController.findBy(eventIdentifier.getEnvironmentRoleIdentifier());
         List<String> emails = eventIdentifier.getEmails();
         
         userEmailEntityController.setUserEmails(eventIdentifier.getIdentifier(), getValidEmails(emails));
@@ -151,7 +151,7 @@ public class DefaultSchoolDataUserListener {
     // Remove identifiers in the removed list
     for (SchoolDataUserEventIdentifier eventIdentifier : removedIdentifiers) {
       SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(identifier);
       if (userSchoolDataIdentifier != null) {
         logger.log(Level.FINE, String.format("Removing user school data identifier %s", identifier));
         userSchoolDataIdentifierController.archiveUserSchoolDataIdentifier(userSchoolDataIdentifier);
@@ -164,9 +164,13 @@ public class DefaultSchoolDataUserListener {
 
     // Finally check if user has any identifiers left, if not archive the user from the system
     if (userEntity != null) {
-      if (userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity).isEmpty()) {
+      boolean isArchived = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity).isEmpty();
+      if (isArchived && !userEntity.getArchived()) {
         logger.log(Level.INFO, String.format("UserEntity #%d has no identities left, archiving userEntity", userEntity.getId()));
         userEntityController.archiveUserEntity(userEntity);
+      } else if (!isArchived && userEntity.getArchived()) {
+        logger.log(Level.INFO, String.format("UserEntity #%d has identities but was archived, unarchiving userEntity", userEntity.getId()));
+        userEntityController.unarchiveUserEntity(userEntity);
       }
     }
     
