@@ -22,7 +22,10 @@
   line-height: 10;
   margin-bottom: -10px;
   margin-top: -10px;
-  width: 150px;
+  width: 90px;
+  @include breakpoint($breakpoint-pad) {
+    width: 150px;
+  }
 }
 
 .chart--activity-chart-empty {
@@ -31,7 +34,10 @@
   margin-bottom: -10px;
   margin-top: -10px;
   opacity: 0.5;
-  width: 150px;
+  width: 90px;
+  @include breakpoint($breakpoint-pad) {
+    width: 150px;
+  }
 }
 
 .chart__activator {
