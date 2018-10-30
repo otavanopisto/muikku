@@ -160,11 +160,11 @@
 
 .filter-item--logins {
   input[type="checkbox"] {
-    border-color: $color-tertiary;
+    border-color: $color-default-contrast;
   }
   
   input[type="checkbox"]:checked {
-    background-color: $color-tertiary;
+    background-color: $color-default-contrast;
   }
   
   input[type="checkbox"]:checked::after {
@@ -193,6 +193,20 @@
   
   input[type="checkbox"]:checked {
     background-color: $color-workspace;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
+}
+
+.filter-item--forumMessages {
+  input[type="checkbox"] {
+    border-color: $color-primary;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-primary;
   }
   
   input[type="checkbox"]:checked::after {
