@@ -16,6 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.util.ArchivableEntity;
 import fi.otavanopisto.security.ContextReference;
 
@@ -84,6 +85,14 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
     this.defaultMaterialLicense = defaultMaterialLicense;
   }
 
+  public OrganizationEntity getOrganizationEntity() {
+    return organizationEntity;
+  }
+
+  public void setOrganizationEntity(OrganizationEntity organizationEntity) {
+    this.organizationEntity = organizationEntity;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -95,6 +104,9 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
 
 	@ManyToOne
   private SchoolDataSource dataSource;
+
+	@ManyToOne
+  private OrganizationEntity organizationEntity;
 
 	@NotEmpty
 	@NotNull

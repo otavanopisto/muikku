@@ -41,6 +41,7 @@ public class CourseBuilder {
   private Map<String, String> variables = null;
   private List<String> tags = null;
   private Set<Long> curriculumIds = null;  
+  private Long organizationId = 1L;
   
   public CourseBuilder() { 
 
@@ -53,7 +54,7 @@ public class CourseBuilder {
     return new Course(id, name, created, lastModified, description, archived, courseNumber, maxParticipantCount, beginDate,
         endDate, nameExtension, localTeachingDays, teachingHours, distanceTeachingHours, distanceTeachingDays,
         assessingHours, planningHours, enrolmentTimeEnd, creatorId, lastModifierId, subjectId, curriculumIds, length,
-        lengthUnitId, moduleId, stateId, typeId, variables, tags);
+        lengthUnitId, moduleId, stateId, typeId, variables, tags, organizationId);
   }
 
   public CourseBuilder name(String name)
@@ -218,5 +219,9 @@ public class CourseBuilder {
   {
       this.curriculumIds = curriculumIds;
       return this;
+  }
+  public CourseBuilder organizationId(Long organizationId) {
+    this.organizationId = organizationId;
+    return this;
   }
 }

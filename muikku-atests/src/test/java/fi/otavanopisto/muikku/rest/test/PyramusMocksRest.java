@@ -498,7 +498,8 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
        (long) 1,
        (long) 1,
        null,
-       null);
+       null,
+       1L);
   
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String courseJson = objectMapper.writeValueAsString(course);

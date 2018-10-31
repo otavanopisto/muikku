@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -36,14 +37,14 @@ public class WorkspaceEntityController {
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
 
-  public WorkspaceEntity createWorkspaceEntity(String dataSource, String identifier, String urlName) {
+  public WorkspaceEntity createWorkspaceEntity(String dataSource, String identifier, String urlName, OrganizationEntity organizationEntity) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find school data source: " + dataSource);
       return null;
     }
     
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, WorkspaceAccess.LOGGED_IN, Boolean.FALSE, Boolean.FALSE);
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, organizationEntity, WorkspaceAccess.LOGGED_IN, Boolean.FALSE, Boolean.FALSE);
     
     return workspaceEntity;
   }
@@ -110,6 +111,10 @@ public class WorkspaceEntityController {
 
   public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
     return workspaceEntityDAO.updateAccess(workspaceEntity, access);
+  }
+
+  public WorkspaceEntity updateOrganizationEntity(WorkspaceEntity workspaceEntity, OrganizationEntity organizationEntity) {
+    return workspaceEntityDAO.updateOrganizationEntity(workspaceEntity, organizationEntity);
   }
 
   public WorkspaceEntity updateDefaultMaterialLicense(WorkspaceEntity workspaceEntity, String defaultMaterialLicense) {

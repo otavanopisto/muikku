@@ -43,6 +43,10 @@ public class OrganizationEntityController {
     return organizationEntityDAO.unarchive(organizationEntity);
   }
   
+  public OrganizationEntity updateName(OrganizationEntity organizationEntity, String name) {
+    return organizationEntityDAO.updateName(organizationEntity, name);
+  }
+  
   public List<OrganizationEntity> listUnarchived() {
     return organizationEntityDAO.listUnarchived();
   }

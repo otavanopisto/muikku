@@ -50,5 +50,13 @@
       usdi.identifier = ue.defaultIdentifier and
       usdi.datasource_id = ue.defaultSchoolDataSource_id;
   </sql>
+  
+  <sql>
+    alter table WorkspaceEntity add column organizationEntity_id bigint;
+  </sql>
+  
+  <sql>
+    alter table WorkspaceEntity add constraint FKkhciievukpels39xnq7ej7qyo foreign key (organizationEntity_id) references OrganizationEntity (id);
+  </sql>
 
 </update>

@@ -109,7 +109,8 @@ public class TestUtilities {
        (long) 1,
        (long) 1, 
        null,
-       null);
+       null,
+       1L);
     
     return course;
   }

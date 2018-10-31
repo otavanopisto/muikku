@@ -129,7 +129,8 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         course.getStateId(),
         course.getTypeId(),
         null, // variables are not copied
-        copiedTags); // copy has its own tag list
+        copiedTags, // copy has its own tag list
+        course.getOrganizationId()); // TODO Organization probably needs to be specified
     
     Course createdCourse = pyramusClient.post("/courses/courses/", courseCopy);
     if (createdCourse == null) {

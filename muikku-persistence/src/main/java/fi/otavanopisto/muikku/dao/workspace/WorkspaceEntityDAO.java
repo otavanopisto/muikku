@@ -14,18 +14,20 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 
 public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
   
 	private static final long serialVersionUID = -5129003092406973620L;
 
-	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, WorkspaceAccess access, Boolean published, Boolean archived) {
+	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, OrganizationEntity organizationEntity, WorkspaceAccess access, Boolean published, Boolean archived) {
     WorkspaceEntity workspaceEntity = new WorkspaceEntity();
     
     workspaceEntity.setDataSource(dataSource);
     workspaceEntity.setIdentifier(identifier);
     workspaceEntity.setUrlName(urlName);
+    workspaceEntity.setOrganizationEntity(organizationEntity);
     workspaceEntity.setAccess(access);
     workspaceEntity.setArchived(archived);
     workspaceEntity.setPublished(published);
@@ -216,6 +218,11 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
 
   public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
     workspaceEntity.setAccess(access);
+    return persist(workspaceEntity);
+  }
+
+  public WorkspaceEntity updateOrganizationEntity(WorkspaceEntity workspaceEntity, OrganizationEntity organizationEntity) {
+    workspaceEntity.setOrganizationEntity(organizationEntity);
     return persist(workspaceEntity);
   }
 

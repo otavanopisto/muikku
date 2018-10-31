@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -19,6 +20,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -36,6 +38,9 @@ public class DefaultSchoolDataWorkspaceListener {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -65,8 +70,11 @@ public class DefaultSchoolDataWorkspaceListener {
       while (workspaceEntityController.findWorkspaceByUrlName(urlName) != null) {
         urlName = urlNameBase + "-" + ++urlNameIterator; 
       }
+      // organization
+      String organizationId = String.valueOf(event.getExtra().get("organizationId"));
+      OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), organizationId);
       // workspace
-      workspaceEntity = workspaceEntityController.createWorkspaceEntity(event.getDataSource(), event.getIdentifier(), urlName);
+      workspaceEntity = workspaceEntityController.createWorkspaceEntity(event.getDataSource(), event.getIdentifier(), urlName, organizationEntity);
     } else {
       logger.warning("workspaceEntity #" + event.getDataSource() + '/' + event.getIdentifier() + " already exists");
     }
@@ -78,6 +86,13 @@ public class DefaultSchoolDataWorkspaceListener {
   public void onSchoolDataWorkspaceUpdated(@Observes SchoolDataWorkspaceUpdatedEvent event) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (workspaceEntity != null) {
+      String organizationId = String.valueOf(event.getExtra().get("organizationId"));
+      OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), organizationId);
+      if (organizationEntity != null) {
+        if (workspaceEntity.getOrganizationEntity() == null || !organizationEntity.getId().equals(workspaceEntity.getOrganizationEntity().getId())) {
+          workspaceEntityController.updateOrganizationEntity(workspaceEntity, organizationEntity);
+        }
+      }
       // TODO: How should we handle the updating of URL names?
     } else {
       logger.warning("Updated workspaceEntity #" + event.getDataSource() + '/' + event.getIdentifier() + " could not be found");
