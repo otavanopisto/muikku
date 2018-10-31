@@ -44,7 +44,7 @@ interface GuiderLabelUpdateDialogState {
 class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogProps, GuiderLabelUpdateDialogState> {
   constructor(props: GuiderLabelUpdateDialogProps){
     super(props);
-    
+
     this.onColorChange = this.onColorChange.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
     this.onHandleClose = this.onHandleClose.bind(this);
@@ -54,8 +54,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     this.update = this.update.bind(this);
     this.resetState = this.resetState.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
-    this.shareLabel = this.shareLabel.bind(this);
-    
+
     this.state = {
       displayColorPicker: false,
       color: props.label.color,
@@ -104,16 +103,10 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   removeLabel(){
     this.setState({removed: true});
   }
-  shareLabel(){
-    
-  }
   update(closeDialog: ()=>any){
     if (this.state.locked){
       return;
     }
-    this.setState({
-      locked: true
-    });
     let success = ()=>{
       this.setState({
         locked: false
@@ -128,6 +121,9 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     if ((this.state.name !== this.props.label.name ||
         this.state.color !== this.props.label.color ||
         this.state.description !== this.props.label.description) && !this.state.removed){
+      this.setState({
+        locked: true
+      });
       this.props.updateGuiderFilterLabel({
         label: this.props.label,
         name: this.state.name,
@@ -136,10 +132,15 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         success, fail
       });
     } else if (this.state.removed){
+      this.setState({
+        locked: true
+      });
       this.props.removeGuiderFilterLabel({
         label: this.props.label,
         success, fail
       });
+    } else {
+      closeDialog();
     }
   }
   render(){
@@ -152,7 +153,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
          {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
         </Button>
         <GuiderLabelShareDialog label={this.props.label}>
-          <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed || this.state.locked} onClick={this.shareLabel}>
+          <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed || this.state.locked}>
             {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
           </Button>
         </GuiderLabelShareDialog>
@@ -163,7 +164,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     }
     let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
             <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
@@ -192,7 +193,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       )
     }
     return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider" 
-     title={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.title', this.props.label.name)}
+     title={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.title')}
      content={content} footer={footer}>{this.props.children}</Dialog>
   } 
 }

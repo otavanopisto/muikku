@@ -21,24 +21,23 @@ interface DialogState {
 
 export default class Dialog extends React.Component<DialogProps, DialogState> {
   private oldOverflow:string;
- 
 
   constructor(props: DialogProps){
     super(props);
-    
+
     this.onOverlayClick = this.onOverlayClick.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.beforeClose = this.beforeClose.bind(this);
     this.oldOverflow = null;
     this.state = {visible: false}
   }
-    
+
   onOverlayClick(close: ()=>any, e: Event){
     if (e.target === e.currentTarget){
       close();
     }
   }
-  
+
   onOpen(element: HTMLElement){
     setTimeout(()=>{
       this.setState({
@@ -48,17 +47,16 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.props.onOpen && this.props.onOpen(element);
     let el = element.childNodes[0].firstChild as HTMLElement;
     let marginOffset = 20;
-    document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";      
+    document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";
   }
-  
+
   beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
     this.setState({
       visible: false
     });
     document.body.style.marginBottom = "0";
     setTimeout(removeFromDOM, 300);
-  }  
-  
+  }
 
   render(){
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}

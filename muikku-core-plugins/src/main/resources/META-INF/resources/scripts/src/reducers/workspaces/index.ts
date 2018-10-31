@@ -159,8 +159,9 @@ export interface WorkspaceType {
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
-  Producers?: Array<WorkspaceProducerType>,
+  producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialType,
+  help?: MaterialType,
   activityLogs?: ActivityLogType[]
 }
 

@@ -18,14 +18,15 @@ interface ProducersState {
 
 class Producers extends React.Component<ProducersProps, ProducersState> {
   render(){
-    if (!this.props.workspace || !this.props.workspace.Producers || !this.props.workspace.Producers.length){
+    if (!this.props.workspace || !this.props.workspace.producers || !this.props.workspace.producers.length){
       return null;
     }
+
     return (<div className="producers">
       <span className="producers__title">{this.props.i18n.text.get("plugin.workspace.index.producersLabel")}:</span>
-      {this.props.workspace.Producers.map((producer, index)=>{
+      {this.props.workspace.producers.map((producer, index)=>{
         let textForTheName = producer.name;
-        if (index !== this.props.workspace.Producers.length - 1){
+        if (index !== this.props.workspace.producers.length - 1){
           textForTheName += ", "
         }
         return <span className="producers__item">{textForTheName}</span>
