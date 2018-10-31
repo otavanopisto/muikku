@@ -12,6 +12,7 @@ import * as queryString from 'query-string';
 import titleActions from '~/actions/base/title';
 
 import WorkspaceHomeBody from '~/components/workspace/workspaceHome';
+import WorkspaceHelpBody from '~/components/workspace/workspaceHelp';
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace } from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient } from '~/actions/announcements';
@@ -37,6 +38,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.updateFirstTime = this.updateFirstTime.bind(this);
     this.onHashChange = this.onHashChange.bind(this);
     this.renderWorkspaceHome = this.renderWorkspaceHome.bind(this);
+    this.renderWorkspaceHelp = this.renderWorkspaceHelp.bind(this);
     
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
@@ -80,6 +82,18 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]}/>
   }
+  renderWorkspaceHelp(props: RouteComponentProps<any>){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      let state = this.props.store.getState();
+      this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
+      this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId}) as Action);
+    }
+    
+    return <WorkspaceHelpBody workspaceUrl={props.match.params["workspaceUrl"]}/>
+  }
   updateFirstTime(){
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
     this.prevPathName = window.location.pathname;
@@ -88,7 +102,8 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
         
-      <Route path="/workspace/:workspaceUrl" render={this.renderWorkspaceHome}/>
+      <Route exact path="/workspace/:workspaceUrl/" render={this.renderWorkspaceHome}/>
+      <Route path="/workspace/:workspaceUrl/help" render={this.renderWorkspaceHelp}/>
     </div></BrowserRouter>);
   }
 }

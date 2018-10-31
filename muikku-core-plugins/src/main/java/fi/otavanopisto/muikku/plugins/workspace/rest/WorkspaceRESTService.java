@@ -72,7 +72,6 @@ import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
-import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
@@ -567,6 +566,22 @@ public class WorkspaceRESTService extends PluginRESTService {
     try {
       WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
       return Response.ok(workspaceMaterialController.createContentNode(frontPage)).build();
+    } catch (WorkspaceMaterialException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+  
+  @GET
+  @Path("/workspaces/{ID}/help")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceHelpPage(@PathParam("ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+    	return Response.status(Status.NOT_FOUND).build();
+    }
+    try {
+      WorkspaceMaterial helpPage = workspaceMaterialController.ensureWorkspaceHelpPageExists(workspaceEntity);
+      return Response.ok(workspaceMaterialController.createContentNode(helpPage)).build();
     } catch (WorkspaceMaterialException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
