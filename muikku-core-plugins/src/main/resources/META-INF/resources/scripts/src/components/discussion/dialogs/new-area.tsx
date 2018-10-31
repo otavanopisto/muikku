@@ -44,7 +44,7 @@ class DiscussionNewArea extends SessionStateComponent<DiscussionNewAreaProps, Di
     })
   }
   checkAgainstStoredState(){
-    this.checkAgainstDefaultState({
+    this.checkStoredAgainstThisState({
       name: "",
       description: ""
     });
