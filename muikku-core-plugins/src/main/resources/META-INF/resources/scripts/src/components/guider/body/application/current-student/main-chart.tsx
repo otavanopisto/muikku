@@ -44,7 +44,7 @@ enum Graph {
   MATERIAL_ASSIGNMENTDONE = "assignments",
   MATERIAL_EXERCISEDONE = "exercises",
   WORKSPACE_VISIT = "visits",
-  FORUM_NEWMESSAGE = "forumMessages",
+  FORUM_NEWMESSAGE = "forum-messages",
 }
 
 var ignoreZoomed: boolean = true;
