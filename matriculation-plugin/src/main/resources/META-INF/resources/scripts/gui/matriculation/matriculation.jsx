@@ -70,6 +70,10 @@ const TermSelect = ({i, value, onChange}) => (
         value={value}
         onChange={onChange}
         className="pure-u-23-24">
+      <option value="AUTUMN2016">Syksy 2016</option>
+      <option value="SPRING2016">Kevät 2016</option>
+      <option value="AUTUMN2017">Syksy 2017</option>
+      <option value="SPRING2017">Kevät 2017</option>
       <option value="AUTUMN2018">Syksy 2018</option>
       <option value="SPRING2019">Kevät 2019</option>
       <option value="AUTUMN2019">Syksy 2019</option>
