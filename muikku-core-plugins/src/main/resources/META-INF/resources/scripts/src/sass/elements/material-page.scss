@@ -4,9 +4,9 @@
 @import "../base/breakpoints";
 
 .material-page {
-  
-}
+  margin: 10px;
 
-.material-page--workspace-description {
-  margin: 15px;
+  @include breakpoint($breakpoint-pad) {
+    margin: 15px;
+  }
 }

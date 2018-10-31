@@ -11,61 +11,45 @@
   flex-grow: 1;
   flex-flow: row wrap;
   flex-shrink: 1;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row nowrap;
-  }
-
-  @include breakpoint($breakpoint-desktop) {
-    flex-flow: row wrap;
-  }
 }
 
 .panel-group--studies {
   order: 1;
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 100%;
-    flex-grow: 1;
-    flex-shrink: 1;
     max-width: 100%;
   }
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 33%;
-    flex-grow: 1;
-    flex-shrink: 1;
+    flex-flow: column nowrap;
     max-width: 33%;
   }
 }
 
 .panel-group--workspace-main {
-  align-items: flex-start;
-  display: flex;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-flow: row wrap;
-  max-width: 100%;
   order: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: column nowrap;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+  }
 }
 
 .panel-group--workspace-aside {
   order: 1;
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 100%;
-    flex-grow: 1;
-    flex-shrink: 1;
-    max-width: 100%;
+    flex-flow: row nowrap;
   }
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 33%;
-    flex-grow: 1;
-    flex-shrink: 1;
+    flex-flow: row wrap;
     max-width: 33%;
-    order: 2;
   }
 }
 
@@ -93,7 +77,6 @@
 }
 
 .panel--continue-studies {
-  flex-basis: 100%;
   flex-shrink: 0;
   order: 1;
 
@@ -103,7 +86,6 @@
 }
 
 .panel--workspaces {
-  flex-basis: 100%;
   flex-shrink: 0;
   order: 2;
 
@@ -141,10 +123,6 @@
 }
 
 .panel--workspace-teachers {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-width: 100%;
   order: 1;
 
   @include breakpoint($breakpoint-pad) {
@@ -152,17 +130,13 @@
     max-width: 50%;
   }
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: 100%;
     max-width: 100%;
   }
 }
 
 .panel--workspace-announcements {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-width: 100%;
   order: 2;
 
   @include breakpoint($breakpoint-pad) {
@@ -170,17 +144,13 @@
     max-width: 50%;
   }
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: 100%;
     max-width: 100%;
   }
 }
 
 .panel--workspace-description {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-width: 100%;
   order: 2;
 
   @include breakpoint($breakpoint-desktop) {
@@ -190,22 +160,12 @@
   }
 }
 
-.panel--basic-announcements {
-  // Reserved for the future enhancements.
-  // We need a feature to separate normal and important announcements
-}
-
-.panel--important-announcements {
-  // Reserved for the future enhancements.
-  // We need a feature to separate normal and important announcements
-}
-
 .panel__header {
   align-items: center;
   display: flex;
   flex-basis: auto;
   flex-grow: 1;
-  flex-shrink: 1;
+  flex-shrink: 0;
   flex-flow: row nowrap;
   justify-content: flex-start;
   margin: 0;
