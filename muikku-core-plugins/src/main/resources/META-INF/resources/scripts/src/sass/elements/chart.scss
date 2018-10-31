@@ -18,26 +18,36 @@
 }
 
 .chart--activity-chart {
+  border-radius: 3px;
   height: 36px;
   line-height: 10;
   margin-bottom: -10px;
   margin-top: -10px;
+  padding-left: 3px;
   width: 90px;
   @include breakpoint($breakpoint-pad) {
     width: 150px;
   }
 }
 
-.chart--activity-chart-empty {
-  height: 36px;
-  line-height: 10;
-  margin-bottom: -10px;
-  margin-top: -10px;
-  opacity: 0.5;
-  width: 90px;
-  @include breakpoint($breakpoint-pad) {
-    width: 150px;
-  }
+.chart--activity-chart-inactive {
+  background-color: #ffeaea;
+}
+
+.chart--activity-chart-lowactivity {
+  background-color: #ffe8d1;
+}
+
+.chart--activity-chart-moderateactivity {
+  background-color: #ffffd6;
+}
+
+.chart--activity-chart-highactivity {
+  background-color: #f1fce5;
+}
+
+.chart--activity-chart-veryhighactivity {
+  background-color: #e8ffe8;
 }
 
 .chart__activator {

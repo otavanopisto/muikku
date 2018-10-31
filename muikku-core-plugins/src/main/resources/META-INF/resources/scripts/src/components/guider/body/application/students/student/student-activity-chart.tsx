@@ -123,31 +123,33 @@ class CurrentStudentStatistics extends React.Component<StudentActivityProps, Stu
       if(value <= 100)
         data.push({"date": key, "activityPoints": value});
       else
-        data.push ({"date": key, "activityPoints": 100, "bulletvalue": value, "bullet": "round"});
+        data.push ({"date": key, "activityPoints": 100});
     });
     
-    let color = "#FF0000";
-    let modifier = "";
-    if (monthActivity == 0)
-      modifier = "-empty";
-    else if (monthActivity > 200)
+    let color = "#FF8000";
+    let modifier = "-lowactivity";
+    if (monthActivity == 0){
+      color = "#FF0000";
+      modifier = "-inactive";
+    }
+    else if (monthActivity > 300){
       color = "#00FF00";
-    else if (monthActivity > 150)
+      modifier = "-veryhighactivity";
+    }
+    else if (monthActivity > 200){
       color = "#80FF00";
-    else if (monthActivity > 100)
+      modifier = "-highactivity";
+    }
+    else if (monthActivity > 100){
       color = "#FFFF00";
-    else if (monthActivity > 50)
-      color = "#FF8000";
+      modifier = "-moderateactivity";
+    }
     
     let graphs = new Array;
     graphs.push({
       "valueField": "activityPoints",
-      "bulletField": "bullet",
-      "bulletSize": 4,
-      "balloonText": "[[bulletvalue]]",
-      "showBalloon": true,
       "lineColor": color,
-      "lineThickness": 1,
+      "lineThickness": 2,
     });
     
     let config = {
@@ -163,33 +165,21 @@ class CurrentStudentStatistics extends React.Component<StudentActivityProps, Stu
         "gridAlpha": 0,
         "axisAlpha": 0,
         "maximum":110,
-        "minimum":-10,
-        "guides": [ {
-          "value": 0,
-          "lineAlpha": 0.3,
-      } ]
-        } ],
+        "minimum":-10
+      } ],
       "categoryAxis": {
         "gridAlpha": 0,
         "axisAlpha": 0,
         "startOnAxis": true
       },
       "graphs": graphs,
-      "balloon": {
-        "borderThickness": 1,
-        "fontSize": 8,
-        "horizontalPadding": 2,
-        "verticalPadding": 2,
-        "drop": true,
-        "pointerOrientation": "left"
-      },
       "dataProvider": data,
       "export": {
         "enabled": true
       }
     };
 
-    return <AmCharts.React className={"chart chart--activity-chart" + modifier} options={config}/>
+    return <AmCharts.React className={"chart chart--activity-chart chart--activity-chart"+modifier} options={config}/>
   }
 }
 
