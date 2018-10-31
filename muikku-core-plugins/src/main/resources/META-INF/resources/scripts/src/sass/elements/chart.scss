@@ -190,11 +190,11 @@
   input[type="checkbox"] {
     border-color: $color-workspace;
   }
-  
+
   input[type="checkbox"]:checked {
     background-color: $color-workspace;
   }
-  
+
   input[type="checkbox"]:checked::after {
     content: "";
   }
