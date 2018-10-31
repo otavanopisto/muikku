@@ -11,6 +11,7 @@
   background: url("/gfx/oo-branded-site-header-background-mobile.jpg") no-repeat center center $color-hero-default-background;
   background-size: cover;
   margin-top: $navbar-mobile-height;
+  order:1;
 
   @include breakpoint($breakpoint-pad) {
     background-image: url("/gfx/oo-branded-site-header-background.png");

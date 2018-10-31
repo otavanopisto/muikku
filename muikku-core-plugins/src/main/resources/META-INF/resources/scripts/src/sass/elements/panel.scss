@@ -17,7 +17,7 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-    flex-flow: column nowrap;
+    flex-flow: row wrap;
   }
 }
 
@@ -39,8 +39,18 @@
   }
 }
 
+.panel-group--workspace-main {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-flow: row wrap;
+  max-width: 100%;
+  order: 2;
+}
 
-.panel-group--workspace {
+.panel-group--workspace-aside {
   order: 1;
 
   @include breakpoint($breakpoint-pad) {
@@ -61,6 +71,7 @@
 
 // PANELS
 .panel {
+  align-items: flex-start;
   background-color: $color-panel-background;
   box-shadow: 0 2px 3px $color-panel-shadow;
   display: flex;
@@ -192,7 +203,7 @@
 .panel__header {
   align-items: center;
   display: flex;
-  flex-basis: 100%;
+  flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
   flex-flow: row nowrap;

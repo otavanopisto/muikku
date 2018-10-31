@@ -7,6 +7,8 @@ import { StatusType } from "~/reducers/base/status";
 
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
+import '~/sass/elements/material-page.scss';
+
 import MaterialLoader from "~/components/base/material-loader";
 
 interface DescriptionPanelProps {

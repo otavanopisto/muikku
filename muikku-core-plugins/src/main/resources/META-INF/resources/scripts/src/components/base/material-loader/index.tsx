@@ -228,7 +228,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     //TODO remove this __deprecated container once things are done and classes are cleared up, or just change the classname to something
     //more reasonable
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
-    return <div className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")}`}>
+    return <div className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} rich-text`}>
       {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
           <div className="">
             <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
