@@ -5,6 +5,8 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 
+import '~/sass/elements/producers.scss';
+
 interface ProducersProps {
   workspace: WorkspaceType,
   i18n: i18nType
@@ -19,14 +21,14 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
     if (!this.props.workspace || !this.props.workspace.Producers || !this.props.workspace.Producers.length){
       return null;
     }
-    return (<div className="">
-      <span className="">{this.props.i18n.text.get("plugin.workspace.index.producersLabel")}:</span>
+    return (<div className="producers">
+      <span className="producers__title">{this.props.i18n.text.get("plugin.workspace.index.producersLabel")}:</span>
       {this.props.workspace.Producers.map((producer, index)=>{
         let textForTheName = producer.name;
         if (index !== this.props.workspace.Producers.length - 1){
           textForTheName += ", "
         }
-        return <span className="">{textForTheName}</span>
+        return <span className="producers__item">{textForTheName}</span>
       })}
     </div>);
   }
