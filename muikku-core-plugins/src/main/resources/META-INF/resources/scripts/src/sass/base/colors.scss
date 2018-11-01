@@ -5,6 +5,9 @@ $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
 $color-default-helper: #b3b2b2;
 
+$color-yo-sign-up: #75ce41;
+$color-yo-sign-up-contrast: $color-default;
+
 $color-inverse: $color-default-contrast;
 $color-inverse-contrast: $color-default;
 
@@ -162,6 +165,8 @@ $color-button-inverse-background: $color-inverse;
 $color-button-inverse-text: $color-inverse-contrast;
 
 $color-button-disabled-background: #ccc;
+
+
 
 // Profile image button
 $color-button-profile-image-edit-delete-background: rgba(0, 0, 0, 0.5);

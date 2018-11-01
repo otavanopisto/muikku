@@ -331,6 +331,29 @@
   width: 100%;
 }
 
+.button--yo-signup {
+  background-color: $color-yo-sign-up;
+  color: $color-yo-sign-up-contrast;
+  height: $button-primary-height;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    display: inline-flex;
+    width: auto;
+
+    &:hover,
+    &.hover {
+      background-color: darken($color-yo-sign-up, 10%);
+    }
+
+    &:active,
+    &.active {
+      background-color: darken($color-yo-sign-up, 20%);
+    }
+  }
+}
+
+
 .button--primary-function {
   display: none;
 

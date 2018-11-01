@@ -109,6 +109,14 @@
   padding: 10px 0;
 }
 
+.application-sub-panel__body--yo-status-incomplete {
+  background-color: #de6c6a;
+}
+
+.application-sub-panel__body--yo-status-complete {
+  background-color: #f6fff2;
+}
+
 .application-sub-panel__body--studies-summary-dates {
   display: flex;
 }
@@ -116,11 +124,40 @@
 .application-sub-panel__body--studies-summary-cards {
   display: flex;
   justify-content: space-around;
+  flex-direction: column;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-direction: row;    
+  }
 }
 
 .application-sub-panel__body--studies-yo-cards {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  flex-direction: column;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-direction: row;    
+  }
+
+}
+
+.application-sub-panel__notification-item {
+  flex-basis: 100%;
+ 
+}
+
+.application-sub-panel__notification-body {
+  padding: 10px;
+}
+
+.application-sub-panel__notification-body--yo-status-incomplete {
+  color: $color-default;
+}
+
+
+.application-sub-panel__notification-footer {
+  padding: 10px;
 }
 
 .application-sub-panel__card-item {
@@ -200,14 +237,22 @@
 
 .application-sub-panel__item--summarizer {
   flex-flow: column wrap;
-  flex-basis: 50%;
+  align-items: normal;
+  flex-basis: 50;
+  padding: 10px;
   
   @include breakpoint($breakpoint-desktop) {
-    flex-flow: row nowrap;
+    flex-flow: column nowrap;
   }  
-
 }
 
+.application-sub-panel__item-body {
+  padding: 10px;
+}
+
+.application-sub-panel__item-body--summarizer {
+  background-color: #ebf8fc;
+}
 
 .application-sub-panel__item-header--hops {
   font-weight: 600;

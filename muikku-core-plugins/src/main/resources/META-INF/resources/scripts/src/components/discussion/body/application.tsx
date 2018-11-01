@@ -8,11 +8,8 @@ import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
 import {DiscussionType} from '~/reducers/main-function/discussion';
 import {StateType} from '~/reducers';
-
 import DiscussionThreads from './application/discussion-threads';
 import CurrentThread from './application/current-thread';
-
-
 import '~/sass/elements/link.scss';
 
 interface DiscussionApplicationState {
