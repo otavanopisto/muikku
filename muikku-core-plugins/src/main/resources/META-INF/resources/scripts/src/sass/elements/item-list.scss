@@ -66,6 +66,16 @@
   }
 }
 
+// Item-list items in workspace teachers
+.item-list--panel-teachers .item-list__item {
+  align-items: flex-start;
+  border-top: solid 1px $color-default-item-separator-border;
+
+  &:first-child {
+    border: 0;
+  }
+}
+
 // Item-list items in announcements
 .item-list--panel-announcements .item-list__item {
   align-items: flex-start;
@@ -109,7 +119,7 @@
 }
 
 .item-list__item--bordered {
-  border-left: solid 4px; 
+  border-left: solid 4px;
 }
 
 // Unread list items in index page (icons and texts)
@@ -158,11 +168,44 @@
   color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
 }
 
+// List item for listing users (teachers and students alike)
+.item-list__profile-picture {
+  padding: 0 10px 0 0;
+}
+
+.item-list__user-contact-info {
+  font-size: 0.8125rem;
+  margin: 3px 0 8px;
+}
+
+.item-list__user-name {
+  font-weight: 600;
+}
+
+.item-list__user-email,
+.item-list__user-phone {
+  @include word-break;
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  opacity: 0.75;
+  padding: 2px 0;
+}
+
+.item-list__user-email *,
+.item-list__user-phone * {
+  margin: 0 5px 0 0;
+}
+
+.item-list__user-vacation-period {
+
+}
+
 // List item texts
 .item-list__text-body {
   flex-basis: auto;
   flex-grow: 1;
-  flex-shrink: 100;
+  flex-shrink: 1;
   font-size: $text-mobile-font-size;
   margin-left: 5px;
 
@@ -172,10 +215,13 @@
 }
 
 .item-list__text-body--multiline {
-  white-space: initial;
+  align-items: flex-start;
   display: flex;
-  flex-direction: column;
+  flex-flow: column wrap;
+  white-space: initial;
 }
+
+
 
 // List item dates
 .item-list__latest-message-date,
