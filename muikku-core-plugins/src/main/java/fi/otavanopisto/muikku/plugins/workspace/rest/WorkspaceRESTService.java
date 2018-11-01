@@ -81,6 +81,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerCont
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -217,6 +218,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileController fileController;
+
+  @Inject
+  private FileAnswerUtils fileAnswerUtils;
   
   @GET
   @Path("/workspaceTypes")
@@ -1604,7 +1608,17 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(answerFile.getContent())
+    byte[] content = answerFile.getContent();
+    if (content == null) {
+      try {
+        content = fileAnswerUtils.getFileContent(workspaceMaterialReply.getUserEntityId(), answerFile.getFileId());
+      }
+      catch (IOException e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+      }
+    }
+    
+    return Response.ok(content)
       .type(answerFile.getContentType())
       .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
       .build();
@@ -1707,7 +1721,11 @@ public class WorkspaceRESTService extends PluginRESTService {
             
             ZipEntry ze = new ZipEntry(fileName);
             zout.putNextEntry(ze);
-            InputStream input = new ByteArrayInputStream(file.getContent());
+            byte[] content = file.getContent();
+            if (content == null) {
+              content = fileAnswerUtils.getFileContent(workspaceMaterialReply.getUserEntityId(), file.getFileId());
+            }
+            InputStream input = new ByteArrayInputStream(content);
             try {
               IOUtils.copy(input, zout);
             }
