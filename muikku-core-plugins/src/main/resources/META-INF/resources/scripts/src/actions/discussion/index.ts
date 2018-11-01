@@ -3,7 +3,7 @@ import promisify from "~/util/promisify";
 import notificationActions from '~/actions/base/notifications';
 import mApi, { MApiError } from '~/lib/mApi';
 import {DiscussionAreaListType, DiscussionAreaType, DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType,
-  DiscussionThreadListType, DiscussionThreadReplyListType, DiscussionThreadReplyType, DiscussionAreaUpdateType} from "~/reducers/main-function/discussion";
+  DiscussionThreadListType, DiscussionThreadReplyListType, DiscussionThreadReplyType, DiscussionAreaUpdateType} from "~/reducers/discussion";
 import { loadUserIndex } from "~/actions/user-index";
 import { StateType } from "~/reducers";
 
@@ -25,12 +25,13 @@ export interface UPDATE_DISCUSSION_AREA extends SpecificActionType<"UPDATE_DISCU
   update: DiscussionAreaUpdateType
 }>{}
 export interface DELETE_DISCUSSION_AREA extends SpecificActionType<"DELETE_DISCUSSION_AREA", number>{}
+export interface SET_DISCUSSION_WORKSPACE_ID extends SpecificActionType<"SET_DISCUSSION_WORKSPACE_ID", number>{}
 
 export interface loadDiscussionThreadsFromServerTriggerType {
   (data:{
     areaId: number,
     page: number,
-    forceRefresh?: boolean,
+    forceRefresh?: boolean
   }):AnyActionType
 }
 
@@ -146,8 +147,10 @@ let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType =
       }
       
       try {
-        let threads:DiscussionThreadListType = <DiscussionThreadListType>await promisify(data.areaId ? mApi().forum.areas.threads
-            .read(data.areaId, params) : mApi().forum.latest.read(params), 'callback')();
+        let threads:DiscussionThreadListType = <DiscussionThreadListType>await promisify(discussion.workspaceId ?
+            (data.areaId ? mApi().workspace.workspaces.forumAreas.threads.read(discussion.workspaceId, data.areaId, params) :
+              mApi().workspace.workspaces.forumLatest.read(discussion.workspaceId, params)) : (data.areaId ? mApi().forum.areas.threads
+            .read(data.areaId, params) : mApi().forum.latest.read(params)), 'callback')();
         
         threads.forEach((thread)=>{
           dispatch(loadUserIndex(thread.creator));
@@ -193,11 +196,14 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
     }
     
     try {
-      let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.create(data.forumAreaId, {
-        forumAreaId: data.forumAreaId, locked: data.locked, message: data.message, sticky: data.sticky, title: data.title
-      }), 'callback')();
-      
       let discussion:DiscussionType = getState().discussion;
+      let params = {
+        forumAreaId: data.forumAreaId, locked: data.locked, message: data.message, sticky: data.sticky, title: data.title
+      };
+      let newThread = <DiscussionThreadType>await promisify(discussion.workspaceId ?
+          mApi().workspace.workspaces.forumAreas.threads.create(discussion.workspaceId, data.forumAreaId, params) :
+          mApi().forum.areas.threads.create(data.forumAreaId, params), 'callback')();
+      
       window.location.hash = newThread.forumAreaId + "/" + 
         (newThread.forumAreaId === discussion.areaId ? discussion.page : "1") + "/" + newThread.id + "/1";
       
@@ -243,8 +249,10 @@ let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDi
         sticky: data.sticky,
         locked: data.locked
       });
-      
-      let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.update(data.thread.forumAreaId, data.thread.id, payload), 'callback')();
+      let discussion:DiscussionType = getState().discussion;
+      let newThread = <DiscussionThreadType>await promisify(discussion.workspaceId ? 
+          mApi().workspace.workspaces.forumAreas.threads.update(discussion.workspaceId, data.thread.forumAreaId, data.thread.id, payload): 
+          mApi().forum.areas.threads.update(data.thread.forumAreaId, data.thread.id, payload), 'callback')();
       dispatch({
         type: "UPDATE_DISCUSSION_THREAD",
         payload: newThread
@@ -293,7 +301,9 @@ let loadDiscussionThreadFromServer:LoadDiscussionThreadFromServerTriggerType = f
       });
     
       if (!newCurrentThread || data.forceRefresh){
-        newCurrentThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
+        newCurrentThread = <DiscussionThreadType>await promisify(discussion.workspaceId ?
+            mApi().workspace.workspaces.forumAreas.threads.read(discussion.workspaceId, data.areaId, data.threadId) :
+            mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
       }
       
       dispatch(loadUserIndex(newCurrentThread.creator));
@@ -305,7 +315,10 @@ let loadDiscussionThreadFromServer:LoadDiscussionThreadFromServerTriggerType = f
         payload: pages
       });
       
-      let replies:DiscussionThreadReplyListType = <DiscussionThreadReplyListType>await promisify(mApi().forum.areas.threads.replies.read(data.areaId, data.threadId, params), 'callback')();
+      let replies:DiscussionThreadReplyListType = <DiscussionThreadReplyListType>await promisify(
+          discussion.workspaceId ?
+            mApi().workspace.workspaces.forumAreas.threads.replies.read(discussion.workspaceId, data.areaId, data.threadId, params) :
+            mApi().forum.areas.threads.replies.read(data.areaId, data.threadId, params), 'callback')();
       replies.forEach((reply)=>{
         dispatch(loadUserIndex(reply.creator));
       });
@@ -370,8 +383,11 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
     let discussion:DiscussionType = state.discussion
     
     try {
-      let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.replies.create(
-          discussion.current.forumAreaId, discussion.current.id, payload), 'callback')();
+      let newThread = <DiscussionThreadType>await promisify(discussion.workspaceId ? 
+          mApi().workspace.workspaces.forumAreas.threads.replies.create(
+              discussion.workspaceId, discussion.current.forumAreaId, discussion.current.id, payload): 
+          mApi().forum.areas.threads.replies.create(
+              discussion.current.forumAreaId, discussion.current.id, payload), 'callback')();
       
       //sadly the new calculation is overly complex and error prone so we'll just do this;
       //We also need to use force refresh to avoid reusing data in memory
@@ -398,7 +414,9 @@ let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = fun
     let discussion:DiscussionType = state.discussion
     
     try {
-      await promisify(mApi().forum.areas.threads.del(discussion.current.forumAreaId, discussion.current.id), 'callback')();
+      await promisify(discussion.workspaceId ? 
+          mApi().workspace.workspaces.forumAreas.threads.del(discussion.workspaceId, discussion.current.forumAreaId, discussion.current.id) : 
+          mApi().forum.areas.threads.del(discussion.current.forumAreaId, discussion.current.id), 'callback')();
       dispatch(loadDiscussionThreadsFromServer({
         areaId: discussion.areaId,
         page: discussion.page,
@@ -435,7 +453,9 @@ let deleteDiscussionThreadReplyFromCurrent:DeleteDiscussionThreadReplyFromCurren
     let discussion:DiscussionType = state.discussion
     
     try {
-      await promisify(mApi().forum.areas.threads.replies.del(discussion.current.forumAreaId, discussion.current.id, data.reply.id), 'callback')();
+      await promisify(discussion.workspaceId ? 
+          mApi().workspace.workspaces.forumAreas.threads.replies.del(discussion.workspaceId, discussion.current.forumAreaId, discussion.current.id, data.reply.id) :
+          mApi().forum.areas.threads.replies.del(discussion.current.forumAreaId, discussion.current.id, data.reply.id), 'callback')();
       
       dispatch(loadDiscussionThreadFromServer({
         areaId: discussion.current.forumAreaId,
@@ -459,8 +479,10 @@ let modifyReplyFromCurrentThread:ModifyReplyFromCurrentThreadTriggerType = funct
     let discussion:DiscussionType = state.discussion
     
     try {
-      let newReply = <DiscussionThreadReplyType>await promisify(mApi().forum.areas.threads.replies.update(
-          discussion.current.forumAreaId, discussion.current.id, data.reply.id, Object.assign({}, data.reply, {message: data.message})), 'callback')();
+      let newReplyMod = Object.assign({}, data.reply, {message: data.message});
+      let newReply = <DiscussionThreadReplyType>await promisify(discussion.workspaceId ? mApi().workspace.workspaces.forumAreas.threads.replies.update(
+          discussion.workspaceId, discussion.current.forumAreaId, discussion.current.id, data.reply.id, newReplyMod) : mApi().forum.areas.threads.replies.update(
+          discussion.current.forumAreaId, discussion.current.id, data.reply.id, newReplyMod), 'callback')();
       
       dispatch({
         type: "UPDATE_DISCUSSION_THREAD_REPLY",
@@ -484,10 +506,12 @@ export interface LoadDiscussionAreasFromServerTriggerType {
 
 let loadDiscussionAreasFromServer:LoadDiscussionAreasFromServerTriggerType = function loadDiscussionAreasFromServer(callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let discussion:DiscussionType = getState().discussion;
     try {
       dispatch({
         type: 'UPDATE_DISCUSSION_AREAS',
-        payload: <DiscussionAreaListType>await promisify(mApi().forum.areas.read(), 'callback')()
+        payload: <DiscussionAreaListType>await promisify(discussion.workspaceId ?
+            mApi().workspace.workspaces.forumAreas.read(discussion.workspaceId) : mApi().forum.areas.read(), 'callback')()
       });
       callback && callback();
     } catch (err){
@@ -498,7 +522,7 @@ let loadDiscussionAreasFromServer:LoadDiscussionAreasFromServerTriggerType = fun
     }
   }
 }
-  
+
 export interface CreateDiscussionAreaTriggerType {
   (data:{name: string, description: string, success?: ()=>any, fail?: ()=>any}):AnyActionType
 }
@@ -511,10 +535,13 @@ let createDiscussionArea:CreateDiscussionAreaTriggerType = function createDiscus
     }
     
     try {
-      let newArea = <DiscussionAreaType>await promisify(mApi().forum.areas.create({
+      let discussion:DiscussionType = getState().discussion;
+      let params = {
         name: data.name,
         description: data.description
-      }), 'callback')();
+      };
+      let newArea = <DiscussionAreaType>await promisify(discussion.workspaceId ? mApi().workspace.workspaces.forumAreas.create(discussion.workspaceId, params): 
+        mApi().forum.areas.create(params), 'callback')();
       dispatch({
         type: 'PUSH_DISCUSSION_AREA_LAST',
         payload: newArea
@@ -543,10 +570,13 @@ let updateDiscussionArea:UpdateDiscussionAreaTriggerType = function updateDiscus
     }
     
     try {
-      await promisify(mApi().forum.areas.update(data.id, {
+      let discussion:DiscussionType = getState().discussion;
+      let params = {
         name: data.name,
         description: data.description
-      }), 'callback')();
+      };
+      await promisify(discussion.workspaceId ? 
+          mApi().workspace.workspaces.forumAreas.update(discussion.workspaceId, data.id, params) : mApi().forum.areas.update(data.id, params), 'callback')();
       dispatch({
         type: 'UPDATE_DISCUSSION_AREA',
         payload: {
@@ -575,7 +605,9 @@ export interface DeleteDiscussionAreaTriggerType {
 let deleteDiscussionArea:DeleteDiscussionAreaTriggerType = function deleteDiscussionArea(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      await promisify(mApi().forum.areas.del(data.id), 'callback')();
+      let discussion:DiscussionType = getState().discussion;
+      await promisify(discussion.workspaceId ? mApi().workspace.workspaces.forumAreas.del(discussion.workspaceId, data.id) :
+        mApi().forum.areas.del(data.id), 'callback')();
       location.hash = "";
       dispatch({
         type: 'DELETE_DISCUSSION_AREA',
@@ -591,12 +623,20 @@ let deleteDiscussionArea:DeleteDiscussionAreaTriggerType = function deleteDiscus
     }
   }
 }
+  
+export interface SetDiscussionWorkspaceIdTriggerType {
+  (workspaceId: number):AnyActionType
+}
+
+let setDiscussionWorkpaceId:SetDiscussionWorkspaceIdTriggerType = function setDiscussionWorkpaceId(workspaceId){
+  return {
+    type: 'SET_DISCUSSION_WORKSPACE_ID',
+    payload: workspaceId
+  }
+}
 
 export {loadDiscussionThreadsFromServer, createDiscussionThread, loadDiscussionThreadFromServer,
   replyToCurrentDiscussionThread, modifyDiscussionThread, deleteCurrentDiscussionThread,
   deleteDiscussionThreadReplyFromCurrent, modifyReplyFromCurrentThread,
-  loadDiscussionAreasFromServer, createDiscussionArea, updateDiscussionArea, deleteDiscussionArea}
-export default {loadDiscussionThreadsFromServer, createDiscussionThread, loadDiscussionThreadFromServer,
-  replyToCurrentDiscussionThread, modifyDiscussionThread, deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent, modifyReplyFromCurrentThread,
-  loadDiscussionAreasFromServer, createDiscussionArea, updateDiscussionArea, deleteDiscussionArea}
+  loadDiscussionAreasFromServer, createDiscussionArea, updateDiscussionArea, deleteDiscussionArea,
+  setDiscussionWorkpaceId}

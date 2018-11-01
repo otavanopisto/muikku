@@ -11,7 +11,7 @@ import workspaces from './workspaces';
 
 import userIndex from './user-index';
 
-import discussion from '~/reducers/main-function/discussion';
+import discussion from '~/reducers/discussion';
 
 import guider from './main-function/guider';
 

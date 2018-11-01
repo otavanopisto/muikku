@@ -12,7 +12,7 @@ import '~/sass/elements/link.scss';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
-import {createDiscussionArea, CreateDiscussionAreaTriggerType} from '~/actions/main-function/discussion';
+import {createDiscussionArea, CreateDiscussionAreaTriggerType} from '~/actions/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionNewAreaProps {

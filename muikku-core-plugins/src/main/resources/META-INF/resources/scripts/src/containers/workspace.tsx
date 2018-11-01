@@ -13,9 +13,11 @@ import titleActions from '~/actions/base/title';
 
 import WorkspaceHomeBody from '~/components/workspace/workspaceHome';
 import WorkspaceHelpBody from '~/components/workspace/workspaceHelp';
+import WorkspaceDiscussionBody from '~/components/workspace/workspaceDiscussions';
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace } from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient } from '~/actions/announcements';
+import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
 interface WorkspaceProps {
   store: Store<StateType>,
@@ -39,6 +41,8 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.onHashChange = this.onHashChange.bind(this);
     this.renderWorkspaceHome = this.renderWorkspaceHome.bind(this);
     this.renderWorkspaceHelp = this.renderWorkspaceHelp.bind(this);
+    this.renderWorkspaceDiscussions = this.renderWorkspaceDiscussions.bind(this);
+    this.loadWorkspaceDiscussionData = this.loadWorkspaceDiscussionData.bind(this);
     
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
@@ -53,7 +57,9 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     document.head.appendChild(script);
   }
   onHashChange(){ 
-    
+    if (window.location.pathname.includes("/discussion")){
+      this.loadWorkspaceDiscussionData(window.location.hash.replace("#","").split("/"));
+    }
   }
   renderWorkspaceHome(props: RouteComponentProps<any>){
     this.updateFirstTime();
@@ -94,9 +100,53 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     
     return <WorkspaceHelpBody workspaceUrl={props.match.params["workspaceUrl"]}/>
   }
+  renderWorkspaceDiscussions(props: RouteComponentProps<any>){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      
+      let state = this.props.store.getState();
+      this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
+      this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId}) as Action);
+      this.props.store.dispatch(setDiscussionWorkpaceId(state.status.currentWorkspaceId) as Action);
+      this.props.store.dispatch(loadDiscussionAreasFromServer(()=>{
+        //here in the callback
+        let currentLocation = window.location.hash.replace("#","").split("/");
+        this.loadWorkspaceDiscussionData(currentLocation);
+      }) as Action);
+    }
+    
+    return <WorkspaceDiscussionBody workspaceUrl={props.match.params["workspaceUrl"]}/>
+  }
   updateFirstTime(){
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
     this.prevPathName = window.location.pathname;
+  }
+  loadWorkspaceDiscussionData(location: string[]){
+    let state = this.props.store.getState();
+    if (location.length <= 2){
+      //The link is expected to be like # none, in this case it will collapse to null, page 1
+      //Else it can be #1 in that case it will collapse to area 1, page 1
+      //Or otherwise #1/2 in that case it will collapse to area 1 page 2
+      
+      this.props.store.dispatch(loadDiscussionThreadsFromServer({
+        areaId: parseInt(location[0]) || null,
+        page: parseInt(location[1]) || 1
+      }) as Action);
+    } else {
+      //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
+      //and there can be a page as #1/2/3/4
+      this.props.store.dispatch(loadDiscussionThreadFromServer({
+        areaId: parseInt(location[0]),
+        page: parseInt(location[1]),
+        threadId: parseInt(location[2]),
+        threadPage: parseInt(location[3]) || 1
+      }) as Action);
+    }
   }
   render(){
     return (<BrowserRouter><div id="root">
@@ -104,6 +154,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
         
       <Route exact path="/workspace/:workspaceUrl/" render={this.renderWorkspaceHome}/>
       <Route path="/workspace/:workspaceUrl/help" render={this.renderWorkspaceHelp}/>
+      <Route path="/workspace/:workspaceUrl/discussions" render={this.renderWorkspaceDiscussions}/>
     </div></BrowserRouter>);
   }
 }

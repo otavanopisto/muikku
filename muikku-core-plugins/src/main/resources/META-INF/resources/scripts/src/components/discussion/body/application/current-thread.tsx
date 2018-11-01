@@ -1,7 +1,7 @@
 import { UserIndexType } from "~/reducers/user-index";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion";
+import { DiscussionType, DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
