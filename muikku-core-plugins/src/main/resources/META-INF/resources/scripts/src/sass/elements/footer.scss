@@ -1,12 +1,24 @@
-@import "../base/breakpoints";
 @import "../base/colors";
 @import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
 
 .footer {
   background-color: $color-footer-default-background;
   font-family: $text-branded-font-family;
   margin-top: calc(1.5rem + 20px);
   width: 100%;
+}
+
+.footer--workspace {
+  @include text;
+  background-color: $color-workspace-footer-default-background;
+  margin: 0;
+  order: 3;
+
+  @include breakpoint($breakpoint-pad){
+    margin: 10px;
+  }
 }
 
 .footer__container {

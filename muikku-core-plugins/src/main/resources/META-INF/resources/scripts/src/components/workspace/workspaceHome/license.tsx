@@ -5,6 +5,8 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 
+import '~/sass/elements/license.scss';
+
 interface LicenseProps {
   workspace: WorkspaceType,
   i18n: i18nType
@@ -44,16 +46,12 @@ class License extends React.Component<LicenseProps, LicenseState> {
       }
     }
 
-    return (<div className="">
-      <div className="">
-        <span className="">
-          {materialLicenseIcons.map((i)=><span className={`icon-${i}`}></span>)}
-        </span>
-        <span className="">{this.props.i18n.text.get("plugin.workspace.index.licenseLabel")}:</span>
-        <span className="">
-          <Link href={this.props.workspace.materialDefaultLicense} target="top">{this.props.workspace.materialDefaultLicense}</Link>
-        </span>
-      </div>
+    return (<div className="license">
+      <span className="license__icons">
+        {materialLicenseIcons.map((i)=><span className={`license__icon icon-${i}`}></span>)}
+      </span>
+      <span className="license__title">{this.props.i18n.text.get("plugin.workspace.index.licenseLabel")}:</span>
+      <Link className="license__link" href={this.props.workspace.materialDefaultLicense} target="top">{this.props.workspace.materialDefaultLicense}</Link>
     </div>);
   }
 }

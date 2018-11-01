@@ -7,6 +7,8 @@ import { StatusType } from "~/reducers/base/status";
 
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
+import '~/sass/elements/material-page.scss';
+
 import MaterialLoader from "~/components/base/material-loader";
 
 interface DescriptionPanelProps {
@@ -27,7 +29,7 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</div>
       </div>
       <div className="panel__body">
-        {this.props.workspace && <MaterialLoader material={this.props.workspace.contentDescription} workspace={this.props.workspace}
+        {this.props.workspace && <MaterialLoader modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
           i18n={this.props.i18n} status={this.props.status} readOnly/>}
       </div>
     </div>);

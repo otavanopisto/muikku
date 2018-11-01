@@ -19,7 +19,6 @@ import '~/sass/elements/rich-text.scss';
 import { i18nType } from '~/reducers/base/i18n';
 import { StatusType } from '~/reducers/base/status';
 
-
 //Bubble gum scripting needs
 //$.getScript("//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js");
 //$.getScript("//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/jquery.magnific-popup.min.js");
@@ -141,7 +140,8 @@ interface MaterialLoaderProps {
   workspace: WorkspaceType,
   i18n: i18nType,
   status: StatusType,
-  
+  modifiers?: string | Array<string>
+
   loadCompositeReplies?: boolean,
   readOnly?: boolean,
   compositeReplies?: MaterialCompositeRepliesType
@@ -157,9 +157,9 @@ let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 export default class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
   constructor(props: MaterialLoaderProps){
     super(props);
-    
+
     this.stopPropagation = this.stopPropagation.bind(this);
-    
+
     this.state = {
       compositeReplies: null
     }
@@ -171,7 +171,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     e.stopPropagation();
   }
   async create(){
-    
+
 //    if (this.props.loadCompositeReplies){
 //    let fieldAnswers:any = materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
 //    if (!fieldAnswers){
@@ -204,16 +204,16 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
 //    } else {
 //      $('<div/>').muikkuMaterialLoader().muikkuMaterialLoader('loadMaterial', this.refs.sandbox);
 //    }
-    
+
     if (this.props.loadCompositeReplies){
       let compositeReplies:MaterialCompositeRepliesType = compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
       if (!compositeReplies){
         compositeReplies = (await promisify(mApi().workspace.workspaces.materials.compositeMaterialReplies
             .read(this.props.workspace.id, this.props.material.assignment.id,
                 {userEntityId: (window as any).MUIKKU_LOGGED_USER_ID}), 'callback')()) as MaterialCompositeRepliesType;
-      
+
         materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = compositeReplies;
-      
+
         setTimeout(()=>{
           delete compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
         }, 60000);
@@ -227,8 +227,8 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
   render(){
     //TODO remove this __deprecated container once things are done and classes are cleared up, or just change the classname to something
     //more reasonable
-
-    return <div className="__deprecated">
+    let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
+    return <div className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} rich-text`}>
       {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
           <div className="">
             <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>

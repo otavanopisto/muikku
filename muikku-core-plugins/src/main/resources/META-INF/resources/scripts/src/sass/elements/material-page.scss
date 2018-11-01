@@ -1,0 +1,12 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.material-page {
+  margin: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 15px;
+  }
+}
