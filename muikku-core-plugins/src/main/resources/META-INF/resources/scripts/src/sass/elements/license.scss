@@ -21,16 +21,21 @@
 }
 
 .license__icon {
-  font-size: 30px;
-  padding: 0 10px 0 0;
+  font-size: 20px;
+  padding: 0 5px 0 0;
 
   @include breakpoint($breakpoint-pad){
+    font-size: 30px;
+    padding: 0 10px 0 0;
+  }
+
+  @include breakpoint($breakpoint-desktop){
     font-size: 40px;
   }
 }
 
 .license__title {
-  padding: 0 10px 0 0;
+  padding: 0 5px;
   text-transform: uppercase;
 }
 
