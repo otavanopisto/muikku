@@ -115,7 +115,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       to: true,
       condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE
     }, {
-      modifier: "discussions",
+      modifier: "discussion",
       trail: "discussions",
       text: 'plugin.workspace.dock.discussions',
       href: "/workspace/" + this.props.workspaceUrl + "/discussions",

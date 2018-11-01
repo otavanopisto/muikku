@@ -5,8 +5,8 @@ import Link from '~/components/general/link';
 import JumboDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-import {DiscussionAreaListType, DiscussionAreaType} from '~/reducers/main-function/discussion';
-import {DiscussionType} from '~/reducers/main-function/discussion';
+import {DiscussionAreaListType, DiscussionAreaType} from '~/reducers/discussion';
+import {DiscussionType} from '~/reducers/discussion';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
 
@@ -14,7 +14,7 @@ import '~/sass/elements/link.scss';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
-import { updateDiscussionArea, UpdateDiscussionAreaTriggerType } from '~/actions/main-function/discussion';
+import { updateDiscussionArea, UpdateDiscussionAreaTriggerType } from '~/actions/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionModifyAreaProps {

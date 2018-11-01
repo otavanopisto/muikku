@@ -26,7 +26,7 @@ import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
 
 import DiscussionBody from '../components/discussion/body';
-import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer} from '~/actions/main-function/discussion';
+import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId} from '~/actions/discussion';
 
 import {loadAnnouncement, loadAnnouncements} from '~/actions/announcements';
 import AnnouncementsBody from '../components/announcements/body';
@@ -281,6 +281,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
       
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.forum.pageTitle')));
+      this.props.store.dispatch(setDiscussionWorkpaceId(null) as Action);
       
       this.props.store.dispatch(loadDiscussionAreasFromServer(()=>{
         //here in the callback

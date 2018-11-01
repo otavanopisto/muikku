@@ -9,7 +9,7 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
-import {DiscussionType} from '~/reducers/main-function/discussion';
+import {DiscussionType} from '~/reducers/discussion';
 import NewArea from '../../dialogs/new-area';
 import ModifyArea from '../../dialogs/modify-area';
 import DeleteArea from '../../dialogs/delete-area';

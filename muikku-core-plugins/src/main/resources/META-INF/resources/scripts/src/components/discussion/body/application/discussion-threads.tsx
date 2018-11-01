@@ -11,7 +11,7 @@ import '~/sass/elements/discussion.scss';
 import '~/sass/elements/avatar.scss';
 
 
-import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
+import { DiscussionType, DiscussionThreadType } from '~/reducers/discussion';
 import { UserIndexType, UserType } from '~/reducers/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';

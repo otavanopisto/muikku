@@ -7,6 +7,8 @@ import websocket from './util/websocket';
 
 import workspaces from './workspaces';
 import announcements from './announcements';
+import discussion from './discussion';
+import userIndex from './user-index';
 
 import {combineReducers} from 'redux';
 
@@ -19,5 +21,7 @@ export default combineReducers({
   title,
   
   workspaces,
-  announcements
+  announcements,
+  discussion,
+  userIndex
 });

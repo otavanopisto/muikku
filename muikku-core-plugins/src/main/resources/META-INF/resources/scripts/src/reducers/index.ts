@@ -11,7 +11,7 @@ import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './user-index';
 import {WorkspacesType} from './workspaces';
-import { DiscussionType } from './main-function/discussion';
+import { DiscussionType } from './discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records';
 import { ErrorType } from './base/error';

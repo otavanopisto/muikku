@@ -54,6 +54,7 @@ export interface DiscussionType {
   threads: DiscussionThreadListType,
   page: number,
   areaId: number,
+  workspaceId?: number,
   totalPages: number,
   current: DiscussionThreadType,
   currentState: DiscussionStateType,
@@ -68,6 +69,7 @@ export interface DiscussionPatchType {
   threads?: DiscussionThreadListType,
   page?: number,
   areaId?: number,
+  workspaceId?: number,
   totalPages?: number,
   current?: DiscussionThreadType,
   currentState?: DiscussionStateType,
@@ -81,6 +83,7 @@ export default function discussion(state: DiscussionType={
     state: "LOADING",
     threads: [],
     areaId: null,
+    workspaceId: null,
     page: 1,
     totalPages: 1,
     current: null,
@@ -154,6 +157,8 @@ export default function discussion(state: DiscussionType={
     })});
   } else if (action.type === "DELETE_DISCUSSION_AREA"){
     return Object.assign({}, state, {areas: state.areas.filter(area=>area.id!==action.payload)});
+  } else if (action.type === "SET_DISCUSSION_WORKSPACE_ID"){
+    return Object.assign({}, state, {workspaceId: action.payload});
   }
   return state;
 }
