@@ -30,10 +30,6 @@
 .panel-group--workspace-main {
   order: 2;
 
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: column nowrap;
-  }
-
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
@@ -47,6 +43,7 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
+    align-items: flex-start;
     flex-basis: 33%;
     flex-flow: row wrap;
     max-width: 33%;
@@ -154,7 +151,10 @@
   order: 2;
 
   @include breakpoint($breakpoint-desktop) {
+    align-items: initial;
+    align-self: stretch;
     flex-basis: 67%;
+    flex-flow: column nowrap;
     max-width: 67%;
     order: 1;
   }
