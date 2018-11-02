@@ -76,7 +76,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                     value: teacher
                   }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
                     initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
-                    <Button buttonModifiers="info">
+                    <Button buttonModifiers={["info", "contact-teacher"]}>
                       {this.props.i18n.text.get("plugin.workspace.index.message.label")}
                     </Button></CommunicatorNewMessage>
               </div>

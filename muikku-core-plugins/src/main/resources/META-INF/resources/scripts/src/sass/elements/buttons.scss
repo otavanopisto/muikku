@@ -426,6 +426,11 @@
   }
 }
 
+.button--contact-teacher {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+}
+
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
