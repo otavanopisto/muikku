@@ -13,8 +13,14 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
-  }  
+  }
+}
+
+@mixin word-break {
+  overflow-wrap: break-word;
+  word-break: break-all;
+  word-wrap: break-word;
 }
