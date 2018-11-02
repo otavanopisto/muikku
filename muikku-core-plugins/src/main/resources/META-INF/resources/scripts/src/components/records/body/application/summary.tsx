@@ -30,47 +30,55 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       if (this.props.records.location !== "summary") {
         return null;        
       } else {
+        
+        let studentBasicInfo = <div className="application-sub-panel">
+          <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.")}</div>
+          <div className="application-sub-panel__body application-sub-panel__body--studies-summary-dates">
+            <div className="application-sub-panel__item">
+              <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
+              <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date">
+                <span>{this.props.records.studyStartDate ? 
+                    this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>          
+              </div>
+            </div>
+            <div className="application-sub-panel__item">
+              <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.records.studyEndDate ? "plugin.records.studyEndDateLabel" :
+              "plugin.records.studyTimeEndLabel")}</div>
+              <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>{this.props.records.studyEndDate || this.props.records.studyTimeEnd ? 
+                  this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : "-"}</span></div>
+            </div>
+          </div>
+        </div>          
       return (
         <div>
-          <h2>OTSOTS</h2>          
+          <h2>{this.props.i18n.text.get("plugin.records.summary.studyInfo")}</h2>          
+          {studentBasicInfo}
+
           <div className="application-sub-panel">
-            <div className="application-sub-panel__header">AlaOts</div>
-            <div className="application-sub-panel__body application-sub-panel__body--studies-summary-dates">
-              <div className="application-sub-panel__item">
-                <div className="application-sub-panel__item-title">Ots</div>
-                <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date"><span>data</span></div>
-              </div>
-              <div className="application-sub-panel__item">
-                <div className="application-sub-panel__item-title">Ots</div>
-                <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>data</span></div>
-              </div>
-            </div>
-          </div>
-          <div className="application-sub-panel">
-            <div className="application-sub-panel__header">AlaOts</div>
+            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.")}</div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-summary-cards">
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">Otsikko</div>
-                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
+                <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.stat.pre")}</div>
                 <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">6</div>
-                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.stat.post")}</div>
               </div>                
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-activity">
-                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-activity">Otsikko</div>
-                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-activity">{this.props.i18n.text.get("plugin.records.summary.card.activity.title")}</div>
+                <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.activity.stat.pre")}</div>
                 <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-activity">6</div>
-                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.activity.stat.post")}</div>
               </div>                
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-returned">
-                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-returned">Otsikko</div>
-                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-returned">{this.props.i18n.text.get("plugin.records.summary.card.tasks.title")}</div>
+                <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.tasks.stat.pre")}</div>
                 <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-returned">6</div>
-                <div className="application-sub-panel__card-body">blaablaa</div>
+                <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.tasks.stat.post")}</div>
               </div>
             </div>
           </div>
           <div className="application-sub-panel">
-            <div className="application-sub-panel__header">AlaOts</div>
+            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.notifications.title")}</div>
             <div className="application-sub-panel__body application-list">
               <div className="application-list__item application-list__item--notification">
                 <div className="application-list__item-header">
