@@ -17,7 +17,7 @@ export default class WorkspaceAnnouncerBody extends React.Component<WorkspaceAnn
   render(){
     let aside = <Aside />;
     return (<div>
-      <WorkspaceNavbar navigation={aside} activeTrail="announcer" workspaceUrl={this.props.workspaceUrl}/>
+      <WorkspaceNavbar navigation={aside} activeTrail="workspace-announcer" workspaceUrl={this.props.workspaceUrl}/>
       <Application aside={aside}/>
     </div>);
   }

@@ -15,7 +15,7 @@ interface WorkspaceDiscussionBodyState {
 export default class WorkspaceDiscussionBody extends React.Component<WorkspaceDiscussionBodyProps, WorkspaceDiscussionBodyState> {
   render(){
     return (<div>
-      <WorkspaceNavbar activeTrail="discussions" workspaceUrl={this.props.workspaceUrl}/>
+      <WorkspaceNavbar activeTrail="workspace-discussions" workspaceUrl={this.props.workspaceUrl}/>
       <Application/>
     </div>);
   }
