@@ -119,7 +119,7 @@ let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(loc
         //and remove the unnecessary code
 
         //this is where notOverrideCurrent plays a role when loading all the other announcements after itself
-        dispatch(loadAnnouncements(location, null, false, false));
+        dispatch(loadAnnouncements(location, null, true, false));
       }
 
       dispatch({
