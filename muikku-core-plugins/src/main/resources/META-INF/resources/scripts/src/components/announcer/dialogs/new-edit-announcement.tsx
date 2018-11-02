@@ -11,7 +11,7 @@ import { AnnouncementType } from '~/reducers/announcements';
 import { AnyActionType } from '~/actions';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
-import { WorkspaceType } from '~/reducers/workspaces';
+import { WorkspaceType, WorkspacesType } from '~/reducers/workspaces';
 import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/user-index';
 import { createAnnouncement, CreateAnnouncementTriggerType,
   updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/announcements';
@@ -54,7 +54,10 @@ interface NewEditAnnouncementProps {
   userIndex: UserIndexType,
   createAnnouncement: CreateAnnouncementTriggerType,
   updateAnnouncement: UpdateAnnouncementTriggerType,
-  status: StatusType
+  status: StatusType,
+  
+  workspaceId: number,
+  workspaces: WorkspacesType
 }
 
 interface NewEditAnnouncementState {
@@ -87,6 +90,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       } as WorkspaceRecepientType;
     }) : [];
     
+    this.baseAnnouncementCurrentTarget = this.baseAnnouncementCurrentTarget.concat(this.getPredefinedWorkspaceByIdToConcat(props));
+    
     this.state = this.getRecoverStoredState({
       text: props.announcement ? props.announcement.content : "",
       currentTarget: props.announcement ? this.baseAnnouncementCurrentTarget : [],
@@ -94,7 +99,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       locked: false,
       startDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.startDate) : props.i18n.time.getLocalizedMoment(),
       endDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.endDate) : props.i18n.time.getLocalizedMoment().add(1, "day")
-    }, props.announcement && props.announcement.id);
+    }, (props.announcement ? props.announcement.id + "-" : "") + (props.workspaceId || ""));
   }
   loadUserGroups(announcement: AnnouncementType){
     announcement.userGroupEntityIds.forEach(this.props.loadUserGroupIndex);
@@ -106,7 +111,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         text: this.props.announcement.content,
         startDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
         endDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
-      }, this.props.announcement.id);
+      }, this.props.announcement.id + "-" + (this.props.workspaceId || ""));
       
       let userGroupEntityIds = this.state.currentTarget.filter(w=>w.type==="usergroup").map(w=>(w.value as any).id);
       let workspaceEntityIds = this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id);
@@ -122,7 +127,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         currentTarget: [],
         startDate: this.props.i18n.time.getLocalizedMoment(),
         endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-      });
+      }, this.props.workspaceId || "");
     }
   }
   clearUp(){
@@ -131,7 +136,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       this.setStateAndClear({subject: "", text: "",
         startDate: this.props.i18n.time.getLocalizedMoment(),
         endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-        currentTarget: []});
+        currentTarget: []}, this.props.announcement.id + "-" + (this.props.workspaceId || "")
+      );
     } else {
       this.baseAnnouncementCurrentTarget = this.props.announcement.workspaces.map(w=>{
         //NOTE this workspace type is incomplete, but should do the job regardless
@@ -146,10 +152,28 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         currentTarget: this.baseAnnouncementCurrentTarget,
         startDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
         endDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
-      });
+      }, this.props.workspaceId || "");
       
       this.setUpGroupEntitiesIds();
     }
+  }
+  getPredefinedWorkspaceByIdToConcat(props: NewEditAnnouncementProps){
+    if (!props.workspaces || !props.workspaceId || props.announcement){
+      return [];
+    }
+    
+    let workpaceFound = props.workspaces && props.workspaces.currentWorkspace && props.workspaces.currentWorkspace.id === props.workspaceId 
+    ? props.workspaces.currentWorkspace :
+    (props.workspaces && props.workspaces.availableWorkspaces.concat(props.workspaces.userWorkspaces).find(w=>w.id === props.workspaceId));
+  
+    if (workpaceFound){
+      return [{
+        type: "workspace",
+        value: workpaceFound
+      } as WorkspaceRecepientType];
+    }
+    
+    return [];
   }
   componentWillReceiveProps(nextProps: NewEditAnnouncementProps){
     if ((this.props.announcement && nextProps.announcement && nextProps.announcement.id !== this.props.announcement.id) ||
@@ -161,7 +185,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           type: "workspace",
           value: w
         } as WorkspaceRecepientType
-      })
+      });
       
       this.setState(this.getRecoverStoredState({
         subject: nextProps.announcement.caption,
@@ -169,19 +193,26 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         currentTarget: this.baseAnnouncementCurrentTarget,
         startDate: nextProps.i18n.time.getLocalizedMoment(nextProps.announcement.startDate),
         endDate: nextProps.i18n.time.getLocalizedMoment(nextProps.announcement.endDate)
-      }, nextProps.announcement && nextProps.announcement.id));
+      }, nextProps.announcement.id + "-" + (nextProps.workspaceId || "")));
       
       this.loadUserGroups(nextProps.announcement);
     } else if (this.props.announcement && !nextProps.announcement){
-      this.baseAnnouncementCurrentTarget = [];
+      this.baseAnnouncementCurrentTarget = this.getPredefinedWorkspaceByIdToConcat(nextProps);
       
       this.setState(this.getRecoverStoredState({
         subject: "",
         text: "",
-        currentTarget: [],
+        currentTarget: this.baseAnnouncementCurrentTarget,
         startDate: nextProps.i18n.time.getLocalizedMoment(),
         endDate: nextProps.i18n.time.getLocalizedMoment().add(1, "day"),
-      }));
+      }, nextProps.workspaceId || ""));
+    } else if (nextProps.workspaceId !== this.props.workspaceId || nextProps.workspaces !== this.props.workspaces && !nextProps.announcement){
+      //Searching for the workspace in current workspace, available workspaces and user workspaces, anywhere possible to find it
+      this.baseAnnouncementCurrentTarget = this.getPredefinedWorkspaceByIdToConcat(nextProps);
+      
+      this.setState(this.getRecoverStoredState({
+        currentTarget: this.baseAnnouncementCurrentTarget,
+      }, nextProps.workspaceId || ""));
     }
     
     if (nextProps.userIndex.groups !== this.props.userIndex.groups && nextProps.announcement && !this.recovered){
@@ -226,7 +257,10 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           workspaceEntityIds: this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id),
         },
         success: ()=>{
-          this.setState({locked: false});
+          this.setStateAndClear({
+            ...this.state,
+            locked: false
+          }, this.props.announcement.id + "-" + (this.props.workspaceId || ""));
           closeDialog();
         },
         fail: ()=>{
@@ -248,7 +282,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           this.setStateAndClear({locked: false, subject: "", text: "",
             startDate: this.props.i18n.time.getLocalizedMoment(),
             endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-            currentTarget: []});
+            currentTarget: []}, this.props.workspaceId || "");
           closeDialog();
         },
         fail: ()=>{
@@ -334,7 +368,12 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     userIndex: state.userIndex,
-    status: state.status
+    status: state.status,
+    
+    //For use with workspaces when announcement gives a workspace
+    //it needs to be fetched from somewhere
+    workspaceId: state.announcements.workspaceId,
+    workspaces: state.workspaces
   }
 };
 

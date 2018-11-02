@@ -83,7 +83,8 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
       announcements,
       location: properLocation,
       selected: [],
-      selectedIds: []
+      selectedIds: [],
+      workspaceId: workspaceId || null
     }
     
     //And there it goes

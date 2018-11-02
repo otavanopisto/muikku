@@ -32,7 +32,7 @@ export interface LoadAnnouncementsTriggerType {
 }
 
 export interface LoadAnnouncementTriggerType {
-  (location:string, announcementId:number):AnyActionType
+  (location:string, announcementId:number, workspaceId?: number):AnyActionType
 }
 
 export interface AddToAnnouncementsSelectedTriggerType {
@@ -105,7 +105,7 @@ let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(
   return loadAnnouncementsHelper.bind(this, location, workspaceId, notOverrideCurrent, force);
 }
 
-let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(location, announcementId){
+let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(location, announcementId, workspaceId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let navigation:AnnouncerNavigationItemListType = state.announcements.navigation;
@@ -119,7 +119,7 @@ let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(loc
         //and remove the unnecessary code
 
         //this is where notOverrideCurrent plays a role when loading all the other announcements after itself
-        dispatch(loadAnnouncements(location, null, true, false));
+        dispatch(loadAnnouncements(location, workspaceId, true, false));
       }
 
       dispatch({
@@ -263,7 +263,7 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
       } else {
         //TODO why in the world the request to create the announcement does not return the created object?
         //I am forced to reload all the announcements due to being unable to know what was created
-        dispatch(loadAnnouncements(announcements.location, null, true, true));
+        dispatch(loadAnnouncements(announcements.location, announcements.workspaceId, true, true));
       }
       data.success();
     } catch (err){

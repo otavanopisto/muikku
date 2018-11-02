@@ -91,7 +91,8 @@ export interface AnnouncementsType {
   selectedIds: Array<number>,
   location: string,
   toolbarLock: boolean,
-  navigation: AnnouncerNavigationItemListType
+  navigation: AnnouncerNavigationItemListType,
+  workspaceId?: number
 }
 
 export interface AnnouncementsPatchType {
@@ -102,7 +103,8 @@ export interface AnnouncementsPatchType {
   selectedIds?: Array<number>,
   location?: string,
   toolbarLock?: boolean,
-  navigation?: AnnouncerNavigationItemListType
+  navigation?: AnnouncerNavigationItemListType,
+  workspaceId?: number
 }
 
 export default function announcements(state: AnnouncementsType={
@@ -113,7 +115,8 @@ export default function announcements(state: AnnouncementsType={
     selectedIds: [],
     location: "",
     toolbarLock: false,
-    navigation: defaultNavigation
+    navigation: defaultNavigation,
+    workspaceId: null
 }, action: ActionType): AnnouncementsType {
   if (action.type === "UPDATE_ANNOUNCEMENTS"){
     return Object.assign({}, state, {announcements: action.payload});

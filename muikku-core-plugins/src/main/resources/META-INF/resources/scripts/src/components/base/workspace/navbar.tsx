@@ -164,49 +164,56 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     href: string,
     text: string,
     visible: boolean,
-    trail: string
+    trail: string,
+    to?: boolean
   }> = [
     {
       modifier: "workspace-management",
       href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-edit"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
-      trail: "workspace-management"
+      trail: "workspace-management",
+      to: true
     },
     {
       modifier: "workspace-announcer",
       href: "/workspace/" + this.props.workspaceUrl + "/announcer",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-announcements"),
       visible: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL,
-      trail: "workspace-announcer"
+      trail: "workspace-announcer",
+      to: true
     },
     {
       modifier: "workspace-permissions",
       href: "/workspace/" + this.props.workspaceUrl + "/permissions",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-permissions"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_PERMISSIONS,
-      trail: "workspace-permissions"
+      trail: "workspace-permissions",
+      to: true
     },
     {
       modifier: "workspace-materials-management",
       href: "/workspace/" + this.props.workspaceUrl + "/materials-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.material-management"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
-      trail: "workspace-materials-management"
+      trail: "workspace-materials-management",
+      to: true
     },
     {
       modifier: "workspace-frontpage-management",
       href: "/workspace/" + this.props.workspaceUrl + "/frontpage-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.editIndex"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE,
-      trail: "workspace-frontpage-management"
+      trail: "workspace-frontpage-management",
+      to: true
     },
     {
       modifier: "workspace-helppage-management",
       href: "/workspace/" + this.props.workspaceUrl + "/helppage-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.editHelp"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_HELP,
-      trail: "workspace-helppage-management"
+      trail: "workspace-helppage-management",
+      to: true
     }
   ]
   
@@ -222,7 +229,8 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
         if (!item.visible){
           return null
         }
-        return <Link className={`link link--${item.modifier} ${this.props.activeTrail === item.trail ? "active" : ""}`} href={item.href}>{item.text}</Link>
+        return <Link className={`link link--${item.modifier} ${this.props.activeTrail === item.trail ? "active" : ""}`}
+          href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null}>{item.text}</Link>
       })}>
         <Link className={`link link--icon link--full link--workspace-navbar icon icon-cogs`}></Link>
       </Dropdown>)
@@ -252,7 +260,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       }
       return {
         modifier: item.modifier,
-        item: (<Link href={item.href} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+        item: (<Link href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
           title={this.props.i18n.text.get(item.text)}>
           <span className={`link__icon icon-${item.icon}`}/>
           {item.badge ? <span className="indicator indicator--workspace">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
