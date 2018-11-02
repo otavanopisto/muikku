@@ -348,6 +348,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
+        @QueryParam("organizations") List<String> organizationIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
@@ -455,8 +456,23 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
+      // TODO: Limit to organizations the logged user has access to (how though?)
+
+      List<SchoolDataIdentifier> organizations = null;
+      if (organizationIds != null) {
+        organizations = new ArrayList<>(organizationIds.size());
+        for (String organizationId : organizationIds) {
+          SchoolDataIdentifier organizationIdentifier = SchoolDataIdentifier.fromId(organizationId);
+          if (organizationIdentifier != null) {
+            organizations.add(organizationIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed organization identifier", organizationId)).build();
+          }
+        }
+      }
+      
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
-          curriculums, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
+          curriculums, organizations, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
