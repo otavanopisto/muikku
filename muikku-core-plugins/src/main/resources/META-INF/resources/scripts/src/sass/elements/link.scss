@@ -284,6 +284,24 @@
   }
 }
 
+.link--workspace-management {
+  background-color: $color-workspace-link-management-background;
+  color: $color-workspace-link-management-text;
+  justify-content: flex-start;
+
+  &:hover,
+  &.hover {
+    background-color: opacify($color-workspace-link-management-hover-background, 0.6);
+    color: $color-workspace-link-management-text;
+  }
+
+  &:active,
+  &.active {
+    background-color: opacify($color-environment-link-language-hover-background, 0.6);
+    color: $color-environment-link-language-text;
+  }
+}
+
 .link--communicator-label,
 .link--guider-label {
   border-top: 1px solid $color-default;

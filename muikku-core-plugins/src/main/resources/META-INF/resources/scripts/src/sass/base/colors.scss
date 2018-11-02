@@ -367,6 +367,10 @@ $color-environment-link-language-hover-background: $color-link-hover-background;
 $color-environment-link-profile-menu-background: $color-link-default-background;
 $color-environment-link-profile-menu-hover-background: $color-link-hover-background;
 
+$color-workspace-link-management-background: $color-link-inverse-background;
+$color-workspace-link-management-text: $color-link-inverse-text;
+$color-workspace-link-management-hover-background: $color-link-hover-background;
+
 // DROPDOWN
 $color-environment-dropdown-language-picker-background: #494949;
 $color-environment-dropdown-language-picker-text: $color-default;
@@ -375,6 +379,10 @@ $color-environment-dropdown-language-picker-shadow: rgba(0, 0, 0, 0.3);
 $color-environment-dropdown-profile-menu-background: $color-default;
 $color-environment-dropdown-profile-menu-text: $color-default-contrast;
 $color-environment-dropdown-profile-menu-shadow: rgba(0, 0, 0, 0.3);
+
+$color-workspace-dropdown-management-background: #494949;
+$color-workspace-dropdown-management-text: $color-default;
+$color-workspace-dropdown-management-shadow: rgba(0, 0, 0, 0.3);
 
 // BUTTONS
 $color-environment-button-pill-language-background: $color-inverse;
