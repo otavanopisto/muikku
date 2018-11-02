@@ -96,28 +96,27 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     if (user == null || user.getRole() == null || user.getRole().getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    int i = 0;
     int bytes = 0;
     int totalBytes = 0;
     int totalFiles = 0;
     Long currentId = fileAnswerUtils.getLastEntityId();
-    while (i < count) {
-      currentId++;
-      WorkspaceMaterialFileFieldAnswer answer = workspaceMaterialFileFieldAnswerDAO.findById(currentId);
-      if (answer != null) {
-        try {
+    List<Long> answerIds = workspaceMaterialFileFieldAnswerDAO.listIdsByLargerAndLimit(currentId, count);
+    for (Long answerId : answerIds) {
+      try {
+        WorkspaceMaterialFileFieldAnswer answer = workspaceMaterialFileFieldAnswerDAO.findById(answerId);
+        if (answer != null) {
           bytes = fileAnswerUtils.relocateToFileSystem(answer);
           if (bytes > 0) {
             totalBytes += bytes;
             totalFiles++;
           }
-        }
-        catch (IOException e) {
-          logger.log(Level.SEVERE, String.format("Failed to relocate WorkspaceMaterialFileFieldAnswer %d", currentId), e);
-          return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+          currentId = answerId;
         }
       }
-      i++;
+      catch (IOException e) {
+        logger.log(Level.SEVERE, String.format("Failed to relocate WorkspaceMaterialFileFieldAnswer %d", currentId), e);
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+      }
     }
     fileAnswerUtils.setLastEntityId(currentId);
     return Response.ok(String.format("Moved %d files (%d bytes) with latest entity at %d", totalFiles, totalBytes, currentId)).build();
