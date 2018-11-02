@@ -153,6 +153,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
       
       String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
+      String organizationIdentifier = (studyProgramme != null && studyProgramme.getOrganizationId() != null) ? identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()).toId() : null;
       
       // #3069: User has evaluation fees if their study program begins with Internetix/
       
@@ -170,7 +171,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           student.getStudyTimeEnd(),
           evaluationFees,
           hidden,
-          curriculumIdentifier));
+          curriculumIdentifier,
+          organizationIdentifier));
     }
     
     return users;

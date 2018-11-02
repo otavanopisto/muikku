@@ -653,7 +653,8 @@ public class CommunicatorRESTService extends PluginRESTService {
           user.getStudyProgrammeName(),
           hasPicture,
           user.hasEvaluationFees(),
-          user.getCurriculumIdentifier());
+          user.getCurriculumIdentifier(),
+          user.getOrganizationIdentifier());
       
       return Response.ok(
         result
