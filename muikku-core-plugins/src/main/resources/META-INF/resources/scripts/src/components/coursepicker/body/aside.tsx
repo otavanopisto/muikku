@@ -6,7 +6,7 @@ import * as queryString from 'query-string';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { CoursesType, CourseEducationFilterType, CourseCurriculumFilterType } from '~/reducers/main-function/courses';
+import { CoursesType, CourseEducationFilterType, CourseCurriculumFilterType, CourseOrganizationFilterType } from '~/reducers/main-function/courses';
 import { StateType } from '~/reducers';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 
@@ -39,6 +39,15 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).filter( ( c: string ) => c !== curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).concat( curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) );
           return <NavigationElement key={curriculum.identifier} isActive={isActive} hash={hash}>{curriculum.name}</NavigationElement>
+        } )}
+      </NavigationTopic>
+      <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.organization')}>
+        {this.props.courses.avaliableFilters.organizations.map( ( organization: CourseOrganizationFilterType ) => {
+          let isActive = this.props.courses.activeFilters.organizationFilters.includes( organization.identifier );
+          let hash = "?" + ( isActive ?
+            queryString.stringify( Object.assign( {}, locationData, { o: ( locationData.o || [] ).filter( ( o: string ) => o !== organization.identifier ) } ), { arrayFormat: 'bracket' } ) :
+            queryString.stringify( Object.assign( {}, locationData, { o: ( locationData.o || [] ).concat( organization.identifier ) } ), { arrayFormat: 'bracket' } ) );
+          return <NavigationElement key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
         } )}
       </NavigationTopic>
     </Navigation>

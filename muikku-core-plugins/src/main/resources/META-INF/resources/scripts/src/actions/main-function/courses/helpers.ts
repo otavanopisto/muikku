@@ -68,6 +68,7 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     myWorkspaces,
     educationTypes: actualFilters.educationFilters,
     curriculums: actualFilters.curriculumFilters,
+    organizations: actualFilters.organizationFilters,
     includeUnpublished
   }
   
