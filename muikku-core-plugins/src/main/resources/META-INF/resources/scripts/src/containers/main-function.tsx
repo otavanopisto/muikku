@@ -189,12 +189,20 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       let state:StateType = this.props.store.getState();
       if (state.status.loggedIn){
         this.props.store.dispatch(loadUserIndexBySchoolData(state.status.userSchoolDataIdentifier, (user:UserType)=>{
-          if (!currentLocationHasData && user.curriculumIdentifier){
-            location.hash = "#?" + queryString.stringify({
-              c: [user.curriculumIdentifier]
-            }, {arrayFormat: 'bracket'});
-          } else if (!currentLocationHasData){
-            this.loadCoursePickerData(currentLocationData);
+          if (!currentLocationHasData) {
+            let defaultSelections : any = {};
+            if (user.curriculumIdentifier) {
+              defaultSelections["c"] = [ user.curriculumIdentifier ];
+            }
+            if (user.organizationIdentifier) {
+              defaultSelections["o"] = [ user.organizationIdentifier ];
+            }
+            
+            if (defaultSelections.c || defaultSelections.o) {
+              location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
+            } else {
+              this.loadCoursePickerData(currentLocationData);
+            }
           }
         }) as Action);
       } else {
