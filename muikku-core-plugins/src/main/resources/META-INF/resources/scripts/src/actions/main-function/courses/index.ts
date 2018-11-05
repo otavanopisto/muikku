@@ -2,12 +2,13 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import notificationActions from '~/actions/base/notifications';
-import { CoursesActiveFiltersType, CoursesPatchType, CoursesStateType, CourseEducationFilterListType, CourseCurriculumFilterListType, WorkspaceCourseType } from '~/reducers/main-function/courses';
+import { CoursesActiveFiltersType, CoursesPatchType, CoursesStateType, CourseEducationFilterListType, CourseCurriculumFilterListType, CourseOrganizationFilterListType, WorkspaceCourseType } from '~/reducers/main-function/courses';
 import { loadCoursesHelper } from './helpers';
 import { StateType } from '~/reducers';
 
 export interface UPDATE_COURSES_AVALIABLE_FILTERS_EDUCATION_TYPES extends SpecificActionType<"UPDATE_COURSES_AVALIABLE_FILTERS_EDUCATION_TYPES", CourseEducationFilterListType>{}
 export interface UPDATE_COURSES_AVALIABLE_FILTERS_CURRICULUMS extends SpecificActionType<"UPDATE_COURSES_AVALIABLE_FILTERS_CURRICULUMS", CourseCurriculumFilterListType>{}
+export interface UPDATE_COURSES_AVAILABLE_FILTERS_ORGANIZATIONS extends SpecificActionType<"UPDATE_COURSES_AVAILABLE_FILTERS_ORGANIZATIONS", CourseOrganizationFilterListType>{}
 export interface UPDATE_COURSES_ACTIVE_FILTERS extends 
   SpecificActionType<"UPDATE_COURSES_ACTIVE_FILTERS", CoursesActiveFiltersType>{}
 export interface UPDATE_COURSES_ALL_PROPS extends 
@@ -35,6 +36,10 @@ export interface SignupIntoCourseTriggerType {
 
 export interface LoadAvaliableCurriculumFiltersFromServerTriggerType {
   (callback?: (curriculums: CourseCurriculumFilterListType)=>any):AnyActionType
+}
+
+export interface LoadAvailableOrganizationFiltersFromServerTriggerType {
+  (callback?: (organizations: CourseOrganizationFilterListType) => any):AnyActionType
 }
 
 let loadCoursesFromServer:LoadCoursesFromServerTriggerType = function loadCoursesFromServer(filters){
@@ -79,6 +84,24 @@ let loadAvaliableCurriculumFiltersFromServer:LoadAvaliableCurriculumFiltersFromS
   }
 }
 
+let loadAvailableOrganizationFiltersFromServer:LoadAvailableOrganizationFiltersFromServerTriggerType = function loadAvailableOrganizationFiltersFromServer(callback){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let organizations = <CourseOrganizationFilterListType>(await promisify(mApi().coursepicker.organizations.read(), 'callback')())
+      dispatch({
+        type: "UPDATE_COURSES_AVAILABLE_FILTERS_ORGANIZATIONS",
+        payload: organizations
+      });
+      callback && callback(organizations);
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.coursepicker.errormessage.curriculumFilters"), 'error'));
+    }
+  }
+}
+
 let signupIntoCourse:SignupIntoCourseTriggerType = function signupIntoCourse(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
@@ -97,5 +120,5 @@ let signupIntoCourse:SignupIntoCourseTriggerType = function signupIntoCourse(dat
   }
 }
 
-export {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
-export default {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
+export {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadAvailableOrganizationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
+export default {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadAvailableOrganizationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};

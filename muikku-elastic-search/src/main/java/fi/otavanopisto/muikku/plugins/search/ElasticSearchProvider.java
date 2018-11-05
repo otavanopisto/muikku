@@ -397,7 +397,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
-    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, null, freeText, null, null, includeUnpublished, start, maxResults, null);
+    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, null, null, freeText, null, null, includeUnpublished, start, maxResults, null);
   }
 
   @Override
@@ -439,6 +439,7 @@ public class ElasticSearchProvider implements SearchProvider {
       List<String> identifiers, 
       List<SchoolDataIdentifier> educationTypes, 
       List<SchoolDataIdentifier> curriculumIdentifiers, 
+      List<SchoolDataIdentifier> organizationIdentifiers, 
       String freeText, 
       List<WorkspaceAccess> accesses, 
       SchoolDataIdentifier accessUser, 
@@ -446,7 +447,6 @@ public class ElasticSearchProvider implements SearchProvider {
       int start, 
       int maxResults, 
       List<Sort> sorts) {
-    
     if (identifiers != null && identifiers.isEmpty()) {
       return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
     }
@@ -454,7 +454,7 @@ public class ElasticSearchProvider implements SearchProvider {
     BoolQueryBuilder query = boolQuery();
     
     freeText = sanitizeSearchString(freeText);
-    
+
     try {
       
       if (!includeUnpublished) {
@@ -510,6 +510,12 @@ public class ElasticSearchProvider implements SearchProvider {
             .should(termsQuery("curriculumIdentifiers.untouched", curriculumIds))
             .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
             .minimumNumberShouldMatch(1));
+      }
+      
+      if (!CollectionUtils.isEmpty(organizationIdentifiers)) {
+        List<String> organizationIds = organizationIdentifiers.stream().map(organizationIdentifier -> organizationIdentifier.toId()).collect(Collectors.toList());
+
+        query.must(termsQuery("organizationIdentifier.untouched", organizationIds));
       }
   
       if (identifiers != null) {

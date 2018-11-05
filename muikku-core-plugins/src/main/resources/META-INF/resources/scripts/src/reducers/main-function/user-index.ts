@@ -10,6 +10,7 @@ export interface UserType {
   hasImage?: boolean,
   hasEvaluationFees?: false,
   curriculumIdentifier?: string,
+  organizationIdentifier?: string,
  
   //EXTENDED VALUES, may or may not be available
   email?: string,

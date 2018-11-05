@@ -85,7 +85,8 @@ public class CommunicatorRESTModels {
           user.getStudyProgrammeName(),
           hasPicture,
           user.hasEvaluationFees(),
-          user.getCurriculumIdentifier());
+          user.getCurriculumIdentifier(),
+          user.getOrganizationIdentifier());
 
       return result;
     } finally {

@@ -1253,7 +1253,7 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    UserEntity userEntity = null;
+    UserEntity userEntity;
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
     if (userIdentifier == null) {
@@ -1291,7 +1291,7 @@ public class UserRESTService extends AbstractRESTService {
       // TODO: User image
       boolean hasImage = false;
       return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
+          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier()))
           .cacheControl(cacheControl)
           .tag(tag)
           .build();

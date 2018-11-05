@@ -63,6 +63,8 @@ public interface User extends SchoolDataEntity {
   
   public String getCurriculumIdentifier();
   
+  public String getOrganizationIdentifier();
+  
   public void setNickName(String nickName);
 
   public String getNickName();  

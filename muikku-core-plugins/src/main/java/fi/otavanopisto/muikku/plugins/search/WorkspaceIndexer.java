@@ -9,9 +9,11 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
@@ -82,6 +84,12 @@ public class WorkspaceIndexer {
       if (workspace.getSubjectIdentifier() != null) {
         Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
         extra.put("subject", subject.getName());
+      }
+      
+      if (workspaceEntity.getOrganizationEntity() != null) {
+        OrganizationEntity organizationEntity = workspaceEntity.getOrganizationEntity();
+        SchoolDataIdentifier identifier = new SchoolDataIdentifier(organizationEntity.getIdentifier(), organizationEntity.getDataSource().getIdentifier());
+        extra.put("organizationIdentifier", identifier.toId());
       }
       
       List<WorkspaceUser> staffMembers = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
