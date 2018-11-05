@@ -29,7 +29,8 @@ function loadCurrentLocation(){
   let originalData:any = queryString.parse(dataSplitted[1] || "", {arrayFormat: 'bracket'});
   
   if (!givenLocation && !originalData.w){
-    store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());
+    store.dispatch(<Action>setLocationToSummaryInTranscriptOfRecords());
+    store.dispatch(<Action>updateSummary());
   } else if (!givenLocation){
     store.dispatch(<Action>setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), originalData.i, parseInt(originalData.w)));
   } else if (givenLocation === "records"){
