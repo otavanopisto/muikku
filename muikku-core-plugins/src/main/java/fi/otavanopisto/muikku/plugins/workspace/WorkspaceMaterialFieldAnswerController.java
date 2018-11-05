@@ -240,10 +240,12 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialFileFieldAnswerFileDAO.listByFieldAnswer(fieldAnswer);
   }
   
-  public void deleteWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile) {
+  public void deleteWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile) throws IOException {
     if (fileAnswerUtils.isFileSystemStorageEnabled()) {
       Long userEntityId = fieldAnswerFile.getFieldAnswer().getReply().getUserEntityId();
-      fileAnswerUtils.removeFileFromFileSystem(userEntityId, fieldAnswerFile.getFileId());
+      if (fileAnswerUtils.isFileInFileSystem(userEntityId, fieldAnswerFile.getFileId())) {
+        fileAnswerUtils.removeFileFromFileSystem(userEntityId, fieldAnswerFile.getFileId());
+      }
     }
     workspaceMaterialFileFieldAnswerFileDAO.delete(fieldAnswerFile);
   }

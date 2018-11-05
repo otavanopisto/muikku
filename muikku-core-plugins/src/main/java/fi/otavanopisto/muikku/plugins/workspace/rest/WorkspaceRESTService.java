@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -1610,14 +1611,25 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     byte[] content = answerFile.getContent();
     if (content == null) {
+      Long userEntityId = workspaceMaterialReply.getUserEntityId();
       try {
-        content = fileAnswerUtils.getFileContent(workspaceMaterialReply.getUserEntityId(), answerFile.getFileId());
+        if (fileAnswerUtils.isFileInFileSystem(userEntityId, answerFile.getFileId())) {
+          content = fileAnswerUtils.getFileContent(workspaceMaterialReply.getUserEntityId(), answerFile.getFileId());
+        }
+        else {
+          logger.warning(String.format("File %s of user %d not found from file storage", answerFile.getFileId(), userEntityId));
+        }
+      }
+      catch (FileNotFoundException fnfe) {
+        return Response.status(Status.NOT_FOUND).build();
       }
       catch (IOException e) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
       }
     }
-    
+    if (content == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
     return Response.ok(content)
       .type(answerFile.getContentType())
       .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
@@ -1697,42 +1709,54 @@ public class WorkspaceRESTService extends PluginRESTService {
           ZipOutputStream zout = new ZipOutputStream(out);
           for (WorkspaceMaterialFileFieldAnswerFile file : answerFiles) {
             
-            // Prevent duplicate file names
-            
-            String fileName = file.getFileName();
-            if (fileNames.contains(fileName)) {
-              int counter = 1;
-              String name = file.getFileName();
-              String prefix = "";
-              if (StringUtils.contains(name, ".")) {
-                prefix = StringUtils.substringAfterLast(name, ".");
-                name = StringUtils.substringBeforeLast(name, ".");
-              }
-              if (!StringUtils.isEmpty(prefix)) {
-                prefix = String.format(".%s", prefix); 
-              }
-              while (fileNames.contains(fileName)) {
-                fileName = String.format("%s (%s)%s", name, counter++, prefix);
-              }
-            }
-            fileNames.add(fileName);
-            
-            // Zip file
-            
-            ZipEntry ze = new ZipEntry(fileName);
-            zout.putNextEntry(ze);
+            // File content
+
             byte[] content = file.getContent();
             if (content == null) {
-              content = fileAnswerUtils.getFileContent(workspaceMaterialReply.getUserEntityId(), file.getFileId());
+              Long userEntityId = workspaceMaterialReply.getUserEntityId();
+              if (fileAnswerUtils.isFileInFileSystem(userEntityId, file.getFileId())) {
+                content = fileAnswerUtils.getFileContent(userEntityId, file.getFileId());
+              }
+              else {
+                logger.warning(String.format("File %s of user %d not found from file storage", file.getFileId(), userEntityId));
+              }
             }
-            InputStream input = new ByteArrayInputStream(content);
-            try {
-              IOUtils.copy(input, zout);
+
+            if (content != null) {
+            
+              // Prevent duplicate file names
+            
+              String fileName = file.getFileName();
+              if (fileNames.contains(fileName)) {
+                int counter = 1;
+                String name = file.getFileName();
+                String prefix = "";
+                if (StringUtils.contains(name, ".")) {
+                  prefix = StringUtils.substringAfterLast(name, ".");
+                  name = StringUtils.substringBeforeLast(name, ".");
+                }
+                if (!StringUtils.isEmpty(prefix)) {
+                  prefix = String.format(".%s", prefix); 
+                }
+                while (fileNames.contains(fileName)) {
+                  fileName = String.format("%s (%s)%s", name, counter++, prefix);
+                }
+              }
+              fileNames.add(fileName);
+            
+              // Zip file
+            
+              ZipEntry ze = new ZipEntry(fileName);
+              zout.putNextEntry(ze);
+              InputStream input = new ByteArrayInputStream(content);
+              try {
+                IOUtils.copy(input, zout);
+              }
+              finally {
+                IOUtils.closeQuietly(input);
+              }
+              zout.closeEntry();
             }
-            finally {
-              IOUtils.closeQuietly(input);
-            }
-            zout.closeEntry();
           }
           zout.flush();
           zout.close();

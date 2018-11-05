@@ -112,13 +112,13 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
           }
           currentId = answerId;
         }
+        fileAnswerUtils.setLastEntityId(currentId);
       }
       catch (IOException e) {
         logger.log(Level.SEVERE, String.format("Failed to relocate WorkspaceMaterialFileFieldAnswer %d", currentId), e);
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
       }
     }
-    fileAnswerUtils.setLastEntityId(currentId);
     return Response.ok(String.format("Moved %d files (%d bytes) with latest entity at %d", totalFiles, totalBytes, currentId)).build();
   }
   

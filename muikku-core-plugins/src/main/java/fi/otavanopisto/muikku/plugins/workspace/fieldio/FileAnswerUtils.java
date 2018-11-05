@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.fieldio;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -57,23 +58,26 @@ public class FileAnswerUtils {
   public byte[] getFileContent(Long userEntityId, String fileId) throws IOException {
     if (userEntityId == null || fileId == null) {
       logger.severe(String.format("Invalid fetch parameters: file %s of user %d", fileId, userEntityId));
-      return new byte[0];
+      throw new IllegalArgumentException("Invalid fetch parameters");
     }
     SystemSetting fileFolderSetting = systemSettingDAO.findByKey(SETTING_FILEFOLDER);
-    if (fileFolderSetting != null && !StringUtils.isBlank(fileFolderSetting.getValue())) {
-      java.io.File answerFile = Paths.get(fileFolderSetting.getValue(), userEntityId.toString(), fileId).toFile();
-      if (answerFile.exists()) {
-        return Files.readAllBytes(answerFile.toPath());
-      }
+    if (fileFolderSetting == null || StringUtils.isBlank(fileFolderSetting.getValue())) {
+      throw new IOException("File answer storage folder not set");
     }
-    logger.warning(String.format("Failed to retrieve file %s of user %d", fileId, userEntityId));
-    return new byte[0];
+    java.io.File answerFile = Paths.get(fileFolderSetting.getValue(), userEntityId.toString(), fileId).toFile();
+    if (answerFile.exists()) {
+      return Files.readAllBytes(answerFile.toPath());
+    }
+    else {
+      logger.warning(String.format("File %s of user %d not found", fileId, userEntityId));
+      throw new FileNotFoundException(); 
+    }
   }
   
   public void storeFileToFileSystem(Long userEntityId, String fileId, byte[] content) throws IOException {
     if (userEntityId == null || fileId == null || content == null) {
       logger.severe(String.format("Invalid store parameters or no file content: file %s of user %d", fileId, userEntityId));
-      return;
+      throw new IllegalArgumentException("Invalid store parameters");
     }
     SystemSetting fileFolderSetting = systemSettingDAO.findByKey(SETTING_FILEFOLDER);
     if (fileFolderSetting == null || StringUtils.isBlank(fileFolderSetting.getValue())) {
@@ -107,23 +111,38 @@ public class FileAnswerUtils {
     }
   }
   
-  public void removeFileFromFileSystem(Long userEntityId, String fileId) {
+  public boolean isFileInFileSystem(Long userEntityId, String fileId) {
     if (userEntityId == null || fileId == null) {
-      logger.severe(String.format("Invalid remove parameters: file %s of user %d", fileId, userEntityId));
-      return;
+      logger.severe(String.format("Invalid check existence parameters: file %s of user %d", fileId, userEntityId));
+      throw new IllegalArgumentException("Invalid check parameters");
     }
     SystemSetting fileFolderSetting = systemSettingDAO.findByKey(SETTING_FILEFOLDER);
     if (fileFolderSetting == null || StringUtils.isBlank(fileFolderSetting.getValue())) {
       logger.warning("File answer storage folder not set");
-      return;
+      return false;
+    }
+    java.io.File answerFile = Paths.get(fileFolderSetting.getValue(), userEntityId.toString(), fileId).toFile();
+    return answerFile.exists();
+  }
+  
+  public void removeFileFromFileSystem(Long userEntityId, String fileId) throws IOException {
+    if (userEntityId == null || fileId == null) {
+      logger.severe(String.format("Invalid remove parameters: file %s of user %d", fileId, userEntityId));
+      throw new IllegalArgumentException("Invalid remove parameters");
+    }
+    SystemSetting fileFolderSetting = systemSettingDAO.findByKey(SETTING_FILEFOLDER);
+    if (fileFolderSetting == null || StringUtils.isBlank(fileFolderSetting.getValue())) {
+      logger.warning("File answer storage folder not set");
+      throw new IOException("File answer storage folder not set");
     }
     java.io.File answerFile = Paths.get(fileFolderSetting.getValue(), userEntityId.toString(), fileId).toFile();
     if (!answerFile.exists()) {
       logger.warning(String.format("File %s to be removed is not found", answerFile.getPath()));
-      return;
+      throw new IOException("File to remove not found");
     }
     if (!answerFile.delete()) {
       logger.warning(String.format("Failed to delete file %s", answerFile.getPath()));
+      throw new IOException("File removal failed");
     }
   }
   
