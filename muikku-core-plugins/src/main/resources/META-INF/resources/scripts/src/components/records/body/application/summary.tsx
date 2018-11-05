@@ -32,7 +32,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       } else {
         
         let studentBasicInfo = <div className="application-sub-panel">
-          <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.")}</div>
+          <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.studyInfo")}</div>
           <div className="application-sub-panel__body application-sub-panel__body--studies-summary-dates">
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
@@ -51,11 +51,11 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>          
       return (
         <div>
-          <h2>{this.props.i18n.text.get("plugin.records.summary.studyInfo")}</h2>          
+          <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.summary.title")}</div>          
+          
           {studentBasicInfo}
 
           <div className="application-sub-panel">
-            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.")}</div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-summary-cards">
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
                 <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
