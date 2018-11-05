@@ -12,7 +12,7 @@ $navbar-desktop-item-width: 4.2rem;
 
 // Link
 $link-icon-font-size: 1.8rem;
-$main-function-link-icon-active-border-size: 3px;
+$main-function-link-icon-active-border-size: $navbar-desktop-height;
 
 // Containers
 $container-mobile-gutter: 10px;

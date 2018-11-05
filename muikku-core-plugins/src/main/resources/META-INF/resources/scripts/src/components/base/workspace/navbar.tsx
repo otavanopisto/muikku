@@ -56,19 +56,19 @@ function getTextForAssessmentState(state: WorkspaceAssessementStateType, i18n: i
     text = "plugin.workspace.dock.evaluation.resendRequestEvaluationButtonTooltip";
     break;
   }
-  
+
   return i18n.text.get(text);
 }
 
 class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNavbarState> {
   constructor(props: WorkspaceNavbarProps){
     super(props);
-    
+
     this.state = {
       requestEvaluationOpen: false,
       requestCancelOpen: false
     }
-    
+
     this.onRequestEvaluationOrCancel = this.onRequestEvaluationOrCancel.bind(this);
   }
   onRequestEvaluationOrCancel(state: string){
@@ -139,7 +139,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       to: true,
       condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE
     }];
-  
+
   let assessmentRequestItem = this.props.currentWorkspace &&
     this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? {
     modifier: "assessment-request",
@@ -152,13 +152,13 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
           icon icon-assessment-${this.props.currentWorkspace.studentAssessments.assessmentState}`}></Link>
     </Dropdown>)
   } : null;
-  
+
   let assessmentRequestMenuItem = assessmentRequestItem ? (<Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)}
       className="link link--full link--menu link--assessment-request">
     <span className={`link__icon icon-assessment-${this.props.currentWorkspace.studentAssessments.assessmentState}`}/>
     <span className="link--menu__text">{getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}</span>
   </Link>) : null;
-  
+
   let managementItemList:Array<{
     icon: string,
     modifier: string,
@@ -223,7 +223,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       to: true
     }
   ]
-  
+
   let managementItem = this.props.currentWorkspace &&
     (this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE ||
     this.props.status.permissions.WORKSPACE_MANAGE_PERMISSIONS || 
@@ -242,7 +242,9 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
           <span>{item.text}</span>
         </Link>
       })}>
-        <Link className={`link link--icon link--full link--workspace-navbar icon icon-cogs`}></Link>
+        <Link className={`link link--icon link--full link--workspace-navbar`}>
+          <span className="link__icon icon-cogs"/>
+        </Link>
       </Dropdown>)
     } : null;
 
