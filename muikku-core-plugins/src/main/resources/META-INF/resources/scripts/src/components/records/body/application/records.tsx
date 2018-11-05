@@ -182,24 +182,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       });
     }
     
-    let studentBasicInfo = <div className="application-sub-panel__body text">
-      <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
-        <div className="application-sub-panel__item-data">
-          <span>{this.props.records.studyStartDate ? 
-            this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>
-        </div>
-      </div>
-      <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.records.studyEndDate ? "plugin.records.studyEndDateLabel" :
-          "plugin.records.studyTimeEndLabel")}</div>
-        <div className="application-sub-panel__item-data">
-          <span>{this.props.records.studyEndDate || this.props.records.studyTimeEnd ? 
-            this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : "-"}</span>
-        </div>
-      </div>
-    </div>  
-    
     let studentRecords = <div className="application-sub-panel">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
@@ -228,7 +210,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                         <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
                         {getAssessments(this.props, workspace)}
-                        {getActivity(this.props, workspace)}
+                        {getActivity(this.props, workspace)pluginpluginplugin}
                       </ApplicationListItemHeader>
                     </ApplicationListItem>
                   })}
@@ -244,7 +226,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                       </ApplicationListItem>
                     })}
               </ApplicationList>
-            }) : <h4>{this.props.i18n.text.get("TODO no records")}</h4>}
+            }) : <h4>{this.props.i18n.text.get("plugin.records.records.empty")}</h4>}
           </div>
           </div>
         })}
@@ -252,13 +234,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
     
-    return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
-    
-    <div className="application-sub-panel">
-      {studentBasicInfo}
-    </div>
-    {studentRecords}    
-    
+    return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>      
+    <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.records.title")}</div>    
+    {studentRecords}        
     <div className="application-sub-panel">
       <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
       <div className="application-sub-panel__body">
