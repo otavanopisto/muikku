@@ -55,11 +55,19 @@
   }
 }
 
-.navbar--main-function .navbar__logo,
-.navbar--workspace .navbar__logo {
+.navbar--main-function .navbar__logo {
 
   @include breakpoint($breakpoint-desktop) {
     background: url("/gfx/oo-branded-site-logo-text-white.png") no-repeat left center;
+    display: inline-block;
+    width: 185px;
+  }
+}
+
+.navbar--workspace .navbar__logo {
+
+  @include breakpoint($breakpoint-desktop) {
+    background: url("/gfx/oo-branded-site-logo-text-white-workspace.png") no-repeat left center;
     display: inline-block;
     width: 185px;
   }
