@@ -121,8 +121,8 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
                                                      workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.read(data.workspaceId, {
                                                        studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')()),
-                                                 reuseExistantValue(true, workspace && workspace.studentActivity,
-                                                     ()=>promisify(mApi().guider.workspaces.activity.read(data.workspaceId), 'callback')()),
+                                                 getState().status.loggedIn ? reuseExistantValue(true, workspace && workspace.studentActivity,
+                                                     ()=>promisify(mApi().guider.workspaces.activity.read(data.workspaceId), 'callback')()) : null,
                                                  reuseExistantValue(true, workspace && workspace.additionalInfo,
                                                      ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(data.workspaceId), 'callback')()),
                                                  reuseExistantValue(true, workspace && workspace.contentDescription,

@@ -557,7 +557,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{ID}/description")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceDescription(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -573,7 +573,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{ID}/help")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceHelpPage(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -589,7 +589,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{ID}/additionalInfo")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceAdditionalInfo(@PathParam("ID") Long workspaceEntityId) {
 	schoolDataBridgeSessionController.startSystemSession();
 	try {
@@ -665,7 +665,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (handling = Handling.INLINE)
   public Response createWorkspaceMaterialProducer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceMaterialProducer payload) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {

@@ -46,6 +46,9 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
     super(props);
   }
   render(){
+    if (!this.props.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
+      return null;
+    }
     return <div className="panel panel--workspace-teachers">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
@@ -71,14 +74,14 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                 {teacher.properties['profile-vacation-period'] ?
                   <div className="item-list__user-vacation-period">{this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")} {teacher.properties['profile-vacation-period']}
                 </div> : null}
-                <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
+                {this.props.status.loggedIn ? <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
                     type: "staff",
                     value: teacher
                   }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
                     initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
                     <Button buttonModifiers={["info", "contact-teacher"]}>
                       {this.props.i18n.text.get("plugin.workspace.index.message.label")}
-                    </Button></CommunicatorNewMessage>
+                    </Button></CommunicatorNewMessage> : null}
               </div>
             </div>
           ) : (

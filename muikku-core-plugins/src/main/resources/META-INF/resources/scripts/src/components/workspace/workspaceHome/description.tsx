@@ -23,6 +23,9 @@ interface DescriptionPanelState {
 
 class DescriptionPanel extends React.Component<DescriptionPanelProps, DescriptionPanelState> {
   render(){
+    if (!this.props.workspace || !this.props.workspace.contentDescription.html){
+      return null;
+    }
     return (<div className="panel panel--workspace-description">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
