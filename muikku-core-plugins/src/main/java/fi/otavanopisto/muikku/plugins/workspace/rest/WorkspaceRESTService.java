@@ -72,6 +72,7 @@ import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
+import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
@@ -1490,6 +1491,31 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     return Response.ok(createRestModel(workspaceMaterials.toArray(new WorkspaceMaterial[0]))).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/materialContentNodes/")
+  @RESTPermitUnimplemented
+  public Response listWorkspaceMaterialsAsContentNodes(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    // TODO: SecuritY???
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Could not find a workspace entity").build();
+    }
+    
+    List<ContentNode> workspaceMaterials;
+	try {
+		workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false);
+	} catch (WorkspaceMaterialException e) {
+		return Response.noContent().build();
+	}
+    
+    if (workspaceMaterials.isEmpty()) {
+      return Response.noContent().build();
+    }
+    
+    return Response.ok(workspaceMaterials).build();
   } 
 
   private boolean isHiddenMaterial(WorkspaceMaterial workspaceMaterial) {
