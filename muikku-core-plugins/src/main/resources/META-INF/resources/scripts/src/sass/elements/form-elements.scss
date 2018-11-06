@@ -127,17 +127,16 @@
   height: 35px;
   padding: 5px 10px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: 40px;
   }
 }
 
-
 .form-element__input-decoration--main-function-search {
   background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
-  
+
   &::before {
     align-items: center;
     color: $color-main-function-search-icon;
@@ -145,7 +144,7 @@
     height: 35px;
     justify-content: center;
     width: 35px;
-    
+
     @include breakpoint($breakpoint-pad) {
       height: 40px;
       width: 40px;
@@ -153,7 +152,7 @@
   }
 }
 
-.form-element__select {    
+.form-element__select {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -164,7 +163,7 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   padding: 2px 25px 2px 2px;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -218,7 +217,7 @@
   margin-top: 10px;  
   min-height: 150px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-desktop) {
     font-size: $text-desktop-font-size;
   }
@@ -228,7 +227,7 @@
   align-items: center;
   display: flex;
   padding: 10px;
-  
+
   input {
     margin-right: 5px;
   }

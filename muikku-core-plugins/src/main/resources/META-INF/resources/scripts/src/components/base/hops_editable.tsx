@@ -1,11 +1,14 @@
 import * as React from "react";
 
-import '~/sass/elements/hops.scss';
 import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from '~/reducers';
+
+import '~/sass/elements/hops.scss';
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 interface HopsProps {
   data?: HOPSDataType,
