@@ -3,6 +3,7 @@ import * as React from 'react';
 import Playground from '../__playground';
 import Application from './body/application';
 import Aside from './body/aside';
+import ScreenContainer from '../general/screen-container';
 
 interface AnnouncementsBodyProps {
 }
@@ -14,9 +15,11 @@ export default class AnnouncementsBody extends React.Component<AnnouncementsBody
 
   render(){
     let aside = <Aside />  
-    return (<div className="embbed embbed-full">
-        <Application aside={aside} />        
+    return (<div>
         <MainFunctionNavbar navigation={aside} activeTrail="index"/>
+        <ScreenContainer>
+          <Application aside={aside} />
+        </ScreenContainer>
     </div>);
   }
 }
