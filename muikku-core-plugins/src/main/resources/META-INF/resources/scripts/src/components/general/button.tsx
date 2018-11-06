@@ -8,7 +8,11 @@ interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes
   buttonModifiers?: string | Array<string>,
   className?: string,
   disabled?: boolean,
-  disablePropagation?: boolean
+  disablePropagation?: boolean,
+  as?: string,
+  href?: string,
+  to?: string,
+  openInNewTab?: string
 }
 
 interface ButtonState {
