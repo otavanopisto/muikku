@@ -23,5 +23,6 @@ select,
 option,
 textarea {
   @include text;
+  outline: none;
 }
 

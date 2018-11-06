@@ -12,6 +12,9 @@ import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
 
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
+
 interface ModifyThreadReplyProps {
   i18n: i18nType,
   children: React.ReactElement<any>,

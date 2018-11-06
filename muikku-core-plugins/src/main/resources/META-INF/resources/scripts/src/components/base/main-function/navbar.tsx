@@ -105,7 +105,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       to: true,
       condition: this.props.status.permissions.ANNOUNCER_TOOL
     }];
-    
+
     return <Navbar mobileTitle={this.props.title}
       modifier="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item)=>{
       if (!item.condition){
