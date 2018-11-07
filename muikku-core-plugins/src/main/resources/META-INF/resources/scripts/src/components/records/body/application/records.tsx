@@ -6,7 +6,7 @@ import * as queryString from 'query-string';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/course.scss';
-import '~/sass/elements/progressbar.scss';
+import '~/sass/elements/activity-badge.scss';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 
@@ -109,7 +109,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
     return <div className="application-list__header-secondary">
       <div className="activity-badge">
-        {workspace.studentActivity.evaluablesTotal ? <div className="activity-badge__item activity-badge__item--evaluated">
+        {workspace.studentActivity.evaluablesTotal ? <div className="activity-badge__item activity-badge__item--assignment">
           <div className={"activity-badge__unit-bar activity-badge__unit-bar--" + workspace.studentActivity.evaluablesDonePercent}></div>
         </div>  : null}    
         {workspace.studentActivity.exercisesTotal ? <div className="activity-badge__item activity-badge__item--exercise">
