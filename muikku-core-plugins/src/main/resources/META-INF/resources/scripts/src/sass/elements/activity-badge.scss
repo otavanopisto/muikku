@@ -38,7 +38,7 @@ $progress-units: 100;
 
 .activity-badge__unit-bar {
   background-color: $color-default-contrast;
-  width:100%;
+  width: 100%;
 }
 
 @for $i from 1 through $progress-units {
