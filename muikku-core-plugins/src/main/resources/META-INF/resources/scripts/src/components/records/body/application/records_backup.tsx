@@ -84,7 +84,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
         getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge--course ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
         {shortenGrade(grade.grade)}
       </span>
-    </span>    
+    </span>
   } else if (workspace.studentAssessments.assessmentState &&
     (workspace.studentAssessments.assessmentState === "incomplete" || workspace.studentAssessments.assessmentState === "fail")){
     let status = props.i18n.text.get(workspace.studentAssessments.assessmentState === "incomplete" ?
@@ -97,7 +97,11 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
   } else {
     return null;
   }
+  
+  
 }
+
+
 
 function getActivity(props: RecordsProps, workspace: WorkspaceType){
     if (!workspace.studentActivity){
@@ -107,17 +111,50 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
     }
     let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
-    return <div className="application-list__header-secondary">
-      <div className="activity-badge">
-        {workspace.studentActivity.evaluablesTotal ? <div className="activity-badge__item activity-badge__item--evaluated">
-          <div className={"activity-badge__unit-bar activity-badge__unit-bar--" + workspace.studentActivity.evaluablesDonePercent}></div>
-        </div>  : null}    
-        {workspace.studentActivity.exercisesTotal ? <div className="activity-badge__item activity-badge__item--exercise">
-          <div className={"activity-badge__unit-bar activity-badge__unit-bar--" + workspace.studentActivity.exercisesDonePercent}></div>
-        </div> : null}
-      </div>
+    return <div className="workspace-activity workspace-activity--studies">
+    
+      {workspace.studentActivity.evaluablesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
+        strokeWidth: 1,
+        duration: 1000,
+        color: "#ce01bd",
+        trailColor: "#f5f5f5",
+        trailWidth: 1,
+        svgStyle: {width: "100%", height: "4px"},
+        text: {
+          className: "workspace-activity__progressbar-label",
+          style: {
+            left: workspace.studentActivity.evaluablesDonePercent === 0 ? "0%" : null,
+            right: workspace.studentActivity.evaluablesDonePercent === 0 ? null : 100 - workspace.studentActivity.evaluablesDonePercent +  "%"
+          }
+        }
+      }}
+      strokeWidth={1} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#f5f5f5"
+      trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
+      text={evaluablesCompleted + "/" + workspace.studentActivity.evaluablesTotal}
+      progress={workspace.studentActivity.evaluablesDonePercent/100}/> : null}
+    
+      {workspace.studentActivity.exercisesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
+        strokeWidth: 1,
+        duration: 1000,
+        color: "#ff9900",
+        trailColor: "#f5f5f5",
+        trailWidth: 1,
+        svgStyle: {width: "100%", height: "4px"},
+        text: {
+          className: "workspace-activity__progressbar-label",
+          style: {
+            left: workspace.studentActivity.exercisesDonePercent === 0 ? "0%" : null,
+            right: workspace.studentActivity.exercisesDonePercent === 0 ? null : 100 - workspace.studentActivity.exercisesDonePercent + "%"
+          }
+        }
+      }}
+      strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
+      trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
+      text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
+      progress={workspace.studentActivity.exercisesDonePercent/100}/> : null}
     </div>
 }
+
 
 class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps){

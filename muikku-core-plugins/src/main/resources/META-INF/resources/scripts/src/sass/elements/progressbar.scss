@@ -1,0 +1,73 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+$progress-units: 100;
+
+.activity-badge {
+  display: flex;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+}
+
+.activity-badge {
+  display: flex;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+}
+
+.activity-badge {
+  display: flex;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+}
+
+
+.activity-badge {
+  display: flex;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+}
+
+.activity-badge__item {
+  align-items:end;
+  background-color: #fff;
+  height: 100%;
+  display: flex;
+  width: 10px;
+}
+
+.activity-badge__item--evaluated {
+  border: 1px solid #b42cb7;
+
+  
+  .activity-badge__unit-bar {
+    background-color: #b42cb7;   
+  }
+}
+
+.activity-badge__item--exercise {
+  border: 1px solid #e45f26;
+    
+  .activity-badge__unit-bar {
+    background-color: #e45f26;   
+  }
+}
+
+.activity-badge__unit-bar {
+  background-color: #dadada;
+  width:100%;
+}
+
+@for $i from 1 through $progress-units {
+    $height: $i + %;
+    
+    .activity-badge__unit-bar--#{$i} {
+        height: $height;
+    }
+}
