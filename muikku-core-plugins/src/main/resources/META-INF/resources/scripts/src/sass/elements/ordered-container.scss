@@ -393,6 +393,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     flex-flow: column nowrap;
+    max-width: calc(33% - 20px);
     padding: 0 10px 0 0;
   }
 }
