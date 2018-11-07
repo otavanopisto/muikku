@@ -236,6 +236,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
        : null}
       <div className="" onClick={this.stopPropagation}>
         <Base html={this.props.material.html} i18n={this.props.i18n} status={this.props.status}
+         path={"/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path}
          readOnly={this.props.readOnly} compositeReplies={this.props.compositeReplies || this.state.compositeReplies}/>
       </div>
     </div>

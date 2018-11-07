@@ -4,6 +4,7 @@ import { HTMLtoReactComponent } from "~/util/modifiers";
 
 interface ImageProps {
   element: HTMLElement,
+  path: string,
   dataset: {
     author: string,
     authorUrl: string,
@@ -45,7 +46,11 @@ export default function image(props: ImageProps){
     //two alternatives of image, one with src, and another one
     //where the source would be data-original
     if (Tag === "img" && props.dataset.original){
-      elementProps.src = props.dataset.original;
+      if (!props.dataset.original.includes("//")){
+        elementProps.src = props.path + "/" + props.dataset.original;
+      } else {
+        elementProps.src = props.dataset.original;
+      }
     }
     return <Tag {...elementProps}>{children}</Tag>
   });

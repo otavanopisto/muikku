@@ -36,6 +36,7 @@ interface BaseProps {
   html: string,
   i18n: i18nType,
   status: StatusType,
+  path: string,
   
   compositeReplies?: MaterialCompositeRepliesType,
   readOnly?: boolean
@@ -126,7 +127,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       let rElement:React.ReactElement<any> = statics[statice.componentKey].handler({
         element: statice.element,
         dataset: extractDataSet(statice.element),
-        i18n: props.i18n
+        i18n: props.i18n,
+        path: props.path
       });
       
       statice.subtree = unstable_renderSubtreeIntoContainer(
@@ -174,7 +176,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         let rElement:React.ReactElement<any> = statics[componentKey].handler({
           element,
           dataset: extractDataSet(element),
-          i18n: props.i18n
+          i18n: props.i18n,
+          path: props.path
         });
         let parentElement = element.parentElement;
         parentElement.removeChild(element);
