@@ -16,7 +16,7 @@
   max-width: $breakpoint-max-usable-screen;
   overflow: visible;
   width:100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0 10px;  
   }
@@ -29,7 +29,7 @@
 
 .reading-panel__header {
   display: none;
-  
+
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     background-color: $color-default-body;
@@ -64,7 +64,7 @@
   right: 0;
   top: $navbar-mobile-height;
   z-index: 8;
-  
+
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     display: flex;
@@ -78,13 +78,13 @@
     top: 0;
   }
 }
-  
+
 .reading-panel__toolbar {
   align-items: center;
   display: flex;
   width: 100%;
-}  
-  
+}
+
 .reading-panel__toolbar-actions-main {
   display: flex;
   flex-basis: auto;
@@ -121,7 +121,7 @@
     overflow: auto;
     overflow: -moz-scrollbars-none;
     z-index: 1;
-    
+
     &::-webkit-scrollbar { 
       display: none; 
     }
@@ -142,9 +142,7 @@
 
   @include breakpoint($breakpoint-pad) {
     border: solid 1px $color-reading-panel-box-border;
-    box-shadow: none;
     margin: 0 10px 0 0;
-    padding: 20px;
   } 
 
   &::-webkit-scrollbar { 
