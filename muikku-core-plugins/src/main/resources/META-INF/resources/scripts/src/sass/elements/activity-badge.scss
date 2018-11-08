@@ -22,7 +22,7 @@ $progress-units: 100;
 
 .activity-badge__item--assignment {
   border: 1px solid $color-assignment;
-  
+
   .activity-badge__unit-bar {
     background-color: $color-assignment;
   }
@@ -30,7 +30,7 @@ $progress-units: 100;
 
 .activity-badge__item--exercise {
   border: 1px solid $color-exercise;
-    
+
   .activity-badge__unit-bar {
     background-color: $color-exercise;
   }
@@ -42,8 +42,8 @@ $progress-units: 100;
 }
 
 @for $i from 1 through $progress-units {
-    
+
   .activity-badge__unit-bar--#{$i} {
-      height: percentage($i / 100);
+     height: percentage($i / 100);
   }
 }
