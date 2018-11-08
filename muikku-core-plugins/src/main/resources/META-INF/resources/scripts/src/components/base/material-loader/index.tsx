@@ -12,7 +12,7 @@ import "~/sass/elements/__ugly-material-loader-deprecated-file-mashup.scss";
 
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
-import { WorkspaceType, MaterialType, MaterialCompositeRepliesType } from '~/reducers/workspaces';
+import { WorkspaceType, MaterialContentNodeType, MaterialCompositeRepliesType } from '~/reducers/workspaces';
 import promisify from '~/util/promisify';
 
 import '~/sass/elements/rich-text.scss';
@@ -136,7 +136,7 @@ import { StatusType } from '~/reducers/base/status';
 //});
 
 interface MaterialLoaderProps {
-  material: MaterialType,
+  material: MaterialContentNodeType,
   workspace: WorkspaceType,
   i18n: i18nType,
   status: StatusType,

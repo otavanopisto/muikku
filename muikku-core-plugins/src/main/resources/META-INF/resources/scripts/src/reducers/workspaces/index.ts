@@ -160,8 +160,8 @@ export interface WorkspaceType {
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
-  contentDescription?: MaterialType,
-  help?: MaterialType,
+  contentDescription?: MaterialContentNodeType,
+  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[]
 }
 
@@ -192,7 +192,7 @@ export interface WorkspaceUpdateType {
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
-  contentDescription?: MaterialType,
+  contentDescription?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[]
 }
 
@@ -285,7 +285,7 @@ export interface MaterialAssignmentType {
   title: string
 }
 
-export interface MaterialType {
+export interface MaterialContentNodeType {
   title: string,
   license: string,
   viewRestrict: string,
@@ -314,27 +314,6 @@ export interface MaterialType {
   //Assigned fields
   evaluation?: MaterialEvaluationType,
   assignment?: MaterialAssignmentType
-}
-
-export interface MaterialContentNodeType {
-  title: string,
-  type: string,
-  children: Array<MaterialContentNodeType>,
-  workspaceMaterialId: number,
-  materialId: number,
-  level: number,
-  assignmentType: string,
-  correctAnswers: string,
-  hidden: boolean,
-  parentId: number,
-  html: string,
-  currentRevision: number,
-  publishedRevision: number,
-  path: string,
-  license: string,
-  viewRestrict: string,
-  viewRestricted: boolean,
-  producers: any
 }
 
 export interface MaterialAnswerType {
@@ -370,7 +349,7 @@ export interface MaterialEvaluationType {
   passed: boolean
 }
 
-export type MaterialListType = Array<MaterialType>;
+export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
 
 function processWorkspaceToHaveNewAssessmentStateAndDate(id: number, assessmentState: WorkspaceAssessementStateType, date: string,
     assessmentRequestObject: WorkspaceAssessmentRequestType, deleteAssessmentRequestObject:boolean, workspace: WorkspaceType){

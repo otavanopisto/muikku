@@ -1,14 +1,14 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { RecordsGradesType } from "~/reducers/main-function/records";
-import { WorkspaceType, MaterialType } from "~/reducers/workspaces";
+import { WorkspaceType, MaterialContentNodeType } from "~/reducers/workspaces";
 
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
 
 interface MaterialProps {
-  material: MaterialType,
+  material: MaterialContentNodeType,
   workspace: WorkspaceType,
   i18n: i18nType,
   status: StatusType

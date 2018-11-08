@@ -3,7 +3,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType, UserFileType} from '~/reducers/user-index';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType } from '~/reducers/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType, JournalListType, MaterialContentNodeType, MaterialAssignmentType, MaterialEvaluationType } from '~/reducers/workspaces';
 import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, CurrentRecordType } from '~/reducers/main-function/records';
 import { StateType } from '~/reducers';
 
@@ -283,7 +283,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
           assignmentType: "EVALUATED",
         }), 'callback')() || [];
         
-        let materials:Array<MaterialType>;
+        let materials:Array<MaterialContentNodeType>;
         let evaluations:Array<MaterialEvaluationType>;
         [materials, evaluations] = <any>await Promise.all([
           Promise.all(assignments.map((assignment)=>{
@@ -297,7 +297,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
         ]);
         
         return materials.map((material, index)=>{
-          return <MaterialType>Object.assign(material, {
+          return <MaterialContentNodeType>Object.assign(material, {
             evaluation: evaluations[index],
             assignment: assignments[index]
           });
