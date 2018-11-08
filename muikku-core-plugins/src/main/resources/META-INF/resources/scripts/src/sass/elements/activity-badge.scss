@@ -42,9 +42,8 @@ $progress-units: 100;
 }
 
 @for $i from 1 through $progress-units {
-    $height: $i + %;
     
     .activity-badge__unit-bar--#{$i} {
-        height: $height;
+        height: percentage($i/100);
     }
 }
