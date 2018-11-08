@@ -43,14 +43,14 @@ class Menu extends React.Component<MenuProps, MenuState> {
   private preventXMovement: boolean;
   constructor(props: MenuProps){
     super(props);
-    
+
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.closeByOverlay = this.closeByOverlay.bind(this);
-    
+
     this.state = {
       displayed: props.open,
       visible: props.open,
@@ -158,11 +158,10 @@ class Menu extends React.Component<MenuProps, MenuState> {
                     {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--profile" href="/profile">
-                        <object className="button-image"
-                          data={getUserImageUrl(this.props.status.userId)}
-                          type="image/jpeg">
-                          <span className="link__icon icon-user"></span>
-                        </object>
+                        {this.props.status.hasImage ? 
+                          <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
+                           <span className="link__icon icon-user"/>
+                         }
                         <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
                       </Link>
                     </li> : null}
