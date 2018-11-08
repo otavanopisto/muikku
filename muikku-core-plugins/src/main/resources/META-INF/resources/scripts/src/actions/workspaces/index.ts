@@ -6,7 +6,7 @@ import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentAc
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType } from '~/reducers/user-index';
-import { MaterialType, WorkspaceProducerType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, WorkspaceProducerType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -107,8 +107,8 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let assessmentRequests:Array<WorkspaceAssessmentRequestType>;
       let activity:WorkspaceStudentActivityType;
       let additionalInfo:WorkspaceAdditionalInfoType;
-      let contentDescription:MaterialType;
-      let help:MaterialType;
+      let contentDescription:MaterialContentNodeType;
+      let help:MaterialContentNodeType;
       let producers:Array<WorkspaceProducerType>;
       let status = getState().status;
       [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help] = await Promise.all([
