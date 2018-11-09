@@ -1327,22 +1327,17 @@ public class UserRESTService extends AbstractRESTService {
     CacheControl cacheControl = new CacheControl();
     cacheControl.setMustRevalidate(true);
 
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      User user = userController.findUserByIdentifier(userIdentifier);
-      if (user == null) {
-        return Response.status(Response.Status.NOT_FOUND).build();
-      }
-
-      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-      return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
-          .cacheControl(cacheControl)
-          .tag(tag)
-          .build();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
+    User user = userController.findUserByIdentifier(userIdentifier);
+    if (user == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
     }
+
+    boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+    return Response
+        .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
+        .cacheControl(cacheControl)
+        .tag(tag)
+        .build();
   }
 
   @GET
