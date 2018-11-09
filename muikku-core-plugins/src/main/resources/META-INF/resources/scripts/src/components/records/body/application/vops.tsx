@@ -32,8 +32,26 @@ class Vops extends React.Component<VopsProps, VopsState> {
     } else if (this.props.vops.status !== "READY"){
       return null;
     }
-    
-    return <VopsGraph/>
+    return <div>
+      <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
+          <div className="application-sub-panel__item application-sub-panel__item--summarizer">
+            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.vops.mandatory.title")}</div>
+            <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">Luatikko sis</div>
+          </div>
+        </div>
+      </div>
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
+          <div className="application-sub-panel__item application-sub-panel__item--summarizer">
+            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.vops.optional.title")}</div>
+            <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">Luatikko sis</div>
+          </div>
+        </div>
+      </div>
+      <VopsGraph/>
+    </div>   
   }
 }
 
