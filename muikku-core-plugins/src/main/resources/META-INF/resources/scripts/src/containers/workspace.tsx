@@ -16,6 +16,7 @@ import WorkspaceHelpBody from '~/components/workspace/workspaceHelp';
 import WorkspaceDiscussionBody from '~/components/workspace/workspaceDiscussions';
 import WorkspaceAnnouncementsBody from '~/components/workspace/workspaceAnnouncements';
 import WorkspaceAnnouncerBody from '~/components/workspace/workspaceAnnouncer';
+import WorkspaceMaterialsBody from '~/components/workspace/workspaceMaterials';
 
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace } from '~/actions/workspaces';
@@ -47,10 +48,12 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.renderWorkspaceDiscussions = this.renderWorkspaceDiscussions.bind(this);
     this.renderWorkspaceAnnouncements = this.renderWorkspaceAnnouncements.bind(this);
     this.renderWorkspaceAnnouncer = this.renderWorkspaceAnnouncer.bind(this);
+    this.renderWorkspaceMaterialsBody = this.renderWorkspaceMaterialsBody.bind(this);
     
     this.loadWorkspaceDiscussionData = this.loadWorkspaceDiscussionData.bind(this);
     this.loadWorkspaceAnnouncementsData = this.loadWorkspaceAnnouncementsData.bind(this);
     this.loadWorkspaceAnnouncerData = this.loadWorkspaceAnnouncerData.bind(this);
+    this.loadWorkspaceMaterialsData = this.loadWorkspaceMaterialsData.bind(this);
     
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
@@ -71,6 +74,8 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.loadWorkspaceAnnouncementsData(parseInt(window.location.hash.replace("#","")));
     } else if (window.location.pathname.includes("/announcer")){
       this.loadWorkspaceAnnouncerData(window.location.hash.replace("#","").split("/"));
+    } else if (window.location.pathname.includes("/materials")){
+      this.loadWorkspaceMaterialsData(window.location.hash.replace("#",""));
     }
   }
   renderWorkspaceHome(props: RouteComponentProps<any>){
@@ -210,6 +215,21 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1]), state.status.currentWorkspaceId) as Action);
     }
   }
+  loadWorkspaceMaterialsData(id: string): void {
+    
+  }
+  renderWorkspaceMaterialsBody(props: RouteComponentProps<any>){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
+      
+      this.loadWorkspaceMaterialsData(window.location.hash.replace("#", ""));
+    }
+    
+    return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}/>
+  }
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
@@ -219,6 +239,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       <Route path="/workspace/:workspaceUrl/discussions" render={this.renderWorkspaceDiscussions}/>
       <Route path="/workspace/:workspaceUrl/announcements" render={this.renderWorkspaceAnnouncements}/>
       <Route path="/workspace/:workspaceUrl/announcer" render={this.renderWorkspaceAnnouncer}/>
+      <Route path="/workspace/:workspaceUrl/materials" render={this.renderWorkspaceMaterialsBody}/>
     </div></BrowserRouter>);
   }
 }
