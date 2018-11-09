@@ -19,7 +19,7 @@ import WorkspaceAnnouncerBody from '~/components/workspace/workspaceAnnouncer';
 import WorkspaceMaterialsBody from '~/components/workspace/workspaceMaterials';
 
 import { RouteComponentProps } from 'react-router';
-import { setCurrentWorkspace, loadStaffMembersOfWorkspace } from '~/actions/workspaces';
+import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials } from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
@@ -224,6 +224,10 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.websocket.restoreEventListeners();
       
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
+      
+      let state = this.props.store.getState();
+      this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId}) as Action);
+      this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId) as Action);
       
       this.loadWorkspaceMaterialsData(window.location.hash.replace("#", ""));
     }

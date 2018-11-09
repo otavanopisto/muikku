@@ -6,7 +6,7 @@ import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentAc
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType } from '~/reducers/user-index';
-import { MaterialContentNodeType, WorkspaceProducerType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -35,6 +35,7 @@ export interface UPDATE_WORKSPACE extends
   original: WorkspaceType,
   update: WorkspaceUpdateType
 }>{}
+export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -256,6 +257,9 @@ export interface LoadMoreWorkspacesFromServerTriggerType {
 export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
   ():AnyActionType
 }
+export interface LoadWholeWorkspaceMaterialsTriggerType {
+  (workspaceId: number):AnyActionType
+}
 export interface SignupIntoWorkspaceTriggerType {
   (data: {
     success: ()=>any,
@@ -403,6 +407,24 @@ let loadStaffMembersOfWorkspace:LoadStaffMembersOfWorkspaceTriggerType = functio
   }
 }
 
+let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = function loadWholeWorkspaceMaterials(workspaceId){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let contentNodes:Array<MaterialContentNodeType> = <Array<MaterialContentNodeType>>(await promisify(mApi().workspace.
+          workspaces.materialContentNodes.read(workspaceId), 'callback')());
+      dispatch({
+        type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
+        payload: contentNodes
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load materials'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
-  updateWorkspace, loadStaffMembersOfWorkspace}
+  updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials}
