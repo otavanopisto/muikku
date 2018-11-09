@@ -57,7 +57,7 @@
   justify-content: flex-start;
   padding: 20px 30px 15px;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
   }
 
