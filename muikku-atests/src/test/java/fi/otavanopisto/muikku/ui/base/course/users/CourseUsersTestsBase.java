@@ -90,9 +90,6 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-archive");
         waitAndClick(".archive-button");
         waitForPresentAndVisible(".workspace-students-listing-wrapper");
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        String payload = objectMapper.writeValueAsString(new WebhookStudentUpdatePayload(2l));
-        TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
         reloadCurrentPage();
         waitForPresent(".workspace-students-list");
         assertNotPresent("div[data-user-id='PYRAMUS-STUDENT-2']");
@@ -135,11 +132,9 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-unarchive");
         waitAndClick(".unarchive-button");
         waitForPresentAndVisible(".workspace-students-listing-wrapper");
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        String payload = objectMapper.writeValueAsString(new WebhookStudentUpdatePayload(2l));
-        TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
         reloadCurrentPage();
         waitForPresent(".workspace-students-list");
+        waitForClickable(".workspace-students-active");
         waitAndClick(".workspace-students-active");
         waitForPresent(".workspace-students-list");
         assertPresent("div[data-user-id='PYRAMUS-STUDENT-2']");      
