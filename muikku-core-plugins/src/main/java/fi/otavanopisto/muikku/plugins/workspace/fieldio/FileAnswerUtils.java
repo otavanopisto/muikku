@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.dao.base.SystemSettingDAO;
 import fi.otavanopisto.muikku.model.base.SystemSetting;
@@ -46,7 +47,7 @@ public class FileAnswerUtils {
   
   public Long getLastEntityId(FileAnswerType type) {
     SystemSetting idSetting = systemSettingDAO.findByKey(type == FileAnswerType.FILE ? FILE_SETTING_LASTID : AUDIO_SETTING_LASTID);
-    return idSetting == null ? 0L : Long.valueOf(idSetting.getValue());
+    return idSetting == null || !NumberUtils.isNumber(idSetting.getValue()) ? 0L : Long.valueOf(idSetting.getValue());
   }
   
   public void setLastEntityId(FileAnswerType type, Long id) {
