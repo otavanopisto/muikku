@@ -29,8 +29,11 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialAudioFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.otavanopisto.muikku.schooldata.RoleController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -84,6 +87,9 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceMaterialFileFieldAnswerDAO workspaceMaterialFileFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialAudioFieldAnswerDAO workspaceMaterialAudioFieldAnswerDAO;
   
   @GET
   @Path("/movefileanswers")
@@ -99,7 +105,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     int bytes = 0;
     int totalBytes = 0;
     int totalFiles = 0;
-    Long currentId = fileAnswerUtils.getLastEntityId();
+    Long currentId = fileAnswerUtils.getLastEntityId(FileAnswerType.FILE);
     List<Long> answerIds = workspaceMaterialFileFieldAnswerDAO.listIdsByLargerAndLimit(currentId, count);
     for (Long answerId : answerIds) {
       try {
@@ -112,10 +118,47 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
           }
           currentId = answerId;
         }
-        fileAnswerUtils.setLastEntityId(currentId);
+        fileAnswerUtils.setLastEntityId(FileAnswerType.FILE, currentId);
       }
       catch (IOException e) {
         logger.log(Level.SEVERE, String.format("Failed to relocate WorkspaceMaterialFileFieldAnswer %d", currentId), e);
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+      }
+    }
+    return Response.ok(String.format("Moved %d files (%d bytes) with latest entity at %d", totalFiles, totalBytes, currentId)).build();
+  }
+
+  @GET
+  @Path("/moveaudioanswers")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response moveAudioAnswers(@QueryParam("count") Integer count) {
+    if (count == null || count < 0) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    EnvironmentUser user = environmentUserController.findEnvironmentUserByUserEntity(sessionController.getLoggedUserEntity());
+    if (user == null || user.getRole() == null || user.getRole().getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    int bytes = 0;
+    int totalBytes = 0;
+    int totalFiles = 0;
+    Long currentId = fileAnswerUtils.getLastEntityId(FileAnswerType.AUDIO);
+    List<Long> answerIds = workspaceMaterialAudioFieldAnswerDAO.listIdsByLargerAndLimit(currentId, count);
+    for (Long answerId : answerIds) {
+      try {
+        WorkspaceMaterialAudioFieldAnswer answer = workspaceMaterialAudioFieldAnswerDAO.findById(answerId);
+        if (answer != null) {
+          bytes = fileAnswerUtils.relocateToFileSystem(answer);
+          if (bytes > 0) {
+            totalBytes += bytes;
+            totalFiles++;
+          }
+          currentId = answerId;
+        }
+        fileAnswerUtils.setLastEntityId(FileAnswerType.AUDIO, currentId);
+      }
+      catch (IOException e) {
+        logger.log(Level.SEVERE, String.format("Failed to relocate WorkspaceMaterialAudioFieldAnswer %d", currentId), e);
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
       }
     }

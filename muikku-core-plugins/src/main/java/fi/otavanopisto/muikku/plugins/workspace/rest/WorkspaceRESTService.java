@@ -82,6 +82,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerCont
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
@@ -1613,8 +1614,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (content == null) {
       Long userEntityId = workspaceMaterialReply.getUserEntityId();
       try {
-        if (fileAnswerUtils.isFileInFileSystem(userEntityId, answerFile.getFileId())) {
-          content = fileAnswerUtils.getFileContent(workspaceMaterialReply.getUserEntityId(), answerFile.getFileId());
+        if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, answerFile.getFileId())) {
+          content = fileAnswerUtils.getFileContent(FileAnswerType.FILE, workspaceMaterialReply.getUserEntityId(), answerFile.getFileId());
         }
         else {
           logger.warning(String.format("File %s of user %d not found from file storage", answerFile.getFileId(), userEntityId));
@@ -1714,8 +1715,8 @@ public class WorkspaceRESTService extends PluginRESTService {
             byte[] content = file.getContent();
             if (content == null) {
               Long userEntityId = workspaceMaterialReply.getUserEntityId();
-              if (fileAnswerUtils.isFileInFileSystem(userEntityId, file.getFileId())) {
-                content = fileAnswerUtils.getFileContent(userEntityId, file.getFileId());
+              if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, file.getFileId())) {
+                content = fileAnswerUtils.getFileContent(FileAnswerType.FILE, userEntityId, file.getFileId());
               }
               else {
                 logger.warning(String.format("File %s of user %d not found from file storage", file.getFileId(), userEntityId));
@@ -1815,6 +1816,27 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
+      byte[] content = answerClip.getContent();
+      if (content == null) {
+        Long userEntityId = workspaceMaterialReply.getUserEntityId();
+        try {
+          if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.AUDIO, userEntityId, answerClip.getClipId())) {
+            content = fileAnswerUtils.getFileContent(FileAnswerType.AUDIO, workspaceMaterialReply.getUserEntityId(), answerClip.getClipId());
+          }
+          else {
+            logger.warning(String.format("Audio %s of user %d not found from file storage", answerClip.getClipId(), userEntityId));
+          }
+        }
+        catch (FileNotFoundException fnfe) {
+          return Response.status(Status.NOT_FOUND).build();
+        }
+        catch (IOException e) {
+          return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+        }
+      }
+      if (content == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
       return Response.ok(answerClip.getContent())
         .type(answerClip.getContentType())
         .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
