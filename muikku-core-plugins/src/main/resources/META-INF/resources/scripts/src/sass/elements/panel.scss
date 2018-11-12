@@ -119,6 +119,20 @@
   }
 }
 
+.panel--workspace-signup {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) { // This remains here as we are gonna add another panel in future so breakpoint-pad needs to be set to 50%
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
 .panel--workspace-teachers {
   order: 1;
 
@@ -127,7 +141,7 @@
     max-width: 50%;
   }
 
-  @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-desktop) { 
     flex-basis: 100%;
     max-width: 100%;
   }
@@ -186,12 +200,16 @@
   flex-grow: 0;
   flex-shrink: 0;
   font-size: 1rem;
+  height: 34px;
   padding: 7px;
   text-align: center;
   vertical-align: middle;
+  width: 34px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
+    height: 38px;
+    Width: 38px;
   }
 }
 
@@ -243,6 +261,11 @@
 .panel__header-icon--workspace-description {
   background-color: $color-workspace-text-for-panels-title-description-icon-background;
   color: $color-workspace-text-for-panels-title-description-icon-color;
+}
+
+.panel__header-icon--workspace-signup {
+  background-color: $color-workspace-text-for-panels-title-signup-icon-background;
+  color: $color-workspace-text-for-panels-title-signup-icon-color;
 }
 
 .panel__header-title {
@@ -298,6 +321,15 @@
   font-style: italic;
   font-weight: 600;
   margin: 0 5px 0 0;
+}
+
+.panel__body--workspace-signup {
+  padding: 10px;
+}
+
+.panel__body-text { // This is for direct text content inside of panel_body
+  font-weight: 400;
+  line-height: 1.5rem;
 }
 
 .panel__title {
