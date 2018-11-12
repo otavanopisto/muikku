@@ -12,7 +12,6 @@ import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer_;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer_;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceMaterialAudioFieldAnswerDAO extends CorePluginsDAO<WorkspaceMaterialAudioFieldAnswer> {
@@ -50,7 +49,7 @@ public class WorkspaceMaterialAudioFieldAnswerDAO extends CorePluginsDAO<Workspa
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
     Root<WorkspaceMaterialAudioFieldAnswer> root = criteria.from(WorkspaceMaterialAudioFieldAnswer.class);
-    criteria.select(root.get(WorkspaceMaterialFileFieldAnswer_.id));
+    criteria.select(root.get(WorkspaceMaterialAudioFieldAnswer_.id));
     criteria.where(
       criteriaBuilder.greaterThan(root.get(WorkspaceMaterialAudioFieldAnswer_.id), id)
     );
