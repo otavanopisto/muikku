@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -10,6 +12,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -18,18 +21,24 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.otavanopisto.muikku.schooldata.RoleController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -66,10 +75,56 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+
+  @Inject
+  private EnvironmentUserController environmentUserController;
+  
+  @Inject
+  private FileAnswerUtils fileAnswerUtils;
+  
+  @Inject
+  private WorkspaceMaterialFileFieldAnswerDAO workspaceMaterialFileFieldAnswerDAO;
+  
+  @GET
+  @Path("/movefileanswers")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response moveFileAnswers(@QueryParam("count") Integer count) {
+    if (count == null || count < 0) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    EnvironmentUser user = environmentUserController.findEnvironmentUserByUserEntity(sessionController.getLoggedUserEntity());
+    if (user == null || user.getRole() == null || user.getRole().getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    int bytes = 0;
+    int totalBytes = 0;
+    int totalFiles = 0;
+    Long currentId = fileAnswerUtils.getLastEntityId();
+    List<Long> answerIds = workspaceMaterialFileFieldAnswerDAO.listIdsByLargerAndLimit(currentId, count);
+    for (Long answerId : answerIds) {
+      try {
+        WorkspaceMaterialFileFieldAnswer answer = workspaceMaterialFileFieldAnswerDAO.findById(answerId);
+        if (answer != null) {
+          bytes = fileAnswerUtils.relocateToFileSystem(answer);
+          if (bytes > 0) {
+            totalBytes += bytes;
+            totalFiles++;
+          }
+          currentId = answerId;
+        }
+        fileAnswerUtils.setLastEntityId(currentId);
+      }
+      catch (IOException e) {
+        logger.log(Level.SEVERE, String.format("Failed to relocate WorkspaceMaterialFileFieldAnswer %d", currentId), e);
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+      }
+    }
+    return Response.ok(String.format("Moved %d files (%d bytes) with latest entity at %d", totalFiles, totalBytes, currentId)).build();
+  }
   
   @GET
   @Path("/syncworkspaceusers/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response synchronizeWorkspaceUsers(@PathParam("ID") Long workspaceEntityId, @Context Request request) {
     // Admins only
     if (!sessionController.isSuperuser()) {
