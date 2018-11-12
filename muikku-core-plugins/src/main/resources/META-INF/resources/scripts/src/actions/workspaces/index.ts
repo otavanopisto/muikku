@@ -36,6 +36,7 @@ export interface UPDATE_WORKSPACE extends
   update: WorkspaceUpdateType
 }>{}
 export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>{};
+export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -258,7 +259,7 @@ export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
   ():AnyActionType
 }
 export interface LoadWholeWorkspaceMaterialsTriggerType {
-  (workspaceId: number):AnyActionType
+  (workspaceId: number, callback?:(nodes: Array<MaterialContentNodeType>)=>any):AnyActionType
 }
 export interface SignupIntoWorkspaceTriggerType {
   (data: {
@@ -267,6 +268,9 @@ export interface SignupIntoWorkspaceTriggerType {
     workspace: WorkspaceType,
     message: string,
   }):AnyActionType
+}
+export interface SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType {
+  (id: number):AnyActionType
 }
 
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
@@ -407,7 +411,7 @@ let loadStaffMembersOfWorkspace:LoadStaffMembersOfWorkspaceTriggerType = functio
   }
 }
 
-let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = function loadWholeWorkspaceMaterials(workspaceId){
+let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = function loadWholeWorkspaceMaterials(workspaceId, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let contentNodes:Array<MaterialContentNodeType> = <Array<MaterialContentNodeType>>(await promisify(mApi().workspace.
@@ -416,6 +420,7 @@ let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = functio
         type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
         payload: contentNodes
       });
+      callback && callback(contentNodes);
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
@@ -425,6 +430,13 @@ let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = functio
   }
 }
 
+let setCurrentWorkspaceMaterialsActiveNodeId:SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType = function setCurrentWorkspaceMaterialsActiveNodeId(id){
+  return {
+    type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID",
+    payload: id
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
-  updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials}
+  updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId}

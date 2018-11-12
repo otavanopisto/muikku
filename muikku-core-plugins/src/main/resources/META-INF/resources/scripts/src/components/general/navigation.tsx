@@ -43,7 +43,7 @@ export class NavigationTopic extends React.Component<NavigationTopicProps, Navig
 
 interface NavigationElementProps {
   isActive: boolean,
-  hash?: string,
+  hash?: number | string,
   href?: string,
   onClick?: ()=>any,
   children: string,

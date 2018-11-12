@@ -51,6 +51,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.resteasy.annotations.GZIP;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
@@ -1494,6 +1495,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @GET
+  @GZIP
   @Path("/workspaces/{WORKSPACEENTITYID}/materialContentNodes/")
   @RESTPermitUnimplemented
   public Response listWorkspaceMaterialsAsContentNodes(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
