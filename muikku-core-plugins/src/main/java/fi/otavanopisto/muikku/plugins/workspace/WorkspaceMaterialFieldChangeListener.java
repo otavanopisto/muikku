@@ -314,7 +314,13 @@ public class WorkspaceMaterialFieldChangeListener {
     if (answer instanceof WorkspaceMaterialAudioFieldAnswer) {
       List<WorkspaceMaterialAudioFieldAnswerClip> audioAnswerClips = workspaceMaterialFieldAnswerController.listWorkspaceMaterialAudioFieldAnswerClipsByFieldAnswer((WorkspaceMaterialAudioFieldAnswer) answer);
       for (WorkspaceMaterialAudioFieldAnswerClip audioAnswerClip : audioAnswerClips) {
-        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(audioAnswerClip);
+        try {
+          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(audioAnswerClip);
+        }
+        catch (Exception e) {
+          // Audio field was removed completely but it's not fatal if its answer files in file system fail to remove
+          logger.log(Level.WARNING, String.format("Problems removing file system files related to audio answer %d", answer.getId()), e);
+        }
       }
     }
     else if (answer instanceof WorkspaceMaterialFileFieldAnswer) {
@@ -325,7 +331,7 @@ public class WorkspaceMaterialFieldChangeListener {
         }
         catch (Exception e) {
           // File field was removed completely but it's not fatal if its answer files in file system fail to remove
-          logger.log(Level.WARNING, String.format("Problems removing file system files related to answer %d", answer.getId()), e);
+          logger.log(Level.WARNING, String.format("Problems removing file system files related to file answer %d", answer.getId()), e);
         }
       }
     }

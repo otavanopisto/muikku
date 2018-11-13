@@ -25,6 +25,7 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFi
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
@@ -224,9 +225,9 @@ public class WorkspaceMaterialFieldAnswerController {
   /* FileFieldFile */
 
   public WorkspaceMaterialFileFieldAnswerFile createWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswer fieldAnswer, byte[] content, String contentType, String fileId, String fileName) throws IOException {
-    if (fileAnswerUtils.isFileSystemStorageEnabled()) {
+    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.FILE)) {
       Long userEntityId = fieldAnswer.getReply().getUserEntityId();
-      fileAnswerUtils.storeFileToFileSystem(userEntityId, fileId, content);
+      fileAnswerUtils.storeFileToFileSystem(FileAnswerType.FILE, userEntityId, fileId, content);
       content = null;
     }
     return workspaceMaterialFileFieldAnswerFileDAO.create(fieldAnswer, content, contentType, fileId, fileName);
@@ -241,10 +242,10 @@ public class WorkspaceMaterialFieldAnswerController {
   }
   
   public void deleteWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile) throws IOException {
-    if (fileAnswerUtils.isFileSystemStorageEnabled()) {
+    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.FILE)) {
       Long userEntityId = fieldAnswerFile.getFieldAnswer().getReply().getUserEntityId();
-      if (fileAnswerUtils.isFileInFileSystem(userEntityId, fieldAnswerFile.getFileId())) {
-        fileAnswerUtils.removeFileFromFileSystem(userEntityId, fieldAnswerFile.getFileId());
+      if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, fieldAnswerFile.getFileId())) {
+        fileAnswerUtils.removeFileFromFileSystem(FileAnswerType.FILE, userEntityId, fieldAnswerFile.getFileId());
       }
     }
     workspaceMaterialFileFieldAnswerFileDAO.delete(fieldAnswerFile);
@@ -262,7 +263,12 @@ public class WorkspaceMaterialFieldAnswerController {
   
   /* AudioFieldClip */
 
-  public WorkspaceMaterialAudioFieldAnswerClip createWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswer fieldAnswer, byte[] content, String contentType, String audioId, String audioName) {
+  public WorkspaceMaterialAudioFieldAnswerClip createWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswer fieldAnswer, byte[] content, String contentType, String audioId, String audioName) throws IOException {
+    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.AUDIO)) {
+      Long userEntityId = fieldAnswer.getReply().getUserEntityId();
+      fileAnswerUtils.storeFileToFileSystem(FileAnswerType.AUDIO, userEntityId, audioId, content);
+      content = null;
+    }
     return workspaceMaterialAudioFieldAnswerClipDAO.create(fieldAnswer, content, contentType, audioId, audioName);
   }
 
@@ -274,7 +280,13 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialAudioFieldAnswerClipDAO.listByFieldAnswer(fieldAnswer);
   }
   
-  public void deleteWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio) {
+  public void deleteWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio) throws IOException {
+    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.AUDIO)) {
+      Long userEntityId = fieldAnswerAudio.getFieldAnswer().getReply().getUserEntityId();
+      if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.AUDIO, userEntityId, fieldAnswerAudio.getClipId())) {
+        fileAnswerUtils.removeFileFromFileSystem(FileAnswerType.AUDIO, userEntityId, fieldAnswerAudio.getClipId());
+      }
+    }
     workspaceMaterialAudioFieldAnswerClipDAO.delete(fieldAnswerAudio);
   }
 
