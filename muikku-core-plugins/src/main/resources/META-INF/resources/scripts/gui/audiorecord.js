@@ -5,7 +5,7 @@
     options: {
       bufferSize: 0,
       numberOfAudioChannels: 1,
-      desiredSampleRate: 8000, 
+      desiredSampleRate: 8192, 
       leftChannel: false,
       disableLogs: false,
       maxClipLength: 60000 * 5,  
