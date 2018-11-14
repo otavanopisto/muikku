@@ -58,6 +58,7 @@ import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
@@ -128,6 +129,7 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -171,6 +173,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -1190,7 +1195,10 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{ID}/staffMembers")
   @RESTPermitUnimplemented
-  public Response listWorkspaceStaffMembers(@PathParam("ID") Long workspaceEntityId, @QueryParam("orderBy") String orderBy) {
+  public Response listWorkspaceStaffMembers(
+      @PathParam("ID") Long workspaceEntityId, 
+      @QueryParam("properties") String properties,
+      @QueryParam("orderBy") String orderBy) {
     
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -1199,7 +1207,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // Access check
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_STAFFMEMBERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -1207,6 +1215,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
     List<WorkspaceStaffMember> workspaceStaffMembers = new ArrayList<>();
     
+    String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
+
     for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser : schoolDataUsers) {
       SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
       User user = userController.findUserByIdentifier(userIdentifier);
@@ -1221,11 +1231,22 @@ public class WorkspaceRESTService extends PluginRESTService {
           continue;
         }
         
+        String email = userEmailEntityController.getUserDefaultEmailAddress(userIdentifier, false);
+        Map<String, String> userProperties = new HashMap<String, String>();
+        if (userEntity != null) {
+          for (int i = 0; i < propertyArray.length; i++) {
+            UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
+            userProperties.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
+          }
+        }
+
         workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(),
           workspaceUser.getUserIdentifier().toId(),
           userEntity != null ? userEntity.getId() : null,
           user.getFirstName(), 
-          user.getLastName()
+          user.getLastName(),
+          email,
+          userProperties
         ));
       } else {
         logger.log(Level.SEVERE, String.format("Could not find user %s", userIdentifier));
@@ -1246,6 +1267,68 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Response
     return Response.ok(workspaceStaffMembers).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEID}/staffMembers/{STAFFMEMBERID}")
+  @RESTPermitUnimplemented
+  public Response findWorkspaceStaffMember(
+      @PathParam("WORKSPACEID") Long workspaceEntityId, 
+      @PathParam("STAFFMEMBERID") String workspaceStaffMemberIdentifier,
+      @QueryParam("properties") String properties) {
+    
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Access check
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_STAFFMEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    WorkspaceUser workspaceUser;
+    
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(workspaceStaffMemberIdentifier);
+    if (userIdentifier != null) {
+      workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, userIdentifier);
+    } else {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid user id %s", workspaceStaffMemberIdentifier)).build();
+    }
+
+    if (workspaceUser == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    User user = userController.findUserByIdentifier(workspaceUser.getUserIdentifier());
+    UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    if (user == null || workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    String email = userEmailEntityController.getUserDefaultEmailAddress(workspaceUser.getUserIdentifier(), false);
+
+    String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
+    Map<String, String> userProperties = new HashMap<String, String>();
+    if (userEntity != null) {
+      for (int i = 0; i < propertyArray.length; i++) {
+        UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
+        userProperties.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
+      }
+    }
+    
+    WorkspaceStaffMember workspaceStaffMember = new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(),
+      workspaceUser.getUserIdentifier().toId(),
+      userEntity != null ? userEntity.getId() : null,
+      user.getFirstName(), 
+      user.getLastName(),
+      email,
+      userProperties
+    );
+    
+    return Response.ok(workspaceStaffMember).build();
   }
   
   @POST
