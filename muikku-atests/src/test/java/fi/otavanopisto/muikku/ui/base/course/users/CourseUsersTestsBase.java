@@ -129,13 +129,10 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitAndClick(".archive-button");
         waitForClickable(".workspace-students-inactive");
         waitAndClick(".workspace-students-inactive");
-        waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-unarchive");
+        waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2'] div.workspace-users-unarchive");
         waitAndClick(".unarchive-button");
         waitForPresentAndVisible(".workspace-students-listing-wrapper");
         reloadCurrentPage();
-        waitForPresent(".workspace-students-list");
-        waitForClickable(".workspace-students-active");
-        waitAndClick(".workspace-students-active");
         waitForPresent(".workspace-students-list");
         assertPresent("div[data-user-id='PYRAMUS-STUDENT-2']");      
       } finally {

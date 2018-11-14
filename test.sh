@@ -10,16 +10,17 @@ if [ "$BUILD" == "true" ] ; then
   mvn clean install -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins,elastic-search-plugin,atests-plugin,evaluation-plugin,timed-notifications-plugin -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dsource.skip=true
 fi;
 
-echo "-------------------------"
-echo "Running tests"
-echo "-------------------------"
+if [[ $TEST != "" ]]; then
+  echo "-------------------------"
+  echo "Running tests"
+  echo "-------------------------"
 
-pushd .
-cd muikku-atests
-if [ "$DEBUG" == "true" ] ; then 
-  mvn clean verify -Pui-it -Dit.test=$TEST -Dmaven.failsafe.debug ${@:4}
-else
-  mvn clean verify -Pui-it -Dit.test=$TEST ${@:4}
+  pushd .
+  cd muikku-atests
+  if [ "$DEBUG" == "true" ] ; then 
+    mvn clean verify -Pui-it -Dit.test=$TEST -Dmaven.failsafe.debug ${@:4}
+  else
+    mvn clean verify -Pui-it -Dit.test=$TEST ${@:4}
+  fi;
+  popd
 fi;
-
-popd
