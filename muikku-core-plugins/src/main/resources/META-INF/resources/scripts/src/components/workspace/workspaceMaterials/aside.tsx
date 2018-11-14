@@ -30,7 +30,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
         return <NavigationTopic name={node.title} key={node.workspaceMaterialId}>
           {node.children.map((subnode)=>{
             return <NavigationElement iconColor={null} icon={null} key={subnode.workspaceMaterialId}
-              isActive={this.props.activeNodeId === subnode.workspaceMaterialId} hash={node.workspaceMaterialId}>{subnode.title}</NavigationElement>
+              isActive={this.props.activeNodeId === subnode.workspaceMaterialId} hash={subnode.workspaceMaterialId}>{subnode.title}</NavigationElement>
           })}
         </NavigationTopic>
       })

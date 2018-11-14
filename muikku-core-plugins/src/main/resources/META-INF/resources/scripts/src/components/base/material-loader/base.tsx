@@ -163,7 +163,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         subtree: unstable_renderSubtreeIntoContainer(
            this,
            rElement,
-           parentElement
+           newParentElement
         ),
         element
       });

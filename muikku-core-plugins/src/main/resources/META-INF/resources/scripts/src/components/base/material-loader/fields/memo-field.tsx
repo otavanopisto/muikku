@@ -85,7 +85,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
   }
   componentWillReceiveProps(nextProps: MemoFieldProps){
     if (nextProps.value !== this.state.value){
-      let rawText = nextProps.content.richedit ? $(nextProps.value).text() : nextProps.value;
+      let rawText = nextProps.content.richedit ? $(nextProps.value).text() : (nextProps.value || "");
       this.setState({
         value: nextProps.value,
         words: wordCount(rawText),
