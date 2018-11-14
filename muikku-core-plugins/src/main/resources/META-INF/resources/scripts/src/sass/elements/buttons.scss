@@ -190,6 +190,24 @@
   }
 }
 
+.button--signup-read-more {
+  background: $color-workspace-signup-readmore-button-background;
+  color: $color-button-inverse-text;
+  display: inline-block;
+  line-height: 1.15rem;
+  margin: 10px auto 0;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-workspace-signup-readmore-button-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-workspace-signup-readmore-button-background, 20%);
+  }
+}
+
 // FRONTPAGE
 .button--forgotpassword-dialog-submit {
   display: inline-flex;

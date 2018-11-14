@@ -1,11 +1,13 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import java.util.Map;
+
 public class WorkspaceStaffMember {
 
   public WorkspaceStaffMember() {
   }
 
-  public WorkspaceStaffMember(String id, String userIdentifier, Long userEntityId, String firstName, String lastName) {
+  public WorkspaceStaffMember(String id, String userIdentifier, Long userEntityId, String firstName, String lastName, String email, Map<String, String> properties) {
     super();
     this.id = id;
     this.userIdentifier = userIdentifier;
@@ -54,10 +56,28 @@ public class WorkspaceStaffMember {
     this.userIdentifier = userIdentifier;
   }
 
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public Map<String, String> getProperties() {
+    return properties;
+  }
+
+  public void setProperties(Map<String, String> properties) {
+    this.properties = properties;
+  }
+
   private String id;
   private String userIdentifier;
   private Long userEntityId;
   private String firstName;
   private String lastName;
+  private String email;
+  private Map<String, String> properties;
 
 }

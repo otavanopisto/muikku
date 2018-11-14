@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,6 +60,7 @@ import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
@@ -84,6 +86,8 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerCont
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -129,6 +133,7 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -172,6 +177,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -222,6 +230,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileController fileController;
+
+  @Inject
+  private FileAnswerUtils fileAnswerUtils;
   
   @GET
   @Path("/workspaceTypes")
@@ -1191,7 +1202,10 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{ID}/staffMembers")
   @RESTPermitUnimplemented
-  public Response listWorkspaceStaffMembers(@PathParam("ID") Long workspaceEntityId, @QueryParam("orderBy") String orderBy) {
+  public Response listWorkspaceStaffMembers(
+      @PathParam("ID") Long workspaceEntityId, 
+      @QueryParam("properties") String properties,
+      @QueryParam("orderBy") String orderBy) {
     
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -1200,7 +1214,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     // Access check
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_STAFFMEMBERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -1208,6 +1222,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser> schoolDataUsers = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
     List<WorkspaceStaffMember> workspaceStaffMembers = new ArrayList<>();
     
+    String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
+
     for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser : schoolDataUsers) {
       SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
       User user = userController.findUserByIdentifier(userIdentifier);
@@ -1222,11 +1238,22 @@ public class WorkspaceRESTService extends PluginRESTService {
           continue;
         }
         
+        String email = userEmailEntityController.getUserDefaultEmailAddress(userIdentifier, false);
+        Map<String, String> userProperties = new HashMap<String, String>();
+        if (userEntity != null) {
+          for (int i = 0; i < propertyArray.length; i++) {
+            UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
+            userProperties.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
+          }
+        }
+
         workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(),
           workspaceUser.getUserIdentifier().toId(),
           userEntity != null ? userEntity.getId() : null,
           user.getFirstName(), 
-          user.getLastName()
+          user.getLastName(),
+          email,
+          userProperties
         ));
       } else {
         logger.log(Level.SEVERE, String.format("Could not find user %s", userIdentifier));
@@ -1247,6 +1274,68 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Response
     return Response.ok(workspaceStaffMembers).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEID}/staffMembers/{STAFFMEMBERID}")
+  @RESTPermitUnimplemented
+  public Response findWorkspaceStaffMember(
+      @PathParam("WORKSPACEID") Long workspaceEntityId, 
+      @PathParam("STAFFMEMBERID") String workspaceStaffMemberIdentifier,
+      @QueryParam("properties") String properties) {
+    
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Access check
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_STAFFMEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    WorkspaceUser workspaceUser;
+    
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(workspaceStaffMemberIdentifier);
+    if (userIdentifier != null) {
+      workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, userIdentifier);
+    } else {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid user id %s", workspaceStaffMemberIdentifier)).build();
+    }
+
+    if (workspaceUser == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    User user = userController.findUserByIdentifier(workspaceUser.getUserIdentifier());
+    UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    if (user == null || workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    String email = userEmailEntityController.getUserDefaultEmailAddress(workspaceUser.getUserIdentifier(), false);
+
+    String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
+    Map<String, String> userProperties = new HashMap<String, String>();
+    if (userEntity != null) {
+      for (int i = 0; i < propertyArray.length; i++) {
+        UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
+        userProperties.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
+      }
+    }
+    
+    WorkspaceStaffMember workspaceStaffMember = new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(),
+      workspaceUser.getUserIdentifier().toId(),
+      userEntity != null ? userEntity.getId() : null,
+      user.getFirstName(), 
+      user.getLastName(),
+      email,
+      userProperties
+    );
+    
+    return Response.ok(workspaceStaffMember).build();
   }
   
   @POST
@@ -1720,7 +1809,28 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(answerFile.getContent())
+    byte[] content = answerFile.getContent();
+    if (content == null) {
+      Long userEntityId = workspaceMaterialReply.getUserEntityId();
+      try {
+        if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, answerFile.getFileId())) {
+          content = fileAnswerUtils.getFileContent(FileAnswerType.FILE, workspaceMaterialReply.getUserEntityId(), answerFile.getFileId());
+        }
+        else {
+          logger.warning(String.format("File %s of user %d not found from file storage", answerFile.getFileId(), userEntityId));
+        }
+      }
+      catch (FileNotFoundException fnfe) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      catch (IOException e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+      }
+    }
+    if (content == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(content)
       .type(answerFile.getContentType())
       .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
       .build();
@@ -1799,38 +1909,54 @@ public class WorkspaceRESTService extends PluginRESTService {
           ZipOutputStream zout = new ZipOutputStream(out);
           for (WorkspaceMaterialFileFieldAnswerFile file : answerFiles) {
             
-            // Prevent duplicate file names
-            
-            String fileName = file.getFileName();
-            if (fileNames.contains(fileName)) {
-              int counter = 1;
-              String name = file.getFileName();
-              String prefix = "";
-              if (StringUtils.contains(name, ".")) {
-                prefix = StringUtils.substringAfterLast(name, ".");
-                name = StringUtils.substringBeforeLast(name, ".");
+            // File content
+
+            byte[] content = file.getContent();
+            if (content == null) {
+              Long userEntityId = workspaceMaterialReply.getUserEntityId();
+              if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, file.getFileId())) {
+                content = fileAnswerUtils.getFileContent(FileAnswerType.FILE, userEntityId, file.getFileId());
               }
-              if (!StringUtils.isEmpty(prefix)) {
-                prefix = String.format(".%s", prefix); 
-              }
-              while (fileNames.contains(fileName)) {
-                fileName = String.format("%s (%s)%s", name, counter++, prefix);
+              else {
+                logger.warning(String.format("File %s of user %d not found from file storage", file.getFileId(), userEntityId));
               }
             }
-            fileNames.add(fileName);
+
+            if (content != null) {
             
-            // Zip file
+              // Prevent duplicate file names
             
-            ZipEntry ze = new ZipEntry(fileName);
-            zout.putNextEntry(ze);
-            InputStream input = new ByteArrayInputStream(file.getContent());
-            try {
-              IOUtils.copy(input, zout);
+              String fileName = file.getFileName();
+              if (fileNames.contains(fileName)) {
+                int counter = 1;
+                String name = file.getFileName();
+                String prefix = "";
+                if (StringUtils.contains(name, ".")) {
+                  prefix = StringUtils.substringAfterLast(name, ".");
+                  name = StringUtils.substringBeforeLast(name, ".");
+                }
+                if (!StringUtils.isEmpty(prefix)) {
+                  prefix = String.format(".%s", prefix); 
+                }
+                while (fileNames.contains(fileName)) {
+                  fileName = String.format("%s (%s)%s", name, counter++, prefix);
+                }
+              }
+              fileNames.add(fileName);
+            
+              // Zip file
+            
+              ZipEntry ze = new ZipEntry(fileName);
+              zout.putNextEntry(ze);
+              InputStream input = new ByteArrayInputStream(content);
+              try {
+                IOUtils.copy(input, zout);
+              }
+              finally {
+                IOUtils.closeQuietly(input);
+              }
+              zout.closeEntry();
             }
-            finally {
-              IOUtils.closeQuietly(input);
-            }
-            zout.closeEntry();
           }
           zout.flush();
           zout.close();
@@ -1889,6 +2015,27 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
+      byte[] content = answerClip.getContent();
+      if (content == null) {
+        Long userEntityId = workspaceMaterialReply.getUserEntityId();
+        try {
+          if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.AUDIO, userEntityId, answerClip.getClipId())) {
+            content = fileAnswerUtils.getFileContent(FileAnswerType.AUDIO, workspaceMaterialReply.getUserEntityId(), answerClip.getClipId());
+          }
+          else {
+            logger.warning(String.format("Audio %s of user %d not found from file storage", answerClip.getClipId(), userEntityId));
+          }
+        }
+        catch (FileNotFoundException fnfe) {
+          return Response.status(Status.NOT_FOUND).build();
+        }
+        catch (IOException e) {
+          return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+        }
+      }
+      if (content == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
       return Response.ok(answerClip.getContent())
         .type(answerClip.getContentType())
         .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
