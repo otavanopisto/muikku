@@ -94,7 +94,7 @@
   text-transform: uppercase;
   white-space: normal;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     text-align: left;
   }
 

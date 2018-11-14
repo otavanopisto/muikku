@@ -23,6 +23,7 @@ interface ApplicationPanelState {
   extraPaddingLeft: number,
   extraPaddingRight: number,
   asideBeforeWidth: number
+  asideAfterWidth: number
 }
 
 export default class ApplicationPanel extends React.Component<ApplicationPanelProps, ApplicationPanelState> {
@@ -33,6 +34,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
   private extraPaddingLeft: number;
   private extraPaddingRight: number;
   private asideBeforeWidth: number;
+  private asideAfterWidth: number;
   private borderWidth: number;
   private disabled: boolean;
   
@@ -46,7 +48,8 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       offsetElementAgainstTop: null,
       extraPaddingLeft: null,
       extraPaddingRight: null,
-      asideBeforeWidth: null
+      asideBeforeWidth: null,
+      asideAfterWidth: null
     }
     
     this.onScroll = this.onScroll.bind(this);
@@ -120,6 +123,14 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       });
     }
     
+    let asideAfter:HTMLElement = (this.refs["asideAfter"] as HTMLElement);
+    if (asideAfter){
+      this.asideAfterWidth = asideAfter.offsetWidth;
+      this.setState({
+        asideAfterWidth: this.asideAfterWidth
+      });
+    }
+    
     this.borderWidth = parseInt(document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement).getPropertyValue("border-left-width"));
     
     this.calculateSides();
@@ -132,7 +143,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     }
   }
   setRemainingHeight(isSticky: boolean){
-    if (!this.props.asideBefore){
+    if (!this.props.asideBefore && !this.props.asideAfter){
      return;
     }
     let top = (document.documentElement.scrollTop || document.body.scrollTop);
@@ -179,7 +190,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
         : null}
         </div>
         <div className="application-panel__body" ref="body">
-         <div style={{display: this.state.sticky ? "block" : "none", height: this.state.stickyHeight}}></div>
+          <div style={{display: this.state.sticky ? "block" : "none", height: this.state.stickyHeight}}></div>
           <div className="application-panel__actions" ref="sticky" style={this.state.sticky ? {
                position: "fixed",
                top: this.state.offsetElementAgainstTop,
@@ -199,7 +210,14 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
                overflowY: "auto"
              }}>{this.props.asideBefore}</div> : null}
             <div className={`application-panel__main-container loader-empty`}>{this.props.children}</div>
-            {this.props.asideAfter ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.asideAfter}</div> : null}
+            {this.props.asideAfter ? <div className="application-panel__helper-container" ref="asideAfter" style={{
+                position: this.state.sticky ? "fixed" : null,
+                top: this.state.sticky ? this.state.offsetElementAgainstTop + this.state.stickyHeight : null,
+                right: this.state.sticky ? this.state.extraPaddingRight : null,
+                height: this.state.remainingHeight,
+                width: this.state.sticky ? this.state.asideAfterWidth : null,
+                overflowY: "auto"
+              }}>{this.props.asideAfter}</div> : null}
           </div>
         </div>
       </div>

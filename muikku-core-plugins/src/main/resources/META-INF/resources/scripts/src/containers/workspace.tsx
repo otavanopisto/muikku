@@ -19,7 +19,7 @@ import WorkspaceAnnouncerBody from '~/components/workspace/workspaceAnnouncer';
 import WorkspaceMaterialsBody from '~/components/workspace/workspaceMaterials';
 
 import { RouteComponentProps } from 'react-router';
-import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials } from '~/actions/workspaces';
+import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId } from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
@@ -75,7 +75,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     } else if (window.location.pathname.includes("/announcer")){
       this.loadWorkspaceAnnouncerData(window.location.hash.replace("#","").split("/"));
     } else if (window.location.pathname.includes("/materials")){
-      this.loadWorkspaceMaterialsData(window.location.hash.replace("#",""));
+      this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "")));
     }
   }
   renderWorkspaceHome(props: RouteComponentProps<any>){
@@ -215,8 +215,10 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1]), state.status.currentWorkspaceId) as Action);
     }
   }
-  loadWorkspaceMaterialsData(id: string): void {
-    
+  loadWorkspaceMaterialsData(id: number): void {
+    if (id){
+      this.props.store.dispatch(setCurrentWorkspaceMaterialsActiveNodeId(id) as Action);
+    }
   }
   renderWorkspaceMaterialsBody(props: RouteComponentProps<any>){
     this.updateFirstTime();
@@ -227,9 +229,13 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       let state = this.props.store.getState();
       this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId}) as Action);
-      this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId) as Action);
+      this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId, (result)=>{
+        if (!window.location.hash.replace("#", "") && result[0] && result[0].children && result[0].children[0]){
+          this.loadWorkspaceMaterialsData(result[0].children[0].workspaceMaterialId);
+        }
+      }) as Action);
       
-      this.loadWorkspaceMaterialsData(window.location.hash.replace("#", ""));
+      this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "")));
     }
     
     return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}/>

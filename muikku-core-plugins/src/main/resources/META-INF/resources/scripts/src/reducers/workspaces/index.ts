@@ -245,7 +245,9 @@ export interface WorkspacesType {
   state: WorkspacesStateType,
   activeFilters: WorkspacesActiveFiltersType,
   hasMore: boolean,
-  toolbarLock: boolean
+  toolbarLock: boolean,
+  currentMaterials: MaterialContentNodeListType,
+  currentMaterialsActiveNodeId: number
 }
 
 export interface WorkspacesPatchType {
@@ -257,7 +259,9 @@ export interface WorkspacesPatchType {
   state?: WorkspacesStateType,
   activeFilters?: WorkspacesActiveFiltersType,
   hasMore?: boolean,
-  toolbarLock?: boolean
+  toolbarLock?: boolean,
+  currentMaterials?: MaterialContentNodeListType,
+  currentMaterialsActiveNodeId?: number
 }
 
 export interface JournalType {
@@ -392,6 +396,7 @@ export default function workspaces(state: WorkspacesType={
   userWorkspaces: [],
   lastWorkspace: null,
   currentWorkspace: null,
+  currentMaterials: null,
   avaliableFilters: {
     educationTypes: [],
     curriculums: [],
@@ -405,7 +410,8 @@ export default function workspaces(state: WorkspacesType={
     baseFilter: "ALL_COURSES"
   },
   hasMore: false,
-  toolbarLock: false
+  toolbarLock: false,
+  currentMaterialsActiveNodeId: null
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
     return <WorkspacesType>Object.assign({}, state, {
@@ -471,6 +477,10 @@ export default function workspaces(state: WorkspacesType={
         return w;
       })
     })
+  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS"){
+    return {...state, currentMaterials: action.payload};
+  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID"){
+    return {...state, currentMaterialsActiveNodeId: action.payload};
   }
   return state;
 }

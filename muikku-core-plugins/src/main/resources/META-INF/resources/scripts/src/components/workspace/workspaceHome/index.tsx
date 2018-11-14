@@ -4,6 +4,7 @@ import ScreenContainer from '~/components/general/screen-container';
 import * as React from 'react';
 
 import WorkspaceHomeHeader from './header';
+import WorkspaceSignUp from './signup';
 import WorkspaceDescription from './description';
 import WorkspaceTeachers from './teachers';
 import WorkspaceAnnouncements from './announcements';
@@ -30,6 +31,7 @@ export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBody
         <div className="panel-group panel-group--workspace-main">
           <WorkspaceDescription/>
           <div className="panel-group panel-group--workspace-aside">
+            <WorkspaceSignUp/>
             <WorkspaceTeachers/>
             <WorkspaceAnnouncements/>
           </div>
