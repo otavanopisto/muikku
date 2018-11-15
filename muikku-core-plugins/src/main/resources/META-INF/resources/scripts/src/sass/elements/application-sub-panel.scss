@@ -245,6 +245,33 @@
   }  
 }
 
+.application-sub-panel__summary-highlight {
+  color: #c2c2c2;
+  font-size: 2.5rem;
+  
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.application-sub-panel__summary-highlight--total {
+  color: #000;
+}
+
+.application-sub-panel__summary-highlight--done {
+  color: #75ce41;
+  color: $color-sub-panel-card-1-font-color;
+}
+
+.application-sub-panel__summary-highlight--undone {
+  color: #82c2e7;
+  color: $color-sub-panel-card-2-font-color;  
+}
+
+.application-sub-panel__summary-definition {
+  margin-left: 5px;
+}
+
 .application-sub-panel__item-body {
   padding: 10px;
 }
