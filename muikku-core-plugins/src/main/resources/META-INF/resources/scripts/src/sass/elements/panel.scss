@@ -323,17 +323,23 @@
   margin: 0 5px 0 0;
 }
 
-.panel__body--workspace-signup {
-  padding: 10px;
-}
-
 .panel__body-text { // This is for direct text content inside of panel_body
   font-weight: 400;
   line-height: 1.5rem;
 }
 
-.panel__title {
+.panel__body-title {
   font-size: 1rem;
   font-weight: 300;
-  padding: 10px;
+  padding: 10px 10px 0; // Bottom padding is omitted as panel__body-content has top padding 
+}
+
+.panel__body-content {
+  line-height: 1.5rem;
+  padding: 10px; // Top and bottom padding is needed to create spacing between panel__body-title and panel__body-footer elements 
+}
+
+.panel__body-footer {
+  line-height: 1;
+  padding: 0 10px 10px; // Top padding is omitted as panel__body-content has bottom padding 
 }
