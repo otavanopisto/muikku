@@ -176,6 +176,9 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     
     this.setRemainingHeight(isSticky);
   }
+  getToolbar(): HTMLDivElement{
+    return this.refs["toolbar"] as HTMLDivElement;
+  }
   render(){
     return (        
     <div className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
@@ -198,9 +201,9 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
                right: this.state.extraPaddingRight
              } : null}>
             {this.props.primaryOption ? <div className="application-panel__helper-container application-panel__helper-container--main-action">{this.props.primaryOption}</div> : null}
-            {this.props.toolbar ? <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div> : null}
+            {this.props.toolbar ? <div ref="toolbar" className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div> : null}
           </div>
-          <div className="application-panel__content" style={this.state.sticky ? {paddingLeft: this.state.asideBeforeWidth} : null}>
+          <div className="application-panel__content" style={this.state.sticky ? {paddingLeft: this.state.asideBeforeWidth, paddingRight: this.state.asideAfterWidth} : null}>
             {this.props.asideBefore ? <div className="application-panel__helper-container" ref="asideBefore" style={{
                position: this.state.sticky ? "fixed" : null,
                top: this.state.sticky ? this.state.offsetElementAgainstTop + this.state.stickyHeight : null,

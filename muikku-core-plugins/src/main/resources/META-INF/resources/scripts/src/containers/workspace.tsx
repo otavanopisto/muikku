@@ -75,7 +75,13 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     } else if (window.location.pathname.includes("/announcer")){
       this.loadWorkspaceAnnouncerData(window.location.hash.replace("#","").split("/"));
     } else if (window.location.pathname.includes("/materials")){
-      this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "")));
+      if (window.location.hash.replace("#", "")){
+        this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "")));
+      } else if (this.props.store.getState().workspaces.currentMaterials &&
+          this.props.store.getState().workspaces.currentMaterials[0] &&
+          this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
+        this.loadWorkspaceMaterialsData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+      }
     }
   }
   renderWorkspaceHome(props: RouteComponentProps<any>){
@@ -232,10 +238,10 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId, (result)=>{
         if (!window.location.hash.replace("#", "") && result[0] && result[0].children && result[0].children[0]){
           this.loadWorkspaceMaterialsData(result[0].children[0].workspaceMaterialId);
+        } else if (window.location.hash.replace("#", "")){
+          this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "")));
         }
       }) as Action);
-      
-      this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "")));
     }
     
     return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}/>

@@ -4,9 +4,10 @@ import { Redirect } from "react-router-dom";
 
 import '~/sass/elements/link.scss';
 
-function scrollToSection(anchor: string) {
+function scrollToSection(anchor: string, onScrollToSection?: ()=>any) {
+  let actualAnchor = anchor + ',[data-id="' + anchor.replace("#", "") + '"]';
   try {
-    if (!$(anchor).size()){
+    if (!$(actualAnchor).size()){
       window.location.href = anchor;
       return;
     }
@@ -16,8 +17,9 @@ function scrollToSection(anchor: string) {
   }
   
   let topOffset = 90;
-  let scrollTop = $(anchor).offset().top - topOffset;
+  let scrollTop = $(actualAnchor).offset().top - topOffset;
 
+  onScrollToSection && onScrollToSection();
   $('html, body').stop().animate({
     scrollTop : scrollTop
   }, {
@@ -37,7 +39,8 @@ interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<H
   href?: string,
   to?: string,
   className?: string,
-  openInNewTab?: string
+  openInNewTab?: string,
+  onScrollToSection?: ()=>any
 }
 
 interface LinkState {
@@ -77,7 +80,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     
     if (!this.props.to){
       if (this.props.href && this.props.href[0] === '#'){
-        scrollToSection(this.props.href);
+        scrollToSection(this.props.href, this.props.onScrollToSection);
       } else if (this.props.href){
         if (this.props.openInNewTab){
           window.open(this.props.href, this.props.openInNewTab).focus();
@@ -147,6 +150,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["disablePropagation"];
     delete elementProps["disabled"];
     delete elementProps["to"];
+    delete elementProps["onScrollToSection"];
     delete elementProps["openInNewTab"];
     
     return <Element {...elementProps}

@@ -12,6 +12,7 @@ import Navigation, { NavigationTopic, NavigationElement } from '~/components/gen
 interface NavigationProps {
   i18n: i18nType,
   materials: MaterialContentNodeListType,
+  onScrollToSection?: ()=>any,
   activeNodeId: number
 }
 
@@ -29,7 +30,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
       this.props.materials.map((node)=>{
         return <NavigationTopic name={node.title} key={node.workspaceMaterialId}>
           {node.children.map((subnode)=>{
-            return <NavigationElement iconColor={null} icon={null} key={subnode.workspaceMaterialId}
+            return <NavigationElement iconColor={null} icon={null} key={subnode.workspaceMaterialId} onScrollToSection={this.props.onScrollToSection}
               isActive={this.props.activeNodeId === subnode.workspaceMaterialId} hash={subnode.workspaceMaterialId}>{subnode.title}</NavigationElement>
           })}
         </NavigationTopic>

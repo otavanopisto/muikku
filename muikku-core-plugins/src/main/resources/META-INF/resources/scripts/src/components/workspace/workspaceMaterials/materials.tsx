@@ -39,6 +39,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   private indexedMaterial: {
     [id: string]: MaterialContentNodeType
   };
+  private autoloadingDisabled: boolean;
   constructor(props: WorkspaceMaterialsProps){
     super(props);
     
@@ -48,9 +49,13 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     
     this.recalculateLoaded = this.recalculateLoaded.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
+    this.recalculateHash = this.recalculateHash.bind(this);
     this.onScroll = this.onScroll.bind(this);
+    this.disableAutoLoadingUntilNewCurrentMaterialGiven = this.disableAutoLoadingUntilNewCurrentMaterialGiven.bind(this);
     
     this.getFlattenedMaterials(props);
+    
+    this.autoloadingDisabled = true;
   }
   componentDidMount(){
     this.recalculateLoaded();
@@ -65,7 +70,49 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     }
   }
   onScroll(){
+    if (this.autoloadingDisabled){
+      return;
+    }
+    this.recalculateHash();
     this.recalculateLoaded();
+  }
+  disableAutoLoadingUntilNewCurrentMaterialGiven(){
+    this.autoloadingDisabled = true;
+  }
+  recalculateHash(){
+    let toolbar = (this.refs["application-panel"] as ApplicationPanel).getToolbar();
+    let clientRectToolbar = toolbar.getBoundingClientRect();
+    let topToolbar = clientRectToolbar.top;
+    let bottomToolbar = clientRectToolbar.bottom;
+    
+    let winner:number = null;
+    let isAllTheWayToTheBottom = document.documentElement.scrollHeight - document.documentElement.scrollTop === document.documentElement.clientHeight;
+    if (!isAllTheWayToTheBottom){
+      let winnerTop:number = null;
+      for (let refKey of Object.keys(this.refs)){
+        let refKeyInt = parseInt(refKey);
+        if (!refKeyInt){
+          continue;
+        }
+        let element = this.refs[refKey] as HTMLElement;
+        let elementTop = element.getBoundingClientRect().top;
+        if (elementTop <= bottomToolbar && (elementTop > winnerTop || !winner)){
+          winner = refKeyInt;
+          winnerTop = elementTop;
+        }
+      }
+    } else {
+      winner = this.flattenedMaterial[this.flattenedMaterial.length - 1].workspaceMaterialId;
+    }
+    
+    winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
+    
+    let newHash = ""
+    if (winner !== this.flattenedMaterial[0].workspaceMaterialId){
+      newHash = winner + "";
+    }
+    
+    location.hash = newHash;
   }
   componentWillReceiveProps(nextProps: WorkspaceMaterialsProps){
     if (this.props.activeNodeId !== nextProps.activeNodeId){
@@ -78,6 +125,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   }
   recalculateLoaded(props: WorkspaceMaterialsProps = this.props){
     this.previousPassChanged = false;
+    this.autoloadingDisabled = false;
     if (!props.activeNodeId){
       return;
     }
@@ -88,8 +136,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     newLoadedMaterialIds[props.activeNodeId] = true;
     
     Object.keys(this.refs).forEach((refKey: string)=>{
+      let refKeyInt = parseInt(refKey);
+      if (!refKeyInt || newLoadedMaterialIds[refKeyInt]){
+        return;
+      }
       if (isScrolledIntoView(this.refs[refKey] as HTMLElement)){
-        newLoadedMaterialIds[parseInt(refKey)] = true;
+        newLoadedMaterialIds[refKeyInt] = true;
       }
     });
     
@@ -103,10 +155,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
     this.flattenedMaterial = [];
     this.indexedMaterial = {};
-    if (!this.props.materials){
+    if (!props.materials){
       return;
     }
-    this.props.materials.forEach((node)=>{
+    props.materials.forEach((node)=>{
       node.children.forEach((subnode)=>{
         this.flattenedMaterial.push(subnode);
         this.indexedMaterial[subnode.workspaceMaterialId + ""] = subnode;
@@ -118,20 +170,23 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
     
-    return <ApplicationPanel modifier="materials"
+    return <ApplicationPanel ref="application-panel" modifier="materials"
       toolbar={<div><h2>{this.props.workspace.name}</h2><ProgressData i18n={this.props.i18n}
       activity={this.props.workspace.studentActivity}/></div>}
       asideAfter={this.props.aside}>
         {this.props.materials.map((node)=>{
-          return <section>
+          return <section key={node.workspaceMaterialId}>
             <h1>{node.title}</h1>
             <div>
               {node.children.map((subnode)=>{
                 if (this.state.loadedMaterialIds[subnode.workspaceMaterialId]){
-                  return <MaterialLoader material={subnode} workspace={this.props.workspace}
-                    i18n={this.props.i18n} status={this.props.status}/>
+                  return <div ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId}>
+                    <MaterialLoader material={subnode} workspace={this.props.workspace}
+                      i18n={this.props.i18n} status={this.props.status} />
+                  </div>
                 }
-                return <div style={{height: 600}} ref={subnode.workspaceMaterialId + ""}>{subnode.workspaceMaterialId}</div>
+                return <div key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId + ""} style={{height: 600}}
+                  ref={subnode.workspaceMaterialId + ""}>{subnode.workspaceMaterialId}</div>
               })}
             </div>
           </section>
@@ -157,5 +212,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    null,
+    { withRef: true }
 )(WorkspaceMaterials);

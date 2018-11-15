@@ -140,7 +140,8 @@ interface MaterialLoaderProps {
   workspace: WorkspaceType,
   i18n: i18nType,
   status: StatusType,
-  modifiers?: string | Array<string>
+  modifiers?: string | Array<string>,
+  id?: string,
 
   loadCompositeReplies?: boolean,
   readOnly?: boolean,
@@ -224,11 +225,14 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
       });
     }
   }
+  getComponent():HTMLDivElement {
+    return this.refs["root"] as HTMLDivElement;
+  }
   render(){
     //TODO remove this __deprecated container once things are done and classes are cleared up, or just change the classname to something
     //more reasonable
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
-    return <div className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} rich-text`}>
+    return <div className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} rich-text`} ref="root" id={this.props.id}>
       {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
           <div className="">
             <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>

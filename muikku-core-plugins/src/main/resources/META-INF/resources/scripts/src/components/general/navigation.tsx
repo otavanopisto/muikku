@@ -52,7 +52,8 @@ interface NavigationElementProps {
   isEditable?: boolean,
   editableWrapper?: any,
   editableWrapperArgs?: any,
-  editableAction?: ()=>any
+  editableAction?: ()=>any,
+  onScrollToSection?: ()=>any
 }
 
 interface NavigationElementState {
@@ -73,7 +74,7 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
         icon="edit" onClick={this.props.editableAction}/>
     }
     
-    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`}
+    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`} onScrollToSection={this.props.onScrollToSection}
       href={this.props.hash ? "#" + this.props.hash : null} to={this.props.href} onClick={this.props.onClick}>
       {this.props.icon ? <span className={`item-list__icon icon-${this.props.icon}`} style={{color: this.props.iconColor}}></span> : null}
       <span className="item-list__text-body">
