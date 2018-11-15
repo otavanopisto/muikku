@@ -1837,7 +1837,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (content == null) {
         return Response.status(Status.NOT_FOUND).build();
       }
-      return Response.ok(answerClip.getContent())
+      return Response.ok(content)
         .type(answerClip.getContentType())
         .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
         .build();
