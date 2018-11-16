@@ -169,8 +169,7 @@
   
   $(document).ready(function () {
     var getEvaluationFee = function (workspaceEntityId, callback) {
-      mApi().user.users.basicinfo
-        .read(MUIKKU_LOGGED_USER)
+      mApi().user.whoami.read()
         .callback($.proxy(function (err, basicInfo) {
           if (err) {
             callback(err);
