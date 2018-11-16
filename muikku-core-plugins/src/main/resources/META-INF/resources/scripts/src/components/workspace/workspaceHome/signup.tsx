@@ -29,7 +29,7 @@ class SignUpPanel extends React.Component<SignUpPanelProps, SignUpPanelState> {
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.logInGuidingTitle')}</div>
       </div>
       <div className="panel__body">
-        <div className="panel__body-content">{this.props.i18n.text.get('plugin.workspace.logInGuidingInformation')}</div>
+        <div className="panel__body-content panel__body-content--signup">{this.props.i18n.text.get('plugin.workspace.logInGuidingInformation')}</div>
         <div className="panel__body-footer">
           <Button buttonModifiers="signup-read-more" href="/">{this.props.i18n.text.get('plugin.workspace.logInGuidingLink')}</Button>
         </div>

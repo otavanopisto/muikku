@@ -3,25 +3,23 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-
-.avatar-container {
-  align-items: center;
-  border-radius: 100%;
-  color: $color-default;
-  display: flex;
-  font-family: $text-font-family;
-  height: $avatar-size;
-  justify-content: center;
-  width: $avatar-size;
-}
-
-
 .avatar {
   align-items: center;
   border-radius: 100%;
   color: $color-environment-link-icon-color;
   display: flex;
   font-size: $avatar-font-size;
+  height: $avatar-size;
+  justify-content: center;
+  width: $avatar-size;
+}
+
+.avatar-container {
+  align-items: center;
+  border-radius: 100%;
+  color: $color-default;
+  display: flex;
+  font-family: $text-avatar-font-family;
   height: $avatar-size;
   justify-content: center;
   width: $avatar-size;

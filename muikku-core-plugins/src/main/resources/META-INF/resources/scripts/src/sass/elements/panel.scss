@@ -320,7 +320,7 @@
   display: inline;
   font-style: italic;
   font-weight: 600;
-  margin: 0 5px 0 0;
+  margin: 0 5px;
 }
 
 .panel__body-text { // This is for direct text content inside of panel_body
@@ -335,8 +335,17 @@
 }
 
 .panel__body-content {
-  line-height: 1.5rem;
   padding: 10px; // Top and bottom padding is needed to create spacing between panel__body-title and panel__body-footer elements 
+}
+
+.panel__body-content--signup {
+  line-height: 1.5rem;
+}
+
+.panel__body-content--continue-studies {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .panel__body-footer {
