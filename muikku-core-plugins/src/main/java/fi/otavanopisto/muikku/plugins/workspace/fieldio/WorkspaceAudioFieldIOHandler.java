@@ -53,9 +53,10 @@ public class WorkspaceAudioFieldIOHandler implements WorkspaceFieldIOHandler {
           if (audioData == null) {
             throw new WorkspaceFieldIOException("Temp audio does not exist");
           }
-          
           workspaceMaterialFieldAnswerController.createWorkspaceMaterialAudioFieldAnswerClip(fieldAnswer, audioData, clip.getContentType(), clip.getId(), clip.getName());
-        } catch (IOException e) {
+          TempFileUtils.deleteTempFile(clip.getId());
+        }
+        catch (Exception e) {
           throw new WorkspaceFieldIOException("Failed to retrieve clip data", e);
         }
       }
@@ -66,7 +67,12 @@ public class WorkspaceAudioFieldIOHandler implements WorkspaceFieldIOHandler {
     for (String existingClipId : existingClipIds) {
       WorkspaceMaterialAudioFieldAnswerClip workspaceMaterialAudioFieldAnswerClip = workspaceMaterialFieldAnswerController.findWorkspaceMaterialAudioFieldAnswerClipByClipId(existingClipId);
       if (workspaceMaterialAudioFieldAnswerClip != null) {
-        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(workspaceMaterialAudioFieldAnswerClip);
+        try {
+          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(workspaceMaterialAudioFieldAnswerClip);
+        }
+        catch (Exception e) {
+          throw new WorkspaceFieldIOException("Failed to remove audio data", e);
+        }
       }
     }
   }

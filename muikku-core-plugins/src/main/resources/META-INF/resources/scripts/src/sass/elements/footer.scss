@@ -1,11 +1,12 @@
-@import "../base/breakpoints";
 @import "../base/colors";
 @import "../base/vars";
+@import "../base/breakpoints";
+@import "../base/mixins";
 
 .footer {
   background-color: $color-footer-default-background;
   font-family: $text-branded-font-family;
-  text-align: center;
+  margin-top: calc(1.5rem + 20px);
   width: 100%;
 }
 
@@ -37,23 +38,28 @@
 .footer__item--contact {
   align-items: center;
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
+  justify-content: center;
+  max-width: 100%;
 
   @include breakpoint($breakpoint-pad){
     align-items: flex-start;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-around;
+    max-width: 50%;
   }
 }
 
 .footer__item--plagscan {
   align-items: center;
   display: flex;
+  flex-flow: column wrap;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   justify-content: flex-start;
-  padding: 20px 30px;
+  padding: 20px 30px 15px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
 
   img {
     height: 30px;
@@ -68,23 +74,34 @@
 
 .footer__header {
   color: $color-frontpage-text-contact-us;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: 1.6rem;
   font-weight: 200;
   margin-bottom: 1.5rem;
+  text-align: center;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 2.5rem;
+    text-align: left;
   }
 }
 
 .footer__subitem {
   color: $color-frontpage-text-contact-us-information;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: $text-mobile-font-size;
   margin-bottom: 0.55rem;
   margin-top: 0.55rem;
-  
+  max-width: 100%;
+  text-align: center;
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
+    text-align: left;
   }
 
   * {
