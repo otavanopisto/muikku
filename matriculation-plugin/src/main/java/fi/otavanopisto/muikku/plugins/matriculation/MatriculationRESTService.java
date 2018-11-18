@@ -213,7 +213,7 @@ public class MatriculationRESTService {
     schoolDataEntity.setCanPublishName(enrollment.isCanPublishName());
     schoolDataEntity.setMessage(enrollment.getMessage());
     schoolDataEntity.setStudentId(studentId);
-    schoolDataEntity.setState("PENDING");
+    schoolDataEntity.setState(enrollment.getState());
     List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance> attendances = new ArrayList<>();
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
       fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance resultAttendance
