@@ -823,7 +823,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/students/{WORKSPACEENTITYID}")
   @RESTPermit (handling = Handling.INLINE)
-  public Response listWorkspaceStudents(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("active") Boolean active) {
+  public Response listWorkspaceStudents(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("active") @DefaultValue ("true") Boolean active) {
     
     // Workspace, access, and Elastic checks
 
