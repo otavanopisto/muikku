@@ -53,6 +53,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     this.onGoBackClick = this.onGoBackClick.bind(this);
     this.loadMessage = this.loadMessage.bind(this);
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
+    this.resetLabelFilter = this.resetLabelFilter.bind(this);
     
     this.state = {
       labelFilter: ""
@@ -74,9 +75,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
   onCreateNewLabel(){
     if (this.state.labelFilter.trim()){
       this.props.addMessagesNavigationLabel(this.state.labelFilter.trim());
-      this.setState({
-        labelFilter: ""
-      });
+      this.resetLabelFilter();
     }
   }
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
@@ -93,6 +92,11 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     } else {
       location.hash = location.hash.split("/")[0];
     }
+  }
+  resetLabelFilter(){
+    this.setState({
+      labelFilter: ""
+    });
   }
   render(){
     let currentLocation = this.props.messages.navigation.find((item)=>{
@@ -179,7 +183,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       <ButtonPill buttonModifiers="delete" icon="delete"
        disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}/>
        
-      <Dropdown modifier="communicator-labels" items={
+      <Dropdown onClose={this.resetLabelFilter} modifier="communicator-labels" items={
         [
           <div className="form-element">
             <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}

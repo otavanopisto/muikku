@@ -10,8 +10,9 @@ type itemType2 = (closeDropdown: ()=>any)=>any
 interface DropdownProps {
   modifier: string,
   children?: React.ReactElement<any>,
-  items: Array<(React.ReactElement<any> | itemType2)>;
-  persistent?:boolean;
+  items: Array<(React.ReactElement<any> | itemType2)>,
+  persistent?:boolean,
+  onClose?: ()=>any
 }
 
 interface DropdownState {
@@ -80,7 +81,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
   }
   render(){
     let elementCloned : React.ReactElement<any> = React.cloneElement(this.props.children, { ref: "activator" });
-    return <Portal ref="portal" openByClickOn={elementCloned}
+    return <Portal ref="portal" openByClickOn={elementCloned} onClose={this.props.onClose}
       closeOnEsc closeOnOutsideClick closeOnScroll={!this.props.persistent} onOpen={this.onOpen} beforeClose={this.beforeClose}>
       <div ref="dropdown"
         style={{
