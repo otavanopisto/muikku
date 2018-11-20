@@ -15,6 +15,7 @@ import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -46,6 +47,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -82,7 +84,9 @@ public class ChatSyncController {
   @Inject
   private ChatController chatController;
 
-
+  @Inject
+  private Event<WorkspaceChatSettingsEnabledEvent> workspaceChatSettingsEnabledEvent;
+  
   public void syncStudent(SchoolDataIdentifier studentIdentifier){
 
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
@@ -260,8 +264,9 @@ public class ChatSyncController {
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
     
-    
     client.deleteChatRoom(workspaceEntity.getIdentifier());
+    
+
   }
   
  public void syncWorkspace(WorkspaceEntity workspaceEntity) {
@@ -304,6 +309,8 @@ public class ChatSyncController {
     chatRoomEntity.setPersistent(true);
     chatRoomEntity.setLogEnabled(true);
     client.createChatRoom(chatRoomEntity);
+    
+    workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
   }
-}   
+}
 
