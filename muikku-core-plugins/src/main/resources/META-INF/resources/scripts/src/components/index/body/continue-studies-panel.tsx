@@ -33,9 +33,11 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</div>
       </div>
       <div className="panel__body">
-        <div className="panel__title">{this.props.lastWorkspace.workspaceName}</div>
-        {this.props.i18n.text.get('plugin.frontPage.latestWorkspace.material.part1')}{" "}<span className="panel__body-highlight">{this.props.lastWorkspace.materialName}.</span>{" "}
-        <Link className="link" href={this.props.lastWorkspace.url}>{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.continueStudiesLink')}</Link>
+        <div className="panel__body-title">{this.props.lastWorkspace.workspaceName}</div>
+        <div className="panel__body-content panel__body-content--continue-studies">
+          {this.props.i18n.text.get('plugin.frontPage.latestWorkspace.material.part1')}{" "}<span className="panel__body-highlight">{this.props.lastWorkspace.materialName}.</span>{" "}
+          <Link className="link" href={this.props.lastWorkspace.url}>{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.continueStudiesLink')}</Link>
+        </div>
       </div>
     </div>);
   }
