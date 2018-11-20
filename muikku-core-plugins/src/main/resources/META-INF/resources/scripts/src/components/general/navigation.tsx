@@ -53,7 +53,9 @@ interface NavigationElementProps {
   editableWrapper?: any,
   editableWrapperArgs?: any,
   editableAction?: ()=>any,
-  onScrollToSection?: ()=>any
+  onScrollToSection?: ()=>any,
+  scrollPadding?: number,
+  disableScroll?: boolean
 }
 
 interface NavigationElementState {
@@ -75,6 +77,7 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
     }
     
     return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`} onScrollToSection={this.props.onScrollToSection}
+      scrollPadding={this.props.scrollPadding} disableScroll={this.props.disableScroll}
       href={this.props.hash ? "#" + this.props.hash : null} to={this.props.href} onClick={this.props.onClick}>
       {this.props.icon ? <span className={`item-list__icon icon-${this.props.icon}`} style={{color: this.props.iconColor}}></span> : null}
       <span className="item-list__text-body">

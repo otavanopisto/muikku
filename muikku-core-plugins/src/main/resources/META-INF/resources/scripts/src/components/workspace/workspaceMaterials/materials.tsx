@@ -24,22 +24,25 @@ interface WorkspaceMaterialsState {
   }
 }
 
-function isScrolledIntoView(el: HTMLElement) {
-  let rect = el.getBoundingClientRect();
-  let elemTop = rect.top;
-  let elemBottom = rect.bottom;
+const DEFAULT_EMPTY_HEIGHT = 600;
+const DEFAULT_OFFSET = 67;
 
-  let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
-  return isVisible;
-}
+//function isScrolledIntoView(el: HTMLElement) {
+//  let rect = el.getBoundingClientRect();
+//  let elemTop = rect.top;
+//  let elemBottom = rect.bottom;
+//
+//  let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+//  return isVisible;
+//}
 
 class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, WorkspaceMaterialsState> {
   private previousPassChanged: boolean;
+  private previousPassOffsetTop: number;
+  private previousPassTarget: string;
+  private disableHashRecalculation: boolean;
+  private lastHashWasSetByScroll: boolean;
   private flattenedMaterial: MaterialContentNodeListType;
-  private indexedMaterial: {
-    [id: string]: MaterialContentNodeType
-  };
-  private autoloadingDisabled: boolean;
   constructor(props: WorkspaceMaterialsProps){
     super(props);
     
@@ -51,40 +54,53 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.recalculateHash = this.recalculateHash.bind(this);
     this.onScroll = this.onScroll.bind(this);
-    this.disableAutoLoadingUntilNewCurrentMaterialGiven = this.disableAutoLoadingUntilNewCurrentMaterialGiven.bind(this);
     
     this.getFlattenedMaterials(props);
     
-    this.autoloadingDisabled = true;
+    this.disableHashRecalculation = true;
+    this.lastHashWasSetByScroll = false;
   }
   componentDidMount(){
+    if (this.props.activeNodeId){
+      document.getElementById(this.props.activeNodeId + "").scrollIntoView(true);
+    }
     this.recalculateLoaded();
     window.document.addEventListener("scroll", this.onScroll);
+    window.addEventListener("beforeunload", this.cancelScrollTop);
   }
   componentWillUnmount(){
+    this.disableHashRecalculation = true;
     window.document.removeEventListener("scroll", this.onScroll);
+    window.removeEventListener("beforeunload", this.cancelScrollTop);
   }
-  componentDidUpdate(){
-    if (this.previousPassChanged){
+  cancelScrollTop(){
+    window.scrollTo(0, 0);
+  }
+  componentDidUpdate(prevProps: WorkspaceMaterialsProps, prevState: WorkspaceMaterialsState){
+    console.log("component did update");
+    if (this.props.activeNodeId !== prevProps.activeNodeId){
+      if (!this.lastHashWasSetByScroll){
+        document.getElementById(this.props.activeNodeId + "").scrollIntoView(true);
+      }
       this.recalculateLoaded();
+      this.lastHashWasSetByScroll = false;
+    } else if (this.previousPassChanged) {
+      document.getElementById(this.previousPassTarget).scrollIntoView(true);
+      window.scrollBy(0, -this.previousPassOffsetTop);
+      
+      this.disableHashRecalculation = false;
     }
   }
   onScroll(){
-    if (this.autoloadingDisabled){
-      return;
-    }
-    this.recalculateHash();
+    console.log("SCROLL EVENT");
+    
     this.recalculateLoaded();
-  }
-  disableAutoLoadingUntilNewCurrentMaterialGiven(){
-    this.autoloadingDisabled = true;
+    this.recalculateHash();
   }
   recalculateHash(){
-    let toolbar = (this.refs["application-panel"] as ApplicationPanel).getToolbar();
-    let clientRectToolbar = toolbar.getBoundingClientRect();
-    let topToolbar = clientRectToolbar.top;
-    let bottomToolbar = clientRectToolbar.bottom;
-    
+    if (this.disableHashRecalculation){
+      return;
+    }
     let winner:number = null;
     let isAllTheWayToTheBottom = document.documentElement.scrollHeight - document.documentElement.scrollTop === document.documentElement.clientHeight;
     if (!isAllTheWayToTheBottom){
@@ -96,7 +112,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         }
         let element = this.refs[refKey] as HTMLElement;
         let elementTop = element.getBoundingClientRect().top;
-        if (elementTop <= bottomToolbar && (elementTop > winnerTop || !winner)){
+        if (elementTop <= DEFAULT_OFFSET && (elementTop > winnerTop || !winner)){
           winner = refKeyInt;
           winnerTop = elementTop;
         }
@@ -109,44 +125,43 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     
     let newHash = ""
     if (winner !== this.flattenedMaterial[0].workspaceMaterialId){
-      newHash = winner + "";
+      newHash = "#" + winner;
     }
     
-    location.hash = newHash;
+    if (newHash !== location.hash){
+      this.lastHashWasSetByScroll = true;
+      location.hash = newHash;
+    }
   }
   componentWillReceiveProps(nextProps: WorkspaceMaterialsProps){
-    if (this.props.activeNodeId !== nextProps.activeNodeId){
-      this.recalculateLoaded(nextProps);
-    }
-    
     if (this.props.materials !== nextProps.materials){
       this.getFlattenedMaterials(nextProps);
     }
   }
   recalculateLoaded(props: WorkspaceMaterialsProps = this.props){
     this.previousPassChanged = false;
-    this.autoloadingDisabled = false;
     if (!props.activeNodeId){
       return;
     }
     
     let newLoadedMaterialIds = {...this.state.loadedMaterialIds};
     let index = this.flattenedMaterial.findIndex((m)=>m.workspaceMaterialId === props.activeNodeId);
-    
     newLoadedMaterialIds[props.activeNodeId] = true;
     
-    Object.keys(this.refs).forEach((refKey: string)=>{
-      let refKeyInt = parseInt(refKey);
-      if (!refKeyInt || newLoadedMaterialIds[refKeyInt]){
-        return;
+    for (let i = 1; i <= 5; i++){
+      if (this.flattenedMaterial[index + i]){
+        newLoadedMaterialIds[this.flattenedMaterial[index + i].workspaceMaterialId] = true;
       }
-      if (isScrolledIntoView(this.refs[refKey] as HTMLElement)){
-        newLoadedMaterialIds[refKeyInt] = true;
+      if (this.flattenedMaterial[index - i]){
+        newLoadedMaterialIds[this.flattenedMaterial[index - i].workspaceMaterialId] = true;
       }
-    });
+    }
     
     if (JSON.stringify(newLoadedMaterialIds) !== JSON.stringify(this.state.loadedMaterialIds)){
       this.previousPassChanged = true;
+      this.disableHashRecalculation = true;
+      this.previousPassTarget = this.props.activeNodeId + "";
+      this.previousPassOffsetTop = document.getElementById(this.previousPassTarget).getBoundingClientRect().top;
       this.setState({
         loadedMaterialIds: newLoadedMaterialIds
       });
@@ -154,14 +169,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
     this.flattenedMaterial = [];
-    this.indexedMaterial = {};
     if (!props.materials){
       return;
     }
     props.materials.forEach((node)=>{
       node.children.forEach((subnode)=>{
         this.flattenedMaterial.push(subnode);
-        this.indexedMaterial[subnode.workspaceMaterialId + ""] = subnode;
       });
     });
   }
@@ -170,29 +183,53 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
     
-    return <ApplicationPanel ref="application-panel" modifier="materials"
-      toolbar={<div><h2>{this.props.workspace.name}</h2><ProgressData i18n={this.props.i18n}
-      activity={this.props.workspace.studentActivity}/></div>}
-      asideAfter={this.props.aside}>
-        {this.props.materials.map((node)=>{
-          return <section key={node.workspaceMaterialId}>
-            <h1>{node.title}</h1>
-            <div>
-              {node.children.map((subnode)=>{
-                if (this.state.loadedMaterialIds[subnode.workspaceMaterialId]){
-                  return <div ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId}>
-                    <MaterialLoader material={subnode} workspace={this.props.workspace}
-                      i18n={this.props.i18n} status={this.props.status} />
-                  </div>
-                }
-                return <div key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId + ""} style={{height: 600}}
-                  ref={subnode.workspaceMaterialId + ""}>{subnode.workspaceMaterialId}</div>
-              })}
-            </div>
-          </section>
-          })
+    console.log("RENDERED WITH DATA");
+    
+    return <div>{this.props.materials.map((node)=>{
+    return <section key={node.workspaceMaterialId}>
+    <h1>{node.title}</h1>
+    <div>
+      {node.children.map((subnode)=>{
+        let anchor = <div id={"" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
+        
+        if (this.state.loadedMaterialIds[subnode.workspaceMaterialId]){
+          return <div style={{border: "solid 1px red"}} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId}>
+            {anchor}
+            <MaterialLoader material={subnode} workspace={this.props.workspace}
+              i18n={this.props.i18n} status={this.props.status} />
+          </div>
         }
-    </ApplicationPanel>
+        return <div key={subnode.workspaceMaterialId} style={{height: DEFAULT_EMPTY_HEIGHT}}
+          ref={subnode.workspaceMaterialId + ""}>{anchor}{subnode.workspaceMaterialId}</div>
+      })}
+    </div>
+  </section>
+  })
+}</div>
+    
+    //<ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/>
+//    return <ApplicationPanel ref="application-panel" modifier="materials"
+//      toolbar={<div><h2>{this.props.workspace.name}</h2></div>}
+//      asideAfter={this.props.aside}>
+//        {this.props.materials.map((node)=>{
+//          return <section key={node.workspaceMaterialId}>
+//            <h1>{node.title}</h1>
+//            <div>
+//              {node.children.map((subnode)=>{
+//                if (this.state.loadedMaterialIds[subnode.workspaceMaterialId]){
+//                  return <div style={{border: "solid 1px red", height: DEFAULT_EMPTY_HEIGHT}} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId}>
+//                    <MaterialLoader material={subnode} workspace={this.props.workspace}
+//                      i18n={this.props.i18n} status={this.props.status} />
+//                  </div>
+//                }
+//                return <div key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId + ""} style={{height: DEFAULT_EMPTY_HEIGHT}}
+//                  ref={subnode.workspaceMaterialId + ""}>{subnode.workspaceMaterialId}</div>
+//              })}
+//            </div>
+//          </section>
+//          })
+//        }
+//    </ApplicationPanel>
   }
 }
 

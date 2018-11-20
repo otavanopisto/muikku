@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { UserType, UserWithSchoolDataType } from '~/reducers/user-index';
+import $ from '~/lib/jquery';
 
 function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -272,4 +273,57 @@ export function guidGenerator() {
      return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
   };
   return (S4()+S4()+"."+S4()+"."+S4()+"."+S4()+"."+S4()+S4()+S4());
+}
+
+export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scrollPadding?: number, disableAnimate?: boolean, disableAnchorSet?: boolean) {
+  console.log("CALLED SCROLL TO", anchor);
+  let actualAnchor = anchor + ',[data-id="' + anchor.replace("#", "") + '"]';
+  try {
+    if (!$(actualAnchor).size()){
+      if (!disableAnchorSet){
+        if (anchor[0] === "#"){
+          window.location.hash = anchor;
+        } else  {
+          window.location.href = anchor;
+        }
+      }
+      return;
+    }
+  } catch (err){
+    if (!disableAnchorSet){
+      if (anchor[0] === "#"){
+        window.location.hash = anchor;
+      } else  {
+        window.location.href = anchor;
+      }
+    }
+    return;
+  }
+  
+  console.log("scrolling is being sucessful");
+  
+  let topOffset = scrollPadding || 90;
+  let scrollTop = $(actualAnchor).offset().top - topOffset;
+
+  onScrollToSection && onScrollToSection();
+  if (disableAnimate){
+    $('html, body').scrollTop(scrollTop);
+  } else {
+    $('html, body').stop().animate({
+      scrollTop : scrollTop
+    }, {
+      duration : 500,
+      easing : "easeInOutQuad"
+    });
+  }
+  
+  if (!disableAnchorSet){
+    setTimeout(()=>{
+      if (anchor[0] === "#"){
+        window.location.hash = anchor;
+      } else  {
+        window.location.href = anchor;
+      }
+    }, 500);
+  }
 }
