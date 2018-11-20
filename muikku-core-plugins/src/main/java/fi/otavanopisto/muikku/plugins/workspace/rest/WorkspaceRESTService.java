@@ -822,7 +822,7 @@ public class WorkspaceRESTService extends PluginRESTService {
    */
   @GET
   @Path("/students/{WORKSPACEENTITYID}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaceStudents(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("active") @DefaultValue ("true") Boolean active) {
     
     // Workspace, access, and Elastic checks
@@ -2523,7 +2523,7 @@ public class WorkspaceRESTService extends PluginRESTService {
    * Returns workspace student
    * 
    * Used        : evaluation-modal.js TODO refactor
-   * Permissions : Logged in TODO implement after refactor
+   * Permissions : LIST_WORKSPACE_MEMBERS
    * Success     : 200 WorkspaceStudentRestModel
    *  
    * PK 20.11.2018
@@ -2538,6 +2538,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
     if (workspaceUserEntity == null) {
