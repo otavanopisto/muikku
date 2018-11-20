@@ -5,12 +5,11 @@ public class WorkspaceUserRestModel {
   public WorkspaceUserRestModel() {
   }
 
-  public WorkspaceUserRestModel(Long workspaceUserEntityId, Long userEntityId, String firstName, String lastName, String studyProgrammeName) {
+  public WorkspaceUserRestModel(Long workspaceUserEntityId, Long userEntityId, String firstName, String lastName) {
     this.workspaceUserEntityId = workspaceUserEntityId;
     this.userEntityId = userEntityId;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.studyProgrammeName = studyProgrammeName;
   }
 
   public Long getWorkspaceUserEntityId() {
@@ -45,18 +44,9 @@ public class WorkspaceUserRestModel {
     this.lastName = lastName;
   }
 
-  public String getStudyProgrammeName() {
-    return studyProgrammeName;
-  }
-
-  public void setStudyProgrammeName(String studyProgrammeName) {
-    this.studyProgrammeName = studyProgrammeName;
-  }
-
   private Long workspaceUserEntityId;
   private Long userEntityId;
   private String firstName;
   private String lastName;
-  private String studyProgrammeName;
 
 }
