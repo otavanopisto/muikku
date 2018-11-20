@@ -78,7 +78,7 @@
       var userElement = $(event.target).closest('.workspace-users');
       var userName = $(event.target).attr('data-user-name');
       this._confirmArchive($.proxy(function() {
-        this._toggleActivity(userElement, {active: false});
+        this._toggleActivity(userElement, false);
       }, this), userName);
     },
 
@@ -86,7 +86,7 @@
       var userElement = $(event.target).closest('.workspace-users');
       var userName = $(event.target).attr('data-user-name');
       this._confirmUnarchive($.proxy(function() {
-        this._toggleActivity(userElement, {active: true});
+        this._toggleActivity(userElement, true);
       }, this), userName);
     },
     
@@ -146,9 +146,14 @@
       }, this));
     },
 
-    _toggleActivity: function(userElement, payload) {
+    _toggleActivity: function(userElement, active) {
+      var workspaceEntityId = this.options.workspaceEntityId;
       var workspaceUserEntityId = userElement.attr('data-workspaceuserentity-id');
-      mApi().workspace.updateWorkspaceStudentActivity.update(workspaceUserEntityId, payload).callback(function (err) {
+      var payload = {
+        workspaceUserEntityId: workspaceUserEntityId,
+        active: active
+      };
+      mApi().workspace.workspaces.students.update(workspaceEntityId, workspaceUserEntityId, payload).callback(function (err) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }

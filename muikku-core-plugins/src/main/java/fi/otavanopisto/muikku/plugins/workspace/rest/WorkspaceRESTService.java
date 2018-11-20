@@ -2613,7 +2613,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{WORKSPACEUSERENTITYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response updateWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceUserEntityId,
+  public Response updateWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId,
       WorkspaceStudentRestModel workspaceStudentRestModel) {
 
     // Workspace, user, and access check
