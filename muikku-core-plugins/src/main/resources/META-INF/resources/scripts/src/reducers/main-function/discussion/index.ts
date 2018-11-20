@@ -1,8 +1,16 @@
 import {ActionType} from '~/actions';
 
+export interface DiscussionUserType {
+  id: number,
+  firstName: string,
+  lastName: string,
+  nickname: string,
+  hasImage: boolean
+}
+
 export interface DiscussionThreadType {
   created: string,
-  creator: number,
+  creator: DiscussionUserType,
   forumAreaId: number,
   id: number,
   lastModified: string,
@@ -17,7 +25,7 @@ export interface DiscussionThreadType {
 export interface DiscussionThreadReplyType {
   childReplyCount: number,
   created: string,
-  creator: number,
+  creator: DiscussionUserType,
   deleted: boolean,
   forumAreaId: number,
   id: number,

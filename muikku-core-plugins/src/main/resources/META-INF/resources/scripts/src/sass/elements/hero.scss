@@ -64,6 +64,7 @@
 
   @include breakpoint ($breakpoint-pad) {
     flex-direction: column;
+    padding: 0 5px;
   }
 }
 
@@ -83,12 +84,13 @@
 .hero__header--frontpage-muikku-author {
   color: $color-frontpage-text-muikku-author;
   font-size: 1.15rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1;
   text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.5rem;
+    font-weight: 300;
   }
 }
 
@@ -99,11 +101,12 @@
 
 .hero__header--frontpage-verkko {
   color: $color-frontpage-text-verkko;
-  font-weight: 200;
+  font-weight: 300;
   letter-spacing: 3px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 3rem;
+    font-weight: 200;
     letter-spacing: 5px;
     text-indent: 7px;
   }
@@ -112,7 +115,7 @@
 .hero__description {
   color: $color-frontpage-text-muikku-description;
   font-size: 0.925rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.2rem;
   margin: 1rem auto 0;
   max-width: 100%;

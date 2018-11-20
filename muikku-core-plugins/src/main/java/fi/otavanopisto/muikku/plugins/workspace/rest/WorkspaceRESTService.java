@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -81,6 +82,8 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerCont
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -94,7 +97,6 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyStat
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceActivityRecord;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
@@ -218,6 +220,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileController fileController;
+
+  @Inject
+  private FileAnswerUtils fileAnswerUtils;
   
   @GET
   @Path("/workspaceTypes")
@@ -1605,7 +1610,28 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(answerFile.getContent())
+    byte[] content = answerFile.getContent();
+    if (content == null) {
+      Long userEntityId = workspaceMaterialReply.getUserEntityId();
+      try {
+        if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, answerFile.getFileId())) {
+          content = fileAnswerUtils.getFileContent(FileAnswerType.FILE, workspaceMaterialReply.getUserEntityId(), answerFile.getFileId());
+        }
+        else {
+          logger.warning(String.format("File %s of user %d not found from file storage", answerFile.getFileId(), userEntityId));
+        }
+      }
+      catch (FileNotFoundException fnfe) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      catch (IOException e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+      }
+    }
+    if (content == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(content)
       .type(answerFile.getContentType())
       .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
       .build();
@@ -1684,38 +1710,54 @@ public class WorkspaceRESTService extends PluginRESTService {
           ZipOutputStream zout = new ZipOutputStream(out);
           for (WorkspaceMaterialFileFieldAnswerFile file : answerFiles) {
             
-            // Prevent duplicate file names
-            
-            String fileName = file.getFileName();
-            if (fileNames.contains(fileName)) {
-              int counter = 1;
-              String name = file.getFileName();
-              String prefix = "";
-              if (StringUtils.contains(name, ".")) {
-                prefix = StringUtils.substringAfterLast(name, ".");
-                name = StringUtils.substringBeforeLast(name, ".");
+            // File content
+
+            byte[] content = file.getContent();
+            if (content == null) {
+              Long userEntityId = workspaceMaterialReply.getUserEntityId();
+              if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, file.getFileId())) {
+                content = fileAnswerUtils.getFileContent(FileAnswerType.FILE, userEntityId, file.getFileId());
               }
-              if (!StringUtils.isEmpty(prefix)) {
-                prefix = String.format(".%s", prefix); 
-              }
-              while (fileNames.contains(fileName)) {
-                fileName = String.format("%s (%s)%s", name, counter++, prefix);
+              else {
+                logger.warning(String.format("File %s of user %d not found from file storage", file.getFileId(), userEntityId));
               }
             }
-            fileNames.add(fileName);
+
+            if (content != null) {
             
-            // Zip file
+              // Prevent duplicate file names
             
-            ZipEntry ze = new ZipEntry(fileName);
-            zout.putNextEntry(ze);
-            InputStream input = new ByteArrayInputStream(file.getContent());
-            try {
-              IOUtils.copy(input, zout);
+              String fileName = file.getFileName();
+              if (fileNames.contains(fileName)) {
+                int counter = 1;
+                String name = file.getFileName();
+                String prefix = "";
+                if (StringUtils.contains(name, ".")) {
+                  prefix = StringUtils.substringAfterLast(name, ".");
+                  name = StringUtils.substringBeforeLast(name, ".");
+                }
+                if (!StringUtils.isEmpty(prefix)) {
+                  prefix = String.format(".%s", prefix); 
+                }
+                while (fileNames.contains(fileName)) {
+                  fileName = String.format("%s (%s)%s", name, counter++, prefix);
+                }
+              }
+              fileNames.add(fileName);
+            
+              // Zip file
+            
+              ZipEntry ze = new ZipEntry(fileName);
+              zout.putNextEntry(ze);
+              InputStream input = new ByteArrayInputStream(content);
+              try {
+                IOUtils.copy(input, zout);
+              }
+              finally {
+                IOUtils.closeQuietly(input);
+              }
+              zout.closeEntry();
             }
-            finally {
-              IOUtils.closeQuietly(input);
-            }
-            zout.closeEntry();
           }
           zout.flush();
           zout.close();
@@ -1774,7 +1816,28 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
-      return Response.ok(answerClip.getContent())
+      byte[] content = answerClip.getContent();
+      if (content == null) {
+        Long userEntityId = workspaceMaterialReply.getUserEntityId();
+        try {
+          if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.AUDIO, userEntityId, answerClip.getClipId())) {
+            content = fileAnswerUtils.getFileContent(FileAnswerType.AUDIO, workspaceMaterialReply.getUserEntityId(), answerClip.getClipId());
+          }
+          else {
+            logger.warning(String.format("Audio %s of user %d not found from file storage", answerClip.getClipId(), userEntityId));
+          }
+        }
+        catch (FileNotFoundException fnfe) {
+          return Response.status(Status.NOT_FOUND).build();
+        }
+        catch (IOException e) {
+          return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+        }
+      }
+      if (content == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      return Response.ok(content)
         .type(answerClip.getContentType())
         .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
         .build();
@@ -2694,37 +2757,4 @@ public class WorkspaceRESTService extends PluginRESTService {
         .noContent()
         .build();
   }
-  
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/activityStatistics")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response getActivityStatistics(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userIdentifier") String userId) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    SchoolDataIdentifier userIdentifier = null;
-    if (StringUtils.isNotBlank(userId)) {
-      userIdentifier = SchoolDataIdentifier.fromId(userId);
-    }
-    
-    if (userIdentifier == null) {
-      return Response.status(Status.NOT_FOUND).entity("User does not exist").build();
-    }
-    
-    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
-    List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> workspaceMaterialReplies = workspaceMaterialReplyController.listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
-    List<WorkspaceActivityRecord> activityStatisitics = new ArrayList<WorkspaceActivityRecord>();
-    for(fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply: workspaceMaterialReplies) {
-      WorkspaceActivityRecord workspaceActivityRecord = new WorkspaceActivityRecord(workspaceMaterialReply.getWorkspaceMaterial().getAssignmentType().toString(), workspaceMaterialReply.getCreated());
-      activityStatisitics.add(workspaceActivityRecord);
-    }
-    return Response.ok(activityStatisitics).build();
-  }
-  
 }

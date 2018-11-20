@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -48,6 +50,9 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSelectFie
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialSorterFieldAnswer;
 
 public class WorkspaceMaterialFieldChangeListener {
+
+  @Inject
+  private Logger logger;
   
   @Inject
   private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
@@ -309,13 +314,25 @@ public class WorkspaceMaterialFieldChangeListener {
     if (answer instanceof WorkspaceMaterialAudioFieldAnswer) {
       List<WorkspaceMaterialAudioFieldAnswerClip> audioAnswerClips = workspaceMaterialFieldAnswerController.listWorkspaceMaterialAudioFieldAnswerClipsByFieldAnswer((WorkspaceMaterialAudioFieldAnswer) answer);
       for (WorkspaceMaterialAudioFieldAnswerClip audioAnswerClip : audioAnswerClips) {
-        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(audioAnswerClip);
+        try {
+          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(audioAnswerClip);
+        }
+        catch (Exception e) {
+          // Audio field was removed completely but it's not fatal if its answer files in file system fail to remove
+          logger.log(Level.WARNING, String.format("Problems removing file system files related to audio answer %d", answer.getId()), e);
+        }
       }
     }
     else if (answer instanceof WorkspaceMaterialFileFieldAnswer) {
       List<WorkspaceMaterialFileFieldAnswerFile> fileAnswerFiles = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer((WorkspaceMaterialFileFieldAnswer) answer);
       for (WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile : fileAnswerFiles) {
-        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+        try {
+          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+        }
+        catch (Exception e) {
+          // File field was removed completely but it's not fatal if its answer files in file system fail to remove
+          logger.log(Level.WARNING, String.format("Problems removing file system files related to file answer %d", answer.getId()), e);
+        }
       }
     }
     else if (answer instanceof WorkspaceMaterialMultiSelectFieldAnswer) {

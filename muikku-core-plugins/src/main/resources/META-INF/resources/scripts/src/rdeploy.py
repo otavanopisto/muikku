@@ -26,20 +26,20 @@ class GUI:
 		self.runButton = Button(main, text="run", command=self.run, font=("Ubuntu", 18))
 		self.runButton.pack()
 
-		self.mavenBuildButton = Button(main, text="Maven build", command=self.mavenBuild, font=("Ubuntu", 18))
-		self.mavenBuildButton.pack()
+		#self.mavenBuildButton = Button(main, text="Maven build", command=self.mavenBuild, font=("Ubuntu", 18))
+		#self.mavenBuildButton.pack()
 
-		self.mavenPyramusBuildButton = Button(main, text="Maven pyramus build", command=self.mavenPyramusBuild, font=("Ubuntu", 18))
-		self.mavenPyramusBuildButton.pack()
+		#self.mavenPyramusBuildButton = Button(main, text="Maven pyramus build", command=self.mavenPyramusBuild, font=("Ubuntu", 18))
+		#self.mavenPyramusBuildButton.pack()
 
-		self.deployButton = Button(main, text="Deploy", command=self.deployMuikku, font=("Ubuntu", 18))
-		self.deployButton.pack()
+		#self.deployButton = Button(main, text="Deploy", command=self.deployMuikku, font=("Ubuntu", 18))
+		#self.deployButton.pack()
 
-		self.deployPyramusButton = Button(main, text="Deploy pyramus", command=self.deployPyramus, font=("Ubuntu", 18))
-		self.deployPyramusButton.pack()
+		#self.deployPyramusButton = Button(main, text="Deploy pyramus", command=self.deployPyramus, font=("Ubuntu", 18))
+		#self.deployPyramusButton.pack()
 
-		self.ultraDupaClean = Button(main, text="Ultra dupa clean and deploy", command=self.ultraDupaClean, font=("Ubuntu", 18))
-		self.ultraDupaClean.pack()
+		#self.ultraDupaClean = Button(main, text="Ultra dupa clean and deploy", command=self.ultraDupaClean, font=("Ubuntu", 18))
+		#self.ultraDupaClean.pack()
 
 
 		self.status = StringVar()
@@ -48,7 +48,7 @@ class GUI:
 
 		self.getValues()
 
-		self.startWildfly()
+		#self.startWildfly()
 
 		self.setStatus("Ready")
 
@@ -101,19 +101,23 @@ class GUI:
 	def deployMuikku(self):
 		mName = [f for f in os.listdir(expanduser("~/.m2/repository/fi/otavanopisto/muikku/muikku")) if os.path.isdir(expanduser("~/.m2/repository/fi/otavanopisto/muikku/muikku/" + f)) and f.endswith("SNAPSHOT")][0]
 		mNameActual = [f for f in os.listdir(expanduser("~/.m2/repository/fi/otavanopisto/muikku/muikku/" + mName)) if os.path.isfile(expanduser("~/.m2/repository/fi/otavanopisto/muikku/muikku/" + mName + "/" + f)) and f.endswith(".war")][0];
-		self.deploy(expanduser("~/.m2/repository/fi/otavanopisto/muikku/muikku/" + mName + "/" + mNameActual))
+		self.deploy(expanduser("~/.m2/repository/fi/otavanopisto/muikku/muikku/" + mName + "/" + mNameActual), mNameActual)
 
 	def deployPyramus(self):
 		mName = [f for f in os.listdir(expanduser("~/.m2/repository/fi/otavanopisto/pyramus/pyramus")) if os.path.isdir(expanduser("~/.m2/repository/fi/otavanopisto/pyramus/pyramus/" + f)) and f.endswith("SNAPSHOT")][0]
 		mNameActual = [f for f in os.listdir(expanduser("~/.m2/repository/fi/otavanopisto/pyramus/pyramus/" + mName)) if os.path.isfile(expanduser("~/.m2/repository/fi/otavanopisto/pyramus/pyramus/" + mName + "/" + f)) and f.endswith(".war")][0];
-		self.deploy(expanduser("~/.m2/repository/fi/otavanopisto/pyramus/pyramus/" + mName + "/" + mNameActual))
+		self.deploy(expanduser("~/.m2/repository/fi/otavanopisto/pyramus/pyramus/" + mName + "/" + mNameActual), mNameActual)
 
-	def deploy(self, thing):
+	def deploy(self, thing, thingName):
 		self.setStatus("Deploying...");
 		self.save()
 		wildFlyLocation = self.wildFlyLocation.get()
-		print(["cp", "-r", thing, wildFlyLocation + "/standalone/deployments/"])
-		subprocess.call(["cp", "-r", thing, wildFlyLocation + "/standalone/deployments/"])
+		subprocess.call(["mkdir", wildFlyLocation + "/standalone/deployments/" + thingName])
+		subprocess.call(["unzip", "-o", thing, "-d", wildFlyLocation + "/standalone/deployments/" + thingName])
+		if (thingName.startswith("muikku")):
+			coreName = [f for f in os.listdir(wildFlyLocation + "/standalone/deployments/" + thingName + "/WEB-INF/lib/") if os.path.isfile(wildFlyLocation + "/standalone/deployments/" + thingName + "/WEB-INF/lib/" + f) and f.startswith("core-plugins") and not f.startswith("core-plugins-persistence")][0]
+			subprocess.call(["unzip", "-o", wildFlyLocation + "/standalone/deployments/" + thingName + "/WEB-INF/lib/" + coreName , "-d", wildFlyLocation + "/standalone/deployments/" + thingName  + "/WEB-INF/lib/" + coreName.replace(".jar", "")]);
+		subprocess.call(["touch", wildFlyLocation + "/standalone/deployments/" + thingName + ".dodeploy"])
 		self.setStatus("Ready")
 
 	def ultraDupaClean(self):
