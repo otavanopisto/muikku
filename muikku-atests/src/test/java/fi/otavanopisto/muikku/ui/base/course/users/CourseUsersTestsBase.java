@@ -128,11 +128,11 @@ public class CourseUsersTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/users", workspace.getUrlName()), false);
         waitForPresent(".workspace-students-listing-wrapper .workspace-users-name");
-        waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-archive");
+        waitAndClick("div[data-workspaceuserentity-id='2']>div.workspace-users-archive");
         waitAndClick(".archive-button");
         waitForClickable(".workspace-students-inactive");
         waitAndClick(".workspace-students-inactive");
-        waitAndClick("div[data-user-id='PYRAMUS-STUDENT-2']>div.workspace-users-unarchive");
+        waitAndClick("div[data-workspaceuserentity-id='2']>div.workspace-users-unarchive");
         waitAndClick(".unarchive-button");
         waitForPresentAndVisible(".workspace-students-listing-wrapper");
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -142,7 +142,7 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForPresent(".workspace-students-list");
         waitAndClick(".workspace-students-active");
         waitForPresent(".workspace-students-list");
-        assertPresent("div[data-user-id='PYRAMUS-STUDENT-2']");      
+        assertPresent("div[data-workspaceuserentity-id='2']");      
       } finally {
         deleteWorkspace(workspace.getId());
       }
