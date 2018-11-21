@@ -19,7 +19,7 @@ interface WorkspaceMaterialsProps {
 }
 
 interface WorkspaceMaterialsState {
-  loadedMaterialIds: {
+  loadedChapters: {
     [key: number]: boolean
   }
 }
@@ -27,31 +27,31 @@ interface WorkspaceMaterialsState {
 const DEFAULT_EMPTY_HEIGHT = 600;
 const DEFAULT_OFFSET = 67;
 
-//function isScrolledIntoView(el: HTMLElement) {
-//  let rect = el.getBoundingClientRect();
-//  let elemTop = rect.top;
-//  let elemBottom = rect.bottom;
-//
-//  let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
-//  return isVisible;
-//}
+function isScrolledIntoView(el: HTMLElement) {
+  let rect = el.getBoundingClientRect();
+  let elemTop = rect.top;
+  let elemBottom = rect.bottom;
+
+  let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+  return isVisible;
+}
 
 class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, WorkspaceMaterialsState> {
   private previousPassChanged: boolean;
   private previousPassOffsetTop: number;
   private previousPassTarget: string;
+  private previousPassLoadedContentOnTop: boolean;
   private disableHashRecalculation: boolean;
   private lastHashWasSetByScroll: boolean;
-  private flattenedMaterial: MaterialContentNodeListType;
+private flattenedMaterial: MaterialContentNodeListType;
   constructor(props: WorkspaceMaterialsProps){
     super(props);
     
     this.state = {
-      loadedMaterialIds: {}
+      loadedChapters: {}
     }
     
     this.recalculateLoaded = this.recalculateLoaded.bind(this);
-    this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.recalculateHash = this.recalculateHash.bind(this);
     this.onScroll = this.onScroll.bind(this);
     
@@ -64,7 +64,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     if (this.props.activeNodeId){
       document.getElementById(this.props.activeNodeId + "").scrollIntoView(true);
     }
-    this.recalculateLoaded();
+    this.recalculateLoaded(this.props, null);
     window.document.addEventListener("scroll", this.onScroll);
     window.addEventListener("beforeunload", this.cancelScrollTop);
   }
@@ -76,25 +76,30 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   cancelScrollTop(){
     window.scrollTo(0, 0);
   }
+  componentWillReceiveProps(nextProps: WorkspaceMaterialsProps){
+    if (this.props.materials !== nextProps.materials){
+      this.getFlattenedMaterials(nextProps);
+    }
+  }
   componentDidUpdate(prevProps: WorkspaceMaterialsProps, prevState: WorkspaceMaterialsState){
     console.log("component did update");
     if (this.props.activeNodeId !== prevProps.activeNodeId){
       if (!this.lastHashWasSetByScroll){
         document.getElementById(this.props.activeNodeId + "").scrollIntoView(true);
       }
-      this.recalculateLoaded();
+      this.recalculateLoaded(this.props, prevProps.activeNodeId);
       this.lastHashWasSetByScroll = false;
-    } else if (this.previousPassChanged) {
+    } else if (this.previousPassChanged && this.previousPassLoadedContentOnTop) {
       document.getElementById(this.previousPassTarget).scrollIntoView(true);
       window.scrollBy(0, -this.previousPassOffsetTop);
-      
+      document.body.style.overflow = "";
       this.disableHashRecalculation = false;
     }
   }
   onScroll(){
     console.log("SCROLL EVENT");
     
-    this.recalculateLoaded();
+    this.recalculateLoaded(this.props, this.props.activeNodeId);
     this.recalculateHash();
   }
   recalculateHash(){
@@ -133,37 +138,66 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       location.hash = newHash;
     }
   }
-  componentWillReceiveProps(nextProps: WorkspaceMaterialsProps){
-    if (this.props.materials !== nextProps.materials){
-      this.getFlattenedMaterials(nextProps);
-    }
+  getChapter(id: number, props: WorkspaceMaterialsProps = this.props){
+    let index = props.materials.findIndex(m1=>{
+      return !!m1.children.find((m)=>m.workspaceMaterialId === id);
+    });
+    let chapter = props.materials[index] || null;
+    return {index, chapter};
   }
-  recalculateLoaded(props: WorkspaceMaterialsProps = this.props){
+  recalculateLoaded(props: WorkspaceMaterialsProps = this.props, prevActiveNodeId: number){
     this.previousPassChanged = false;
     if (!props.activeNodeId){
       return;
     }
     
-    let newLoadedMaterialIds = {...this.state.loadedMaterialIds};
-    let index = this.flattenedMaterial.findIndex((m)=>m.workspaceMaterialId === props.activeNodeId);
-    newLoadedMaterialIds[props.activeNodeId] = true;
-    
-    for (let i = 1; i <= 5; i++){
-      if (this.flattenedMaterial[index + i]){
-        newLoadedMaterialIds[this.flattenedMaterial[index + i].workspaceMaterialId] = true;
+    let newLoadedChapters = {...this.state.loadedChapters};
+    let clearLoadedChapters:Array<{
+      index: number,
+      chapter: MaterialContentNodeType
+    }> = [];
+    Object.keys(this.refs).forEach((refKey:string)=>{
+      if (isScrolledIntoView(this.refs[refKey] as HTMLElement)){
+        let chapter = this.getChapter(parseInt(refKey), props);
+        if (chapter.chapter){
+          newLoadedChapters[chapter.chapter.workspaceMaterialId] = true;
+          clearLoadedChapters.push(chapter);
+        }
       }
-      if (this.flattenedMaterial[index - i]){
-        newLoadedMaterialIds[this.flattenedMaterial[index - i].workspaceMaterialId] = true;
-      }
+    });
+    let activeNodeChapter = this.getChapter(props.activeNodeId, props);
+    if (activeNodeChapter.chapter){
+      newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId] = true;
+      clearLoadedChapters.push(activeNodeChapter);
     }
     
-    if (JSON.stringify(newLoadedMaterialIds) !== JSON.stringify(this.state.loadedMaterialIds)){
+    if (JSON.stringify(newLoadedChapters) !== JSON.stringify(this.state.loadedChapters)){
+      this.previousPassLoadedContentOnTop = false;
+      this.disableHashRecalculation = false;
+      
+      if (prevActiveNodeId){
+        let chapter = this.getChapter(prevActiveNodeId, props);
+        let minNewChapter = clearLoadedChapters.length >= 2 ? clearLoadedChapters.reduce((m1, m2)=>{
+          if (m1.index > m2.index){
+            return m2;
+          }
+          return m1;
+        }) : clearLoadedChapters[0];
+        if (chapter.chapter && chapter.index > minNewChapter.index){
+          this.previousPassLoadedContentOnTop = true;
+          this.disableHashRecalculation = true;
+          
+          this.previousPassTarget = prevActiveNodeId + "";
+          this.previousPassOffsetTop = document.getElementById(this.previousPassTarget).getBoundingClientRect().top;
+          
+          document.body.style.overflow = "hidden";
+        }
+      }
+      
       this.previousPassChanged = true;
-      this.disableHashRecalculation = true;
-      this.previousPassTarget = this.props.activeNodeId + "";
-      this.previousPassOffsetTop = document.getElementById(this.previousPassTarget).getBoundingClientRect().top;
+      
       this.setState({
-        loadedMaterialIds: newLoadedMaterialIds
+        loadedChapters: newLoadedChapters
       });
     }
   }
@@ -192,7 +226,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       {node.children.map((subnode)=>{
         let anchor = <div id={"" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
         
-        if (this.state.loadedMaterialIds[subnode.workspaceMaterialId]){
+        if (this.state.loadedChapters[node.workspaceMaterialId]){
           return <div style={{border: "solid 1px red"}} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId}>
             {anchor}
             <MaterialLoader material={subnode} workspace={this.props.workspace}
