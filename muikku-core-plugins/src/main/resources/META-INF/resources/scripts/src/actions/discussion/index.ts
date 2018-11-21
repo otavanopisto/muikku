@@ -4,7 +4,6 @@ import notificationActions from '~/actions/base/notifications';
 import mApi, { MApiError } from '~/lib/mApi';
 import {DiscussionAreaListType, DiscussionAreaType, DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType,
   DiscussionThreadListType, DiscussionThreadReplyListType, DiscussionThreadReplyType, DiscussionAreaUpdateType} from "~/reducers/discussion";
-import { loadUserIndex } from "~/actions/user-index";
 import { StateType } from "~/reducers";
 
 const MAX_LOADED_AT_ONCE = 30;
@@ -151,10 +150,6 @@ let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType =
             (data.areaId ? mApi().workspace.workspaces.forumAreas.threads.read(discussion.workspaceId, data.areaId, params) :
               mApi().workspace.workspaces.forumLatest.read(discussion.workspaceId, params)) : (data.areaId ? mApi().forum.areas.threads
             .read(data.areaId, params) : mApi().forum.latest.read(params)), 'callback')();
-        
-        threads.forEach((thread)=>{
-          dispatch(loadUserIndex(thread.creator));
-        });
         
         //Create the payload for updating all the communicator properties
         let payload:DiscussionPatchType = {
@@ -306,8 +301,6 @@ let loadDiscussionThreadFromServer:LoadDiscussionThreadFromServerTriggerType = f
             mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
       }
       
-      dispatch(loadUserIndex(newCurrentThread.creator));
-      
       let pages:number = Math.ceil(newCurrentThread.numReplies / MAX_LOADED_AT_ONCE) || 1;
     
       dispatch({
@@ -319,10 +312,7 @@ let loadDiscussionThreadFromServer:LoadDiscussionThreadFromServerTriggerType = f
           discussion.workspaceId ?
             mApi().workspace.workspaces.forumAreas.threads.replies.read(discussion.workspaceId, data.areaId, data.threadId, params) :
             mApi().forum.areas.threads.replies.read(data.areaId, data.threadId, params), 'callback')();
-      replies.forEach((reply)=>{
-        dispatch(loadUserIndex(reply.creator));
-      });
-      
+     
       let newThreads: DiscussionThreadListType = state.discussion.threads.map((thread: DiscussionThreadType)=>{
         if (thread.id !== newCurrentThread.id){
           return thread;

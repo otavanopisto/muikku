@@ -17,7 +17,7 @@ import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/act
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 
 import CousePickerBody from '../components/coursepicker/body';
-import { loadUserIndexBySchoolData, loadUserIndex } from '~/actions/user-index';
+import { loadUserIndexBySchoolData } from '~/actions/user-index';
 import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer } from '~/actions/workspaces';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import { UserType } from '~/reducers/user-index';

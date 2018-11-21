@@ -33,7 +33,6 @@ interface MainChartData {
   MATERIAL_EXERCISEDONE?: number,
   MATERIAL_ASSIGNMENTDONE?: number,
   FORUM_NEWMESSAGE?: number,
-  FORUM_NEWTHREAD?: number,
   NOTIFICATION_ASSESMENTREQUEST?: number,
   NOTIFICATION_NOPASSEDCOURSES?: number,
   NOTIFICATION_SUPPLEMENTATIONREQUEST?: number,
@@ -43,7 +42,9 @@ interface MainChartData {
 enum Graph {
   SESSION_LOGGEDIN = "logins",
   MATERIAL_ASSIGNMENTDONE = "assignments",
-  MATERIAL_EXERCISEDONE = "exercises"
+  MATERIAL_EXERCISEDONE = "exercises",
+  WORKSPACE_VISIT = "visits",
+  FORUM_NEWMESSAGE = "forum-messages",
 }
 
 let ignoreZoomed: boolean = true;
@@ -62,7 +63,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       amChartsLoaded: AmCharts !== null,
       filteredWorkspaces: [],
       filteredCompletedWorkspaces: [],
-      filteredGraphs: []
+      filteredGraphs: [Graph.FORUM_NEWMESSAGE]
     };
     
     if (!this.state.amChartsLoaded){
@@ -167,11 +168,12 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     //NOTE: The unused data can be cut here. (Option 1)
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
     let chartDataMap = new Map<string, MainChartData>();
-    chartDataMap.set(new Date().toISOString().slice(0, 10), {SESSION_LOGGEDIN: 0, WORKSPACE_VISIT: 0, MATERIAL_EXERCISEDONE: 0, MATERIAL_ASSIGNMENTDONE: 0, FORUM_NEWMESSAGE: 0, FORUM_NEWTHREAD: 0});
+    chartDataMap.set(new Date().toISOString().slice(0, 10), {SESSION_LOGGEDIN: 0, WORKSPACE_VISIT: 0, MATERIAL_EXERCISEDONE: 0, MATERIAL_ASSIGNMENTDONE: 0, FORUM_NEWMESSAGE: 0});
       this.props.activityLogs.map((log)=>{
         let date = log.timestamp.slice(0, 10);
         let entry = chartDataMap.get(date) || {};
         switch(log.type){
+<<<<<<< HEAD
           case "SESSION_LOGGEDIN":
           case "FORUM_NEWMESSAGE":
           case "FORUM_NEWTHREAD":
@@ -183,6 +185,31 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
             break;
           default:
             break;
+=======
+        case "SESSION_LOGGEDIN":
+          entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
+          break;
+        case "FORUM_NEWMESSAGE":
+          entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
+          break;
+        case "FORUM_NEWTHREAD":
+          entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
+          break;
+        case "NOTIFICATION_ASSESMENTREQUEST":
+          entry.NOTIFICATION_ASSESMENTREQUEST = entry.NOTIFICATION_ASSESMENTREQUEST + 1|| 1;
+          break;
+        case "NOTIFICATION_NOPASSEDCOURSES":
+          entry.NOTIFICATION_NOPASSEDCOURSES = entry.NOTIFICATION_NOPASSEDCOURSES + 1|| 1;
+          break;
+        case "NOTIFICATION_SUPPLEMENTATIONREQUEST":
+          entry.NOTIFICATION_SUPPLEMENTATIONREQUEST = entry.NOTIFICATION_SUPPLEMENTATIONREQUEST + 1|| 1;
+          break;
+        case "NOTIFICATION_STUDYTIME":
+          entry.NOTIFICATION_STUDYTIME = entry.NOTIFICATION_STUDYTIME + 1|| 1;
+          break;
+        default:
+          break;
+>>>>>>> 8cdee4766dbc612a537dfb37347fa114dcf9f9c1
         }
         chartDataMap.set(date, entry);
       });
@@ -225,33 +252,17 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
     let graphs = new Array;
-    if (!this.state.filteredGraphs.includes(Graph.SESSION_LOGGEDIN)){
-      graphs.push({
-        "id": "SESSION_LOGGEDIN",
-        "balloonText": this.props.i18n.text.get("plugin.guider.loginsTitle") + " <b>[[SESSION_LOGGEDIN]]</b>",
-        "fillAlphas": 0.7,
-        "lineAlpha": 0.2,
-        "lineColor": "#62c3eb",
-        "title": "SESSION_LOGGEDIN",
-        "type": "column",
-        "stackable": false,
-        "clustered": false,
-        "columnWidth": 0.6,
-        "valueField": "SESSION_LOGGEDIN"
-      });
-    }
-    
     if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)){
       graphs.push({
         "id": "MATERIAL_ASSIGNMENTDONE",
         "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
-        "fillAlphas": 0.9,
+        "fillAlphas": 1,
         "lineAlpha": 0.2,
         "lineColor": "#ce01bd",
         "title": "MATERIAL_ASSIGNMENTDONE",
         "type": "column",
         "clustered": false,
-        "columnWidth": 0.4,
+        "columnWidth": 0.7,
         "valueField": "MATERIAL_ASSIGNMENTDONE"
       });
     }
@@ -260,19 +271,75 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       graphs.push({
         "id": "MATERIAL_EXERCISEDONE",
         "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
-        "fillAlphas": 0.9,
+        "fillAlphas": 1,
         "lineAlpha": 0.2,
         "lineColor": "#ff9900",
         "title": "MATERIAL_EXERCISEDONE",
         "type": "column",
         "clustered": false,
-        "columnWidth": 0.4,
+        "columnWidth": 0.7,
         "valueField": "MATERIAL_EXERCISEDONE"
       });
     }
     
+    if (!this.state.filteredGraphs.includes(Graph.FORUM_NEWMESSAGE)){
+      graphs.push({
+        "id": "FORUM_NEWMESSAGE",
+        "balloonText": this.props.i18n.text.get("plugin.guider.forumMessagesTitle") + " <b>[[FORUM_NEWMESSAGE]]</b>",
+        "fillAlphas": 1,
+        "lineAlpha": 0.2,
+        "lineColor": "#62c3eb",
+        "title": "FORUM_NEWMESSAGE",
+        "type": "column",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.4,
+        "valueField": "FORUM_NEWMESSAGE"
+      });
+    }
+    
+    if (!this.state.filteredGraphs.includes(Graph.SESSION_LOGGEDIN)){
+      graphs.push({
+        "id": "SESSION_LOGGEDIN",
+        "balloonText": this.props.i18n.text.get("plugin.guider.loginsTitle") + " <b>[[SESSION_LOGGEDIN]]</b>",
+        "bullet": "round",
+        "bulletSize": 12,
+        "fillAlphas": 0,
+        "lineAlpha": 0.5,
+        "lineThickness": 2,
+        "lineColor": "#2c2c2c",
+        "title": "SESSION_LOGGEDIN",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.7,
+        "valueField": "SESSION_LOGGEDIN"
+      });
+    }
+    
+    if (!this.state.filteredGraphs.includes(Graph.WORKSPACE_VISIT)){
+      graphs.push({
+        "id": "WORKSPACE_VISIT",
+        "balloonText": this.props.i18n.text.get("plugin.guider.visitsTitle") + " <b>[[WORKSPACE_VISIT]]</b>",
+        "bullet": "round",
+        "bulletSize": 8,
+        "fillAlphas": 0,
+        "lineAlpha": 0.5,
+        "lineThickness": 2,
+        "lineColor": "#43cd80",
+        "title": "WORKSPACE_VISIT",
+        "type": "line",
+        "stackable": false,
+        "clustered": false,
+        "columnWidth": 0.9,
+        "valueField": "WORKSPACE_VISIT"
+      });
+    }
+    
+    //TODO: set to if certain graphs not filtered
+    let stacked: boolean = !this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE) || !this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)
     let valueAxes = [{
-    "stackType": (graphs.length>1)? "regular": "none",
+    "stackType": stacked? "regular" : "none",
     "unit": "",
     "position": "left",
     "title": "",
@@ -284,7 +351,6 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "theme": "none",
       "type": "serial",
       "minMarginLeft": 50,
-      "startDuration": 0.4,
       "plotAreaFillAlphas": 0.1,
       "mouseWheelZoomEnabled": true,
       "minSelectedTime": 604800000,
@@ -335,7 +401,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     };
     ignoreZoomed = true;
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
-    let showGraphs: string[] = [Graph.SESSION_LOGGEDIN, Graph.MATERIAL_ASSIGNMENTDONE, Graph.MATERIAL_EXERCISEDONE];
+    let showGraphs: string[] = [Graph.SESSION_LOGGEDIN, Graph.MATERIAL_ASSIGNMENTDONE, Graph.MATERIAL_EXERCISEDONE, Graph.WORKSPACE_VISIT, Graph.FORUM_NEWMESSAGE];
     return <div className="application-sub-panel__body">
       <div className="chart-legend">
         <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler}/>
