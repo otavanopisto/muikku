@@ -686,7 +686,7 @@
 
     confirmStudentArchive: function(card, callback) {
       var workspaceEntityId = $(card).attr('data-workspace-entity-id');
-      var workspaceUserIdentifier = $(card).attr('data-workspace-user-identifier');
+      var workspaceUserEntityId = $(card).attr('data-workspace-user-entity-id');
       var studentName = $(card).find('.evaluation-card-student').text();
       renderDustTemplate('evaluation/evaluation-archive-student-confirm.dust', {studentName: studentName}, $.proxy(function(text) {
         var dialog = $(text);
@@ -701,7 +701,7 @@
             'class' : 'remove-button',
             'click' : function(event) {
               mApi().workspace.workspaces.students
-                .read(workspaceEntityId, workspaceUserIdentifier)
+                .read(workspaceEntityId, workspaceUserEntityId)
                 .callback($.proxy(function (err, workspaceUserEntity) {
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -709,7 +709,7 @@
                   else {
                     workspaceUserEntity.active = false;
                     mApi().workspace.workspaces.students
-                      .update(workspaceEntityId, workspaceUserIdentifier, workspaceUserEntity)
+                      .update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity)
                       .callback($.proxy(function (err, html) {
                         if (err) {
                           $('.notification-queue').notificationQueue('notification', 'error', err);
