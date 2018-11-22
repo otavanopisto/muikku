@@ -143,6 +143,27 @@ public abstract class AbstractIntegrationTest {
     }
   }
   
+  public String getWorkspaceUserEntityIdByPyramusId(String pyramusId) throws SQLException, ClassNotFoundException{
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(
+          String.format(
+              "SELECT id AS result "
+                  + "FROM workspaceUserEntity "
+                  + "WHERE identifier = '%s'",
+                  pyramusId));
+      ResultSet results = statement.getResultSet();
+      String user_id = "";
+      while (results.next()) {              
+        user_id = results.getString("result");
+      }
+      return user_id;
+    } finally {
+      connection.close();
+    }
+  }
+  
   protected Boolean webhookCall(String url, String payload) throws Exception {
     String signature = "38c6cbd28bf165070d070980dd1fb595";
     CloseableHttpClient client = HttpClients.createDefault();
