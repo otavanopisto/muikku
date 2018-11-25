@@ -26,6 +26,8 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
       return null;
     } else if (!this.props.lastWorkspace){
       return null;
+    } else if (!this.props.status.isStudent) {
+      return null;
     }
     return (<div className="panel panel--continue-studies">
       <div className="panel__header">
@@ -59,3 +61,7 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ContinueStudiesPanel);
+
+
+
+

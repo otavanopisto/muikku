@@ -31,10 +31,12 @@ import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -70,6 +72,9 @@ public class SessionBackingBean {
   
   @Inject
   private UserEmailEntityController userEmailEntityController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @PostConstruct
   public void init() {
@@ -321,6 +326,35 @@ public class SessionBackingBean {
   
   public String getAreaPermissions() {
     return areaPermissions != null ? areaPermissions : "null";
+  }
+  
+  public Boolean getUserPropertyAsBoolean(String propertyKey) {
+	String userProperty = this.getUserProperty(propertyKey);
+    if(userProperty != null && "1".equals(userProperty)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  public String getUserProperty(String propertyKey) {
+	if (!sessionController.isLoggedIn()) {
+	  return null;
+    }
+	  
+	SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+	if (userIdentifier == null) {
+		return null;
+	}
+	User user = userController.findUserByIdentifier(userIdentifier);
+	if (user == null) {
+		return null;
+	}
+	UserProperty userProperty = userSchoolDataController.getUserProperty(user, propertyKey);
+	if (userProperty == null) {
+	  return null;
+	}
+	return userProperty.getValue();
   }
 	  
   private String areaPermissions;

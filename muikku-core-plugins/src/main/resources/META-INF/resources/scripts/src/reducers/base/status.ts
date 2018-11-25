@@ -19,7 +19,8 @@ export interface StatusType {
   currentWorkspaceId?: number,
   currentWorkspaceName?: string,
   hasImage: boolean,
-  imgVersion: number
+  imgVersion: number,
+  hopsEnabled: boolean
 }
 
 export interface ProfileStatusType {
@@ -46,7 +47,8 @@ export default function status(state: StatusType={
   currentWorkspaceId: (<any>window).WORKSPACE_ID,
   currentWorkspaceName: (<any>window).WORKSPACE_NAME,
   hasImage: false,
-  imgVersion: (new Date()).getTime()
+  imgVersion: (new Date()).getTime(),
+  hopsEnabled: (<any>window).HOPS_ENABLED
 }, action: ActionType): StatusType{
   if (action.type === "LOGOUT"){
     $('#logout').click();

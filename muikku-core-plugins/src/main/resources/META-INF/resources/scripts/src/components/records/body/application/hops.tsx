@@ -48,7 +48,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return null;
     }
     
-    return <HopsGraph editable onHopsChange={this.setHopsToWithDelay}/>
+    return <HopsGraph onHopsChange={this.setHopsToWithDelay}/>
   }
 }
 
