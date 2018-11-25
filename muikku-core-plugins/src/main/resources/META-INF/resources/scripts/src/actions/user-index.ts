@@ -12,6 +12,10 @@ export interface LoadUserIndexBySchoolDataTriggerType {
   (userId: string, callback?: (user:UserType)=>any):AnyActionType
 }
 
+export interface LoadLoggedUserTriggerType {
+  (callback?: (user:UserType)=>any):AnyActionType
+}
+
 export interface LoadUserGroupIndexTriggerType {
   (groupId: number):AnyActionType
 }
@@ -91,6 +95,41 @@ let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function l
   }
 }
 
+let loadLoggedUser:LoadLoggedUserTriggerType =  function loadLoggedUser(callback) { 
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+    
+    if (state.status.loggedIn) {
+      let userId = state.status.userSchoolDataIdentifier;
+      let currentUserInfo = state.userIndex.usersBySchoolData[userId];
+      if (currentUserInfo || fetchingStateUserBySchoolData[userId]){
+        return;
+      }
+      
+      fetchingStateUserBySchoolData[userId] = true;
+      
+      try {
+        let user:UserType = <UserType>(await (promisify(mApi().user.whoami.read(), 'callback')()) || 0);
+        dispatch({
+          type: "SET_USER_BY_SCHOOL_DATA_INDEX",
+          payload: {
+            index: userId,
+            value: user
+          }
+        });
+        callback(user);
+      } catch(err){
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+      }
+    } else {
+      // TODO: if the user is not logged in, what to do?
+      callback(null);
+    }
+  }
+}
+
 let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIndex(groupId) { 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
@@ -117,5 +156,5 @@ let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIn
   }
 }
 
-export default {loadUserGroupIndex, loadUserIndexBySchoolData}
-export {loadUserGroupIndex, loadUserIndexBySchoolData}
+export default {loadUserGroupIndex, loadLoggedUser}
+export {loadUserGroupIndex, loadLoggedUser}
