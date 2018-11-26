@@ -406,21 +406,26 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public UserProperty getUserProperty(String userIdentifier, String key) {
-    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
-    if (studentId != null) {
-      Student student = pyramusClient.get("/students/students/" + studentId, Student.class);
-      Map<String, String> variables = student.getVariables();
-      String value = variables.get(key);
-      if (value == null) {
-        return null;
-      } else {
-        return new PyramusUserProperty(userIdentifier, key, value);
-      }
-    }
-    logger.warning(String.format("PyramusUserSchoolDataBridge.getUserProperty malformed user identifier %s\n%s",
-        userIdentifier,
-        ExceptionUtils.getStackTrace(new Throwable())));
-    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
+	Map<String, String> variables = null;
+	Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+	if (studentId != null) {
+	  Student student = findPyramusStudent(studentId);
+	  variables = student.getVariables();
+	} else {
+	  Long staffMemberId = identifierMapper.getPyramusStaffId(userIdentifier);
+	  if (staffMemberId != null) {
+	    StaffMember staffMember = findPyramusStaffMember(staffMemberId);
+	    variables = staffMember.getVariables();
+	  }
+	}
+	if (variables != null) {
+	  String value = variables.get(key);
+	  return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
+	}
+	logger.warning(String.format("PyramusUserSchoolDataBridge.getUserProperty malformed user identifier %s\n%s",
+	    userIdentifier,
+	    ExceptionUtils.getStackTrace(new Throwable())));
+	throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
   @Override
