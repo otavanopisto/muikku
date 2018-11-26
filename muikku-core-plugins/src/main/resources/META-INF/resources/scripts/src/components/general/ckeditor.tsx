@@ -29,6 +29,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   private width: number | string;
   private height: number | string;
   private cancelChangeTrigger: boolean;
+  private timeout: NodeJS.Timer;
   
   constructor(props: CKEditorProps){
     super(props);
@@ -44,60 +45,77 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     //we don't expect the user to type anything at all when ckeditor is starting up
     this.cancelChangeTrigger = true;
   }
-  
   resize(width: number | string, height: number | string){
     getCKEDITOR().instances[this.name].resize(width, height);
     
     this.width = width;
     this.height = height;
   }
-  
   componentDidMount(){
-    let extraConfig: any = {
-      height: 0,
-      startupFocus: this.props.autofocus,
-      allowedContent: true,
-      entities_latin: false,
-      entities_greek: false,
-      entities: false,
-      basicEntities: false
-    };
-    
-    if (this.props.extraPlugins){
-      for (let [plugin, url] of (Object as any).entries(this.props.extraPlugins)){
-        getCKEDITOR().plugins.addExternal(plugin, url);
-      }
-      extraConfig.extraPlugins = Object.keys(this.props.extraPlugins).join(',');
+    this.setupCKEditor();
+  }
+  setupCKEditor(){
+    if (!getCKEDITOR()){
+      this.timeout = setTimeout(()=>{
+        this.setupCKEditor();
+      }, 10);
+      return;
     }
-    getCKEDITOR().replace(this.name, Object.assign(extraConfig, {...this.props.configuration, 
-      contentsCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"}));
-    getCKEDITOR().instances[this.name].on('change', ()=>{
-      if (this.cancelChangeTrigger){
-        return;
-      }
+    let extraConfig: any = {
+        height: 0,
+        startupFocus: this.props.autofocus,
+        allowedContent: true,
+        entities_latin: false,
+        entities_greek: false,
+        entities: false,
+        basicEntities: false
+      };
       
-      let data = getCKEDITOR().instances[this.name].getData();
-      if (data !== this.currentData){
-        this.currentData = data;
-        this.props.onChange(data);
+      if (this.props.extraPlugins){
+        for (let [plugin, url] of (Object as any).entries(this.props.extraPlugins)){
+          getCKEDITOR().plugins.addExternal(plugin, url);
+        }
+        extraConfig.extraPlugins = Object.keys(this.props.extraPlugins).join(',');
       }
-    });
-    getCKEDITOR().instances[this.name].on('key', ()=>{
-      this.cancelChangeTrigger = false;
-    })
-    getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
-      let instance = getCKEDITOR().instances[this.name];
-      this.enableCancelChangeTrigger();
-      instance.setData(this.props.children);
-      if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
-        this.resize(this.props.width, this.props.height);
-      }
-      
-      //TODO somehow, the freaking autofocus doesn't focus in the last row but in the first
-      //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
-    });
+      getCKEDITOR().replace(this.name, Object.assign(extraConfig, {...this.props.configuration, 
+        contentsCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"}));
+      getCKEDITOR().instances[this.name].on('change', ()=>{
+        if (this.cancelChangeTrigger){
+          return;
+        }
+        
+        let data = getCKEDITOR().instances[this.name].getData();
+        if (data !== this.currentData){
+          this.currentData = data;
+          this.props.onChange(data);
+        }
+      });
+      getCKEDITOR().instances[this.name].on('key', ()=>{
+        this.cancelChangeTrigger = false;
+      })
+      getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
+        let instance = getCKEDITOR().instances[this.name];
+        this.enableCancelChangeTrigger();
+        instance.setData(this.props.children);
+        if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
+          this.resize(this.props.width, this.props.height);
+        }
+        
+        //TODO somehow, the freaking autofocus doesn't focus in the last row but in the first
+        //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
+      });
+  }
+  updateCKEditor(data: string){
+    if (!getCKEDITOR()){
+      return;
+    }
+    getCKEDITOR().instances[this.name].setData(data);
   }
   componentWillUnmount(){
+    if (!getCKEDITOR()){
+      clearTimeout(this.timeout);
+      return;
+    }
     getCKEDITOR().instances[this.name].destroy();
   }
   enableCancelChangeTrigger(){
@@ -109,7 +127,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   componentWillReceiveProps(nextProps: CKEditorProps){
     if (nextProps.children !== this.currentData){
       this.enableCancelChangeTrigger();
-      getCKEDITOR().instances[this.name].setData(nextProps.children);
+      
     }
     
     if (nextProps.width !== this.props.width || nextProps.height !== this.props.height){

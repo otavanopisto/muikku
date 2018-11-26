@@ -231,6 +231,10 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
       
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
       
       let state = this.props.store.getState();

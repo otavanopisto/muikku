@@ -20,7 +20,10 @@ interface WorkspaceMaterialsProps {
 
 interface WorkspaceMaterialsState {
   loadedChapters: {
-    [key: number]: boolean
+    [key: number]: {
+      isAnimating: boolean,
+      height: number
+    }
   }
 }
 
@@ -37,13 +40,8 @@ function isScrolledIntoView(el: HTMLElement) {
 }
 
 class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, WorkspaceMaterialsState> {
-  private previousPassChanged: boolean;
-  private previousPassOffsetTop: number;
-  private previousPassTarget: string;
-  private previousPassLoadedContentOnTop: boolean;
   private disableHashRecalculation: boolean;
-  private lastHashWasSetByScroll: boolean;
-private flattenedMaterial: MaterialContentNodeListType;
+  private flattenedMaterial: MaterialContentNodeListType;
   constructor(props: WorkspaceMaterialsProps){
     super(props);
     
@@ -55,26 +53,23 @@ private flattenedMaterial: MaterialContentNodeListType;
     this.recalculateHash = this.recalculateHash.bind(this);
     this.onScroll = this.onScroll.bind(this);
     
-    this.getFlattenedMaterials(props);
-    
     this.disableHashRecalculation = true;
-    this.lastHashWasSetByScroll = false;
+    
+    this.getFlattenedMaterials(props);
   }
   componentDidMount(){
     if (this.props.activeNodeId){
-      document.getElementById(this.props.activeNodeId + "").scrollIntoView(true);
+      (this.refs[this.props.activeNodeId] as HTMLElement).scrollIntoView(true);
+      setTimeout(()=>{
+        this.disableHashRecalculation = false;
+      }, 100);
     }
-    this.recalculateLoaded(this.props, null);
+    this.recalculateLoaded();
     window.document.addEventListener("scroll", this.onScroll);
-    window.addEventListener("beforeunload", this.cancelScrollTop);
   }
   componentWillUnmount(){
     this.disableHashRecalculation = true;
     window.document.removeEventListener("scroll", this.onScroll);
-    window.removeEventListener("beforeunload", this.cancelScrollTop);
-  }
-  cancelScrollTop(){
-    window.scrollTo(0, 0);
   }
   componentWillReceiveProps(nextProps: WorkspaceMaterialsProps){
     if (this.props.materials !== nextProps.materials){
@@ -84,28 +79,43 @@ private flattenedMaterial: MaterialContentNodeListType;
   componentDidUpdate(prevProps: WorkspaceMaterialsProps, prevState: WorkspaceMaterialsState){
     console.log("component did update");
     if (this.props.activeNodeId !== prevProps.activeNodeId){
-      if (!this.lastHashWasSetByScroll){
-        document.getElementById(this.props.activeNodeId + "").scrollIntoView(true);
+      let onActiveLoad = null;
+      if (this.props.activeNodeId !== this.getActive()){
+        let activeNodeChapter = this.getChapter(this.props.activeNodeId);
+        let trigger = ()=>{
+          this.disableHashRecalculation = true;
+          (this.refs[this.props.activeNodeId] as HTMLElement).scrollIntoView(true);
+          setTimeout(()=>{
+            (this.refs[this.props.activeNodeId] as HTMLElement).scrollIntoView(true);
+            this.disableHashRecalculation = false;
+          }, 100);
+        };
+        if (!this.state.loadedChapters[activeNodeChapter.chapter.workspaceMaterialId]){
+          onActiveLoad = trigger;
+        } else {
+          trigger();
+        }
+      } else {
+        this.disableHashRecalculation = false;
       }
-      this.recalculateLoaded(this.props, prevProps.activeNodeId);
-      this.lastHashWasSetByScroll = false;
-    } else if (this.previousPassChanged && this.previousPassLoadedContentOnTop) {
-      document.getElementById(this.previousPassTarget).scrollIntoView(true);
-      window.scrollBy(0, -this.previousPassOffsetTop);
-      document.body.style.overflow = "";
-      this.disableHashRecalculation = false;
+      
+      if (onActiveLoad){
+        this.recalculateLoaded(true, onActiveLoad);
+      } else {
+        this.recalculateLoaded();
+      }
     }
+  }
+  immediatelyCompleteAnimation(chapter: number){
+    
   }
   onScroll(){
     console.log("SCROLL EVENT");
     
-    this.recalculateLoaded(this.props, this.props.activeNodeId);
+    this.recalculateLoaded();
     this.recalculateHash();
   }
-  recalculateHash(){
-    if (this.disableHashRecalculation){
-      return;
-    }
+  getActive(){
     let winner:number = null;
     let isAllTheWayToTheBottom = document.documentElement.scrollHeight - document.documentElement.scrollTop === document.documentElement.clientHeight;
     if (!isAllTheWayToTheBottom){
@@ -115,89 +125,74 @@ private flattenedMaterial: MaterialContentNodeListType;
         if (!refKeyInt){
           continue;
         }
-        let element = this.refs[refKey] as HTMLElement;
-        let elementTop = element.getBoundingClientRect().top;
-        if (elementTop <= DEFAULT_OFFSET && (elementTop > winnerTop || !winner)){
-          winner = refKeyInt;
-          winnerTop = elementTop;
-        }
+      let element = this.refs[refKey] as HTMLElement;
+      let elementTop = element.getBoundingClientRect().top;
+      if (elementTop <= DEFAULT_OFFSET && (elementTop > winnerTop || !winner)){
+        winner = refKeyInt;
+        winnerTop = elementTop;
       }
-    } else {
-      winner = this.flattenedMaterial[this.flattenedMaterial.length - 1].workspaceMaterialId;
+    }
+  } else {
+    winner = this.flattenedMaterial[this.flattenedMaterial.length - 1].workspaceMaterialId;
+  }
+  
+    winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
+    return winner;
+  }
+  recalculateHash(){
+    if (this.disableHashRecalculation){
+      return;
     }
     
-    winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
+    let active = this.getActive();
     
     let newHash = ""
-    if (winner !== this.flattenedMaterial[0].workspaceMaterialId){
-      newHash = "#" + winner;
+    if (active !== this.flattenedMaterial[0].workspaceMaterialId){
+      newHash = "#" + active;
     }
     
     if (newHash !== location.hash){
-      this.lastHashWasSetByScroll = true;
       location.hash = newHash;
     }
   }
-  getChapter(id: number, props: WorkspaceMaterialsProps = this.props){
-    let index = props.materials.findIndex(m1=>{
+  getChapter(id: number){
+    let index = this.props.materials.findIndex(m1=>{
       return !!m1.children.find((m)=>m.workspaceMaterialId === id);
     });
-    let chapter = props.materials[index] || null;
-    return {index, chapter};
+    let chapter = this.props.materials[index] || null;
+    let size = this.props.materials[index].children.length;
+    return {index, chapter, size};
   }
-  recalculateLoaded(props: WorkspaceMaterialsProps = this.props, prevActiveNodeId: number){
-    this.previousPassChanged = false;
-    if (!props.activeNodeId){
+  recalculateLoaded(dontAnimate?: boolean, onDone?: ()=>any){
+    if (!this.props.activeNodeId){
       return;
     }
     
     let newLoadedChapters = {...this.state.loadedChapters};
-    let clearLoadedChapters:Array<{
-      index: number,
-      chapter: MaterialContentNodeType
-    }> = [];
     Object.keys(this.refs).forEach((refKey:string)=>{
       if (isScrolledIntoView(this.refs[refKey] as HTMLElement)){
-        let chapter = this.getChapter(parseInt(refKey), props);
+        let chapter = this.getChapter(parseInt(refKey));
         if (chapter.chapter){
-          newLoadedChapters[chapter.chapter.workspaceMaterialId] = true;
-          clearLoadedChapters.push(chapter);
+          newLoadedChapters[chapter.chapter.workspaceMaterialId] = {
+            isAnimating: dontAnimate ? false : true,
+            height: dontAnimate ? null : chapter.size * DEFAULT_EMPTY_HEIGHT
+          };
         }
       }
     });
-    let activeNodeChapter = this.getChapter(props.activeNodeId, props);
+    let activeNodeChapter = this.getChapter(this.props.activeNodeId);
     if (activeNodeChapter.chapter){
-      newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId] = true;
-      clearLoadedChapters.push(activeNodeChapter);
+      newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId] = {
+        isAnimating: dontAnimate ? false : true,
+        height: dontAnimate ? null : activeNodeChapter.size * DEFAULT_EMPTY_HEIGHT
+      };
     }
     
     if (JSON.stringify(newLoadedChapters) !== JSON.stringify(this.state.loadedChapters)){
-      this.previousPassLoadedContentOnTop = false;
-      this.disableHashRecalculation = false;
-      
-      if (prevActiveNodeId){
-        let chapter = this.getChapter(prevActiveNodeId, props);
-        let minNewChapter = clearLoadedChapters.length >= 2 ? clearLoadedChapters.reduce((m1, m2)=>{
-          if (m1.index > m2.index){
-            return m2;
-          }
-          return m1;
-        }) : clearLoadedChapters[0];
-        if (chapter.chapter && chapter.index > minNewChapter.index){
-          this.previousPassLoadedContentOnTop = true;
-          this.disableHashRecalculation = true;
-          
-          this.previousPassTarget = prevActiveNodeId + "";
-          this.previousPassOffsetTop = document.getElementById(this.previousPassTarget).getBoundingClientRect().top;
-          
-          document.body.style.overflow = "hidden";
-        }
-      }
-      
-      this.previousPassChanged = true;
-      
       this.setState({
         loadedChapters: newLoadedChapters
+      }, ()=>{
+        onDone && onDone();
       });
     }
   }
@@ -213,27 +208,28 @@ private flattenedMaterial: MaterialContentNodeListType;
     });
   }
   render(){
-    if (!this.props.workspace || !this.props.materials){
+    if (!this.props.materials){
       return null;
     }
     
     console.log("RENDERED WITH DATA");
     
-    return <div>{this.props.materials.map((node)=>{
+    return <div style={{paddingTop: DEFAULT_OFFSET}}>{this.props.materials.map((node)=>{
     return <section key={node.workspaceMaterialId}>
     <h1>{node.title}</h1>
     <div>
       {node.children.map((subnode)=>{
-        let anchor = <div id={"" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
-        
+        let anchor = <div id={"anchor-" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
+        let material = !this.props.workspace ? null : <MaterialLoader material={subnode} workspace={this.props.workspace}
+          i18n={this.props.i18n} status={this.props.status} />;
         if (this.state.loadedChapters[node.workspaceMaterialId]){
-          return <div style={{border: "solid 1px red"}} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId}>
+          return <div style={{border: "solid 1px red"}} ref={subnode.workspaceMaterialId + ""}
+            key={subnode.workspaceMaterialId}>
             {anchor}
-            <MaterialLoader material={subnode} workspace={this.props.workspace}
-              i18n={this.props.i18n} status={this.props.status} />
+            {material}
           </div>
         }
-        return <div key={subnode.workspaceMaterialId} style={{height: DEFAULT_EMPTY_HEIGHT}}
+        return <div key={subnode.workspaceMaterialId} style={{border: "solid 1px green", height: DEFAULT_EMPTY_HEIGHT}}
           ref={subnode.workspaceMaterialId + ""}>{anchor}{subnode.workspaceMaterialId}</div>
       })}
     </div>

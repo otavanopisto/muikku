@@ -12,8 +12,6 @@ import Navigation, { NavigationTopic, NavigationElement } from '~/components/gen
 interface NavigationProps {
   i18n: i18nType,
   materials: MaterialContentNodeListType,
-  onScrollToSection?: ()=>any,  
-      scrollPadding?: number,
   activeNodeId: number
 }
 

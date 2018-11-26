@@ -15,17 +15,8 @@ interface WorkspaceMaterialsBodyState {
 }
 
 export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMaterialsBodyProps, WorkspaceMaterialsBodyState> {
-  constructor(props: WorkspaceMaterialsBodyProps){
-    super(props);
-    
-    this.disableAutoLoading = this.disableAutoLoading.bind(this);
-  }
-  disableAutoLoading(){
-    //(this.refs["materials"] as any).getWrappedInstance().disableAutoLoadingUntilNewCurrentMaterialGiven();
-    //(this.refs["materials"] as any).getWrappedInstance().makeItHashWasSetByMaterials();
-  }
   render(){
-    let aside = <NavigationAside onScrollToSection={this.disableAutoLoading} scrollPadding={132}/>;
+    let aside = <NavigationAside/>;
     return (<div>
       <WorkspaceNavbar navigation={aside} activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="materials"> 
