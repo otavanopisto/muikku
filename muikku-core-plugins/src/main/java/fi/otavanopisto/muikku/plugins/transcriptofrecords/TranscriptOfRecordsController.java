@@ -1,11 +1,15 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.enterprise.inject.Any;
@@ -14,8 +18,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.settings.MatriculationSubject;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -28,7 +37,12 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class TranscriptOfRecordsController {
-
+  
+  private static final String MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY = "matriculation.subjects";
+  
+  @Inject
+  private Logger logger;
+  
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
@@ -37,6 +51,9 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Inject
   @Any
@@ -208,6 +225,27 @@ public class TranscriptOfRecordsController {
     }
     
     return result;
+  }
+  
+  /**
+   * Returns a list of configured matriculation subjects.
+   * 
+   * @return list of configured matriculation subjects or empty list if setting is not configured.
+   */
+  public List<MatriculationSubject> listMatriculationSubjects() {
+    String subjectsJson = pluginSettingsController.getPluginSetting("transcriptofrecords", MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY);
+    if (StringUtils.isNotBlank(subjectsJson)) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+        return objectMapper.readValue(subjectsJson, new TypeReference<List<MatriculationSubject>>() { });
+      } catch (IOException e) {
+        if (logger.isLoggable(Level.SEVERE)) {
+          logger.log(Level.SEVERE, String.format("Failed to parse %s setting value", MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY), e);
+        }
+      }
+    }
+    
+    return Collections.emptyList();
   }
 
   private SearchProvider getProvider(String name) {
