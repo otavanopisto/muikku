@@ -186,17 +186,18 @@
   &:hover {
     background: $evaluation-passed-color;
   }
-  
+
 }
 
 // RE-EVALUATE OVERLAY
 .workspace-re-evaluation-form-overlay {
   align-items: center;
-  background: #fff;
+  background: $evaluation-modal-workspace-evaluation-form-overlay-background-color;
   bottom: 0;
   display: flex;
-  left: 0;
+  flex-flow: column nowrap;
   justify-content: flex-start;
+  left: 0;
   position: absolute;
   right: 0;
   top: 0;
@@ -204,12 +205,12 @@
 
 .workspace-re-evaluation-form-activate-description {
   color: $evaluation-delete-color;
+  flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  flex-basis: auto;
   font-size: 16px;
-  font-weight: 400; 
-  padding: 5px 20px 5px 5px;
+  font-weight: 400;
+  padding: 0 5px 10px;
   text-align: left;
   text-transform: none;
 }
@@ -217,14 +218,13 @@
 .workspace-re-evaluation-form-activate-button {
   background: $evaluation-delete-color;
   border-radius: 3px;
-  color: #fff;
+  color: $evaluation-modal-workspace-evaluation-form-activate-button-font-color;
   cursor: pointer;
+  flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 1;
-  flex-bases: auto;
-  font-size: 14px;
-  padding: 4px 8px;
-  font-weight: 400;
+  font-size: 16px;
+  padding: 8px 12px;
 }
 
 // EVALUATE FORM

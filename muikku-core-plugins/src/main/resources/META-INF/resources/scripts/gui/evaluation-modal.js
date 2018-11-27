@@ -169,7 +169,7 @@
                   ));
               };
 
-              $('.workspace-re-evaluation-form-activate-button').click($.proxy(function(event) {
+              $('.workspace-re-evaluation-form-activate-button').click($.proxy(function() {
                   $('.workspace-re-evaluation-form-overlay').remove();
               }, this));
 
