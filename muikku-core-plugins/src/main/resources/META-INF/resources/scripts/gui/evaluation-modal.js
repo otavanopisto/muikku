@@ -167,7 +167,7 @@
                     .addClass('workspace-re-evaluation-form-activate-button')
                     .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationButtonLabel"))
                   ));
-              };
+              }
 
               $('.workspace-re-evaluation-form-activate-button').click($.proxy(function() {
                   $('.workspace-re-evaluation-form-overlay').remove();
