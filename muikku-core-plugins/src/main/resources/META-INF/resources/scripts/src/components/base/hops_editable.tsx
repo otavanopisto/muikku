@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from '~/reducers';
+import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
 
 interface HopsProps {
   data?: HOPSDataType,
@@ -53,6 +54,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
     }
   }
 
+  onMatriculationSubjectsChange(subjects: string[]) {
+    //TODO: implement
+    console.log(subjects);
+  }
+
   render() {
     return <div className="application-sub-panel text">
     
@@ -88,6 +94,9 @@ class Hops extends React.Component<HopsProps, HopsState> {
               </div>
             })}
         </div>
+      </div>
+      <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
+        <MatriculationSubjectsList onMatriculationSubjectsChange={this.onMatriculationSubjectsChange} />
       </div>
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title form-element">
