@@ -110,11 +110,11 @@
 }
 
 .application-sub-panel__body--yo-status-incomplete {
-  background-color: #de6c6a;
+  background-color: $color-sub-panel-status-incomplete-background-color;
 }
 
 .application-sub-panel__body--yo-status-complete {
-  background-color: #f6fff2;
+  background-color: $color-sub-panel-status-complete-background-color;
 }
 
 .application-sub-panel__body--studies-summary-dates {
@@ -250,7 +250,7 @@
 }
 
 .application-sub-panel__item-body--summarizer {
-  background-color: #ebf8fc;
+  background-color: $color-application-list-sorter-background;
 }
 
 .application-sub-panel__item-header--hops {
@@ -305,12 +305,12 @@
     border-radius: 3px;
     display: inline-block;
     margin: 2px 5px 2px 0;
-    padding: 4px;  
+    padding: 4px;
   }
 } 
 
 .application-sub-panel__item-data--summary-start-date span {
-  background-color: $color-sub-panel-data-1-background;  
+  background-color: $color-sub-panel-data-1-background;
 }
 
 .application-sub-panel__item-data--summary-end-date span {
