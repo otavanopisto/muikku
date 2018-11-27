@@ -25,10 +25,23 @@
   }
 }
 
+.application-list__header-container--sorter {
+  align-items: center;
+  background-color: $color-application-list-sorter-background;
+  cursor: pointer;
+  justify-content: space-between;
+  padding: 10px;
+}
+
 .application-list__header {
   font-size: 1.125rem;
   font-weight: 400;
 }
+
+.application-list__header--sorter {
+  font-size: 0.875rem;
+}
+
 
 .application-list__header-title {
   display: flex;
