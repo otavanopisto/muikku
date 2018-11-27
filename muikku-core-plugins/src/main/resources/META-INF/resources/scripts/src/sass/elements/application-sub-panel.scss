@@ -21,7 +21,7 @@
   font-weight: 400;
   padding: 0 10px;
   text-transform: uppercase;
-  width: 100%;  
+  width: 100%;
   
   @include breakpoint($breakpoint-pad) {
     margin: 0 0 10px;
@@ -32,7 +32,7 @@
 .application-sub-panel__header--guider-header {
   font-family: $text-font-family;
   font-size: 1.1875rem;
-  font-weight: 400;  
+  font-weight: 400;
   text-transform: uppercase;
   width: 100%;
 }
@@ -53,15 +53,15 @@
 
 
 .application-sub-panel__header-main {
-  flex-basis: 100%;  
-  flex-grow: 1;  
+  flex-basis: 100%;
+  flex-grow: 1;
   flex-shrink: 1;
   
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
     flex-grow: 1;
     flex-shrink: 1;
-    font-size: 1.25rem;    
+    font-size: 1.25rem;
   }  
   
 }
@@ -86,7 +86,7 @@
   
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
-    flex-grow: 1;    
+    flex-grow: 1;
   }
 }
 
@@ -127,7 +127,7 @@
   flex-direction: column;
   
   @include breakpoint($breakpoint-desktop) {
-    flex-direction: row;    
+    flex-direction: row;
   }
 }
 
@@ -137,7 +137,7 @@
   flex-direction: column;
   
   @include breakpoint($breakpoint-pad) {
-    flex-direction: row;    
+    flex-direction: row;
   }
 
 }
@@ -183,7 +183,7 @@
 
 .application-sub-panel__card-body {
   display: flex;
-  justify-content: center;  
+  justify-content: center;
   padding: 10px;
 }
 
@@ -282,8 +282,8 @@
   border-radius: 3px;
   display: inline-block;
   margin-left: 5px;
-  margin-right: 5px; 
-  padding: 2px 5px;   
+  margin-right: 5px;
+  padding: 2px 5px;
 }
 
 
@@ -403,7 +403,7 @@
 }
 
 .application-sub-panel__text {
-  padding: 2px 12px;  
+  padding: 2px 12px;
 }
 
 .application-sub-panel__text--task-evaluation {
