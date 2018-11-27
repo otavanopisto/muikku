@@ -27,7 +27,7 @@
 
 .application-list__header-container--sorter {
   align-items: center;
-  background-color: #f8f8f8;
+  background-color: $color-application-list-sorter-background;
   cursor: pointer;
   justify-content: space-between;
   padding: 10px;
