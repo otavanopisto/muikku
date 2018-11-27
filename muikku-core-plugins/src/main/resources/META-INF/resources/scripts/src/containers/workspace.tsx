@@ -55,6 +55,8 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.loadWorkspaceAnnouncerData = this.loadWorkspaceAnnouncerData.bind(this);
     this.loadWorkspaceMaterialsData = this.loadWorkspaceMaterialsData.bind(this);
     
+    this.onWorkspaceMaterialsBodyActiveNodeIdChange = this.onWorkspaceMaterialsBodyActiveNodeIdChange.bind(this);
+    
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
   loadlib(url: string){
@@ -76,12 +78,25 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.loadWorkspaceAnnouncerData(window.location.hash.replace("#","").split("/"));
     } else if (window.location.pathname.includes("/materials")){
       if (window.location.hash.replace("#", "")){
-        this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "")));
+        this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
       } else if (this.props.store.getState().workspaces.currentMaterials &&
           this.props.store.getState().workspaces.currentMaterials[0] &&
           this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
         this.loadWorkspaceMaterialsData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
       }
+    }
+  }
+  onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number){
+    if (!newId){
+      history.pushState(null, null, '#');
+      if (this.props.store.getState().workspaces.currentMaterials &&
+          this.props.store.getState().workspaces.currentMaterials[0] &&
+          this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
+        this.loadWorkspaceMaterialsData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+      }
+    } else {
+      history.pushState(null, null, '#p-' + newId);
+      this.loadWorkspaceMaterialsData(newId);
     }
   }
   renderWorkspaceHome(props: RouteComponentProps<any>){
@@ -243,12 +258,13 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
         if (!window.location.hash.replace("#", "") && result[0] && result[0].children && result[0].children[0]){
           this.loadWorkspaceMaterialsData(result[0].children[0].workspaceMaterialId);
         } else if (window.location.hash.replace("#", "")){
-          this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "")));
+          this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
         }
       }) as Action);
     }
     
-    return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}/>
+    return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}
+      onActiveNodeIdChange={this.onWorkspaceMaterialsBodyActiveNodeIdChange}/>
   }
   render(){
     return (<BrowserRouter><div id="root">

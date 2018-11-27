@@ -15,7 +15,8 @@ interface WorkspaceMaterialsProps {
   materials: MaterialContentNodeListType,
   aside: React.ReactElement<any>,
   activeNodeId: number,
-  status: StatusType
+  status: StatusType,
+  onActiveNodeIdChange: (activeNodeId: number)=>any
 }
 
 interface WorkspaceMaterialsState {
@@ -87,11 +88,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           //Only way to force trigger the event when the scrolling is so buggy
           //Do it as many times as possible with timeouts in order to trick the browser
           //to actually scroll there
-          (this.refs[this.props.activeNodeId] as HTMLElement).scrollIntoView(true);
+          let element = document.querySelector("#p-" + this.props.activeNodeId);
+          element.scrollIntoView(true);
           setTimeout(()=>{
-            (this.refs[this.props.activeNodeId] as HTMLElement).scrollIntoView(true);
+            element.scrollIntoView(true);
             setTimeout(()=>{
-              (this.refs[this.props.activeNodeId] as HTMLElement).scrollIntoView(true);
+              element.scrollIntoView(true);
               setTimeout(()=>{
                 this.disableHashRecalculation = false;
                 this.disableLoadedRecalculation = false;
@@ -190,13 +192,15 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     
     let active = this.getActive();
     
-    let newHash = ""
+    let newActive:number = null;
+    let newHash = "";
     if (active !== this.flattenedMaterial[0].workspaceMaterialId){
-      newHash = "#" + active;
+      newActive = active;
+      newHash = active + "";
     }
     
-    if (newHash !== location.hash){
-      location.hash = newHash;
+    if (newHash !== location.hash.replace("#","").replace("p-","")){
+      this.props.onActiveNodeIdChange(newActive);
     }
   }
   getChapter(id: number){
@@ -273,7 +277,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     <h1>{node.title}</h1>
     <div>
       {node.children.map((subnode)=>{
-        let anchor = <div id={"anchor-" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
+        let anchor = <div id={"p-" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
         let material = !this.props.workspace ? null : <MaterialLoader material={subnode} workspace={this.props.workspace}
           i18n={this.props.i18n} status={this.props.status} />;
         if (this.state.loadedChapters[node.workspaceMaterialId]){

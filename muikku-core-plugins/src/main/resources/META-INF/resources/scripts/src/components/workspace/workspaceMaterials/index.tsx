@@ -7,7 +7,8 @@ import Materials from './materials';
 import NavigationAside from './aside';
 
 interface WorkspaceMaterialsBodyProps {
-  workspaceUrl: string
+  workspaceUrl: string,
+  onActiveNodeIdChange: (newId: number)=>any
 }
 
 interface WorkspaceMaterialsBodyState {
@@ -20,7 +21,7 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
     return (<div>
       <WorkspaceNavbar navigation={aside} activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="materials"> 
-        <Materials aside={aside} ref="materials"/>
+        <Materials aside={aside} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
       </ScreenContainer>
     </div>);
   }
