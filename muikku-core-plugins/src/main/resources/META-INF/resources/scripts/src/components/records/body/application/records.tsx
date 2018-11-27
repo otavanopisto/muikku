@@ -133,13 +133,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           return 0;      
         }    
     )
-    
   }
   
   sortWorkspaces(data: any){
     let key = "name";
-    let sortDirection = this.state.sortDirectionWorkspaces;  
-    let sortedData = this.sortBy(data, key, sortDirection ); 
+    let sortDirection = this.state.sortDirectionWorkspaces;
+    let sortedData = this.sortBy(data, key, sortDirection);
 
       this.setState({
         sortDirectionWorkspaces : this.state.sortDirectionWorkspaces === "asc" ? "desc" : "asc",
@@ -150,7 +149,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   sortRecords(data: any){
     let key = "courseName";
     let sortDirection = this.state.sortDirectionRecords;  
-    let sortedData = this.sortBy(data, key, sortDirection ); 
+    let sortedData = this.sortBy(data, key, sortDirection);
 
       this.setState({
         sortDirectionRecords : this.state.sortDirectionRecords === "asc" ? "desc" : "asc",
@@ -225,7 +224,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                       </ApplicationListItemHeader>
                     </ApplicationListItem>
                   })}
- 
             </ApplicationList>
             }) : <h4>{this.props.i18n.text.get("plugin.records.records.empty")}</h4>}
           </div>
