@@ -328,12 +328,8 @@ public class SessionBackingBean {
   }
   
   public Boolean getUserPropertyAsBoolean(String propertyKey) {
-	String userProperty = this.getUserProperty(propertyKey);
-    if(userProperty != null && "1".equals(userProperty)) {
-      return true;
-    } else {
-      return false;
-    }
+    String userProperty = this.getUserProperty(propertyKey);
+    return userProperty != null && "1".equals(userProperty);
   }
   
   public String getUserProperty(String propertyKey) {
