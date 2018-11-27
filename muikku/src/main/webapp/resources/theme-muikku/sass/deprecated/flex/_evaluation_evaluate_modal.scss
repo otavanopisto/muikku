@@ -189,21 +189,59 @@
   
 }
 
+// RE-EVALUATE OVERLAY
+.workspace-re-evaluation-form-overlay {
+  align-items: center;
+  background: #fff;
+  bottom: 0;
+  display: flex;
+  left: 0;
+  justify-content: flex-start;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.workspace-re-evaluation-form-activate-description {
+  color: $evaluation-delete-color;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+  font-size: 16px;
+  font-weight: 400; 
+  padding: 5px 20px 5px 5px;
+  text-align: left;
+  text-transform: none;
+}
+
+.workspace-re-evaluation-form-activate-button {
+  background: $evaluation-delete-color;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-bases: auto;
+  font-size: 14px;
+  padding: 4px 8px;
+  font-weight: 400;
+}
+
 // EVALUATE FORM
 .evaluation-modal-evaluate-form {
-  
+
   .cke {
     border: 2px solid $evaluation-modal-texteditor-border-color;
     box-shadow: none;
     border-radius: 3px;
   }
-  
+
   label {
     display: block;
     margin: 0;
     text-transform: uppercase;
   }
-  
+
   input[type="text"],
   input[type="date"] {
     background: $evaluation-modal-textfield-background-color;
@@ -258,6 +296,7 @@
 
 .eval-modal-evaluate-buttonset {
   padding: 0;
+  position: relative;
   text-align: center;
   text-transform: uppercase;
 }
