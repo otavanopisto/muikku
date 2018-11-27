@@ -5,10 +5,12 @@ import '~/sass/elements/application-list.scss';
 interface ApplicationListProps {
   modifiers?: string | Array<string>,
   className?: string
+  sortKey?: string,
+  sortData?: any 
 }
 
 interface ApplicationListState {
-
+  sortOrder: string
 }
 
 export default class ApplicationList extends React.Component<ApplicationListProps, ApplicationListState> {
