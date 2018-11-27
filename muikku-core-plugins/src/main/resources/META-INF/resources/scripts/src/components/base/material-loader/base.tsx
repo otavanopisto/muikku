@@ -170,9 +170,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     });
     
     Object.keys(statics).forEach((componentKey)=>{
-      console.log("searching for statics in", componentKey, this.elements);
       $(this.elements).find(componentKey).addBack(componentKey).toArray().forEach((element: HTMLElement)=>{
-        console.log("found", element);
         let rElement:React.ReactElement<any> = statics[componentKey].handler({
           element,
           dataset: extractDataSet(element),
