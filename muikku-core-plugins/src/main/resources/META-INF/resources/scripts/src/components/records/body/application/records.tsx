@@ -115,7 +115,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps){
     super(props);
     this.goToWorkspace = this.goToWorkspace.bind(this);
-    this.state = {sortDirectionWorkspaces : "asc", sortDirectionRecords: "asc"};
+    this.state = {sortDirectionWorkspaces : "desc", sortDirectionRecords: "desc"};
   }
   
   goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
@@ -184,7 +184,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               return <ApplicationList key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <div onClick={this.sortWorkspaces.bind(this, record.workspaces)} className="application-list__header-container application-list__header-container--sorter">
                   <h3 className="application-list__header application-list__header--sorter">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3>
-                  <div className={`icon-sort-alpha-${this.state.sortDirectionWorkspaces}`}></div>                
+                  <div className={`icon-sort-alpha-${this.state.sortDirectionWorkspaces === 'asc' ? 'desc' : 'asc'}`}></div>                
                 </div> : null}  
                 {record.workspaces.map((workspace)=>{
                   //Do we want an special way to display all these different states? passed is very straightforward but failed and
@@ -212,7 +212,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 {record.transferCredits.length ? 
                   <div className="application-list__header-container application-list__header-container--sorter" onClick={this.sortRecords.bind(this, record.transferCredits)}>
                     <h3 className="application-list__header application-list__header--sorter">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3>
-                    <div className={`icon-sort-alpha-${this.state.sortDirectionRecords}`}></div>                    
+                    <div className={`icon-sort-alpha-${this.state.sortDirectionRecords === 'asc' ? 'desc' : 'asc'}`}></div>                    
                   </div> : null}
                   {record.transferCredits.map((credit)=>{
                     return <ApplicationListItem className="course course--credits" key={credit.identifier}>
