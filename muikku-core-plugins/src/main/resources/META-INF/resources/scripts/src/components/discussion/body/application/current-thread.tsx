@@ -1,7 +1,6 @@
-import { UserIndexType } from "~/reducers/main-function/user-index";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion";
+import { DiscussionUserType, DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion";
 import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
@@ -21,7 +20,6 @@ import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThre
 interface CurrentThreadProps {
   discussion: DiscussionType,
   i18n: i18nType,
-  userIndex: UserIndexType,
   userId: number,
   permissions: any
 }
@@ -46,9 +44,8 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     }
     let areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussion.current.forumAreaId] || {};
     
-    //Again note that the user might not be ready
-    let userCreator = this.props.userIndex.users[this.props.discussion.current.creator];
-    let userCategory = this.props.discussion.current.creator > 10 ? this.props.discussion.current.creator % 10 + 1 : this.props.discussion.current.creator;
+    let userCreator: DiscussionUserType = this.props.discussion.current.creator;
+    let userCategory = this.props.discussion.current.creator.id > 10 ? this.props.discussion.current.creator.id % 10 + 1 : this.props.discussion.current.creator.id;
     let avatar;
     if (!userCreator){
       //This is what it shows when the user is not ready
@@ -62,8 +59,8 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
        </object>;
     }
     
-    let canRemoveThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.removeThread;
-    let canEditThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.editMessage;
+    let canRemoveThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.removeThread;
+    let canEditThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.editMessage;
 
     
     return <DiscussionCurrentThread sticky={this.props.discussion.current.sticky} locked={this.props.discussion.current.locked}
@@ -96,11 +93,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       {
         
         this.props.discussion.currentReplies.map((reply: DiscussionThreadReplyType)=>{
-          //Again note that the user might not be ready
-          let user = this.props.userIndex.users[reply.creator];
-          let userCategory = reply.creator > 10 ? reply.creator % 10 + 1 : reply.creator;                    
-          let canRemoveMessage = this.props.userId === reply.creator || areaPermissions.removeThread;
-          let canEditMessage = this.props.userId === reply.creator || areaPermissions.editMessages;
+          let user: DiscussionUserType = reply.creator;
+          let userCategory = reply.creator.id > 10 ? reply.creator.id % 10 + 1 : reply.creator;                    
+          let canRemoveMessage = this.props.userId === reply.creator.id || areaPermissions.removeThread;
+          let canEditMessage = this.props.userId === reply.creator.id || areaPermissions.editMessages;
           
           let avatar;
           if (!user){
@@ -154,7 +150,6 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     discussion: state.discussion,
-    userIndex: state.userIndex,
     userId: state.status.userId,
     permissions: state.status.permissions
   }
