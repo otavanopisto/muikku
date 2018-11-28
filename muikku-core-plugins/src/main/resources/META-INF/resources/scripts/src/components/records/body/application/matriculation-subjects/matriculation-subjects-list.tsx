@@ -147,7 +147,7 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
 
     const matriculationSubjectInputs = this.state.selectedMatriculationSubjects.map((subject: string, index: number) => {
       return (
-        <div>
+        <div key={index}>
           <select className="form-element__select form-element__select--hops-selector" value={subject} onChange={this.handleMatriculationSubjectChange.bind( this, index )}>
             <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectChoose")}</option>
             {this.state.matriculationSubjects.map(( subject: MatriculationSubject, index: number ) => {
@@ -162,6 +162,7 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
     return (
       <div>
         {matriculationSubjectInputs}
+        <br/>
         <button onClick={this.handleMatriculationSubjectAdd.bind(this)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectAdd")}</button>
       </div>
     );
