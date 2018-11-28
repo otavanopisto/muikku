@@ -269,7 +269,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         userProperties.asBoolean("spanish"),
         userProperties.asString("science"),
         userProperties.asString("religion"),
-        userProperties.asString("additionalInfo")
+        userProperties.asString("additionalInfo"),
+        userProperties.getStudentMatriculationSubjects()
     );
   }
 
@@ -417,7 +418,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     vopsController.saveStringProperty(user, "science", model.getScience());
     vopsController.saveStringProperty(user, "religion", model.getReligion());
     vopsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
-
+    vopsController.saveStudentMatriculationSubjects(user, model.getStudentMatriculationSubjects());
+    
     return Response.ok().entity(model).build();
   }
   

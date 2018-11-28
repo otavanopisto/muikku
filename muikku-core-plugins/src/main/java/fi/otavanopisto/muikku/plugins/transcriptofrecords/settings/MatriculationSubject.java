@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.settings;
 
 /**
- * Matriculation subject PluginSetting model
+ * Matriculation subject model
  * 
  * @author Antti Leppä
  * @author Heikki Kurhinen

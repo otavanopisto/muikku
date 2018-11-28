@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,13 +17,14 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.settings.MatriculationSubject;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.settings.MatriculationSubjects;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.settings.StudentMatriculationSubjects;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -39,6 +39,7 @@ import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 public class TranscriptOfRecordsController {
   
   private static final String MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY = "matriculation.subjects";
+  private static final String USER_MATRICULATION_SUBJECTS_USER_PROPERTY = "hops.matriculation-subjects";
   
   @Inject
   private Logger logger;
@@ -58,7 +59,7 @@ public class TranscriptOfRecordsController {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-  
+
   private static final Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
   
   public boolean subjectAppliesToStudent(User student, Subject subject) {
@@ -158,7 +159,14 @@ public class TranscriptOfRecordsController {
   }
 
   public TranscriptofRecordsUserProperties loadUserProperties(User user) {
-    return new TranscriptofRecordsUserProperties(userSchoolDataController.listUserProperties(user));
+    List<UserProperty> userProperties = userSchoolDataController.listUserProperties(user);
+    
+    StudentMatriculationSubjects studentMatriculationSubjects = unserializeStudentMatriculationSubjects(userProperties.stream()
+      .filter(userProperty -> USER_MATRICULATION_SUBJECTS_USER_PROPERTY.equals(userProperty.getKey()))
+      .findFirst()
+      .orElse(null));
+  
+    return new TranscriptofRecordsUserProperties(userProperties, studentMatriculationSubjects);
   }
 
   public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
@@ -232,20 +240,84 @@ public class TranscriptOfRecordsController {
    * 
    * @return list of configured matriculation subjects or empty list if setting is not configured.
    */
-  public List<MatriculationSubject> listMatriculationSubjects() {
+  public MatriculationSubjects listMatriculationSubjects() {
     String subjectsJson = pluginSettingsController.getPluginSetting("transcriptofrecords", MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY);
-    if (StringUtils.isNotBlank(subjectsJson)) {
+    return unserializeObject(subjectsJson, MatriculationSubjects.class);    
+  }
+  
+  /**
+   * Saves a list of student's matriculation subjects
+   * 
+   * @param student student
+   * @param matriculationSubjects list of student's matriculation subjects
+   */
+  public void saveStudentMatriculationSubjects(User student, StudentMatriculationSubjects matriculationSubjects) {
+    userSchoolDataController.setUserProperty(student, USER_MATRICULATION_SUBJECTS_USER_PROPERTY, serializeObject(matriculationSubjects));
+  }
+
+  /**
+   * Unserializes student's matriculation subjects from user property
+   * 
+   * @param userProperty user property
+   * @return unserialized student's matriculation subjects
+   */
+  private StudentMatriculationSubjects unserializeStudentMatriculationSubjects(UserProperty userProperty) {
+    return unserializeStudentMatriculationSubjects(userProperty != null ? userProperty.getValue() : null);
+  }
+  
+  /**
+   * Unserializes student's matriculation subjects from string
+   * 
+   * @param value string value
+   * @return unserialized student's matriculation subjects
+   */
+  private StudentMatriculationSubjects unserializeStudentMatriculationSubjects(String value) {
+    StudentMatriculationSubjects result = unserializeObject(value, StudentMatriculationSubjects.class);
+    if (result != null) {
+      return result;
+    }
+    
+    return new StudentMatriculationSubjects();
+  }
+  
+  /**
+   * Unserialized object from a JSON string
+   * 
+   * @param string string representation
+   * @return unserialized object or null if unserialization fails
+   */
+  private <T> T unserializeObject(String string, Class<T> targetClass) {
+    if (StringUtils.isNotBlank(string)) {
       ObjectMapper objectMapper = new ObjectMapper();
       try {
-        return objectMapper.readValue(subjectsJson, new TypeReference<List<MatriculationSubject>>() { });
+        return objectMapper.readValue(string, targetClass);
       } catch (IOException e) {
-        if (logger.isLoggable(Level.SEVERE)) {
-          logger.log(Level.SEVERE, String.format("Failed to parse %s setting value", MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY), e);
-        }
+        logger.log(Level.SEVERE, "Failed to unserialize object", e);
       }
     }
     
-    return Collections.emptyList();
+    return null;
+  }
+  
+  /**
+   * Writes an object as JSON string
+   * 
+   * @param entity to be serialized
+   * @return serialized string
+   */
+  private String serializeObject(Object entity) {
+    if (entity == null) {
+      return null;
+    }
+
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper.writeValueAsString(entity);
+    } catch (JsonProcessingException e) {
+      logger.log(Level.SEVERE, "Failed to serialize an entity", e);
+    }
+    
+    return null;
   }
 
   private SearchProvider getProvider(String name) {
