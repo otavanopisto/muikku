@@ -114,7 +114,7 @@ after_failure:
 notifications:
   webhooks:
     urls:
-    - http://build.staging.fi/travis.php
+    - http://build.muikkuverkko.fi/travis.php
     on_success: always
     on_failure: never
     on_start: false
