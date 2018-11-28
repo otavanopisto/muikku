@@ -3,8 +3,8 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects;
 /**
  * Matriculation subject model
  * 
- * @author Antti Leppä
- * @author Heikki Kurhinen
+ * @author Antti Leppä <antti.leppa@metatavu.fi>
+ * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
  */
 public class MatriculationSubject {
 

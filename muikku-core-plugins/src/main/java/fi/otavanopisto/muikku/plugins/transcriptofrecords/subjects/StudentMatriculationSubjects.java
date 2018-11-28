@@ -5,8 +5,8 @@ import java.util.ArrayList;
 /**
  * Matriculation subject model for student selected subject
  * 
- * @author Antti Leppä
- * @author Heikki Kurhinen
+ * @author Antti Leppä <antti.leppa@metatavu.fi>
+ * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
  */
 public class StudentMatriculationSubjects extends ArrayList<String> {
 
