@@ -17,7 +17,7 @@ import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 
 import CousePickerBody from '../components/coursepicker/body';
-import { loadUserIndexBySchoolData } from '~/actions/main-function/user-index';
+import { loadLoggedUser } from '~/actions/main-function/user-index';
 import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 import { UserType } from '~/reducers/main-function/user-index';
@@ -186,7 +186,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       
       let state:StateType = this.props.store.getState();
       if (state.status.loggedIn){
-        this.props.store.dispatch(loadUserIndexBySchoolData(state.status.userSchoolDataIdentifier, (user:UserType)=>{
+        this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
           if (!currentLocationHasData && user.curriculumIdentifier){
             location.hash = "#?" + queryString.stringify({
               c: [user.curriculumIdentifier]
