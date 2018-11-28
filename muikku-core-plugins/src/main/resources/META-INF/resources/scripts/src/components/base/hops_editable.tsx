@@ -54,9 +54,13 @@ class Hops extends React.Component<HopsProps, HopsState> {
     }
   }
 
-  onMatriculationSubjectsChange(subjects: string[]) {
-    //TODO: implement
-    console.log(subjects);
+  /**
+   * Event handler for handling matriculation subjects changes
+   * 
+   * @param subjects list of subjects
+   */
+  onMatriculationSubjectsChange = (subjects: string[]) => {
+    this.set("studentMatriculationSubjects", subjects);
   }
 
   render() {
@@ -96,7 +100,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-        <MatriculationSubjectsList onMatriculationSubjectsChange={this.onMatriculationSubjectsChange} />
+        <div className="application-sub-panel__item-title">
+          {this.props.i18n.text.get( "plugin.records.hops.goals.matriculationExam" )}
+        </div>
+        <div className="application-sub-panel__item-data form-element">
+          <MatriculationSubjectsList initialMatriculationSubjects={this.state.hops.studentMatriculationSubjects} onMatriculationSubjectsChange={this.onMatriculationSubjectsChange} />
+        </div>
       </div>
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title form-element">

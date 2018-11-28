@@ -21,6 +21,7 @@ export interface HOPSDataType {
   science: "BI" | "FY" | "KE" | "GE",
   religion: "UE" | "ET" | "UX",
   additionalInfo?: string,
+  studentMatriculationSubjects: string[],
   optedIn: boolean
 }
 
