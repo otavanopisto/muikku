@@ -80,9 +80,9 @@ class YO extends React.Component<YOProps,YOState> {
       const loaded = this.state.matriculationSubjectsLoaded && this.props.hops.status === "READY" && !!this.props.hops.value;
       const selectedMatriculationSubjects = loaded ? (this.props.hops.value.studentMatriculationSubjects || []).map((subject: string, index: number) => {
         return (
-          <li key={index}>{this.getMatriculationSubjectNameByValue(subject)}</li>
+          <div key={index}>{this.getMatriculationSubjectNameByValue(subject)}</div>
         );
-      }) : ( <li>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</li> );
+      }) : ( <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> );
       
       return (
         <div>
@@ -115,7 +115,7 @@ class YO extends React.Component<YOProps,YOState> {
               <div className="application-sub-panel__item application-sub-panel__item--summarizer">
                 <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
                 <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
-                  <ul>{selectedMatriculationSubjects}</ul>
+                  {selectedMatriculationSubjects}
                 </div>
               </div>
             </div>
