@@ -31,7 +31,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
           {node.children.map((subnode)=>{
             return <NavigationElement iconColor={null} icon={null} key={subnode.workspaceMaterialId}
               isActive={this.props.activeNodeId === subnode.workspaceMaterialId} disableScroll
-              hash={subnode.workspaceMaterialId}>{subnode.title}</NavigationElement>
+              hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</NavigationElement>
           })}
         </NavigationTopic>
       })

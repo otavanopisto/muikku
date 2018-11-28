@@ -29,7 +29,7 @@ interface WorkspaceMaterialsState {
 }
 
 const DEFAULT_EMPTY_HEIGHT = 200;
-const DEFAULT_OFFSET = 67;
+const DEFAULT_OFFSET = 67*2;
 const ANIMATION_SECONDS = 3;
 
 function isScrolledIntoView(el: HTMLElement) {
@@ -298,57 +298,37 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     
     //console.log("RENDERED WITH DATA");
     
-    return <div style={{paddingTop: DEFAULT_OFFSET}}>{this.props.materials.map((node)=>{
-    return <section key={node.workspaceMaterialId} id={"section-" + node.workspaceMaterialId} style={{
-      height: this.state.loadedChapters[node.workspaceMaterialId] ?
-      this.state.loadedChapters[node.workspaceMaterialId].height : node.children.length*DEFAULT_EMPTY_HEIGHT,
-      transition: "height " + ANIMATION_SECONDS + "s ease",
-      overflow: "hidden"
-    }}>
-    <h1>{node.title}</h1>
-    <div>
-      {node.children.map((subnode)=>{
-        let anchor = <div id={"p-" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
-        let material = !this.props.workspace ? null : <MaterialLoader material={subnode} workspace={this.props.workspace}
-          i18n={this.props.i18n} status={this.props.status} />;
-        if (this.state.loadedChapters[node.workspaceMaterialId]){
-          return <div style={{border: "solid 1px red"}} ref={subnode.workspaceMaterialId + ""}
-            key={subnode.workspaceMaterialId}>
-            {anchor}
-            {material}
-          </div>
+    return <ApplicationPanel modifier="materials"
+      toolbar={<div><h2>{this.props.workspace.name}</h2><ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/></div>}
+      asideAfter={this.props.aside}>
+        {this.props.materials.map((node)=>{
+          return <section key={node.workspaceMaterialId} id={"section-" + node.workspaceMaterialId} style={{
+          height: this.state.loadedChapters[node.workspaceMaterialId] ?
+          this.state.loadedChapters[node.workspaceMaterialId].height : node.children.length*DEFAULT_EMPTY_HEIGHT,
+          transition: "height " + ANIMATION_SECONDS + "s ease",
+          overflow: "hidden"
+        }}>
+        <h1>{node.title}</h1>
+        <div>
+          {node.children.map((subnode)=>{
+            let anchor = <div id={"p-" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
+            let material = !this.props.workspace ? null : <MaterialLoader material={subnode} workspace={this.props.workspace}
+              i18n={this.props.i18n} status={this.props.status} />;
+            if (this.state.loadedChapters[node.workspaceMaterialId]){
+              return <div style={{border: "solid 1px red"}} ref={subnode.workspaceMaterialId + ""}
+                key={subnode.workspaceMaterialId}>
+                {anchor}
+                {material}
+              </div>
+            }
+            return <div key={subnode.workspaceMaterialId} style={{border: "solid 1px green", height: DEFAULT_EMPTY_HEIGHT}}
+              ref={subnode.workspaceMaterialId + ""}>{anchor}{subnode.workspaceMaterialId}</div>
+          })}
+        </div>
+      </section>
+          })
         }
-        return <div key={subnode.workspaceMaterialId} style={{border: "solid 1px green", height: DEFAULT_EMPTY_HEIGHT}}
-          ref={subnode.workspaceMaterialId + ""}>{anchor}{subnode.workspaceMaterialId}</div>
-      })}
-    </div>
-  </section>
-  })
-}</div>
-    
-    //<ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/>
-//    return <ApplicationPanel ref="application-panel" modifier="materials"
-//      toolbar={<div><h2>{this.props.workspace.name}</h2></div>}
-//      asideAfter={this.props.aside}>
-//        {this.props.materials.map((node)=>{
-//          return <section key={node.workspaceMaterialId}>
-//            <h1>{node.title}</h1>
-//            <div>
-//              {node.children.map((subnode)=>{
-//                if (this.state.loadedMaterialIds[subnode.workspaceMaterialId]){
-//                  return <div style={{border: "solid 1px red", height: DEFAULT_EMPTY_HEIGHT}} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId}>
-//                    <MaterialLoader material={subnode} workspace={this.props.workspace}
-//                      i18n={this.props.i18n} status={this.props.status} />
-//                  </div>
-//                }
-//                return <div key={subnode.workspaceMaterialId} data-id={subnode.workspaceMaterialId + ""} style={{height: DEFAULT_EMPTY_HEIGHT}}
-//                  ref={subnode.workspaceMaterialId + ""}>{subnode.workspaceMaterialId}</div>
-//              })}
-//            </div>
-//          </section>
-//          })
-//        }
-//    </ApplicationPanel>
+    </ApplicationPanel>
   }
 }
 
