@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.settings.StudentMatriculationSubjects;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.StudentMatriculationSubjects;
 
 public class HopsRESTModel {
 

@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.settings.MatriculationSubjects;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.settings.StudentMatriculationSubjects;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.MatriculationSubjects;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.StudentMatriculationSubjects;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
@@ -242,7 +243,11 @@ public class TranscriptOfRecordsController {
    */
   public MatriculationSubjects listMatriculationSubjects() {
     String subjectsJson = pluginSettingsController.getPluginSetting("transcriptofrecords", MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY);
-    return unserializeObject(subjectsJson, MatriculationSubjects.class);    
+    if (StringUtils.isNotBlank(subjectsJson)) {
+      return unserializeObject(subjectsJson, MatriculationSubjects.class);   
+    }
+
+    return unserializeObject(getClass().getClassLoader().getResourceAsStream("fi/otavanopisto/muikku/plugins/transcriptofrecords/default-matriculation-subjects.json"), MatriculationSubjects.class);
   }
   
   /**
@@ -294,6 +299,23 @@ public class TranscriptOfRecordsController {
       } catch (IOException e) {
         logger.log(Level.SEVERE, "Failed to unserialize object", e);
       }
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Unserialized object from input stream
+   * 
+   * @param inputStream input stream
+   * @return unserialized object or null if unserialization fails
+   */
+  private <T> T unserializeObject(InputStream inputStream, Class<T> targetClass) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.readValue(inputStream, targetClass);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "Failed to unserialize object", e);
     }
     
     return null;

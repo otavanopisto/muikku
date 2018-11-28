@@ -1,0 +1,126 @@
+[
+  {
+    "name": "Äidinkieli",
+    "value": "aidinkieli"
+  },
+  {
+    "name": "Suomi toisena kielenä",
+    "value": "suomitoisenakielena"
+  },
+  {
+    "name": "Englanti, A-taso",
+    "value": "englanti_a_taso"
+  },
+  {
+    "name": "Ranska, A-taso",
+    "value": "ranska_a_taso"
+  },
+  {
+    "name": "Espanja, A-taso",
+    "value": "espanja_a_taso"
+  },
+  {
+    "name": "Saksa, A-taso",
+    "value": "saksa_a_taso"
+  },
+  {
+    "name": "Venäjä, A-taso",
+    "value": "venaja_a_taso"
+  },
+  {
+    "name": "Ruotsi, A-taso",
+    "value": "ruotsi_a_taso"
+  },
+  {
+    "name": "Ruotsi, B-taso",
+    "value": "ruotsi_b_taso"
+  },
+  {
+    "name": "Matematiikka, pitkä",
+    "value": "matematiikka_pitka"
+  },
+  {
+    "name": "Matematiikka, lyhyt",
+    "value": "matematiikka_lyhyt"
+  },
+  {
+    "name": "Uskonto",
+    "value": "uskonto"
+  },
+  {
+    "name": "Elämänkatsomustieto",
+    "value": "elamankatsomustieto"
+  },
+  {
+    "name": "Yhteiskuntaoppi",
+    "value": "yhteiskuntaoppi"
+  },
+  {
+    "name": "Kemia",
+    "value": "kemia"
+  },
+  {
+    "name": "Maantiede",
+    "value": "maantiede"
+  },
+  {
+    "name": "Terveystieto",
+    "value": "terveystieto"
+  },
+  {
+    "name": "Psykologia",
+    "value": "psykologia"
+  },
+  {
+    "name": "Filosofia",
+    "value": "filosofia"
+  },
+  {
+    "name": "Historia",
+    "value": "historia"
+  },
+  {
+    "name": "Fysiikka",
+    "value": "fysiikka"
+  },
+  {
+    "name": "Biologia",
+    "value": "biologia"
+  },
+  {
+    "name": "Englanti, C-taso",
+    "value": "englanti_c_taso"
+  },
+  {
+    "name": "Ranska, C-taso",
+    "value": "ranska_c_taso"
+  },
+  {
+    "name": "Espanja, C-taso",
+    "value": "espanja_c_taso"
+  },
+  {
+    "name": "Saksa, C-taso",
+    "value": "saksa_c_taso"
+  },
+  {
+    "name": "Venäjä, C-taso",
+    "value": "venaja_c_taso"
+  },
+  {
+    "name": "Italia, C-taso",
+    "value": "italia_c_taso"
+  },
+  {
+    "name": "Portugali, C-taso",
+    "value": "portugali_c_taso"
+  },
+  {
+    "name": "Latina, C-taso",
+    "value": "latina_c_taso"
+  },
+  {
+    "name": "Saame, C-taso",
+    "value": "saame_c_taso"
+  }
+]

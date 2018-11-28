@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.settings.StudentMatriculationSubjects;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.StudentMatriculationSubjects;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 
 public class TranscriptofRecordsUserProperties {

@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.transcriptofrecords.settings;
+package fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects;
 
 import java.util.ArrayList;
 
