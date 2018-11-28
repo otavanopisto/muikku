@@ -8,6 +8,9 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
+import { HOPSType } from "~/reducers/main-function/hops";
+import mApi from '~/lib/mApi';
+import MatriculationSubjectType from './matriculation-subjects/matriculation-subject-type';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
@@ -16,24 +19,71 @@ import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/buttons.scss';
 
 
+
 interface YOProps {
   i18n: i18nType,
-  records: RecordsType
+  records: RecordsType,
+  hops: HOPSType
 }
 
 interface YOState {
+  matriculationSubjects: MatriculationSubjectType[],
+  matriculationSubjectsLoaded: boolean
 }
 
 class YO extends React.Component<YOProps,YOState> {
   constructor(props:YOProps){
     super(props);
-  }    
+
+    this.state = {
+      matriculationSubjects: [],
+      matriculationSubjectsLoaded: false
+    }
+  }
+  
+  /**
+   * Finds a matriculation subject name by subject value
+   * 
+   * @param matriculationSubjectValue value
+   * @returns subject name or empty string if not found 
+   */
+  getMatriculationSubjectNameByValue = (matriculationSubjectValue: string): string => {
+    const subject = this.state.matriculationSubjects.find((matriculationSubject: MatriculationSubjectType) => {
+      return matriculationSubject.value === matriculationSubjectValue;
+    });
+
+    return subject ? subject.name : "";
+  }
+
+  /**
+   * Component did mount life-cycle method  
+   * 
+   * Reads available matriculation subjects from REST API
+   */
+  componentDidMount() {
+    mApi().records.matriculationSubjects.read()
+      .callback((err: Error, matriculationSubjects: MatriculationSubjectType[])=>{
+        if (!err) {
+          this.setState({
+            matriculationSubjects: matriculationSubjects,
+            matriculationSubjectsLoaded: true
+          });
+        }
+      });
+  }
+  
   render(){        
     
-      if (this.props.records.location !== "yo") {
-        return null;        
-      } else {
-
+    if (this.props.records.location !== "yo") {
+      return null;        
+    } else {
+      const loaded = this.state.matriculationSubjectsLoaded && this.props.hops.status === "READY" && !!this.props.hops.value;
+      const selectedMatriculationSubjects = loaded ? (this.props.hops.value.studentMatriculationSubjects || []).map((subject: string, index: number) => {
+        return (
+          <li key={index}>{this.getMatriculationSubjectNameByValue(subject)}</li>
+        );
+      }) : ( <li>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</li> );
+      
       return (
         <div>
           <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.yo.title")}</div>          
@@ -64,8 +114,8 @@ class YO extends React.Component<YOProps,YOState> {
               </div>
               <div className="application-sub-panel__item application-sub-panel__item--summarizer">
                 <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
-                <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">Luatikko sis
-                
+                <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
+                  <ul>{selectedMatriculationSubjects}</ul>
                 </div>
               </div>
             </div>
@@ -98,7 +148,8 @@ class YO extends React.Component<YOProps,YOState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: state.records
+    records: state.records,
+    hops: state.hops
   }
 };
 

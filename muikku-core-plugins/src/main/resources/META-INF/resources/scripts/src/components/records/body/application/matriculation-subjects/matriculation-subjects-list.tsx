@@ -4,6 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { Dispatch } from "redux";
 import { StateType } from '~/reducers';
 import mApi from '~/lib/mApi';
+import MatriculationSubjectType from "./matriculation-subject-type";
 
 /**
  * Interface representing MatriculationSubjectsList component properties
@@ -22,19 +23,9 @@ interface MatriculationSubjectsListProps {
  * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
  */
 interface MatriculationSubjectsListState {
-  matriculationSubjects: MatriculationSubject[]
+  matriculationSubjects: MatriculationSubjectType[]
   selectedMatriculationSubjects: string[]
   loading: boolean
-}
-
-/**
- * Interface representing matriculation subject REST model 
- * 
- * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
- */
-interface MatriculationSubject {
-  name: string,
-  value: string
 }
 
 /**
@@ -123,7 +114,7 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
       });
 
       mApi().records.matriculationSubjects.read()
-        .callback((err: Error, matriculationSubjects: MatriculationSubject[])=>{
+        .callback((err: Error, matriculationSubjects: MatriculationSubjectType[])=>{
           if (!err) {
             this.setState({
               matriculationSubjects: matriculationSubjects,
@@ -150,7 +141,7 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
         <div key={index}>
           <select className="form-element__select form-element__select--hops-selector" value={subject} onChange={this.handleMatriculationSubjectChange.bind( this, index )}>
             <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectChoose")}</option>
-            {this.state.matriculationSubjects.map(( subject: MatriculationSubject, index: number ) => {
+            {this.state.matriculationSubjects.map(( subject: MatriculationSubjectType, index: number ) => {
               return <option key={index} value={subject.value}>{subject.name}</option>
             })}
           </select>

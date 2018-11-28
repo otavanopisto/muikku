@@ -43,6 +43,7 @@ function loadCurrentLocation(){
     store.dispatch(<Action>updateHops());
   } else if (givenLocation === "yo"){
     store.dispatch(<Action>setLocationToYoInTranscriptOfRecords());
+    store.dispatch(<Action>updateHops());
     store.dispatch(<Action>updateYO());
   } else if (givenLocation === "summary"){
     store.dispatch(<Action>setLocationToSummaryInTranscriptOfRecords());
