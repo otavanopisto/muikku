@@ -1,4 +1,8 @@
 import * as React from "react";
+import { connect } from "react-redux";
+import { i18nType } from "~/reducers/base/i18n";
+import { Dispatch } from "redux";
+import { StateType } from '~/reducers';
 import mApi from '~/lib/mApi';
 
 /**
@@ -8,7 +12,8 @@ import mApi from '~/lib/mApi';
  */
 interface MatriculationSubjectsListProps {
   initialMatriculationSubjects?: string[],
-  onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void
+  onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void,
+  i18n: i18nType
 }
 
 /**
@@ -37,7 +42,7 @@ interface MatriculationSubject {
  * 
  * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
  */
-export default class MatriculationSubjectsList extends React.Component<MatriculationSubjectsListProps, MatriculationSubjectsListState> {
+class MatriculationSubjectsList extends React.Component<MatriculationSubjectsListProps, MatriculationSubjectsListState> {
   constructor(props: MatriculationSubjectsListProps){
     super(props);
     
@@ -137,19 +142,19 @@ export default class MatriculationSubjectsList extends React.Component<Matricula
    */
   render(){
     if (this.state.loading) {
-      return (<div className="loader">Ladataan...</div>);
+      return (<div className="loader">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectLoading")}</div>);
     }
 
     const matriculationSubjectInputs = this.state.selectedMatriculationSubjects.map((subject: string, index: number) => {
       return (
         <div>
           <select className="form-element__select form-element__select--hops-selector" value={subject} onChange={this.handleMatriculationSubjectChange.bind( this, index )}>
-            <option disabled value="">Valitse...</option>
+            <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectChoose")}</option>
             {this.state.matriculationSubjects.map(( subject: MatriculationSubject, index: number ) => {
               return <option key={index} value={subject.value}>{subject.name}</option>
             })}
           </select>
-          <button onClick={this.handleMatriculationSubjectRemove.bind(this, index)}>Poista</button>
+          <button onClick={this.handleMatriculationSubjectRemove.bind(this, index)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectRemove")}</button>
         </div>
       );
     });
@@ -157,8 +162,24 @@ export default class MatriculationSubjectsList extends React.Component<Matricula
     return (
       <div>
         {matriculationSubjectInputs}
-        <button onClick={this.handleMatriculationSubjectAdd.bind(this)}>Lisää</button>
+        <button onClick={this.handleMatriculationSubjectAdd.bind(this)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectAdd")}</button>
       </div>
     );
   }
 }
+
+
+function mapStateToProps( state: StateType ) {
+  return {
+    i18n: state.i18n
+  }
+};
+
+function mapDispatchToProps( dispatch: Dispatch<any> ) {
+  return {}
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)( MatriculationSubjectsList );
