@@ -30,6 +30,7 @@ interface WorkspaceMaterialsState {
 
 const DEFAULT_EMPTY_HEIGHT = 200;
 const DEFAULT_OFFSET = 67;
+const ANIMATION_SECONDS = 3;
 
 function isScrolledIntoView(el: HTMLElement) {
   let rect = el.getBoundingClientRect();
@@ -41,9 +42,11 @@ function isScrolledIntoView(el: HTMLElement) {
 }
 
 class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, WorkspaceMaterialsState> {
-  private disableHashRecalculation: boolean;
-  private disableLoadedRecalculation: boolean;
+  private disableScrollInteraction: boolean;
   private flattenedMaterial: MaterialContentNodeListType;
+  private hackToMakeBrowserListenAndScrollWhereIWantItToScroll: Element;
+  private hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout: NodeJS.Timer;
+  private hackToMakeBrowserListenAndScrollWhereIWantItToScrollCallback: ()=>any;
   constructor(props: WorkspaceMaterialsProps){
     super(props);
     
@@ -55,67 +58,79 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.recalculateHash = this.recalculateHash.bind(this);
     this.onScroll = this.onScroll.bind(this);
     
-    this.disableHashRecalculation = true;
+    this.disableScrollInteraction = true;
     
     this.getFlattenedMaterials(props);
   }
   componentDidMount(){
     if (this.props.activeNodeId){
-      (this.refs[this.props.activeNodeId] as HTMLElement).scrollIntoView(true);
-      setTimeout(()=>{
-        this.disableHashRecalculation = false;
-      }, 100);
+      this.pleaseScrollIntoView(document.querySelector("#p-" + this.props.activeNodeId), ()=>{
+        this.disableScrollInteraction = false;
+      });
     }
     this.recalculateLoaded();
     window.document.addEventListener("scroll", this.onScroll);
+    window.document.addEventListener("beforeunload", this.cancelScrollTop);
   }
   componentWillUnmount(){
-    this.disableHashRecalculation = true;
+    this.disableScrollInteraction = true;
     window.document.removeEventListener("scroll", this.onScroll);
+    
+    this.cancelScrollTop();
+    window.document.removeEventListener("beforeunload", this.cancelScrollTop);
+  }
+  cancelScrollTop(){
+    window.scrollTo(0, 0);
   }
   componentWillReceiveProps(nextProps: WorkspaceMaterialsProps){
     if (this.props.materials !== nextProps.materials){
       this.getFlattenedMaterials(nextProps);
     }
   }
+  pleaseScrollIntoView(element:Element, cb:()=>any){
+    this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll = element;
+    this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollCallback = cb;
+    this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout = setTimeout(()=>{
+      this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll = null;
+      this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollCallback();
+    }, 300);
+    element.scrollIntoView(true);
+  }
   componentDidUpdate(prevProps: WorkspaceMaterialsProps, prevState: WorkspaceMaterialsState){
     console.log("component did update");
     if (this.props.activeNodeId !== prevProps.activeNodeId){
       let onActiveLoad = null;
       if (this.props.activeNodeId !== this.getActive()){
+        this.disableScrollInteraction = true;
+        
         let activeNodeChapter = this.getChapter(this.props.activeNodeId);
+        let isChaptedLoaded = this.state.loadedChapters[activeNodeChapter.chapter.workspaceMaterialId];
         let trigger = ()=>{
           //Only way to force trigger the event when the scrolling is so buggy
           //Do it as many times as possible with timeouts in order to trick the browser
           //to actually scroll there
           let element = document.querySelector("#p-" + this.props.activeNodeId);
-          element.scrollIntoView(true);
-          setTimeout(()=>{
-            element.scrollIntoView(true);
-            setTimeout(()=>{
-              element.scrollIntoView(true);
-              setTimeout(()=>{
-                this.disableHashRecalculation = false;
-                this.disableLoadedRecalculation = false;
-              }, 100);
-            }, 100);
-          }, 100);
+          this.pleaseScrollIntoView(element, ()=>{
+            this.disableScrollInteraction = false;
+            if (!isChaptedLoaded){
+              console.log("ooing a second test pass");
+              this.recalculateLoaded();
+            }
+          });
         };
-        if (!this.state.loadedChapters[activeNodeChapter.chapter.workspaceMaterialId]){
+        if (!isChaptedLoaded){
           onActiveLoad = trigger;
         } else {
-          this.disableHashRecalculation = true;
-          this.disableLoadedRecalculation = true;
           trigger();
         }
       } else {
-        this.disableHashRecalculation = false;
+        this.disableScrollInteraction = false;
       }
       
       if (onActiveLoad){
-        this.disableHashRecalculation = true;
-        console.log("loading using onactiveload");
-        this.recalculateLoaded(true, onActiveLoad);
+        this.disableScrollInteraction = true;
+        console.log("loading using onactiveload only active");
+        this.recalculateLoaded(true, onActiveLoad, true);
       } else {
         console.log("loading using default");
         this.recalculateLoaded();
@@ -128,10 +143,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       let divElement:Element = document.querySelector("#section-" + chapter);
       let endHeight = 0;
       Array.from(divElement.childNodes).forEach((child)=>{
-        if (child.nodeType === 0){
+        if (child.nodeType === 1){
           endHeight += (child as HTMLElement).offsetHeight;
         }
       });
+      console.log("expected new height of newly loaded chapter", chapter, endHeight);
       newLoadedChapters[chapter] = {
         isAnimating: true,
         height: endHeight
@@ -151,10 +167,25 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         this.setState({
           loadedChapters: newLoadedChapters2
         });
-      }, 300);
+      }, ANIMATION_SECONDS * 1000);
     }, 50);
   }
   onScroll(){
+    if (this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll){
+      console.log("SCROLL EVENT, HACKFULLY DENIED");
+      this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll.scrollIntoView(true);
+      clearTimeout(this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout);
+      this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout = setTimeout(()=>{
+        this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll = null;
+        this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollCallback();
+      }, 300);
+      return;
+    }
+    if (this.disableScrollInteraction){
+      console.log("SCROLL EVENT, DENIED");
+      return;
+    }
+    
     console.log("SCROLL EVENT");
     
     this.recalculateLoaded();
@@ -162,7 +193,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   }
   getActive(){
     let winner:number = null;
-    //TODO fix this to be relative because buggy scrolling doesn't give the truthful value
     let isAllTheWayToTheBottom = document.documentElement.scrollHeight - document.documentElement.scrollTop === document.documentElement.clientHeight;
     if (!isAllTheWayToTheBottom){
       let winnerTop:number = null;
@@ -186,10 +216,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     return winner;
   }
   recalculateHash(){
-    if (this.disableHashRecalculation){
-      return;
-    }
-    
     let active = this.getActive();
     
     let newActive:number = null;
@@ -211,26 +237,30 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     let size = this.props.materials[index].children.length;
     return {index, chapter, size};
   }
-  recalculateLoaded(dontAnimate?: boolean, onDone?: ()=>any){
-    if (!this.props.activeNodeId || this.disableLoadedRecalculation){
+  recalculateLoaded(dontAnimate?: boolean, onDone?: ()=>any, onlyActive?:boolean){
+    if (!this.props.activeNodeId){
       return;
     }
     
     let newLoadedChapters = {...this.state.loadedChapters};
-    Object.keys(this.refs).forEach((refKey:string)=>{
-      if (isScrolledIntoView(this.refs[refKey] as HTMLElement)){
-        let chapter = this.getChapter(parseInt(refKey));
-        if (chapter.chapter && !newLoadedChapters[chapter.chapter.workspaceMaterialId]){
-          newLoadedChapters[chapter.chapter.workspaceMaterialId] = {
-            isAnimating: !dontAnimate,
-            height: dontAnimate ? null : chapter.size * DEFAULT_EMPTY_HEIGHT
-          };
-          if (!dontAnimate){
-            this.animate(chapter.chapter.workspaceMaterialId);
+    
+    if (!onlyActive){
+      Object.keys(this.refs).forEach((refKey:string)=>{
+        if (isScrolledIntoView(this.refs[refKey] as HTMLElement)){
+          let chapter = this.getChapter(parseInt(refKey));
+          if (chapter.chapter && !newLoadedChapters[chapter.chapter.workspaceMaterialId]){
+            newLoadedChapters[chapter.chapter.workspaceMaterialId] = {
+              isAnimating: !dontAnimate,
+              height: dontAnimate ? null : chapter.size * DEFAULT_EMPTY_HEIGHT
+            };
+            if (!dontAnimate){
+              this.animate(chapter.chapter.workspaceMaterialId);
+            }
           }
         }
-      }
-    });
+      });
+    }
+    
     let activeNodeChapter = this.getChapter(this.props.activeNodeId);
     if (activeNodeChapter.chapter && !newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId]){
       newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId] = {
@@ -272,7 +302,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     return <section key={node.workspaceMaterialId} id={"section-" + node.workspaceMaterialId} style={{
       height: this.state.loadedChapters[node.workspaceMaterialId] ?
       this.state.loadedChapters[node.workspaceMaterialId].height : node.children.length*DEFAULT_EMPTY_HEIGHT,
-      transition: "height 3s ease"
+      transition: "height " + ANIMATION_SECONDS + "s ease",
+      overflow: "hidden"
     }}>
     <h1>{node.title}</h1>
     <div>
