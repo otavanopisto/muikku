@@ -203,10 +203,20 @@ public class HopsRESTModel {
     this.optedIn = optedIn;
   }
   
+  /**
+   * Returns student's matriculation subjects
+   * 
+   * @return student's matriculation subjects
+   */
   public StudentMatriculationSubjects getStudentMatriculationSubjects() {
     return studentMatriculationSubjects;
   }
   
+  /**
+   * Sets student's matriculation subjects
+   * 
+   * @param studentMatriculationSubjects student's matriculation subjects
+   */
   public void setStudentMatriculationSubjects(StudentMatriculationSubjects studentMatriculationSubjects) {
     this.studentMatriculationSubjects = studentMatriculationSubjects;
   }
