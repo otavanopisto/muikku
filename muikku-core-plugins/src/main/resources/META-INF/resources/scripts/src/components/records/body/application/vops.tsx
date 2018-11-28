@@ -32,8 +32,6 @@ class Vops extends React.Component<VopsProps, VopsState> {
     } else if (this.props.vops.status !== "READY"){
       return null;
     }
-    
-    
     return <div>
       <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
       <div className="application-sub-panel">
