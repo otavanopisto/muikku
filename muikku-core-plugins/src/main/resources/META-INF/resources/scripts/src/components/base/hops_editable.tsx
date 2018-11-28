@@ -101,7 +101,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       </div>
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title">
-          {this.props.i18n.text.get( "plugin.records.hops.goals.matriculationExam" )}
+          {this.props.i18n.text.get( "plugin.records.hops.goals.matriculationSubjects" )}
         </div>
         <div className="application-sub-panel__item-data form-element">
           <MatriculationSubjectsList initialMatriculationSubjects={this.state.hops.studentMatriculationSubjects} onMatriculationSubjectsChange={this.onMatriculationSubjectsChange} />
