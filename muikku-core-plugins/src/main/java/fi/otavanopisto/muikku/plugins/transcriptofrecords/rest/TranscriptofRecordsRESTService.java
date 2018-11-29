@@ -109,6 +109,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private GradingController gradingController;
+
+  @Inject
+  private TranscriptOfRecordsController transcriptOfRecordsController;
   
   @GET
   @Path("/files/{ID}/content")
@@ -266,7 +269,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         userProperties.asBoolean("spanish"),
         userProperties.asString("science"),
         userProperties.asString("religion"),
-        userProperties.asString("additionalInfo")
+        userProperties.asString("additionalInfo"),
+        userProperties.getStudentMatriculationSubjects()
     );
   }
 
@@ -414,8 +418,27 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     vopsController.saveStringProperty(user, "science", model.getScience());
     vopsController.saveStringProperty(user, "religion", model.getReligion());
     vopsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
-
+    vopsController.saveStudentMatriculationSubjects(user, model.getStudentMatriculationSubjects());
+    
     return Response.ok().entity(model).build();
+  }
+  
+  /**
+   * REST endpoint for listing matriculation subjects.
+   * 
+   * Method requires that user is logged in but does not require any special permissions.
+   * 
+   * @return REST response object
+   */
+  @GET
+  @Path("/matriculationSubjects")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listMatriculationSubjects() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    return Response.ok(transcriptOfRecordsController.listMatriculationSubjects()).build();
   }
   
 }
