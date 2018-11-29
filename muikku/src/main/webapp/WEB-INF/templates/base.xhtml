@@ -31,6 +31,7 @@
       studyStartDate: '#{sessionBackingBean.studyStartDate}'  || null,
       studyTimeEnd: '#{sessionBackingBean.studyTimeEnd}' || null
     }
+    var HOPS_ENABLED = #{sessionBackingBean.getUserPropertyAsBoolean('hops.enabled')};
 
     var MUIKKU_PERMISSIONS = {
       FORUM_ACCESSENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_ACCESSENVIRONMENTFORUM')},

@@ -20,7 +20,8 @@ interface ItemDataElement {
   to?: boolean,
   icon: string,
   condition?: boolean,
-  badge?: number
+  badge?: number,
+  openInNewTab?: string
 }
 
 interface MainFunctionNavbarProps {
@@ -94,7 +95,8 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.evaluation.evaluation',
       href: "/evaluation2",
       icon: "evaluate",
-      condition: this.props.status.permissions.EVALUATION_VIEW_INDEX
+      condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
+      openInNewTab: "_blank"
     }, {
       modifier: "announcer",
       trail: "announcer",
@@ -104,7 +106,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       to: true,
       condition: this.props.status.permissions.ANNOUNCER_TOOL
     }];
-    
+
     return <Navbar mobileTitle={this.props.title}
       modifier="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item)=>{
       if (!item.condition){
@@ -112,7 +114,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       }
       return {
         modifier: item.modifier,
-        item: (<Link href={item.href} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+        item: (<Link openInNewTab={item.openInNewTab} href={item.href} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
           title={this.props.i18n.text.get(item.text)}>
           <span className={`link__icon icon-${item.icon}`}/>
           {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
@@ -127,7 +129,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       if (!item.condition){
         return null;
       }
-      return <Link href={item.href} className={`link link--full link--menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
+      return <Link openInNewTab={item.openInNewTab} href={item.href} className={`link link--full link--menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
         <span className={`link__icon icon-${item.icon}`}/>
         {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         <span className="link--menu__text">{this.props.i18n.text.get(item.text)}</span>

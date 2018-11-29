@@ -79,20 +79,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       
       let data = getCKEDITOR().instances[this.name].getData();
       if (data !== this.currentData){
-        let avoidChange = false;
-        if (data[data.length - 1] === "\n" && data.substr(0, data.length - 1) === this.currentData){
-          avoidChange = true;
-        } else if (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === data){
-          avoidChange = true
-        }
         this.currentData = data;
-        if (!avoidChange){
-          if (data[data.length - 1] !== '\n'){
-            this.props.onChange(data);
-          } else {
-            this.props.onChange(data.substr(0, data.length - 1));
-          }
-        }
+        this.props.onChange(data);
       }
     });
     getCKEDITOR().instances[this.name].on('key', ()=>{
@@ -100,6 +88,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     })
     getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
       let instance = getCKEDITOR().instances[this.name];
+      this.enableCancelChangeTrigger();
       instance.setData(this.props.children);
       if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
         this.resize(this.props.width, this.props.height);
@@ -112,13 +101,16 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   componentWillUnmount(){
     getCKEDITOR().instances[this.name].destroy();
   }
+  enableCancelChangeTrigger(){
+    setTimeout(()=>{
+      this.cancelChangeTrigger = false;
+    }, 300);
+    this.cancelChangeTrigger = true;
+  }
   componentWillReceiveProps(nextProps: CKEditorProps){
     if (nextProps.children !== this.currentData){
-      if (!((nextProps.children[nextProps.children.length - 1] === "\n" && nextProps.children.substr(0, nextProps.children.length - 1) === this.currentData) ||
-          (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === nextProps.children))){
-        this.cancelChangeTrigger = true;
-        getCKEDITOR().instances[this.name].setData(nextProps.children);
-      }
+      this.enableCancelChangeTrigger();
+      getCKEDITOR().instances[this.name].setData(nextProps.children);
     }
     
     if (nextProps.width !== this.props.width || nextProps.height !== this.props.height){
