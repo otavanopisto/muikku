@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -416,6 +417,36 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     vopsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
 
     return Response.ok().entity(model).build();
+  }
+  
+  @GET
+  @Consumes("application/json")
+  @Path("/matriculationEligibility/{STUDENTIDENTIFIER}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getMatriculationEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    if (identifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
+    }
+
+    User student = userController.findUserByIdentifier(identifier);
+    if (student == null) {
+      return Response.status(Status.NOT_FOUND).entity("Student not found").build();
+    }
+
+    MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
+    int coursesCompleted = vopsController.countMandatoryCoursesForStudent(identifier);
+    int coursesRequired = vopsController.getMandatoryCoursesRequiredForMatriculation();
+
+    if (coursesCompleted >= coursesRequired) {
+      result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
+    } else {
+      result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);
+      result.setCoursesCompleted(coursesCompleted);
+      result.setCoursesRequired(coursesRequired);
+    }
+
+    return Response.ok(result).build();
   }
   
 }

@@ -239,4 +239,6 @@ public interface UserSchoolDataBridge {
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier);
 
+  fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(SchoolDataIdentifier studentIdentifier);
+
 }

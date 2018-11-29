@@ -19,6 +19,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
@@ -49,6 +50,7 @@ import fi.otavanopisto.pyramus.rest.model.PhoneNumber;
 import fi.otavanopisto.pyramus.rest.model.School;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
 import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StudentCourseStats;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
@@ -823,4 +825,14 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
     }
   }
+ 
+  @Override
+  public fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(
+      SchoolDataIdentifier studentIdentifier
+  ) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    StudentCourseStats courseStats = pyramusClient.get(String.format("/students/students/%d/courseStats", studentId), StudentCourseStats.class); 
+    return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses());
+  }
+
 }

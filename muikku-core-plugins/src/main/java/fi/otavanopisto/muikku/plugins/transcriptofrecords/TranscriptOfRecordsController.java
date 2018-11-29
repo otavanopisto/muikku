@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,11 +15,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
@@ -37,6 +40,9 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Inject
   @Any
@@ -207,6 +213,27 @@ public class TranscriptOfRecordsController {
       }
     }
     
+    return result;
+  }
+
+  public int countMandatoryCoursesForStudent(SchoolDataIdentifier studentIdentifier) {
+    StudentCourseStats stats = userSchoolDataController.getStudentCourseStats(studentIdentifier);
+    return stats.getNumMandatoryCompletedCourses();
+  }
+
+  public int getMandatoryCoursesRequiredForMatriculation() {
+    String resultString = pluginSettingsController.getPluginSetting(
+        "transcriptofrecords",
+        "mandatoryCoursesRequiredForMatriculation");
+    int result = Integer.parseInt(resultString);
+    return result;
+  }
+  
+  public LocalDate getMatriculationExamDate(String examDate) {
+    String resultString = pluginSettingsController.getPluginSetting(
+        "transcriptofrecords",
+        "matriculationExamDate");
+    LocalDate result = LocalDate.parse(resultString);
     return result;
   }
 
