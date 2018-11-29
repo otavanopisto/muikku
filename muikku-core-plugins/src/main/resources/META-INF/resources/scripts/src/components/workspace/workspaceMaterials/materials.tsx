@@ -25,11 +25,12 @@ interface WorkspaceMaterialsState {
       isAnimating: boolean,
       height: number
     }
-  }
+  },
+  defaultOffset: number
 }
 
 const DEFAULT_EMPTY_HEIGHT = 200;
-const DEFAULT_OFFSET = 67*2;
+const DEFAULT_OFFSET = 67;
 const ANIMATION_SECONDS = 3;
 
 function isScrolledIntoView(el: HTMLElement) {
@@ -51,7 +52,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     super(props);
     
     this.state = {
-      loadedChapters: {}
+      loadedChapters: {},
+      defaultOffset: (document.querySelector("#stick") as HTMLElement || {} as any).offsetHeight || DEFAULT_OFFSET
     }
     
     this.recalculateLoaded = this.recalculateLoaded.bind(this);
@@ -63,6 +65,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.getFlattenedMaterials(props);
   }
   componentDidMount(){
+    let defaultOffset = (document.querySelector("#stick") as HTMLElement || {} as any).offsetHeight || DEFAULT_OFFSET;
+    if (defaultOffset !== this.state.defaultOffset){
+      this.setState({
+        defaultOffset
+      })
+    }
     if (this.props.activeNodeId){
       this.pleaseScrollIntoView(document.querySelector("#p-" + this.props.activeNodeId), ()=>{
         this.disableScrollInteraction = false;
@@ -97,7 +105,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     element.scrollIntoView(true);
   }
   componentDidUpdate(prevProps: WorkspaceMaterialsProps, prevState: WorkspaceMaterialsState){
-    console.log("component did update");
     if (this.props.activeNodeId !== prevProps.activeNodeId){
       let onActiveLoad = null;
       if (this.props.activeNodeId !== this.getActive()){
@@ -113,7 +120,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           this.pleaseScrollIntoView(element, ()=>{
             this.disableScrollInteraction = false;
             if (!isChaptedLoaded){
-              console.log("ooing a second test pass");
               this.recalculateLoaded();
             }
           });
@@ -129,10 +135,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       
       if (onActiveLoad){
         this.disableScrollInteraction = true;
-        console.log("loading using onactiveload only active");
         this.recalculateLoaded(true, onActiveLoad, true);
       } else {
-        console.log("loading using default");
         this.recalculateLoaded();
       }
     }
@@ -147,7 +151,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           endHeight += (child as HTMLElement).offsetHeight;
         }
       });
-      console.log("expected new height of newly loaded chapter", chapter, endHeight);
       newLoadedChapters[chapter] = {
         isAnimating: true,
         height: endHeight
@@ -172,7 +175,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   }
   onScroll(){
     if (this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll){
-      console.log("SCROLL EVENT, HACKFULLY DENIED");
       this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll.scrollIntoView(true);
       clearTimeout(this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout);
       this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout = setTimeout(()=>{
@@ -182,11 +184,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return;
     }
     if (this.disableScrollInteraction){
-      console.log("SCROLL EVENT, DENIED");
       return;
     }
-    
-    console.log("SCROLL EVENT");
     
     this.recalculateLoaded();
     this.recalculateHash();
@@ -203,7 +202,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         }
       let element = this.refs[refKey] as HTMLElement;
       let elementTop = element.getBoundingClientRect().top;
-      if (elementTop <= DEFAULT_OFFSET && (elementTop > winnerTop || !winner)){
+      if (elementTop <= this.state.defaultOffset && (elementTop > winnerTop || !winner)){
         winner = refKeyInt;
         winnerTop = elementTop;
       }
@@ -296,39 +295,36 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
     
-    //console.log("RENDERED WITH DATA");
-    
-    return <ApplicationPanel modifier="materials"
-      toolbar={<div><h2>{this.props.workspace.name}</h2><ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/></div>}
-      asideAfter={this.props.aside}>
-        {this.props.materials.map((node)=>{
-          return <section key={node.workspaceMaterialId} id={"section-" + node.workspaceMaterialId} style={{
+    return <div style={{paddingTop: this.state.defaultOffset}}>
+      <div><h2>{this.props.workspace.name}</h2><ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/></div>
+      {this.props.materials.map((node)=>{
+        return <section key={node.workspaceMaterialId} id={"section-" + node.workspaceMaterialId} style={{
           height: this.state.loadedChapters[node.workspaceMaterialId] ?
           this.state.loadedChapters[node.workspaceMaterialId].height : node.children.length*DEFAULT_EMPTY_HEIGHT,
           transition: "height " + ANIMATION_SECONDS + "s ease",
           overflow: "hidden"
         }}>
-        <h1>{node.title}</h1>
-        <div>
-          {node.children.map((subnode)=>{
-            let anchor = <div id={"p-" + subnode.workspaceMaterialId} style={{border: "solid 1px", transform: "translateY(" + (-DEFAULT_OFFSET) + "px)"}}/>;
-            let material = !this.props.workspace ? null : <MaterialLoader material={subnode} workspace={this.props.workspace}
-              i18n={this.props.i18n} status={this.props.status} />;
-            if (this.state.loadedChapters[node.workspaceMaterialId]){
-              return <div style={{border: "solid 1px red"}} ref={subnode.workspaceMaterialId + ""}
-                key={subnode.workspaceMaterialId}>
-                {anchor}
-                {material}
-              </div>
-            }
-            return <div key={subnode.workspaceMaterialId} style={{border: "solid 1px green", height: DEFAULT_EMPTY_HEIGHT}}
-              ref={subnode.workspaceMaterialId + ""}>{anchor}{subnode.workspaceMaterialId}</div>
-          })}
-        </div>
-      </section>
-          })
-        }
-    </ApplicationPanel>
+          <h1>{node.title}</h1>
+          <div>
+            {node.children.map((subnode)=>{
+              let anchor = <div id={"p-" + subnode.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
+              let material = !this.props.workspace ? null : <MaterialLoader material={subnode} workspace={this.props.workspace}
+                i18n={this.props.i18n} status={this.props.status} />;
+              if (this.state.loadedChapters[node.workspaceMaterialId]){
+                return <div ref={subnode.workspaceMaterialId + ""}
+                  key={subnode.workspaceMaterialId}>
+                  {anchor}
+                  {material}
+                </div>
+              }
+              return <div key={subnode.workspaceMaterialId} style={{height: DEFAULT_EMPTY_HEIGHT}}
+                ref={subnode.workspaceMaterialId + ""}>{anchor}{subnode.workspaceMaterialId}</div>
+             })}
+           </div>
+         </section>
+       })
+      }
+    </div>
   }
 }
 

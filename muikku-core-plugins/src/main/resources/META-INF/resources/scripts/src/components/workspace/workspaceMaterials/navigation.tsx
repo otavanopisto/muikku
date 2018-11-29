@@ -19,7 +19,19 @@ interface NavigationState {
   
 }
 
-class NavigationAside extends React.Component<NavigationProps, NavigationState> {
+function isScrolledIntoView(el: HTMLElement) {
+  let rect = el.getBoundingClientRect();
+  let elemTop = rect.top;
+  let elemBottom = rect.bottom;
+
+  let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+  return isVisible;
+}
+
+class NavigationComponent extends React.Component<NavigationProps, NavigationState> {
+  componentWillReceiveProps(nextProps: NavigationProps){
+    
+  }
   render(){
     if (!this.props.materials){
       return null;
@@ -55,4 +67,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(NavigationAside);
+)(NavigationComponent);

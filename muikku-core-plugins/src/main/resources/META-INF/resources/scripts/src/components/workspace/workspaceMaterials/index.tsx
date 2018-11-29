@@ -4,7 +4,7 @@ import ScreenContainer from '~/components/general/screen-container';
 import * as React from 'react';
 
 import Materials from './materials';
-import NavigationAside from './aside';
+import NavigationComponent from './navigation';
 
 interface WorkspaceMaterialsBodyProps {
   workspaceUrl: string,
@@ -17,11 +17,11 @@ interface WorkspaceMaterialsBodyState {
 
 export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMaterialsBodyProps, WorkspaceMaterialsBodyState> {
   render(){
-    let aside = <NavigationAside/>;
+    let navigationComponent = <NavigationComponent/>;
     return (<div>
-      <WorkspaceNavbar navigation={aside} activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
+      <WorkspaceNavbar navigation={navigationComponent} activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="materials"> 
-        <Materials aside={aside} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
+        <Materials aside={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
       </ScreenContainer>
     </div>);
   }
