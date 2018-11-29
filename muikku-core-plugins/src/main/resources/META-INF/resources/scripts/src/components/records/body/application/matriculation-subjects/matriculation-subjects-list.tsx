@@ -103,6 +103,16 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
   }
 
   /**
+   * Finds a matriculation subject name by subject value
+   * 
+   * @param code matriculation subject code
+   * @returns subject name or empty string if not found 
+   */
+  getMatriculationSubjectNameByCode = (code: string): string => {
+    return this.props.i18n.text.get(`plugin.records.hops.matriculationSubject.${code}`);
+  }
+
+  /**
    * Component did mount life-cycle method  
    * 
    * Reads available matriculation subjects from REST API
@@ -142,7 +152,7 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
           <select className="form-element__select form-element__select--hops-selector" value={subject} onChange={this.handleMatriculationSubjectChange.bind( this, index )}>
             <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectChoose")}</option>
             {this.state.matriculationSubjects.map(( subject: MatriculationSubjectType, index: number ) => {
-              return <option key={index} value={subject.value}>{subject.name}</option>
+              return <option key={index} value={subject.code}>{this.getMatriculationSubjectNameByCode(subject.code)}</option>
             })}
           </select>
           <button onClick={this.handleMatriculationSubjectRemove.bind(this, index)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectRemove")}</button>

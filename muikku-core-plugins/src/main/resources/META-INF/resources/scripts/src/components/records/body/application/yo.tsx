@@ -44,15 +44,11 @@ class YO extends React.Component<YOProps,YOState> {
   /**
    * Finds a matriculation subject name by subject value
    * 
-   * @param matriculationSubjectValue value
+   * @param code matriculation subject code
    * @returns subject name or empty string if not found 
    */
-  getMatriculationSubjectNameByValue = (matriculationSubjectValue: string): string => {
-    const subject = this.state.matriculationSubjects.find((matriculationSubject: MatriculationSubjectType) => {
-      return matriculationSubject.value === matriculationSubjectValue;
-    });
-
-    return subject ? subject.name : "";
+  getMatriculationSubjectNameByCode = (code: string): string => {
+    return this.props.i18n.text.get(`plugin.records.hops.matriculationSubject.${code}`);
   }
 
   /**
@@ -78,9 +74,9 @@ class YO extends React.Component<YOProps,YOState> {
       return null;        
     } else {
       const loaded = this.state.matriculationSubjectsLoaded && this.props.hops.status === "READY" && !!this.props.hops.value;
-      const selectedMatriculationSubjects = loaded ? (this.props.hops.value.studentMatriculationSubjects || []).map((subject: string, index: number) => {
+      const selectedMatriculationSubjects = loaded ? (this.props.hops.value.studentMatriculationSubjects || []).map((subjectCode: string, index: number) => {
         return (
-          <div key={index}>{this.getMatriculationSubjectNameByValue(subject)}</div>
+          <div key={index}>{this.getMatriculationSubjectNameByCode(subjectCode)}</div>
         );
       }) : ( <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> );
       

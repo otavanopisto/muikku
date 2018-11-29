@@ -8,45 +8,24 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects;
  */
 public class MatriculationSubject {
 
-  private String name;
-  private String value;
+  private String code;
   
   /**
-   * Returns name of the subject
+   * Returns code of the subject
    * 
-   * @return name of the subject
+   * @return code of the subject
    */
-  public String getName() {
-    return name;
+  public String getCode() {
+    return code;
   }
   
   /**
-   * Sets the name of the subject
+   * Sets the code of the subject
    * 
-   * @param name name of the subject
+   * @param code code of the subject
    */
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  /**
-   * Returns value of the subject
-   * 
-   * @return value of the subject
-   */
-  public String getValue() {
-    return value;
-  }
-  
-  /**
-   * Sets the value of the subject
-   * 
-   * @param name value of the subject
-   */
-  public void setValue(String value) {
-    this.value = value;
+  public void setCode(String code) {
+    this.code = code;
   }
   
 }
-
-

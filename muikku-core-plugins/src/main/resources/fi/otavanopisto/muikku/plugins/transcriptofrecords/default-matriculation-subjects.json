@@ -1,126 +1,92 @@
 [
   {
-    "name": "Äidinkieli",
-    "value": "aidinkieli"
+    "code": "A"
   },
   {
-    "name": "Suomi toisena kielenä",
-    "value": "suomitoisenakielena"
+    "code": "A5"
   },
   {
-    "name": "Englanti, A-taso",
-    "value": "englanti_a_taso"
+    "code": "EA"
   },
   {
-    "name": "Ranska, A-taso",
-    "value": "ranska_a_taso"
+    "code": "FA"
   },
   {
-    "name": "Espanja, A-taso",
-    "value": "espanja_a_taso"
+    "code": "PA"
   },
   {
-    "name": "Saksa, A-taso",
-    "value": "saksa_a_taso"
+    "code": "SA"
   },
   {
-    "name": "Venäjä, A-taso",
-    "value": "venaja_a_taso"
+    "code": "VA"
   },
   {
-    "name": "Ruotsi, A-taso",
-    "value": "ruotsi_a_taso"
+    "code": "BA"
   },
   {
-    "name": "Ruotsi, B-taso",
-    "value": "ruotsi_b_taso"
+    "code": "BB"
   },
   {
-    "name": "Matematiikka, pitkä",
-    "value": "matematiikka_pitka"
+    "code": "M"
   },
   {
-    "name": "Matematiikka, lyhyt",
-    "value": "matematiikka_lyhyt"
+    "code": "N"
   },
   {
-    "name": "Uskonto",
-    "value": "uskonto"
+    "code": "UE"
   },
   {
-    "name": "Elämänkatsomustieto",
-    "value": "elamankatsomustieto"
+    "code": "ET"
   },
   {
-    "name": "Yhteiskuntaoppi",
-    "value": "yhteiskuntaoppi"
+    "code": "YH"
   },
   {
-    "name": "Kemia",
-    "value": "kemia"
+    "code": "KE"
   },
   {
-    "name": "Maantiede",
-    "value": "maantiede"
+    "code": "GE"
   },
   {
-    "name": "Terveystieto",
-    "value": "terveystieto"
+    "code": "TE"
   },
   {
-    "name": "Psykologia",
-    "value": "psykologia"
+    "code": "PS"
   },
   {
-    "name": "Filosofia",
-    "value": "filosofia"
+    "code": "FF"
   },
   {
-    "name": "Historia",
-    "value": "historia"
+    "code": "HI"
   },
   {
-    "name": "Fysiikka",
-    "value": "fysiikka"
+    "code": "FY"
   },
   {
-    "name": "Biologia",
-    "value": "biologia"
+    "code": "BI"
   },
   {
-    "name": "Englanti, C-taso",
-    "value": "englanti_c_taso"
+    "code": "EC"
   },
   {
-    "name": "Ranska, C-taso",
-    "value": "ranska_c_taso"
+    "code": "FC"
   },
   {
-    "name": "Espanja, C-taso",
-    "value": "espanja_c_taso"
+    "code": "PC"
   },
   {
-    "name": "Saksa, C-taso",
-    "value": "saksa_c_taso"
+    "code": "SC"
   },
   {
-    "name": "Venäjä, C-taso",
-    "value": "venaja_c_taso"
+    "code": "VC"
   },
   {
-    "name": "Italia, C-taso",
-    "value": "italia_c_taso"
+    "code": "TC"
   },
   {
-    "name": "Portugali, C-taso",
-    "value": "portugali_c_taso"
+    "code": "GC"
   },
   {
-    "name": "Latina, C-taso",
-    "value": "latina_c_taso"
-  },
-  {
-    "name": "Saame, C-taso",
-    "value": "saame_c_taso"
+    "code": "LC"
   }
 ]
