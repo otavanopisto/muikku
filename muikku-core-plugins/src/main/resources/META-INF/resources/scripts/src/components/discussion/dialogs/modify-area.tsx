@@ -56,7 +56,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
   }
   checkAgainstStoredState(){
     let area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
-    this.checkAgainstDefaultState({
+    this.checkStoredAgainstThisState({
       name: (area && area.name) || "",
       description: (area && area.description) || ""
     }, this.props.discussion.areaId);

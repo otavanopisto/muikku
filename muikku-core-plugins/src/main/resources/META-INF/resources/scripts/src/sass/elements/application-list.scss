@@ -25,10 +25,23 @@
   }
 }
 
+.application-list__header-container--sorter {
+  align-items: center;
+  background-color: $color-application-list-sorter-background;
+  cursor: pointer;
+  justify-content: space-between;
+  padding: 10px;
+}
+
 .application-list__header {
   font-size: 1.125rem;
   font-weight: 400;
 }
+
+.application-list__header--sorter {
+  font-size: 0.875rem;
+}
+
 
 .application-list__header-title {
   display: flex;
@@ -54,6 +67,18 @@
   margin-right: 10px;
 }
 
+.application-list__header-icon--notification-1 {
+  color: $color-notification-type-1;
+}
+
+.application-list__header-icon--notification-2 {
+  color: $color-notification-type-2;
+}
+
+.application-list__header-icon--notification-3 {
+  color: $color-notification-type-3;
+}
+
 .application-list__header-primary {
   display: flex;
   flex-basis: 0;
@@ -65,7 +90,7 @@
 }
 
 .application-list__header-primary--highlight {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .application-list__header-helper {
@@ -228,6 +253,27 @@
   }
 }
 
+.application-list__item--notification {
+  border-top: 3px solid $color-message-border;
+  margin: 0 0 1px;
+  padding: 10px 10px 10px 0;
+  
+  &:first-child {
+    border-color: transparent;
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+  }
+  
+  &.course--open {
+    background: $color-default;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
+    z-index: 10;
+  }   
+}
+
 .application-list__item--highlight {
   background-color: $color-message-unread-background;
 
@@ -259,12 +305,6 @@
 .application-list-document {
   line-height: 1.5rem;
   margin: 20px 0 0;
-}
-
-.application-list-document-header {
-  font-size: 1.5rem;
-  font-weight: 200;
-  margin: 0 0 10px;
 }
 
 .application-list__item-counter-container {
@@ -340,7 +380,7 @@
 .application-list__item-content-avatar {
   align-items: center;
   border-radius: 100%;
-  color: #fff;
+  color: $color-environment-link-icon-color;
   display: flex;
   font-size: 1.25rem;
   height: 46px;
@@ -486,6 +526,18 @@
   &::after {
     content: ">";
     margin: 0 10px;
+  }
+}
+
+.application-list__item-header-main-content--communicator-recipients {
+
+  span:not(:last-child) {
+
+    &::after {
+      content: ",";
+      padding: 0 5px 0 0;
+    }
+
   }
 }
 
@@ -669,7 +721,8 @@
   padding: 10px;
 }
 
-// Coursepicker
+// Coursepicker - TODO: these should be moved to course.scss ?
+
 .application-list__item-header--course {
   cursor: pointer;
   padding: 10px 0;

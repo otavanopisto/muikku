@@ -1,9 +1,8 @@
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
-
-@import url('https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,700,900');
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i&subset=cyrillic');
+@import url('https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic');
 
 *, *::before, *::after {
   @include prefix(drag, webkit ms o moz, none);

@@ -17,7 +17,7 @@
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -25,7 +25,7 @@
   .link__icon {
     display: inline-block;
   }
-  
+
   &:not(.link--icon) .link__icon {
     margin-right: 10px;
   }
@@ -50,7 +50,7 @@
   color: $color-link-frontpage-text;
   font-size: 0.9375rem;
   text-transform: uppercase;
-  
+
   &:hover,
   &.hover,
   &:active,
@@ -70,19 +70,19 @@
   text-align: left;
   white-space: normal;
   word-spacing: 75px;
-  
+
   @include breakpoint($breakpoint-mobile-xl) {
     flex-basis: auto;
   }
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-basis: 0;
   }
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
   }
-  
+
   &.link--forgot-password-main-function {
   	color: $color-main-function-label-forgot-password;
   }
@@ -90,7 +90,13 @@
 
 .link--privacy-policy {
   color: $color-default;
+  text-align: center;
   text-transform: uppercase;
+  white-space: normal;
+
+  @include breakpoint($breakpoint-pad) {
+    text-align: left;
+  }
 
   &:hover,
   &:active {
@@ -182,14 +188,14 @@
 
 .link--menu {
   overflow: hidden;
-  
+
   &.active,
   &:active {
     background-color: $color-default;
     color: $color-default-contrast;
     font-weight: 600;
   }
-  
+
   .link__icon {
     background-color: $color-environment-link-menu-icon-background;
     color: $color-environment-link-menu-icon-color;
@@ -209,7 +215,7 @@
 }
 
 .link--menu--instructions {
-  
+
   .link__icon {
     background: $color-environment-link-menu-instructions-icon-background;
     color: $color-environment-link-menu-instructions-icon-color;
@@ -217,7 +223,7 @@
 }
 
 .link--menu--helpdesk {
-  
+
   .link__icon {
     background: $color-environment-link-menu-heldesk-icon-background;
     color: $color-environment-link-menu-helpdesk-icon-color;
@@ -231,7 +237,7 @@
 }
 
 .link--menu--logout {
-  
+
   .link__icon {
     background: $color-environment-link-menu-logout-icon-background;
     color: $color-environment-link-menu-logout-icon-color;
@@ -246,10 +252,10 @@
     &:hover, &.hover {
       color: $color-environment-link-icon-color-hover;
     }
-    
+
     &:active, &.active {
       color: $color-environment-link-icon-color-active;
-    
+
       &::before {
         content: " ";
         height: $main-function-link-icon-active-border-size;
@@ -286,26 +292,26 @@
   max-width: 204.5px;
   overflow: hidden;
   text-overflow: ellipsis;
-  
+
   &:hover,
   &.hover {
     background-color: $color-main-function-label-link-hover-background;
   }
-  
+
   &:active,
   &.active {
     background-color: $color-main-function-label-link-active-background;
   }
-  
+
   &.selected {
     background-color: $color-main-function-label-link-selected-background;
-    
+
     .text {
       color: $color-default;
       font-weight: 600;
     }
   }
-  
+
   &.semi-selected {
     background-color: lighten($color-main-function-label-link-selected-background, 5%);
   }
@@ -319,5 +325,5 @@
 
   &:not(:first-child) {
     margin-left: 20px;
-  }     
-}  
+  }
+}

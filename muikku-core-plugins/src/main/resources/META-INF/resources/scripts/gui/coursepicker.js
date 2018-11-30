@@ -109,8 +109,7 @@
         if (!MUIKKU_LOGGED_USER) {
           callback(null, false);
         } else {
-          mApi().user.users.basicinfo
-            .read(MUIKKU_LOGGED_USER)
+          mApi().user.whoami.read()
             .callback($.proxy(function (err, basicInfo) {
               callback(err, basicInfo && basicInfo.hasEvaluationFees);
             }, this));
@@ -139,8 +138,7 @@
         if (!MUIKKU_LOGGED_USER) {
           callback(null, false);
         } else {
-          mApi().user.users.basicinfo
-            .read(MUIKKU_LOGGED_USER)
+          mApi().user.whoami.read()
             .callback($.proxy(function (err, basicInfo) {
               callback(err, basicInfo && basicInfo.curriculumIdentifier);
             }, this));

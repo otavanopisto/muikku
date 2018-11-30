@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -81,6 +82,8 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerCont
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -94,7 +97,6 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyStat
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceActivityRecord;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
@@ -105,6 +107,8 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFiel
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudent;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudentRestModel;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserRestModel;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -218,6 +222,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileController fileController;
+
+  @Inject
+  private FileAnswerUtils fileAnswerUtils;
   
   @GET
   @Path("/workspaceTypes")
@@ -802,9 +809,195 @@ public class WorkspaceRESTService extends PluginRESTService {
     )).build();
   }
   
+  /**
+   * Returns students of workspace WORKSPACEENTITYID
+   * TODO change to /workspace/{WORKSPACEENTITYID}/students once old endpoint no longer used
+   * 
+   * Query       : active (boolean) active or inactive workspace students
+   * Used        : Workspace members view
+   * Permissions : LIST_WORKSPACE_MEMBERS
+   * Success     : 200 WorkspaceStudentRestModel (list)
+   *  
+   * PK 20.11.2018
+   */
+  @GET
+  @Path("/students/{WORKSPACEENTITYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaceStudents(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("active") @DefaultValue ("true") Boolean active) {
+    
+    // Workspace, access, and Elastic checks
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    SearchProvider elasticSearchProvider = null;
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      elasticSearchProvider = searchProviderIterator.next();
+    }
+    if (elasticSearchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Search provider not found").build();
+    }
+
+    // Lookup map to convert user entity ids to workspace user entity ids
+
+    Map<Long, Long> workspaceUserEntityIds = new HashMap<Long, Long>();
+
+    // Turn active or inactive students into school data identifiers
+
+    List<WorkspaceUserEntity> workspaceUserEntities = active
+        ? workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity)
+        : workspaceUserEntityController.listInactiveWorkspaceStudents(workspaceEntity);
+    List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<SchoolDataIdentifier>();
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      String identifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
+      String dataSource = workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier();
+      studentIdentifiers.add(new SchoolDataIdentifier(identifier, dataSource));
+      workspaceUserEntityIds.put(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), workspaceUserEntity.getId());
+    }
+
+    // Retrieve users via Elastic
+
+    SearchResult searchResult = elasticSearchProvider.searchUsers(
+        null,                                                     // search string
+        null,                                                     // fields
+        null,                                                     // environment role
+        null,                                                     // user groups
+        null,                                                     // workspace (not set because of student identifiers)
+        studentIdentifiers,                                       // user identifiers of students in workspace
+        true,                                                     // include inactive students
+        false,                                                    // include hidden
+        false,                                                    // only default users 
+        0,                                                        // first result
+        Integer.MAX_VALUE);                                       // max results
+    List<Map<String, Object>> elasticUsers = searchResult.getResults();
+
+    List<WorkspaceStudentRestModel> workspaceStudents = new ArrayList<WorkspaceStudentRestModel>();
+    if (elasticUsers != null && !elasticUsers.isEmpty()) {
+
+      // Convert Elastic results to REST model objects (WorkspaceUserRestModel)
+
+      for (Map<String, Object> elasticUser : elasticUsers) {
+        Long userEntityId = Long.valueOf(elasticUser.get("userEntityId").toString());
+        Long workspaceUserEntityId = workspaceUserEntityIds.get(userEntityId);
+        if (workspaceUserEntityId == null) {
+          logger.warning(String.format("Workspace user entity for user % in workspace %d not found", userEntityId, workspaceEntity.getId()));
+          continue;
+        }
+        workspaceStudents.add(new WorkspaceStudentRestModel(
+            workspaceUserEntityId,
+            userEntityId,
+            elasticUser.get("firstName").toString(),
+            elasticUser.get("lastName").toString(),
+            elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
+            active));
+      }
+
+      // Sort by last and first name
+
+      workspaceStudents.sort(Comparator.comparing(WorkspaceStudentRestModel::getLastName).thenComparing(WorkspaceStudentRestModel::getFirstName));
+    }
+    
+    return Response.ok(workspaceStudents).build();
+  }
+  
+  /**
+   * Returns staff members of workspace WORKSPACEENTITYID
+   * TODO change to /workspace/{WORKSPACEENTITYID}/staffMembers once old endpoint no longer used
+   * 
+   * Used        : Workspace members view
+   * Permissions : LIST_WORKSPACE_MEMBERS
+   * Success     : 200 WorkspaceUserRestModel (list)
+   *  
+   * PK 20.11.2018
+   */
+  @GET
+  @Path("/staffMembers/{WORKSPACEENTITYID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response listWorkspaceStaffMembers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    
+    // Workspace, access, and Elastic checks
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    SearchProvider elasticSearchProvider = null;
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      elasticSearchProvider = searchProviderIterator.next();
+    }
+    if (elasticSearchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Search provider not found").build();
+    }
+    
+    List<EnvironmentRoleArchetype> environmentRoleArchetypes = Arrays.asList(
+        EnvironmentRoleArchetype.ADMINISTRATOR,
+        EnvironmentRoleArchetype.MANAGER,
+        EnvironmentRoleArchetype.STUDY_GUIDER,
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.TEACHER);
+    
+    // Get workspace staff members via Elastic
+
+    SearchResult searchResult = elasticSearchProvider.searchUsers(
+        null,                                                     // search string
+        null,                                                     // fields
+        environmentRoleArchetypes,                                // all staff archetypes
+        null,                                                     // user groups
+        Collections.singletonList(workspaceEntityId),             // workspace
+        null,                                                     // user identifiers
+        false,                                                    // include inactive students
+        false,                                                    // include hidden
+        false,                                                    // only default users 
+        0,                                                        // first result
+        Integer.MAX_VALUE);                                       // max results
+    List<Map<String, Object>> elasticUsers = searchResult.getResults();
+
+    List<WorkspaceUserRestModel> workspaceStaffMembers = new ArrayList<WorkspaceUserRestModel>();
+    if (elasticUsers != null && !elasticUsers.isEmpty()) {
+
+      // Convert Elastic result to REST model (WorkspaceUserRestModel)
+
+      for (Map<String, Object> elasticUser : elasticUsers) {
+        SchoolDataIdentifier identifier = SchoolDataIdentifier.fromString(elasticUser.get("id").toString());
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, identifier);
+        if (workspaceUserEntity != null && !workspaceUserEntity.getArchived()) {
+
+          // #3111: Workspace staff members should be limited to teachers only. A better implementation would support specified workspace roles
+
+          WorkspaceRoleArchetype workspaceRoleArcheType = workspaceUserEntity.getWorkspaceUserRole().getArchetype();
+          if (workspaceRoleArcheType != WorkspaceRoleArchetype.TEACHER) {
+            continue;
+          }
+
+          workspaceStaffMembers.add(new WorkspaceUserRestModel(
+              workspaceUserEntity.getId(),
+              workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+              elasticUser.get("firstName").toString(),
+              elasticUser.get("lastName").toString()));
+        }
+      }
+
+      // Sort by last and first name
+
+      workspaceStaffMembers.sort(Comparator.comparing(WorkspaceUserRestModel::getLastName).thenComparing(WorkspaceUserRestModel::getFirstName));
+    }
+    
+    return Response.ok(workspaceStaffMembers).build();
+  }
+
   @GET
   @Path("/workspaces/{ID}/students")
   @RESTPermit (handling = Handling.INLINE)
+  @Deprecated // Slow as molasses; still used (at least) in evaluation but that one needs its own endpoint in its own rest service
   public Response listWorkspaceStudents(@PathParam("ID") Long workspaceEntityId,
       @QueryParam("active") Boolean active,
       @QueryParam("requestedAssessment") Boolean requestedAssessment,
@@ -838,7 +1031,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-
+    
     List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser> workspaceUsers = null;
     
     if (searchString != null) {
@@ -888,7 +1081,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
     }
-    
+
     List<Flag> flags = null;
     if (flagIds != null && flagIds.length > 0) {
       flags = new ArrayList<>(flagIds.length);
@@ -956,7 +1149,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (maxResults != null && workspaceUsers.size() > maxResults) {
       workspaceUsers.subList(maxResults, workspaceUsers.size() - 1).clear();
     }
-  
+
     for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser : workspaceUsers) {
       SchoolDataIdentifier workspaceUserIdentifier = workspaceUser.getIdentifier();
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityMap.get(workspaceUserIdentifier.toId());
@@ -1001,6 +1194,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // Sorting
+
     if (StringUtils.equals(orderBy, "name")) {
       Collections.sort(result, new Comparator<WorkspaceStudent>() {
         @Override
@@ -1011,7 +1205,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       });
     }
-    
+   
     // Response
     return Response.ok(result).build();
   }
@@ -1102,6 +1296,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{ID}/staffMembers")
   @RESTPermitUnimplemented
+  @Deprecated 
   public Response listWorkspaceStaffMembers(@PathParam("ID") Long workspaceEntityId, @QueryParam("orderBy") String orderBy) {
     
     // Workspace
@@ -1605,7 +1800,28 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(answerFile.getContent())
+    byte[] content = answerFile.getContent();
+    if (content == null) {
+      Long userEntityId = workspaceMaterialReply.getUserEntityId();
+      try {
+        if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, answerFile.getFileId())) {
+          content = fileAnswerUtils.getFileContent(FileAnswerType.FILE, workspaceMaterialReply.getUserEntityId(), answerFile.getFileId());
+        }
+        else {
+          logger.warning(String.format("File %s of user %d not found from file storage", answerFile.getFileId(), userEntityId));
+        }
+      }
+      catch (FileNotFoundException fnfe) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      catch (IOException e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+      }
+    }
+    if (content == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(content)
       .type(answerFile.getContentType())
       .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
       .build();
@@ -1684,38 +1900,54 @@ public class WorkspaceRESTService extends PluginRESTService {
           ZipOutputStream zout = new ZipOutputStream(out);
           for (WorkspaceMaterialFileFieldAnswerFile file : answerFiles) {
             
-            // Prevent duplicate file names
-            
-            String fileName = file.getFileName();
-            if (fileNames.contains(fileName)) {
-              int counter = 1;
-              String name = file.getFileName();
-              String prefix = "";
-              if (StringUtils.contains(name, ".")) {
-                prefix = StringUtils.substringAfterLast(name, ".");
-                name = StringUtils.substringBeforeLast(name, ".");
+            // File content
+
+            byte[] content = file.getContent();
+            if (content == null) {
+              Long userEntityId = workspaceMaterialReply.getUserEntityId();
+              if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, file.getFileId())) {
+                content = fileAnswerUtils.getFileContent(FileAnswerType.FILE, userEntityId, file.getFileId());
               }
-              if (!StringUtils.isEmpty(prefix)) {
-                prefix = String.format(".%s", prefix); 
-              }
-              while (fileNames.contains(fileName)) {
-                fileName = String.format("%s (%s)%s", name, counter++, prefix);
+              else {
+                logger.warning(String.format("File %s of user %d not found from file storage", file.getFileId(), userEntityId));
               }
             }
-            fileNames.add(fileName);
+
+            if (content != null) {
             
-            // Zip file
+              // Prevent duplicate file names
             
-            ZipEntry ze = new ZipEntry(fileName);
-            zout.putNextEntry(ze);
-            InputStream input = new ByteArrayInputStream(file.getContent());
-            try {
-              IOUtils.copy(input, zout);
+              String fileName = file.getFileName();
+              if (fileNames.contains(fileName)) {
+                int counter = 1;
+                String name = file.getFileName();
+                String prefix = "";
+                if (StringUtils.contains(name, ".")) {
+                  prefix = StringUtils.substringAfterLast(name, ".");
+                  name = StringUtils.substringBeforeLast(name, ".");
+                }
+                if (!StringUtils.isEmpty(prefix)) {
+                  prefix = String.format(".%s", prefix); 
+                }
+                while (fileNames.contains(fileName)) {
+                  fileName = String.format("%s (%s)%s", name, counter++, prefix);
+                }
+              }
+              fileNames.add(fileName);
+            
+              // Zip file
+            
+              ZipEntry ze = new ZipEntry(fileName);
+              zout.putNextEntry(ze);
+              InputStream input = new ByteArrayInputStream(content);
+              try {
+                IOUtils.copy(input, zout);
+              }
+              finally {
+                IOUtils.closeQuietly(input);
+              }
+              zout.closeEntry();
             }
-            finally {
-              IOUtils.closeQuietly(input);
-            }
-            zout.closeEntry();
           }
           zout.flush();
           zout.close();
@@ -1774,7 +2006,28 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
-      return Response.ok(answerClip.getContent())
+      byte[] content = answerClip.getContent();
+      if (content == null) {
+        Long userEntityId = workspaceMaterialReply.getUserEntityId();
+        try {
+          if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.AUDIO, userEntityId, answerClip.getClipId())) {
+            content = fileAnswerUtils.getFileContent(FileAnswerType.AUDIO, workspaceMaterialReply.getUserEntityId(), answerClip.getClipId());
+          }
+          else {
+            logger.warning(String.format("Audio %s of user %d not found from file storage", answerClip.getClipId(), userEntityId));
+          }
+        }
+        catch (FileNotFoundException fnfe) {
+          return Response.status(Status.NOT_FOUND).build();
+        }
+        catch (IOException e) {
+          return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve file").build();
+        }
+      }
+      if (content == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      return Response.ok(content)
         .type(answerClip.getContentType())
         .header("Content-Disposition", "attachment; filename=\"" + answerClip.getFileName().replaceAll("\"", "\\\"") + "\"")
         .build();
@@ -2266,90 +2519,145 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(workspaceMaterial).build();
   }
   
+  /**
+   * Returns workspace student
+   * 
+   * Used        : evaluation-modal.js TODO refactor
+   * Permissions : LIST_WORKSPACE_MEMBERS
+   * Success     : 200 WorkspaceStudentRestModel
+   *  
+   * PK 20.11.2018
+   */
   @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response findWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceStudentId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{WORKSPACEUSERENTITYID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
+
+    // Workspace, workspace user, and Elastic checks
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
-    if (workspaceUserIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
     if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Workspace student not found").build();
+      return Response.status(Status.NOT_FOUND).build();
     }
-    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
-    if (bridgeUser == null) {
-      return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
-    }
-    
-    SchoolDataIdentifier userIdentifier = bridgeUser.getUserIdentifier();
-    User user = userController.findUserByIdentifier(userIdentifier);
-    if (user == null) {
-      return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
-    }
-    
-    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceEntityAndUser(workspaceEntity, userIdentifier);
-    if (workspaceUser == null) {
-      return Response.status(Status.NOT_FOUND).entity("School data workspace user not found").build();
-    }
-    
-    return Response.ok(createRestModel(
-        workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity(),
-        user,
-        workspaceUser,
-        workspaceUserEntity.getActive())).build();
-  }
-  
-  @PUT
-  @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response updateWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
-      @PathParam("ID") String workspaceStudentId,
-      WorkspaceStudent workspaceStudent) {
-    // Workspace
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
+    if (!workspaceEntity.getId().equals(workspaceUserEntity.getWorkspaceEntity().getId())) {
+      logger.warning(String.format("Workspace entity mismatch (workspace %d workspace user %d)", workspaceEntityId, workspaceUserEntityId));
       return Response.status(Status.BAD_REQUEST).build();
     }
-    // Access check
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    if (workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.STUDENT) {
+      logger.warning(String.format("Attempted to toggle activity of workspace user %d (not a student)", workspaceUserEntity.getId()));
+      return Response.status(Status.BAD_REQUEST).build();
     }
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity)) {
+    SearchProvider elasticSearchProvider = null;
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      elasticSearchProvider = searchProviderIterator.next();
+    }
+    if (elasticSearchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Search provider not found").build();
+    }
+    
+    // WorkspaceUserEntity to SchoolDataIdentifier
+
+    String identifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
+    String dataSource = workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier();
+    SchoolDataIdentifier schoolDataIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+    
+    // Find user from Elastic
+
+    SearchResult searchResult = elasticSearchProvider.searchUsers(
+        null,                                                     // search string
+        null,                                                     // fields
+        null,                                                     // environment roles
+        null,                                                     // user groups
+        null,                                                     // workspace
+        Collections.singletonList(schoolDataIdentifier),          // user identifiers
+        false,                                                    // include inactive students
+        false,                                                    // include hidden
+        false,                                                    // only default users 
+        0,                                                        // first result
+        1);                                                       // max results
+    List<Map<String, Object>> elasticUsers = searchResult.getResults();
+    if (elasticUsers.isEmpty()) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    Map<String, Object> elasticUser = elasticUsers.get(0);
+    
+    // Convert and return WorkspaceStudentRestModel
+    
+    WorkspaceStudentRestModel workspaceStudentRestModel = new WorkspaceStudentRestModel(
+        workspaceUserEntity.getId(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+        elasticUser.get("firstName").toString(),
+        elasticUser.get("lastName").toString(),
+        elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
+        workspaceUserEntity.getActive());
+    
+    return Response.ok(workspaceStudentRestModel).build();
+  }
+  
+  /**
+   * Updates workspace student. Only updates activity field.
+   * 
+   * Payload     : WorkspaceStudentRestModel
+   * Used        : Workspace members view
+   *               evaluation-modal.js TODO refactor
+   * Permissions : MANAGE_WORKSPACE_MEMBERS
+   * Success     : 204 no content
+   *  
+   * PK 20.11.2018
+   */
+  @PUT
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{WORKSPACEUSERENTITYID}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response updateWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId,
+      WorkspaceStudentRestModel workspaceStudentRestModel) {
+
+    // Workspace, user, and access check
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!workspaceEntity.getId().equals(workspaceUserEntity.getWorkspaceEntity().getId())) {
+      logger.warning(String.format("Workspace entity mismatch (workspace %d workspace user %d)", workspaceEntityId, workspaceUserEntityId));
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    if (workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.STUDENT) {
+      logger.warning(String.format("Attempted to toggle activity of workspace user %d (not a student)", workspaceUserEntity.getId()));
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceUserEntity.getWorkspaceEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    // Workspace student and school data user
-    SchoolDataIdentifier workspaceUserIdentifier = SchoolDataIdentifier.fromId(workspaceStudentId);
-    if (workspaceUserIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace user id").build();
+    // Update activity in Muikku
+    
+    workspaceUserEntityController.updateActive(workspaceUserEntity, workspaceStudentRestModel.getActive());
+    
+    // Update activity in Pyramus (participation type in course might change)
+    
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    if (workspaceUser != null) {
+      workspaceController.updateWorkspaceStudentActivity(workspaceUser, workspaceStudentRestModel.getActive());
     }
     
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser bridgeUser = workspaceController.findWorkspaceUser(workspaceIdentifier, workspaceUserIdentifier);
-    if (bridgeUser == null) {
-      return Response.status(Status.NOT_FOUND).entity("School data user not found").build();
-    }
+    // Update Elastic search index (add or remove workspace from user's workspaces)
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
-    
-    // Reindex user when switching between active and inactive
-    if (workspaceStudent.getActive() != null && !workspaceStudent.getActive().equals(workspaceUserEntity.getActive())) {
-      workspaceController.updateWorkspaceStudentActivity(bridgeUser, workspaceStudent.getActive());
-      workspaceUserEntityController.updateActive(workspaceUserEntity, workspaceStudent.getActive());
-      UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
-      userIndexer.indexUser(userSchoolDataIdentifier.getDataSource().getIdentifier(), userSchoolDataIdentifier.getIdentifier());
-    }
+    UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
+    userIndexer.indexUser(userSchoolDataIdentifier.getDataSource().getIdentifier(), userSchoolDataIdentifier.getIdentifier());
 
-    return Response.ok(workspaceStudent).build();
+    return Response.noContent().build();
   }
 
   @DELETE
@@ -2694,37 +3002,4 @@ public class WorkspaceRESTService extends PluginRESTService {
         .noContent()
         .build();
   }
-  
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/activityStatistics")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response getActivityStatistics(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userIdentifier") String userId) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    SchoolDataIdentifier userIdentifier = null;
-    if (StringUtils.isNotBlank(userId)) {
-      userIdentifier = SchoolDataIdentifier.fromId(userId);
-    }
-    
-    if (userIdentifier == null) {
-      return Response.status(Status.NOT_FOUND).entity("User does not exist").build();
-    }
-    
-    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
-    List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> workspaceMaterialReplies = workspaceMaterialReplyController.listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
-    List<WorkspaceActivityRecord> activityStatisitics = new ArrayList<WorkspaceActivityRecord>();
-    for(fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply: workspaceMaterialReplies) {
-      WorkspaceActivityRecord workspaceActivityRecord = new WorkspaceActivityRecord(workspaceMaterialReply.getWorkspaceMaterial().getAssignmentType().toString(), workspaceMaterialReply.getCreated());
-      activityStatisitics.add(workspaceActivityRecord);
-    }
-    return Response.ok(activityStatisitics).build();
-  }
-  
 }

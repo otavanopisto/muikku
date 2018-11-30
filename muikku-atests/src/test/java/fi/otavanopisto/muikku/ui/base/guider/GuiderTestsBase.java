@@ -22,8 +22,8 @@ public class GuiderTestsBase extends AbstractUITest {
   @Test
   public void filterByNameTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    MockStudent student2 = new MockStudent(4l, 4l, "Test", "Student", "teststudentos@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(2l, 2l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student2 = new MockStudent(3l, 3l, "Test", "Student", "teststudentos@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
     Long courseId = 2l;
@@ -57,8 +57,8 @@ public class GuiderTestsBase extends AbstractUITest {
   @Test
   public void filterByWorkspaceTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    MockStudent student2 = new MockStudent(4l, 4l, "Test", "Student", "teststudentos@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(4l, 4l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student2 = new MockStudent(5l, 5l, "Test", "Student", "teststudentos@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
     Long courseId = 2l;
@@ -98,8 +98,9 @@ public class GuiderTestsBase extends AbstractUITest {
     }
   )
   public void uploadFileToStudentTest() throws Exception {
+//    TODO: Cleanup student from previous tests
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student = new MockStudent(6l, 6l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
     login();
@@ -114,9 +115,10 @@ public class GuiderTestsBase extends AbstractUITest {
       .build();
     try {
       navigate("/guider", false);
-      waitAndClick(".application-list .user--guider .application-list__item-header--student .text--list-item-title");
-      scrollToEnd();
+      waitAndClick(".application-list__header-primary>span");
       waitForPresent(".file-uploader>input");
+      scrollIntoView(".file-uploader>input");
+
       File testFile = getTestFile();
       sendKeys(".file-uploader>input", testFile.getAbsolutePath());
       waitForPresent("a.uploaded-files__item-title");

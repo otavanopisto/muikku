@@ -5,6 +5,9 @@ $color-default-item-separator-border: #f2f2f2;
 $color-default-separator-border: #ebebeb;
 $color-default-helper: #b3b2b2;
 
+$color-yo-sign-up: #75ce41;
+$color-yo-sign-up-contrast: $color-default;
+
 $color-inverse: $color-default-contrast;
 $color-inverse-contrast: $color-default;
 
@@ -54,6 +57,13 @@ $color-label-mobile-selected-background: #97e1ef;
 
 // Workspace
 $color-workspace: #43cd80;
+
+// Notifications
+  
+$color-notification-type-1: #75ce4a; 
+$color-notification-type-2: #b1b1b1;
+$color-notification-type-3: #c43c38;
+
 
 // Signature
 $color-signature-border: #f2f2f2;
@@ -155,6 +165,8 @@ $color-button-inverse-background: $color-inverse;
 $color-button-inverse-text: $color-inverse-contrast;
 
 $color-button-disabled-background: #ccc;
+
+
 
 // Profile image button
 $color-button-profile-image-edit-delete-background: rgba(0, 0, 0, 0.5);
@@ -305,6 +317,7 @@ $color-toc-box-border: $color-panel-border;
 
 // application list
 $color-application-list-item-background: #fff;
+$color-application-list-sorter-background: #f8f8f8;
 $color-application-list-item-fade-background: rgba(255, 255, 255, 0);
 $color-application-list-item-background-hover: $color-list-hover-background;
 $color-application-list-item-background-active: $color-list-active-background;
@@ -405,7 +418,7 @@ $color-cagtegory-11: #000;
 @import "colors/frontpage";
 @import "colors/main-function";
 @import "colors/index";
-@import "colors/sub-container";
+@import "colors/sub-panel";
 @import "colors/application-dialog";
 @import "colors/message";
 @import "colors/course";

@@ -6,13 +6,13 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from '~/reducers';
+import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
 
 interface HopsProps {
   data?: HOPSDataType,
   defaultData: HOPSDataType,
   onHopsChange?: ( hops: HOPSDataType ) => any,
-  i18n: i18nType,
-  editable: boolean
+  i18n: i18nType
 }
 
 interface HopsState {
@@ -53,7 +53,20 @@ class Hops extends React.Component<HopsProps, HopsState> {
     }
   }
 
+  /**
+   * Event handler for handling matriculation subjects changes
+   * 
+   * @param subjects list of subjects
+   */
+  onMatriculationSubjectsChange = (subjects: string[]) => {
+    this.set("studentMatriculationSubjects", subjects);
+  }
+
   render() {
+    let data = this.props.data || this.props.defaultData;
+    if (!data || !data.optedIn){
+      return null;
+    }
     return <div className="application-sub-panel text">
     
     <div className="application-sub-panel__header application-sub-panel__header--studies-hops">{this.props.i18n.text.get("plugin.records.hops.title")}</div>  
@@ -89,6 +102,16 @@ class Hops extends React.Component<HopsProps, HopsState> {
             })}
         </div>
       </div>
+      {this.state.hops.goalMatriculationExam === "yes" &&
+        <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
+          <div className="application-sub-panel__item-title">
+            {this.props.i18n.text.get( "plugin.records.hops.goals.matriculationSubjects" )}
+          </div>
+          <div className="application-sub-panel__item-data form-element">
+            <MatriculationSubjectsList initialMatriculationSubjects={this.state.hops.studentMatriculationSubjects} onMatriculationSubjectsChange={this.onMatriculationSubjectsChange} />
+          </div>
+        </div>
+      }
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title form-element">
           {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears1" )}

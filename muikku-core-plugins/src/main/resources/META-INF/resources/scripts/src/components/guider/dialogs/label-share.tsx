@@ -10,13 +10,11 @@ import mApi from '~/lib/mApi';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider';
-import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
 
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import { StaffRecepientType, UserIndexType, UserType } from '~/reducers/main-function/user-index';
 import promisify from '~/util/promisify';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
-import { loadUserIndexBySchoolData, LoadUserIndexBySchoolDataTriggerType } from '~/actions/main-function/user-index';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 
@@ -31,7 +29,6 @@ interface GuiderLabelShareDialogProps {
   onClose?: ()=>any,
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType,
-  loadUserIndexBySchoolData: LoadUserIndexBySchoolDataTriggerType,
   userIndex: UserIndexType
 }
 
@@ -62,22 +59,17 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
     }
   }
   updateSharesState(props=this.props){
-    //HAXING THIS IN, since there's no such way to retrieve a staff user from the user index
     this.setState({
       selectedItems: this.sharesResult.map((result:any)=>{
-        let user:UserType = props.userIndex.usersBySchoolData[result.userIdentifier];
-        if (!user){
-          return null;
-        }
         return {
           type: "staff",
           value: {
-            id: result.userIdentifier,
+            id: result.user.userIdentifier,
             email: "unknown",
-            firstName: user.firstName,
-            lastName: user.lastName,
+            firstName: result.user.firstName,
+            lastName: result.user.lastName,
             properties: {},
-            userEntityId: user.id
+            userEntityId: result.user.userEntityId
           }
         }
       }).filter((r:StaffRecepientType)=>r!==null)
@@ -87,9 +79,6 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
     this.setState({selectedItems: []});
     try {
       this.sharesResult = await promisify(mApi().user.flags.shares.read(this.props.label.id), 'callback')();
-      this.sharesResult.forEach((share: any)=>{
-        this.props.loadUserIndexBySchoolData(share.userIdentifier)
-      });
       this.updateSharesState();
     } catch (e){
       this.props.displayNotification(e.message, "error");
@@ -159,7 +148,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({displayNotification, loadUserIndexBySchoolData}, dispatch);
+  return bindActionCreators({displayNotification}, dispatch);
 };
 
 export default connect(
