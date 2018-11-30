@@ -34,7 +34,8 @@ interface Eligibility {
 }
 
 interface YOState {
-  eligibility?: Eligibility
+  eligibility?: Eligibility,
+  err?: String
 }
 
 class YO extends React.Component<YOProps,YOState> {
@@ -48,7 +49,11 @@ class YO extends React.Component<YOProps,YOState> {
     mApi().records.studentMatriculationEligibility
       .read((window as any).MUIKKU_LOGGED_USER)
       .callback((err: any, eligibility: Eligibility) => {
-        this.setState({eligibility});
+        if (err) {
+          this.setState({err});
+        } else {
+          this.setState({eligibility});
+        }
       });
   }
 
@@ -60,6 +65,8 @@ class YO extends React.Component<YOProps,YOState> {
       return (
         <div>
           <h2>OTSOTS</h2>          
+          {this.state.err != null ?
+            <p>{this.state.err}</p> : null}
           {this.state.eligibility != null ?
             this.state.eligibility.status == "ELIGIBLE" ?
               <div>
@@ -79,7 +86,6 @@ class YO extends React.Component<YOProps,YOState> {
                    <b>{moment(this.state.eligibility.examDate).format("D.M.YYYY")}</b></p>
               </div>
             : <p>{i18n.text.get("plugin.records.matriculation.loading")}</p>}
-          {/*
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">AlaOts</div>
             <div className="application-sub-panel__body">
@@ -118,9 +124,8 @@ class YO extends React.Component<YOProps,YOState> {
                 </div>
               </div> 
             </div>
-          </div>                                            
-          */}
-           </div>        
+          </div>
+        </div>        
         )
       }
   }
