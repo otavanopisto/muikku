@@ -19,6 +19,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentMatriculationEligibility;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
@@ -30,6 +31,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
@@ -822,5 +824,25 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     } catch (PyramusRestClientUnauthorizedException purr) {
       throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
     }
+  }
+
+  @Override
+  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
+    if (!StringUtils.equals(studentIdentifier.getDataSource(), getSchoolDataSource())) {
+      throw new SchoolDataBridgeInternalException(String.format("Could not evaluate stundent's matriculation eligibility from school data source %s", studentIdentifier.getDataSource()));
+    }
+    
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId != null) {
+      fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility result = pyramusClient.get(String.format("/students/students/%d/matriculationEligibility?subjectCode=%s", pyramusStudentId, subjectCode), fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility.class);
+      if (result == null) {
+        throw new SchoolDataBridgeInternalException(String.format("Could not resolve student's matriculation eligibility for user %s", studentIdentifier));
+      }
+      
+      return new PyramusStudentMatriculationEligibility(result.getEligible(), result.getRequirePassingGrades(), result.getAcceptedCourseCount(), result.getAcceptedTransferCreditCount());
+    } else {
+      throw new SchoolDataBridgeInternalException(String.format("Failed to resolve Pyramus user from studentIdentifier %s", studentIdentifier));
+    }
+    
   }
 }

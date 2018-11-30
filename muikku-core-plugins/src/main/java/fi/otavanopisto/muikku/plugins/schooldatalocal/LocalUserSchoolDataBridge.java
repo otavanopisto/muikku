@@ -30,6 +30,7 @@ import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
@@ -545,5 +546,12 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
       String postalCode, String city, String country) {
     // TODO Auto-generated method stub
     
+  }
+  
+  @Override
+  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier,
+      String subjectCode) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
