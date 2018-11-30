@@ -170,7 +170,6 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
   }
 }
 
-
 function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n
