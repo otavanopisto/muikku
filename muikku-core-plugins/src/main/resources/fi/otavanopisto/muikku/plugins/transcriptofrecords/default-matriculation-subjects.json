@@ -1,92 +1,122 @@
 [
   {
-    "code": "A"
+    "code": "A",
+    "subjectCode": "AI"
   },
   {
-    "code": "A5"
+    "code": "A5",
+    "subjectCode": "S2"
   },
   {
-    "code": "EA"
+    "code": "EA",
+    "subjectCode": "ENA"
   },
   {
-    "code": "FA"
+    "code": "FA",
+    "subjectCode": "RAB2"
   },
   {
-    "code": "PA"
+    "code": "PA",
+    "subjectCode": "EAB3"
   },
   {
-    "code": "SA"
+    "code": "SA",
+    "subjectCode": "SAA"
   },
   {
-    "code": "VA"
+    "code": "VA",
+    "subjectCode": "VEA"
   },
   {
-    "code": "BA"
+    "code": "BA",
+    "subjectCode": "RUA"
   },
   {
-    "code": "BB"
+    "code": "BB",
+    "subjectCode": "RUB"
   },
   {
-    "code": "M"
+    "code": "M",
+    "subjectCode": "MAA"
   },
   {
-    "code": "N"
+    "code": "N",
+    "subjectCode": "MAB"
   },
   {
-    "code": "UE"
+    "code": "UE",
+    "subjectCode": "UE"
   },
   {
-    "code": "ET"
+    "code": "ET",
+    "subjectCode": "ET"
   },
   {
-    "code": "YH"
+    "code": "YH",
+    "subjectCode": "YH"
   },
   {
-    "code": "KE"
+    "code": "KE",
+    "subjectCode": "KE"
   },
   {
-    "code": "GE"
+    "code": "GE",
+    "subjectCode": "GE"
   },
   {
-    "code": "TE"
+    "code": "TE",
+    "subjectCode": "TE"
   },
   {
-    "code": "PS"
+    "code": "PS",
+    "subjectCode": "PS"
   },
   {
-    "code": "FF"
+    "code": "FF",
+    "subjectCode": "FI"
   },
   {
-    "code": "HI"
+    "code": "HI",
+    "subjectCode": "HI"
   },
   {
-    "code": "FY"
+    "code": "FY",
+    "subjectCode": "FY"
   },
   {
-    "code": "BI"
+    "code": "BI",
+    "subjectCode": "BI"
   },
   {
-    "code": "EC"
+    "code": "EC",
+    "subjectCode": "ENA3"
   },
   {
-    "code": "FC"
+    "code": "FC",
+    "subjectCode": "RAB3"
   },
   {
-    "code": "PC"
+    "code": "PC",
+    "subjectCode": "EAB3"
   },
   {
-    "code": "SC"
+    "code": "SC",
+    "subjectCode": "SAB3"
   },
   {
-    "code": "VC"
+    "code": "VC",
+    "subjectCode": "VEB3"
   },
   {
-    "code": "TC"
+    "code": "TC",
+    "subjectCode": "IAB3"
   },
   {
-    "code": "GC"
+    "code": "GC",
+    "subjectCode": null
   },
   {
-    "code": "LC"
+    "code": "LC",
+    "subjectCode": "LAB3"
   }
 ]

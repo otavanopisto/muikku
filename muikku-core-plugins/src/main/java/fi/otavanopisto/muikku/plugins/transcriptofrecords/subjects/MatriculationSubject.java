@@ -9,6 +9,7 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects;
 public class MatriculationSubject {
 
   private String code;
+  private String subjectCode;
   
   /**
    * Returns code of the subject
@@ -26,6 +27,24 @@ public class MatriculationSubject {
    */
   public void setCode(String code) {
     this.code = code;
+  }
+  
+  /**
+   * Returns subject code for matriculation subject
+   * 
+   * @return subject code for matriculation subject
+   */
+  public String getSubjectCode() {
+    return subjectCode;
+  }
+  
+  /**
+   * Sets subject code for matriculation subject
+   * 
+   * @param subjectCode subject code for matriculation subject
+   */
+  public void setSubjectCode(String subjectCode) {
+    this.subjectCode = subjectCode;
   }
   
 }
