@@ -138,7 +138,7 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.102-SNAPSHOT</version>
+      <version>0.7.104-SNAPSHOT</version>
     </dependency>
     
     <dependency>
