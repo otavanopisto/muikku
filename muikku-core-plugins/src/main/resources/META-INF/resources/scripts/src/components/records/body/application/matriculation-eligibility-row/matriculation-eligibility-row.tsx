@@ -65,42 +65,36 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
       eligible: EligbleEnum.UNKNOWN,
       requiredCount: 0,
       acceptedCount: 0,
-      loading: false
+      loading: true
     }
   }
 
   /**
-   * Component did mount life-cycle method  
+   * Component will mount life-cycle method  
    * 
    * Reads available matriculation subjects from REST API
    */
-  async componentDidMount() {
-    if (!this.state.loading) {
+  async componentWillMount() {
+    try {
+      const result = await promisify(mApi().records.matriculationEligibility.read({"subjectCode": this.props.subjectCode}), 'callback')() as MatriculationEligibilityType;
       this.setState({
-        loading: true
+        eligible: result.eligible ? EligbleEnum.TRUE : EligbleEnum.FALSE,
+        requiredCount: result.requirePassingGrades,
+        acceptedCount: result.acceptedCourseCount + result.acceptedTransferCreditCount,
+        loading: false
       });
-
-      try {
-        const result = await promisify(mApi().records.matriculationEligibility.read({"subjectCode": this.props.subjectCode}), 'callback')() as MatriculationEligibilityType;
-        this.setState({
-          eligible: result.eligible ? EligbleEnum.TRUE : EligbleEnum.FALSE,
-          requiredCount: result.requirePassingGrades,
-          acceptedCount: result.acceptedCourseCount + result.acceptedTransferCreditCount,
-          loading: false
-        });
-      } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        }
-
-        this.setState({
-          eligible: EligbleEnum.UNKNOWN,
-          loading: false
-        });
+    } catch (err) {
+      if (!(err instanceof MApiError)) {
+        throw err;
       }
+
+      this.setState({
+        eligible: EligbleEnum.UNKNOWN,
+        loading: false
+      });
     }
   }
-
+  
   /**
    * Component render method  
    * 
