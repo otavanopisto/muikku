@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { Dispatch } from "redux";
 import { StateType } from '~/reducers';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
+import promisify from "~/util/promisify";
 
 /**
  * Enum describing matriculation eligibility
@@ -73,28 +74,30 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
    * 
    * Reads available matriculation subjects from REST API
    */
-  componentDidMount() {
+  async componentDidMount() {
     if (!this.state.loading) {
       this.setState({
         loading: true
       });
 
-      mApi().records.matriculationEligibility.read({"subjectCode": this.props.subjectCode})
-        .callback((err: Error, result: MatriculationEligibilityType)=>{
-          if (!err) {
-            this.setState({
-              eligible: result.eligible ? EligbleEnum.TRUE : EligbleEnum.FALSE,
-              requiredCount: result.requirePassingGrades,
-              acceptedCount: result.acceptedCourseCount + result.acceptedTransferCreditCount,
-              loading: false
-            });
-          } else {
-            this.setState({
-              eligible: EligbleEnum.UNKNOWN,
-              loading: false
-            });
-          }
+      try {
+        const result = await promisify(mApi().records.matriculationEligibility.read({"subjectCode": this.props.subjectCode}), 'callback')() as MatriculationEligibilityType;
+        this.setState({
+          eligible: result.eligible ? EligbleEnum.TRUE : EligbleEnum.FALSE,
+          requiredCount: result.requirePassingGrades,
+          acceptedCount: result.acceptedCourseCount + result.acceptedTransferCreditCount,
+          loading: false
         });
+      } catch (err) {
+        if (!(err instanceof MApiError)) {
+          throw err;
+        }
+
+        this.setState({
+          eligible: EligbleEnum.UNKNOWN,
+          loading: false
+        });
+      }
     }
   }
 
