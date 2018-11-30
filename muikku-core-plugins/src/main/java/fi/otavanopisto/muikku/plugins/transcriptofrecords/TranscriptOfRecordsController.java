@@ -229,7 +229,11 @@ public class TranscriptOfRecordsController {
     return result;
   }
   
-  public LocalDate getMatriculationExamDate(String examDate) {
+  public LocalDate getMatriculationExamEnrollmentDate(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getLatestStudentEnrollmentDate(studentIdentifier);
+  }
+  
+  public LocalDate getMatriculationExamDate() {
     String resultString = pluginSettingsController.getPluginSetting(
         "transcriptofrecords",
         "matriculationExamDate");

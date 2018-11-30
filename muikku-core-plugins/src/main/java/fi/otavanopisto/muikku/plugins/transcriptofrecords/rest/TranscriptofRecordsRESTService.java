@@ -435,10 +435,15 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
+    LocalDate latestEnrollmentDate = vopsController.getMatriculationExamEnrollmentDate(identifier);
     int coursesCompleted = vopsController.countMandatoryCoursesForStudent(identifier);
     int coursesRequired = vopsController.getMandatoryCoursesRequiredForMatriculation();
 
-    if (coursesCompleted >= coursesRequired) {
+    if (latestEnrollmentDate != null) {
+      result.setStatus(MatriculationExamEligibilityStatus.ENROLLED);
+      result.setEnrollmentDate(latestEnrollmentDate.toString());
+      result.setExamDate(vopsController.getMatriculationExamDate().toString());
+    } else if (coursesCompleted >= coursesRequired) {
       result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
     } else {
       result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);

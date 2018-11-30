@@ -241,4 +241,6 @@ public interface UserSchoolDataBridge {
 
   fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(SchoolDataIdentifier studentIdentifier);
 
+  fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment getLatestEnrollmentForStudent(SchoolDataIdentifier studentIdentifier);
+
 }
