@@ -24,13 +24,18 @@ function isScrolledIntoView(el: HTMLElement) {
   let elemTop = rect.top;
   let elemBottom = rect.bottom;
 
-  let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+  let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= (document.querySelector("#stick") as HTMLElement).offsetHeight + 50;
   return isVisible;
 }
 
 class NavigationComponent extends React.Component<NavigationProps, NavigationState> {
   componentWillReceiveProps(nextProps: NavigationProps){
-    
+    if (nextProps.activeNodeId !== this.props.activeNodeId){
+      let element = (this.refs[nextProps.activeNodeId] as NavigationElement).getElement();
+      if (!isScrolledIntoView(element)){
+        element.scrollIntoView(true);
+      }
+    }
   }
   render(){
     if (!this.props.materials){
@@ -41,7 +46,7 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
       this.props.materials.map((node)=>{
         return <NavigationTopic name={node.title} key={node.workspaceMaterialId}>
           {node.children.map((subnode)=>{
-            return <NavigationElement iconColor={null} icon={null} key={subnode.workspaceMaterialId}
+            return <NavigationElement ref={subnode.workspaceMaterialId + ""} iconColor={null} icon={null} key={subnode.workspaceMaterialId}
               isActive={this.props.activeNodeId === subnode.workspaceMaterialId} disableScroll
               hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</NavigationElement>
           })}

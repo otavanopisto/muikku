@@ -130,9 +130,14 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["to"];
     delete elementProps["onScrollToSection"];
     delete elementProps["openInNewTab"];
+    delete elementProps["scrollPadding"];
+    delete elementProps["disableScroll"];
     
-    return <Element {...elementProps}
+    return <Element ref="element" {...elementProps}
       className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchMove={this.onTouchMove}/>
+  }
+  getElement():HTMLElement {
+    return this.refs["element"] as HTMLElement;
   }
 }
