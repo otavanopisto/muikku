@@ -4,7 +4,7 @@
     
       <div class="jumbo-dialog-header">
         <div class="jumbo-dialog-title">
-          {#localize key="plugin.communicator.createmessage.topic"/}
+          {#localize key="plugin.communicator.createmessage.label"/}
           <span class="jumbo-dialog-close icon icon-close"></span>
         </div>
       </div>

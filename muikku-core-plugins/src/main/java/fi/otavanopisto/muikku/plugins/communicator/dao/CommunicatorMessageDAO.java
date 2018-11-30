@@ -132,8 +132,22 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
       }
       break;
 
-      case INBOX:
-      case TRASH:
+      case INBOX: {
+        Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
+        Join<CommunicatorMessageRecipient, CommunicatorMessage> messageJoin = root.join(CommunicatorMessageRecipient_.communicatorMessage);
+        criteria.multiselect(messageJoin.get(CommunicatorMessage_.communicatorMessageId), criteriaBuilder.greatest(messageJoin.get(CommunicatorMessage_.created)));
+        criteria.where(
+          criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), userEntity.getId()),
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
+          )
+        );
+        criteria.groupBy(messageJoin.get(CommunicatorMessage_.communicatorMessageId));
+      }
+      break;
+      
+      case TRASH: {
         Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
         Join<CommunicatorMessageRecipient, CommunicatorMessage> messageJoin = root.join(CommunicatorMessageRecipient_.communicatorMessage);
         criteria.multiselect(messageJoin.get(CommunicatorMessage_.communicatorMessageId), criteriaBuilder.greatest(messageJoin.get(CommunicatorMessage_.created)));
@@ -152,6 +166,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
           )
         );
         criteria.groupBy(messageJoin.get(CommunicatorMessage_.communicatorMessageId));
+      }
       break;
     }
 
