@@ -17,6 +17,7 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import moment from '~/lib/moment';
 import '~/sass/elements/buttons.scss';
+import promisify from "~/util/promisify";
 
 interface YOProps {
   i18n: i18nType,
@@ -51,16 +52,15 @@ class YO extends React.Component<YOProps, YOState> {
     }
   }
 
-  componentDidMount() {
-    mApi().records.studentMatriculationEligibility
-      .read((window as any).MUIKKU_LOGGED_USER)
-      .callback((err: any, eligibility: Eligibility) => {
-        if (err) {
-          this.setState({ err });
-        } else {
-          this.setState({ eligibility });
-        }
-      });
+  async componentDidMount() {
+    try {
+      let eligibility: Eligibility = await promisify(
+        mApi().records.studentMatriculationEligibility
+        .read((window as any).MUIKKU_LOGGED_USER), 'callback')() as Eligibility;
+      this.setState({eligibility});
+    } catch (err) {
+      this.setState({err});
+    }
     mApi().records.matriculationSubjects.read()
       .callback((err: Error, matriculationSubjects: MatriculationSubjectType[]) => {
         if (!err) {
@@ -69,7 +69,7 @@ class YO extends React.Component<YOProps, YOState> {
             matriculationSubjectsLoaded: true
           });
         }
-      });
+    });
   }
 
   /**
