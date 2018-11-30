@@ -347,12 +347,18 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).confirmResetPassword(resetCode, newPassword);
   }
 
-  public StudentCourseStats getStudentCourseStats(SchoolDataIdentifier studentIdentifier) {
+  public StudentCourseStats getStudentCourseStats(
+      SchoolDataIdentifier studentIdentifier
+  ) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
     }
-    return getUserBridge(schoolDataSource).getStudentCourseStats(studentIdentifier);
+    return getUserBridge(schoolDataSource).getStudentCourseStats(
+        studentIdentifier,
+        "lukio",
+        "pakollinen"
+    );
   }
 
   public LocalDate getLatestStudentEnrollmentDate(SchoolDataIdentifier studentIdentifier) {

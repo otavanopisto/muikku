@@ -831,10 +831,17 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
  
   @Override
   public fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(
-      SchoolDataIdentifier studentIdentifier
+      SchoolDataIdentifier studentIdentifier,
+      String educationTypeCode,
+      String educationSubtypeCode
   ) {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
-    StudentCourseStats courseStats = pyramusClient.get(String.format("/students/students/%d/courseStats", studentId), StudentCourseStats.class); 
+    StudentCourseStats courseStats = pyramusClient.get(
+        String.format(
+            "/students/students/%d/courseStats?educationTypeCode=%s&educationSubtypeCode=%s",
+            studentId,
+            educationTypeCode,
+            educationSubtypeCode), StudentCourseStats.class); 
     return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses());
   }
   
