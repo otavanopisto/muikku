@@ -40,6 +40,8 @@ interface YOState {
 class YO extends React.Component<YOProps,YOState> {
   constructor(props:YOProps){
     super(props);
+
+    this.state = { }
   }    
 
   componentDidMount() {
