@@ -103,27 +103,35 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.setState({textInput, autocompleteOpened: true});
     
     if (textInput){
-      let studentsLoader: any = this.props.loaders.studentsLoader ? this.props.loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
-        searchString: textInput,
-        onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
-      }), 'callback');
-      let userGroupsLoader: any = this.props.loaders.userGroupsLoader ? this.props.loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
-        searchString: textInput
-      }), 'callback');
-      let workspacesLoader: any = this.props.loaders.workspacesLoader ? this.props.loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
-        search: textInput,
-        myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
-      }), 'callback');
-      let staffLoader: any = this.props.loaders.staffLoader ? this.props.loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
-        searchString: textInput
-      }), 'callback');
+      let getStudentsLoader = () =>  {
+        return this.props.loaders.studentsLoader ? this.props.loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
+          searchString: textInput,
+          onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
+        }), 'callback');
+      }
+      let getUserGroupsLoader = () => { 
+        return this.props.loaders.userGroupsLoader ? this.props.loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
+          searchString: textInput
+        }), 'callback');
+      }
+      let getWorkspacesLoader = () => { 
+        return this.props.loaders.workspacesLoader ? this.props.loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
+          search: textInput,
+          myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
+        }), 'callback');
+      }
+      let getStaffLoader = () => { 
+        return this.props.loaders.staffLoader ? this.props.loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
+          searchString: textInput
+        }), 'callback');
+      }
       
       let searchResults = await Promise.all(
         [
-          checkHasPermission(this.props.hasUserPermission) ? studentsLoader().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasGroupPermission) ? userGroupsLoader().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasWorkspacePermission) ? workspacesLoader().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
-          checkHasPermission(this.props.hasStaffPermission, false) ? staffLoader().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+          checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
+          checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
+          checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+          checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
         ]
       );
       
