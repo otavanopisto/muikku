@@ -51,6 +51,8 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/communicator")
 @RequestScoped
@@ -97,17 +99,13 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
 
   @GET
   @Path("/recipientsUsersSearch") // TODO mApi requires ids between all resources - this should be /recipients/users/search
-  @RESTPermitUnimplemented
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response searchUsers(
       @QueryParam("searchString") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults
     ) {
     
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     
     EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUser);
@@ -165,9 +163,8 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       List<fi.otavanopisto.muikku.rest.model.User> ret = new ArrayList<fi.otavanopisto.muikku.rest.model.User>();
 
       for (Map<String, Object> o : results) {
-        String[] id = ((String) o.get("id")).split("/", 2);
-        UserEntity userEntity = userEntityController
-            .findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
+        Long userEntityId = Long.valueOf(o.get("userEntityId").toString());
+        UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
         
         if (userEntity != null) {
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
@@ -188,6 +185,8 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
             emailAddress,
             studyStartDate,
             studyTimeEnd));
+        } else {
+          logger.warning(String.format("UserEntity not found by id %s", userEntityId));
         }
       }
 
