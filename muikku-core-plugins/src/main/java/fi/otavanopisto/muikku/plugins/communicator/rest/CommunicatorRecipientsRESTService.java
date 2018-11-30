@@ -44,7 +44,6 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.RoleFeatures;
-import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -61,10 +60,6 @@ import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 public class CommunicatorRecipientsRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 4522150023024829380L;
-
-  @Inject
-  @BaseUrl
-  private String baseUrl;
 
   @Inject
   private Logger logger;
@@ -123,19 +118,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
     Set<Long> workspaceFilters = null;
     Set<EnvironmentRoleArchetype> roleArchetypeFilter = new HashSet<>();
     
-    if (sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
-      // Study guider limitations
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.MANAGER);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.TEACHER);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_GUIDER);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDENT);
-      
-      // Groups where user is a member
-      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
-      userGroupFilters = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
-    } else if (EnvironmentRoleArchetype.STUDENT.equals(loggedUserRole)) {
+    if (EnvironmentRoleArchetype.STUDENT.equals(loggedUserRole)) {
       // Stuff students can seach for
       roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.MANAGER);
@@ -151,6 +134,12 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       roleArchetypeFilter.add(EnvironmentRoleArchetype.TEACHER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_GUIDER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDENT);
+      
+      if (sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
+        // Study guider limitations - groups where user is a member
+        List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
+        userGroupFilters = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
+      }
     }
 
     SearchProvider searchProvider = getSearchProvider();
