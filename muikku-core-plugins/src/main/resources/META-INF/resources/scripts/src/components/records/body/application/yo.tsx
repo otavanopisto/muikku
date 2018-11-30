@@ -40,10 +40,12 @@ interface YOState {
 class YO extends React.Component<YOProps,YOState> {
   constructor(props:YOProps){
     super(props);
+
+    this.state = { }
   }    
 
   componentDidMount() {
-    mApi().records.matriculationEligibility
+    mApi().records.studentMatriculationEligibility
       .read((window as any).MUIKKU_LOGGED_USER)
       .callback((err: any, eligibility: Eligibility) => {
         this.setState({eligibility});

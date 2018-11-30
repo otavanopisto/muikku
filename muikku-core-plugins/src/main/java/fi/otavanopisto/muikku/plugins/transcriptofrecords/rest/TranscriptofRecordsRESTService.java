@@ -421,19 +421,23 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @GET
   @Consumes("application/json")
-  @Path("/matriculationEligibility/{STUDENTIDENTIFIER}")
+  @Path("/studentMatriculationEligibility/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
   public Response getMatriculationEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
     }
-
+    
+    if (!identifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     User student = userController.findUserByIdentifier(identifier);
     if (student == null) {
       return Response.status(Status.NOT_FOUND).entity("Student not found").build();
     }
-
+    
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
     LocalDate latestEnrollmentDate = vopsController.getMatriculationExamEnrollmentDate(identifier);
     int coursesCompleted = vopsController.countMandatoryCoursesForStudent(identifier);
