@@ -11,8 +11,8 @@ import mApi from '~/lib/mApi';
  * @author Antti Leppä <antti.leppa@metatavu.fi>
  */
 enum EligbleEnum { 
-  TRUE, 
   FALSE,
+  TRUE, 
   UNKNOWN
 };
 
