@@ -6,7 +6,7 @@ import { StateType } from '~/reducers';
 import mApi from '~/lib/mApi';
 
 /**
- * Enum describing matriculation elligibility
+ * Enum describing matriculation eligibility
  * 
  * @author Antti Leppä <antti.leppa@metatavu.fi>
  */
@@ -17,11 +17,11 @@ enum EligbleEnum { 
 };
 
 /**
- * Interface representing matriculation elligibility REST model 
+ * Interface representing matriculation eligibility REST model 
  * 
  * @author Antti Leppä <antti.leppa@metatavu.fi>
  */
-interface MatriculationElligibilityType {
+interface MatriculationEligibilityType {
   eligible: boolean;
   requirePassingGrades: number;
   acceptedCourseCount: number;
@@ -79,8 +79,8 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
         loading: true
       });
 
-      mApi().records.matriculationElligibility.read({"subjectCode": this.props.subjectCode})
-        .callback((err: Error, result: MatriculationElligibilityType)=>{
+      mApi().records.matriculationEligibility.read({"subjectCode": this.props.subjectCode})
+        .callback((err: Error, result: MatriculationEligibilityType)=>{
           if (!err) {
             this.setState({
               eligible: result.eligible ? EligbleEnum.TRUE : EligbleEnum.FALSE,

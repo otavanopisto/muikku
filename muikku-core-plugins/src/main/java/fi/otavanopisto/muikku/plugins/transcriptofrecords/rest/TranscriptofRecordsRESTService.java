@@ -444,9 +444,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/matriculationElligibility")
+  @Path("/matriculationEligibility")
   @RESTPermit(handling = Handling.INLINE)
-  public Response findMatriculationElligibility(@QueryParam ("subjectCode") String subjectCode) {
+  public Response findMatriculationEligibility(@QueryParam ("subjectCode") String subjectCode) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
