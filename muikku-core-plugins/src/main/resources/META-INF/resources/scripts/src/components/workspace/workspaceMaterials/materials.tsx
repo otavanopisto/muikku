@@ -5,7 +5,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType } from "~/reducers/workspaces";
 import ProgressData from '../progressData';
 
-import ApplicationPanel from '~/components/general/application-panel';
+import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
 import MaterialLoader from "~/components/base/material-loader";
 import { StatusType } from "~/reducers/base/status";
 
@@ -13,7 +13,7 @@ interface WorkspaceMaterialsProps {
   i18n: i18nType,
   workspace: WorkspaceType,
   materials: MaterialContentNodeListType,
-  aside: React.ReactElement<any>,
+  navigation: React.ReactElement<any>,
   activeNodeId: number,
   status: StatusType,
   onActiveNodeIdChange: (activeNodeId: number)=>any
@@ -45,7 +45,7 @@ function isScrolledIntoView(el: HTMLElement) {
 class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, WorkspaceMaterialsState> {
   private disableScrollInteraction: boolean;
   private flattenedMaterial: MaterialContentNodeListType;
-  private hackToMakeBrowserListenAndScrollWhereIWantItToScroll: Element;
+  private hackToMakeBrowserListenAndScrollWhereIWantItToScroll: Element | number;
   private hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout: NodeJS.Timer;
   private hackToMakeBrowserListenAndScrollWhereIWantItToScrollCallback: ()=>any;
   constructor(props: WorkspaceMaterialsProps){
@@ -95,36 +95,50 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       this.getFlattenedMaterials(nextProps);
     }
   }
-  pleaseScrollIntoView(element:Element, cb:()=>any){
+  pleaseScrollIntoView(element:Element | number, cb:()=>any){
     this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll = element;
     this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollCallback = cb;
     this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout = setTimeout(()=>{
       this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll = null;
       this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollCallback();
     }, 300);
-    element.scrollIntoView(true);
+    if (element instanceof Element){
+      element.scrollIntoView(true);
+    } else {
+      document.documentElement.scrollTo(0, element);
+    }
   }
   componentDidUpdate(prevProps: WorkspaceMaterialsProps, prevState: WorkspaceMaterialsState){
     if (this.props.activeNodeId !== prevProps.activeNodeId){
       let onActiveLoad = null;
-      if (this.props.activeNodeId !== this.getActive()){
+      let activeNodeChapter = this.getChapter(this.props.activeNodeId);
+      let isChapterLoaded = this.state.loadedChapters[activeNodeChapter.chapter.workspaceMaterialId];
+      if (this.props.activeNodeId !== this.getActive() || !isChapterLoaded){
         this.disableScrollInteraction = true;
         
-        let activeNodeChapter = this.getChapter(this.props.activeNodeId);
-        let isChaptedLoaded = this.state.loadedChapters[activeNodeChapter.chapter.workspaceMaterialId];
         let trigger = ()=>{
+          let onHasScrolled = ()=>{
+            this.disableScrollInteraction = false;
+            if (!isChapterLoaded){
+              this.recalculateLoaded();
+            }
+          };
+          
+          //scroll is there already
+          if (activeNodeChapter.index === 0 && document.documentElement.scrollTop === 0){
+            onHasScrolled();
+            return;
+          } else if (activeNodeChapter.index === 0){
+            this.pleaseScrollIntoView(0, onHasScrolled);
+            return;
+          }
           //Only way to force trigger the event when the scrolling is so buggy
           //Do it as many times as possible with timeouts in order to trick the browser
           //to actually scroll there
           let element = document.querySelector("#p-" + this.props.activeNodeId);
-          this.pleaseScrollIntoView(element, ()=>{
-            this.disableScrollInteraction = false;
-            if (!isChaptedLoaded){
-              this.recalculateLoaded();
-            }
-          });
+          this.pleaseScrollIntoView(element, onHasScrolled);
         };
-        if (!isChaptedLoaded){
+        if (!isChapterLoaded){
           onActiveLoad = trigger;
         } else {
           trigger();
@@ -175,7 +189,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   }
   onScroll(){
     if (this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll){
-      this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll.scrollIntoView(true);
+      if (this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll instanceof Element){
+        this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll.scrollIntoView(true);
+      } else {
+        document.documentElement.scrollTo(0, this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll);
+      }
       clearTimeout(this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout);
       this.hackToMakeBrowserListenAndScrollWhereIWantItToScrollTimeout = setTimeout(()=>{
         this.hackToMakeBrowserListenAndScrollWhereIWantItToScroll = null;
@@ -295,36 +313,37 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
     
-    return <div style={{paddingTop: this.state.defaultOffset}}>
-      <div><h2>{this.props.workspace.name}</h2><ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/></div>
-      {this.props.materials.map((node)=>{
-        return <section key={node.workspaceMaterialId} id={"section-" + node.workspaceMaterialId} style={{
-          height: this.state.loadedChapters[node.workspaceMaterialId] ?
-          this.state.loadedChapters[node.workspaceMaterialId].height : node.children.length*DEFAULT_EMPTY_HEIGHT,
+    return <ContentPanel modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name}>
+      {this.props.materials.map((chapter)=>{
+        return <section key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
+          height: this.state.loadedChapters[chapter.workspaceMaterialId] ?
+          this.state.loadedChapters[chapter.workspaceMaterialId].height : chapter.children.length*DEFAULT_EMPTY_HEIGHT,
           transition: "height " + ANIMATION_SECONDS + "s ease",
           overflow: "hidden"
         }}>
-          <h1>{node.title}</h1>
+          <h1>{chapter.title}</h1>
           <div>
-            {node.children.map((subnode)=>{
-              let anchor = <div id={"p-" + subnode.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
-              let material = !this.props.workspace ? null : <MaterialLoader material={subnode} workspace={this.props.workspace}
-                i18n={this.props.i18n} status={this.props.status} />;
-              if (this.state.loadedChapters[node.workspaceMaterialId]){
-                return <div ref={subnode.workspaceMaterialId + ""}
-                  key={subnode.workspaceMaterialId}>
+            {chapter.children.map((node)=>{
+              let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
+              if (this.state.loadedChapters[chapter.workspaceMaterialId]){
+                let material = !this.props.workspace ? null : <ContentPanelItem>
+                  <MaterialLoader material={node} workspace={this.props.workspace}
+                    i18n={this.props.i18n} status={this.props.status}/>
+                </ContentPanelItem>;
+                return <div ref={node.workspaceMaterialId + ""}
+                  key={node.workspaceMaterialId}>
                   {anchor}
                   {material}
                 </div>
               }
-              return <div key={subnode.workspaceMaterialId} style={{height: DEFAULT_EMPTY_HEIGHT}}
-                ref={subnode.workspaceMaterialId + ""}>{anchor}{subnode.workspaceMaterialId}</div>
+              return <div key={node.workspaceMaterialId} style={{height: DEFAULT_EMPTY_HEIGHT}}
+                ref={node.workspaceMaterialId + ""}>{anchor}</div>
              })}
            </div>
          </section>
        })
       }
-    </div>
+    </ContentPanel>
   }
 }
 

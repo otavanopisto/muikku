@@ -1,0 +1,86 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.content-panel {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding: $navbar-mobile-height 0 10px;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
+}
+
+.content-panel__container {
+  @include text;
+  display: flex;
+  flex-direction: column;
+  max-width: $breakpoint-max-usable-screen;
+  width: 100%;
+}
+
+.content-panel__body {
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoint($breakpoint-pad) {
+    box-shadow: none;
+  }
+}
+
+.content-panel__header {
+  width: 100%;
+}
+
+.content-panel__navigation {
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  top: $navbar-mobile-height;
+  bottom: 0;
+  right: 0;
+  width: 220px;
+  overflow-y: auto;
+  
+  @include breakpoint($breakpoint-pad) {
+    top: calc(#{$navbar-desktop-height} * 1.25);
+  }
+}
+
+.content-panel__content {
+  padding: $navbar-mobile-height 0 0 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-direction: row;
+    padding: 0 220px 0 0;
+  }
+}
+
+.content-panel__main-container {
+  overflow-x: hidden;
+  width: 100%;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0;
+  position: relative;
+  margin: 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 12px;
+  }
+}
+
+.content-panel__item {
+  background-color: $color-application-panel-box-background;
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  width: 100%;
+  padding: 20px 5px;
+  border: solid 1px $color-application-panel-box-border;
+  margin-top: 25px;
+}
