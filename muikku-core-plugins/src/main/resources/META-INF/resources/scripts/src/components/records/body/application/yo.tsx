@@ -53,6 +53,7 @@ class YO extends React.Component<YOProps,YOState> {
   }
 
   render(){        
+      let i18n = this.props.i18n;
       if (this.props.records.location !== "yo") {
         return null;        
       } else {
@@ -62,22 +63,22 @@ class YO extends React.Component<YOProps,YOState> {
           {this.state.eligibility != null ?
             this.state.eligibility.status == "ELIGIBLE" ?
               <div>
-                <p>Sinulla on oikeus ilmoittautua ylioppilaskokeeseen</p>
-                <a href="/jsf/matriculation/index.jsf ">Ilmoittaudu YO-kokeeseen</a>
+                <p>{i18n.text.get("plugin.records.matriculation.eligible")}</p>
+                <a href="/jsf/matriculation/index.jsf ">{i18n.text.get("plugin.records.matriculation.enroll")}</a>
               </div> :
               this.state.eligibility.status == "NOT_ELIGIBLE" ?
               <div>
-                <p>Sinulla ei ole oikeutta ilmoittautua ylioppilaskokeeseen.</p>
-                <p>Kursseja suoritettuna: <b>{this.state.eligibility.coursesCompleted}</b></p>
-                <p>Kursseja vaaditaan: <b>{this.state.eligibility.coursesRequired}</b></p>
+                <p>{i18n.text.get("plugin.records.matriculation.notEligible")}</p>
+                <p>{i18n.text.get("plugin.records.matriculation.coursesCompleted")}<b>{this.state.eligibility.coursesCompleted}</b></p>
+                <p>{i18n.text.get("plugin.records.matriculation.coursesRequired")}<b>{this.state.eligibility.coursesRequired}</b></p>
               </div> :
               <div>
-                <p>Ilmoittautumispäivämäärä YO-kokeeseen:
+                <p>{i18n.text.get("plugin.records.matriculation.enrollmentDate")}
                    <b>{moment(this.state.eligibility.enrollmentDate).format("D.M.YYYY")}</b></p>
-                <p>Ylioppilaskokeen ajankohta:
+                <p>{i18n.text.get("plugin.records.matriculation.examDate")}
                    <b>{moment(this.state.eligibility.examDate).format("D.M.YYYY")}</b></p>
               </div>
-            : <p>Ladataan...</p>}
+            : <p>{i18n.text.get("plugin.records.matriculation.loading")}</p>}
           {/*
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">AlaOts</div>
