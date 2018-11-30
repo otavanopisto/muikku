@@ -65,7 +65,6 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
       <div className="application-sub-panel__header application-sub-panel__header--studies-detailed-info" key={this.props.records.current.workspace.id}>
         {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
       </div>
-      <div>MAKKKARAAAA!</div>
       <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
         {workspaceEvaluation}      
         <ApplicationList>
