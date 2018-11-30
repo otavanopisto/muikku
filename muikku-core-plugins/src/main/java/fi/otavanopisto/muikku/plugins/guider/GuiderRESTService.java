@@ -400,7 +400,11 @@ public class GuiderRESTService extends PluginRESTService {
           }
           
           UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-          String emailAddress = userEntity != null ? userEmailEntityController.getUserDefaultEmailAddress(userEntity, true) : null;
+          if (userEntity == null) {
+            logger.severe(String.format("Student %s in search index not found in Muikku", studentIdentifier));
+            continue;
+          }
+          String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
 
           Date studyStartDate = getDateResult(o.get("studyStartDate"));
           Date studyEndDate = getDateResult(o.get("studyEndDate"));
@@ -409,7 +413,7 @@ public class GuiderRESTService extends PluginRESTService {
           List<FlagStudent> studentFlags = null;
           List<fi.otavanopisto.muikku.rest.model.StudentFlag> restFlags = null;
           if (getFlagsFromStudents) {
-             studentFlags = flagController.listByOwnedAndSharedStudentFlags(studentIdentifier, ownerIdentifier);
+            studentFlags = flagController.listByOwnedAndSharedStudentFlags(studentIdentifier, ownerIdentifier);
             restFlags = createRestModel(studentFlags.toArray(new FlagStudent[0]));
           }
           

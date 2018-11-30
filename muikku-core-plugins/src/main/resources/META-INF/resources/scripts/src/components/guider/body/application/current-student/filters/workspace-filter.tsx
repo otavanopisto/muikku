@@ -22,7 +22,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
     let items:JSX.Element[] = [];
     items.push(<div className="filter-category" key="activeWorkspaces">
         <span className="filter-category__label">{this.props.i18n.text.get("plugin.guider.activeCoursesLabel")}</span>
-        <a className="filter-category__link" onClick={()=>{this.props.workspaceHandler()}}>{this.props.filteredWorkspaces.length != 0 ? "Show all" : "Hide all"}</a>
+        <a className="filter-category__link" onClick={()=>{this.props.workspaceHandler()}}>{this.props.filteredWorkspaces.length != 0 ? this.props.i18n.text.get("plugin.guider.charts.filters.showAll") : this.props.i18n.text.get("plugin.guider.charts.filters.hideAll")}</a>
       </div>);
     this.props.workspaces.map((workspace)=>{
       let ifChecked = !this.props.filteredWorkspaces.includes(workspace.id);

@@ -17,7 +17,8 @@ export interface StatusType {
   isStudent: boolean,
   profile: ProfileStatusType,
   hasImage: boolean,
-  imgVersion: number
+  imgVersion: number,
+  hopsEnabled: boolean
 }
 
 export interface ProfileStatusType {
@@ -41,7 +42,8 @@ export default function status(state: StatusType={
   profile: (<any>window).PROFILE_DATA,
   isStudent: (<any>window).MUIKKU_IS_STUDENT,
   hasImage: false,
-  imgVersion: (new Date()).getTime()
+  imgVersion: (new Date()).getTime(),
+  hopsEnabled: (<any>window).HOPS_ENABLED
 }, action: ActionType): StatusType{
   if (action.type === "LOGOUT"){
     $('#logout').click();
