@@ -27,7 +27,7 @@
   display: flex;
   flex-direction: column;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     box-shadow: none;
   }
 }
@@ -40,24 +40,65 @@
   display: flex;
   justify-content: flex-end;
   position: fixed;
-  top: $navbar-mobile-height;
+  top: 0;
   bottom: 0;
   right: 0;
-  width: 220px;
   overflow-y: auto;
+  width: 100%;
+  z-index: 10000;
   
-  @include breakpoint($breakpoint-pad) {
-    top: calc(#{$navbar-desktop-height} * 1.25);
+  &:not(.displayed){
+    display: none;
+  }
+ 
+  &:not(.visible){
+  	.content-panel__navigation-content {
+      right: -90%;
+    }
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    &:not(.displayed){
+      display: block;
+    }
+    &:not(.visible){
+      .content-panel__navigation-content {
+        right: 0;
+      }
+    }
+  }
+  
+  .content-panel__navigation-content {
+  	overflow-y: auto;
+  	width: 90%;
+  	position: absolute;
+  	top: 0;
+  	right: 0;
+  	bottom: 0;
+  	padding-left: 24px;
+    background-color: $color-application-panel-box-background;
+    box-shadow: 0 2px 3px $color-panel-shadow;
+    border: solid 1px $color-application-panel-box-border;
+  }
+ 
+  @include breakpoint($breakpoint-desktop) {
+  	top: $navbar-desktop-height;
+  	width: 400px;
+  	
+  	.content-panel__navigation-content {
+  	  width: 400px;
+      padding-left: 0;
+  	}
   }
 }
 
 .content-panel__content {
   padding: $navbar-mobile-height 0 0 0;
   
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     display: flex;
     flex-direction: row;
-    padding: 0 220px 0 0;
+    padding: 0 400px 0 0;
   }
 }
 
@@ -71,7 +112,7 @@
   position: relative;
   margin: 0;
   
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     padding: 12px;
   }
 }
@@ -83,4 +124,17 @@
   padding: 20px 5px;
   border: solid 1px $color-application-panel-box-border;
   margin-top: 25px;
+}
+
+.content-panel__navigation-open {
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+  }
+
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background-color: red;
+  width: 25px;
+  height: 25px;
 }

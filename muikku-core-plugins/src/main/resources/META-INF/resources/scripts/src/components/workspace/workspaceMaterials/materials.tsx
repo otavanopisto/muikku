@@ -3,7 +3,6 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType } from "~/reducers/workspaces";
-import ProgressData from '../progressData';
 
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
 import MaterialLoader from "~/components/base/material-loader";
@@ -38,7 +37,7 @@ function isScrolledIntoView(el: HTMLElement) {
   let elemTop = rect.top;
   let elemBottom = rect.bottom;
 
-  let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+  let isVisible = elemTop < window.innerHeight && elemBottom >= ((document.querySelector("#stick") as HTMLElement).offsetHeight/2);
   return isVisible;
 }
 
@@ -313,6 +312,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
     
+    //NOTE because of fancy loading and all this scrolling mess, the height that you set of the h1 chapter title should be at least
+    //more than half the height of the navigation bar otherwise you'd get a bunch of scrolling bugs
     return <ContentPanel modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name}>
       {this.props.materials.map((chapter)=>{
         return <section key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
@@ -321,7 +322,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           transition: "height " + ANIMATION_SECONDS + "s ease",
           overflow: "hidden"
         }}>
-          <h1>{chapter.title}</h1>
+          {this.state.loadedChapters[chapter.workspaceMaterialId] ? <h1>{chapter.title}</h1> : null}
           <div>
             {chapter.children.map((node)=>{
               let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
