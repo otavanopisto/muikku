@@ -37,7 +37,7 @@ function isScrolledIntoView(el: HTMLElement) {
   let elemTop = rect.top;
   let elemBottom = rect.bottom;
 
-  let isVisible = elemTop < window.innerHeight && elemBottom >= ((document.querySelector("#stick") as HTMLElement).offsetHeight/2);
+  let isVisible = elemTop < window.innerHeight && elemBottom >= (document.querySelector("#stick") as HTMLElement).offsetHeight;
   return isVisible;
 }
 
@@ -204,8 +204,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return;
     }
     
-    this.recalculateLoaded();
-    this.recalculateHash();
+    this.recalculateLoaded(false, ()=>{
+      this.recalculateHash();
+    });
   }
   getActive(){
     let winner:number = null;
@@ -219,7 +220,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         }
       let element = this.refs[refKey] as HTMLElement;
       let elementTop = element.getBoundingClientRect().top;
-      if (elementTop <= this.state.defaultOffset && (elementTop > winnerTop || !winner)){
+      let elementBottom = element.getBoundingClientRect().bottom;
+      let isVisible = elementTop < window.innerHeight && elementBottom >= (document.querySelector("#stick") as HTMLElement).offsetHeight;
+      if (isVisible && (elementTop < winnerTop || !winner)){
         winner = refKeyInt;
         winnerTop = elementTop;
       }
@@ -232,6 +235,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     return winner;
   }
   recalculateHash(){
+    console.log("recalculating hash");;
     let active = this.getActive();
     
     let newActive:number = null;
@@ -242,7 +246,18 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     }
     
     if (newHash !== location.hash.replace("#","").replace("p-","")){
-      this.props.onActiveNodeIdChange(newActive);
+      console.log("active node changed");
+      let newActiveChapter = this.getChapter(newActive || this.flattenedMaterial[0].workspaceMaterialId);
+      if (!this.state.loadedChapters[newActiveChapter.chapter.workspaceMaterialId]){
+        console.log("couldn't find the chapter");
+        this.recalculateLoaded(false, ()=>{
+          console.log("now it has been updated, chaging active");
+          this.props.onActiveNodeIdChange(newActive);
+        }, true, newActiveChapter);
+      } else {
+        console.log("the chapter exists");
+        this.props.onActiveNodeIdChange(newActive);
+      }
     }
   }
   getChapter(id: number){
@@ -253,10 +268,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     let size = this.props.materials[index].children.length;
     return {index, chapter, size};
   }
-  recalculateLoaded(dontAnimate?: boolean, onDone?: ()=>any, onlyActive?:boolean){
+  recalculateLoaded(dontAnimate?: boolean, onDone?: ()=>any, onlyActive?:boolean, activeNodeChapterDefault?: any){
     if (!this.props.activeNodeId){
       return;
     }
+    
+    console.log("recalculate loaded", dontAnimate, onDone, onlyActive);
     
     let newLoadedChapters = {...this.state.loadedChapters};
     
@@ -277,7 +294,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       });
     }
     
-    let activeNodeChapter = this.getChapter(this.props.activeNodeId);
+    let activeNodeChapter = activeNodeChapterDefault || this.getChapter(this.props.activeNodeId);
     if (activeNodeChapter.chapter && !newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId]){
       newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId] = {
         isAnimating: !dontAnimate,
@@ -289,11 +306,16 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     }
     
     if (JSON.stringify(newLoadedChapters) !== JSON.stringify(this.state.loadedChapters)){
+      
+      console.log("recalculate loaded, got new");
+      
       this.setState({
         loadedChapters: newLoadedChapters
       }, ()=>{
         onDone && onDone();
       });
+    } else {
+      onDone && onDone();
     }
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
@@ -312,8 +334,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
     
-    //NOTE because of fancy loading and all this scrolling mess, the height that you set of the h1 chapter title should be at least
-    //more than half the height of the navigation bar otherwise you'd get a bunch of scrolling bugs
     return <ContentPanel modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name}>
       {this.props.materials.map((chapter)=>{
         return <section key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
@@ -322,7 +342,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           transition: "height " + ANIMATION_SECONDS + "s ease",
           overflow: "hidden"
         }}>
-          {this.state.loadedChapters[chapter.workspaceMaterialId] ? <h1>{chapter.title}</h1> : null}
+          <h1>{chapter.title}</h1>
           <div>
             {chapter.children.map((node)=>{
               let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
