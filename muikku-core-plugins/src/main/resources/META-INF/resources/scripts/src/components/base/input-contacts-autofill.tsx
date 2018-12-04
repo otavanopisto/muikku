@@ -103,25 +103,27 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.setState({textInput, autocompleteOpened: true});
     
     if (textInput){
+      let loaders = this.props.loaders || {};
+      
       let getStudentsLoader = () =>  {
-        return this.props.loaders.studentsLoader ? this.props.loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
+        return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
           searchString: textInput,
           onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
         }), 'callback');
       }
       let getUserGroupsLoader = () => { 
-        return this.props.loaders.userGroupsLoader ? this.props.loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
+        return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
           searchString: textInput
         }), 'callback');
       }
       let getWorkspacesLoader = () => { 
-        return this.props.loaders.workspacesLoader ? this.props.loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
+        return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
           search: textInput,
           myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
         }), 'callback');
       }
       let getStaffLoader = () => { 
-        return this.props.loaders.staffLoader ? this.props.loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
+        return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
           searchString: textInput
         }), 'callback');
       }
