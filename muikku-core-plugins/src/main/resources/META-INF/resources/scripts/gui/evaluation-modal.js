@@ -806,7 +806,7 @@
     
     _confirmAssessmentDeletion: function(callback) {
       var studentName = $(this._requestCard).find('.evaluation-card-student').text();
-      renderDustTemplate('evaluation/evaluation_remove_workspace_evaluation_confirm.dust', { studentName: studentName }, $.proxy(function(text) {
+      renderDustTemplate('evaluation/evaluation-archive-assessment-confirm.dust', { studentName: studentName }, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
           modal : true,
