@@ -7,7 +7,8 @@ import '~/sass/elements/loaders.scss';
 interface ContentPanelProps {
   modifier: string,
   title?: React.ReactElement<any> | string,
-  navigation: React.ReactElement<any>
+  navigation: React.ReactElement<any>,
+  onOpen?: ()=>any
 }
 
 interface ContentPanelState {
@@ -100,6 +101,7 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     this.setState({displayed: true, open: true});
     setTimeout(()=>{
       this.setState({visible: true});
+      this.props.onOpen && this.props.onOpen();
     }, 10);
     $(document.body).css({'overflow': 'hidden'});
   }

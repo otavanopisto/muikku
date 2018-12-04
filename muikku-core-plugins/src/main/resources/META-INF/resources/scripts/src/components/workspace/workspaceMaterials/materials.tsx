@@ -15,7 +15,8 @@ interface WorkspaceMaterialsProps {
   navigation: React.ReactElement<any>,
   activeNodeId: number,
   status: StatusType,
-  onActiveNodeIdChange: (activeNodeId: number)=>any
+  onActiveNodeIdChange: (activeNodeId: number)=>any,
+  onOpenNavigation: ()=>any
 }
 
 interface WorkspaceMaterialsState {
@@ -58,6 +59,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.recalculateLoaded = this.recalculateLoaded.bind(this);
     this.recalculateHash = this.recalculateHash.bind(this);
     this.onScroll = this.onScroll.bind(this);
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
     
     this.disableScrollInteraction = true;
     
@@ -329,12 +331,15 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       });
     });
   }
+  onOpenNavigation(){
+    this.props.onOpenNavigation();
+  }
   render(){
     if (!this.props.materials){
       return null;
     }
     
-    return <ContentPanel modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name}>
+    return <ContentPanel onOpen={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name}>
       {this.props.materials.map((chapter)=>{
         return <section key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
           height: this.state.loadedChapters[chapter.workspaceMaterialId] ?

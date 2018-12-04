@@ -16,12 +16,20 @@ interface WorkspaceMaterialsBodyState {
 }
 
 export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMaterialsBodyProps, WorkspaceMaterialsBodyState> {
+  constructor(props: WorkspaceMaterialsBodyProps){
+    super(props);
+    
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
+  }
+  onOpenNavigation(){
+    (this.refs.navigation as any).getWrappedInstance().refresh();
+  }
   render(){
-    let navigationComponent = <NavigationComponent/>;
+    let navigationComponent = <NavigationComponent ref="navigation"/>;
     return (<div>
       <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="materials"> 
-        <Materials navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
+        <Materials onOpenNavigation={this.onOpenNavigation} navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
       </ScreenContainer>
     </div>);
   }

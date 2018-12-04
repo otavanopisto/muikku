@@ -33,10 +33,13 @@ function isScrolledIntoView(el: HTMLElement) {
 class NavigationComponent extends React.Component<NavigationProps, NavigationState> {
   componentWillReceiveProps(nextProps: NavigationProps){
     if (nextProps.activeNodeId !== this.props.activeNodeId){
-      let element = (this.refs[nextProps.activeNodeId] as NavigationElement).getElement();
-      if (!isScrolledIntoView(element)){
-        element.scrollIntoView(true);
-      }
+      this.refresh(nextProps);
+    }
+  }
+  refresh(props:NavigationProps = this.props){
+    let element = (this.refs[props.activeNodeId] as NavigationElement).getElement();
+    if (!isScrolledIntoView(element)){
+      element.scrollIntoView(true);
     }
   }
   render(){
@@ -76,5 +79,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  { withRef: true }
 )(NavigationComponent);
