@@ -17,6 +17,7 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import moment from '~/lib/moment';
 import '~/sass/elements/buttons.scss';
+import MatriculationEligibilityRow from './matriculation-eligibility-row/matriculation-eligibility-row';
 import promisify from "~/util/promisify";
 
 interface YOProps {
@@ -73,13 +74,17 @@ class YO extends React.Component<YOProps, YOState> {
   }
 
   /**
-   * Finds a matriculation subject name by subject value
+   * Finds a subject code for matriculation subject
    * 
    * @param code matriculation subject code
-   * @returns subject name or empty string if not found 
+   * @returns subject code or null if not found
    */
-  getMatriculationSubjectNameByCode = (code: string): string => {
-    return this.props.i18n.text.get(`plugin.records.hops.matriculationSubject.${code}`);
+  getSubjectCodeForCode = (code: string) => {
+    const result = this.state.matriculationSubjects.find((matriculationSubject) => {
+      return matriculationSubject.code === code;
+    });
+
+    return result ? result.subjectCode : null;
   }
 
   render() {
@@ -88,9 +93,9 @@ class YO extends React.Component<YOProps, YOState> {
       return null;
     } else {
       const loaded = this.state.matriculationSubjectsLoaded && this.props.hops.status === "READY" && !!this.props.hops.value;
-      const selectedMatriculationSubjects = loaded ? (this.props.hops.value.studentMatriculationSubjects || []).map((subjectCode: string, index: number) => {
+      const selectedMatriculationSubjects = loaded ? (this.props.hops.value.studentMatriculationSubjects || []).map((code: string, index: number) => {
         return (
-          <div key={index}>{this.getMatriculationSubjectNameByCode(subjectCode)}</div>
+          <MatriculationEligibilityRow key={index} code={code} subjectCode={this.getSubjectCodeForCode(code)}/>
         );
       }) : (<div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div>);
 
