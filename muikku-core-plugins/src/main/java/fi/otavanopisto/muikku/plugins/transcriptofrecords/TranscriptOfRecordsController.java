@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +30,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.StudentMatric
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
@@ -53,7 +55,7 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
-
+  
   @Inject
   private PluginSettingsController pluginSettingsController;
 
@@ -340,6 +342,31 @@ public class TranscriptOfRecordsController {
     }
     
     return null;
+  }
+
+  public int countMandatoryCoursesForStudent(SchoolDataIdentifier studentIdentifier) {
+    StudentCourseStats stats = userSchoolDataController.getStudentCourseStats(studentIdentifier);
+    return stats.getNumMandatoryCompletedCourses();
+  }
+
+  public int getMandatoryCoursesRequiredForMatriculation() {
+    String resultString = pluginSettingsController.getPluginSetting(
+        "transcriptofrecords",
+        "mandatoryCoursesRequiredForMatriculation");
+    int result = Integer.parseInt(resultString);
+    return result;
+  }
+  
+  public LocalDate getMatriculationExamEnrollmentDate(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getLatestStudentEnrollmentDate(studentIdentifier);
+  }
+  
+  public LocalDate getMatriculationExamDate() {
+    String resultString = pluginSettingsController.getPluginSetting(
+        "transcriptofrecords",
+        "matriculationExamDate");
+    LocalDate result = LocalDate.parse(resultString);
+    return result;
   }
 
   private SearchProvider getProvider(String name) {
