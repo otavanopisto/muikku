@@ -289,7 +289,8 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       if (!item.condition){
         return null;
       }
-      return <Link href={item.href} className={`link link--full link--menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
+      return <Link href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null}
+        className={`link link--full link--menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
         <span className={`link__icon icon-${item.icon}`}/>
         {item.badge ? <span className="indicator indicator--workspace">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         <span className="link--menu__text">{this.props.i18n.text.get(item.text)}</span>

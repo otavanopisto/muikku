@@ -94,6 +94,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   componentWillReceiveProps(nextProps: WorkspaceMaterialsProps){
     if (this.props.materials !== nextProps.materials){
       this.getFlattenedMaterials(nextProps);
+    } else if (this.props.activeNodeId !== nextProps.activeNodeId){
+      (this.refs["content-panel"] as ContentPanel).close();
     }
   }
   pleaseScrollIntoView(element:Element | number, cb:()=>any){
@@ -281,6 +283,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     
     if (!onlyActive){
       Object.keys(this.refs).forEach((refKey:string)=>{
+        let refKeyInt = parseInt(refKey);
+        if (!refKeyInt){
+          return;
+        }
+        
         if (isScrolledIntoView(this.refs[refKey] as HTMLElement)){
           let chapter = this.getChapter(parseInt(refKey));
           if (chapter.chapter && !newLoadedChapters[chapter.chapter.workspaceMaterialId]){
@@ -339,7 +346,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
     
-    return <ContentPanel onOpen={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name}>
+    return <ContentPanel onOpen={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation}
+      title={this.props.workspace.name} ref="content-panel">
       {this.props.materials.map((chapter)=>{
         return <section key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
           height: this.state.loadedChapters[chapter.workspaceMaterialId] ?
