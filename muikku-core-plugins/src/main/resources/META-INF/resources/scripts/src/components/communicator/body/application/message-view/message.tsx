@@ -86,11 +86,11 @@ class Message extends React.Component<MessageProps, MessageState> {
             <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender">
               {this.props.message.sender.firstName ? this.props.message.sender.firstName + " " : ""} {this.props.message.sender.lastName ? this.props.message.sender.lastName : ""}
             </span>
-            <span className="application-list__item-header-main-content">
+            <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-recipients">
               {this.props.message.recipients.map((recipient)=>{
                 return (
                   <span key={recipient.recipientId}>
-                    {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
+                    {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName : ""}
                   </span>
                 )
               })}

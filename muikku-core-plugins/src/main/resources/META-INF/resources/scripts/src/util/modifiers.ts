@@ -33,20 +33,32 @@ export function filterHighlight(string: string, filter: string){
         string
     );
   }
-  return string.split(new RegExp("(" + escapeRegExp(filter) + ")", "i")).map((element, index)=>{
-    if (index % 2 === 0){
-      return React.createElement(
-        "span",
-        { key: index },
-        element
-      );
+  let accumulator:Array<Array<any>> = [[]];
+  string.split(new RegExp("(" + escapeRegExp(filter) + "|\\s)", "i")).forEach((element, index)=>{
+    if (element === ""){
+      return;
+    } else if (element === " "){
+      accumulator.push([]);
+    } else if (element === filter) {
+      accumulator[accumulator.length - 1].push(React.createElement(
+          "b",
+          {key: index},
+          element
+      ))
+    } else {
+      accumulator[accumulator.length - 1].push(element);
     }
-    return React.createElement(
-      "b",
-      { key: index },
-      element
-    );
   });
+  
+  let spans = accumulator.map((childMap, index)=>React.createElement("span",{key: index},...childMap));
+  let newChild:Array<any> = [];
+  spans.forEach((s, index)=>{
+    newChild.push(s);
+    if (index !== spans.length - 1){
+      newChild.push(" ");
+    }
+  })
+  return newChild;
 }
 
 export function colorIntToHex(color: number) {

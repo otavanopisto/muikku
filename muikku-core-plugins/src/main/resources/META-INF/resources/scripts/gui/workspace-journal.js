@@ -54,10 +54,9 @@
       $("#journalEntries").empty();
     },
     _loadStudents: function(workspaceId) {
-      mApi().workspace.workspaces.students.read(workspaceId, { 
-        active: true,
-        archived: false, 
-        orderBy: 'name' })
+      mapi().workspace.workspaces.students.read(workspaceId, {
+        active: true
+      })
       .callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -65,7 +64,7 @@
         else {
           $.each(students, function (ind, student) {
             $("<option/>", {
-              'value': student.studentEntityId
+              'value': student.userEntityId
             }).text(student.lastName + ', ' + student.firstName).appendTo("#studentSelectField");
           });
         }

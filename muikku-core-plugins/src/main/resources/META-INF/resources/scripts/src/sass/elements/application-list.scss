@@ -516,6 +516,18 @@
   }
 }
 
+.application-list__item-header-main-content--communicator-recipients {
+
+  span:not(:last-child) {
+
+    &::after {
+      content: ",";
+      padding: 0 5px 0 0;
+    }
+
+  }
+}
+
 .application-list__item-header-aside {
   align-items: center;
   display: flex;

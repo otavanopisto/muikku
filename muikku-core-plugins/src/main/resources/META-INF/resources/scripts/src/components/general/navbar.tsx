@@ -42,36 +42,36 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
   render(){
     return (
-            <div>
-              <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`} id="stick">
-                <div className="navbar__wrapper">
-                  <div className="navbar__logo"></div>
-                  <ul className="navbar__items">
-                    <li className={`navbar__item navbar__item--menu-button`}>
-                      <a className={`link link--icon link--full ${this.props.modifier ? 'link--' + this.props.modifier : ''}`} onClick={this.openMenu}>
-                        <span className="link__icon icon-navicon"></span>
-                      </a>
-                    </li>
-                    {this.props.navbarItems.map((item, index)=>{
-                      if (!item){
-                        return null;
-                      }
-                      return (<li key={index} className={`navbar__item navbar__item--${item.modifier}`}>
-                        {item.item}
-                      </li>);
-                    }).filter(item=>!!item)}
-                  </ul>
-                  {this.props.mobileTitle ? <div className="navbar__mobile-title">{this.props.mobileTitle}</div> : null}
-                  <div className="navbar__default-options">
-                    {this.props.defaultOptions}
-                    <ProfileItem modifier={this.props.modifier}/>
-                    <LanguagePicker />
-                  </div>
-                </div>
-              </nav>
-              <Menu open={this.state.isMenuOpen} onClose={this.closeMenu}
-                items={this.props.menuItems} modifier={this.props.modifier} navigation={this.props.navigation}/>
+      <div>
+        <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`} id="stick">
+          <div className="navbar__wrapper">
+            <div className="navbar__logo"></div>
+            <ul className="navbar__items">
+              <li className={`navbar__item navbar__item--menu-button`}>
+                <a className={`link link--icon link--full ${this.props.modifier ? 'link--' + this.props.modifier : ''}`} onClick={this.openMenu}>
+                  <span className="link__icon icon-navicon"></span>
+                </a>
+              </li>
+              {this.props.navbarItems.map((item, index)=>{
+                if (!item){
+                  return null;
+                }
+                return (<li key={index} className={`navbar__item navbar__item--${item.modifier}`}>
+                  {item.item}
+                </li>);
+              }).filter(item=>!!item)}
+            </ul>
+            {this.props.mobileTitle ? <div className="navbar__mobile-title">{this.props.mobileTitle}</div> : null}
+            <div className="navbar__default-options">
+              {this.props.defaultOptions}
+              <ProfileItem modifier={this.props.modifier}/>
+              <LanguagePicker />
             </div>
-            );
+          </div>
+        </nav>
+        <Menu open={this.state.isMenuOpen} onClose={this.closeMenu}
+          items={this.props.menuItems} modifier={this.props.modifier} navigation={this.props.navigation}/>
+      </div>
+      );
   }
 }
