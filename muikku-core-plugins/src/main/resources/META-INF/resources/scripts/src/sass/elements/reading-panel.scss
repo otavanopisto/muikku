@@ -113,7 +113,7 @@
 
   @include breakpoint($breakpoint-pad) {
     -ms-overflow-style: -ms-autohiding-scrollbar;
-    flex-basis: auto;
+    flex-basis: 33%;
     flex-grow: 1;
     flex-shrink: 1;
     display: flex;
@@ -122,8 +122,8 @@
     overflow: -moz-scrollbars-none;
     z-index: 1;
 
-    &::-webkit-scrollbar { 
-      display: none; 
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 }
@@ -141,6 +141,7 @@
   padding: 10px 20px;
 
   @include breakpoint($breakpoint-pad) {
+    flex-basis: 66%;
     border: solid 1px $color-reading-panel-box-border;
     margin: 0 10px 0 0;
   } 
