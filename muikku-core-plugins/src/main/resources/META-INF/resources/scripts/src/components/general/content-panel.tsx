@@ -7,7 +7,8 @@ import '~/sass/elements/loaders.scss';
 interface ContentPanelProps {
   modifier: string,
   title?: React.ReactElement<any> | string,
-  navigation: React.ReactElement<any>
+  navigation: React.ReactElement<any>,
+  onOpen?: ()=>any
 }
 
 interface ContentPanelState {
@@ -60,15 +61,17 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     let absoluteDifferenceX = Math.abs(diffX - this.state.drag);
     this.touchMovementX += absoluteDifferenceX;
 
-    if (diffX > 0) {
+    if (diffX < 0) {
       diffX = 0;
     }
     
-    if (diffX >= -3){
+    if (diffX <= 3){
       if (diffY >= 5 || diffY <= -5){
         diffX = 0;
+        console.log("prevent x movement");
         this.preventXMovement = true;
       } else {
+        console.log("unprevent x movement");
         this.preventXMovement = false;
       }
     }
@@ -100,6 +103,7 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     this.setState({displayed: true, open: true});
     setTimeout(()=>{
       this.setState({visible: true});
+      this.props.onOpen && this.props.onOpen();
     }, 10);
     $(document.body).css({'overflow': 'hidden'});
   }
@@ -111,6 +115,9 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     }
   }
   close(){
+    if (!this.state.visible){
+      return;
+    }
     $(document.body).css({'overflow': ''});
     this.setState({visible: false});
     setTimeout(()=>{
@@ -126,15 +133,15 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
         
         <div className="content-panel__body" ref="body">
           <div className="content-panel__content">
-            <div className={`content-panel__main-container loader-empty`}>{this.props.children}</div>
-            <div className="content-panel__navigation-open" onClick={this.open}/>
             <div ref="menu-overlay"
-              className={`content-panel__navigation ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
-              onClick={this.closeByOverlay}>
-              <div className="content-panel__navigation-content" style={{right: this.state.drag}}>{
-                this.props.navigation
+             className={`content-panel__navigation ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
+             onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
+              <div className="content-panel__navigation-content" style={{right: this.state.drag !== null ? -this.state.drag : null}}>{
+               this.props.navigation
               }</div>
             </div>
+            <div className={`content-panel__main-container loader-empty`}>{this.props.children}</div>
+            <div className="content-panel__navigation-open" onClick={this.open}/>
           </div>
         </div>
       </div>
