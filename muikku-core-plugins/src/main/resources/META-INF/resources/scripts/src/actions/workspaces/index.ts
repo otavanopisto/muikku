@@ -6,7 +6,7 @@ import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentAc
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType } from '~/reducers/user-index';
-import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -37,6 +37,7 @@ export interface UPDATE_WORKSPACE extends
 }>{}
 export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>{};
 export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>{};
+export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES", MaterialCompositeRepliesListType>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -272,6 +273,9 @@ export interface SignupIntoWorkspaceTriggerType {
 export interface SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType {
   (id: number):AnyActionType
 }
+export interface LoadWorkspaceCompositeMaterialReplies {
+  (id: number):AnyActionType
+}
 
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (callback?: (curriculums: WorkspaceCurriculumFilterListType)=>any):AnyActionType
@@ -437,6 +441,24 @@ let setCurrentWorkspaceMaterialsActiveNodeId:SetCurrentWorkspaceMaterialsActiveN
   }
 }
 
+let loadWorkspaceCompositeMaterialReplies:LoadWorkspaceCompositeMaterialReplies = function loadWorkspaceCompositeMaterialReplies(id){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let compositeReplies:MaterialCompositeRepliesListType = <MaterialCompositeRepliesListType>(await promisify(mApi().workspace.
+          workspaces.compositeReplies.read(id), 'callback')());
+      dispatch({
+        type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
+        payload: compositeReplies || []
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load material composite replies'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
-  updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId}
+  updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies}

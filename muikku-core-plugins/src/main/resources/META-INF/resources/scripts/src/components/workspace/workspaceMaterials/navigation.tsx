@@ -2,7 +2,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { MaterialContentNodeListType, WorkspaceType } from "~/reducers/workspaces";
+import { MaterialContentNodeListType, WorkspaceType, MaterialCompositeRepliesListType } from "~/reducers/workspaces";
 import ProgressData from '../progressData';
 
 import '~/sass/elements/buttons.scss';
@@ -13,6 +13,7 @@ import Navigation, { NavigationTopic, NavigationElement } from '~/components/gen
 interface NavigationProps {
   i18n: i18nType,
   materials: MaterialContentNodeListType,
+  materialReplies: MaterialCompositeRepliesListType,
   activeNodeId: number,
   workspace: WorkspaceType
 }
@@ -53,8 +54,35 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
         this.props.materials.map((node)=>{
           return <NavigationTopic name={node.title} key={node.workspaceMaterialId}>
             {node.children.map((subnode)=>{
-              return <NavigationElement ref={subnode.workspaceMaterialId + ""} iconColor={null} icon={null} key={subnode.workspaceMaterialId}
-                isActive={this.props.activeNodeId === subnode.workspaceMaterialId} disableScroll
+              let isAssignment = subnode.assignmentType === "EVALUATED";
+              let isExercise = subnode.assignmentType === "EXERCISE";
+              let isNormalPage = subnode.assignmentType === null;
+              
+              //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
+              let modifier = isAssignment ? "assignment" : (isExercise ? "exercise" : null);
+              let icon:string = null;
+              let iconTitle:string = null;
+              
+              let compositeReply = this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === subnode.workspaceMaterialId);
+              if (compositeReply){
+                switch (compositeReply.state){
+                  case "PASSED":
+                  case "ANSWERED":
+                  case "SUBMITTED":
+                  case "WITHDRAWN":
+                  case "PASSED":
+                  case "FAILED":
+                  case "INCOMPLETE":
+                    icon = "guides"
+                    iconTitle = this.props.i18n.text.get("TODO tooltip for the icon");
+                  case "UNANSWERED":
+                  default:
+                    break;
+                }
+              }
+              
+              return <NavigationElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} iconColor={null} icon={null} key={subnode.workspaceMaterialId}
+                isActive={this.props.activeNodeId === subnode.workspaceMaterialId} disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
                 hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</NavigationElement>
             })}
           </NavigationTopic>
@@ -68,6 +96,7 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     materials: state.workspaces.currentMaterials,
+    materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace
   }

@@ -43,12 +43,18 @@ export class NavigationTopic extends React.Component<NavigationTopicProps, Navig
 
 interface NavigationElementProps {
   isActive: boolean,
+  className?: string,
+  modifier?: string,
   hash?: number | string,
   href?: string,
   onClick?: ()=>any,
   children: string,
   icon?: string,
+  iconTitle?: string,
   iconColor?: string,
+  iconAfter?: string,
+  iconAfterTitle?: string,
+  iconAfterColor?: string,
   isEditable?: boolean,
   editableWrapper?: any,
   editableWrapperArgs?: any,
@@ -76,13 +82,16 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
         icon="edit" onClick={this.props.editableAction}/>
     }
     
-    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`} onScrollToSection={this.props.onScrollToSection}
+    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${this.props.modifier ? "item-list__item--" + this.props.modifier : ""}`}
+      onScrollToSection={this.props.onScrollToSection}
       scrollPadding={this.props.scrollPadding} disableScroll={this.props.disableScroll}
       href={this.props.hash ? "#" + this.props.hash : null} to={this.props.href} onClick={this.props.onClick} ref="element">
-      {this.props.icon ? <span className={`item-list__icon icon-${this.props.icon}`} style={{color: this.props.iconColor}}></span> : null}
+      {this.props.icon ? <span title={this.props.iconTitle} className={`item-list__icon icon-${this.props.icon}`} style={{color: this.props.iconColor}}></span> : null}
       <span className="item-list__text-body">
         {this.props.children}
       </span>
+      {this.props.iconAfter ? <span title={this.props.iconAfterTitle}
+          className={`item-list__icon icon-${this.props.iconAfter}`} style={{color: this.props.iconAfterColor}}></span> : null}
       {editableComponent}
     </Link>
   }

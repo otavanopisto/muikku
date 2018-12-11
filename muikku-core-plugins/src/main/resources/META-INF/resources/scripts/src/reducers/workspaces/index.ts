@@ -247,7 +247,8 @@ export interface WorkspacesType {
   hasMore: boolean,
   toolbarLock: boolean,
   currentMaterials: MaterialContentNodeListType,
-  currentMaterialsActiveNodeId: number
+  currentMaterialsActiveNodeId: number,
+  currentMaterialsReplies: MaterialCompositeRepliesListType
 }
 
 export interface WorkspacesPatchType {
@@ -283,7 +284,7 @@ export interface MaterialAssignmentType {
   parentId: number,
   nextSiblingId: number,
   hidden: boolean,
-  assignmentType: string,
+  assignmentType: "EXERCISE" | "EVALUATED",
   correctAnswers: string,
   path: string,
   title: string
@@ -297,17 +298,17 @@ export interface MaterialContentNodeType {
   currentRevision: number,
   publishedRevision: number,
   
-  //Standard Fields (only available when loaded through materials)
+  //Standard Fields (only available when loaded through materials rest endpoint)
   id?: number,
   contentType?: string,
   
-  //Extended Fields (only available when loaded via workspace)
+  //Extended Fields (only available when loaded via workspace rest endpoint)
   type?: string,
   children?: Array<MaterialContentNodeType>,
   workspaceMaterialId?: number,
   materialId?: number,
   level?: number,
-  assignmentType?: string,
+  assignmentType?: "EXERCISE" | "EVALUATED",
   correctAnswers?: string,
   hidden?: boolean,
   parentId?: number,
@@ -330,12 +331,20 @@ export interface MaterialAnswerType {
 
 export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>,
+  state: "UNANSWERED" | "ANSWERED" | "SUBMITTED" | "WITHDRAWN" | "PASSED" | "FAILED" | "INCOMPLETE",
+  
+  //Available when loaded specifically (eg. via records)
   created: string,
   lastModified: string,
-  state: string,
   submitted: string,
-  withdrawn?: string
+  withdrawn?: string,
+      
+  //Available when loaded generically (eg. via workspace material)
+  workspaceMaterialId: number,
+  workspaceMaterialReplyId: number
 }
+
+export type MaterialCompositeRepliesListType = Array<MaterialCompositeRepliesType>;
 
 export interface MaterialEvaluationType {
   id: number,
@@ -397,6 +406,7 @@ export default function workspaces(state: WorkspacesType={
   lastWorkspace: null,
   currentWorkspace: null,
   currentMaterials: null,
+  currentMaterialsReplies: null,
   avaliableFilters: {
     educationTypes: [],
     curriculums: [],
@@ -481,6 +491,8 @@ export default function workspaces(state: WorkspacesType={
     return {...state, currentMaterials: action.payload};
   } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID"){
     return {...state, currentMaterialsActiveNodeId: action.payload};
+  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES"){
+    return {...state, currentMaterialsReplies: action.payload}
   }
   return state;
 }
