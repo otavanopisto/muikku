@@ -43,7 +43,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
               </span>
             )}
           </div> : null}
-          <div>{this.props.i18n.time.format(this.props.announcement.startDate)}</div>
+          <div className="article__date">{this.props.i18n.time.format(this.props.announcement.startDate)}</div>
           <section className="article__body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcement.content}}></section>
         </article>
       </section>

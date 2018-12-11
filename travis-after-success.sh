@@ -48,7 +48,6 @@ if [[ $deploy_release == "true" ]]; then
   pushd .
   cd muikku
   mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins -Dclassifier=otavanopisto
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins -Dclassifier=janakkala
   popd
 fi;
 

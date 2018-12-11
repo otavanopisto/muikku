@@ -437,6 +437,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+  
+  protected String getCurrentPath() {
+    String path = getWebDriver().getCurrentUrl();
+    path = StringUtils.substring(path, StringUtils.lastIndexOf(path, "/"));
+    return path;
+  }
 
   protected void waitForPresentAndVisible(String selector) {
     waitForPresent(selector);
@@ -633,18 +639,30 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }  
   }
   
+  protected void selectEnglishLocale() {
+    waitForPresent("a.button-pill--current-language>span");
+    String localeText = getElementText("a.button-pill--current-language>span");
+    if(localeText.equalsIgnoreCase("FI")) {
+      waitAndClick(".button-pill--current-language");
+      waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
+      waitUntilContentChanged("a.button-pill--current-language>span", "FI");
+    }  
+  }
+  
   protected String getElementText(String selector) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getText();
   }
   
   protected void assertText(String selector, String text) {
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(text, element.getText());
   }
 
 
   protected void assertTextIgnoreCase(String selector, String text) {
+    waitForPresent(selector);
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
   }
