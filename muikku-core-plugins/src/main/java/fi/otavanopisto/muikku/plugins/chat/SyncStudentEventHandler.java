@@ -58,8 +58,8 @@ public class SyncStudentEventHandler {
     
     WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspace.getId());
 
-    if (workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
-      chatSyncController.syncStudent(user);
+    if (workspaceChatStatus.getStatus() != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
+      chatSyncController.SyncWorkspaceUser(workspace, user);
     }
   }
 
@@ -93,8 +93,8 @@ public class SyncStudentEventHandler {
       
       UserChatSettings userChatSetting = chatController.findUserChatSettings(user);
       
-      if (userChatSetting != null && userChatSetting.getVisibility().toString() == "VISIBLE_TO_ALL"){
-        chatSyncController.syncStudent(user);
+      if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
+        chatSyncController.SyncWorkspaceUser(workspaceEntity, user);
       }
       
     }
@@ -104,8 +104,8 @@ public class SyncStudentEventHandler {
       SchoolDataIdentifier user = new SchoolDataIdentifier(workspaceStaffMember.getUserSchoolDataIdentifier().getIdentifier(), workspaceStaffMember.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
       UserChatSettings userChatSetting = chatController.findUserChatSettings(user);
       
-      if (userChatSetting != null && userChatSetting.getVisibility().toString() == "VISIBLE_TO_ALL"){
-        chatSyncController.syncStudent(user);
+      if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
+        chatSyncController.SyncWorkspaceUser(workspaceEntity, user);
       }
     }
   }

@@ -312,5 +312,43 @@ public class ChatSyncController {
     
     workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
   }
+ 
+ public void SyncWorkspaceUser(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
+    if (openfireToken == null) {
+      logger.log(Level.INFO, "No openfire token set, skipping room sync");
+      return;
+      }
+    String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
+    if (openfireUrl == null) {
+      logger.log(Level.INFO, "No openfire url set, skipping room sync");
+      return;
+    }
+    String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
+    if (openfirePort == null) {
+      logger.log(Level.INFO, "No openfire port set, skipping room sync");
+      return;
+    }
+    if (!StringUtils.isNumeric(openfirePort)) {
+      logger.log(Level.WARNING, "Invalid openfire port, skipping room sync");
+      return;
+    }
+    AuthenticationToken token = new AuthenticationToken(openfireToken);
+    RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+    User user = userController.findUserByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier()); 
+
+    
+    EnvironmentUser workspaceUserRole = environmentUserController.findEnvironmentUserByUserEntity(userEntityController.findUserEntityByUser(user)); 
+    EnvironmentRoleEntity role = workspaceUserRole.getRole();
+    if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
+      client.addAdmin(workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
+    } else {
+      client.addMember(workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
+   }
+   
+ }
 }
 
