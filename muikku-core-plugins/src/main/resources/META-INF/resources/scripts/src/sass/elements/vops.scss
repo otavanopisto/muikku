@@ -9,7 +9,7 @@
 
 .vops__title {
   padding: 0 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     margin: 0 0 10px;
     padding: 0;
@@ -21,7 +21,7 @@
   display: flex;
   padding: 0 10px 10px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0 0 10px;
   }
@@ -33,7 +33,7 @@
   height: $vops-legend-header-size;
   margin: 0 5px 0 0;
   width: $vops-legend-header-size;
-  
+
   &::before {
     color: $color-text-link;
   }
@@ -42,9 +42,9 @@
 .vops__legend-header-text {
   color: $color-text-link;
   cursor: pointer;
-  display: inline-block;      
+  display: inline-block;
   font-size: $vops-legend-header-size;
-  font-family: $text-font-family;      
+  font-family: $text-font-family;
   text-decoration: underline;
 }
 
@@ -64,7 +64,7 @@
 .vops__legend-items {
   margin: 0 0 10px;
   width: 100%;
-  
+
   &:last-child {
     margin: 0;
   }
@@ -75,7 +75,7 @@
   display: flex;
   justify-content: start;
   padding: 5px 5px 5px 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     display: inline-flex;
@@ -95,16 +95,16 @@
   font-size: $vops-data-text-font-size;
   padding: 10px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
   }
-  
+
   > span {
     display: block;
     font-size: $text-mobile-font-size;
     padding: 2px 0;
-    
+
     @include breakpoint($breakpoint-pad) {
       display: inline-block;
       font-size: $text-mobile-font-size;
@@ -113,7 +113,7 @@
   
   > span:not(:first-child) {
     margin: 0;
-    
+
     @include breakpoint($breakpoint-pad) {
       margin: 0 0 0 15px; 
     }
@@ -165,14 +165,11 @@
 }
 
 .vops__body {
-	align-items: center;
-  display: flex;
-  justify-content: center;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 5px 10px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 5px 0;
   }
@@ -185,7 +182,7 @@
 
 .vops__row {
  width: 100%;
- display: table-row;         
+ display: table-row;
 }
 
 .vops__row-item {
