@@ -37,7 +37,6 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollect
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -83,9 +82,6 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
-
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -208,7 +204,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
 
     List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity());
     // Remove workspaces where the user doesn't have permission to send messages for 
-    workspaceEntities.removeIf(workspaceEntity -> sessionController.hasWorkspacePermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity));
+    workspaceEntities.removeIf(workspaceEntity -> !sessionController.hasWorkspacePermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity));
 
     if (workspaceEntities.isEmpty()) {
       return Response.ok(Collections.EMPTY_LIST).build();
@@ -240,41 +236,36 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
           curriculumIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
       
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        List<Map<String, Object>> results = searchResult.getResults();
-        for (Map<String, Object> result : results) {
-          String searchId = (String) result.get("id");
-          if (StringUtils.isNotBlank(searchId)) {
-            String[] id = searchId.split("/", 2);
-            if (id.length == 2) {
-              String dataSource = id[1];
-              String identifier = id[0];
-  
-              SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
-              
-              WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
-              if (workspaceEntity != null) {
-                String name = (String) result.get("name");
-                String nameExtension = (String) result.get("nameExtension");
-  
-                if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(new WorkspaceBasicInfo(
-                      workspaceEntity.getId(), 
-                      workspaceEntity.getUrlName(), 
-                      name, 
-                      nameExtension));
-                } else {
-                  logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
-                }
+      List<Map<String, Object>> results = searchResult.getResults();
+      for (Map<String, Object> result : results) {
+        String searchId = (String) result.get("id");
+        if (StringUtils.isNotBlank(searchId)) {
+          String[] id = searchId.split("/", 2);
+          if (id.length == 2) {
+            String dataSource = id[1];
+            String identifier = id[0];
+
+            SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+            
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
+            if (workspaceEntity != null) {
+              String name = (String) result.get("name");
+              String nameExtension = (String) result.get("nameExtension");
+
+              if (StringUtils.isNotBlank(name)) {
+                workspaces.add(new WorkspaceBasicInfo(
+                    workspaceEntity.getId(), 
+                    workspaceEntity.getUrlName(), 
+                    name, 
+                    nameExtension));
               } else {
-                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
+                logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
               }
+            } else {
+              logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
             }
           }
         }
-      } finally {
-        schoolDataBridgeSessionController.endSystemSession();
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
