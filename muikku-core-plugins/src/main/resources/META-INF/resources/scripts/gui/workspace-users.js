@@ -43,7 +43,7 @@
       this.element.find('.workspace-students-list').empty();
       this.element.find('.workspace-students-list').addClass('loading');
       
-      mApi().workspace.students.read(this.options.workspaceEntityId, {active: active}).callback($.proxy(function (err, students) {
+      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {active: active}).callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
