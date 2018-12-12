@@ -279,11 +279,27 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
 let loadAnnouncementsAsAClient:LoadAnnouncementsAsAClientTriggerType = function loadAnnouncementsFromServer(options={hideWorkspaceAnnouncements: "false"}, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')();
       dispatch({
-        type: 'UPDATE_ANNOUNCEMENTS',
-        payload: announcements
+        type: "UPDATE_ANNOUNCEMENTS_STATE",
+        payload: <AnnouncementsStateType>"LOADING"
       });
+      
+      let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')();
+      
+      let payload:AnnouncementsPatchType = {
+        state: "READY",
+        announcements,
+        location: null,
+        selected: [],
+        selectedIds: []
+      }
+      
+      //And there it goes
+      dispatch({
+        type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
+        payload
+      });
+      
       callback && callback(announcements);
     } catch (err){
       if (!(err instanceof MApiError)){
