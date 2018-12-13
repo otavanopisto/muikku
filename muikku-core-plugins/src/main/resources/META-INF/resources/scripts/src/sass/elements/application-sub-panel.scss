@@ -6,7 +6,7 @@
 .application-sub-panel {
   border-bottom: 1px solid $color-default-contrast;
   margin: 0 0 20px;
-  
+
   &:last-child {
     border: 0;
     padding: 0;
@@ -22,8 +22,8 @@
   font-weight: 400;
   padding: 0 10px;
   text-transform: uppercase;
-  width: 100%;  
-  
+  width: 100%;
+
   @include breakpoint($breakpoint-pad) {
     font-size: 1.375rem;
     margin: 0 0 10px;
@@ -34,7 +34,7 @@
 .application-sub-panel__header--guider-header {
   font-family: $text-font-family;
   font-size: 1.1875rem;
-  font-weight: 400;  
+  font-weight: 400;
   text-transform: uppercase;
   width: 100%;
 }
@@ -47,31 +47,33 @@
   flex-grow: 1;
   flex-shrink: 1;
   margin-left: 15px;
-  
+  text-transform: none;
+
   @include breakpoint($breakpoint-desktop) {
+    align-items: center;
     flex-flow: row wrap;
   }
 }
 
 
 .application-sub-panel__header-main {
-  flex-basis: 100%;  
-  flex-grow: 1;  
+  flex-basis: 100%;
+  flex-grow: 1;
   flex-shrink: 1;
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
     flex-grow: 1;
     flex-shrink: 1;
-    font-size: 1.25rem;    
-  }  
-  
+    font-size: 1.25rem;
+  }
+
 }
 
 .application-sub-panel__header-main--guider-profile-student-name {
   flex-shrink: 0;
   font-size: 1.125rem;
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 0;
     flex-grow: 0;
@@ -85,10 +87,10 @@
   color: $color-default-helper;
   font-size: 1rem;
   word-wrap: break-all;
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
-    flex-grow: 1;    
+    flex-grow: 1;
   }
 }
 
@@ -101,13 +103,11 @@
   font-size: $text-capitalized-mobile-font-size;
   justify-content: flex-end;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-capitalized-desktop-font-size;
   }
 }
-
-
 
 .application-sub-panel__body {
   padding: 10px 0;
@@ -120,19 +120,19 @@
   flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px; 
-  
+  padding: 10px;
+
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
   } 
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
   } 
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
-  }  
+  }
 }
 
  .application-sub-panel__item-header {
@@ -150,7 +150,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   margin: 0 0 5px;
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 250px;
     margin: 0 10px 0 0;
@@ -168,10 +168,9 @@
   border-radius: 3px;
   display: inline-block;
   margin-left: 5px;
-  margin-right: 5px; 
-  padding: 2px 5px;   
+  margin-right: 5px;
+  padding: 2px 5px;
 }
-
 
 .application-sub-panel__item-data {
   align-items: center;
@@ -180,39 +179,35 @@
   flex-flow: row wrap;
   flex-grow: 0;
   flex-shrink: 0;
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-grow: 1;
     flex-shrink: 1;
   }
-  
+
   span {
     background-color: $color-hops-readable-inline-background;
     border-radius: 3px;
     display: inline-block;
     margin: 2px 5px 2px 0;
-    padding: 4px;  
+    padding: 4px;
   }
-} 
-
-
-
-
+}
 
 // HOPS in Guider in readable state
 .application-sub-panel__item--hops-readable {
   flex-flow: row wrap;
-  
+
   .application-sub-panel__item-title {
-  
+
     @include breakpoint($breakpoint-desktop) {
       flex-basis: 60%;
       margin: 0 10px 0 0;
     }
   }
-  
+
   .application-sub-panel__item-data {
-  
+
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
@@ -223,16 +218,16 @@
 .application-sub-panel__item--hops-editable {
   align-items: flex-start;
   flex-flow: column wrap;
-  
+
   .application-sub-panel__item-title {
-  
+
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
   }
-  
+
   .application-sub-panel__item-data {
-  
+
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
@@ -240,10 +235,9 @@
 }
 
 // Studies
-
 .application-sub-panel__header--studies-detailed-info {
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0;
   }
@@ -255,7 +249,7 @@
   font-size: 1.1875rem;
   text-transform: uppercase;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0;
     font-size: 1.375rem;
@@ -264,26 +258,25 @@
 
 .application-sub-panel__body--studies-detailed-info {
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
   }
 }
 
 // Guider
-
 .application-sub-panel--guider-student-header {
   border: 0;
   padding: 10px 0 0;
   margin: 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0;
   }
 }
 
 .application-sub-panel__text {
-  padding: 2px 12px;  
+  padding: 2px 12px;
 }
 
 .application-sub-panel__text--task-evaluation {
@@ -308,7 +301,7 @@
 
 .application-sub-panel__body--labels {
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
   }
