@@ -8,6 +8,8 @@ import ContentPanel, { ContentPanelItem } from '~/components/general/content-pan
 import MaterialLoader from "~/components/base/material-loader";
 import { StatusType } from "~/reducers/base/status";
 
+import WorkspaceMaterial from './material';
+
 interface WorkspaceMaterialsProps {
   i18n: i18nType,
   workspace: WorkspaceType,
@@ -31,7 +33,6 @@ interface WorkspaceMaterialsState {
 
 const DEFAULT_EMPTY_HEIGHT = 200;
 const DEFAULT_OFFSET = 67;
-const ANIMATION_SECONDS = 3;
 
 function isScrolledIntoView(el: HTMLElement) {
   let rect = el.getBoundingClientRect();
@@ -446,8 +447,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
               if (this.state.loadedChapters[chapter.workspaceMaterialId]){
                 let material = !this.props.workspace ? null : <ContentPanelItem>
-                  <MaterialLoader material={node} workspace={this.props.workspace}
-                    i18n={this.props.i18n} status={this.props.status}/>
+                  <WorkspaceMaterial materialContentNode={node} workspace={this.props.workspace}/>
                 </ContentPanelItem>;
                 return <div ref={node.workspaceMaterialId + ""}
                   key={node.workspaceMaterialId}>
