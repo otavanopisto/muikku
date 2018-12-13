@@ -22,7 +22,7 @@ interface WorkspaceMaterialsProps {
 interface WorkspaceMaterialsState {
   loadedChapters: {
     [key: number]: {
-      isAnimating: boolean,
+      isExpanding: boolean,
       height: number
     }
   },
@@ -199,42 +199,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       }
     }
   }
-  animate(chapter: number){
-    //this gets called once the chapter is ready and loading
-    //this function can be replaced with something else that will keep the scrolling based on the active
-    //can also check to call the animate on all the chapters to be loaded at once
-    //and maybe to rename the function
-    setTimeout(()=>{
-      let newLoadedChapters = {...this.state.loadedChapters};
-      let divElement:Element = document.querySelector("#section-" + chapter);
-      let endHeight = 0;
-      Array.from(divElement.childNodes).forEach((child)=>{
-        if (child.nodeType === 1){
-          endHeight += (child as HTMLElement).offsetHeight;
-        }
-      });
-      newLoadedChapters[chapter] = {
-        isAnimating: true,
-        height: endHeight
-      };
-      
-      this.setState({
-        loadedChapters: newLoadedChapters
-      });
-      
-      setTimeout(()=>{
-        let newLoadedChapters2 = {...this.state.loadedChapters};
-        newLoadedChapters2[chapter] = {
-          isAnimating: false,
-          height: null
-        };
-        
-        this.setState({
-          loadedChapters: newLoadedChapters2
-        });
-      }, ANIMATION_SECONDS * 1000);
-    }, 50);
-  }
   onScroll(){
     //Now the scroll event might be called by these synthethic random
     //events that the browser triggers for no reason at all
@@ -343,17 +307,46 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     let size = this.props.materials[index].children.length;
     return {index, chapter, size};
   }
-  recalculateLoaded(dontAnimate?: boolean, onDone?: ()=>any, onlyActive?:boolean, activeNodeChapterDefault?: any){
+  expand(chapterIds: Array<number>){
+    if (!chapterIds.length){
+      return;
+    }
+    
+    let currentNode:HTMLAnchorElement = document.querySelector("#p-" + this.props.activeNodeId) as HTMLAnchorElement;
+    let currentNodeDistanceToScreenTop = currentNode.getBoundingClientRect().top;
+    
+    let oldDisableScrollInteraction = this.disableScrollInteraction;
+    this.disableScrollInteraction = true;
+    
+    let newLoadedChapters = {...this.state.loadedChapters}
+    chapterIds.forEach(id=>{
+      newLoadedChapters[id] = {
+        isExpanding: false,
+        height: null
+      }
+    });
+    
+    this.setState({
+      loadedChapters: newLoadedChapters
+    }, ()=>{
+      let newDistanceCurrentNodeToScreenTop = currentNode.getBoundingClientRect().top;
+      let difference = newDistanceCurrentNodeToScreenTop - currentNodeDistanceToScreenTop;
+      let newScrollTop = document.documentElement.scrollTop + difference;
+      document.documentElement.scrollTo(0, newScrollTop);
+      this.disableScrollInteraction = oldDisableScrollInteraction;
+    });
+  }
+  recalculateLoaded(dontWaitForExpand?: boolean, onDone?: ()=>any, onlyActive?:boolean, activeNodeChapterDefault?: any){
     //if we don't have a active node id then cancel this
     if (!this.props.activeNodeId){
       return;
     }
     
-    console.log("recalculate loaded", dontAnimate, onDone, onlyActive);
+    console.log("recalculate loaded", dontWaitForExpand, onDone, onlyActive);
     
     //so we need to check which will be the new loaded chapters
     let newLoadedChapters = {...this.state.loadedChapters};
-    let animationQueue:Array<number> = [];
+    let expandElements:Array<number> = [];
     
     //if its not only the active loaded we need to check all the chapters that
     //are into view as of the moment that this function is running
@@ -376,13 +369,13 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
             
             //We set it to load
             newLoadedChapters[chapter.chapter.workspaceMaterialId] = {
-              isAnimating: !dontAnimate,
-              height: dontAnimate ? null : chapter.size * DEFAULT_EMPTY_HEIGHT
+              isExpanding: !dontWaitForExpand,
+              height: dontWaitForExpand ? null : chapter.size * DEFAULT_EMPTY_HEIGHT
             };
             
-            //we check if we are allowed to animate and call the function for that
-            if (!dontAnimate){
-              animationQueue.push(chapter.chapter.workspaceMaterialId);
+            //we check if we are allowed to expand and call the function for that
+            if (!dontWaitForExpand){
+              expandElements.push(chapter.chapter.workspaceMaterialId);
             }
           }
         }
@@ -394,11 +387,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     let activeNodeChapter = activeNodeChapterDefault || this.getChapter(this.props.activeNodeId);
     if (activeNodeChapter.chapter && !newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId]){
       newLoadedChapters[activeNodeChapter.chapter.workspaceMaterialId] = {
-        isAnimating: !dontAnimate,
-        height: dontAnimate ? null : activeNodeChapter.size * DEFAULT_EMPTY_HEIGHT
+        isExpanding: !dontWaitForExpand,
+        height: dontWaitForExpand ? null : activeNodeChapter.size * DEFAULT_EMPTY_HEIGHT
       };
-      if (!dontAnimate){
-        animationQueue.push(activeNodeChapter.chapter.workspaceMaterialId);
+      if (!dontWaitForExpand){
+        expandElements.push(activeNodeChapter.chapter.workspaceMaterialId);
       }
     }
     
@@ -411,12 +404,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       this.setState({
         loadedChapters: newLoadedChapters
       }, ()=>{
-        animationQueue.forEach(this.animate.bind(this));
+        this.expand(expandElements);
         onDone && onDone();
       });
     } else {
       //Otherwise we call the callback immediately
-      animationQueue.forEach(this.animate.bind(this));
+      this.expand(expandElements);
       onDone && onDone();
     }
   }
@@ -444,8 +437,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       {this.props.materials.map((chapter)=>{
         return <section key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
           height: this.state.loadedChapters[chapter.workspaceMaterialId] ?
-          this.state.loadedChapters[chapter.workspaceMaterialId].height : chapter.children.length*DEFAULT_EMPTY_HEIGHT,
-          transition: "height " + ANIMATION_SECONDS + "s ease",
+            this.state.loadedChapters[chapter.workspaceMaterialId].height : chapter.children.length*DEFAULT_EMPTY_HEIGHT,
           overflow: "hidden"
         }}>
           <h1>{chapter.title}</h1>

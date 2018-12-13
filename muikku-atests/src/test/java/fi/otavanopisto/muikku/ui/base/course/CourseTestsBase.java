@@ -29,12 +29,15 @@ public class CourseTestsBase extends AbstractUITest {
   
   @Test
   public void courseExistsTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForElementToBePresent(By.className("workspace-title"));
-      boolean elementExists = getWebDriver().findElements(By.className("workspace-title")).size() > 0;
+      waitForElementToBePresent(By.className("hero__workspace-title"));
+      boolean elementExists = getWebDriver().findElements(By.className("hero__workspace-title")).size() > 0;
       assertTrue(elementExists);
     }finally{
       deleteWorkspace(workspace.getId());  
@@ -44,12 +47,15 @@ public class CourseTestsBase extends AbstractUITest {
 
   @Test
   public void courseHomeButtonExistsTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-      boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-home-workspace")).size() > 0;
+      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-home");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-home")).size() > 0;
 
       assertTrue(elementExists);
     }finally{
@@ -60,12 +66,15 @@ public class CourseTestsBase extends AbstractUITest {
  
   @Test
   public void courseGuideButtonExistsTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
-      boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-guides")).size() > 0;
+      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-explanation");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-explanation")).size() > 0;
 
       assertTrue(elementExists);
     }finally{
@@ -76,13 +85,15 @@ public class CourseTestsBase extends AbstractUITest {
   
   @Test
   public void courseMaterialButtonTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForElementToBePresent(By.className("workspace-title"));
-      boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-materials")).size() > 0;
-
+      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-materials");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-materials")).size() > 0;
       assertTrue(elementExists);
     }finally{
       WireMock.reset();
@@ -92,13 +103,15 @@ public class CourseTestsBase extends AbstractUITest {
   
   @Test
   public void courseDiscussionButtonTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForElementToBePresent(By.className("workspace-title"));
-      boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-bubble")).size() > 0;
-      
+      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-discussion");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-discussion")).size() > 0;
       assertTrue(elementExists);
     }finally{
       WireMock.reset();
@@ -108,13 +121,15 @@ public class CourseTestsBase extends AbstractUITest {
 
   @Test
   public void courseStudentsAndTeachersButtonTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForElementToBePresent(By.className("workspace-title"));
-      boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-members")).size() > 0;
-      
+      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-members");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-members")).size() > 0;
       assertTrue(elementExists);
     }finally{
       WireMock.reset();
@@ -124,13 +139,15 @@ public class CourseTestsBase extends AbstractUITest {
   
   @Test
   public void courseJournalButtonTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForElementToBePresent(By.className("workspace-title"));
-      boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-journal")).size() > 0;
-      WireMock.reset();
+      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-journal");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-journal")).size() > 0;
       assertTrue(elementExists);
     }finally{
       WireMock.reset();
@@ -140,7 +157,10 @@ public class CourseTestsBase extends AbstractUITest {
   
   @Test
   public void courseUnpublishTest() throws Exception {
-    loginAdmin();
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
@@ -224,7 +244,8 @@ public class CourseTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.CHROME_HEADLESS
       }
     )
   public void courseProgressWidgetTest() throws Exception {
@@ -279,7 +300,7 @@ public class CourseTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
         waitForPresentAndVisible(".notification-queue-item-success");
         waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
-        
+
         waitForPresent(".materials-progress-evaluated-status");
         assertTextIgnoreCase(".materials-progress-evaluated-status span", "1/1");
         
@@ -291,6 +312,8 @@ public class CourseTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .muikku-assignment-button", exerciseMaterial.getId()));
         waitUntilAnimationIsDone(".materials-progress-practice-status .slice .bar");
         waitForPresent(".materials-progress-practice-status");
+        waitUntilContentChanged(".materials-progress-practice-status span", "0/1");
+        
         assertTextIgnoreCase(".materials-progress-practice-status span", "1/1");
         
         waitAndClick(".materials-progress-evaluated-status.evaluable span");

@@ -206,6 +206,8 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
 //      $('<div/>').muikkuMaterialLoader().muikkuMaterialLoader('loadMaterial', this.refs.sandbox);
 //    }
 
+    //TODO maybe we should get rid of this way to load the composite replies
+    //after all it's learned that this is part of the workspace
     if (this.props.loadCompositeReplies){
       let compositeReplies:MaterialCompositeRepliesType = compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
       if (!compositeReplies){

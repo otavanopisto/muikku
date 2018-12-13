@@ -19,7 +19,7 @@ import WorkspaceAnnouncerBody from '~/components/workspace/workspaceAnnouncer';
 import WorkspaceMaterialsBody from '~/components/workspace/workspaceMaterials';
 
 import { RouteComponentProps } from 'react-router';
-import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId } from '~/actions/workspaces';
+import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies } from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
@@ -254,6 +254,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       let state = this.props.store.getState();
       this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId}) as Action);
+      this.props.store.dispatch(loadWorkspaceCompositeMaterialReplies(state.status.currentWorkspaceId) as Action);
       this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId, (result)=>{
         if (!window.location.hash.replace("#", "") && result[0] && result[0].children && result[0].children[0]){
           this.loadWorkspaceMaterialsData(result[0].children[0].workspaceMaterialId);
