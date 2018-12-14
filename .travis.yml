@@ -78,7 +78,6 @@ env:
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/journal
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/users
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/announcer
-  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=evaluation
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=newevaluation
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=indexpage
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=announcer
@@ -98,7 +97,6 @@ env:
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/journal
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/users
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/announcer
-  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=evaluation
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=newevaluation
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=indexpage
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=announcer
