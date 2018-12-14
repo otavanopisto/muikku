@@ -305,6 +305,7 @@ public class ChatRESTService extends PluginRESTService {
     restModel.setChatStatus(workspaceChatSettings.getStatus());
     return restModel;
   }
+
   @GET
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
   @RESTPermit(handling = Handling.INLINE)
@@ -320,6 +321,7 @@ public class ChatRESTService extends PluginRESTService {
     }
     return Response.ok(restModel(workspaceChatSettings)).build();
   }
+  
   @PUT
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
   @RESTPermit(handling = Handling.INLINE)
@@ -339,21 +341,24 @@ public class ChatRESTService extends PluginRESTService {
     }
 
     WorkspaceChatStatus status = workspaceChatSettings.getChatStatus();
-    WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
-    
-    if (findWorkspaceChatSettings == null) {
-      findWorkspaceChatSettings = chatController.createWorkspaceChatSettings(workspaceEntityId, status);
-
-    } else {
-      findWorkspaceChatSettings = chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
-    
+    if (status != null) {
+      WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
+      if (findWorkspaceChatSettings == null) {
+        findWorkspaceChatSettings = chatController.createWorkspaceChatSettings(workspaceEntityId, status);
+      }
+      else {
+        findWorkspaceChatSettings = chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
+      }
+      if (status == WorkspaceChatStatus.ENABLED) {
+        chatSyncController.syncWorkspace(workspaceEntity);
+      }
+      else {
+        chatSyncController.removeWorkspaceChatRoom(workspaceEntity);
+      }
+      return Response.ok(restModel(findWorkspaceChatSettings)).build(); 
     }
-  
-    if (status == WorkspaceChatStatus.ENABLED) {
-      chatSyncController.syncWorkspace(workspaceEntity);
-    } else {
-      chatSyncController.removeWorkspaceChatRoom(workspaceEntity);
+    else {
+      return Response.noContent().build();
     }
-    return Response.ok(restModel(findWorkspaceChatSettings)).build(); 
   }
 }
