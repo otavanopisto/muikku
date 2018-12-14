@@ -28,7 +28,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   private currentData:string;
   private width: number | string;
   private height: number | string;
-  private cancelNextChangeTrigger: boolean;
+  private cancelChangeTrigger: boolean;
   
   constructor(props: CKEditorProps){
     super(props);
@@ -40,7 +40,9 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     this.width = null;
     this.height = null;
     
-    this.cancelNextChangeTrigger = false;
+    //CKeditor tends to trigger change on setup for no reason at all
+    //we don't expect the user to type anything at all when ckeditor is starting up
+    this.cancelChangeTrigger = true;
   }
   
   resize(width: number | string, height: number | string){
@@ -61,6 +63,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       entities: false,
       basicEntities: false
     };
+    
     if (this.props.extraPlugins){
       for (let [plugin, url] of (Object as any).entries(this.props.extraPlugins)){
         getCKEDITOR().plugins.addExternal(plugin, url);
@@ -70,30 +73,22 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().replace(this.name, Object.assign(extraConfig, {...this.props.configuration, 
       contentsCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"}));
     getCKEDITOR().instances[this.name].on('change', ()=>{
-      if (this.cancelNextChangeTrigger){
-        this.cancelNextChangeTrigger = false;
+      if (this.cancelChangeTrigger){
         return;
       }
+      
       let data = getCKEDITOR().instances[this.name].getData();
       if (data !== this.currentData){
-        let avoidChange = false;
-        if (data[data.length - 1] === "\n" && data.substr(0, data.length - 1) === this.currentData){
-          avoidChange = true;
-        } else if (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === data){
-          avoidChange = true
-        }
         this.currentData = data;
-        if (!avoidChange){
-          if (data[data.length - 1] !== '\n'){
-            this.props.onChange(data);
-          } else {
-            this.props.onChange(data.substr(0, data.length - 1));
-          }
-        }
+        this.props.onChange(data);
       }
     });
+    getCKEDITOR().instances[this.name].on('key', ()=>{
+      this.cancelChangeTrigger = false;
+    })
     getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
       let instance = getCKEDITOR().instances[this.name];
+      this.enableCancelChangeTrigger();
       instance.setData(this.props.children);
       if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
         this.resize(this.props.width, this.props.height);
@@ -106,13 +101,16 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   componentWillUnmount(){
     getCKEDITOR().instances[this.name].destroy();
   }
+  enableCancelChangeTrigger(){
+    setTimeout(()=>{
+      this.cancelChangeTrigger = false;
+    }, 300);
+    this.cancelChangeTrigger = true;
+  }
   componentWillReceiveProps(nextProps: CKEditorProps){
     if (nextProps.children !== this.currentData){
-      if (!((nextProps.children[nextProps.children.length - 1] === "\n" && nextProps.children.substr(0, nextProps.children.length - 1) === this.currentData) ||
-          (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === nextProps.children))){
-        this.cancelNextChangeTrigger = true;
-        getCKEDITOR().instances[this.name].setData(nextProps.children);
-      }
+      this.enableCancelChangeTrigger();
+      getCKEDITOR().instances[this.name].setData(nextProps.children);
     }
     
     if (nextProps.width !== this.props.width || nextProps.height !== this.props.height){

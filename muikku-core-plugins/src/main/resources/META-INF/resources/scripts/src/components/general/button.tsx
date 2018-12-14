@@ -8,7 +8,11 @@ interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes
   buttonModifiers?: string | Array<string>,
   className?: string,
   disabled?: boolean,
-  disablePropagation?: boolean
+  disablePropagation?: boolean,
+  as?: string,
+  href?: string,
+  to?: string,
+  openInNewTab?: string
 }
 
 interface ButtonState {
@@ -21,9 +25,9 @@ export default class Button  extends React.Component<ButtonProps, ButtonState> {
     delete elementProps["buttonAs"];
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
-    
+
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
-    
+
     return <Element {...elementProps}
     className={`button ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`button--${s}`).join(" ")}`}/>
   }

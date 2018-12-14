@@ -43,14 +43,14 @@ class Menu extends React.Component<MenuProps, MenuState> {
   private preventXMovement: boolean;
   constructor(props: MenuProps){
     super(props);
-    
+
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.closeByOverlay = this.closeByOverlay.bind(this);
-    
+
     this.state = {
       displayed: props.open,
       visible: props.open,
@@ -140,54 +140,53 @@ class Menu extends React.Component<MenuProps, MenuState> {
   }
   render(){
     return (<div className={`menu menu--${this.props.modifier} ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
-              onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu">
-             <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
-                <div className="menu__header">
-                  <div className="menu__logo"></div>
-                  <Link className="menu__header__button--close icon-arrow-left"></Link>
-                </div>
-                <div className="menu__body">
-                  {this.props.navigation ? <div className="menu__extras">{this.props.navigation}</div> : null}
-                  <ul className="menu__items">
-                    {this.props.items.map((item, index)=>{
-                      if (!item){
-                        return null;
-                      }
-                      return <li className="menu__item" key={index}>{item}</li>
-                    })}
-                    {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
-                    {this.props.status.loggedIn ? <li className="menu__item">
-                      <Link className="link link--full link--menu link--menu--profile" href="/profile">
-                        <object className="button-image"
-                          data={getUserImageUrl(this.props.status.userId)}
-                          type="image/jpeg">
-                          <span className="link__icon icon-user"></span>
-                        </object>
-                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
-                      </Link>
-                    </li> : null}
-                    {this.props.status.loggedIn ? <li className="menu__item">
-                      <Link className="link link--full link--menu link--menu--instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
-                        <span className="link__icon icon-forgotpassword"/>
-                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
-                      </Link>
-                    </li> : null}
-                    {this.props.status.loggedIn ? <li className="menu__item">
-                      <Link className="link link--full link--menu link--menu--helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
-                        <span className="link__icon icon-helpdesk"></span>
-                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
-                      </Link>
-                    </li> : null}
-                    {this.props.status.loggedIn ? <li className="menu__item">
-                      <Link className="link link--full link--menu link--menu--logout" onClick={this.props.logout}>
-                        <span className="link__icon icon-signout"></span>
-                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
-                      </Link>
-                    </li> : null}
-                  </ul>
-                </div>
-              </div>
-            </div>);
+      onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu">
+      <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
+        <div className="menu__header">
+          <div className="menu__logo"></div>
+          <Link className="menu__header__button--close icon-arrow-left"></Link>
+        </div>
+        <div className="menu__body">
+          {this.props.navigation ? <div className="menu__extras">{this.props.navigation}</div> : null}
+          <ul className="menu__items">
+            {this.props.items.map((item, index)=>{
+              if (!item){
+                return null;
+              }
+              return <li className="menu__item" key={index}>{item}</li>
+            })}
+            {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
+            {this.props.status.loggedIn ? <li className="menu__item">
+              <Link className="link link--full link--menu link--menu--profile" href="/profile">
+                {this.props.status.hasImage ? 
+                  <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
+                   <span className="link__icon icon-user"/>
+                 }
+                <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
+              </Link>
+            </li> : null}
+            {this.props.status.loggedIn ? <li className="menu__item">
+              <Link className="link link--full link--menu link--menu--instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
+                <span className="link__icon icon-forgotpassword"/>
+                <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
+              </Link>
+            </li> : null}
+            {this.props.status.loggedIn ? <li className="menu__item">
+              <Link className="link link--full link--menu link--menu--helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
+                <span className="link__icon icon-helpdesk"></span>
+                <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
+              </Link>
+            </li> : null}
+            {this.props.status.loggedIn ? <li className="menu__item">
+              <Link className="link link--full link--menu link--menu--logout" onClick={this.props.logout}>
+                <span className="link__icon icon-signout"></span>
+                <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
+              </Link>
+            </li> : null}
+          </ul>
+        </div>
+      </div>
+    </div>);
   }
 }
 

@@ -37,8 +37,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
   //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
   //later once a pattern is defined
   render() {
-    return <div className="application-sub-panel__body text">
+    if (!this.props.data || !this.props.data.optedIn){
+      return null;
+    }
 
+    return <div className="application-sub-panel__body">
       <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
         <div className="application-sub-panel__item-title">
          {this.props.i18n.text.get("plugin.records.hops.goals.upperSecondary")}

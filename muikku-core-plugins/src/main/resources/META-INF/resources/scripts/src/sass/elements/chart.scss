@@ -27,12 +27,12 @@
   flex-shrink: 0;
   font-size: $text-desktop-font-size;
   padding: 2px;
-  
+
   &:hover,
   &.hover {
     background-color: darken($color-primary, 10%);
   }
-  
+
   &:active,
   &.active {
     background-color: darken($color-primary, 20%);
@@ -53,7 +53,7 @@
   justify-content: flex-end;
   padding-left: 30px;
   padding-right: 21px;
-  
+
   @include breakpoint($breakpoint-pad) {
     justify-content: space-between;
   }
@@ -61,7 +61,7 @@
 
 .chart-legend-filter {
   align-items: center;
-  
+
   @include breakpoint($breakpoint-pad) {
     display: flex;
     flex-basis: 0;
@@ -84,7 +84,7 @@
 
 .filter-items--graph-filter {
   display: none;
-  
+
   @include breakpoint($breakpoint-pad) {
     display: inline-flex;
     padding: 0 5px;
@@ -116,7 +116,7 @@
   font-size: $text-desktop-font-size;
   height: 100%;
   margin-right: 10px;
-  
+
   input[type="checkbox"] {
     align-items: center;
     -moz-appearance: none;
@@ -131,11 +131,11 @@
     vertical-align: middle;
     width: 1rem;
   }
-  
+
   input[type="checkbox"]:focus {
     outline: 5px;
   }
-  
+
   input[type="checkbox"]:checked::after {
     color: $color-default;
     content: "\E639";
@@ -148,11 +148,11 @@
   input[type="checkbox"] {
     border-color: $color-assignment;
   }
-  
+
   input[type="checkbox"]:checked {
     background-color: $color-assignment;
   }
-  
+
   input[type="checkbox"]:checked::after {
     content: "";
   }
@@ -160,13 +160,13 @@
 
 .filter-item--logins {
   input[type="checkbox"] {
-    border-color: $color-tertiary;
+    border-color: $color-default-contrast;
   }
-  
+
   input[type="checkbox"]:checked {
-    background-color: $color-tertiary;
+    background-color: $color-default-contrast;
   }
-  
+
   input[type="checkbox"]:checked::after {
     content: "";
   }
@@ -176,11 +176,39 @@
   input[type="checkbox"] {
     border-color: $color-exercise;
   }
-  
+
   input[type="checkbox"]:checked {
     background-color: $color-exercise;
   }
-  
+
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
+}
+
+.filter-item--visits {
+  input[type="checkbox"] {
+    border-color: $color-workspace;
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: $color-workspace;
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
+}
+
+.filter-item--forum-messages {
+  input[type="checkbox"] {
+    border-color: $color-primary;
+  }
+
+  input[type="checkbox"]:checked {
+    background-color: $color-primary;
+  }
+
   input[type="checkbox"]:checked::after {
     content: "";
   }
@@ -190,7 +218,7 @@
   input[type="checkbox"] {
     border-color: $color-main-function-application-list-item-checkbox-border;
   }
-  
+
   input[type="checkbox"]:checked {
     background-color: $color-form-element-selected;
     border-color: $color-form-element-selected;
@@ -200,11 +228,11 @@
 .filter-item--workspaces-empty {
   font-style: italic;
   opacity: 0.8;
-  
+
   input[type="checkbox"] {
     border-color: $color-main-function-application-list-item-checkbox-border;
   }
-  
+
   input[type="checkbox"]:checked {
     background-color: $color-form-element-selected;
     border-color: $color-form-element-selected;
@@ -215,18 +243,19 @@
   background-color: $color-primary;
   border-radius: 3px;
   color: $color-default;
+  cursor: pointer;
   display: inline-flex;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   font-size: $button-pill-mobile-font-size;
   padding: 5px;
-  
+
   &:hover,
   &.hover {
     background-color: darken($color-primary, 10%);
   }
-  
+
   &:active,
   &.active {
     background-color: darken($color-primary, 20%);
@@ -237,5 +266,4 @@
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
-  
 }

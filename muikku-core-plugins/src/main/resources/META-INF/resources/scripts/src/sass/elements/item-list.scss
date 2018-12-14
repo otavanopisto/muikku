@@ -22,9 +22,9 @@
 
 .item-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-  align-items: center;
+  align-items: flex-start;
   background-color: $color-item-list-item-background;
-  color: $color-text-default;    
+  color: $color-text-default;
   cursor: pointer;
   display: flex;
   padding: 12px;
@@ -158,9 +158,9 @@
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
   margin-left: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+//  overflow: hidden;
+//  text-overflow: ellipsis;
+//  white-space: nowrap;
   
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;

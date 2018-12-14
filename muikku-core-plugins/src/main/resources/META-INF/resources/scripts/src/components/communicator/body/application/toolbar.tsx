@@ -28,7 +28,7 @@ import { ButtonPill } from '~/components/general/button';
 interface CommunicatorToolbarProps {
   messages: MessagesType,
   i18n: i18nType,
-  
+
   deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType,
   addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType,
   removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType,
@@ -48,12 +48,13 @@ interface CommunicatorToolbarState {
 class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, CommunicatorToolbarState> {
   constructor(props: CommunicatorToolbarProps){
     super(props);
-    
+
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
     this.loadMessage = this.loadMessage.bind(this);
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
-    
+    this.resetLabelFilter = this.resetLabelFilter.bind(this);
+
     this.state = {
       labelFilter: ""
     }
@@ -74,16 +75,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
   onCreateNewLabel(){
     if (this.state.labelFilter.trim()){
       this.props.addMessagesNavigationLabel(this.state.labelFilter.trim());
-      this.setState({
-        labelFilter: ""
-      });
+      this.resetLabelFilter();
     }
   }
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
-      let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
+      let canGoBack = (!document.referrer || document.referrer.indexOf(window.location.host) !== -1) && (history.length);
       if (canGoBack && location.hash.indexOf("?f") === -1){
         history.back();
       } else {
@@ -94,20 +93,25 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       location.hash = location.hash.split("/")[0];
     }
   }
+  resetLabelFilter(){
+    this.setState({
+      labelFilter: ""
+    });
+  }
   render(){
     let currentLocation = this.props.messages.navigation.find((item)=>{
       return (item.location === this.props.messages.location);
     });
-    
+
     if (!currentLocation){
       return null;
     }
     if (this.props.messages.currentThread){
       return ( 
         <ApplicationPanelToolbar>
-          <ApplicationPanelToolbarActionsMain>         
+          <ApplicationPanelToolbarActionsMain>
             <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick}/>
-          
+
             <div className="application-panel__tool--current-folder">
               <span className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               <span className="application-panel__tool-title">{"  " + currentLocation.text(this.props.i18n)}</span>
@@ -142,18 +146,18 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             </Dropdown>
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
-            <ButtonPill buttonModifiers="prev-page" icon="arrow-left"
-              disabled={this.props.messages.currentThread.olderThreadId === null}
-              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>       
-            
-            <ButtonPill buttonModifiers="next-page" icon="arrow-right"
+            <ButtonPill buttonModifiers="next-page" icon="arrow-left"
               disabled={this.props.messages.currentThread.newerThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}/>
+
+             <ButtonPill buttonModifiers="prev-page" icon="arrow-right"
+               disabled={this.props.messages.currentThread.olderThreadId === null}
+               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>
           </ApplicationPanelToolbarActionsAside>
         </ApplicationPanelToolbar>
       )
     }
-  
+
     let allInCommon:number[] = [];
     let onlyInSome:number[] = [];
     let isAtLeastOneSelected = this.props.messages.selectedThreads.length >= 1;
@@ -179,7 +183,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       <ButtonPill buttonModifiers="delete" icon="delete"
        disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}/>
        
-      <Dropdown modifier="communicator-labels" items={
+      <Dropdown onClose={this.resetLabelFilter} modifier="communicator-labels" items={
         [
           <div className="form-element">
             <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}

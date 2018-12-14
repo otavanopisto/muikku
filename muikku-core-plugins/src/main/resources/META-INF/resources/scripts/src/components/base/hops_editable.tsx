@@ -11,8 +11,7 @@ interface HopsProps {
   data?: HOPSDataType,
   defaultData: HOPSDataType,
   onHopsChange?: ( hops: HOPSDataType ) => any,
-  i18n: i18nType,
-  editable: boolean
+  i18n: i18nType
 }
 
 interface HopsState {
@@ -54,6 +53,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 
   render() {
+    let data = this.props.data || this.props.defaultData;
+    if (!data || !data.optedIn){
+      return null;
+    }
     return <div className="application-sub-panel text">
     
     <div className="application-sub-panel__header application-sub-panel__header--studies-hops">{this.props.i18n.text.get("plugin.records.hops.title")}</div>  
