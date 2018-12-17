@@ -118,7 +118,7 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
-    display: flex;
+     display: flex;
     flex-basis: 40%;
     flex-grow: 1;
     flex-shrink: 1;
