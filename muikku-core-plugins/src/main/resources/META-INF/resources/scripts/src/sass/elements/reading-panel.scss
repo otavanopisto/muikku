@@ -118,10 +118,10 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
+    display: flex;
     flex-basis: 40%;
     flex-grow: 1;
     flex-shrink: 1;
-    display: flex;
     margin: 0 0 0 10px;
     overflow: auto;
     overflow: -moz-scrollbars-none;
