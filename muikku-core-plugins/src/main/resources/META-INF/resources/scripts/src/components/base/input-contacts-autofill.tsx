@@ -9,6 +9,13 @@ import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, Worksp
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
+export interface InputContactsAutofillLoaders {
+  studentsLoader?: (searchString: string) => any,
+  staffLoader?: (searchString: string) => any,
+  userGroupsLoader?: (searchString: string) => any,
+  workspacesLoader?: (searchString: string) => any  
+}
+
 export interface InputContactsAutofillProps {
   placeholder?: string,
   onChange: (newValue: ContactRecepientType[])=>any,
@@ -21,7 +28,8 @@ export interface InputContactsAutofillProps {
   userPermissionIsOnlyDefaultUsers?: boolean,
   workspacePermissionIsOnlyMyWorkspaces?: boolean,
   showEmails?: boolean,
-  autofocus?: boolean
+  autofocus?: boolean,
+  loaders?: InputContactsAutofillLoaders
 }
 
 export interface InputContactsAutofillState {
@@ -95,22 +103,37 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.setState({textInput, autocompleteOpened: true});
     
     if (textInput){
+      let loaders = this.props.loaders || {};
+      
+      let getStudentsLoader = () =>  {
+        return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
+          searchString: textInput,
+          onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
+        }), 'callback');
+      }
+      let getUserGroupsLoader = () => { 
+        return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
+          searchString: textInput
+        }), 'callback');
+      }
+      let getWorkspacesLoader = () => { 
+        return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
+          search: textInput,
+          myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
+        }), 'callback');
+      }
+      let getStaffLoader = () => { 
+        return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
+          searchString: textInput
+        }), 'callback');
+      }
+      
       let searchResults = await Promise.all(
         [
-          checkHasPermission(this.props.hasUserPermission) ? promisify(mApi().user.users.read({
-            searchString: textInput,
-            onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
-          }), 'callback')().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasGroupPermission) ? promisify(mApi().usergroup.groups.read({
-            searchString: textInput
-          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasWorkspacePermission) ? promisify(mApi().coursepicker.workspaces.read({
-            search: textInput,
-            myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces),
-          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
-          checkHasPermission(this.props.hasStaffPermission, false) ? promisify(mApi().user.staffMembers.read({
-            searchString: textInput
-          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+          checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
+          checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
+          checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+          checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
         ]
       );
       
