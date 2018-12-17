@@ -118,7 +118,6 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
-    -ms-overflow-style: -ms-autohiding-scrollbar;
     flex-basis: 40%;
     flex-grow: 1;
     flex-shrink: 1;
@@ -126,6 +125,7 @@
     margin: 0 0 0 10px;
     overflow: auto;
     overflow: -moz-scrollbars-none;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
     z-index: 1;
 
     &::-webkit-scrollbar {
@@ -141,7 +141,6 @@
 // Main containers
 
 .reading-panel__main-container {
-  -ms-overflow-style: -ms-autohiding-scrollbar;
   background-color: $color-reading-panel-box-background;
   display: flex;
   flex-basis: auto;
@@ -149,6 +148,7 @@
   flex-shrink: 1;
   margin: 0;
   overflow: -moz-scrollbars-none;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
   padding: 10px 20px;
 
   &::-webkit-scrollbar {
