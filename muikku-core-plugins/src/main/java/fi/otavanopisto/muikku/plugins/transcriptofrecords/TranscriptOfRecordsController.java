@@ -1,11 +1,16 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.enterprise.inject.Any;
@@ -14,11 +19,18 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.MatriculationSubjects;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.subjects.StudentMatriculationSubjects;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
@@ -28,7 +40,13 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class TranscriptOfRecordsController {
-
+  
+  private static final String MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY = "matriculation.subjects";
+  private static final String USER_MATRICULATION_SUBJECTS_USER_PROPERTY = "hops.matriculation-subjects";
+  
+  @Inject
+  private Logger logger;
+  
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
@@ -37,11 +55,14 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-  
+
   private static final Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
   
   public boolean subjectAppliesToStudent(User student, Subject subject) {
@@ -141,7 +162,14 @@ public class TranscriptOfRecordsController {
   }
 
   public TranscriptofRecordsUserProperties loadUserProperties(User user) {
-    return new TranscriptofRecordsUserProperties(userSchoolDataController.listUserProperties(user));
+    List<UserProperty> userProperties = userSchoolDataController.listUserProperties(user);
+    
+    StudentMatriculationSubjects studentMatriculationSubjects = unserializeStudentMatriculationSubjects(userProperties.stream()
+      .filter(userProperty -> USER_MATRICULATION_SUBJECTS_USER_PROPERTY.equals(userProperty.getKey()))
+      .findFirst()
+      .orElse(null));
+  
+    return new TranscriptofRecordsUserProperties(userProperties, studentMatriculationSubjects);
   }
 
   public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
@@ -207,6 +235,137 @@ public class TranscriptOfRecordsController {
       }
     }
     
+    return result;
+  }
+  
+  /**
+   * Returns a list of configured matriculation subjects.
+   * 
+   * @return list of configured matriculation subjects or empty list if setting is not configured.
+   */
+  public MatriculationSubjects listMatriculationSubjects() {
+    String subjectsJson = pluginSettingsController.getPluginSetting("transcriptofrecords", MATRICULATION_SUBJECTS_PLUGIN_SETTING_KEY);
+    if (StringUtils.isNotBlank(subjectsJson)) {
+      return unserializeObject(subjectsJson, MatriculationSubjects.class);   
+    }
+
+    return unserializeObject(getClass().getClassLoader().getResourceAsStream("fi/otavanopisto/muikku/plugins/transcriptofrecords/default-matriculation-subjects.json"), MatriculationSubjects.class);
+  }
+  
+  /**
+   * Saves a list of student's matriculation subjects
+   * 
+   * @param student student
+   * @param matriculationSubjects list of student's matriculation subjects
+   */
+  public void saveStudentMatriculationSubjects(User student, StudentMatriculationSubjects matriculationSubjects) {
+    userSchoolDataController.setUserProperty(student, USER_MATRICULATION_SUBJECTS_USER_PROPERTY, serializeObject(matriculationSubjects));
+  }
+
+  /**
+   * Unserializes student's matriculation subjects from user property
+   * 
+   * @param userProperty user property
+   * @return unserialized student's matriculation subjects
+   */
+  private StudentMatriculationSubjects unserializeStudentMatriculationSubjects(UserProperty userProperty) {
+    return unserializeStudentMatriculationSubjects(userProperty != null ? userProperty.getValue() : null);
+  }
+  
+  /**
+   * Unserializes student's matriculation subjects from string
+   * 
+   * @param value string value
+   * @return unserialized student's matriculation subjects
+   */
+  private StudentMatriculationSubjects unserializeStudentMatriculationSubjects(String value) {
+    StudentMatriculationSubjects result = unserializeObject(value, StudentMatriculationSubjects.class);
+    if (result != null) {
+      return result;
+    }
+    
+    return new StudentMatriculationSubjects();
+  }
+  
+  /**
+   * Unserialized object from a JSON string
+   * 
+   * @param string string representation
+   * @return unserialized object or null if unserialization fails
+   */
+  private <T> T unserializeObject(String string, Class<T> targetClass) {
+    if (StringUtils.isNotBlank(string)) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+        return objectMapper.readValue(string, targetClass);
+      } catch (IOException e) {
+        logger.log(Level.SEVERE, "Failed to unserialize object", e);
+      }
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Unserialized object from input stream
+   * 
+   * @param inputStream input stream
+   * @return unserialized object or null if unserialization fails
+   */
+  private <T> T unserializeObject(InputStream inputStream, Class<T> targetClass) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.readValue(inputStream, targetClass);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "Failed to unserialize object", e);
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Writes an object as JSON string
+   * 
+   * @param entity to be serialized
+   * @return serialized string
+   */
+  private String serializeObject(Object entity) {
+    if (entity == null) {
+      return null;
+    }
+
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper.writeValueAsString(entity);
+    } catch (JsonProcessingException e) {
+      logger.log(Level.SEVERE, "Failed to serialize an entity", e);
+    }
+    
+    return null;
+  }
+
+  public int countMandatoryCoursesForStudent(SchoolDataIdentifier studentIdentifier) {
+    StudentCourseStats stats = userSchoolDataController.getStudentCourseStats(studentIdentifier);
+    return stats.getNumMandatoryCompletedCourses();
+  }
+
+  public int getMandatoryCoursesRequiredForMatriculation() {
+    String resultString = pluginSettingsController.getPluginSetting(
+        "transcriptofrecords",
+        "mandatoryCoursesRequiredForMatriculation");
+    int result = Integer.parseInt(resultString);
+    return result;
+  }
+  
+  public LocalDate getMatriculationExamEnrollmentDate(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getLatestStudentEnrollmentDate(studentIdentifier);
+  }
+  
+  public LocalDate getMatriculationExamDate() {
+    String resultString = pluginSettingsController.getPluginSetting(
+        "transcriptofrecords",
+        "matriculationExamDate");
+    LocalDate result = LocalDate.parse(resultString);
     return result;
   }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
@@ -238,5 +239,20 @@ public interface UserSchoolDataBridge {
       String country);
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier);
+
+  /**
+   * Returns student eligibility to participate matriculation exams
+   * 
+   * @param studentIdentifier student's identifier
+   * @param subjectCode subject code
+   * @return student eligibility to participate matriculation exams
+   */
+  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode);
+  fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(
+      SchoolDataIdentifier studentIdentifier,
+      String educationTypeCode,
+      String educationSubtypeCode);
+
+  fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment getLatestEnrollmentForStudent(SchoolDataIdentifier studentIdentifier);
 
 }

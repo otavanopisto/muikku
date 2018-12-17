@@ -21,7 +21,7 @@
   font-weight: 400;
   padding: 0 10px;
   text-transform: uppercase;
-  width: 100%;  
+  width: 100%;
   
   @include breakpoint($breakpoint-pad) {
     margin: 0 0 10px;
@@ -32,7 +32,7 @@
 .application-sub-panel__header--guider-header {
   font-family: $text-font-family;
   font-size: 1.1875rem;
-  font-weight: 400;  
+  font-weight: 400;
   text-transform: uppercase;
   width: 100%;
 }
@@ -53,15 +53,15 @@
 
 
 .application-sub-panel__header-main {
-  flex-basis: 100%;  
-  flex-grow: 1;  
+  flex-basis: 100%;
+  flex-grow: 1;
   flex-shrink: 1;
   
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
     flex-grow: 1;
     flex-shrink: 1;
-    font-size: 1.25rem;    
+    font-size: 1.25rem;
   }  
   
 }
@@ -86,7 +86,7 @@
   
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
-    flex-grow: 1;    
+    flex-grow: 1;
   }
 }
 
@@ -110,11 +110,11 @@
 }
 
 .application-sub-panel__body--yo-status-incomplete {
-  background-color: #de6c6a;
+  background-color: $color-sub-panel-status-incomplete-background-color;
 }
 
 .application-sub-panel__body--yo-status-complete {
-  background-color: #f6fff2;
+  background-color: $color-sub-panel-status-complete-background-color;
 }
 
 .application-sub-panel__body--studies-summary-dates {
@@ -127,7 +127,7 @@
   flex-direction: column;
   
   @include breakpoint($breakpoint-desktop) {
-    flex-direction: row;    
+    flex-direction: row;
   }
 }
 
@@ -137,7 +137,7 @@
   flex-direction: column;
   
   @include breakpoint($breakpoint-pad) {
-    flex-direction: row;    
+    flex-direction: row;
   }
 
 }
@@ -183,7 +183,7 @@
 
 .application-sub-panel__card-body {
   display: flex;
-  justify-content: center;  
+  justify-content: center;
   padding: 10px;
 }
 
@@ -223,7 +223,7 @@
   flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px; 
+  padding: 10px;
   
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
@@ -235,8 +235,8 @@
 }
 
 .application-sub-panel__item--summarizer {
-  flex-flow: column wrap;
   align-items: normal;
+  flex-flow: column wrap;
   flex-basis: 50;
   padding: 10px;
   
@@ -277,7 +277,7 @@
 }
 
 .application-sub-panel__item-body--summarizer {
-  background-color: #ebf8fc;
+  background-color: $color-sub-panel-summarizer-background-color;
 }
 
 .application-sub-panel__item-header--hops {
@@ -310,7 +310,7 @@
   display: inline-block;
   margin-left: 5px;
   margin-right: 5px; 
-  padding: 2px 5px;   
+  padding: 2px 5px;
 }
 
 
@@ -332,12 +332,12 @@
     border-radius: 3px;
     display: inline-block;
     margin: 2px 5px 2px 0;
-    padding: 4px;  
+    padding: 4px;
   }
 } 
 
 .application-sub-panel__item-data--summary-start-date span {
-  background-color: $color-sub-panel-data-1-background;  
+  background-color: $color-sub-panel-data-1-background;
 }
 
 .application-sub-panel__item-data--summary-end-date span {
@@ -430,7 +430,7 @@
 }
 
 .application-sub-panel__text {
-  padding: 2px 12px;  
+  padding: 2px 12px;
 }
 
 .application-sub-panel__text--task-evaluation {

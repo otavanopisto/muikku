@@ -1,0 +1,122 @@
+[
+  {
+    "code": "A",
+    "subjectCode": "AI"
+  },
+  {
+    "code": "A5",
+    "subjectCode": "S2"
+  },
+  {
+    "code": "EA",
+    "subjectCode": "ENA"
+  },
+  {
+    "code": "FA",
+    "subjectCode": "RAB2"
+  },
+  {
+    "code": "PA",
+    "subjectCode": "EAB3"
+  },
+  {
+    "code": "SA",
+    "subjectCode": "SAA"
+  },
+  {
+    "code": "VA",
+    "subjectCode": "VEA"
+  },
+  {
+    "code": "BA",
+    "subjectCode": "RUA"
+  },
+  {
+    "code": "BB",
+    "subjectCode": "RUB"
+  },
+  {
+    "code": "M",
+    "subjectCode": "MAA"
+  },
+  {
+    "code": "N",
+    "subjectCode": "MAB"
+  },
+  {
+    "code": "UE",
+    "subjectCode": "UE"
+  },
+  {
+    "code": "ET",
+    "subjectCode": "ET"
+  },
+  {
+    "code": "YH",
+    "subjectCode": "YH"
+  },
+  {
+    "code": "KE",
+    "subjectCode": "KE"
+  },
+  {
+    "code": "GE",
+    "subjectCode": "GE"
+  },
+  {
+    "code": "TE",
+    "subjectCode": "TE"
+  },
+  {
+    "code": "PS",
+    "subjectCode": "PS"
+  },
+  {
+    "code": "FF",
+    "subjectCode": "FI"
+  },
+  {
+    "code": "HI",
+    "subjectCode": "HI"
+  },
+  {
+    "code": "FY",
+    "subjectCode": "FY"
+  },
+  {
+    "code": "BI",
+    "subjectCode": "BI"
+  },
+  {
+    "code": "EC",
+    "subjectCode": "ENA3"
+  },
+  {
+    "code": "FC",
+    "subjectCode": "RAB3"
+  },
+  {
+    "code": "PC",
+    "subjectCode": "EAB3"
+  },
+  {
+    "code": "SC",
+    "subjectCode": "SAB3"
+  },
+  {
+    "code": "VC",
+    "subjectCode": "VEB3"
+  },
+  {
+    "code": "TC",
+    "subjectCode": "IAB3"
+  },
+  {
+    "code": "GC",
+    "subjectCode": null
+  },
+  {
+    "code": "LC",
+    "subjectCode": "LAB3"
+  }
+]

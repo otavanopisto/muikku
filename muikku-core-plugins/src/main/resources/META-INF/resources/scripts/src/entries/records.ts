@@ -40,7 +40,6 @@ function loadCurrentLocation(){
     store.dispatch(<Action>updateVops());
   } else if (givenLocation === "hops"){
     store.dispatch(<Action>setLocationToHopsInTranscriptOfRecords());
-    store.dispatch(<Action>updateHops());
   } else if (givenLocation === "yo"){
     store.dispatch(<Action>setLocationToYoInTranscriptOfRecords());
     store.dispatch(<Action>updateYO());
@@ -51,6 +50,8 @@ function loadCurrentLocation(){
     store.dispatch(<Action>setLocationToStatisticsInTranscriptOfRecords());
     store.dispatch(<Action>updateStatistics());
   }
+
+  store.dispatch(<Action>updateHops());
 }
 
 window.addEventListener("hashchange", ()=>{

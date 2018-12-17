@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
@@ -75,6 +76,17 @@ public class UserController {
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserPhoneNumbers(userIdentifier);
+  }
+  
+  /**
+   * Returns student eligibility to participate matriculation exams
+   * 
+   * @param studentIdentifier student identifier
+   * @param subjectCode subject code
+   * @return student eligibility to participate matriculation exams
+   */
+  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
+    return userSchoolDataController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
   }
 
   public List<UserEmail> listUserEmails(SchoolDataIdentifier userIdentifier) {

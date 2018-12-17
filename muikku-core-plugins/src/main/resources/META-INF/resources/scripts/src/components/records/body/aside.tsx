@@ -9,10 +9,12 @@ import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records
 import {StateType} from '~/reducers';
 
 import NavigationMenu, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
+import { HOPSType } from '~/reducers/main-function/hops';
 
 interface NavigationProps {
   i18n: i18nType,
-  location: TranscriptOfRecordLocationType
+  location: TranscriptOfRecordLocationType,
+  hops: HOPSType
 }
 
 interface NavigationState {
@@ -22,6 +24,22 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
 
   constructor(props: NavigationProps){
     super(props);
+  }
+
+  /**
+   * Returns whether section with given hash should be visible or not
+   * 
+   * @param hash section hash
+   * @return whether section with given hash should be visible or not
+   */
+  isVisible(hash: string) {
+    switch (hash) {
+      case "yo":
+        const yoVisibleValues = ["yes", "maybe"]; 
+        return this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1;
+    }
+
+    return true;
   }
   
   render() {
@@ -54,7 +72,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
                     ]
     return ( 
       <NavigationMenu>
-          {sections.map((item, index)=>{
+          {sections.filter(section => this.isVisible(section.hash)).map((item, index)=>{
             return <NavigationElement isActive={this.props.location === item.hash} hash={item.hash} key={index}
             >{item.name}</NavigationElement> 
           })}
@@ -63,10 +81,12 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 }
 
+
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    location: state.records.location
+    location: state.records.location,
+    hops: state.hops
   }
 };
 

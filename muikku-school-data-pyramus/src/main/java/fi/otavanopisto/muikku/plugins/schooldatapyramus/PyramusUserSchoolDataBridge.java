@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,7 +19,10 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentMatriculationEligibility;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
@@ -30,6 +34,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
@@ -42,6 +47,7 @@ import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.Email;
 import fi.otavanopisto.pyramus.rest.model.Language;
+import fi.otavanopisto.pyramus.rest.model.MatriculationExamEnrollment;
 import fi.otavanopisto.pyramus.rest.model.Municipality;
 import fi.otavanopisto.pyramus.rest.model.Nationality;
 import fi.otavanopisto.pyramus.rest.model.Person;
@@ -49,6 +55,7 @@ import fi.otavanopisto.pyramus.rest.model.PhoneNumber;
 import fi.otavanopisto.pyramus.rest.model.School;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
 import fi.otavanopisto.pyramus.rest.model.Student;
+import fi.otavanopisto.pyramus.rest.model.StudentCourseStats;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
@@ -848,4 +855,59 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
     }
   }
+
+  @Override
+  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
+    if (!StringUtils.equals(studentIdentifier.getDataSource(), getSchoolDataSource())) {
+      throw new SchoolDataBridgeInternalException(String.format("Could not evaluate stundent's matriculation eligibility from school data source %s", studentIdentifier.getDataSource()));
+    }
+    
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId != null) {
+      fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility result = pyramusClient.get(String.format("/students/students/%d/matriculationEligibility?subjectCode=%s", pyramusStudentId, subjectCode), fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility.class);
+      if (result == null) {
+        throw new SchoolDataBridgeInternalException(String.format("Could not resolve student's matriculation eligibility for user %s", studentIdentifier));
+      }
+      
+      return new PyramusStudentMatriculationEligibility(result.getEligible(), result.getRequirePassingGrades(), result.getAcceptedCourseCount(), result.getAcceptedTransferCreditCount());
+    } else {
+      throw new SchoolDataBridgeInternalException(String.format("Failed to resolve Pyramus user from studentIdentifier %s", studentIdentifier));
+    }
+    
+  }
+ 
+  @Override
+  public fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(
+      SchoolDataIdentifier studentIdentifier,
+      String educationTypeCode,
+      String educationSubtypeCode
+  ) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    StudentCourseStats courseStats = pyramusClient.get(
+        String.format(
+            "/students/students/%d/courseStats?educationTypeCode=%s&educationSubtypeCode=%s",
+            studentId,
+            educationTypeCode,
+            educationSubtypeCode), StudentCourseStats.class); 
+    return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses());
+  }
+  
+  @Override
+  public fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment getLatestEnrollmentForStudent(
+      SchoolDataIdentifier studentIdentifier
+  ) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    MatriculationExamEnrollment enrollment = pyramusClient.get(
+        String.format("/matriculation/enrollments/latest/%d", studentId),
+        MatriculationExamEnrollment.class);
+    if (enrollment != null) {
+      PyramusMatriculationExamEnrollment result = new PyramusMatriculationExamEnrollment(
+            LocalDate.parse(enrollment.getEnrollmentDate())
+      );
+      return result;
+    } else {
+      return null;
+    }
+  }
+
 }

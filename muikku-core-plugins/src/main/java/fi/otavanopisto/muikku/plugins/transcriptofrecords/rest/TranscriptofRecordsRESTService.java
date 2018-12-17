@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -19,6 +20,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
@@ -46,6 +48,7 @@ import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -109,6 +112,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private GradingController gradingController;
+
+  @Inject
+  private TranscriptOfRecordsController transcriptOfRecordsController;
   
   @GET
   @Path("/files/{ID}/content")
@@ -266,7 +272,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         userProperties.asBoolean("spanish"),
         userProperties.asString("science"),
         userProperties.asString("religion"),
-        userProperties.asString("additionalInfo")
+        userProperties.asString("additionalInfo"),
+        userProperties.getStudentMatriculationSubjects()
     );
   }
 
@@ -414,8 +421,79 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     vopsController.saveStringProperty(user, "science", model.getScience());
     vopsController.saveStringProperty(user, "religion", model.getReligion());
     vopsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
-
+    vopsController.saveStudentMatriculationSubjects(user, model.getStudentMatriculationSubjects());
+    
     return Response.ok().entity(model).build();
+  }
+  
+  @GET
+  @Consumes("application/json")
+  @Path("/studentMatriculationEligibility/{STUDENTIDENTIFIER}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getMatriculationEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    if (identifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
+    }
+    
+    if (!identifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    User student = userController.findUserByIdentifier(identifier);
+    if (student == null) {
+      return Response.status(Status.NOT_FOUND).entity("Student not found").build();
+    }
+    
+    MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
+    LocalDate latestEnrollmentDate = vopsController.getMatriculationExamEnrollmentDate(identifier);
+    int coursesCompleted = vopsController.countMandatoryCoursesForStudent(identifier);
+    int coursesRequired = vopsController.getMandatoryCoursesRequiredForMatriculation();
+
+    if (latestEnrollmentDate != null) {
+      result.setStatus(MatriculationExamEligibilityStatus.ENROLLED);
+      result.setEnrollmentDate(latestEnrollmentDate.toString());
+      result.setExamDate(vopsController.getMatriculationExamDate().toString());
+    } else if (coursesCompleted >= coursesRequired) {
+      result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
+    } else {
+      result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);
+      result.setCoursesCompleted(coursesCompleted);
+      result.setCoursesRequired(coursesRequired);
+    }
+
+    return Response.ok(result).build();
+  }
+
+  /**
+   * REST endpoint for listing matriculation subjects.
+   * 
+   * Method requires that user is logged in but does not require any special permissions.
+   * 
+   * @return REST response object
+   */
+  @GET
+  @Path("/matriculationSubjects")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listMatriculationSubjects() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    return Response.ok(transcriptOfRecordsController.listMatriculationSubjects()).build();
+  }
+  
+  @GET
+  @Path("/matriculationEligibility")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response findMatriculationEligibility(@QueryParam ("subjectCode") String subjectCode) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(sessionController.getLoggedUser(), subjectCode);
+    
+    return Response.ok(result).build();
   }
   
 }

@@ -28,6 +28,10 @@ interface RecordsProps {
 }
 
 interface RecordsState {
+  sortDirectionWorkspaces? : string, 
+  sortDirectionRecords? : string,
+  sortedWorkspaces? : any
+  sortedRecords? : any
 }
 
 let storedCurriculumIndex:any = {};
@@ -79,7 +83,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
   } else if (workspace.studentAssessments.assessmentState &&
     (workspace.studentAssessments.assessmentState === "incomplete" || workspace.studentAssessments.assessmentState === "fail")){
     let status = props.i18n.text.get(workspace.studentAssessments.assessmentState === "incomplete" ?
-    		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
+        "plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
     return <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
       {status[0].toLocaleUpperCase()}
     </span>
@@ -104,20 +108,55 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
           <div className={"activity-badge__unit-bar activity-badge__unit-bar--" + workspace.studentActivity.exercisesDonePercent}></div>
         </div> : null}
       </div>
-
 }
 
 class Records extends React.Component<RecordsProps, RecordsState> {
+  
   constructor(props: RecordsProps){
     super(props);
-    
     this.goToWorkspace = this.goToWorkspace.bind(this);
+    this.state = {sortDirectionWorkspaces : "desc", sortDirectionRecords: "desc"};
   }
   
   goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
     window.location.hash = "#?u=" + user.userEntityId + "&i=" + encodeURIComponent(user.id) + "&w=" + workspace.id;
   }
-    
+ 
+ 
+  sortBy (data: any, key: string, direction: string) {
+    data.sort(
+        (a: any, b: any) => {
+          if (a[key] < b[key])
+           return direction === "asc" ?  -1 : 1;
+          if (a[key] > b[key]) 
+           return direction === "asc" ?  1 : -1;
+          return 0;      
+        }    
+    )
+  }
+  
+  sortWorkspaces(data: any){
+    let key = "name";
+    let sortDirection = this.state.sortDirectionWorkspaces;
+    let sortedData = this.sortBy(data, key, sortDirection);
+
+      this.setState({
+        sortDirectionWorkspaces : this.state.sortDirectionWorkspaces === "asc" ? "desc" : "asc",
+        sortedWorkspaces : sortedData
+      });
+  }
+
+  sortRecords(data: any){
+    let key = "courseName";
+    let sortDirection = this.state.sortDirectionRecords;  
+    let sortedData = this.sortBy(data, key, sortDirection);
+
+      this.setState({
+        sortDirectionRecords : this.state.sortDirectionRecords === "asc" ? "desc" : "asc",
+        sortedRecords : sortedData
+      });
+  }
+  
   render(){
     
     if (this.props.records.userDataStatus === "LOADING"){
@@ -133,55 +172,59 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         storedCurriculumIndex[curriculum.identifier] = curriculum.name;
       });
     }
-    
     let studentRecords = <div className="application-sub-panel">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
-          let records = data.records;      
-
+          let records = data.records;
           return <div className="react-required-container" key={data.user.id}>
           <div className="application-sub-panel__header">{user.studyProgrammeName}</div>
           <div className="application-sub-panel__body">
             {records.length ? records.map((record, index)=>{
               return <ApplicationList key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <div className="application-list__header-container"><h3 className="application-list__header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}  
-                  {record.workspaces.map((workspace)=>{
-                    //Do we want an special way to display all these different states? passed is very straightforward but failed and
-                    //incomplete might be difficult to understand
-                    let extraClassNameState = "";
-                    if (workspace.studentAssessments.assessmentState === "pass"){
-                      extraClassNameState = "state-PASSED"
-                    } else if (workspace.studentAssessments.assessmentState === "fail"){
-                      extraClassNameState = "state-FAILED"
-                    } else if (workspace.studentAssessments.assessmentState === "incomplete"){
-                      extraClassNameState = "state-INCOMPLETE"
-                    }
-                    return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
-                      <ApplicationListItemHeader modifiers="course" key={workspace.id}>
-                        <span className="application-list__header-icon icon-books"></span>
-                        <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span>
-                        <div className="application-list__header-secondary">                        
-                          {getEvaluationRequestIfAvailable(this.props, workspace)}
-                          {getAssessments(this.props, workspace)}
-                          {getActivity(this.props, workspace)}
+                {record.groupCurriculumIdentifier ? <div onClick={this.sortWorkspaces.bind(this, record.workspaces)} className="application-list__header-container application-list__header-container--sorter">
+                  <h3 className="application-list__header application-list__header--sorter">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3>
+                  <div className={`icon-sort-alpha-${this.state.sortDirectionWorkspaces === 'asc' ? 'desc' : 'asc'}`}></div>                
+                </div> : null}  
+                {record.workspaces.map((workspace)=>{
+                  //Do we want an special way to display all these different states? passed is very straightforward but failed and
+                  //incomplete might be difficult to understand
+                  let extraClassNameState = "";
+                  if (workspace.studentAssessments.assessmentState === "pass"){
+                    extraClassNameState = "state-PASSED"
+                  } else if (workspace.studentAssessments.assessmentState === "fail"){
+                    extraClassNameState = "state-FAILED"
+                  } else if (workspace.studentAssessments.assessmentState === "incomplete"){
+                    extraClassNameState = "state-INCOMPLETE"
+                  }
+                  return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                    <ApplicationListItemHeader modifiers="course" key={workspace.id}>
+                      <span className="application-list__header-icon icon-books"></span>
+                      <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span>
+                      <div className="application-list__header-secondary">
+                        {getEvaluationRequestIfAvailable(this.props, workspace)}
+                        {getAssessments(this.props, workspace)}
+                        {getActivity(this.props, workspace)}
+                      </div>
+                    </ApplicationListItemHeader>
+                  </ApplicationListItem>  
+                })}
+                {record.transferCredits.length ? 
+                  <div className="application-list__header-container application-list__header-container--sorter" onClick={this.sortRecords.bind(this, record.transferCredits)}>
+                    <h3 className="application-list__header application-list__header--sorter">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3>
+                    <div className={`icon-sort-alpha-${this.state.sortDirectionRecords === 'asc' ? 'desc' : 'asc'}`}></div>                    
+                  </div> : null}
+                  {record.transferCredits.map((credit)=>{
+                    return <ApplicationListItem className="course course--credits" key={credit.identifier}>
+                      <ApplicationListItemHeader modifiers="course">
+                        <span className="application-list__header-icon icon-books"></span>  
+                        <span className="application-list__header-primary">{credit.courseName}</span>
+                        <div className="application-list__header-secondary">
+                          {getTransferCreditValue(this.props, credit)}
                         </div>
                       </ApplicationListItemHeader>
                     </ApplicationListItem>
                   })}
-                {record.transferCredits.length ? 
-                  <div className="application-list__header-container"><h3 className="application-list__header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
-                    {record.transferCredits.map((credit)=>{
-                      return <ApplicationListItem className="course course--credits" key={credit.identifier}>
-                        <ApplicationListItemHeader modifiers="course">
-                          <span className="application-list__header-icon icon-books"></span>  
-                          <span className="application-list__header-primary">{credit.courseName}</span>
-                          <div className="application-list__header-secondary">                        
-                            {getTransferCreditValue(this.props, credit)}
-                          </div>
-                        </ApplicationListItemHeader>
-                      </ApplicationListItem>
-                    })}
-              </ApplicationList>
+            </ApplicationList>
             }) : <h4>{this.props.i18n.text.get("plugin.records.records.empty")}</h4>}
           </div>
           </div>
@@ -190,9 +233,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
     
-    return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>      
-    <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.records.title")}</div>    
-    {studentRecords}        
+    return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
+    <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.records.title")}</div>
+    {studentRecords}
     <div className="application-sub-panel">
       <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
       <div className="application-sub-panel__body">
