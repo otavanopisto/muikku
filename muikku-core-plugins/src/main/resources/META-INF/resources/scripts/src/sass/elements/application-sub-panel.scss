@@ -192,7 +192,7 @@
 }
 
 .application-sub-panel__card-header--summary-evaluated, .application-sub-panel__card-highlight--summary-evaluated  {
-  color: $color-sub-panel-card-1-font-color;
+  color: $color-sub-panel-card-1-font;
 }
 
 .application-sub-panel__card-item--summary-activity {
@@ -200,7 +200,7 @@
 }
 
 .application-sub-panel__card-header--summary-activity, .application-sub-panel__card-highlight--summary-activity  {
-  color: $color-sub-panel-card-2-font-color;
+  color: $color-sub-panel-card-2-font;
 }
 
 .application-sub-panel__card-item--summary-returned {
@@ -208,7 +208,7 @@
 }
 
 .application-sub-panel__card-header--summary-returned, .application-sub-panel__card-highlight--summary-returned  {
-  color: $color-sub-panel-card-3-font-color;
+  color: $color-sub-panel-card-3-font;
 }
 
 
@@ -246,7 +246,7 @@
 }
 
 .application-sub-panel__summary-highlight {
-  color: #c2c2c2;
+  color: $color-sub-panel-summary-highlight-font;
   font-size: 2.5rem;
   
   &:not(:first-child) {
@@ -255,17 +255,15 @@
 }
 
 .application-sub-panel__summary-highlight--total {
-  color: #000;
+  color: $color-sub-panel-summary-highlight-total-font;
 }
 
 .application-sub-panel__summary-highlight--done {
-  color: #75ce41;
-  color: $color-sub-panel-card-1-font-color;
+  color: $color-sub-panel-card-1-font;
 }
 
 .application-sub-panel__summary-highlight--undone {
-  color: #82c2e7;
-  color: $color-sub-panel-card-2-font-color;  
+  color: $color-sub-panel-card-2-font;
 }
 
 .application-sub-panel__summary-definition {
@@ -277,7 +275,9 @@
 }
 
 .application-sub-panel__item-body--summarizer {
+  align-items: center;
   background-color: $color-sub-panel-summarizer-background-color;
+  display: flex;
 }
 
 .application-sub-panel__item-header--hops {
@@ -334,7 +334,7 @@
     margin: 2px 5px 2px 0;
     padding: 4px;
   }
-} 
+}
 
 .application-sub-panel__item-data--summary-start-date span {
   background-color: $color-sub-panel-data-1-background;

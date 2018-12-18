@@ -37,7 +37,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
       <div className="application-sub-panel">
         <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
           <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-            <div className="application-sub-panel__item-body application-sub-panel__header">{this.props.i18n.text.get("plugin.records.vops.mandatory.title")}</div>
+            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.vops.mandatory.title")}</div>
             <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
               <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--total">23</span>
               <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.mandatory")}</span>
