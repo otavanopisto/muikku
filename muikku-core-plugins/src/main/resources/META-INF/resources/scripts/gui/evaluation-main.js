@@ -285,6 +285,7 @@
         $(data.card).removeClass('evaluated-passed evaluated-failed evaluated-incomplete');
         $(data.card).find('.evaluation-row .evaluation-card-data-text').text('-');
         $(data.card).removeAttr('data-evaluated');
+        $(data.card).removeAttr('data-graded');
         if ($(data.card).attr('data-assessment-request-date')) {
           $(data.card).find('.request-row').addClass('highlight');
           $(data.card).addClass('evaluation-requested');
