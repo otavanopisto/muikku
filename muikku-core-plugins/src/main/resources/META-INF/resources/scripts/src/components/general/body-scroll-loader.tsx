@@ -40,8 +40,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     }
     if ((this.props as any)[this.statePropertyLocation] as string === "READY" && 
         (this.props as any)[this.hasMorePropertyLocation] as boolean){
-      let doesNotHaveScrollBar = (document.body.scrollHeight || document.documentElement.scrollHeight) === 
-        (document.body.offsetHeight || document.documentElement.offsetHeight);
+      let doesNotHaveScrollBar = document.documentElement.scrollHeight === document.documentElement.offsetHeight;
       if (doesNotHaveScrollBar){
         (this.props as any)[this.loadMoreTriggerFunctionLocation]();
       }

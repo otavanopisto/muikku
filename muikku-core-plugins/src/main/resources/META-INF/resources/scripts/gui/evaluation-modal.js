@@ -154,7 +154,7 @@
               }, this));
  
               // Prevent accidental evaluation if evaluated before
-              if ($(this._requestCard).attr('data-evaluated')) {
+              if ($(this._requestCard).attr('data-graded') == "true") {
                 this._evaluationModal
                 .find('.eval-modal-evaluate-buttonset')
                 .append($('<div>')

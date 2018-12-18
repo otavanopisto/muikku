@@ -8,6 +8,12 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  
+  padding: calc(#{$navbar-mobile-height} * 1.2) 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
 }
 
 .reading-panel__container {
@@ -18,7 +24,7 @@
   width:100%;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 0 10px;  
+    padding: 0 10px;
   }
 }
 
@@ -39,8 +45,8 @@
     flex-shrink: 0;
     justify-content: center;
     margin: 10px;
-    position: relative;
     max-width: calc($breakpoint-max-usable-screen - 20px);
+    position: relative;
     width: calc(100% - 20px);
   }
 }
@@ -98,6 +104,10 @@
 }
 
 .reading-panel__content {
+<<<<<<< HEAD
+=======
+  padding: 2.5rem 0 0;
+>>>>>>> 641f5a211f259d1c97062187b33c96565727731c
 
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
@@ -112,19 +122,28 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
+<<<<<<< HEAD
     -ms-overflow-style: -ms-autohiding-scrollbar;
     flex-basis: 33%;
+=======
+    display: flex;
+    flex-basis: 40%;
+>>>>>>> 641f5a211f259d1c97062187b33c96565727731c
     flex-grow: 1;
     flex-shrink: 1;
-    display: flex;
     margin: 0 0 0 10px;
     overflow: auto;
     overflow: -moz-scrollbars-none;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
     z-index: 1;
 
     &::-webkit-scrollbar {
       display: none;
     }
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 33%;
   }
 }
 
@@ -140,14 +159,19 @@
   -ms-overflow-style: -ms-autohiding-scrollbar;
   padding: 10px 20px;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
   @include breakpoint($breakpoint-pad) {
     flex-basis: 66%;
     border: solid 1px $color-reading-panel-box-border;
+    flex-basis: 60%;
     margin: 0 10px 0 0;
-  } 
+  }
 
-  &::-webkit-scrollbar { 
-    display: none; 
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 67%;
   }
 }
 
@@ -157,7 +181,7 @@
   margin: 0;
   padding: 10px;
   position: relative;
-  
+
   @include breakpoint($breakpoint-pad) {
     margin: 0 12px;
     padding: 12px 0;

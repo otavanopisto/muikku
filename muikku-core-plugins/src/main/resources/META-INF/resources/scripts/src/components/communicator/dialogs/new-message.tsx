@@ -171,7 +171,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         searchString: searchString
       }), 'callback'),
       workspacesLoader: (searchString: string) => promisify(mApi().communicator.recipientsWorkspacesSearch.read({
-        search: searchString
+        searchString: searchString
       }), 'callback')
     }
   }

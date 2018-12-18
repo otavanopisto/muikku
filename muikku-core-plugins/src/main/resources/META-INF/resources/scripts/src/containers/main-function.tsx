@@ -206,9 +206,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
-      if (currentLocationHasData){
-        this.loadCoursePickerData(currentLocationData);
-      }
       
       let state:StateType = this.props.store.getState();
       if (state.status.loggedIn){
@@ -217,7 +214,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
             location.hash = "#?" + queryString.stringify({
               c: [user.curriculumIdentifier]
             }, {arrayFormat: 'bracket'});
-          } else if (!currentLocationHasData){
+          } else {
             this.loadCoursePickerData(currentLocationData);
           }
         }) as Action);

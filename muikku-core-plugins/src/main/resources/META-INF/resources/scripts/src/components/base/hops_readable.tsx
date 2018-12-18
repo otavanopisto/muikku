@@ -43,9 +43,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
     if (!this.props.data || !this.props.data.optedIn){
       return null;
     }
-    
-    return <div className="application-sub-panel__body text">
 
+    return <div className="application-sub-panel__body">
       <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
         <div className="application-sub-panel__item-title">
          {this.props.i18n.text.get("plugin.records.hops.goals.upperSecondary")}

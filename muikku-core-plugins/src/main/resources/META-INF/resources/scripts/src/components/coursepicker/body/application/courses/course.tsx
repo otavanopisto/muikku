@@ -40,15 +40,13 @@ class Course extends React.Component<CourseProps, CourseState>{
     this.setState({expanded: !this.state.expanded})
   }
   render(){
-    //Please fix this markup I have no idea which standard to use, this is more or less like communicator
-    //you can move the toggle expanded function wherever you want that you need the action to be triggered
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
         <span className="application-list__header-icon icon-books"></span>
         <span className="application-list__header-primary">{this.props.workspace.name} {this.props.workspace.nameExtension ? "(" + this.props.workspace.nameExtension + ")" : null}</span>
-        {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ? <span className="application-list__fee-indicatoricon-coin-euro" title={this.props.i18n.text.get("plugin.coursepicker.course.evaluationhasfee")}/> : null}
+        {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ? <span className="application-list__fee-indicatoricon-coin-euro icon-coin-euro" title={this.props.i18n.text.get("plugin.coursepicker.course.evaluationhasfee")}/> : null}
         <span className="application-list__header-secondary">{this.props.workspace.educationTypeName}</span>
-      </ApplicationListItemHeader>        
+      </ApplicationListItemHeader>
       {this.state.expanded ?
         <div>
           <ApplicationListItemBody className="application-list__item-body--course">
