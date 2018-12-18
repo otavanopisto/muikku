@@ -110,11 +110,11 @@
 }
 
 .application-sub-panel__body--yo-status-incomplete {
-  background-color: $color-sub-panel-status-incomplete-background-color;
+  background-color: $color-sub-panel-status-incomplete-background;
 }
 
 .application-sub-panel__body--yo-status-complete {
-  background-color: $color-sub-panel-status-complete-background-color;
+  background-color: $color-sub-panel-status-complete-background;
 }
 
 .application-sub-panel__body--studies-summary-dates {
@@ -278,7 +278,7 @@
 
 .application-sub-panel__item-body--summarizer {
   align-items: center;
-  background-color: $color-sub-panel-summarizer-background-color;
+  background-color: $color-sub-panel-summarizer-background;
   display: flex;
 }
 
