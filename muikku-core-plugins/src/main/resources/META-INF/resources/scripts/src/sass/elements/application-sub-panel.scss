@@ -191,7 +191,8 @@
   background-color: $color-sub-panel-card-1-background;
 }
 
-.application-sub-panel__card-header--summary-evaluated, .application-sub-panel__card-highlight--summary-evaluated  {
+.application-sub-panel__card-header--summary-evaluated, 
+.application-sub-panel__card-highlight--summary-evaluated {
   color: $color-sub-panel-card-1-font;
 }
 
@@ -199,7 +200,8 @@
   background-color: $color-sub-panel-card-2-background;
 }
 
-.application-sub-panel__card-header--summary-activity, .application-sub-panel__card-highlight--summary-activity  {
+.application-sub-panel__card-header--summary-activity, 
+.application-sub-panel__card-highlight--summary-activity {
   color: $color-sub-panel-card-2-font;
 }
 
@@ -207,7 +209,8 @@
   background-color: $color-sub-panel-card-3-background;
 }
 
-.application-sub-panel__card-header--summary-returned, .application-sub-panel__card-highlight--summary-returned  {
+.application-sub-panel__card-header--summary-returned, 
+.application-sub-panel__card-highlight--summary-returned {
   color: $color-sub-panel-card-3-font;
 }
 
