@@ -1085,6 +1085,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     asAdmin().get("/test/reindex").then().statusCode(200);    
   }
 
+  protected void archiveUserByEmail(String email) {
+    asAdmin().put("/test/users/archive/{EMAIL}", email)
+    .then()
+    .statusCode(200);    
+  }
+  
   protected void mockImport() {
     asAdmin().get("/test/mockimport").then().statusCode(200);    
   }
