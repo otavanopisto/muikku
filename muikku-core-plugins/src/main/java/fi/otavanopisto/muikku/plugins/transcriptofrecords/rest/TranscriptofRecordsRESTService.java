@@ -30,7 +30,6 @@ import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
@@ -51,10 +50,10 @@ import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -99,9 +98,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
-  private EnvironmentUserController environmentUserController;
-
-  @Inject
   private PluginSettingsController pluginSettingsController;
   
   @Inject
@@ -109,6 +105,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private GradingController gradingController;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @GET
   @Path("/files/{ID}/content")
@@ -238,11 +237,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
     User user = userController.findUserByIdentifier(userIdentifier);
-    UserEntity userEntity = userEntityController.findUserEntityByUser(user);
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-    EnvironmentRoleEntity roleEntity = environmentUser.getRole();
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
 
-    if (!EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype())) {
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return null;
     }
 
@@ -388,11 +385,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     User user = userController.findUserByIdentifier(userIdentifier);
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-    EnvironmentRoleEntity roleEntity = environmentUser.getRole();
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
 
-    if (!EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype())) {
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
 

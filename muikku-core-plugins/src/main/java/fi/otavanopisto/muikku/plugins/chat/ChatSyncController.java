@@ -1,39 +1,23 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.infinispan.configuration.global.ShutdownHookBehavior;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.MUCRoomEntity;
@@ -47,9 +31,9 @@ import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 @Stateless
 public class ChatSyncController {
@@ -71,9 +55,6 @@ public class ChatSyncController {
   private Instance<SearchProvider> searchProviders;
 
   @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  @Inject
   private UserController userController;
   
   @Inject
@@ -82,6 +63,8 @@ public class ChatSyncController {
   @Inject
   private ChatController chatController;
 
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   public void syncStudent(SchoolDataIdentifier studentIdentifier){
 
@@ -180,8 +163,8 @@ public class ChatSyncController {
             }  
           } 
         }
-        EnvironmentUser workspaceUserRole = environmentUserController.findEnvironmentUserByUserEntity(userEntityController.findUserEntityByUser(user)); 
-        EnvironmentRoleEntity role = workspaceUserRole.getRole();
+
+        EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
         if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
           client.addAdmin(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
         } else {
