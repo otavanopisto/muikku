@@ -1001,9 +1001,9 @@ public class Evaluation2RESTService {
     
     // An active workspace supplementation request will override graded, passing, and evaluationDate
     
-    Boolean graded = Boolean.TRUE;
     Boolean passing = compositeAssessmentRequest.getPassing();
     Date evaluationDate = compositeAssessmentRequest.getEvaluationDate();
+    Boolean graded = evaluationDate != null;
     if (userEntity != null) {
       SupplementationRequest supplementationRequest = evaluationController.findSupplementationRequestByStudentAndWorkspaceAndArchived(
           userEntity.getId(),
