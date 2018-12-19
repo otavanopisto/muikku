@@ -933,7 +933,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response cleanupDiscussions() {
     List<EnvironmentForumArea> forumAreas = environmentForumAreaDAO.listAllNonArchived();
-    List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
+//    List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
     List<ForumThread> threads = new ArrayList<>();
     List<ForumThreadReply> replies = new ArrayList<>();
     for(EnvironmentForumArea forumArea : forumAreas) {
