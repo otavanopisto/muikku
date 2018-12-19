@@ -61,11 +61,11 @@ public class UserIndexer {
     
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      User user = userController.findUserByDataSourceAndIdentifier(dataSource, identifier);
+      User user = userController.findUserByIdentifier(userIdentifier);
       if (user != null) {
         EnvironmentRoleArchetype archetype = null;
         
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());
+        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
         
         if (userEntity != null) {
           EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
