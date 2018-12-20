@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +28,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
@@ -44,11 +45,11 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -69,9 +70,6 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
   private SessionController sessionController;
   
   @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  @Inject
   private UserEntityController userEntityController;
 
   @Inject
@@ -79,6 +77,9 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
 
   @Inject
   private UserEmailEntityController userEmailEntityController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -102,11 +103,19 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults
     ) {
     
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
     
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUser);
-    EnvironmentRoleArchetype loggedUserRole = (environmentUser != null && environmentUser.getRole() != null) ? 
-        environmentUser.getRole().getArchetype() : null;
+    EnumSet<EnvironmentRoleArchetype> staffRoles = EnumSet.of(
+        EnvironmentRoleArchetype.ADMINISTRATOR, 
+        EnvironmentRoleArchetype.MANAGER, 
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER,
+        EnvironmentRoleArchetype.TEACHER);
+    
+    if (loggedUserRole == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
     
     Set<Long> userGroupFilters = null;
     Set<Long> workspaceFilters = null;
@@ -119,7 +128,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.TEACHER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_GUIDER);
-    } else {
+    } else if (staffRoles.contains(loggedUserRole)) {
       // Default for other roles
       
       roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
@@ -134,6 +143,8 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
         List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
         userGroupFilters = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
       }
+    } else {
+      return Response.ok(Collections.EMPTY_LIST).build();
     }
 
     SearchProvider searchProvider = getSearchProvider();

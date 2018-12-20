@@ -155,8 +155,7 @@
  
               // Prevent accidental evaluation if evaluated before
               if ($(this._requestCard).attr('data-graded') == 'true') {
-                this._evaluationModal
-                  .find('.eval-modal-workspace-evaluate-container')
+                $('#evaluationEvaluateContainer')
                   .find('.eval-modal-evaluate-buttonset')
                   .append($('<div>')
                       .addClass('workspace-re-evaluation-form-overlay')
@@ -168,7 +167,9 @@
                           .addClass('workspace-re-evaluation-form-activate-button')
                           .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationButtonLabel"))
                     ));
-                $('.workspace-re-evaluation-form-activate-button').click($('.workspace-re-evaluation-form-overlay').remove());
+                $('.workspace-re-evaluation-form-activate-button').click(function(event) {
+                  $('.workspace-re-evaluation-form-overlay').remove();
+                });
               }
 
 

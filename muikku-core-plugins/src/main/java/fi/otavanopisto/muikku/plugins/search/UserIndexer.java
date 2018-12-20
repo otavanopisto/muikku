@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -20,7 +20,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchIndexer;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -49,9 +48,6 @@ public class UserIndexer {
   private UserEmailEntityController userEmailEntityController;
   
   @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
@@ -61,24 +57,24 @@ public class UserIndexer {
   private SearchIndexer indexer;
   
   public void indexUser(String dataSource, String identifier) {
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+    
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      User user = userController.findUserByDataSourceAndIdentifier(dataSource, identifier);
+      User user = userController.findUserByIdentifier(userIdentifier);
       if (user != null) {
         EnvironmentRoleArchetype archetype = null;
         
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());
+        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
         
         if (userEntity != null) {
-          EnvironmentUser eu = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-          
-          if ((eu != null) && (eu.getRole() != null))
-            archetype = eu.getRole().getArchetype();
+          EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
+          if (roleEntity != null) {
+            archetype = roleEntity.getArchetype();
+          }
         }
         
         if ((archetype != null) && (userEntity != null)) {
-          SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
-          
           boolean isDefaultIdentifier = (userEntity.getDefaultIdentifier() != null && userEntity.getDefaultSchoolDataSource() != null) ?
               userEntity.getDefaultIdentifier().equals(user.getIdentifier()) && 
               userEntity.getDefaultSchoolDataSource().getIdentifier().equals(user.getSchoolDataSource()) : false;
@@ -116,8 +112,9 @@ public class UserIndexer {
           }
           
           indexer.index(User.class.getSimpleName(), user, extra);
-        } else
+        } else {
           indexer.index(User.class.getSimpleName(), user);
+        }
       } else {
         logger.info(String.format("Removing user %s/%s from index", identifier, dataSource));
         removeUser(dataSource, identifier);
