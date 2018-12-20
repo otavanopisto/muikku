@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -41,7 +41,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -80,9 +79,6 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
   private PluginSettingsController pluginSettingsController;
 
   @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  @Inject
   private FileAnswerUtils fileAnswerUtils;
   
   @Inject
@@ -98,8 +94,8 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     if (count == null || count < 0) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    EnvironmentUser user = environmentUserController.findEnvironmentUserByUserEntity(sessionController.getLoggedUserEntity());
-    if (user == null || user.getRole() == null || user.getRole().getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
       return Response.status(Status.FORBIDDEN).build();
     }
     int bytes = 0;
@@ -135,8 +131,8 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     if (count == null || count < 0) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    EnvironmentUser user = environmentUserController.findEnvironmentUserByUserEntity(sessionController.getLoggedUserEntity());
-    if (user == null || user.getRole() == null || user.getRole().getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
       return Response.status(Status.FORBIDDEN).build();
     }
     int bytes = 0;
