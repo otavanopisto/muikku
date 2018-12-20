@@ -91,11 +91,11 @@
               assessors: staffMembers,
               workspaceUserEntityId: $(requestCard).attr('data-workspace-user-entity-id')
             }, $.proxy(function (html) {
-              
+
               // Modal UI
-              
+
               this._evaluationModal.append(html);
-              
+
               this._evaluationModal
                 .find('.eval-modal-evaluate-workspace-content')
                 .css({
@@ -107,11 +107,11 @@
                   .addClass('workspace-evaluation-form-activate-button')
                   .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayButtonLabel"))
                 );
-              
+
               // Material's loading animation start
-              
+
               this.element.trigger("loadStart", $('.eval-modal-assignments-content'));
-              
+
               // Workspace assessment editor
 
               var workspaceLiteralEditor = this._evaluationModal.find("#workspaceEvaluateFormLiteralEvaluation")[0]; 
@@ -127,23 +127,23 @@
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
-              
+
               // Enabled workspace grade if assessment is marked graded
-              
+
               $('#workspaceGradedButton').click($.proxy(function(event) {
                 $('#workspaceGrade').prop('disabled', false);
                 $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
               }, this));
-              
+
               // Disable workspace grade if assessment is marked incomplete
-              
+
               $('#workspaceIncompleteButton').click($.proxy(function(event) {
                 $('#workspaceGrade').prop('disabled', true);
                 $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
               }, this));
-              
+
               // Delete workspace assessment (or supplementation request)
-              
+
               if ($(this._requestCard).attr('data-evaluated')) {
                 $('#workspaceDeleteButton').show();
               }
@@ -152,9 +152,29 @@
                   this._deleteEvaluationData();
                 }, this));
               }, this));
-              
+ 
+              // Prevent accidental evaluation if evaluated before
+              if ($(this._requestCard).attr('data-graded') == 'true') {
+                $('#evaluationEvaluateContainer')
+                  .find('.eval-modal-evaluate-buttonset')
+                  .append($('<div>')
+                      .addClass('workspace-re-evaluation-form-overlay')
+                      .append($('<div>')
+                          .addClass('workspace-re-evaluation-form-activate-description')
+                          .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationDescription"))
+                      )
+                      .append($('<div>')
+                          .addClass('workspace-re-evaluation-form-activate-button')
+                          .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationButtonLabel"))
+                    ));
+                $('.workspace-re-evaluation-form-activate-button').click(function(event) {
+                  $('.workspace-re-evaluation-form-overlay').remove();
+                });
+              }
+
+
               // Save workspace assessment (or supplementation request) 
-              
+
               $('#workspaceSaveButton').click($.proxy(function(event) {
                 CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.discardDraft();
                 var gradingValue = $('input[name=workspaceGrading]:checked').val();
@@ -165,15 +185,15 @@
                   this._saveWorkspaceSupplementationRequest();
                 }
               }, this));
-              
+
               // Cancel workspace assessment
-              
+
               $('#workspaceCancelButton').click($.proxy(function(event) {
                 this.close();
               }, this));
-              
+
               // Activate workspace assessment
-              
+
               $('.workspace-evaluation-form-activate-button').click($.proxy(function(event) {
                 $('.workspace-evaluation-form-activate-button, .workspace-evaluation-form-overlay').animate({
                   opacity: 0
@@ -186,7 +206,7 @@
                   }
                 });
               }, this));
-              
+
               // Assignment assessment editor
 
               var assignmentDateEditor = $(this._evaluationModal).find('#assignmentEvaluationDate'); 
@@ -196,44 +216,44 @@
                 .datepicker();
 
               // Enabled assignment grade if assessment is marked graded
-              
+
               $('#assignmentGradedButton').click($.proxy(function(event) {
                 $('#assignmentGrade').prop('disabled', false);
                 $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
               }, this));
-              
+
               // Disable assignment grade if assessment is marked incomplete
-              
+
               $('#assignmentIncompleteButton').click($.proxy(function(event) {
                 $('#assignmentGrade').prop('disabled', true);
                 $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
               }, this));
-              
+
               $('#assignmentSaveButton').click($.proxy(function(event) {
                 CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.discardDraft();
                 this._saveMaterialAssessment();
               }, this));
-              
+
               $('#assignmentCancelButton').click($.proxy(function(event) {
                 this.toggleAssignment(this._activeAssignment, false, false);
                 this.toggleMaterialAssessmentView(false);
               }, this));
-              
+
               $('.eval-modal-assignment-close').click($.proxy(function(event) {
                 this.toggleMaterialAssessmentView(false);
               }, this));
-              
+
               // Discard modal button (top right)  
 
               $('.eval-modal-close').click($.proxy(function (event) {
                 this.close();
               }, this));
-            
+
             }, this));
           }
         }, this));
     },
-    
+
     close: function() {
       $('body').removeClass('no-scroll');
       for (var name in CKEDITOR.instances) {
@@ -367,7 +387,7 @@
         }
       }
     },
-    
+
     _onDialogReady: function() {
       if ($(this._requestCard).attr('data-evaluated') == 'true') {
         var userEntityId = $(this._requestCard).attr('data-user-entity-id');
@@ -390,7 +410,7 @@
       this._loadMaterials();
       this._loadJournalEntries();
     },
-    
+
     _onMaterialsLoaded: function(event, data) {
       $.each(data.assignments, $.proxy(function(index, assignment) {
         renderDustTemplate("evaluation/evaluation-assignment-wrapper.dust", {
@@ -686,7 +706,7 @@
 
     confirmStudentArchive: function(card, callback) {
       var workspaceEntityId = $(card).attr('data-workspace-entity-id');
-      var workspaceUserIdentifier = $(card).attr('data-workspace-user-identifier');
+      var workspaceUserEntityId = $(card).attr('data-workspace-user-entity-id');
       var studentName = $(card).find('.evaluation-card-student').text();
       renderDustTemplate('evaluation/evaluation-archive-student-confirm.dust', {studentName: studentName}, $.proxy(function(text) {
         var dialog = $(text);
@@ -701,7 +721,7 @@
             'class' : 'remove-button',
             'click' : function(event) {
               mApi().workspace.workspaces.students
-                .read(workspaceEntityId, workspaceUserIdentifier)
+                .read(workspaceEntityId, workspaceUserEntityId)
                 .callback($.proxy(function (err, workspaceUserEntity) {
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -709,7 +729,7 @@
                   else {
                     workspaceUserEntity.active = false;
                     mApi().workspace.workspaces.students
-                      .update(workspaceEntityId, workspaceUserIdentifier, workspaceUserEntity)
+                      .update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity)
                       .callback($.proxy(function (err, html) {
                         if (err) {
                           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -786,7 +806,7 @@
     
     _confirmAssessmentDeletion: function(callback) {
       var studentName = $(this._requestCard).find('.evaluation-card-student').text();
-      renderDustTemplate('evaluation/evaluation_remove_workspace_evaluation_confirm.dust', { studentName: studentName }, $.proxy(function(text) {
+      renderDustTemplate('evaluation/evaluation-archive-assessment-confirm.dust', { studentName: studentName }, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
           modal : true,

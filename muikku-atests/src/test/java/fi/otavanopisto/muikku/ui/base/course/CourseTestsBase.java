@@ -224,7 +224,8 @@ public class CourseTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.CHROME_HEADLESS
       }
     )
   public void courseProgressWidgetTest() throws Exception {
@@ -279,7 +280,7 @@ public class CourseTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
         waitForPresentAndVisible(".notification-queue-item-success");
         waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
-        
+
         waitForPresent(".materials-progress-evaluated-status");
         assertTextIgnoreCase(".materials-progress-evaluated-status span", "1/1");
         
@@ -291,6 +292,8 @@ public class CourseTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .muikku-assignment-button", exerciseMaterial.getId()));
         waitUntilAnimationIsDone(".materials-progress-practice-status .slice .bar");
         waitForPresent(".materials-progress-practice-status");
+        waitUntilContentChanged(".materials-progress-practice-status span", "0/1");
+        
         assertTextIgnoreCase(".materials-progress-practice-status span", "1/1");
         
         waitAndClick(".materials-progress-evaluated-status.evaluable span");

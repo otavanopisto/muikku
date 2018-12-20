@@ -1,9 +1,12 @@
 import * as React from 'react';
+import promisify from '~/util/promisify';
+import mApi from '~/lib/mApi';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
+import InputContactsAutofillLoaders from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/environment-dialog';
 import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messages';
 import {AnyActionType} from '~/actions';
@@ -81,7 +84,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     this.onSignatureToggleClick = this.onSignatureToggleClick.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-    
+
     this.state = this.getRecoverStoredState({
       text: "",
       selectedItems: props.initialSelectedItems || [],
@@ -146,9 +149,21 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       locked: false
     }, getStateIdentifier(this.props));
   }
+  inputContactsAutofillLoaders() {
+    return {
+      studentsLoader: (searchString: string) => promisify(mApi().communicator.recipientsUsersSearch.read({
+        searchString: searchString
+      }), 'callback'),
+      workspacesLoader: (searchString: string) => promisify(mApi().communicator.recipientsWorkspacesSearch.read({
+        searchString: searchString
+      }), 'callback')
+    }
+  }
   render(){
     let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill modifier="new-message" key="1" hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+      (<InputContactsAutofill modifier="new-message" key="1" 
+          loaders={this.inputContactsAutofillLoaders()}
+          hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),

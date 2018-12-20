@@ -198,7 +198,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         }
         chartDataMap.set(date, entry);
       });
-    
+
     let workspaces: {id: number, name: string, isEmpty: boolean}[] = [];
     this.props.workspaces.map((workspace)=>{
       workspaces.push({id: workspace.id, name: workspace.name, isEmpty: workspace.activityLogs.length == 0 });
@@ -235,10 +235,10 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         })
       }
     });
-    
+
     //TODO: load and parse completed workspaces
     let completedWorkspaces: {id: number, name: string, isEmpty: boolean}[] = [];
-    
+
     //NOTE: Data can be filtered here also (Option 2)
     let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b)=>{return a > b ? 1 : -1;});
     let data = new Array;
@@ -246,7 +246,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       let value = chartDataMap.get(key);
       data.push({"date": key, ...value});
     });
-    
+
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
     let graphs = new Array;
     if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)){
@@ -263,7 +263,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "valueField": "MATERIAL_ASSIGNMENTDONE"
       });
     }
-    
+
     if (!this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)){
       graphs.push({
         "id": "MATERIAL_EXERCISEDONE",
@@ -278,7 +278,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "valueField": "MATERIAL_EXERCISEDONE"
       });
     }
-    
+
     if (!this.state.filteredGraphs.includes(Graph.FORUM_NEWMESSAGE)){
       graphs.push({
         "id": "FORUM_NEWMESSAGE",
@@ -294,7 +294,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "valueField": "FORUM_NEWMESSAGE"
       });
     }
-    
+
     if (!this.state.filteredGraphs.includes(Graph.SESSION_LOGGEDIN)){
       graphs.push({
         "id": "SESSION_LOGGEDIN",
@@ -313,7 +313,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "valueField": "SESSION_LOGGEDIN"
       });
     }
-    
+
     if (!this.state.filteredGraphs.includes(Graph.WORKSPACE_VISIT)){
       graphs.push({
         "id": "WORKSPACE_VISIT",
@@ -332,7 +332,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "valueField": "WORKSPACE_VISIT"
       });
     }
-    
+
     //TODO: set to if certain graphs not filtered
     let stacked: boolean = !this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE) || !this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)
     let valueAxes = [{
@@ -343,13 +343,14 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     "integersOnly": true,
     "minimum": 0
     }];
-    
+
     let config = {
       "theme": "none",
       "type": "serial",
       "minMarginLeft": 50,
       "plotAreaFillAlphas": 0.1,
       "mouseWheelZoomEnabled": true,
+      "fontFamily" : "Open Sans",
       "minSelectedTime": 604800000,
       "maxSelectedTime": 31556952000,
       "dataDateFormat": "YYYY-MM-DD",

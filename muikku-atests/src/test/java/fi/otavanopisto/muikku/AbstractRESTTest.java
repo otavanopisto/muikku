@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku;
 import static com.jayway.restassured.RestAssured.certificate;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,6 +65,10 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
     PyramusMocksRest.resetWireMock();
   }
   
+  protected Set<RestTestRequest> roles(EnumSet<TestRole> set) {
+    return roles(set.toArray(new TestRole[0]));
+  }
+  
   protected Set<RestTestRequest> roles(TestRole ... roles) {
     Set<RestTestRequest> set = new HashSet<>();
     
@@ -75,6 +80,8 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
       set.add(new RestTestRequest(asTeacher(), TestRole.TEACHER));
     if (ArrayUtils.contains(roles, TestRole.STUDENT))
       set.add(new RestTestRequest(asStudent(), TestRole.STUDENT));
+    if (ArrayUtils.contains(roles, TestRole.EVERYONE))
+      set.add(new RestTestRequest(asEveryone(), TestRole.EVERYONE));
     
     return set;
   }

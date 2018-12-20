@@ -220,51 +220,44 @@
     }
     
     if ($('.maySignUp').val() == 'true') {
+      var workspaceEntityId = $('.workspaceEntityId').val();
       if ($('.canSignUp').val() == 'true') {
-        var workspaceEntityId = $('.workspaceEntityId').val();
-        
-        mApi().workspace.workspaces.students
-          .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
+        mApi().workspace.workspaces.amIMember
+          .read(workspaceEntityId)
           .callback(function(err, result) {
-            if (!err) {
-              if (!result || !result.length) {
-                var signUpLink = $('<a>')
-                  .attr('href', 'javascript:void(null)').text(getLocaleText('plugin.workspace.materials.notSignedUpWarningLink'))
-                  .click(function () {
-                    getEvaluationFee(workspaceEntityId, function (err, hasEvaluationFee) {
-                      if (err) {
-                        $('.notification-queue').notificationQueue('notification', 'error', err);
-                      } else {
-                        $('<div>').workspaceSignUpDialog({
-                          workspaceName: $('.workspaceName').val(),
-                          workspaceNameExtension: $('.workspaceNameExtension').val(),
-                          hasEvaluationFee: hasEvaluationFee,
-                          workspaceEntityId: workspaceEntityId
-                        });
-                      }
-                    });
+            if (!err && result === false) {
+              var signUpLink = $('<a>')
+                .attr('href', 'javascript:void(null)').text(getLocaleText('plugin.workspace.materials.notSignedUpWarningLink'))
+                .click(function () {
+                  getEvaluationFee(workspaceEntityId, function (err, hasEvaluationFee) {
+                    if (err) {
+                      $('.notification-queue').notificationQueue('notification', 'error', err);
+                    } else {
+                      $('<div>').workspaceSignUpDialog({
+                        workspaceName: $('.workspaceName').val(),
+                        workspaceNameExtension: $('.workspaceNameExtension').val(),
+                        hasEvaluationFee: hasEvaluationFee,
+                        workspaceEntityId: workspaceEntityId
+                      });
+                    }
                   });
-                
-                var warning = $('<span>')
-                  .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
-                  .append(signUpLink)
-                  .append('.');
-             
-                $('.notification-queue').notificationQueue('notification', 'warn', warning);
-              }
+                });
+              var warning = $('<span>')
+                .text(getLocaleText('plugin.workspace.materials.notSignedUpWarning') + ' ')
+                .append(signUpLink)
+                .append('.');
+              $('.notification-queue').notificationQueue('notification', 'warn', warning);
             }
           });
-      } else {
-        var workspaceEntityId = $('.workspaceEntityId').val();
-        mApi().workspace.workspaces.students
-          .read(workspaceEntityId, { studentIdentifier: MUIKKU_LOGGED_USER, archived: false })
+      }
+      else {
+        mApi().workspace.workspaces.amIMember
+          .read(workspaceEntityId)
           .callback(function(err, result) {
-            if (!err) {
-              if (!result || !result.length) {
-                var warning = $('<span>')
-                  .text(getLocaleText('plugin.workspace.materials.cannotSignUpWarning'));
-                $('.notification-queue').notificationQueue('notification', 'warn', warning);
-              }
+            if (!err && result === false) {
+              var warning = $('<span>')
+                .text(getLocaleText('plugin.workspace.materials.cannotSignUpWarning'));
+              $('.notification-queue').notificationQueue('notification', 'warn', warning);
             }
           });
       }

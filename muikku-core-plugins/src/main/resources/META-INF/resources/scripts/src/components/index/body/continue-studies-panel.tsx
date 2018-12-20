@@ -30,6 +30,8 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
       return null;
     } else if (!this.props.lastWorkspace){
       return null;
+    } else if (!this.props.status.isStudent) {
+      return null;
     }
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--continue-studies">
       <div className="ordered-container__item-header">
@@ -65,3 +67,7 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ContinueStudiesPanel);
+
+
+
+

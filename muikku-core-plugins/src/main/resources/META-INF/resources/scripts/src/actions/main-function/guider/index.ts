@@ -195,7 +195,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
       });
       
       await Promise.all([
-        promisify(mApi().user.students.read(id), 'callback')()
+        promisify(mApi().guider.students.read(id), 'callback')()
           .then((basic:GuiderStudentType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "basic", value: basic}})
           }),

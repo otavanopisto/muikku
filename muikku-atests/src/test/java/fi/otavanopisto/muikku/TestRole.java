@@ -5,6 +5,7 @@ public enum TestRole {
   ADMIN,
   MANAGER,
   TEACHER,
-  STUDENT
+  STUDENT,
+  EVERYONE
   
 }

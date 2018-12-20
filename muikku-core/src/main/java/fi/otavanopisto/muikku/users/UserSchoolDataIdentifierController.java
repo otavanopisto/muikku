@@ -6,8 +6,11 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
+import fi.otavanopisto.muikku.dao.users.EnvironmentUserDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -22,6 +25,9 @@ public class UserSchoolDataIdentifierController {
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
+
+  @Inject
+  private EnvironmentUserDAO environmentUserDAO;
   
   public UserSchoolDataIdentifier createUserSchoolDataIdentifier(SchoolDataSource dataSource, String identifier, UserEntity userEntity) {
     return userSchoolDataIdentifierDAO.create(dataSource, identifier, userEntity, Boolean.FALSE);
@@ -66,6 +72,16 @@ public class UserSchoolDataIdentifierController {
     return findUserSchoolDataIdentifierByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
   }
 
+  public EnvironmentRoleEntity findUserSchoolDataIdentifierRole(SchoolDataIdentifier schoolDataIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
+    return userSchoolDataIdentifier != null ? findUserSchoolDataIdentifierRole(userSchoolDataIdentifier) : null;
+  }
+  
+  public EnvironmentRoleEntity findUserSchoolDataIdentifierRole(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    EnvironmentUser environmentUser = environmentUserDAO.findByUserEntity(userSchoolDataIdentifier.getUserEntity());
+    return environmentUser != null ? environmentUser.getRole() : null;
+  }
+  
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(SchoolDataSource dataSource, String identifier) {
     return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
   }
@@ -85,6 +101,5 @@ public class UserSchoolDataIdentifierController {
   public void unarchiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
     userSchoolDataIdentifierDAO.updateArchived(userSchoolDataIdentifier, Boolean.FALSE);
   }
-  
-  
+
 }
