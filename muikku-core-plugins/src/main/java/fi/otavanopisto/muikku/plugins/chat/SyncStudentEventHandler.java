@@ -1,38 +1,23 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.chat.dao.WorkspaceChatSettingsDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
-import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
-import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
-import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserController;
-import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class SyncStudentEventHandler {
-  @Inject 
-  private Logger logger; 
   
   @Inject
   private ChatSyncController chatSyncController;
@@ -58,8 +43,8 @@ public class SyncStudentEventHandler {
     
     WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspace.getId());
 
-    if (workspaceChatStatus.getStatus() != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
-      chatSyncController.SyncWorkspaceUser(workspace, user);
+    if (workspaceChatStatus != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
+      chatSyncController.syncWorkspaceUser(workspace, user);
     }
   }
 
@@ -94,7 +79,7 @@ public class SyncStudentEventHandler {
       UserChatSettings userChatSetting = chatController.findUserChatSettings(user);
       
       if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
-        chatSyncController.SyncWorkspaceUser(workspaceEntity, user);
+        chatSyncController.syncWorkspaceUser(workspaceEntity, user);
       }
       
     }
@@ -105,7 +90,7 @@ public class SyncStudentEventHandler {
       UserChatSettings userChatSetting = chatController.findUserChatSettings(user);
       
       if (userChatSetting != null && UserChatVisibility.VISIBLE_TO_ALL.equals(userChatSetting.getVisibility())){
-        chatSyncController.SyncWorkspaceUser(workspaceEntity, user);
+        chatSyncController.syncWorkspaceUser(workspaceEntity, user);
       }
     }
   }
