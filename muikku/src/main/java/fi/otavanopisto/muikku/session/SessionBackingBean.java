@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
@@ -37,17 +37,14 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 @RequestScoped
 @Named
 @Stateful
 public class SessionBackingBean {
-
-  @Inject
-  private EnvironmentUserController environmentUserController;
 
   @Inject
   private SessionController sessionController;
@@ -75,6 +72,9 @@ public class SessionBackingBean {
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @PostConstruct
   public void init() {
@@ -91,9 +91,10 @@ public class SessionBackingBean {
       if (loggedUser != null) {
         String activeSchoolDataSource = sessionController.getLoggedUserSchoolDataSource();
         String activeUserIdentifier = sessionController.getLoggedUserIdentifier();
-        EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUser);
-        if ((environmentUser != null) && (environmentUser.getRole() != null)) {
-          loggedUserRoleArchetype = environmentUser.getRole().getArchetype();
+        
+        EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+        if (roleEntity != null) {
+          loggedUserRoleArchetype = roleEntity.getArchetype();
         }
 
         User user = userController.findUserByDataSourceAndIdentifier(activeSchoolDataSource, activeUserIdentifier);

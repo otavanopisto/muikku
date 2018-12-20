@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.users;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.users.EnvironmentUserDAO;
@@ -22,10 +20,6 @@ public class EnvironmentUserController {
     return environmentUserDAO.findByUserEntity(userEntity);
   }
 
-  public List<EnvironmentUser> listEnvironmentUsers() {
-    return environmentUserDAO.listAll();
-  }
-  
   public EnvironmentUser updateEnvironmentUserRole(EnvironmentUser environmentUser, EnvironmentRoleEntity role) {
     return environmentUserDAO.updateRole(environmentUser, role);
   }

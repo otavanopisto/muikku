@@ -40,7 +40,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
 
@@ -71,7 +70,6 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -116,9 +114,6 @@ public class GuiderRESTService extends PluginRESTService {
   @Inject
   private UserController userController;
 
-  @Inject
-  private EnvironmentUserController environmentUserController;
-  
   @Inject
   private UserEntityController userEntityController;
 
@@ -465,17 +460,16 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
     }
     
-    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-    if (userEntity == null) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    UserEntity userEntity = userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getUserEntity() : null;
+    if (userSchoolDataIdentifier == null || userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
     }
+    
     // Bug fix #2966: REST endpoint should only return students
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-    if (environmentUser != null) {
-      EnvironmentRoleEntity userRole = environmentUser.getRole();
-      if (userRole == null || userRole.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
-        return Response.status(Status.NOT_FOUND).build();
-      }
+    EnvironmentRoleEntity userRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
+    if (userRole == null || userRole.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
+      return Response.status(Status.NOT_FOUND).build();
     }
 
     EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
