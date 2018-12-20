@@ -461,7 +461,7 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
     });
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification("plugin.communicator.errormessage.badLocation",'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"),'error'));
       dispatch( {
         type: "UNLOCK_TOOLBAR",
         payload: null
