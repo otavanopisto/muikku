@@ -66,8 +66,10 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
           }
           logger.info(String.format("Creating new file answer %s (%s)", fileId, file.getName()));
           workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswerFile(fieldAnswer, fileData, file.getContentType(), fileId, file.getName());
+          TempFileUtils.deleteTempFile(fileId);
         }
-      } catch (IOException e) {
+      }
+      catch (Exception e) {
         throw new WorkspaceFieldIOException("Failed to store file data", e);
       }
     }
@@ -77,7 +79,12 @@ public class WorkspaceFileFieldIOHandler implements WorkspaceFieldIOHandler {
       WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(removedId);
       if (fieldAnswerFile != null) {
         logger.info(String.format("Removing existing file answer %s (%s)", removedId, fieldAnswerFile.getFileName()));
-        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+        try {
+          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+        }
+        catch (Exception e) {
+          throw new WorkspaceFieldIOException("Failed to remove file data", e);
+        }
       }
     }
   }

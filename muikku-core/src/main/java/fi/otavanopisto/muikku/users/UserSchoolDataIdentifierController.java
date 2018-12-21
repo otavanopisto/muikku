@@ -68,6 +68,15 @@ public class UserSchoolDataIdentifierController {
     return findUserSchoolDataIdentifierByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
   }
 
+  public EnvironmentRoleEntity findUserSchoolDataIdentifierRole(SchoolDataIdentifier schoolDataIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
+    return userSchoolDataIdentifier != null ? findUserSchoolDataIdentifierRole(userSchoolDataIdentifier) : null;
+  }
+  
+  public EnvironmentRoleEntity findUserSchoolDataIdentifierRole(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getRole() : null;
+  }
+  
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(SchoolDataSource dataSource, String identifier) {
     return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
   }

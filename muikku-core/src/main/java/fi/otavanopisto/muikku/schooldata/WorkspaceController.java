@@ -195,7 +195,6 @@ public class WorkspaceController {
   
   public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity, boolean includeUnpublished) {
     List<WorkspaceEntity> result = new ArrayList<>();
-    
     List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       if (includeUnpublished || workspaceUserEntity.getWorkspaceEntity().getPublished()) {
@@ -204,7 +203,6 @@ public class WorkspaceController {
         }
       }
     }
-    
     return result;
   }
 

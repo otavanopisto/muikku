@@ -28,10 +28,10 @@ interface AnnouncementState {
 }
 
 class Announcement extends React.Component<AnnouncementProps, AnnouncementState> {
-  render(){    
+  render(){
     if (!this.props.announcement) {
-      return (null)      
-    }        
+      return (null)
+    }
     return (
       <section>
         <article className="article">
@@ -47,7 +47,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
           <div>{this.props.i18n.time.format(this.props.announcement.startDate)}</div>
           <section className="article__body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcement.content}}></section>
         </article>
-      </section>      
+      </section>
     );
   }
 }

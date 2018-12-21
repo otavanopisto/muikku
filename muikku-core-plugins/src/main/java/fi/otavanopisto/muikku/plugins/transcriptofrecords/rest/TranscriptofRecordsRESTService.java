@@ -31,7 +31,6 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
@@ -109,7 +108,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private GradingController gradingController;
-  
+
   @GET
   @Path("/files/{ID}/content")
   @RESTPermit(handling = Handling.INLINE)
@@ -238,10 +237,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
     User user = userController.findUserByIdentifier(userIdentifier);
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifier.getRole();
-    
-    if (!EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype())) {
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
+
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return null;
     }
 
@@ -387,10 +385,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     User user = userController.findUserByIdentifier(userIdentifier);
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    EnvironmentRoleEntity roleEntity = userEntityController.getDefaultIdentifierRole(userEntity);
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
 
-    if (!EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype())) {
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
 

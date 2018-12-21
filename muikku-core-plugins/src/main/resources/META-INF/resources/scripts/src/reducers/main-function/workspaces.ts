@@ -55,13 +55,10 @@ export interface WorkspaceStudentAssessmentsType {
   assessments: Array<WorkspaceStudentAssessmentType>
 }
 
-export interface WorkspaceActivityRecordType {
-  type: string,
-  date: string
-}
-
-export interface WorkspaceActivityStatisticsType {
-  records: WorkspaceActivityRecordType[];
+export interface ActivityLogType {
+  type: String,
+  timestamp: String,
+  contextId?: number
 }
 
 export interface WorkspaceType {
@@ -84,7 +81,7 @@ export interface WorkspaceType {
   studentActivity?: WorkspaceStudentActivityType,
   forumStatistics?: WorkspaceForumStatisticsType,
   studentAssessments?: WorkspaceStudentAssessmentsType,
-  activityStatistics?: WorkspaceActivityStatisticsType
+      activityLogs?: ActivityLogType[]
 }
 
 export interface ShortWorkspaceType {

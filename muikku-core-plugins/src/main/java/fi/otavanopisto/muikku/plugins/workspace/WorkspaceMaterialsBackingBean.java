@@ -18,11 +18,10 @@ import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -64,7 +63,7 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
 
   @Inject
   private WorkspaceVisitController workspaceVisitController;
-
+  
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -171,13 +170,10 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   }
 
   private Boolean resolveMaySignUp() {
-    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
-    if (loggedUser != null) {
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-          loggedUser.getDataSource(), loggedUser.getIdentifier());
-      
-      if ((userSchoolDataIdentifier != null) && (userSchoolDataIdentifier.getRole() != null)) {
-        return EnvironmentRoleArchetype.STUDENT.equals(userSchoolDataIdentifier.getRole().getArchetype());
+    if (sessionController.isLoggedIn()) {
+      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+      if (roleEntity != null) {
+        return EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype());
       }
     }
     

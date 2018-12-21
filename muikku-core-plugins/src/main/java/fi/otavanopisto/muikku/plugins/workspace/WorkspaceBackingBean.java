@@ -163,6 +163,7 @@ public class WorkspaceBackingBean {
   public String getWorkspaceNameExtension() {
     return workspaceNameExtension;
   }
+  
 
   private Long workspaceEntityId;
   private String workspaceUrlName;

@@ -35,13 +35,14 @@ interface CommunicatorLabelUpdateDialogState {
   displayColorPicker: boolean,
   color: string,
   name: string,
-  removed: boolean
+  removed: boolean,
+  locked: boolean
 }
 
 class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpdateDialogProps, CommunicatorLabelUpdateDialogState> {
   constructor(props: CommunicatorLabelUpdateDialogProps){
     super(props);
-    
+
     this.onColorChange = this.onColorChange.bind(this);
     this.onHandleClick = this.onHandleClick.bind(this);
     this.onHandleClose = this.onHandleClose.bind(this);
@@ -50,12 +51,13 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     this.update = this.update.bind(this);
     this.resetState = this.resetState.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
-    
+
     this.state = {
       displayColorPicker: false,
       color: props.label.color,
       name: props.label.text(props.i18n),
-      removed: false
+      removed: false,
+      locked: false
     }
   }
   onHandleClick = () => {
@@ -90,30 +92,59 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     this.setState({removed: true});
   }
   update(closeDialog: ()=>any){
-    closeDialog();
+    if (this.state.locked){
+      return;
+    }
+    let success = ()=>{
+      this.setState({
+        locked: false
+      });
+      closeDialog();
+    }
+    let fail = ()=>{
+      this.setState({
+        locked: false
+      });
+    }
     if ((this.state.name !== this.props.label.text(this.props.i18n) || this.state.color !== this.props.label.color) && !this.state.removed){
-      this.props.updateMessagesNavigationLabel(this.props.label, this.state.name, this.state.color);
+      this.setState({
+        locked: true
+      });
+      this.props.updateMessagesNavigationLabel({
+        label: this.props.label,
+        newName: this.state.name,
+        newColor: this.state.color,
+        success, fail
+      });
     } else if (this.state.removed){
-      this.props.removeMessagesNavigationLabel(this.props.label);
+      this.setState({
+        locked: true
+      });
+      this.props.removeMessagesNavigationLabel({
+        label: this.props.label,
+        success, fail
+      });
+    } else {
+      closeDialog();
     }
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
+        <Button buttonModifiers={["success","standard-ok"]} disabled={this.state.locked} onClick={this.update.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
         </Button>
-        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} disabled={this.state.locked} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
         </Button>
-         <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
+         <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed || this.state.locked} onClick={this.removeLabel}>
            {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}
          </Button>
       </div>
     }
     let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
             <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>

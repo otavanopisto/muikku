@@ -8,7 +8,7 @@ public class ForumThreadRESTModel extends ForumMessageRESTModel {
   public ForumThreadRESTModel() {
   }
   
-  public ForumThreadRESTModel(Long id, String title, String message, Long creator, Date created, Long forumAreaId, Boolean sticky, Boolean locked, Date updated, Long numReplies, Date lastModified) {
+  public ForumThreadRESTModel(Long id, String title, String message, ForumMessageUserRESTModel creator, Date created, Long forumAreaId, Boolean sticky, Boolean locked, Date updated, Long numReplies, Date lastModified) {
     super(id, message, creator, created, forumAreaId, lastModified);
     this.title = title;
     this.sticky = sticky;

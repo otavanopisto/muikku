@@ -6,16 +6,15 @@ import java.util.Date;
 public class ForumMessageRESTModel {
 
   public ForumMessageRESTModel() {
-    
   }
   
-  public ForumMessageRESTModel(Long id, String message, Long creator, Date created, Long forumAreaId, Date lastModified) {
+  public ForumMessageRESTModel(Long id, String message, ForumMessageUserRESTModel creator, Date created, Long forumAreaId, Date lastModified) {
     this.id = id;
     this.message = message;
     this.creator = creator;
     this.created = created;
     this.lastModified = lastModified;
-    this.setForumAreaId(forumAreaId);
+    this.forumAreaId = forumAreaId;
   }
 
   public Long getId() {
@@ -34,11 +33,11 @@ public class ForumMessageRESTModel {
     this.message = message;
   }
 
-  public Long getCreator() {
+  public ForumMessageUserRESTModel getCreator() {
     return creator;
   }
 
-  public void setCreator(Long creator) {
+  public void setCreator(ForumMessageUserRESTModel creator) {
     this.creator = creator;
   }
 
@@ -68,9 +67,8 @@ public class ForumMessageRESTModel {
 
   private Long id;
   private String message;
-  private Long creator;
+  private ForumMessageUserRESTModel creator;
   private Date created;
   private Long forumAreaId;
   private Date lastModified;
-
 }

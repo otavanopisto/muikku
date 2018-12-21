@@ -5,12 +5,13 @@
 
 .glyph {
   align-items: center;
-  display: flex;  
+  display: flex;
 }
 
 .glyph--autocomplete-recipient {
   align-items: center;
-  display: flex;  
+  display: flex;
+  min-width: 15px;
 }
 
 .glyph--selected-recipient {
@@ -19,4 +20,5 @@
   flex-grow: 0;
   flex-shrink: 0;
   margin-right: 5px;
+  min-width: 15px;
 }

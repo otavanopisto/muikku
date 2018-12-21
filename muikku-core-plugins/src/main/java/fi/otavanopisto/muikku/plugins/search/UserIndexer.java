@@ -52,17 +52,19 @@ public class UserIndexer {
   private SearchIndexer indexer;
   
   public void indexUser(String dataSource, String identifier) {
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+    
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      User user = userController.findUserByDataSourceAndIdentifier(dataSource, identifier);
+      User user = userController.findUserByIdentifier(userIdentifier);
       if (user != null) {
+        // TODO: we have only one role here but a user(entity) can have several roles via several userschooldataidentifiers
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());
         EnvironmentRoleArchetype archetype = ((userSchoolDataIdentifier != null) && (userSchoolDataIdentifier.getRole() != null)) ? 
             userSchoolDataIdentifier.getRole().getArchetype() : null;
         
         if ((archetype != null) && (userSchoolDataIdentifier != null)) {
           UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
-          SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
           
           boolean isDefaultIdentifier = (userEntity.getDefaultIdentifier() != null && userEntity.getDefaultSchoolDataSource() != null) ?
               userEntity.getDefaultIdentifier().equals(user.getIdentifier()) && 

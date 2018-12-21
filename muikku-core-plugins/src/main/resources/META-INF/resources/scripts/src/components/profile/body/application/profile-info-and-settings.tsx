@@ -60,9 +60,9 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     this.save = this.save.bind(this);
     
     this.state = {
-      profileVacationStart: null,
-      profileVacationEnd: null,
-      phoneNumber: ""
+      profileVacationStart: (props.profile.properties['profile-vacation-start'] && moment(props.profile.properties['profile-vacation-start'])) || null,
+      profileVacationEnd: (props.profile.properties['profile-vacation-end'] && moment(props.profile.properties['profile-vacation-end'])) || null,
+      phoneNumber: props.profile.properties['profile-phone'] || ""
     }
   }
   componentWillReceiveProps(nextProps: ProfileInfoAndSettingsProps){

@@ -17,7 +17,7 @@ import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 
 import CousePickerBody from '../components/coursepicker/body';
-import { loadUserIndexBySchoolData, loadUserIndex } from '~/actions/main-function/user-index';
+import { loadLoggedUser } from '~/actions/main-function/user-index';
 import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer, loadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 import { UserType } from '~/reducers/main-function/user-index';
@@ -182,13 +182,10 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
-      if (currentLocationHasData){
-        this.loadCoursePickerData(currentLocationData);
-      }
       
       let state:StateType = this.props.store.getState();
       if (state.status.loggedIn){
-        this.props.store.dispatch(loadUserIndexBySchoolData(state.status.userSchoolDataIdentifier, (user:UserType)=>{
+        this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
           if (!currentLocationHasData) {
             let defaultSelections : any = {};
             if (user.curriculumIdentifier) {

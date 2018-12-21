@@ -76,7 +76,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
     this.clearUp = this.clearUp.bind(this);
   }
   checkAgainstStoredState(){
-    this.checkAgainstDefaultState({
+    this.checkStoredAgainstThisState({
       text: this.props.thread.message,
       title: this.props.thread.title,
       threadPinned: this.props.thread.sticky,

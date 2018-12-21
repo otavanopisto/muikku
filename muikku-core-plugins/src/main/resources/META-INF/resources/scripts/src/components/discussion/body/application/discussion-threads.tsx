@@ -12,8 +12,8 @@ import '~/sass/elements/discussion.scss';
 import '~/sass/elements/avatar.scss';
 
 
-import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
-import { UserIndexType, UserType } from '~/reducers/main-function/user-index';
+import { DiscussionUserType, DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
+import { UserType } from '~/reducers/main-function/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
@@ -23,8 +23,7 @@ import { DiscussionThreads, DiscussionThread, DiscussionThreadHeader, Discussion
 
 interface DiscussionThreadsProps {
   discussion: DiscussionType,
-  i18n: i18nType,
-  userIndex: UserIndexType
+  i18n: i18nType
 }
 
 interface DiscussionThreadsState {
@@ -62,12 +61,9 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
     return <BodyScrollKeeper hidden={!!this.props.discussion.current}>
       <DiscussionThreads>{
         this.props.discussion.threads.map( ( thread: DiscussionThreadType, index: number ) => {
+          let user: DiscussionUserType = thread.creator;
 
-          //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
-          //round so put something as a placeholder in order to be efficient and make short rendering cycles
-          let user: UserType = this.props.userIndex.users[thread.creator];
-
-          let userCategory = thread.creator > 10 ? thread.creator % 10 + 1 : thread.creator;
+          let userCategory = thread.creator.id > 10 ? thread.creator.id % 10 + 1 : thread.creator.id;
           let avatar;
           if ( !user ) {
             //This is what it shows when the user is not ready
@@ -126,8 +122,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
 function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n,
-    discussion: state.discussion,
-    userIndex: state.userIndex
+    discussion: state.discussion
   }
 };
 

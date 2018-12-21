@@ -23,7 +23,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/evaluation2", to = "/jsf/evaluation/main-view.jsf")
+@Join(path = "/evaluation2", to = "/jsf/evaluation/main-view.jsf") // TODO refactor to /evaluation
 @LoggedIn
 public class EvaluationMainViewBackingBean {
 

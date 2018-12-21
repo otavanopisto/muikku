@@ -10,7 +10,7 @@
   display: block;
   position: relative;
   z-index: 99;
-  
+
   .autocomplete__input {
     display: block;
     width: 100%;
@@ -27,27 +27,27 @@
     border: solid 1px $color-autocomplete-list-border;
     border-top: none;
     z-index: 10;
-        
+
     .autocomplete__list__item {
       @include prefix(transition, moz o ms webkit, background-color 0.3s);
       border-top: solid 1px $color-autocomplete-list-border;
       background-color: $color-autocomplete-list-background-color;
       padding: 10px;
-      
+
       &:hover, &.hover {
-      	background-color: $color-autocomplete-list-item-hover;
+        background-color: $color-autocomplete-list-item-hover;
       }
-     
+
       &:active, &.active {
-      	background-color: $color-autocomplete-list-item-active;
+        background-color: $color-autocomplete-list-item-active;
       }
-     
+
       &.selected {
-      	background-color: $color-autocomplete-list-item-selected;
+        background-color: $color-autocomplete-list-item-selected;
       }
     }
   }
- 
+
   &.autocomplete--new-message {
     margin-bottom: 10px;
   }
@@ -55,9 +55,13 @@
 
 .autocomplete__recipient {
   display: flex;
-  	
+
   i {
     opacity: 0.6;
+  }
+
+  span {
+    margin-right: 5px;
   }
 } 
 
@@ -66,16 +70,14 @@
   display: flex;
   flex-flow: row nowrap;
   font-size: 0.75rem;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: 0.8125rem;
   }
- 	
+
   i {
     margin: 0 0 0 5px;
     opacity: 0.6;
   }
 }
- 
- 
  
