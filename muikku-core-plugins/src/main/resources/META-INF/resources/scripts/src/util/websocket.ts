@@ -16,7 +16,12 @@ export default class MuikkuWebsocket {
   private ticket:any;
   private webSocket:WebSocket;
   private socketOpen:boolean;
-  private messagesPending:any[];
+  private messagesPending:{
+    eventType: string,
+    data: any,
+    onSent?: ()=>any,
+    stackId?: number
+  }[];
   private pingHandle:any;
   private pinging:boolean;
   private pingTime:number;
@@ -54,22 +59,35 @@ export default class MuikkuWebsocket {
 
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
-  sendMessage(eventType: any, data: any){
-    let message = {
-      eventType,
-      data
-    }
-    
+  sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: number){
     if (this.socketOpen) {
       try {
-        this.webSocket.send(JSON.stringify(message));
-      } catch (e) {
-        this.messagesPending.push({
+        this.webSocket.send(JSON.stringify({
           eventType: eventType,
           data: data
-        });
+        }));
+        this.messagesPending.length === 0 && this.trigger("webSocketSync");
+        onSent && onSent();
+      } catch (e) {
+        this.queueMessage(eventType, data, onSent, stackId);
+        this.trigger("webSocketDesync");
         this.reconnect();
       }
+    } else {
+      this.queueMessage(eventType, data, onSent, stackId);
+      this.trigger("webSocketDesync");
+    }
+  }
+  queueMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: number){
+    let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
+    let message = {
+      eventType,
+      data,
+      onSent,
+      stackId
+    };
+    if (typeof index === "number" && index !== -1){
+      this.messagesPending[index] = message
     } else {
       this.messagesPending.push(message);
     }
@@ -171,7 +189,7 @@ export default class MuikkuWebsocket {
     
     while (this.socketOpen && this.messagesPending.length) {
       var message = this.messagesPending.shift();
-      this.sendMessage(message.eventType, message.data);
+      this.sendMessage(message.eventType, message.data, message.onSent);
     }
   }
   
