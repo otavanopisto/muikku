@@ -8,7 +8,6 @@
   align-items: center;
   display: flex;
   justify-content: center;
-  
   padding: calc(#{$navbar-mobile-height} * 1.2) 0 10px;
 
   @include breakpoint($breakpoint-pad) {
@@ -104,10 +103,7 @@
 }
 
 .reading-panel__content {
-<<<<<<< HEAD
-=======
   padding: 2.5rem 0 0;
->>>>>>> 641f5a211f259d1c97062187b33c96565727731c
 
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
@@ -122,13 +118,8 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
-<<<<<<< HEAD
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    flex-basis: 33%;
-=======
     display: flex;
     flex-basis: 40%;
->>>>>>> 641f5a211f259d1c97062187b33c96565727731c
     flex-grow: 1;
     flex-shrink: 1;
     margin: 0 0 0 10px;
