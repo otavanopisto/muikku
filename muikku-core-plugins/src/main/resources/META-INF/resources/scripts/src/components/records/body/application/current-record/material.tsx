@@ -50,7 +50,7 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
           <span className="application-list__header-primary">{this.props.material.assignment.title}</span>
         </div>
         {this.state.opened ? <div className="application-list__item-body text">
-          <MaterialLoader material={this.props.material} workspace={this.props.workspace} i18n={this.props.i18n} status={this.props.status}
+          <MaterialLoader material={this.props.material} workspace={this.props.workspace}
             readOnly loadCompositeReplies/>
         </div> : null}
       </div>

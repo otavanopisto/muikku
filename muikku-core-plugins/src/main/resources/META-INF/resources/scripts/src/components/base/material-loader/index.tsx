@@ -18,122 +18,9 @@ import promisify from '~/util/promisify';
 import '~/sass/elements/rich-text.scss';
 import { i18nType } from '~/reducers/base/i18n';
 import { StatusType } from '~/reducers/base/status';
-
-//Bubble gum scripting needs
-//$.getScript("//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js");
-//$.getScript("//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/jquery.magnific-popup.min.js");
-//$.getScript("//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js");
-//$.getScript("//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js", function(){
-//  $.getScript("//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js", function(){
-//    var mdust:any = {};
-//
-//  mdust.loading = {};
-//  mdust.queued = {};
-//
-//  (window as any).dust.onLoad = function(name: any, callback: any) {
-//    if (mdust.loading[name]) {
-//      if (!mdust.queued[name]) {
-//        mdust.queued[name] = [];
-//      }
-//      
-//      mdust.queued[name].push(callback);
-//    } else {
-//      mdust.loading[name] = true;
-//      
-//      $.ajax((window as any).CONTEXTPATH + '/resources/dust/' + name, {
-//        //Fixes Firefox complains about XML #3330
-//        mimeType: "text/plain",
-//        
-//        success : function(data: any, textStatus: any, jqXHR: any) {
-//          delete mdust.loading[name];
-//          callback(false, data);
-//          
-//          if (mdust.queued[name]) {
-//            $.each(mdust.queued[name], function (ind: any, queuedCallback: any) {
-//              queuedCallback(false, data);
-//            });
-//            
-//            delete mdust.queued[name];
-//          }
-//        },
-//        error: function (jqXHR: any, textStatus: any, errorThrown: any) {
-//          var message = 'Could not find Dust template: ' + name;
-//          
-//          //WELP this should never happen
-//          $('.notification-queue').notificationQueue('notification', 'error', message);  
-//        }
-//      })
-//    };
-//  };
-//
-//  (window as any).dust.filters.formatDate = function(value: any) {
-//    return (window as any).formatDate((window as any).moment(value).toDate());
-//  };
-//
-//  (window as any).dust.filters.formatTime = function(value: any) {
-//    return (window as any).formatTime((window as any).moment(value).toDate());
-//  };
-//
-//  (window as any).dust.filters.formatPercent = function(value: any) {
-//    return parseFloat(value).toFixed(2);
-//  };
-//
-//  (window as any).dust.filters.shorten50 = function (value) {
-//    if (value.length < 50) {
-//      return value;
-//    } else {
-//      return value.slice(0, 47) + "...";
-//    }
-//  }
-//
-//  (window as any).dust.helpers.contextPath = function(chunk: any, context: any, bodies: any) {
-//    return chunk.write((window as any).CONTEXTPATH);
-//  };
-//
-//  (window as any).renderDustTemplate = function(templateName: any, json: any, callback: any) {
-//    var base = (window as any).dust.makeBase({
-//      localize: function(chunk: any, context: any, bodies: any, params: any) {
-//        var args = new Array();
-//        var i = 0;
-//        while (true) {
-//          if (params["arg" + i] != null) {
-//            args.push(params["arg" + i]);
-//          } else {
-//            break;
-//          }
-//          
-//          i++;
-//        }
-//        
-//        var text = (window as any).getLocaleText(params.key, args);
-//        if (text)
-//          text = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-//        
-//        var result = chunk.write(text);
-//        return result;
-//      },
-//      isLoggedIn: function(chunk: any, context: any, bodies: any, params: any) {
-//        if ((window as any).MUIKKU_LOGGEDIN === true) {
-//          return chunk.render(bodies.block, context);
-//        } else {
-//          if (bodies['else']) {
-//            return chunk.render(bodies['else'], context);
-//          }
-//        }
-//      }
-//    });
-//    
-//    (window as any).dust.render(templateName, base.push(json), function (err: any, text: any) {
-//      if (err) {
-//        var message = "Error occured while rendering dust template " + templateName + ": " + err;
-//        $('.notification-queue').notificationQueue('notification', 'error', message);  
-//      } else {
-//        callback(text);
-//      }
-//    });
-//  };
-//  })
-//});
+import { StateType } from '~/reducers';
+import { Dispatch, connect } from 'react-redux';
+import { WebsocketStateType } from '~/reducers/util/websocket';
 
 interface MaterialLoaderProps {
   material: MaterialContentNodeType,
@@ -142,6 +29,7 @@ interface MaterialLoaderProps {
   status: StatusType,
   modifiers?: string | Array<string>,
   id?: string,
+  websocket: WebsocketStateType,
 
   loadCompositeReplies?: boolean,
   readOnly?: boolean,
@@ -155,7 +43,7 @@ interface MaterialLoaderState {
 let materialRepliesCache:{[key: string]: any} = {};
 let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 
-export default class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
+class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
   constructor(props: MaterialLoaderProps){
     super(props);
 
@@ -172,40 +60,6 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     e.stopPropagation();
   }
   async create(){
-
-//    if (this.props.loadCompositeReplies){
-//    let fieldAnswers:any = materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
-//    if (!fieldAnswers){
-//      fieldAnswers = {};
-//      let replies:any = await promisify(mApi().workspace.workspaces.materials.compositeMaterialReplies
-//          .read(this.props.workspace.id, this.props.material.assignment.id, {userEntityId: (window as any).MUIKKU_LOGGED_USER_ID}), 'callback')();
-//      replies = replies.answers ? replies : {answers: []};
-//      for (let i = 0, l = replies.answers.length; i < l; i++) {
-//        let answer = replies.answers[i];
-//        let answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-//        fieldAnswers[answerKey] = answer.value;
-//      }
-//      
-//      materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = fieldAnswers;
-//      
-//      setTimeout(()=>{
-//        delete materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
-//      }, 60000);
-//    }
-//    
-//    //I can't start explaining how wrong this is, oh god... XD
-//    //get data from the sever, put in in a variable, parse the variable, create a virtual element so that the material loader can
-//    //Read it from what it believes is the dom
-//    //Why not, eehmmm... pass the data directly? O.O mind blown!!!
-//    $('<div/>').attr("data-grades", JSON.stringify((window as any).GRADES))
-//      .muikkuMaterialLoader({
-//        readOnlyFields: true,
-//        fieldlessMode: true
-//      }).muikkuMaterialLoader('loadMaterial', this.refs.sandbox, fieldAnswers);
-//    } else {
-//      $('<div/>').muikkuMaterialLoader().muikkuMaterialLoader('loadMaterial', this.refs.sandbox);
-//    }
-
     //TODO maybe we should get rid of this way to load the composite replies
     //after all it's learned that this is part of the workspace
     if (this.props.loadCompositeReplies){
@@ -241,17 +95,27 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
           </div>
        : null}
       <div className="" onClick={this.stopPropagation}>
-        <Base html={this.props.material.html} i18n={this.props.i18n} status={this.props.status}
-         path={"/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path}
+        <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}
+         workspace={this.props.workspace} websocket={this.props.websocket}
          readOnly={this.props.readOnly} compositeReplies={this.props.compositeReplies || this.state.compositeReplies}/>
       </div>
     </div>
   }
 }
 
-//SANDBOX for testing purposes to pull when I need it
-//<hr/>
-//<div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"
-//  data-material-id={this.props.material.id} data-workspace-material-id={this.props.material.assignment.id}
-//  data-material-content={this.props.material.html} data-path={this.props.material.assignment.path} data-material-type="html"
-//  data-loaded="false" data-workspace-entity-id={this.props.workspace.id} onClick={this.stopPropagation}/>
+function mapStateToProps(state: StateType){
+  return {
+    i18n: state.i18n,
+    status: state.status,
+    websocket: state.websocket
+  }
+};
+
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MaterialLoader);

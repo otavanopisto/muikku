@@ -34,7 +34,9 @@ interface AudioFieldState {
     name?: string,
     contentType?: string
   }>,
-  time: number
+  time: number,
+  modified: boolean,
+  synced: boolean
 }
 
 const MAX_RECORDING_TIME_IN_SECONDS = 60*5;
@@ -49,7 +51,9 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     this.state = {
       recording: false,
       time: 0,
-      values: []
+      values: [],
+      modified: false,
+      synced: true
     }
     
     this.start = this.start.bind(this);
@@ -67,6 +71,11 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
         }))
       });
     }
+    
+    this.setState({
+      modified: false,
+      synced: true
+    });
   }
   async start(){
     this.stream = await navigator.mediaDevices.getUserMedia({

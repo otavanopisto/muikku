@@ -20,7 +20,9 @@ interface FileFieldState {
     contentType: string
   },
   isUploading: boolean,
-  progress: number
+  progress: number,
+  modified: boolean,
+  synced: boolean
 }
 
 export default class FileField extends React.Component<FileFieldProps, FileFieldState> {
@@ -30,7 +32,9 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     this.state = {
       value: (props.value && JSON.parse(props.value)[0]) || null,
       isUploading: false,
-      progress: 0
+      progress: 0,
+      modified: false,
+      synced: true
     }
   }
   onFileChanged(e: React.ChangeEvent<HTMLInputElement>){
@@ -48,6 +52,11 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     if (value !== this.state.value){
       this.setState({value});
     }
+    
+    this.setState({
+      modified: false,
+      synced: true
+    });
   }
   render(){
     let dataInContainer = null;

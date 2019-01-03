@@ -17,7 +17,9 @@ interface SelectFieldProps {
 }
 
 interface SelectFieldState {
-  value: string
+  value: string,
+  modified: boolean,
+  synced: boolean
 }
 
 export default class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
@@ -27,7 +29,9 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     this.onSelectChange = this.onSelectChange.bind(this);
     
     this.state = {
-      value: props.value || ''
+      value: props.value || '',
+      modified: false,
+      synced: true
     }
   }
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
@@ -39,6 +43,11 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
         value: nextProps.value || ''
       });
     }
+    
+    this.setState({
+      modified: false,
+      synced: true
+    });
   }
   render(){
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){

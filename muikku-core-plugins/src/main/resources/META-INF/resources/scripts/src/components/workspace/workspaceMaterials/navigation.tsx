@@ -63,9 +63,9 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
               let icon:string = null;
               let iconTitle:string = null;
               
-              let compositeReply = this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === subnode.workspaceMaterialId);
-              if (compositeReply){
-                switch (compositeReply.state){
+              let compositeReplies = this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === subnode.workspaceMaterialId);
+              if (compositeReplies){
+                switch (compositeReplies.state){
                   case "PASSED":
                   case "ANSWERED":
                   case "SUBMITTED":

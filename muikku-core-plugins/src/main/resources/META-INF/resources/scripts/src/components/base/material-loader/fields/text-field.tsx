@@ -14,12 +14,15 @@ interface TextFieldProps {
       text: string
     }>
   },
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
   readOnly?: boolean,
   value?: string
 }
 
 interface TextFieldState {
-  value: string
+  value: string,
+  modified: boolean,
+  synced: boolean
 }
 
 export default class TextField extends React.Component<TextFieldProps, TextFieldState> {
@@ -27,7 +30,9 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     super(props);
     
     this.state = {
-      value: props.value || ''
+      value: props.value || '',
+      modified: false,
+      synced: true
     }
     
     this.onInputChange = this.onInputChange.bind(this);
@@ -38,8 +43,14 @@ export default class TextField extends React.Component<TextFieldProps, TextField
         value: nextProps.value || ''
       });
     }
+    
+    this.setState({
+      modified: false,
+      synced: true
+    });
   }
   onInputChange(e: React.ChangeEvent<HTMLInputElement>){
+    this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
     this.setState({
       value: e.target.value
     });

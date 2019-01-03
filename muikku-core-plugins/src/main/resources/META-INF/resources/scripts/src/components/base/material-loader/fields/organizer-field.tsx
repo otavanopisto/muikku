@@ -33,7 +33,7 @@ interface OrganizerFieldProps {
   },
   
   readOnly?: boolean,
-      value?: string
+  value?: string
 }
 
 interface OrganizerFieldState {
@@ -44,7 +44,10 @@ interface OrganizerFieldState {
     [categoryId: string]: Array<string>
   },
   order: Array<string>,
-  useList: Array<string>
+  useList: Array<string>,
+  
+  modified: boolean,
+  synced: boolean
 }
 
 export default class OrganizerField extends React.Component<OrganizerFieldProps, OrganizerFieldState> {
@@ -66,6 +69,11 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       }
     } else if (nextProps.value !== this.props.value){
       this.setState(this.getStateWithProps(nextProps, false, true));
+    } else {
+      this.setState({
+        modified: false,
+        synced: true
+      });
     }
   }
   getStateWithProps(props: OrganizerFieldProps = this.props, doshuffle: boolean, reuse: boolean){
@@ -85,7 +93,9 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         }
         return [] as Array<string>
       }),
-      useList 
+      useList,
+      modified: false,
+      synced: true
     };
     console.log(result);
     return result;

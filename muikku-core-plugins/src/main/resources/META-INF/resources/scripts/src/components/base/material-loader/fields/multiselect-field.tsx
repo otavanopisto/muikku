@@ -17,7 +17,9 @@ interface MultiSelectFieldProps {
 }
 
 interface MultiSelectFieldState {
-  values: Array<string>
+  values: Array<string>,
+  modified: boolean,
+  synced: boolean
 }
 
 export default class MultiSelectField extends React.Component<MultiSelectFieldProps, MultiSelectFieldState> {
@@ -28,7 +30,9 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     
     let values:Array<string> = ((props.value && JSON.parse(props.value)) || []) as Array<string>;
     this.state = {
-      values: values.sort()
+      values: values.sort(),
+      modified: false,
+      synced: true
     }
   }
   componentWillReceiveProps(nextProps: MultiSelectFieldProps){
@@ -51,6 +55,11 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
         values: values.sort()
       });
     }
+    
+    this.setState({
+      modified: false,
+      synced: true
+    });
   }
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
     let nValues = this.state.values.slice(0);

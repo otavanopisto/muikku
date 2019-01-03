@@ -28,7 +28,7 @@ class HelpPanel extends React.Component<HelpPanelProps, HelpPanelState> {
       </div>
       <div className="panel__body">
         {this.props.workspace && <MaterialLoader modifiers="workspace-help" material={this.props.workspace.help} workspace={this.props.workspace}
-          i18n={this.props.i18n} status={this.props.status} readOnly/>}
+          readOnly/>}
       </div>
     </div>);
   }

@@ -20,7 +20,9 @@ interface MemoFieldProps {
 interface MemoFieldState {
   value: string,
   words: number,
-  characters: number
+  characters: number,
+  modified: boolean,
+  synced: boolean
 }
 
 const ckEditorConfig = {
@@ -62,7 +64,9 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     this.state = {
       value,
       words: wordCount(rawText),
-      characters: characterCount(rawText)
+      characters: characterCount(rawText),
+      modified: false,
+      synced: true
     }
     
     this.onInputChange = this.onInputChange.bind(this);
@@ -92,6 +96,11 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
         characters: characterCount(rawText)
       });
     }
+    
+    this.setState({
+      modified: false,
+      synced: true
+    });
   }
   render(){
     let fields;

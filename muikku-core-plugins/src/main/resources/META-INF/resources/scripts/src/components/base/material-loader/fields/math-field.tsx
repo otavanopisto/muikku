@@ -15,7 +15,9 @@ interface MathFieldProps {
 }
 
 interface MathFieldState {
-  value: string
+  value: string,
+  modified: boolean,
+  synced: boolean
 }
 
 export default class TextField extends React.Component<MathFieldProps, MathFieldState> {
@@ -23,7 +25,9 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     super(props);
     
     this.state = {
-      value: props.value || ''
+      value: props.value || '',
+      modified: false,
+      synced: true
     }
     
     this.setValue = this.setValue.bind(this);
@@ -32,6 +36,11 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     if (this.props.value !== nextProps.value){
       this.setValue(nextProps.value);
     }
+    
+    this.setState({
+      modified: false,
+      synced: true
+    });
   }
   setValue(newValue: string){
     //console.log(newValue);

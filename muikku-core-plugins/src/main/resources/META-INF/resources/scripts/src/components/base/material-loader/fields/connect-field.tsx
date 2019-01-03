@@ -29,7 +29,9 @@ interface ConnectFieldState {
   selectedField: FieldType,
   selectedIsCounterpart: boolean,
   selectedIndex: number,
-  editedIds: Set<string>
+  editedIds: Set<string>,
+  modified: boolean,
+  synced: boolean
 }
 
 export default class ConnectField extends React.Component<ConnectFieldProps, ConnectFieldState> {
@@ -69,7 +71,9 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       selectedField: null,
       selectedIsCounterpart: false,
       selectedIndex: null,
-      editedIds: new Set(editedIdsArray)
+      editedIds: new Set(editedIdsArray),
+      modified: false,
+      synced: true
     }
     
     this.swapField = this.swapField.bind(this);
@@ -106,6 +110,11 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
         editedIds: new Set(editedIdsArray)
       });
     }
+    
+    this.setState({
+      modified: false,
+      synced: true
+    });
   }
   swapField(fielda: FieldType, fieldb: FieldType){
     this.setState({

@@ -3,6 +3,7 @@ import {Store} from 'react-redux';
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
 import { Action } from 'redux';
+import { WebsocketStateType } from '~/reducers/util/websocket';
 
 type ListenerType = {
     [name: string]: {
@@ -20,7 +21,7 @@ export default class MuikkuWebsocket {
     eventType: string,
     data: any,
     onSent?: ()=>any,
-    stackId?: number
+    stackId?: string
   }[];
   private pingHandle:any;
   private pinging:boolean;
@@ -56,17 +57,23 @@ export default class MuikkuWebsocket {
         this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
       }
     });
+    
+    this.store.dispatch({
+      'type': 'INITIALIZE_WEBSOCKET',
+      'payload': this
+    });
 
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
-  sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: number){
+  sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
     if (this.socketOpen) {
       try {
         this.webSocket.send(JSON.stringify({
           eventType: eventType,
           data: data
         }));
-        this.messagesPending.length === 0 && this.trigger("webSocketSync");
+        let websocketState:WebsocketStateType = this.store.getState().websocket;
+        this.messagesPending.length === 0 && !websocketState.synchronized && this.trigger("webSocketSync");
         onSent && onSent();
       } catch (e) {
         this.queueMessage(eventType, data, onSent, stackId);
@@ -78,7 +85,7 @@ export default class MuikkuWebsocket {
       this.trigger("webSocketDesync");
     }
   }
-  queueMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: number){
+  queueMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
     let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
     let message = {
       eventType,
@@ -92,14 +99,20 @@ export default class MuikkuWebsocket {
       this.messagesPending.push(message);
     }
   }
-  addEventListener(event: string, action: Function){
+  addEventListener(event: string, actionCreator: Function){
     let evtListeners = this.listeners[event] || {
       actions: [],
       callbacks: []
     };
-    evtListeners.actions.push(action);
+    evtListeners.actions.push(actionCreator);
     this.listeners[event] = evtListeners;
     return this;
+  }
+  removeEventCallback(event: string, actionCreator: Function){
+    let index = this.listeners[event].callbacks.indexOf(actionCreator);
+    if (index !== -1){
+      this.listeners[event].callbacks.splice(index, 1);
+    }
   }
   addEventCallback(event: string, action: Function){
     let evtListeners = this.listeners[event] || {

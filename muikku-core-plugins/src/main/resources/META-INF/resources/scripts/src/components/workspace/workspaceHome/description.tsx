@@ -33,7 +33,7 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
       </div>
       <div className="panel__body">
         {this.props.workspace && <MaterialLoader modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
-          i18n={this.props.i18n} status={this.props.status} readOnly/>}
+          readOnly/>}
       </div>
     </div>);
   }

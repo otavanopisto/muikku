@@ -2,7 +2,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType } from "~/reducers/workspaces";
+import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType, MaterialCompositeRepliesListType } from "~/reducers/workspaces";
 
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
 import MaterialLoader from "~/components/base/material-loader";
@@ -14,6 +14,7 @@ interface WorkspaceMaterialsProps {
   i18n: i18nType,
   workspace: WorkspaceType,
   materials: MaterialContentNodeListType,
+  materialReplies: MaterialCompositeRepliesListType,
   navigation: React.ReactElement<any>,
   activeNodeId: number,
   status: StatusType,
@@ -429,7 +430,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.props.onOpenNavigation();
   }
   render(){
-    if (!this.props.materials){
+    if (!this.props.materials || !this.props.workspace){
       return null;
     }
     
@@ -446,8 +447,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
             {chapter.children.map((node)=>{
               let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
               if (this.state.loadedChapters[chapter.workspaceMaterialId]){
+                let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
                 let material = !this.props.workspace ? null : <ContentPanelItem>
-                  <WorkspaceMaterial materialContentNode={node} workspace={this.props.workspace}/>
+                  <WorkspaceMaterial materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
                 </ContentPanelItem>;
                 return <div ref={node.workspaceMaterialId + ""}
                   key={node.workspaceMaterialId}>
@@ -471,6 +473,7 @@ function mapStateToProps(state: StateType){
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     materials: state.workspaces.currentMaterials,
+    materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     status: state.status
   }
