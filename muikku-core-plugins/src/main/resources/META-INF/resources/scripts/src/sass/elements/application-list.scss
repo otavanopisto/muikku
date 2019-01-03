@@ -538,13 +538,20 @@
 }
 
 .application-list__item-body--discussion-message {
+  font-size: $text-mobile-font-size;
   font-style: italic;
-  line-height: 1rem;
+  font-weight: 400;
+  line-height: 1.125rem;
   max-height: 5rem;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    line-height: 1.25rem;
+  }
 }
 
 .application-list__item-edited {
