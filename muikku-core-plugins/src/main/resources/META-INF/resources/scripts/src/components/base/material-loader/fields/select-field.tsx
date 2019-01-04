@@ -13,7 +13,8 @@ interface SelectFieldProps {
     }>
   },
   readOnly?: boolean,
-  value?: string
+  value?: string,
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
 interface SelectFieldState {
@@ -35,6 +36,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     }
   }
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
+    this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
     this.setState({value: e.target.value});
   }
   componentWillReceiveProps(nextProps: SelectFieldProps){

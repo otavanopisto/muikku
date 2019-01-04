@@ -20,7 +20,8 @@ interface ConnectFieldProps {
   },
   
   readOnly?: boolean,
-  value?: string
+  value?: string,
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
 interface ConnectFieldState {
@@ -80,6 +81,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     this.swapCounterpart = this.swapCounterpart.bind(this);
     this.pickField = this.pickField.bind(this);
     this.cancelPreviousPick = this.cancelPreviousPick.bind(this);
+    this.triggerChange = this.triggerChange.bind(this);
   }
   componentWillReceiveProps(nextProps: ConnectFieldProps){
     if (JSON.stringify(nextProps.content) !== JSON.stringify(this.props.content)){
@@ -116,6 +118,17 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       synced: true
     });
   }
+  triggerChange(){
+    if (!this.props.onChange){
+      return;
+    }
+    let newValue:any = {};
+    this.state.fields.forEach((field, index)=>{
+      let counterpart = this.state.counterparts[index];
+      newValue[field.name] = counterpart.name;
+    });
+    this.props.onChange(this, this.props.content.name, JSON.stringify(newValue));
+  }
   swapField(fielda: FieldType, fieldb: FieldType){
     this.setState({
       fields: this.state.fields.map(f=>{
@@ -126,7 +139,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
         }
         return f;
       })
-    })
+    }, this.triggerChange)
   }
   swapCounterpart(fielda: FieldType, fieldb: FieldType){
     if (fielda.name === fieldb.name){
@@ -141,7 +154,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
         }
         return f;
       })
-    })
+    }, this.triggerChange)
   }
   pickField(field: FieldType, isCounterpart: boolean, index: number){
     console.log(arguments);
