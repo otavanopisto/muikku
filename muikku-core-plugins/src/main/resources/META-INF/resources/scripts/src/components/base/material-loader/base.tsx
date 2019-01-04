@@ -333,7 +333,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     //we add our default parameters form redux
     parameters["i18n"] = props.i18n;
     parameters["status"] = props.status;
-    parameters["readOnly"] = props.readOnly;
+    parameters["readOnly"] = props.readOnly || (
+        props.compositeReplies && props.material.assignmentType === "EVALUATED" && 
+        ["SUBMITTED", "PASSED", "FAILED", "INCOMPLETE"].includes(props.compositeReplies.state)
+    );
     
     //We set the value if we have one in composite replies
     parameters["value"] = props.compositeReplies && props.compositeReplies.answers.find((answer)=>{
