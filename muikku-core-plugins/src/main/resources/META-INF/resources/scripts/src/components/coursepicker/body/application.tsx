@@ -50,7 +50,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
       "MY_COURSES": "plugin.coursepicker.owncourses",
       "AS_TEACHER": "plugin.coursepicker.teachercourses"
     }
-    
+
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.coursepicker.pageTitle')}</h2>
     let toolbar = <Toolbar/>
     let primaryOption = <div className="form-element"> 
@@ -59,7 +59,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
           return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option> 
         })} 
       </select>
-    </div>    
+    </div>
     return (<div>
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} asideBefore={this.props.aside} primaryOption={primaryOption}>
         <CoursepickerWorkspaces/>

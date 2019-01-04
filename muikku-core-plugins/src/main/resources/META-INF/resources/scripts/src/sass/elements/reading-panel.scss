@@ -8,10 +8,10 @@
   align-items: center;
   display: flex;
   justify-content: center;
-  padding: calc(#{$navbar-mobile-height} * 1.2) 0 10px;
+  padding: 0 0 10px;
 
   @include breakpoint($breakpoint-pad) {
-    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+    padding: 0 10px 10px;
   }
 }
 
@@ -103,7 +103,6 @@
 }
 
 .reading-panel__content {
-  padding: 2.5rem 0 0;
 
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;

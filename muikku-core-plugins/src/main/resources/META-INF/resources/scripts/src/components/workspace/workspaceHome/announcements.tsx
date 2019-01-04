@@ -33,7 +33,11 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
         {this.props.announcements.length && this.props.workspace ? (
           <div className="panel__body">
             <div className="item-list item-list--panel-announcements">
-              {this.props.announcements.map(a=><Link to={this.props.status.contextPath + "/workspace/" + this.props.workspace.urlName + "/announcements#" + a.id}
+              {this.props.announcements.map(a=>{
+                if (a.workspaceEntityIds.length <= 0){
+                  return false
+                } 
+                return <Link to={this.props.status.contextPath + "/workspace/" + this.props.workspace.urlName + "/announcements#" + a.id}
                 key={a.id} as="div" className="item-list__item item-list__item--announcements item-list__item--has-workspaces">
                 <span className="item-list__icon item-list__icon--announcements icon-announcer"></span>
                 <span className="item-list__text-body item-list__text-body--multiline">
@@ -44,7 +48,7 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
                     {this.props.i18n.time.format(a.startDate)}
                   </span>
                 </span>
-              </Link>)}
+              </Link>})}
             </div>
           </div>
           ) : (
