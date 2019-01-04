@@ -284,19 +284,22 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
   //when an answer is saved from the server, as in the websocket calls this
   onAnswerSavedAtServer(data: any){
+    //For some reason the data comes as string
+    let actualData = JSON.parse(data);
     //we check the data for a match for this specific page, given that a lot of callbacks will be registered
     //and we are going to get all those events indiscrimately of wheter which page it belongs to as we are
     //registering this event on all the field-answer-saved events
-    if (data.materialId === this.props.material.materialId && data.workspaceMaterialId === this.props.material.workspaceMaterialId &&
-        data.workspaceMaterialId === this.props.workspace.id && this.timeoutUnsyncRegistry[data.fieldName]){
+    if (actualData.materialId === this.props.material.materialId && actualData.workspaceMaterialId === this.props.material.workspaceMaterialId &&
+        actualData.workspaceEntityId === this.props.workspace.id){
       //We clear the timeout that would mark the field as unsynced given the time had passed
-      clearTimeout(this.timeoutUnsyncRegistry[data.fieldName]);
+      clearTimeout(this.timeoutUnsyncRegistry[actualData.fieldName]);
+      delete this.timeoutUnsyncRegistry[actualData.fieldName];
       //we check the name context registry to see if it had been synced, said if you lost connection to the server
       //the field got unsynced, regained the connection and the answer got saved, so the thing above did nothing
       //as the field had been unsynced already
-      if (!this.nameContextRegistry[data.fieldName].state.synced){
+      if (!this.nameContextRegistry[actualData.fieldName].state.synced){
         //we make it synced then and the user is happy can keep typing
-        this.nameContextRegistry[data.fieldName].setState({synced: true});
+        this.nameContextRegistry[actualData.fieldName].setState({synced: true});
       }
     }
   }
