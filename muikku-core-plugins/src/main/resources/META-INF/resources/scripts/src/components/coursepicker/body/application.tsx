@@ -22,6 +22,12 @@ interface CoursepickerApplicationProps {
   workspaces: WorkspacesType
 }
 
+interface CoursepickerApplicationProps {
+  aside: React.ReactElement<any>,
+  i18n: i18nType,
+  workspaces: WorkspacesType
+}
+
 interface CoursepickerApplicationState {
 }
 

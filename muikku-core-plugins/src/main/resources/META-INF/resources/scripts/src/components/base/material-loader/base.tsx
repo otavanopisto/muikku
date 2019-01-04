@@ -139,6 +139,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     this.staticRegistry = [];
     this.timeoutChangeRegistry = {};
     this.timeoutUnsyncRegistry = {};
+    this.nameContextRegistry = {};
     
     //And prepare this one too
     this.onAnswerSavedAtServer = this.onAnswerSavedAtServer.bind(this);
@@ -369,7 +370,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     this.timeoutChangeRegistry[name] = setTimeout(()=>{
       
       //Tell the server thru the websocket to save
-      this.props.websocket.websocket.sendMessage("workspace:field-answer-save", {
+      this.props.websocket.websocket.sendMessage("workspace:field-answer-save", JSON.stringify({
         answer: newValue,
         //I have no idea what this is for
         embedId: "",
@@ -378,7 +379,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         workspaceEntityId: this.props.workspace.id,
         workspaceMaterialId: this.props.material.workspaceMaterialId,
         userEntityId: this.props.status.userId
-      }, null, name + "-" + this.props.workspace.id + "-" + this.props.material.workspaceMaterialId + "-" + this.props.material.materialId);
+      }), null, name + "-" + this.props.workspace.id + "-" + this.props.material.workspaceMaterialId + "-" + this.props.material.materialId);
       //We set no callback onsent
       //and for the stackId we use this unique id that should represent the only field
       //remember that base.tsx represents a specific page so a name in the registry here suffices

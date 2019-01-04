@@ -97,7 +97,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     if (this.props.materials !== nextProps.materials){
       this.getFlattenedMaterials(nextProps);
     } else if (this.props.activeNodeId !== nextProps.activeNodeId){
-      (this.refs["content-panel"] as ContentPanel).close();
+      this.refs["content-panel"] && (this.refs["content-panel"] as ContentPanel).close();
     }
   }
   
