@@ -18,7 +18,7 @@ interface ReplyThreadProps {
   reply?: DiscussionThreadReplyType,
   quote?: string,
   quoteAuthor?: string,
-  currentId: number,      
+  currentId: number,
   replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
 }
 
@@ -54,12 +54,12 @@ const extraPlugins = {
 class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadState> {
   constructor(props: ReplyThreadProps){
     super(props, "discussion-reply-thread");
-    
+
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.createReply = this.createReply.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.onDialogOpen = this.onDialogOpen.bind(this);
-    
+
     this.state = this.getRecoverStoredState({
       locked: false,
       text: (props.quote && props.quoteAuthor ? 
@@ -113,10 +113,10 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
               "",
       }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
     }
-  }  
+  }
   render(){
-    let content = (closeDialog: ()=>any) => [    
-    <div className="env-dialog__row" key="1">     
+    let content = (closeDialog: ()=>any) => [
+    <div className="env-dialog__row" key="1">
       <div className="env-dialog__form-element-container">
         <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div> 
         <CKEditor autofocus key="1" width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
@@ -125,8 +125,8 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     </div>
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
-         <div className="env-dialog__actions">   
+      return (
+         <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
@@ -135,11 +135,11 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
           </Button>
           {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
               {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
-            </Button> : null}                  
+            </Button> : null}
         </div>
       )
     }
-    
+
     return <JumboDialog modifier="reply-thread"
       title={this.props.i18n.text.get('plugin.discussion.reply.topic')}
       content={content} footer={footer} onOpen={this.onDialogOpen}>

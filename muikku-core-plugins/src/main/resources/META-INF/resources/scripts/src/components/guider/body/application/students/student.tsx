@@ -37,7 +37,7 @@ export default class Student extends React.Component<StudentProps, StudentState>
           </div>
         })}
         </div>
-      </ApplicationListItemFooter> : null}   
+      </ApplicationListItemFooter> : null}
     </ApplicationListItemContentWrapper>
   }
 }

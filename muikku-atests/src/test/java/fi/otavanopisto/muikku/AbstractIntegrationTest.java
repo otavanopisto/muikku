@@ -304,6 +304,15 @@ public abstract class AbstractIntegrationTest {
     return request.cookie("JSESSIONID", studentSessionId);
   }
   
+  protected RequestSpecification asEveryone() {
+    RequestSpecification request = RestAssured.given();
+    if (everyoneSessionId == null) {
+      everyoneSessionId = loginAs(RoleType.PSEUDO, "EVERYONE");
+    }
+    
+    return request.cookie("JSESSIONID", everyoneSessionId);
+  }
+  
   private static String loginAs(RoleType type, String role) {
     Response response = given()
       .contentType("application/json")
@@ -365,4 +374,5 @@ public abstract class AbstractIntegrationTest {
   private String managerSessionId;
   private String teacherSessionId;
   private String studentSessionId;
+  private String everyoneSessionId;
 }

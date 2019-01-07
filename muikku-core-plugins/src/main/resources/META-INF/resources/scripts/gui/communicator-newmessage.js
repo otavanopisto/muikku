@@ -304,11 +304,9 @@
       var existingWorkspaceIds = this._getExistingWorkspaceIds();
       
       return $.proxy(function (callback) {
-        // coursepicker??
-        mApi().coursepicker.workspaces
+        mApi().communicator.recipientsWorkspacesSearch
           .read({
-            search: term,
-            myWorkspaces: true,
+            searchString: term
           })
           .callback($.proxy(function (err, results) {
             if (err) {
@@ -356,8 +354,8 @@
       var isStudent = this.options.isStudent;
       var existingUserIds = this._getRecipientIds();
       return $.proxy(function (callback) {
-        mApi().user.users
-          .read({ 'searchString' : term, 'onlyDefaultUsers': true })
+        mApi().communicator.recipientsUsersSearch
+          .read({ 'searchString' : term })
           .callback(function(err, results) {
             if (err) {
               callback(err);
