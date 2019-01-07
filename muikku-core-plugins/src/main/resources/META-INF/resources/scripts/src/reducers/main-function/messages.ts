@@ -188,6 +188,20 @@ export interface MessagesPatchType {
   unreadThreadCount?: number
 };
 
+function sortNavigationItems(itemA: MessagesNavigationItemType, itemB: MessagesNavigationItemType){
+  if (itemA.type !== "label" && itemB.type !== "label"){
+    return 0;
+  } else if (itemA.type === "label" && itemB.type !== "label"){
+    return 1;
+  } else if (itemA.type !== "label" && itemB.type === "label"){
+    return -1;
+  }
+  
+  let labelAUpperCase = itemA.text(null).toUpperCase();
+  let labelBUpperCase = itemB.text(null).toUpperCase();
+  return (labelAUpperCase < labelBUpperCase) ? -1 : (labelAUpperCase > labelBUpperCase) ? 1 : 0;
+}
+
 export default function messages(state: MessagesType = {
   state: "LOADING",
   threads: [],
@@ -212,15 +226,15 @@ export default function messages(state: MessagesType = {
     });
   } else if (action.type === 'UPDATE_MESSAGES_NAVIGATION_LABELS'){
     return Object.assign({}, state, {
-      navigation: defaultNavigation.concat(<MessagesNavigationItemListType>action.payload)
+      navigation: defaultNavigation.concat(<MessagesNavigationItemListType>action.payload).sort(sortNavigationItems)
     });
   } else if (action.type === 'ADD_MESSAGES_NAVIGATION_LABEL'){
     return Object.assign({}, state, {
-      navigation: state.navigation.concat(<MessagesNavigationItemListType>[<MessagesNavigationItemType>action.payload])
+      navigation: state.navigation.concat(<MessagesNavigationItemListType>[<MessagesNavigationItemType>action.payload]).sort(sortNavigationItems)
     });
   } else if (action.type === 'DELETE_MESSAGE_THREADS_NAVIGATION_LABEL'){
     return Object.assign({}, state, {
-      navigation: state.navigation.filter((item: MessagesNavigationItemType)=>{return item.id !== action.payload.labelId})
+      navigation: state.navigation.filter((item: MessagesNavigationItemType)=>{return item.id !== action.payload.labelId}).sort(sortNavigationItems)
     });
   } else if (action.type === 'UPDATE_MESSAGES_NAVIGATION_LABEL'){
     return Object.assign({}, state, {
@@ -229,7 +243,7 @@ export default function messages(state: MessagesType = {
           return item;
         }
         return Object.assign({}, item, <MessagesNavigationItemUpdateType>action.payload.update);
-      })
+      }).sort(sortNavigationItems)
     });
   } else if (action.type === "UPDATE_MESSAGES_STATE"){
     let newState: MessagesStateType = action.payload;
