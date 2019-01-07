@@ -17,7 +17,8 @@ interface SorterFieldProps {
   },
   
   readOnly?: boolean,
-  value?: string
+  value?: string,
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
 interface SorterFieldState {
@@ -70,15 +71,18 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     if (itemA.id === itemB.id){
       return;
     }
+    let items = this.state.items.map(item=>{
+      if (item.id === itemA.id){
+        return itemB
+      } else if (item.id === itemB.id){
+        return itemA;
+      }
+      return item;
+    });
+    
+    this.props.onChange && this.props.onChange(this, this.props.content.name, JSON.stringify(items.map(item=>item.id)));
     this.setState({
-      items: this.state.items.map(item=>{
-        if (item.id === itemA.id){
-          return itemB
-        } else if (item.id === itemB.id){
-          return itemA;
-        }
-        return item;
-      })
+      items
     });
   }
   render(){

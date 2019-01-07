@@ -13,7 +13,8 @@ interface MultiSelectFieldProps {
     }>
   },
   readOnly?: boolean,
-  value?: string
+  value?: string,
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
 interface MultiSelectFieldState {
@@ -69,6 +70,8 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
       nValues.push(e.target.value);
       nValues.sort();
     }
+    
+    this.props.onChange && this.props.onChange(this, this.props.content.name, JSON.stringify(nValues));
     this.setState({
       values: nValues
     });

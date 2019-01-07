@@ -405,6 +405,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   render(){
     //This is all there is we just glue the HTML in there
     //and pick out the content from there
-    return <div ref="base" className="page-content"/>;
+    return <div ref="base" className="page-content __deprecated"/>;
   }
 }

@@ -11,7 +11,8 @@ interface MathFieldProps {
   i18n: i18nType,
   
   readOnly?: boolean,
-  value?: string
+  value?: string,
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
 interface MathFieldState {
@@ -43,7 +44,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     });
   }
   setValue(newValue: string){
-    //console.log(newValue);
+    this.props.onChange && this.props.onChange(this, this.props.content.name, newValue);
     this.setState({
       value: newValue
     });

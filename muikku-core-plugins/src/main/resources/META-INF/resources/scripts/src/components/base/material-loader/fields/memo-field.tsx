@@ -14,7 +14,8 @@ interface MemoFieldProps {
   },
   i18n: i18nType,
   readOnly?: boolean,
-  value?: string
+  value?: string,
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
 interface MemoFieldState {
@@ -73,6 +74,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
   }
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>){
+    this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
     this.setState({
       value: e.target.value,
       words: wordCount(e.target.value),
@@ -81,6 +83,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
   }
   onCKEditorChange(value: string){
     let rawText = $(value).text();
+    this.props.onChange && this.props.onChange(this, this.props.content.name, value);
     this.setState({
       value,
       words: wordCount(rawText),
