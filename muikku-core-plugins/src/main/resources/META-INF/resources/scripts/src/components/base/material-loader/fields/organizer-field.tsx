@@ -33,7 +33,8 @@ interface OrganizerFieldProps {
   },
   
   readOnly?: boolean,
-  value?: string
+  value?: string,
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
 interface OrganizerFieldState {
@@ -57,6 +58,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     this.getStateWithProps = this.getStateWithProps.bind(this);
     this.onDropDraggableItem = this.onDropDraggableItem.bind(this);
     this.deleteTermFromBox = this.deleteTermFromBox.bind(this);
+    this.triggerChange = this.triggerChange.bind(this);
     
     this.state = this.getStateWithProps(props, true, false);
   }
@@ -97,7 +99,6 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       modified: false,
       synced: true
     };
-    console.log(result);
     return result;
   }
   onDropDraggableItem(termId: string, categoryId: string){
@@ -107,7 +108,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       this.setState({
         boxes: nBox,
         useList: [...this.state.useList, termId]
-      })
+      }, this.triggerChange)
     }
   }
   deleteTermFromBox(categoryId: string, termId: string){
@@ -122,7 +123,13 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     this.setState({
       boxes: nBox,
       useList: newUseList
-    })
+    }, this.triggerChange)
+  }
+  triggerChange(){
+    if (!this.props.onChange){
+      return;
+    }
+    this.props.onChange(this, this.props.content.name, JSON.stringify(this.state.boxes));
   }
   render(){
     return <div className="muikku-organizer-field muikku-field">
