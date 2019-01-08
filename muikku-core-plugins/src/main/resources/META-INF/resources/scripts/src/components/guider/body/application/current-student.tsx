@@ -43,7 +43,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     super(props);
   }
   
-  //TODO doesn't anyone notice that nor assesment requested, nor no passed courses etc... is available in this view
+  //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   render(){
     if (this.props.guider.currentStudent === null){
       return null;
@@ -133,6 +133,16 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className="application-sub-panel__item-data">
           <span>{this.props.guider.currentStudent.lastLogin.time ? 
               this.props.i18n.time.format(this.props.guider.currentStudent.lastLogin.time, "LLL") : "-"}</span>
+        </div>
+      </div>}
+      {this.props.guider.currentStudent.usergroups && <div className="application-sub-panel__item">
+        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studentgroups")}</div>
+        <div className="application-sub-panel__item-data">
+        {this.props.guider.currentStudent.usergroups.length ? this.props.guider.currentStudent.usergroups.map((usergroup)=>{
+          return <span key={usergroup.id} >
+            {usergroup.name}
+          </span>
+        }) : null}
         </div>
       </div>}
       {this.props.guider.currentStudent.notifications && Object.keys(this.props.guider.currentStudent.notifications).map((notification)=>{
