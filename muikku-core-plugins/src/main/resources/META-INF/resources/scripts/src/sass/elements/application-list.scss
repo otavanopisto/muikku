@@ -233,9 +233,18 @@
 }
 
 .application-list__item--highlight {
+  background-color: $color-message-unread-background;
 
   @include breakpoint($breakpoint-pad) {
     border-top: solid 1px $color-default;
+  }
+
+  &.selected {
+    background-color: $color-application-list-item-background-selected;
+
+    @include breakpoint($breakpoint-pad) {
+      background-color: $color-message-unread-background;
+    }
   }
 }
 
