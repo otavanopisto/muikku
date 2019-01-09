@@ -8,6 +8,8 @@ export interface YODataType{
   studyEndDate: string,
 }
 
+
+
 export interface YOSubjectType {
     matriculationSubjects: YOMatriculationSubjectType[] ,
     matriculationSubjectsLoaded: boolean
