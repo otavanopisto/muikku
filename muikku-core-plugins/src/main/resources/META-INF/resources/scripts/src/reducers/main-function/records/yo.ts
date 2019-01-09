@@ -8,14 +8,28 @@ export interface YODataType{
   studyEndDate: string,
 }
 
-export interface YOType {
-  status: YOStatusType,
-  value: YODataType
+export interface YOSubjectType {
+    matriculationSubjects: YOMatriculationSubjectType[] ,
+    matriculationSubjectsLoaded: boolean
 }
 
-export default function statistics(state:YOType={
+export interface YOType {
+  status: YOStatusType,
+  value: YODataType,
+  subjects: YOSubjectType
+}
+
+export interface YOMatriculationSubjectType {
+  code: string,
+  subjectCode: string
+}
+
+
+
+export default function yo(state:YOType={
   status: "WAIT",
-  value: null
+  value: null,
+  subjects: null
 }, action: ActionType):YOType{
   if (action.type === "UPDATE_STUDIES_YO_STATUS"){
     return Object.assign({}, state, {
@@ -25,6 +39,10 @@ export default function statistics(state:YOType={
     return Object.assign({}, state, {
       value: action.payload
     });
+  } else if (action.type === "UPDATE_STUDIES_YO_SUBJECTS"){
+     return Object.assign({}, state, {
+       subjects: action.payload
+     });       
   }
   return state;
 }
