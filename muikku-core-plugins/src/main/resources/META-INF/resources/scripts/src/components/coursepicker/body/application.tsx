@@ -14,18 +14,15 @@ import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 
 import {StateType} from '~/reducers';
+
 import { WorkspaceBaseFilterType, WorkspacesType } from '~/reducers/workspaces';
+import { StatusType } from '~/reducers/base/status';
 
 interface CoursepickerApplicationProps {
   aside: React.ReactElement<any>,
   i18n: i18nType,
   workspaces: WorkspacesType
-}
-
-interface CoursepickerApplicationProps {
-  aside: React.ReactElement<any>,
-  i18n: i18nType,
-  workspaces: WorkspacesType
+  status: StatusType
 }
 
 interface CoursepickerApplicationState {
@@ -54,11 +51,18 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.coursepicker.pageTitle')}</h2>
     let toolbar = <Toolbar/>
     let primaryOption = <div className="form-element"> 
+      {this.props.status.loggedIn ?
       <select className="form-element__select form-element__select--main-action" value={this.props.workspaces.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
         {this.props.workspaces.avaliableFilters.baseFilters.map((filter: WorkspaceBaseFilterType)=>{
-          return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option> 
-        })} 
+          if (this.props.status.isStudent && filter === "AS_TEACHER"){
+            return false
+          } 
+          return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option>
+        })}
       </select>
+      : 
+      <select className="form-element__select form-element__select--main-action"><option>{this.props.i18n.text.get('plugin.coursepicker.opencourses')}</option></select> 
+      }
     </div>
     return (<div>
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} asideBefore={this.props.aside} primaryOption={primaryOption}>
@@ -71,7 +75,8 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    workspaces: state.workspaces
+    workspaces: state.workspaces,
+    status: state.status
   }
 };
 

@@ -233,54 +233,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
       let state = getState();
       let status: StatusType = state.status;
       
-      if (!state.messages){
-        return;
-      }
-
-      //This as in the main thread list will check wheter the message was sent and we are in the inbox or unreadlocation, that will work if
-      //and only if one of the receivers is us, otherwise it's always active for when a message is sent
-      const isInboxOrUnread = state.messages && state.messages.location === "inbox" || state.messages.location === "unread"
-      const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && result.recipients
-        .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
-      const weAreInSentLocation = state.messages.location === "sent";
-      const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
-      if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients || weJustSentThatMessageAndWeAreInCurrent) {
-        let item = state.messages.navigation.find((item)=>{
-          return item.location === state.messages.location;
-        });
-        if (!item) {
-          return;
-        }
-        let params = {
-          firstResult: 0,
-          maxResults: 1,
-        }
-
-        try {
-          let threads: MessageThreadListType = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback' )();
-          if (threads[0]) {
-            dispatch({
-              type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
-              payload: threads[0]
-            });
-
-            if ( state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId ) {
-              dispatch({
-                type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-                payload: result
-              });
-              if (state.messages.location !== "sent" && threads[0].unreadMessagesInThread) {
-                dispatch(toggleMessageThreadReadStatus(threads[0], true));
-              }
-            }
-
-          }
-        } catch ( err ) { if (!(err instanceof MApiError)){
-          throw err;
-        }}
-      }
-      
-      //Also we need to update the specific message in the thread view if it's there
+      //First lets check and update the thread count in case the thread is there somewhere for that specific message
       let thread:MessageThreadType = state.messages.threads.find((thread)=>thread.communicatorMessageId === result.communicatorMessageId);
       if (thread){
         let newCount = thread.messageCountInThread + 1;
@@ -292,6 +245,58 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
               messageCountInThread: newCount
             }
           }
+        });
+      }
+
+      //This as in the main thread list will check wheter the message was sent and we are in the inbox or unreadlocation, that will work if
+      //and only if one of the receivers is us, otherwise it's always active for when a message is sent
+      const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
+      const weAreOneOfTheRecepients = result.recipients
+        .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
+      const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && weAreOneOfTheRecepients;
+      const weAreInSentLocation = state.messages.location === "sent";
+      const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
+      
+      //if we are in sent location or are one of the recipients then the message should become the first one
+      if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients) {
+        let item = state.messages.navigation.find((item)=>{
+          return item.location === state.messages.location;
+        });
+        if (!item) {
+          return;
+        }
+        let params = {
+          firstResult: 0,
+          maxResults: 1,
+        }
+        
+        //we basically conduct a search for the first result which should be our thread
+
+        try {
+          let threads: MessageThreadListType = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback' )();
+          if (threads[0]) {
+            if (threads[0].communicatorMessageId !== result.communicatorMessageId){
+              console.warn("Mismatch between result of new thread and thread itself", threads[0].communicatorMessageId, result.communicatorMessageId);
+              return;
+            }
+            dispatch({
+              type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
+              payload: threads[0]
+            });
+            
+            if (weJustSentThatMessageAndWeAreInCurrent && weAreOneOfTheRecepients && threads[0].unreadMessagesInThread) {
+              dispatch(toggleMessageThreadReadStatus(threads[0], true));
+            }
+          }
+        } catch ( err ) { if (!(err instanceof MApiError)){
+          throw err;
+        }}
+      }
+      
+      if (weJustSentThatMessageAndWeAreInCurrent){
+        dispatch({
+          type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
+          payload: result
         });
       }
       
