@@ -294,12 +294,20 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       //We clear the timeout that would mark the field as unsynced given the time had passed
       clearTimeout(this.timeoutUnsyncRegistry[actualData.fieldName]);
       delete this.timeoutUnsyncRegistry[actualData.fieldName];
+      
+      //if we have an error
+      if (actualData.error){
+        //we get the context and check whether it's synced
+        this.nameContextRegistry[actualData.fieldName].setState({synced: false, syncError: actualData.error});
+        return;
+      }
+      
       //we check the name context registry to see if it had been synced, said if you lost connection to the server
       //the field got unsynced, regained the connection and the answer got saved, so the thing above did nothing
       //as the field had been unsynced already
       if (!this.nameContextRegistry[actualData.fieldName].state.synced){
         //we make it synced then and the user is happy can keep typing
-        this.nameContextRegistry[actualData.fieldName].setState({synced: true});
+        this.nameContextRegistry[actualData.fieldName].setState({synced: true, syncError: null});
       }
     }
   }

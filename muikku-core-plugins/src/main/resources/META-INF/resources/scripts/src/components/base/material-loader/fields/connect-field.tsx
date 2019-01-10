@@ -32,7 +32,8 @@ interface ConnectFieldState {
   selectedIndex: number,
   editedIds: Set<string>,
   modified: boolean,
-  synced: boolean
+  synced: boolean,
+  syncError: string
 }
 
 export default class ConnectField extends React.Component<ConnectFieldProps, ConnectFieldState> {
@@ -74,7 +75,8 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       selectedIndex: null,
       editedIds: new Set(editedIdsArray),
       modified: false,
-      synced: true
+      synced: true,
+      syncError: null
     }
     
     this.swapField = this.swapField.bind(this);
@@ -115,7 +117,8 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     
     this.setState({
       modified: false,
-      synced: true
+      synced: true,
+      syncError: null
     });
   }
   triggerChange(){
