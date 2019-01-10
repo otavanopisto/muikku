@@ -6,7 +6,6 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic');
 
 *, *::before, *::after {
-  @include prefix(drag, webkit ms o moz, none);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
