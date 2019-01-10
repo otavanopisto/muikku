@@ -28,17 +28,19 @@ function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: Work
     return ""
   }
 
-  let text = workspace.name + (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "");
   let pretext = "";
+  let text = workspace.name + (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "");
+
   if (html){
     let url = window.location.href;
     let arr = url.split("/");
     let server = arr[0] + "//" + arr[2];
 
-    text = '<a href="' + server + status.contextPath + "/workspace/" + workspace.urlName + '">' + text + "</a></p>";
-    pretext = "<p> </p>\n\n<p>";
+    pretext = '<p></p>';
+    text = '<p><i class="message-from-workspace">' + i18n.text.get("plugin.workspace.index.newMessageCaption") + ' ' + '<a href="' + server + status.contextPath + "/workspace/" + workspace.urlName + '">' + text + "</a></i></p>";
   }
-  return pretext + i18n.text.get("plugin.workspace.index.newMessageCaption", text);
+  
+  return pretext + text;
 }
 
 class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, WorkspaceTeachersState> {
