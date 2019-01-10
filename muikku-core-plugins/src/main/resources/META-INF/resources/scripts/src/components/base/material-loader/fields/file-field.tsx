@@ -2,6 +2,8 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 import $ from '~/lib/jquery';
+import { StatusType } from "~/reducers/base/status";
+import {ButtonPill} from "~/components/general/button";
 let ProgressBarLine = require('react-progressbar.js').Line;
 
 interface FileFieldProps {
@@ -10,6 +12,7 @@ interface FileFieldProps {
     name: string
   },
   i18n: i18nType,
+  status: StatusType,
   
   readOnly?: boolean,
   value?: string,
@@ -23,14 +26,16 @@ interface FileFieldState {
     name: string,
     contentType: string,
     uploading?: boolean,
-        
+    failed?: boolean,
+    
     //only has a value while uploading
     progress?: number,
     file?: File
   }>,
   
   modified: boolean,
-  synced: boolean
+  synced: boolean,
+  syncError: string
 }
 
 export default class FileField extends React.Component<FileFieldProps, FileFieldState> {
@@ -38,9 +43,10 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     super(props);
     
     this.state = {
-      values: (props.value && JSON.parse(props.value)) || [],
+      values: (props.value && (JSON.parse(props.value) || [])) || [],
       modified: false,
-      synced: true
+      synced: true,
+      syncError: null
     }
     
     this.onFileChanged = this.onFileChanged.bind(this);
@@ -72,7 +78,9 @@ export default class FileField extends React.Component<FileFieldProps, FileField
         return;
       }
     }
-    let result = JSON.stringify(this.state.values.map((value)=>{
+    let result = JSON.stringify(this.state.values.filter((value)=>{
+      return !value.failed;
+    }).map((value)=>{
       let {
         fileId,
         name,
@@ -85,26 +93,38 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     
     this.props.onChange(this, this.props.content.name, result);
   }
+  removeFileAt(index: number){
+    let newValues = this.state.values.slice(index, 1);
+    this.setState({
+      values: newValues
+    }, this.checkDoneAndRunOnChange)
+  }
   processFileAt(index: number){
     let formData = new FormData();
     let file:File = this.state.values[index].file;
     formData.append("file", file);
     $.ajax({
-      url: '/tempFileUploadServlet/',
+      url: this.props.status.contextPath + '/tempFileUploadServlet',
       type: 'POST',
       data: formData,
-      success: (dataString: string)=>{
-        var data = JSON.parse(dataString);
+      success: (data: any)=>{
         let newValues = [...this.state.values];
         newValues[index] = {...this.state.values[index]}
         newValues[index].uploading = false;
-        newValues[index].fileId = data.id;
+        newValues[index].contentType = data.fileContentType || file.type;
+        newValues[index].fileId = data.fileId;
         this.setState({
           values: newValues
         }, this.checkDoneAndRunOnChange)
       },
       error: (xhr:any, err:Error)=>{
-        
+        let newValues = [...this.state.values];
+        newValues[index] = {...this.state.values[index]}
+        newValues[index].uploading = false;
+        newValues[index].failed = true;
+        this.setState({
+          values: newValues
+        }, this.checkDoneAndRunOnChange)
       },
       xhr: ()=>{
         let xhr = new (window as any).XMLHttpRequest();
@@ -117,7 +137,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
             newValues[index].progress = percentComplete;
             this.setState({
               values: newValues
-            })
+            });
           }
         }, false);
         return xhr;
@@ -128,26 +148,30 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     })
   }
   componentWillReceiveProps(nextProps: FileFieldProps){
-    let values = (nextProps.value && JSON.parse(nextProps.value)) || null;
+    let values = (nextProps.value && (JSON.parse(nextProps.value) || null)) || null;
     if (values !== this.state.values){
       this.setState({values});
     }
     
     this.setState({
       modified: false,
-      synced: true
+      synced: true,
+      syncError: null
     });
   }
   render(){
     let dataInContainer = null;
     if (this.state.values.length){
       dataInContainer = this.state.values.map((value, index)=>{
-        let isImage = value.contentType.indexOf("image") === 0;
-        
         if (!value.uploading){
           //You should set a class and set it up so that images can have a max width, right now it is so that the image can be humongous 
           return <Link key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name}>
-            {!isImage ? value.name : <img src={`/rest/workspace/fileanswer/${value.fileId}`}/>}
+            {value.name} <ButtonPill buttonModifiers="remove-file-answer" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
+          </Link>;
+        } else if (value.failed){
+          //You should set a class and set it up so that images can have a max width, right now it is so that the image can be humongous 
+          return <Link key={index}>
+            {this.props.i18n.text.get("TODO file failed to upload")}
           </Link>;
         } else {
           return <Link key={index}>

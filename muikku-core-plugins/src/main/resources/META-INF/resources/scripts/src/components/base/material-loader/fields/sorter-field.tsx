@@ -24,7 +24,8 @@ interface SorterFieldProps {
 interface SorterFieldState {
   items: Array<SorterFieldItemType>,
   modified: boolean,
-  synced: boolean
+  synced: boolean,
+  syncError: string
 }
 
 export default class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
@@ -43,7 +44,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     this.state = {
       items,
       modified: false,
-      synced: true
+      synced: true,
+      syncError: null
     }
     
     this.swap = this.swap.bind(this);
@@ -64,7 +66,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     
     this.setState({
       modified: false,
-      synced: true
+      synced: true,
+      syncError: null
     });
   }
   swap(itemA: SorterFieldItemType, itemB: SorterFieldItemType){

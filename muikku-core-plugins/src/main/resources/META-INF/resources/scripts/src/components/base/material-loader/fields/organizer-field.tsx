@@ -48,7 +48,8 @@ interface OrganizerFieldState {
   useList: Array<string>,
   
   modified: boolean,
-  synced: boolean
+  synced: boolean,
+  syncError: string
 }
 
 export default class OrganizerField extends React.Component<OrganizerFieldProps, OrganizerFieldState> {
@@ -74,11 +75,12 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     } else {
       this.setState({
         modified: false,
-        synced: true
+        synced: true,
+        syncError: null
       });
     }
   }
-  getStateWithProps(props: OrganizerFieldProps = this.props, doshuffle: boolean, reuse: boolean){
+  getStateWithProps(props: OrganizerFieldProps = this.props, doshuffle: boolean, reuse: boolean): OrganizerFieldState{
     let value = props.value ? JSON.parse(props.value) : null;
     let useList:Array<string> = [];
     if (value){
@@ -86,7 +88,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         useList = [...useList, ...value[key]];
       });
     }
-    let result = {
+    return {
       order: doshuffle ? shuffle(props.content.terms).map((term)=>term.id) : (reuse ? this.state.order : props.content.terms.map((term)=>term.id)),
       terms: arrayToObject(props.content.terms, "id", "name"),
       boxes: arrayToObject(props.content.categories, "id", (category)=>{
@@ -97,9 +99,9 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       }),
       useList,
       modified: false,
-      synced: true
+      synced: true,
+      syncError: null
     };
-    return result;
   }
   onDropDraggableItem(termId: string, categoryId: string){
     if (this.state.boxes[categoryId].indexOf(termId) === -1){
