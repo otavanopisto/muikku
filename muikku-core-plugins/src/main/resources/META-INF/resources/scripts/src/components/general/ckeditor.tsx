@@ -127,7 +127,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   componentWillReceiveProps(nextProps: CKEditorProps){
     if (nextProps.children !== this.currentData){
       this.enableCancelChangeTrigger();
-      
+      getCKEDITOR().instances[this.name].setData(nextProps.children);
     }
     
     if (nextProps.width !== this.props.width || nextProps.height !== this.props.height){
