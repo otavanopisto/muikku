@@ -780,6 +780,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
     }
@@ -830,6 +831,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
     }
