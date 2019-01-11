@@ -164,6 +164,8 @@
   position: relative;
 
   .cke {
+    border: 2px solid $color-env-dialog-form-element-border;
+    border-radius: 3px;
     flex-grow: 1;
   }
 
@@ -267,7 +269,6 @@ label {
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  margin: 0 4px 0 0;
   padding: 4px 8px;
   width: 100%;
 }
