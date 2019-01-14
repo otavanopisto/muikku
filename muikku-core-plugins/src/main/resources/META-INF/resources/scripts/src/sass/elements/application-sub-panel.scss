@@ -233,7 +233,7 @@
   
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
-  }  
+  }
 }
 
 .application-sub-panel__item--summarizer {
@@ -244,13 +244,13 @@
   
   @include breakpoint($breakpoint-desktop) {
     flex-flow: column nowrap;
-  }  
+  }
 }
 
 .application-sub-panel__summary-highlight {
   color: $color-sub-panel-summary-highlight-font;
   font-size: 2.5rem;
-  
+
   &:not(:first-child) {
     margin-left: 15px;
   }
