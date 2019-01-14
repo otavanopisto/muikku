@@ -8,10 +8,8 @@ export interface YODataType{
   studyEndDate: string,
 }
 
-
-
 export interface YOSubjectType {
-    matriculationSubjects: YOMatriculationSubjectType[] ,
+    matriculationSubjects: Array<YOMatriculationSubjectType> ,
     matriculationSubjectsLoaded: boolean
 }
 
@@ -25,8 +23,6 @@ export interface YOMatriculationSubjectType {
   code: string,
   subjectCode: string
 }
-
-
 
 export default function yo(state:YOType={
   status: "WAIT",

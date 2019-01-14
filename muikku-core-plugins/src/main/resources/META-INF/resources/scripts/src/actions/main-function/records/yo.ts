@@ -22,13 +22,14 @@ let updateYO:UpdateYOTriggerType = function updateYO() {
         payload: null
       });
           
-//      let subjects:Array<YOSubjectType> = await promisify(mApi().records.matriculationSubjects.read({
-//      }), 'callback')() as Array<YOSubjectType>;
-//
-//      dispatch({
-//          type: 'UPDATE_STUDIES_YO_SUBJECTS',
-//          payload: null
-//        });      
+      let subjects:YOSubjectType = await promisify(mApi().records.matriculationSubjects.read({
+          matriculationSubjectsLoaded: true          
+      }), 'callback')() as YOSubjectType;
+
+      dispatch({
+          type: 'UPDATE_STUDIES_YO_SUBJECTS',
+          payload: subjects
+        });      
       
     }
     catch(err) {
@@ -36,12 +37,6 @@ let updateYO:UpdateYOTriggerType = function updateYO() {
     }
   }
 } 
-  
-  
-
-
-
-
 
 export default {updateYO};
 export {updateYO};

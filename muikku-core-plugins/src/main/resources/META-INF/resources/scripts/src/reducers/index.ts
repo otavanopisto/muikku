@@ -13,6 +13,7 @@ import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records/records';
+import { YOType } from './main-function/records/yo';
 import { ErrorType } from './base/error';
 import { ProfileType } from './main-function/profile';
 
@@ -22,9 +23,9 @@ export interface StateType {
   locales: LocaleListType,
   status: StatusType,
   title: string,
-  
-  websocket?: WebsocketStateType,
-  
+
+  websocket?: WebsocketStateType,          
+  subjects: YOType,
   announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
