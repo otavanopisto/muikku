@@ -226,11 +226,11 @@
   flex-grow: 1;
   flex-shrink: 1;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
-  } 
-  
+  }
+
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
@@ -241,7 +241,7 @@
   flex-flow: column wrap;
   flex-basis: 50;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-flow: column nowrap;
   }
