@@ -23,9 +23,8 @@ export interface StateType {
   locales: LocaleListType,
   status: StatusType,
   title: string,
-
   websocket?: WebsocketStateType,          
-  subjects: YOType,
+  yo?: YOType,
   announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,

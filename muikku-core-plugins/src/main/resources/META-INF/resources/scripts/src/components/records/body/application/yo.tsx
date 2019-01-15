@@ -25,7 +25,7 @@ interface YOProps {
   i18n: i18nType,
   records: RecordsType,
   hops: HOPSType,
-  subjects: YOType 
+  yo: YOType
 }
 
 type EligibilityStatus = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
@@ -41,7 +41,6 @@ interface Eligibility {
 interface YOState {
   eligibility?: Eligibility,
   err?: String
-  matriculationSubjects: MatriculationSubjectType[],
   matriculationSubjectsLoaded: boolean
 }
 
@@ -49,7 +48,6 @@ class YO extends React.Component<YOProps, YOState> {
   constructor(props: YOProps) {
     super(props);
     this.state = {
-      matriculationSubjects: [],
       matriculationSubjectsLoaded: false
     }
   }
@@ -63,15 +61,7 @@ class YO extends React.Component<YOProps, YOState> {
     } catch (err) {
       this.setState({err});
     }
-    mApi().records.matriculationSubjects.read()
-      .callback((err: Error, matriculationSubjects: MatriculationSubjectType[]) => {
-        if (!err) {
-          this.setState({
-            matriculationSubjects: matriculationSubjects,
-            matriculationSubjectsLoaded: true
-          });
-        }
-    });
+    
   }
 
   /**
@@ -81,18 +71,17 @@ class YO extends React.Component<YOProps, YOState> {
    * @returns subject code or null if not found
    */
   getSubjectCodeForCode = (code: string) => {
-    const result = this.state.matriculationSubjects.find((matriculationSubject) => {
+     const result = this.props.yo.subjects.matriculationSubjects.find((matriculationSubject) => {
       return matriculationSubject.code === code;
     });
 
     return result ? result.subjectCode : null;
   }
-
-
   
   render() {      
     let i18n = this.props.i18n;
-    let test = this.props.subjects;
+    
+    let end = null;
     if (this.props.records.location !== "yo") {
       return null;
     } else {
@@ -190,13 +179,14 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     records: state.records,
     hops: state.hops,
-    subjects: state.subjects
+    yo: state.yo
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };
+
 
 export default connect(
   mapStateToProps,
