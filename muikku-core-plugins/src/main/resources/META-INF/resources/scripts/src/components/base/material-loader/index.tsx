@@ -23,7 +23,7 @@ import { Dispatch, connect } from 'react-redux';
 import { WebsocketStateType } from '~/reducers/util/websocket';
 import Button from '~/components/general/button';
 import { bindActionCreators } from 'redux';
-import { setCurrentWorkspace, SetCurrentWorkspaceTriggerType, UpdateEvaluatedAssignmentStateTriggerType, updateEvaluatedAssignmentState } from '~/actions/workspaces';
+import { UpdateEvaluatedAssignmentStateTriggerType, updateEvaluatedAssignmentState } from '~/actions/workspaces';
 import equals = require("deep-equal");
 
 const STATES = [{
@@ -100,14 +100,12 @@ interface MaterialLoaderProps {
   id?: string,
   websocket: WebsocketStateType,
   answerable?: boolean,
-  onSubmitAnswer?: ()=>any,
-  onUpdateAnswer?: ()=>any,
+  onAnswerPushed?: ()=>any
 
   loadCompositeReplies?: boolean,
   readOnly?: boolean,
   compositeReplies?: MaterialCompositeRepliesType,
-      
-  setCurrentWorkspace: SetCurrentWorkspaceTriggerType,
+  
   updateEvaluatedAssignmentState: UpdateEvaluatedAssignmentStateTriggerType
 }
 
@@ -198,11 +196,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     } else {
       this.props.updateEvaluatedAssignmentState(this.stateConfiguration['success-state'],
           this.props.workspace.id, this.props.material.workspaceMaterialId, this.props.compositeReplies && this.props.compositeReplies.workspaceMaterialReplyId,
-          this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), ()=>{
-            //This function is very efficient and reuses as much data as possible so it won't call anything from the server other than
-            //to refresh the activity and that's because we are forcing it to do so
-            this.props.setCurrentWorkspace({workspaceId: this.props.workspace.id, refreshActivity: true});
-          });
+          this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAnswerPushed);
     }
   }
   onConfirmedAndSyncedModification(){
@@ -252,7 +246,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateEvaluatedAssignmentState, setCurrentWorkspace}, dispatch);
+  return bindActionCreators({updateEvaluatedAssignmentState}, dispatch);
 };
 
 export default connect(

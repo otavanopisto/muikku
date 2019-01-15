@@ -32,9 +32,9 @@ function isScrolledIntoView(el: HTMLElement) {
 }
 
 class NavigationComponent extends React.Component<NavigationProps, NavigationState> {
-  componentWillReceiveProps(nextProps: NavigationProps){
-    if (nextProps.activeNodeId !== this.props.activeNodeId){
-      this.refresh(nextProps);
+  componentDidUpdate(prevProps: NavigationProps){
+    if (prevProps.activeNodeId !== this.props.activeNodeId){
+      this.refresh();
     }
   }
   refresh(props:NavigationProps = this.props){

@@ -105,13 +105,18 @@ function reuseExistantValue(conditional: boolean, existantValue: any, otherwise:
 let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let current:WorkspaceType = getState().workspaces.currentWorkspace;
-    if (current && current.id === data.workspaceId){
+    if (current && current.id === data.workspaceId && !data.refreshActivity){
       data.success && data.success(current);
       return;
     }
     
     try {
-      let workspace:WorkspaceType = getState().workspaces.userWorkspaces.find(w=>w.id === data.workspaceId) || getState().workspaces.availableWorkspaces.find(w=>w.id === data.workspaceId);
+      let workspace:WorkspaceType = getState().workspaces.userWorkspaces.find(w=>w.id === data.workspaceId) ||
+        getState().workspaces.availableWorkspaces.find(w=>w.id === data.workspaceId);
+      if (current && current.id === data.workspaceId){
+        //if I just make it be current it will be buggy
+        workspace = {...current};
+      }
       let assesments:WorkspaceStudentAssessmentsType;
       let feeInfo:WorkspaceFeeInfoType;
       let assessmentRequests:Array<WorkspaceAssessmentRequestType>;
@@ -121,37 +126,42 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let help:MaterialContentNodeType;
       let producers:Array<WorkspaceProducerType>;
       let status = getState().status;
+      let ridiculousArray = getState().status.loggedIn ? reuseExistantValue(true,
+          //The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
+          //And rerequest
+          typeof data.refreshActivity !== "undefined" && data.refreshActivity ? null : workspace && workspace.studentActivity,
+          ()=>promisify(mApi().guider.workspaces.activity.read(data.workspaceId), 'callback')()) : null;
       [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help] = await Promise.all([
-                                                 reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.read(data.workspaceId), 'callback')()),
+                                                 reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
                                                      workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
-                                                     .students.assessments.read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
+                                                     .students.assessments.cacheClear().read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-                                                     workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.read(data.workspaceId), 'callback')()),
+                                                     workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
-                                                     workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.read(data.workspaceId, {
+                                                     workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.cacheClear().read(data.workspaceId, {
                                                        studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')()),
                                                  
                                                  getState().status.loggedIn ? reuseExistantValue(true,
                                                      //The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
                                                      //And rerequest
                                                      typeof data.refreshActivity !== "undefined" && data.refreshActivity ? null : workspace && workspace.studentActivity,
-                                                     ()=>promisify(mApi().guider.workspaces.activity.read(data.workspaceId), 'callback')()) : null,
+                                                     ()=>promisify(mApi().guider.workspaces.activity.cacheClear().read(data.workspaceId), 'callback')()) : null,
                                                  
                                                  reuseExistantValue(true, workspace && workspace.additionalInfo,
-                                                     ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(data.workspaceId), 'callback')()),
+                                                     ()=>promisify(mApi().workspace.workspaces.additionalInfo.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(true, workspace && workspace.contentDescription,
-                                                     ()=>promisify(mApi().workspace.workspaces.description.read(data.workspaceId), 'callback')()),
+                                                     ()=>promisify(mApi().workspace.workspaces.description.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(true, workspace && workspace.producers,
-                                                     ()=>promisify(mApi().workspace.workspaces.materialProducers.read(data.workspaceId), 'callback')()),
+                                                     ()=>promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(true, workspace && workspace.help,
-                                                     ()=>promisify(mApi().workspace.workspaces.help.read(data.workspaceId), 'callback')())]) as any
+                                                     ()=>promisify(mApi().workspace.workspaces.help.cacheClear().read(data.workspaceId), 'callback')())]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
@@ -496,7 +506,7 @@ let updateEvaluatedAssignmentState:UpdateEvaluatedAssignmentStateTriggerType = f
             .create(workspaceId, workspaceMaterialId, {
               state: successState
             }), 'callback')();
-        replyId = replyGenerated.id;
+        replyId = replyGenerated ? replyGenerated.id : existantReplyId;
       }
       
       //Indeed the reply id will be null in the case of answered setting it up
@@ -508,6 +518,8 @@ let updateEvaluatedAssignmentState:UpdateEvaluatedAssignmentStateTriggerType = f
           workspaceMaterialId
         }
       });
+      
+      callback && callback();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
