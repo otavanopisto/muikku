@@ -2,6 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import CKEditor from '~/components/general/ckeditor';
 import $ from '~/lib/jquery';
+import equals = require("deep-equal");
 
 interface MemoFieldProps {
   type: string,
@@ -14,7 +15,7 @@ interface MemoFieldProps {
   },
   i18n: i18nType,
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -61,7 +62,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
   constructor(props: MemoFieldProps){
     super(props);
     
-    let value = props.value || '';
+    let value = props.initialValue || '';
     let rawText = this.props.content.richedit ? $(value).text() : value;
     this.state = {
       value,
@@ -74,6 +75,9 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     
     this.onInputChange = this.onInputChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
+  }
+  shouldComponentUpdate(nextProps: MemoFieldProps, nextState: MemoFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>){
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
@@ -90,22 +94,6 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       value,
       words: wordCount(rawText),
       characters: characterCount(rawText)
-    });
-  }
-  componentWillReceiveProps(nextProps: MemoFieldProps){
-    if (nextProps.value !== this.state.value){
-      let rawText = nextProps.content.richedit ? $(nextProps.value).text() : (nextProps.value || "");
-      this.setState({
-        value: nextProps.value || "",
-        words: wordCount(rawText),
-        characters: characterCount(rawText)
-      });
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
     });
   }
   render(){

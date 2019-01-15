@@ -5,6 +5,7 @@ import $ from '~/lib/jquery';
 let ProgressBarLine = require('react-progressbar.js').Line;
 import moment from '~/lib/moment';
 import { StatusType } from "reducers/base/status";
+import equals = require("deep-equal");
 
 //TODO make it work functionality, it currently doesn't work cuz I can't figure it out how the old system did it
 //the old system crashes currently I need to be in materials view
@@ -25,7 +26,7 @@ interface AudioFieldProps {
   status: StatusType,
   
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -80,28 +81,18 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     this.onFileChanged = this.onFileChanged.bind(this);
     this.processFileAt = this.processFileAt.bind(this);
   }
-  componentWillReceiveProps(nextProps: AudioFieldProps){
-    if (nextProps.value !== this.props.value){
-      this.setState({
-        values: JSON.parse(nextProps.value).map((v:any)=>({
-          id: v.id,
-          name: v.name,
-          contentType: v.contentType,
-          url: `/rest/workspace/audioanswer/${v.id}`
-        }))
-      });
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
-    });
+  shouldComponentUpdate(nextProps: AudioFieldProps, nextState: AudioFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   async start(){
-    this.stream = await navigator.mediaDevices.getUserMedia({
-      audio: true
-    });
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({
+        audio: true
+      });
+    } catch (err){
+      console.error(err.stack);
+      return;
+    }
     this.recorder = new (window as any).MediaRecorder(this.stream);
     this.recorder.addEventListener('dataavailable', (e: Event)=>{
       let blob = (e as any).data as Blob;

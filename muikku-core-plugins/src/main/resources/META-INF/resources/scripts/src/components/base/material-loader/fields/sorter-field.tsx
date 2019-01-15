@@ -1,6 +1,7 @@
 import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
+import equals = require("deep-equal");
 
 interface SorterFieldItemType {
   id: string,
@@ -17,7 +18,7 @@ interface SorterFieldProps {
   },
   
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -34,8 +35,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     
     let value = null;
     let items;
-    if (props.value){
-      value = JSON.parse(value);
+    if (props.initialValue){
+      value = JSON.parse(props.initialValue);
       items = value.map((v:string)=>this.props.content.items.find(i=>i.id === v));
     } else {
       items = shuffle(props.content.items) || [];
@@ -50,25 +51,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     
     this.swap = this.swap.bind(this);
   }
-  componentWillReceiveProps(nextProps: SorterFieldProps){
-    if (JSON.stringify(nextProps.content) !== JSON.stringify(this.props.content)){
-      this.setState({
-        items: shuffle(nextProps.content.items) || []
-      });
-    }
-    
-    if (nextProps.value !== this.props.value){
-      let value = JSON.parse(nextProps.value);
-      let items = value.map((v:string)=>nextProps.content.items.find(i=>i.id === v));
-      
-      this.setState({items});
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
-    });
+  shouldComponentUpdate(nextProps: SorterFieldProps, nextState: SorterFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   swap(itemA: SorterFieldItemType, itemB: SorterFieldItemType){
     if (itemA.id === itemB.id){

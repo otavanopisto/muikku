@@ -5,6 +5,7 @@ import $ from '~/lib/jquery';
 import { StatusType } from "~/reducers/base/status";
 import {ButtonPill} from "~/components/general/button";
 let ProgressBarLine = require('react-progressbar.js').Line;
+import equals = require("deep-equal");
 
 interface FileFieldProps {
   type: string,
@@ -15,7 +16,7 @@ interface FileFieldProps {
   status: StatusType,
   
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -43,7 +44,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     super(props);
     
     this.state = {
-      values: (props.value && (JSON.parse(props.value) || [])) || [],
+      values: (props.initialValue && (JSON.parse(props.initialValue) || [])) || [],
       modified: false,
       synced: true,
       syncError: null
@@ -52,6 +53,9 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     this.onFileChanged = this.onFileChanged.bind(this);
     this.processFileAt = this.processFileAt.bind(this);
     this.checkDoneAndRunOnChange = this.checkDoneAndRunOnChange.bind(this);
+  }
+  shouldComponentUpdate(nextProps: FileFieldProps, nextState: FileFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   onFileChanged(e: React.ChangeEvent<HTMLInputElement>){
     let newValues = Array.from(e.target.files).map((file)=>{
@@ -146,18 +150,6 @@ export default class FileField extends React.Component<FileFieldProps, FileField
       contentType: false,
       processData: false
     })
-  }
-  componentWillReceiveProps(nextProps: FileFieldProps){
-    let values = (nextProps.value && (JSON.parse(nextProps.value) || null)) || null;
-    if (values !== this.state.values){
-      this.setState({values});
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
-    });
   }
   render(){
     let dataInContainer = null;

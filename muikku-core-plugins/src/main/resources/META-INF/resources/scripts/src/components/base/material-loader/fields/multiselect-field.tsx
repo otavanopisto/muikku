@@ -1,4 +1,5 @@
 import * as React from "react";
+import equals = require("deep-equal");
 
 interface MultiSelectFieldProps {
   type: string,
@@ -13,7 +14,7 @@ interface MultiSelectFieldProps {
     }>
   },
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -30,7 +31,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     
     this.toggleValue = this.toggleValue.bind(this);
     
-    let values:Array<string> = ((props.value && JSON.parse(props.value)) || []) as Array<string>;
+    let values:Array<string> = ((props.initialValue && JSON.parse(props.initialValue)) || []) as Array<string>;
     this.state = {
       values: values.sort(),
       modified: false,
@@ -38,32 +39,8 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
       syncError: null
     }
   }
-  componentWillReceiveProps(nextProps: MultiSelectFieldProps){
-    if (JSON.stringify(nextProps.content.options) !== JSON.stringify(this.props.content.options)){
-      let nValues:Array<string> = [];
-      nextProps.content.options.forEach(option=>{
-        if (this.state.values.includes(option.name)){
-          nValues.push(option.name);
-        }
-      });
-      
-      this.setState({
-        values: nValues.sort()
-      });
-    }
-    
-    let values = nextProps.value && JSON.parse(nextProps.value);
-    if (values && JSON.stringify(values.sort()) !== JSON.stringify(this.state.values)){
-      this.setState({
-        values: values.sort()
-      });
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
-    });
+  shouldComponentUpdate(nextProps: MultiSelectFieldProps, nextState: MultiSelectFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
     let nValues = this.state.values.slice(0);

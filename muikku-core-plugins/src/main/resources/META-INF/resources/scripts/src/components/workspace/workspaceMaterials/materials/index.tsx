@@ -448,7 +448,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
               if (this.state.loadedChapters[chapter.workspaceMaterialId]){
                 let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
-                let material = !this.props.workspace ? null : <ContentPanelItem>
+                let material = !this.props.workspace || !this.props.materialReplies  ? null : <ContentPanelItem>
                   <WorkspaceMaterial materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
                 </ContentPanelItem>;
                 return <div ref={node.workspaceMaterialId + ""}

@@ -42,7 +42,9 @@ interface BaseProps {
   websocket: WebsocketStateType,
   
   compositeReplies?: MaterialCompositeRepliesType,
-  readOnly?: boolean
+  readOnly?: boolean,
+      
+  onConfirmedAndSyncedModification?: ()=>any
 }
 
 interface BaseState {
@@ -240,15 +242,16 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
   
   //to update we go over every registry of fields
-  updateEverything(props: BaseProps = this.props){
+  updateEverything(nextProps: BaseProps){
     
     //We go thru each one of them
     this.fieldRegistry.forEach((field)=>{
       //we get the original deleted element
       let element = field.element;
       //the new element as react would give it
-      let rElement:React.ReactElement<any> = this.getObjectElement(element, props);
-    
+      
+      let rElement:React.ReactElement<any> = this.getObjectElement(element, nextProps);
+      
       //and render the thing again on the parent node
       field.subtree = unstable_renderSubtreeIntoContainer(
         this,
@@ -262,8 +265,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       let rElement:React.ReactElement<any> = statics[statice.componentKey].handler({
         element: statice.element,
         dataset: extractDataSet(statice.element),
-        i18n: props.i18n,
-        path: "/workspace/" + props.workspace.urlName + "/materials/" + props.material.path
+        i18n: nextProps.i18n,
+        path: "/workspace/" + nextProps.workspace.urlName + "/materials/" + nextProps.material.path
       });
       
       statice.subtree = unstable_renderSubtreeIntoContainer(
@@ -301,6 +304,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         this.nameContextRegistry[actualData.fieldName].setState({synced: false, syncError: actualData.error});
         return;
       }
+      
+      //The answer has been modified so we bubble this event
+      this.props.onConfirmedAndSyncedModification();
       
       //we check the name context registry to see if it had been synced, said if you lost connection to the server
       //the field got unsynced, regained the connection and the answer got saved, so the thing above did nothing
@@ -344,18 +350,15 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     //we add our default parameters form redux
     parameters["i18n"] = props.i18n;
     parameters["status"] = props.status;
-    parameters["readOnly"] = props.readOnly || (
-        props.compositeReplies && props.material.assignmentType === "EVALUATED" && 
-        ["SUBMITTED", "PASSED", "FAILED", "INCOMPLETE"].includes(props.compositeReplies.state)
-    );
+    parameters["readOnly"] = props.readOnly;
     
     //We set the value if we have one in composite replies
-    parameters["value"] = props.compositeReplies && props.compositeReplies.answers.find((answer)=>{
+    parameters["initialValue"] = props.compositeReplies && props.compositeReplies.answers && props.compositeReplies.answers.find((answer)=>{
       return answer.fieldName === (parameters.content && parameters.content.name);
     });
     
     //And sometimes the value comes weird in a .value field so we pick that one if its there
-    parameters["value"] = parameters["value"] && parameters["value"].value;
+    parameters["initialValue"] = parameters["initialValue"] && parameters["initialValue"].value;
     
     //We add the onChange function that will make us try to sync with the server
     parameters["onChange"] = this.onValueChange.bind(this);

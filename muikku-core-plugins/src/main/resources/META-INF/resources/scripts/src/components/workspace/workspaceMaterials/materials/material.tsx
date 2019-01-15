@@ -22,7 +22,7 @@ interface WorkspaceMaterialState {
 class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, WorkspaceMaterialState> {
   render(){
     return <MaterialLoader material={this.props.materialContentNode} workspace={this.props.workspace}
-      compositeReplies={this.props.compositeReplies}/>
+      compositeReplies={this.props.compositeReplies} answerable/>
   }
 }
 

@@ -2,6 +2,7 @@ import * as React from "react";
 import MathField from './better-math-field';
 import { i18nType } from "~/reducers/base/i18n";
 import '~/sass/elements/fields/math-field.scss';
+import equals = require("deep-equal");
 
 interface MathFieldProps {
   type: string,
@@ -11,7 +12,7 @@ interface MathFieldProps {
   i18n: i18nType,
   
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -27,7 +28,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     super(props);
     
     this.state = {
-      value: props.value || '',
+      value: props.initialValue || '',
       modified: false,
       synced: true,
       syncError: null
@@ -35,16 +36,8 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     
     this.setValue = this.setValue.bind(this);
   }
-  componentWillReceiveProps(nextProps: MathFieldProps){
-    if (this.props.value !== nextProps.value){
-      this.setValue(nextProps.value);
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
-    });
+  shouldComponentUpdate(nextProps: MathFieldProps, nextState: MathFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   setValue(newValue: string){
     this.props.onChange && this.props.onChange(this, this.props.content.name, newValue);

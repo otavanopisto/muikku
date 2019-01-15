@@ -328,10 +328,11 @@ export interface MaterialAnswerType {
   value: string,
   workspaceMaterialId: number
 }
+export type MaterialCompositeRepliesStateType = "UNANSWERED" | "ANSWERED" | "SUBMITTED" | "WITHDRAWN" | "PASSED" | "FAILED" | "INCOMPLETE"
 
 export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>,
-  state: "UNANSWERED" | "ANSWERED" | "SUBMITTED" | "WITHDRAWN" | "PASSED" | "FAILED" | "INCOMPLETE",
+  state: MaterialCompositeRepliesStateType,
   
   //Available when loaded specifically (eg. via records)
   created: string,
@@ -493,6 +494,19 @@ export default function workspaces(state: WorkspacesType={
     return {...state, currentMaterialsActiveNodeId: action.payload};
   } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES"){
     return {...state, currentMaterialsReplies: action.payload}
+  } else if (action.type === "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER"){
+    let wasUpdated = false;
+    let newCurrentMaterialsReplies = state.currentMaterialsReplies.map((compositeReplies: MaterialCompositeRepliesType)=>{
+      if (compositeReplies.workspaceMaterialId === action.payload.workspaceMaterialId){
+        wasUpdated = true;
+        return {...compositeReplies, ...action.payload};
+      }
+      return compositeReplies
+    });
+    if (!wasUpdated){
+      newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([<MaterialCompositeRepliesType>action.payload]);
+    }
+    return {...state, currentMaterialsReplies: newCurrentMaterialsReplies}
   }
   return state;
 }

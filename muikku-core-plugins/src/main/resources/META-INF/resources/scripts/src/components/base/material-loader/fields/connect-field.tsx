@@ -1,6 +1,7 @@
 import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
+import equals = require("deep-equal");
 
 interface FieldType {
   name: string,
@@ -20,7 +21,7 @@ interface ConnectFieldProps {
   },
   
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -43,8 +44,8 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     let fields:FieldType[];
     let counterparts:FieldType[];
     let editedIdsArray:Array<string> = [];
-    if (props.value){
-      let value = JSON.parse(props.value);
+    if (props.initialValue){
+      let value = JSON.parse(props.initialValue);
       fields = [];
       counterparts = [];
       
@@ -85,41 +86,8 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     this.cancelPreviousPick = this.cancelPreviousPick.bind(this);
     this.triggerChange = this.triggerChange.bind(this);
   }
-  componentWillReceiveProps(nextProps: ConnectFieldProps){
-    if (JSON.stringify(nextProps.content) !== JSON.stringify(this.props.content)){
-      this.setState({
-        fields: shuffle(nextProps.content.fields),
-        counterparts: shuffle(nextProps.content.counterparts)
-      });
-    }
-    
-    if (nextProps.value !== this.props.value && nextProps.value){
-      let value = JSON.parse(nextProps.value);
-      let fields:FieldType[] = [];
-      let counterparts:FieldType[] = [];
-      let editedIdsArray:Array<string> = [];
-      
-      Object.keys(value).forEach((fieldId)=>{
-        let counterpartId = value[fieldId];
-        editedIdsArray.push(fieldId);
-        editedIdsArray.push(counterpartId);
-        
-        fields.push(nextProps.content.fields.find((f)=>f.name === fieldId));
-        counterparts.push(nextProps.content.counterparts.find((c)=>c.name === counterpartId))
-      });
-      
-      this.setState({
-        fields,
-        counterparts,
-        editedIds: new Set(editedIdsArray)
-      });
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
-    });
+  shouldComponentUpdate(nextProps: ConnectFieldProps, nextState: ConnectFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   triggerChange(){
     if (!this.props.onChange){

@@ -67,14 +67,29 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
               if (compositeReplies){
                 switch (compositeReplies.state){
                   case "PASSED":
+                    icon = "guides"
+                    iconTitle = this.props.i18n.text.get("PASSED");
+                    break;
                   case "ANSWERED":
+                    icon = "guides"
+                    iconTitle = this.props.i18n.text.get("ANSWERED");
+                    break;
                   case "SUBMITTED":
+                    icon = "guides"
+                    iconTitle = this.props.i18n.text.get("SUBMITTED");
+                    break;
                   case "WITHDRAWN":
-                  case "PASSED":
+                    icon = "guides"
+                    iconTitle = this.props.i18n.text.get("WITHDRAWN");
+                    break;
                   case "FAILED":
+                    icon = "guides"
+                    iconTitle = this.props.i18n.text.get("FAILED");
+                    break;
                   case "INCOMPLETE":
                     icon = "guides"
-                    iconTitle = this.props.i18n.text.get("TODO tooltip for the icon");
+                    iconTitle = this.props.i18n.text.get("INCOMPLETE");
+                    break;
                   case "UNANSWERED":
                   default:
                     break;

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
+import equals = require("deep-equal");
 
 interface FieldType {
   name: string,
@@ -33,7 +34,7 @@ interface OrganizerFieldProps {
   },
   
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -63,25 +64,11 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     
     this.state = this.getStateWithProps(props, true, false);
   }
-  componentWillReceiveProps(nextProps: OrganizerFieldProps){
-    if (JSON.stringify(nextProps.content) !== JSON.stringify(this.props.content)){
-      if (JSON.stringify(nextProps.content.terms) !== JSON.stringify(this.props.content.terms)){
-        this.setState(this.getStateWithProps(nextProps, true, false));
-      } else {
-        this.setState(this.getStateWithProps(nextProps, false, true));
-      }
-    } else if (nextProps.value !== this.props.value){
-      this.setState(this.getStateWithProps(nextProps, false, true));
-    } else {
-      this.setState({
-        modified: false,
-        synced: true,
-        syncError: null
-      });
-    }
+  shouldComponentUpdate(nextProps: OrganizerFieldProps, nextState: OrganizerFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   getStateWithProps(props: OrganizerFieldProps = this.props, doshuffle: boolean, reuse: boolean): OrganizerFieldState{
-    let value = props.value ? JSON.parse(props.value) : null;
+    let value = props.initialValue ? JSON.parse(props.initialValue) : null;
     let useList:Array<string> = [];
     if (value){
       Object.keys(value).forEach((key)=>{

@@ -1,4 +1,5 @@
 import * as React from "react";
+import equals = require("deep-equal");
 
 interface SelectFieldProps {
   type: string,
@@ -13,7 +14,7 @@ interface SelectFieldProps {
     }>
   },
   readOnly?: boolean,
-  value?: string,
+  initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
 }
 
@@ -31,7 +32,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     this.onSelectChange = this.onSelectChange.bind(this);
     
     this.state = {
-      value: props.value || '',
+      value: props.initialValue || '',
       modified: false,
       synced: true,
       syncError: null
@@ -41,18 +42,8 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
     this.setState({value: e.target.value});
   }
-  componentWillReceiveProps(nextProps: SelectFieldProps){
-    if (nextProps.value !== this.state.value){
-      this.setState({
-        value: nextProps.value || ''
-      });
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
-    });
+  shouldComponentUpdate(nextProps: SelectFieldProps, nextState: SelectFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   render(){
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){

@@ -6,7 +6,7 @@ import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentAc
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType } from '~/reducers/user-index';
-import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -38,6 +38,12 @@ export interface UPDATE_WORKSPACE extends
 export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>{};
 export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>{};
 export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES", MaterialCompositeRepliesListType>{};
+export interface UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER
+  extends SpecificActionType<"UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER", {
+    state: MaterialCompositeRepliesStateType,
+    workspaceMaterialId: number,
+    workspaceMaterialReplyId: number
+}>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -79,6 +85,7 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
 export interface SetCurrentWorkspaceTriggerType {
   (data?: {
     workspaceId: number,
+    refreshActivity?: boolean,
     success?: (workspace: WorkspaceType)=>any,
     fail?: ()=>any
   }):AnyActionType
@@ -116,22 +123,33 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let status = getState().status;
       [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help] = await Promise.all([
                                                  reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.read(data.workspaceId), 'callback')()),
+                                                 
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
                                                      workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
                                                      .students.assessments.read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
+                                                 
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
                                                      workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.read(data.workspaceId), 'callback')()),
+                                                 
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
                                                      workspace && workspace.assessmentRequests, ()=>promisify(mApi().assessmentrequest.workspace.assessmentRequests.read(data.workspaceId, {
                                                        studentIdentifier: getState().status.userSchoolDataIdentifier }), 'callback')()),
-                                                 getState().status.loggedIn ? reuseExistantValue(true, workspace && workspace.studentActivity,
+                                                 
+                                                 getState().status.loggedIn ? reuseExistantValue(true,
+                                                     //The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
+                                                     //And rerequest
+                                                     typeof data.refreshActivity !== "undefined" && data.refreshActivity ? null : workspace && workspace.studentActivity,
                                                      ()=>promisify(mApi().guider.workspaces.activity.read(data.workspaceId), 'callback')()) : null,
+                                                 
                                                  reuseExistantValue(true, workspace && workspace.additionalInfo,
                                                      ()=>promisify(mApi().workspace.workspaces.additionalInfo.read(data.workspaceId), 'callback')()),
+                                                 
                                                  reuseExistantValue(true, workspace && workspace.contentDescription,
                                                      ()=>promisify(mApi().workspace.workspaces.description.read(data.workspaceId), 'callback')()),
+                                                 
                                                  reuseExistantValue(true, workspace && workspace.producers,
                                                      ()=>promisify(mApi().workspace.workspaces.materialProducers.read(data.workspaceId), 'callback')()),
+                                                 
                                                  reuseExistantValue(true, workspace && workspace.help,
                                                      ()=>promisify(mApi().workspace.workspaces.help.read(data.workspaceId), 'callback')())]) as any
       workspace.studentAssessments = assesments;
@@ -275,6 +293,9 @@ export interface SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType {
 }
 export interface LoadWorkspaceCompositeMaterialReplies {
   (id: number):AnyActionType
+}
+export interface UpdateEvaluatedAssignmentStateTriggerType {
+  (successState: MaterialCompositeRepliesStateType, workspaceId: number, workspaceMaterialId: number, existantReplyId?: number, successMessage?: string, callback?: ()=>any):AnyActionType
 }
 
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
@@ -459,6 +480,44 @@ let loadWorkspaceCompositeMaterialReplies:LoadWorkspaceCompositeMaterialReplies 
   }
 }
 
+//Updates the evaluated assignment state, and either updates an existant composite reply or creates a new one as incomplete,
+//that is no answers
+//unless the state is answered that it won't even have a replyId
+//this is to save unecessary requests
+let updateEvaluatedAssignmentState:UpdateEvaluatedAssignmentStateTriggerType = function updateEvaluatedAssignmentState(successState, workspaceId, workspaceMaterialId, existantReplyId, successMessage, callback){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let replyId:number = null;
+      if (successState !== "ANSWERED"){
+        let replyGenerated:any = await promisify((existantReplyId && mApi().workspace.workspaces.materials.replies
+            .update(workspaceId, workspaceMaterialId, existantReplyId, {
+              state: successState
+            })) || mApi().workspace.workspaces.materials.replies
+            .create(workspaceId, workspaceMaterialId, {
+              state: successState
+            }), 'callback')();
+        replyId = replyGenerated.id;
+      }
+      
+      //Indeed the reply id will be null in the case of answered setting it up
+      dispatch({
+        type: "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
+        payload: {
+          workspaceMaterialReplyId: replyId,
+          state: successState,
+          workspaceMaterialId
+        }
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to deliver to the server'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
-  updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies}
+  updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
+  updateEvaluatedAssignmentState}

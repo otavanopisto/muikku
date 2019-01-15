@@ -1,4 +1,5 @@
 import * as React from "react";
+import equals = require("deep-equal");
 
 interface TextFieldProps {
   type: string,
@@ -16,7 +17,7 @@ interface TextFieldProps {
   },
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
   readOnly?: boolean,
-  value?: string
+  initialValue?: string
 }
 
 interface TextFieldState {
@@ -31,7 +32,7 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     super(props);
     
     this.state = {
-      value: props.value || '',
+      value: props.initialValue || '',
       modified: false,
       synced: true,
       syncError: null
@@ -39,18 +40,8 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     
     this.onInputChange = this.onInputChange.bind(this);
   }
-  componentWillReceiveProps(nextProps: TextFieldProps){
-    if (nextProps.value !== this.state.value){
-      this.setState({
-        value: nextProps.value || ''
-      });
-    }
-    
-    this.setState({
-      modified: false,
-      synced: true,
-      syncError: null
-    });
+  shouldComponentUpdate(nextProps: TextFieldProps, nextState: TextFieldState){
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
   }
   onInputChange(e: React.ChangeEvent<HTMLInputElement>){
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
