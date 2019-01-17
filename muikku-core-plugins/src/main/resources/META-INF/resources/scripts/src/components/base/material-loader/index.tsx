@@ -23,29 +23,29 @@ import { Dispatch, connect } from 'react-redux';
 import { WebsocketStateType } from '~/reducers/util/websocket';
 import Button from '~/components/general/button';
 import { bindActionCreators } from 'redux';
-import { UpdateEvaluatedAssignmentStateTriggerType, updateEvaluatedAssignmentState } from '~/actions/workspaces';
+import { UpdateAssignmentStateTriggerType, updateAssignmentState } from '~/actions/workspaces';
 import equals = require("deep-equal");
 
 const STATES = [{
   'assignment-type': 'EXERCISE',
-  'state': ['UNANSWERED', 'ANSWERED'],
+  'state': ['UNANSWERED', 'ANSWERED', 'WITHDRAWN'],
+  'checks-answers': true,
+  'displays-hide-show-answers-on-request-button-if-allowed': false,
   'button-class': 'muikku-check-exercises',
-  'button-text': "plugin.workspace.materialsLoader.sendExerciseButton",
-  'button-check-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+  'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
   'button-disabled': false,
   'success-state': 'SUBMITTED',
   'fields-read-only': false
 }, {
   'assignment-type': 'EXERCISE',
   'state': ['SUBMITTED', 'PASSED', 'FAILED', 'INCOMPLETE'],
-  'check-answers': true,
+  'checks-answers': true,
+  'answers-always-checked': true,
+  'displays-hide-show-answers-on-request-button-if-allowed': true,
   'button-class': 'muikku-check-exercises',
-  'button-text': "plugin.workspace.materialsLoader.exerciseSentButton",
-  'button-check-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
+  'button-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
   'button-disabled': false,
-  'success-state': 'SUBMITTED',
-  'fields-read-only': false,
-  'show-answers-button-visible': true
+  'modify-state': 'ANSWERED'
 }, {
   'assignment-type': 'EVALUATED',
   'state': ['UNANSWERED', 'ANSWERED'],
@@ -100,17 +100,20 @@ interface MaterialLoaderProps {
   id?: string,
   websocket: WebsocketStateType,
   answerable?: boolean,
-  onAnswerPushed?: ()=>any
+  onAssignmentStateModified?: ()=>any
 
   loadCompositeReplies?: boolean,
   readOnly?: boolean,
   compositeReplies?: MaterialCompositeRepliesType,
   
-  updateEvaluatedAssignmentState: UpdateEvaluatedAssignmentStateTriggerType
+  updateAssignmentState: UpdateAssignmentStateTriggerType
 }
 
 interface MaterialLoaderState {
-  compositeReplies: MaterialCompositeRepliesType
+  compositeReplies: MaterialCompositeRepliesType,
+  
+  answersVisible: boolean,
+  answersChecked: boolean
 }
 
 let materialRepliesCache:{[key: string]: any} = {};
@@ -119,7 +122,7 @@ let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 //Treat this class with care it uses a lot of hacks to be efficient
 //The compositeReplies which answers are ignored and only used for setting the initial replies
 //Overall there are a ton of hacks for making it fast
-//So try only to update the composite replies only, however any changes will be ignored by the field themselves and used only on purposes of
+//So try only to updnullnullate the composite replies only, however any changes will be ignored by the field themselves and used only on purposes of
 //updating the layout and whatnot basically here, down the line all changes are scraped, base never ever updates
 //and the field never changes its state, a change in the content of the field, can destroy it and break the page
 //you can add styles here but don't mess up with the low level rendering
@@ -130,12 +133,16 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
 
     this.stopPropagation = this.stopPropagation.bind(this);
 
-    this.state = {
-      compositeReplies: null
-    }
+    let state:MaterialLoaderState = {
+      compositeReplies: null,
+      answersVisible: false,
+      answersChecked: false
+    };
     
     this.onConfirmedAndSyncedModification = this.onConfirmedAndSyncedModification.bind(this);
+    this.onModification = this.onModification.bind(this);
     this.onPushAnswer = this.onPushAnswer.bind(this);
+    this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     
     if (props.answerable && props.material){
       this.stateConfiguration = STATES.filter((state:any)=>{
@@ -145,7 +152,16 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         let statesInIt = state['state'];
         return statesInIt === stateRequired || ((statesInIt instanceof Array) && statesInIt.includes(stateRequired));
       });
+      
+      if (this.stateConfiguration && this.stateConfiguration['answers-always-checked']){
+        state.answersChecked = true;
+        if (!props.material || props.material.correctAnswers === "ALWAYS"){
+          state.answersVisible = true;
+        }
+      }
     }
+    
+    this.state = state;
   }
   componentDidMount(){
     this.create();
@@ -155,14 +171,27 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
     if (nextProps.answerable && nextProps.material){
+      let compositeReplies = nextProps.compositeReplies || nextState.compositeReplies;
       this.stateConfiguration = STATES.filter((state:any)=>{
         return state['assignment-type'] === nextProps.material.assignmentType;
       }).find((state:any)=>{
-        let compositeReplies = nextProps.compositeReplies || nextState.compositeReplies;
         let stateRequired = (compositeReplies && compositeReplies.state) || "UNANSWERED";
         let statesInIt = state['state'];
         return statesInIt === stateRequired || ((statesInIt instanceof Array) && statesInIt.includes(stateRequired));
       });
+      
+      if (this.stateConfiguration && this.stateConfiguration['answers-always-checked'] && !nextState.answersChecked){
+        if (!nextProps.material || nextProps.material.correctAnswers === "ALWAYS"){
+          this.setState({
+            answersVisible: true,
+            answersChecked: true
+          });
+        } else {
+          this.setState({
+            answersChecked: true
+          });
+        }
+      }
     }
   }
   async create(){
@@ -191,24 +220,59 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     return this.refs["root"] as HTMLDivElement;
   }
   onPushAnswer(){
-    if (this.stateConfiguration['assignment-type'] === "EXERCISE"){
-      alert("NOT IMPLEMENTED");
-    } else {
-      this.props.updateEvaluatedAssignmentState(this.stateConfiguration['success-state'],
-          this.props.workspace.id, this.props.material.workspaceMaterialId, this.props.compositeReplies && this.props.compositeReplies.workspaceMaterialReplyId,
-          this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAnswerPushed);
+    if (this.stateConfiguration['checks-answers']){
+      if (!this.props.material.correctAnswers || this.props.material.correctAnswers === "ALWAYS"){
+        this.setState({
+          answersVisible: true,
+          answersChecked: true
+        });
+      } else {
+        this.setState({
+          answersChecked: true
+        });
+      }
+    }
+    
+    if (this.stateConfiguration['success-state']){
+      let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
+      //We make it be the success state that was given
+      this.props.updateAssignmentState(this.stateConfiguration['success-state'], false,
+          this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
+          this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAssignmentStateModified);
     }
   }
   onConfirmedAndSyncedModification(){
-    if (this.stateConfiguration['assignment-type'] === "EXERCISE"){
-      alert("NOT IMPLEMENTED");
-    } else {
-      if (!this.props.compositeReplies || this.props.compositeReplies.state === "UNANSWERED"){
-        this.props.updateEvaluatedAssignmentState("ANSWERED",
-            this.props.workspace.id, this.props.material.workspaceMaterialId, this.props.compositeReplies && this.props.compositeReplies.workspaceMaterialReplyId,
-            this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']));
-      }
+    let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
+    if (!compositeReplies || compositeReplies.state === "UNANSWERED"){
+      //We make the call using true to avoid the server call since that would be redundant
+      //We just want to make the answer answered and we know that it has been updated
+      //already as the answer has been synced
+      this.props.updateAssignmentState("ANSWERED", true,
+          this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
+          this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']));
     }
+  }
+  onModification(){
+    let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
+    if (this.stateConfiguration['modify-state'] &&
+        (compositeReplies || {state: "UNANSWERED"}).state !== this.stateConfiguration['modify-state']){
+      //The modify state is forced in so we use false to call to the server
+      this.props.updateAssignmentState(this.stateConfiguration['modify-state'], false,
+          this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
+          this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAssignmentStateModified);
+    }
+    
+    if (this.stateConfiguration['checks-answers'] && (this.state.answersVisible || this.state.answersChecked)){
+      this.setState({
+        answersVisible: false,
+        answersChecked: false
+      });
+    }
+  }
+  toggleAnswersVisible(){
+    this.setState({
+      answersVisible: !this.state.answersVisible
+    });
   }
   render(){
     //TODO remove this __deprecated container once things are done and classes are cleared up, or just change the classname to something
@@ -224,12 +288,20 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
          <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}
           workspace={this.props.workspace} websocket={this.props.websocket} onConfirmedAndSyncedModification={this.onConfirmedAndSyncedModification}
-          readOnly={this.props.readOnly || (this.props.answerable && this.stateConfiguration && this.stateConfiguration['fields-read-only'])} compositeReplies={this.props.compositeReplies || this.state.compositeReplies}/>
+          onModification={this.onModification}
+          readOnly={this.props.readOnly || (this.props.answerable && this.stateConfiguration && this.stateConfiguration['fields-read-only'])}
+          compositeReplies={this.props.compositeReplies || this.state.compositeReplies}/>
          }
       </div>
-      {this.props.answerable && this.stateConfiguration && !this.stateConfiguration['button-disabled']? <div className="material-page-answers-buttons">
-        <Button buttonModifiers={this.stateConfiguration['button-class']}
-        onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.stateConfiguration['button-text'])}</Button>
+      {this.props.answerable && this.stateConfiguration ? <div className="material-page-answers-buttons">
+        {!this.stateConfiguration['button-disabled'] ? <Button buttonModifiers={this.stateConfiguration['button-class']}
+          onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.stateConfiguration['button-text'])}</Button> : null}
+              
+        {this.stateConfiguration['displays-hide-show-answers-on-request-button-if-allowed'] &&
+          this.props.material.correctAnswers === "ON_REQUEST" ? <Button 
+            buttonModifiers="muikku-show-correct-answers-button" onClick={this.toggleAnswersVisible}>
+            {this.props.i18n.text.get(this.state.answersVisible ? "plugin.workspace.materialsLoader.hideAnswers" : "plugin.workspace.materialsLoader.showAnswers")}
+          </Button> : null}
       </div> : null}
       {this.props.material.license ?
         <div className="license">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}: {this.props.material.license}</div> : null}
@@ -246,7 +318,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateEvaluatedAssignmentState}, dispatch);
+  return bindActionCreators({updateAssignmentState}, dispatch);
 };
 
 export default connect(

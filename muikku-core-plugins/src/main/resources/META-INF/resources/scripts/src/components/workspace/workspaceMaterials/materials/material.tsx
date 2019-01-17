@@ -34,7 +34,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
   }
   render(){
     return <MaterialLoader material={this.props.materialContentNode} workspace={this.props.workspace}
-      compositeReplies={this.props.compositeReplies} answerable onAnswerPushed={this.updateWorkspaceActivity}/>
+      compositeReplies={this.props.compositeReplies} answerable onAssignmentStateModified={this.updateWorkspaceActivity}/>
   }
 }
 

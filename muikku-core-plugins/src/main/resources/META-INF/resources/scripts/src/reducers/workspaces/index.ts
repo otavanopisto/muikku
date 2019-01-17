@@ -278,6 +278,8 @@ export interface JournalType {
 
 export type JournalListType = Array<JournalType>;
 
+export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
+
 export interface MaterialAssignmentType {
   id: number,
   materialId: number,
@@ -309,7 +311,7 @@ export interface MaterialContentNodeType {
   materialId?: number,
   level?: number,
   assignmentType?: "EXERCISE" | "EVALUATED",
-  correctAnswers?: string,
+  correctAnswers?: MaterialCorrectAnswersType,
   hidden?: boolean,
   parentId?: number,
   path?: string,

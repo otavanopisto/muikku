@@ -304,8 +304,8 @@ export interface SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType {
 export interface LoadWorkspaceCompositeMaterialReplies {
   (id: number):AnyActionType
 }
-export interface UpdateEvaluatedAssignmentStateTriggerType {
-  (successState: MaterialCompositeRepliesStateType, workspaceId: number, workspaceMaterialId: number, existantReplyId?: number, successMessage?: string, callback?: ()=>any):AnyActionType
+export interface UpdateAssignmentStateTriggerType {
+  (successState: MaterialCompositeRepliesStateType, avoidServerCall: boolean, workspaceId: number, workspaceMaterialId: number, existantReplyId?: number, successMessage?: string, callback?: ()=>any):AnyActionType
 }
 
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
@@ -492,13 +492,11 @@ let loadWorkspaceCompositeMaterialReplies:LoadWorkspaceCompositeMaterialReplies 
 
 //Updates the evaluated assignment state, and either updates an existant composite reply or creates a new one as incomplete,
 //that is no answers
-//unless the state is answered that it won't even have a replyId
-//this is to save unecessary requests
-let updateEvaluatedAssignmentState:UpdateEvaluatedAssignmentStateTriggerType = function updateEvaluatedAssignmentState(successState, workspaceId, workspaceMaterialId, existantReplyId, successMessage, callback){
+let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssignmentState(successState, avoidServerCall, workspaceId, workspaceMaterialId, existantReplyId, successMessage, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      let replyId:number = null;
-      if (successState !== "ANSWERED"){
+      let replyId:number = existantReplyId;
+      if (!avoidServerCall){
         let replyGenerated:any = await promisify((existantReplyId && mApi().workspace.workspaces.materials.replies
             .update(workspaceId, workspaceMaterialId, existantReplyId, {
               state: successState
@@ -532,4 +530,4 @@ let updateEvaluatedAssignmentState:UpdateEvaluatedAssignmentStateTriggerType = f
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
-  updateEvaluatedAssignmentState}
+  updateAssignmentState}

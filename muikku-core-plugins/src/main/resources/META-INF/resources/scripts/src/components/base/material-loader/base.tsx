@@ -44,7 +44,8 @@ interface BaseProps {
   compositeReplies?: MaterialCompositeRepliesType,
   readOnly?: boolean,
       
-  onConfirmedAndSyncedModification?: ()=>any
+  onConfirmedAndSyncedModification?: ()=>any,
+  onModification?: ()=>any
 }
 
 interface BaseState {
@@ -376,6 +377,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (!context.state.modified){
       context.setState({modified: true});
     }
+    
+    this.props.onModification && this.props.onModification();
     
     //we get the name context registry and register that context for future use
     this.nameContextRegistry[name] = context;
