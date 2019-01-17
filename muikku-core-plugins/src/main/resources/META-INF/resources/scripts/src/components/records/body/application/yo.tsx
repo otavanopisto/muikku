@@ -46,7 +46,7 @@ class YO extends React.Component<YOProps, YOState> {
    * @returns subject code or null if not found
    */
   getSubjectCodeForCode = (code: string) => {
-     const result = this.props.yo.subjects.matriculationSubjects.find((matriculationSubject) => {
+     const result = this.props.yo.subjects.find((matriculationSubject) => {
       return matriculationSubject.code === code;
     });
 

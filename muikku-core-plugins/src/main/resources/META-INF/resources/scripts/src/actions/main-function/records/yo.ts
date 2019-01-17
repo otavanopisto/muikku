@@ -3,13 +3,14 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
-import { YODataType, YOStatusType, YOSubjectType, YOMatriculationSubjectType, YOEligibilityStatusType, YOEligibilityType } from '~/reducers/main-function/records/yo';
+import { YODataType, YOStatusType, YOMatriculationSubjectType, YOEligibilityStatusType, YOEligibilityType } from '~/reducers/main-function/records/yo';
 import { StateType } from '~/reducers';
+
 
 export interface UPDATE_STUDIES_YO extends SpecificActionType<"UPDATE_STUDIES_YO", YODataType> {}
 export interface UPDATE_STUDIES_YO_ELIGIBILITY_STATUS extends SpecificActionType<"UPDATE_STUDIES_YO_ELIGIBILITY_STATUS", YOEligibilityStatusType> {}
 export interface UPDATE_STUDIES_YO_ELIGIBILITY extends SpecificActionType<"UPDATE_STUDIES_YO_ELIGIBILITY", YOEligibilityType> {}
-export interface UPDATE_STUDIES_YO_SUBJECTS extends SpecificActionType<"UPDATE_STUDIES_YO_SUBJECTS", YOSubjectType> {}
+export interface UPDATE_STUDIES_YO_SUBJECTS extends SpecificActionType<"UPDATE_STUDIES_YO_SUBJECTS", YOMatriculationSubjectType> {}
 export interface UPDATE_STUDIES_YO_STATUS extends SpecificActionType<"UPDATE_STUDIES_YO_STATUS", YOStatusType>{}
 
 export interface UpdateYOTriggerType {
@@ -25,9 +26,9 @@ let updateYO:UpdateYOTriggerType = function updateYO() {
         payload: null
       });
           
-      let subjects:YOSubjectType = await promisify(mApi().records.matriculationSubjects.read({
+      let subjects:YOMatriculationSubjectType = await promisify(mApi().records.matriculationSubjects.read({
           matriculationSubjectsLoaded: true          
-      }), 'callback')() as YOSubjectType;
+      }), 'callback')() as YOMatriculationSubjectType;
 
       dispatch({
           type: 'UPDATE_STUDIES_YO_SUBJECTS',

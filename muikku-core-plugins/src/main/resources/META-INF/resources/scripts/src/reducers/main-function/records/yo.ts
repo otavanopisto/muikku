@@ -16,14 +16,11 @@ export interface YOEligibilityType {
     examDate: String
 }
 
-export interface YOSubjectType {
-    matriculationSubjects: Array<YOMatriculationSubjectType> ,
-}
 
 export interface YOType {
   status: YOStatusType,
   value: YODataType,
-  subjects: YOSubjectType,
+  subjects: Array<YOMatriculationSubjectType>,
   eligibility: YOEligibilityType,
   eligibilityStatus: YOEligibilityStatusType
 }
