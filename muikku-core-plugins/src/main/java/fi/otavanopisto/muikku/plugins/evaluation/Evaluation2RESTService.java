@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.evaluation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -45,6 +46,8 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluati
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignment;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
@@ -185,13 +188,107 @@ public class Evaluation2RESTService {
   }
   
   @GET
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/events")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaceEvents(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
+    
+    // Entities and access check (ACCESS_EVALUATION or own)
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+    User student = userController.findUserByIdentifier(studentIdentifier);
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      if (!sessionController.getLoggedUserEntity().getId().equals(studentEntity.getId())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Result object
+    
+    List<RestEvaluationEvent> events = new ArrayList<RestEvaluationEvent>();
+    
+    // Assessments
+    
+    List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(
+        workspaceEntity.getDataSource().getIdentifier(), 
+        workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+    for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
+      
+      // More data from Pyramus (urgh)
+      
+      User assessor = userController.findUserByIdentifier(workspaceAssessment.getAssessingUserIdentifier());
+      SchoolDataIdentifier gradingScaleIdentifier = workspaceAssessment.getGradingScaleIdentifier();
+      GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+      SchoolDataIdentifier gradeIdentifier = workspaceAssessment.getGradeIdentifier();
+      GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+      
+      // Event
+      
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setAuthor(assessor.getDisplayName());
+      event.setDate(workspaceAssessment.getDate());
+      event.setGrade(gradingScaleItem.getName());
+      event.setIdentifier(workspaceAssessment.getIdentifier().toId());
+      event.setText(workspaceAssessment.getVerbalAssessment());
+      event.setType(gradingScaleItem.isPassingGrade() ? RestEvaluationEventType.EVALUATION_PASS : RestEvaluationEventType.EVALUATION_FAIL);
+      events.add(event);
+    }
+    
+    // Supplementation requests
+    
+    List<SupplementationRequest> supplementationRequests = evaluationController.listSupplementationRequestsByStudentAndWorkspaceAndArchived(
+        studentEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
+    for (SupplementationRequest supplementationRequest : supplementationRequests) {
+      
+      // More data from Pyramus (urgh)
+      
+      UserEntity assessorEntity = userEntityController.findUserEntityById(supplementationRequest.getUserEntityId());
+      SchoolDataIdentifier assessorIdentifier = new SchoolDataIdentifier(assessorEntity.getDefaultIdentifier(), assessorEntity.getDefaultSchoolDataSource().getIdentifier());
+      User assessor = userController.findUserByIdentifier(assessorIdentifier);
+      
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setAuthor(assessor.getDisplayName());
+      event.setDate(supplementationRequest.getRequestDate());
+      event.setIdentifier(supplementationRequest.getId().toString());
+      event.setText(supplementationRequest.getRequestText());
+      event.setType(RestEvaluationEventType.SUPPLEMENTATION_REQUEST);
+      events.add(event);
+    }
+    
+    // Evaluation requests
+    
+    List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
+        workspaceEntity.getDataSource().getIdentifier(), 
+        workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+    for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
+      RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setAuthor(student.getDisplayName());
+      event.setDate(assessmentRequest.getDate());
+      event.setIdentifier(assessmentRequest.getIdentifier());
+      event.setText(assessmentRequest.getRequestText());
+      event.setType(RestEvaluationEventType.EVALUATION_REQUEST);
+      events.add(event);
+    }
+    
+    // Sort and return
+    
+    events.sort(Comparator.comparing(RestEvaluationEvent::getDate));
+    return Response.ok(events).build();
+  }
+  
+  @GET
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   @Deprecated // use /workspaceuser/{WORKSPACEUSERENTITYID}/assessment/{ASSESSMENTIDENTIFIER} instead
   public Response findWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
