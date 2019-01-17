@@ -27,7 +27,14 @@ interface AnnouncementProps {
 interface AnnouncementState {
 }
 
+
+
 class Announcement extends React.Component<AnnouncementProps, AnnouncementState> {
+
+  componentDidUpdate() {
+   window.scrollTo(0,0);
+  }
+  
   render(){
     if (!this.props.announcement) {
       return (null)
