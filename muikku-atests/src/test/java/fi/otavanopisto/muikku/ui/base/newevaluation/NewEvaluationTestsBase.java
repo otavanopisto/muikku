@@ -28,6 +28,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
@@ -125,6 +126,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
@@ -221,6 +223,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
@@ -302,6 +305,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
@@ -409,6 +413,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
