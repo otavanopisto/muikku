@@ -10,7 +10,7 @@ import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 import { HOPSType } from "~/reducers/main-function/hops";
 import mApi from '~/lib/mApi';
-import { YOType } from '~/reducers/main-function/records/yo';
+import { YOType, YOEligibilityType, YOEligibilityStatusType } from '~/reducers/main-function/records/yo';
 import MatriculationSubjectType from './matriculation-subjects/matriculation-subject-type';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
@@ -28,40 +28,15 @@ interface YOProps {
   yo: YOType
 }
 
-type EligibilityStatus = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
-
-interface Eligibility {
-  status: EligibilityStatus,
-  coursesCompleted: number,
-  coursesRequired: number,
-  enrollmentDate: String,
-  examDate: String
-}
-
 interface YOState {
-  eligibility?: Eligibility,
+  eligibility?: YOEligibilityType,
+  eligibilityStatus?: YOEligibilityStatusType,
   err?: String
-  matriculationSubjectsLoaded: boolean
 }
 
 class YO extends React.Component<YOProps, YOState> {
   constructor(props: YOProps) {
     super(props);
-    this.state = {
-      matriculationSubjectsLoaded: false
-    }
-  }
-
-  async componentDidMount() {
-    try {
-      let eligibility: Eligibility = await promisify(
-        mApi().records.studentMatriculationEligibility
-        .read((window as any).MUIKKU_LOGGED_USER), 'callback')() as Eligibility;
-      this.setState({eligibility});
-    } catch (err) {
-      this.setState({err});
-    }
-    
   }
 
   /**
@@ -81,11 +56,10 @@ class YO extends React.Component<YOProps, YOState> {
   render() {      
     let i18n = this.props.i18n;
     
-    let end = null;
     if (this.props.records.location !== "yo") {
       return null;
     } else {
-      const loaded = this.state.matriculationSubjectsLoaded && this.props.hops.status === "READY" && !!this.props.hops.value;
+      const loaded = this.props.hops.status === "READY" && !!this.props.hops.value;
       const selectedMatriculationSubjects = loaded ? (this.props.hops.value.studentMatriculationSubjects || []).map((code: string, index: number) => {
         return (
           <MatriculationEligibilityRow key={index} code={code} subjectCode={this.getSubjectCodeForCode(code)}/>
@@ -96,9 +70,8 @@ class YO extends React.Component<YOProps, YOState> {
         <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.yo.title")}</div>
         <div className="application-sub-panel">
           <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.abiStatus.title")}</div>
-          {this.state.err != null ?
-            <p>{this.state.err}</p> : null}
-          {this.state.eligibility != null ? this.state.eligibility.status == "ELIGIBLE" ?
+  
+          {this.props.yo.eligibility != null ? this.props.yo.eligibilityStatus == "ELIGIBLE" ?
               <div>
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
                   <div className="application-sub-panel__notification-item">
@@ -109,12 +82,12 @@ class YO extends React.Component<YOProps, YOState> {
                   </div>
                 </div>              
               </div> :                 
-              this.state.eligibility.status == "NOT_ELIGIBLE" ?
+              this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete">
                       <span className="application-sub-panel__notification-content">
-                        {i18n.text.get("plugin.records.matriculation.notEligible", this.state.eligibility.coursesCompleted, this.state.eligibility.coursesRequired)}
+                        {i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}
                       </span>
                     </div>
                   </div>
@@ -122,11 +95,11 @@ class YO extends React.Component<YOProps, YOState> {
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
                  <div className="application-sub-panel__notification-body">
                    <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
-                   <span className="application-sub-panel__notification-content">{moment(this.state.eligibility.enrollmentDate).format("D.M.YYYY")}</span>
+                   <span className="application-sub-panel__notification-content">{moment(this.props.yo.eligibility.enrollmentDate).format("D.M.YYYY")}</span>
                  </div>
                  <div className="application-sub-panel__notification-body">
                    <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.examDate")}</span>
-                   <span className="application-sub-panel__notification-content">{moment(this.state.eligibility.examDate).format("D.M.YYYY")}</span>
+                   <span className="application-sub-panel__notification-content">{moment(this.props.yo.eligibility.examDate).format("D.M.YYYY")}</span>
                  </div>
                </div>  
             : null}
