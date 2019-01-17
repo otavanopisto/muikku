@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  
+  <sql>alter table SupplementationRequest drop index UKl51cf45ha7x8d6lyux4gpkakm;</sql>
+  <sql>alter table SupplementationRequest drop index UKpnt06qthoxjvxmuxupbhchenn;</sql>
+  <sql>alter table WorkspaceMaterialEvaluation drop index studentEntityId;</sql>
+
+  <sql>create index sr_student_material on SupplementationRequest (studentEntityId, workspaceMaterialId);</sql>
+  <sql>create index sr_student_workspace on SupplementationRequest (studentEntityId, workspaceEntityId);</sql>
+  <sql>create index wme_student_material on WorkspaceMaterialEvaluation (studentEntityId, workspaceMaterialId);</sql>
+  
+</update>

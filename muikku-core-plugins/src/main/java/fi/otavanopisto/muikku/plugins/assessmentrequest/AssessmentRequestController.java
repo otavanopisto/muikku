@@ -126,7 +126,7 @@ public class AssessmentRequestController {
     
     // Workspace supplementation request
     UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-    SupplementationRequest supplementationRequest = evaluationController.findSupplementationRequestByStudentAndWorkspaceAndArchived(
+    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
         userEntity.getId(),
         workspaceEntity.getId(),
         Boolean.FALSE);
