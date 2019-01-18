@@ -45,7 +45,10 @@ interface BaseProps {
   readOnly?: boolean,
       
   onConfirmedAndSyncedModification?: ()=>any,
-  onModification?: ()=>any
+  onModification?: ()=>any,
+  displayRightAnswers: boolean,
+  checkForRightness: boolean,
+  onRightnessChange: (name:string, status:boolean)=>any
 }
 
 interface BaseState {
@@ -363,6 +366,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     
     //We add the onChange function that will make us try to sync with the server
     parameters["onChange"] = this.onValueChange.bind(this);
+    
+    parameters["displayRightAnswers"] = props.displayRightAnswers;
+    parameters["checkForRightness"] = props.checkForRightness;
+    parameters["onRightnessChange"] = props.onRightnessChange;
     
     //and we return that thing
     return <ActualElement {...parameters}/>

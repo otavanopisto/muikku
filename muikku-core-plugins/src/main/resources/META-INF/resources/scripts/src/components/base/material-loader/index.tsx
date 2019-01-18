@@ -113,7 +113,9 @@ interface MaterialLoaderState {
   compositeReplies: MaterialCompositeRepliesType,
   
   answersVisible: boolean,
-  answersChecked: boolean
+  answersChecked: boolean,
+  
+  rightnessRegistry: {[name: string]: any}
 }
 
 let materialRepliesCache:{[key: string]: any} = {};
@@ -136,13 +138,15 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let state:MaterialLoaderState = {
       compositeReplies: null,
       answersVisible: false,
-      answersChecked: false
+      answersChecked: false,
+      rightnessRegistry: {}
     };
     
     this.onConfirmedAndSyncedModification = this.onConfirmedAndSyncedModification.bind(this);
     this.onModification = this.onModification.bind(this);
     this.onPushAnswer = this.onPushAnswer.bind(this);
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
+    this.onRightnessChange = this.onRightnessChange.bind(this);
     
     if (props.answerable && props.material){
       this.stateConfiguration = STATES.filter((state:any)=>{
@@ -274,6 +278,13 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       answersVisible: !this.state.answersVisible
     });
   }
+  onRightnessChange(name: string, value: boolean){
+    let newObj:any = {...this.state.rightnessRegistry};
+    newObj[name] = value;
+    this.setState({
+      rightnessRegistry: newObj
+    })
+  }
   render(){
     //TODO remove this __deprecated container once things are done and classes are cleared up, or just change the classname to something
     //more reasonable
@@ -290,7 +301,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           workspace={this.props.workspace} websocket={this.props.websocket} onConfirmedAndSyncedModification={this.onConfirmedAndSyncedModification}
           onModification={this.onModification}
           readOnly={this.props.readOnly || (this.props.answerable && this.stateConfiguration && this.stateConfiguration['fields-read-only'])}
-          compositeReplies={this.props.compositeReplies || this.state.compositeReplies}/>
+          compositeReplies={this.props.compositeReplies || this.state.compositeReplies} displayRightAnswers={this.state.answersVisible}
+          checkForRightness={this.state.answersChecked} onRightnessChange={this.onRightnessChange}/>
          }
       </div>
       {this.props.answerable && this.stateConfiguration ? <div className="material-page-answers-buttons">
@@ -302,6 +314,12 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
             buttonModifiers="muikku-show-correct-answers-button" onClick={this.toggleAnswersVisible}>
             {this.props.i18n.text.get(this.state.answersVisible ? "plugin.workspace.materialsLoader.hideAnswers" : "plugin.workspace.materialsLoader.showAnswers")}
           </Button> : null}
+      </div> : null}
+      {this.state.answersChecked ? <div className="correct-answers-count-container">
+        <span className="correct-answers-count-label">{this.props.i18n.text.get("plugin.workspace.materialsLoader.correctAnswersCountLabel")}</span>
+        <span className="correct-answers-count-data">
+          {Object.keys(this.state.rightnessRegistry).filter((key)=>this.state.rightnessRegistry).length} / {Object.keys(this.state.rightnessRegistry).length}
+        </span>
       </div> : null}
       {this.props.material.license ?
         <div className="license">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}: {this.props.material.license}</div> : null}

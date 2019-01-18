@@ -1,5 +1,6 @@
 import * as React from "react";
 import equals = require("deep-equal");
+import { i18nType } from "~/reducers/base/i18n";
 
 interface TextFieldProps {
   type: string,
@@ -10,21 +11,28 @@ interface TextFieldProps {
     name: string,
     rightAnswers: Array<{
       caseSensitive: boolean,
-      correct: false,
+      correct: boolean,
       normalizeWhitespace: boolean,
       text: string
     }>
   },
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
   readOnly?: boolean,
-  initialValue?: string
+  initialValue?: string,
+  i18n: i18nType,
+      
+  displayRightAnswers?: boolean,
+  checkForRightness?: boolean,
+  onRightnessChange?: (name: string, value: boolean)=>any
 }
 
 interface TextFieldState {
   value: string,
   modified: boolean,
   synced: boolean,
-  syncError: string
+  syncError: string,
+  
+  rightnessState: "UNKNOWN" | "PASS" | "FAIL"
 }
 
 export default class TextField extends React.Component<TextFieldProps, TextFieldState> {
@@ -35,13 +43,16 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       value: props.initialValue || '',
       modified: false,
       synced: true,
-      syncError: null
+      syncError: null,
+      
+      rightnessState: null
     }
     
     this.onInputChange = this.onInputChange.bind(this);
   }
   shouldComponentUpdate(nextProps: TextFieldProps, nextState: TextFieldState){
-    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
+    || this.props.i18n !== nextProps.i18n || this.props.displayRightAnswers !== nextProps.displayRightAnswers || this.props.checkForRightness !== nextProps.checkForRightness;
   }
   onInputChange(e: React.ChangeEvent<HTMLInputElement>){
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
@@ -49,7 +60,81 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       value: e.target.value
     });
   }
+  checkForRightness(){
+    let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(a=>a.correct);
+    if (!actuallyCorrectAnswers.length){
+      if (this.state.rightnessState !== "UNKNOWN"){
+        this.setState({
+          rightnessState: "UNKNOWN"
+        });
+        this.props.onRightnessChange(this.props.content.name, true);
+      }
+      return;
+    }
+    
+    let isRight:boolean;
+    let answer;
+    for (answer of actuallyCorrectAnswers){
+      let comparerAnswer = answer.text
+      let comparerValue = this.state.value;
+      if (!answer.caseSensitive){
+        comparerAnswer = comparerAnswer.toLocaleLowerCase();
+        comparerValue = comparerValue.toLocaleLowerCase();
+      }
+      if (answer.normalizeWhitespace){
+        comparerAnswer.trim().replace(/\s+/gi, " ");
+        comparerValue.trim().replace(/\s+/gi, " ");
+      }
+      
+      isRight = comparerValue === comparerAnswer;
+      if (isRight){
+        break;
+      }
+    }
+    
+    if (isRight && this.state.rightnessState !== "PASS"){
+      this.setState({
+        rightnessState: "PASS"
+      });
+      this.props.onRightnessChange(this.props.content.name, true);
+    } else if (!isRight && this.state.rightnessState !== "FAIL"){
+      this.setState({
+        rightnessState: "FAIL"
+      });
+      this.props.onRightnessChange(this.props.content.name, false);
+    }
+  }
+  componentDidMount(){
+    if (this.props.checkForRightness){
+      this.checkForRightness();
+    }
+  }
+  componentDidUpdate(prevProps: TextFieldProps, prevState: TextFieldState){
+    if (this.props.checkForRightness){
+      this.checkForRightness();
+    }
+  }
   render(){
+    let rightAnswers = null;
+    if (this.props.displayRightAnswers && this.props.content.rightAnswers){
+      let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(a=>a.correct);
+      let answersAreExample = false;
+      if (!actuallyCorrectAnswers.length){
+        answersAreExample = true;
+        actuallyCorrectAnswers = this.props.content.rightAnswers;
+      }
+      rightAnswers = <span className="muikku-field-examples">
+        <span className="muikku-field-examples-title">
+          {this.props.i18n.text.get(answersAreExample ? 
+              "plugin.workspace.assigment.checkAnswers.detailsSummary.title" :
+              "plugin.workspace.assigment.checkAnswers.correctSummary.title")}
+        </span>
+        {actuallyCorrectAnswers.map((answer, index)=>
+          <span key={index} className="muikku-field-example">{answer.text}</span>
+        )}
+      </span>
+    }
+    
     if (this.props.readOnly){
       return <div className="muikku-text-field muikku-field">{this.state.value}</div>
     }
