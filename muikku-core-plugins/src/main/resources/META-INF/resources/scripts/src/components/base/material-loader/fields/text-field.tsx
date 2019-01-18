@@ -58,9 +58,12 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
     this.setState({
       value: e.target.value
-    });
+    }, this.checkForRightness);
   }
   checkForRightness(){
+    if (!this.props.checkForRightness){
+      return;
+    }
     let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(a=>a.correct);
     if (!actuallyCorrectAnswers.length){
       if (this.state.rightnessState !== "UNKNOWN"){
@@ -105,25 +108,21 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     }
   }
   componentDidMount(){
-    if (this.props.checkForRightness){
-      this.checkForRightness();
-    }
+    this.checkForRightness();
   }
   componentDidUpdate(prevProps: TextFieldProps, prevState: TextFieldState){
-    if (this.props.checkForRightness){
-      this.checkForRightness();
-    }
+    this.checkForRightness();
   }
   render(){
-    let rightAnswers = null;
-    if (this.props.displayRightAnswers && this.props.content.rightAnswers){
+    let rightAnswerSummaryComponent = null;
+    if (this.props.displayRightAnswers && this.props.content.rightAnswers && !(this.props.checkForRightness && this.state.rightnessState === "PASS")){
       let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(a=>a.correct);
       let answersAreExample = false;
       if (!actuallyCorrectAnswers.length){
         answersAreExample = true;
         actuallyCorrectAnswers = this.props.content.rightAnswers;
       }
-      rightAnswers = <span className="muikku-field-examples">
+      rightAnswerSummaryComponent = <span className="muikku-field-examples">
         <span className="muikku-field-examples-title">
           {this.props.i18n.text.get(answersAreExample ? 
               "plugin.workspace.assigment.checkAnswers.detailsSummary.title" :
@@ -135,10 +134,18 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       </span>
     }
     
+    let classNameState = this.state.rightnessState && this.props.checkForRightness ? "state-" + this.state.rightnessState : "";
+    
     if (this.props.readOnly){
-      return <div className="muikku-text-field muikku-field">{this.state.value}</div>
+      return <div>
+        <div className={`muikku-text-field muikku-field ${classNameState}`}>{this.state.value}</div>
+        {rightAnswerSummaryComponent}
+      </div>
     }
-    return <input className="muikku-text-field muikku-field" type="text" value={this.state.value}
-      size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
+    return <div>
+      <input className={`muikku-text-field muikku-field ${classNameState}`} type="text" value={this.state.value}
+        size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
+      {rightAnswerSummaryComponent}
+    </div>
   }
 }
