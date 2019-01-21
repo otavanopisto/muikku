@@ -100,6 +100,8 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     || this.props.i18n !== nextProps.i18n || this.props.displayRightAnswers !== nextProps.displayRightAnswers || this.props.checkForRightness !== nextProps.checkForRightness;
   }
   triggerChange(){
+    this.checkForRightness();
+    
     if (!this.props.onChange){
       return;
     }
@@ -109,7 +111,6 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       newValue[field.name] = counterpart.name;
     });
     this.props.onChange(this, this.props.content.name, JSON.stringify(newValue));
-    this.checkForRightness();
   }
   checkForRightness(){
     if (!this.props.checkForRightness){
