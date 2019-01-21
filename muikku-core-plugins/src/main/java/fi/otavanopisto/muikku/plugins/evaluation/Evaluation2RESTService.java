@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
@@ -202,12 +203,12 @@ public class Evaluation2RESTService {
     UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
     SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
-    User student = userController.findUserByIdentifier(studentIdentifier);
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       if (!sessionController.getLoggedUserEntity().getId().equals(studentEntity.getId())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
+    User student = userController.findUserByIdentifier(studentIdentifier);
     
     // Result object
     
@@ -909,6 +910,9 @@ public class Evaluation2RESTService {
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
+    if (!StringUtils.isBlank(payload.getIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("POST with payload identifier").build();
+    }
 
     // Entities and identifiers
     
@@ -987,6 +991,9 @@ public class Evaluation2RESTService {
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
+    }
+    if (StringUtils.isBlank(payload.getIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
     }
 
     // Entities and identifiers
