@@ -16,7 +16,11 @@ interface MemoFieldProps {
   i18n: i18nType,
   readOnly?: boolean,
   initialValue?: string,
-  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
+  
+   displayRightAnswers?: boolean,
+   checkForRightness?: boolean,
+   onRightnessChange?: (name: string, value: boolean)=>any
 }
 
 interface MemoFieldState {
@@ -25,7 +29,9 @@ interface MemoFieldState {
   characters: number,
   modified: boolean,
   synced: boolean,
-  syncError: string
+  syncError: string,
+  
+  rightnessState: "UNKNOWN"
 }
 
 const ckEditorConfig = {
@@ -70,14 +76,17 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       characters: characterCount(rawText),
       modified: false,
       synced: true,
-      syncError: null
+      syncError: null,
+      
+      rightnessState: "UNKNOWN"
     }
     
     this.onInputChange = this.onInputChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
   }
   shouldComponentUpdate(nextProps: MemoFieldProps, nextState: MemoFieldState){
-    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
+    || this.props.i18n !== nextProps.i18n || this.props.displayRightAnswers !== nextProps.displayRightAnswers || this.props.checkForRightness !== nextProps.checkForRightness;
   }
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>){
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
@@ -97,12 +106,23 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     });
   }
   render(){
+    let classNameState = this.state.rightnessState && this.props.checkForRightness ? "state-" + this.state.rightnessState : "";
+    let rightAnswerExampleComponent = null;
+    if (this.props.displayRightAnswers && this.props.content.example){
+      rightAnswerExampleComponent = <span className="muikku-field-examples">
+        <span className="muikku-field-examples-title">
+          {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
+        </span>
+        <span className="muikku-field-example">{this.props.content.example}</span>
+      </span>
+    }
+    
     let fields;
     if  (this.props.readOnly){
-      fields = !this.props.content.richedit ? <div className="muikku-memo-field muikku-field">{this.state.value}</div> :
+      fields = !this.props.content.richedit ? <div className={`muikku-memo-field muikku-field ${classNameState}`}>{this.state.value}</div> :
               <div className="muikku-memo-field muikku-field" dangerouslySetInnerHTML={{__html:this.state.value}}/>
     } else {
-      fields = !this.props.content.richedit ? <textarea className="muikku-memo-field muikku-field" cols={parseInt(this.props.content.columns)}
+      fields = !this.props.content.richedit ? <textarea className={`muikku-memo-field muikku-field ${classNameState}`} cols={parseInt(this.props.content.columns)}
           rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
             <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
              onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
@@ -119,6 +139,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
           <div className="character-count">{this.state.characters}</div>
         </div>
       </div>
+      {rightAnswerExampleComponent}
     </div>
   }
 }

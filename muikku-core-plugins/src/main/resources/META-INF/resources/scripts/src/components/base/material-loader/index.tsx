@@ -32,7 +32,8 @@ const STATES = [{
   'checks-answers': true,
   'displays-hide-show-answers-on-request-button-if-allowed': false,
   'button-class': 'muikku-check-exercises',
-  'button-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+  'button-text': "plugin.workspace.materialsLoader.sendExerciseButton",
+  'button-check-text': "plugin.workspace.materialsLoader.checkExerciseButton",
   'button-disabled': false,
   'success-state': 'SUBMITTED',
   'fields-read-only': false
@@ -43,7 +44,8 @@ const STATES = [{
   'answers-always-checked': true,
   'displays-hide-show-answers-on-request-button-if-allowed': true,
   'button-class': 'muikku-check-exercises',
-  'button-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
+  'button-text': "plugin.workspace.materialsLoader.exerciseSentButton",
+  'button-check-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
   'button-disabled': false,
   'modify-state': 'ANSWERED'
 }, {
@@ -114,6 +116,7 @@ interface MaterialLoaderState {
   
   answersVisible: boolean,
   answersChecked: boolean,
+  answerCheckable: boolean,
   
   rightnessRegistry: {[name: string]: any}
 }
@@ -139,6 +142,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       compositeReplies: null,
       answersVisible: false,
       answersChecked: false,
+      //assume true, as it is usually true
+      answerCheckable: true,
       rightnessRegistry: {}
     };
     
@@ -147,6 +152,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.onPushAnswer = this.onPushAnswer.bind(this);
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     this.onRightnessChange = this.onRightnessChange.bind(this);
+    this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
     
     if (props.answerable && props.material){
       this.stateConfiguration = STATES.filter((state:any)=>{
@@ -285,6 +291,11 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       rightnessRegistry: newObj
     })
   }
+  onAnswerCheckableChange(answerCheckable: boolean){
+    if (answerCheckable !== this.state.answerCheckable){
+      this.setState({answerCheckable});
+    }
+  }
   render(){
     //TODO remove this __deprecated container once things are done and classes are cleared up, or just change the classname to something
     //more reasonable
@@ -302,20 +313,20 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           onModification={this.onModification}
           readOnly={this.props.readOnly || (this.props.answerable && this.stateConfiguration && this.stateConfiguration['fields-read-only'])}
           compositeReplies={this.props.compositeReplies || this.state.compositeReplies} displayRightAnswers={this.state.answersVisible}
-          checkForRightness={this.state.answersChecked} onRightnessChange={this.onRightnessChange}/>
+          checkForRightness={this.state.answersChecked} onRightnessChange={this.onRightnessChange} onAnswerCheckableChange={this.onAnswerCheckableChange}/>
          }
       </div>
       {this.props.answerable && this.stateConfiguration ? <div className="material-page-answers-buttons">
         {!this.stateConfiguration['button-disabled'] ? <Button buttonModifiers={this.stateConfiguration['button-class']}
-          onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.stateConfiguration['button-text'])}</Button> : null}
-              
+          onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.state.answerCheckable ?
+            this.stateConfiguration['button-check-text'] : this.stateConfiguration['button-text'])}</Button> : null}
         {this.stateConfiguration['displays-hide-show-answers-on-request-button-if-allowed'] &&
           this.props.material.correctAnswers === "ON_REQUEST" ? <Button 
             buttonModifiers="muikku-show-correct-answers-button" onClick={this.toggleAnswersVisible}>
             {this.props.i18n.text.get(this.state.answersVisible ? "plugin.workspace.materialsLoader.hideAnswers" : "plugin.workspace.materialsLoader.showAnswers")}
           </Button> : null}
       </div> : null}
-      {this.state.answersChecked ? <div className="correct-answers-count-container">
+      {this.state.answersChecked && Object.keys(this.state.rightnessRegistry).length ? <div className="correct-answers-count-container">
         <span className="correct-answers-count-label">{this.props.i18n.text.get("plugin.workspace.materialsLoader.correctAnswersCountLabel")}</span>
         <span className="correct-answers-count-data">
           {Object.keys(this.state.rightnessRegistry).filter((key)=>this.state.rightnessRegistry).length} / {Object.keys(this.state.rightnessRegistry).length}

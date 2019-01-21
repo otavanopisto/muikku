@@ -34,6 +34,16 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.mathexercise": MathField
 }
 
+const answerCheckables = [
+  "application/vnd.muikku.field.text",
+  "application/vnd.muikku.field.select",
+  "application/vnd.muikku.field.multiselect",
+  "application/vnd.muikku.field.memo",
+  "application/vnd.muikku.field.connect",
+  "application/vnd.muikku.field.organizer",
+  "application/vnd.muikku.field.sorter"
+]
+
 interface BaseProps {
   material: MaterialContentNodeType,
   i18n: i18nType,
@@ -48,7 +58,8 @@ interface BaseProps {
   onModification?: ()=>any,
   displayRightAnswers: boolean,
   checkForRightness: boolean,
-  onRightnessChange: (name:string, status:boolean)=>any
+  onRightnessChange: (name:string, status:boolean)=>any,
+  onAnswerCheckableChange: (status: boolean)=>any
 }
 
 interface BaseState {
@@ -90,6 +101,8 @@ function preprocessor($html: any): any{
 export default class Base extends React.Component<BaseProps, BaseState> {
   //The elements is a list of HTMLElement that compound a specific page
   private elements: Array<HTMLElement>;
+
+  private answerCheckable:boolean;
 
   //The field registry contain the list of all the fields within a specific
   //page, base represents a specific page
@@ -149,6 +162,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     
     //And prepare this one too
     this.onAnswerSavedAtServer = this.onAnswerSavedAtServer.bind(this);
+    
+    this.answerCheckable = null;
   }
   
   //This is handled manually
@@ -192,6 +207,14 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     $(this.elements).find("object").addBack("object").each((index: number, element: HTMLElement)=>{
       //We get the object element as in, the react component that it will be replaced with
       let rElement:React.ReactElement<any> = this.getObjectElement(element, props);
+    
+      if (this.props.onAnswerCheckableChange){
+        let newAnswerCheckableState = answerCheckables.includes(element.getAttribute("type"));
+        if (newAnswerCheckableState !== this.answerCheckable){
+          this.answerCheckable = newAnswerCheckableState;
+          this.props.onAnswerCheckableChange(newAnswerCheckableState);
+        }
+      }
     
       //We get the parent element of that object
       let parentElement = element.parentElement;
