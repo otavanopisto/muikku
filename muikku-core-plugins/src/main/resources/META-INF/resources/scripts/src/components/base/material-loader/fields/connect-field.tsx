@@ -2,6 +2,7 @@ import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
+import { i18nType } from "~/reducers/base/i18n";
 
 interface FieldType {
   name: string,
@@ -22,7 +23,12 @@ interface ConnectFieldProps {
   
   readOnly?: boolean,
   initialValue?: string,
-  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
+  i18n: i18nType,
+      
+  displayRightAnswers?: boolean,
+  checkForRightness?: boolean,
+  onRightnessChange?: (name: string, value: boolean)=>any
 }
 
 interface ConnectFieldState {
@@ -34,7 +40,9 @@ interface ConnectFieldState {
   editedIds: Set<string>,
   modified: boolean,
   synced: boolean,
-  syncError: string
+  syncError: string,
+  
+  rightnessState: Array<"PASS" | "FAIL">
 }
 
 export default class ConnectField extends React.Component<ConnectFieldProps, ConnectFieldState> {
@@ -77,7 +85,8 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       editedIds: new Set(editedIdsArray),
       modified: false,
       synced: true,
-      syncError: null
+      syncError: null,
+      rightnessState: null
     }
     
     this.swapField = this.swapField.bind(this);
@@ -87,7 +96,8 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     this.triggerChange = this.triggerChange.bind(this);
   }
   shouldComponentUpdate(nextProps: ConnectFieldProps, nextState: ConnectFieldState){
-    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state);
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
+    || this.props.i18n !== nextProps.i18n || this.props.displayRightAnswers !== nextProps.displayRightAnswers || this.props.checkForRightness !== nextProps.checkForRightness;
   }
   triggerChange(){
     if (!this.props.onChange){
@@ -99,6 +109,38 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       newValue[field.name] = counterpart.name;
     });
     this.props.onChange(this, this.props.content.name, JSON.stringify(newValue));
+    this.checkForRightness();
+  }
+  checkForRightness(){
+    if (!this.props.checkForRightness){
+      return;
+    }
+    
+    let newRightnessState:Array<"PASS" | "FAIL"> = this.state.fields.map((field, index)=>{
+      let counterpart = this.state.counterparts[index];
+      let connection = this.props.content.connections.find(connection=>connection.field === field.name);
+      return connection && connection.counterpart === counterpart.name ? "PASS" : "FAIL";
+    });
+    
+    if (!equals(newRightnessState, this.state.rightnessState)){
+      this.setState({
+        rightnessState: newRightnessState
+      });
+    }
+    
+    let isRight = newRightnessState.includes("FAIL");
+    let wasRight = !this.state.rightnessState.includes("FAIL");
+    if (isRight && !wasRight){
+      this.props.onRightnessChange(this.props.content.name, true);
+    } else if (!isRight && wasRight){
+      this.props.onRightnessChange(this.props.content.name, false);
+    }
+  }
+  componentDidMount(){
+    this.checkForRightness();
+  }
+  componentDidUpdate(prevProps: ConnectFieldProps, prevState: ConnectFieldState){
+    this.checkForRightness();
   }
   swapField(fielda: FieldType, fieldb: FieldType){
     this.setState({
@@ -192,19 +234,29 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     });
   }
   render(){
-    return <div className="muikku-connect-field muikku-field">
+    let elementClassNameState = this.props.checkForRightness && this.state.rightnessState ?
+        "state-" + (this.state.rightnessState.includes("FAIL") ? "FAIL" : "PASS") : "";
+    return <div className={`muikku-connect-field muikku-field ${elementClassNameState}`}>
       <div className="muikku-connect-field-terms">
-        {this.state.fields.map((field, index)=><div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
-          <span className="muikku-connect-field-number">{index + 1}</span>
-          <div className={`muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
-            "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}`}>{field.text}</div>
-        </div>)}
+        {this.state.fields.map((field, index)=>{
+          let itemClassNameState = this.props.checkForRightness && this.state.rightnessState && this.state.rightnessState[index] ? 
+              "state-" + this.state.rightnessState[index] : ""
+          return <div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
+            <span className="muikku-connect-field-number">{index + 1}</span>
+            <div className={`muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
+              "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}
+              ${itemClassNameState}`}>{field.text}</div>
+          </div>
+         })}
       </div>
       <div className="muikku-connect-field-gap"></div>
       <div className="muikku-connect-field-counterparts">
        {this.state.counterparts.map((field, index)=>{
+         let itemRightness = this.props.checkForRightness && this.state.rightnessState && this.state.rightnessState[index];
+         let itemClassNameState = this.props.checkForRightness && this.state.rightnessState && this.state.rightnessState[index] ? 
+             "state-" + this.state.rightnessState[index] : ""
          let className = `muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
-           "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}`;
+           "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""} ${itemClassNameState}`;
          let style:React.CSSProperties = {
              justifyContent: "flex-start"  //TODO lankkinen Add this in classes sadly I had to use the original connect field term class because of missing functionality
          };
@@ -213,12 +265,19 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
              key={field.name} style={style}>{field.text}</div>
          }
          
+         let itemRightAnswerComponent = null;
+         if (this.props.displayRightAnswers && !(this.props.checkForRightness && itemRightness === "PASS")){
+           itemRightAnswerComponent = <span className="muikku-connect-field-number">
+             {this.state.fields.findIndex(f=>f.name === (this.props.content.connections.find(c=>c.counterpart === field.name) || {field: null}).field)}
+           </span>
+         }
+         
          return <Draggable interactionData={{field, index, isCounterpart: true}} 
            interactionGroup={this.props.content.name + "-counterparts"}
            onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
            onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".muikku-field"
            onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
-           className={className} key={field.name} style={style}>{field.text}</Draggable>
+           className={className} key={field.name} style={style}>{itemRightAnswerComponent}{field.text}</Draggable>
        })}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
+import Dropdown from "~/components/general/dropdown";
 
 interface SelectFieldProps {
   type: string,
@@ -112,6 +113,18 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
           {rightAnswersFound.map((answer, index)=>
             <span key={index} className="muikku-field-example">{answer.text}</span>
           )}
+          {this.props.content.explanation ? <span className="explanation-wrapper">
+             <Dropdown openByHover modifier="word-definition" content={this.props.content.explanation}>
+               <span className="explanation-button icon-explanation"/>
+             </Dropdown>
+           </span> : null}
+        </span>;
+      } else if (this.props.content.explanation) {
+        rightAnswerSummaryComponent = <span className="muikku-field-examples">
+          <span className="muikku-field-examples-title">
+            {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
+          </span>
+          <span className="muikku-field-example">{this.props.content.explanation}</span>
         </span>;
       }
     }

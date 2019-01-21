@@ -88,11 +88,10 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       return;
     }
     
-    let newRightnessState:Array<"PASS" | "FAIL"> = [];
-    this.state.items.forEach((item, index)=>{
+    let newRightnessState:Array<"PASS" | "FAIL"> = this.state.items.map((item, index)=>{
       let answer = this.props.content.items[index];
       let isAnswerProper = answer.id === item.id;
-      newRightnessState.push(isAnswerProper ? "PASS" : "FAIL");
+      return isAnswerProper ? "PASS" : "FAIL";
     });
     
     if (!equals(newRightnessState, this.state.rightnessState)){

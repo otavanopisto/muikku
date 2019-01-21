@@ -86,13 +86,15 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     let portalProps:any = {};
     if (!this.props.openByHover){
       portalProps.openByClickOn = elementCloned;
-      portalProps.closeOnEsc = true;
-      portalProps.closeOnOutsideClick = true;
-      portalProps.closeOnScroll = !this.props.persistent;
-      portalProps.onClose = this.props.onClose;
     } else {
       portalProps.openByHoverOn = elementCloned;
     }
+    
+    portalProps.closeOnEsc = true;
+    portalProps.closeOnOutsideClick = true;
+    portalProps.closeOnScroll = !this.props.persistent;
+    portalProps.onClose = this.props.onClose;
+    
     return <Portal ref="portal" {...portalProps} onOpen={this.onOpen} beforeClose={this.beforeClose}>
       <div ref="dropdown"
         style={{
