@@ -3,6 +3,31 @@ import { ActionType } from "actions";
 export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 
+/**
+ * Enum describing matriculation eligibility
+ * 
+ * @author Antti Leppä <antti.leppa@metatavu.fi>
+ */
+
+export enum YOEligbleEnum { 
+  FALSE,
+  TRUE, 
+  UNKNOWN
+}
+
+/**
+ * Interface representing matriculation eligibility REST model 
+ * 
+ * @author Antti Leppä <antti.leppa@metatavu.fi>
+ */
+
+export interface YOMatriculationEligibilityType {
+  eligible: boolean;
+  requirePassingGrades: number;
+  acceptedCourseCount: number;
+  acceptedTransferCreditCount: number;
+}
+
 export interface YODataType{
   studyStartDate: string,
   studyTimeEnd: string,
@@ -15,7 +40,6 @@ export interface YOEligibilityType {
     enrollmentDate: String,
     examDate: String
 }
-
 
 export interface YOType {
   status: YOStatusType,

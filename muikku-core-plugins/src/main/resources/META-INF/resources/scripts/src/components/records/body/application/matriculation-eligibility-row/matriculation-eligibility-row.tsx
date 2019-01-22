@@ -6,34 +6,39 @@ import { StateType } from '~/reducers';
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify from "~/util/promisify";
 
+
 /**
  * Enum describing matriculation eligibility
  * 
  * @author Antti Leppä <antti.leppa@metatavu.fi>
  */
-enum EligbleEnum { 
+
+export enum EligbleEnum { 
   FALSE,
   TRUE, 
   UNKNOWN
-};
+}
 
 /**
  * Interface representing matriculation eligibility REST model 
  * 
  * @author Antti Leppä <antti.leppa@metatavu.fi>
  */
-interface MatriculationEligibilityType {
+
+export interface MatriculationEligibilityType {
   eligible: boolean;
   requirePassingGrades: number;
   acceptedCourseCount: number;
   acceptedTransferCreditCount: number;
 }
 
+
 /**
  * Interface representing MatriculationEligibilityRow component properties
  * 
  * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
  */
+
 interface MatriculationEligibilityRowProps {
   code: string,
   subjectCode: string,
