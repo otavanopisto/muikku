@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +28,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
@@ -37,7 +38,6 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollect
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -45,11 +45,11 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -70,9 +70,6 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
   private SessionController sessionController;
   
   @Inject
-  private EnvironmentUserController environmentUserController;
-  
-  @Inject
   private UserEntityController userEntityController;
 
   @Inject
@@ -82,10 +79,10 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
   private UserEmailEntityController userEmailEntityController;
   
   @Inject
-  private UserGroupEntityController userGroupEntityController;
-
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
   @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  private UserGroupEntityController userGroupEntityController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -106,11 +103,19 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults
     ) {
     
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
     
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUser);
-    EnvironmentRoleArchetype loggedUserRole = (environmentUser != null && environmentUser.getRole() != null) ? 
-        environmentUser.getRole().getArchetype() : null;
+    EnumSet<EnvironmentRoleArchetype> staffRoles = EnumSet.of(
+        EnvironmentRoleArchetype.ADMINISTRATOR, 
+        EnvironmentRoleArchetype.MANAGER, 
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER,
+        EnvironmentRoleArchetype.TEACHER);
+    
+    if (loggedUserRole == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
     
     Set<Long> userGroupFilters = null;
     Set<Long> workspaceFilters = null;
@@ -123,7 +128,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.TEACHER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_GUIDER);
-    } else {
+    } else if (staffRoles.contains(loggedUserRole)) {
       // Default for other roles
       
       roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
@@ -138,6 +143,8 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
         List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
         userGroupFilters = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
       }
+    } else {
+      return Response.ok(Collections.EMPTY_LIST).build();
     }
 
     SearchProvider searchProvider = getSearchProvider();
@@ -208,7 +215,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
 
     List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity());
     // Remove workspaces where the user doesn't have permission to send messages for 
-    workspaceEntities.removeIf(workspaceEntity -> sessionController.hasWorkspacePermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity));
+    workspaceEntities.removeIf(workspaceEntity -> !sessionController.hasWorkspacePermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity));
 
     if (workspaceEntities.isEmpty()) {
       return Response.ok(Collections.EMPTY_LIST).build();
@@ -240,41 +247,36 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
           curriculumIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
       
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        List<Map<String, Object>> results = searchResult.getResults();
-        for (Map<String, Object> result : results) {
-          String searchId = (String) result.get("id");
-          if (StringUtils.isNotBlank(searchId)) {
-            String[] id = searchId.split("/", 2);
-            if (id.length == 2) {
-              String dataSource = id[1];
-              String identifier = id[0];
-  
-              SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
-              
-              WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
-              if (workspaceEntity != null) {
-                String name = (String) result.get("name");
-                String nameExtension = (String) result.get("nameExtension");
-  
-                if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(new WorkspaceBasicInfo(
-                      workspaceEntity.getId(), 
-                      workspaceEntity.getUrlName(), 
-                      name, 
-                      nameExtension));
-                } else {
-                  logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
-                }
+      List<Map<String, Object>> results = searchResult.getResults();
+      for (Map<String, Object> result : results) {
+        String searchId = (String) result.get("id");
+        if (StringUtils.isNotBlank(searchId)) {
+          String[] id = searchId.split("/", 2);
+          if (id.length == 2) {
+            String dataSource = id[1];
+            String identifier = id[0];
+
+            SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+            
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
+            if (workspaceEntity != null) {
+              String name = (String) result.get("name");
+              String nameExtension = (String) result.get("nameExtension");
+
+              if (StringUtils.isNotBlank(name)) {
+                workspaces.add(new WorkspaceBasicInfo(
+                    workspaceEntity.getId(), 
+                    workspaceEntity.getUrlName(), 
+                    name, 
+                    nameExtension));
               } else {
-                logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
+                logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
               }
+            } else {
+              logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
             }
           }
         }
-      } finally {
-        schoolDataBridgeSessionController.endSystemSession();
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();

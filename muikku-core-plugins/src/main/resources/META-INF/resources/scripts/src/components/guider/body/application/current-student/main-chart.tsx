@@ -350,6 +350,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "minMarginLeft": 50,
       "plotAreaFillAlphas": 0.1,
       "mouseWheelZoomEnabled": true,
+      "fontFamily" : "Open Sans",
       "minSelectedTime": 604800000,
       "maxSelectedTime": 31556952000,
       "dataDateFormat": "YYYY-MM-DD",

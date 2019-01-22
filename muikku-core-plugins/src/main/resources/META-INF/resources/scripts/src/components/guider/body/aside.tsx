@@ -40,7 +40,9 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
           let hash = isActive ?
             queryString.stringify(Object.assign({}, locationData, {c: "", w: (locationData.w || []).filter((w:string)=>parseInt(w)!==workspace.id)}), {arrayFormat: 'bracket'}) :
             queryString.stringify(Object.assign({}, locationData, {c: "", w: (locationData.w || []).concat(workspace.id)}), {arrayFormat: 'bracket'});
-          return <NavigationElement key={workspace.id} isActive={isActive} hash={"?" + hash}>{workspace.name}</NavigationElement>
+          return <NavigationElement key={workspace.id} isActive={isActive} hash={"?" + hash}>
+            {workspace.name + (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "")}
+          </NavigationElement>
         })}
       </NavigationTopic>
     </Navigation>

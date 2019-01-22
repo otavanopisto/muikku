@@ -154,24 +154,24 @@
               }, this));
  
               // Prevent accidental evaluation if evaluated before
-              if ($(this._requestCard).attr('data-evaluated')) {
-                this._evaluationModal
-                .find('.eval-modal-evaluate-buttonset')
-                .append($('<div>')
-                  .addClass('workspace-re-evaluation-form-overlay')
+              if ($(this._requestCard).attr('data-graded') == 'true') {
+                $('#evaluationEvaluateContainer')
+                  .find('.eval-modal-evaluate-buttonset')
                   .append($('<div>')
-                    .addClass('workspace-re-evaluation-form-activate-description')
-                    .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationDescription"))
-                  )
-                  .append($('<div>')
-                    .addClass('workspace-re-evaluation-form-activate-button')
-                    .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationButtonLabel"))
-                  ));
+                      .addClass('workspace-re-evaluation-form-overlay')
+                      .append($('<div>')
+                          .addClass('workspace-re-evaluation-form-activate-description')
+                          .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationDescription"))
+                      )
+                      .append($('<div>')
+                          .addClass('workspace-re-evaluation-form-activate-button')
+                          .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationButtonLabel"))
+                    ));
+                $('.workspace-re-evaluation-form-activate-button').click(function(event) {
+                  $('.workspace-re-evaluation-form-overlay').remove();
+                });
               }
 
-              $('.workspace-re-evaluation-form-activate-button').click($.proxy(function() {
-                  $('.workspace-re-evaluation-form-overlay').remove();
-              }, this));
 
               // Save workspace assessment (or supplementation request) 
 

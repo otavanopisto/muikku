@@ -17,6 +17,7 @@ import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
 import { StatusType } from '~/reducers/base/status';
+import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -32,14 +33,14 @@ const ckEditorConfig = {
   resize_enabled: false
 }
 const extraPlugins = {
-  'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.9/',
-  'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.9/',
-  'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.9/',
-  'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
-  'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
+  'widget': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/${CKEDITOR_VERSION}/`,
+  'lineutils': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/${CKEDITOR_VERSION}/`,
+  'filetools' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/${CKEDITOR_VERSION}/`,
+  'notification' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/${CKEDITOR_VERSION}/`,
+  'notificationaggregator' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/${CKEDITOR_VERSION}/`,
   'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
-  'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
+  'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
+  'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`
 }
 
 type SelectedItemListType = Array<WorkspaceRecepientType | UserRecepientType | UserGroupRecepientType>;
@@ -155,7 +156,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         searchString: searchString
       }), 'callback'),
       workspacesLoader: (searchString: string) => promisify(mApi().communicator.recipientsWorkspacesSearch.read({
-        search: searchString
+        searchString: searchString
       }), 'callback')
     }
   }
