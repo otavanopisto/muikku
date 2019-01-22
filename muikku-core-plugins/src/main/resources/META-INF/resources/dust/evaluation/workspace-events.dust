@@ -10,3 +10,81 @@
     {/ne}
   </div>
 {/events}
+
+{!
+
+  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_REQUEST">
+    <div>3.2.2018</div>
+    <div>Opiskelija Heebo</div>
+    <div>
+      <p>Anna arvio</p>
+      <p>Anna arvio</p>
+      <p>Anna arvio</p>
+      <p></p>
+      <p>Anna</p>
+    </div>
+  </div>
+  <div class="workspaceEvent" data-identifier="xxx" data-type="SUPPLEMENTATION_REQUEST">
+    <div>5.2.2018</div>
+    <div>Opettaja Heebo</div>
+    <div>
+      <h3>Jaahas</h3>
+      <p>Täydennyspyyntö</p>
+      <p>Tekstiä runsaasti</p>
+    </div>
+    <div class="edit-event-button">Muokkaa</div>
+    <div class="remove-event-button">Poista</div>
+  </div>
+  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_REQUEST">
+    <div>6.2.2018</div>
+    <div>Opiskelija Heebo</div>
+    <div>
+      <p>Uusi yritys</p>
+    </div>
+  </div>
+  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_FAIL">
+    <div>7.2.2018</div>
+    <div>Opettaja Heebo</div>
+    <div>4</div>
+    <div>
+      <p><b>NO!</b></p>
+    </div>
+    <div class="edit-event-button">Muokkaa</div>
+    <div class="remove-event-button">Poista</div>
+  </div>
+  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_REQUEST">
+    <div>8.2.2018</div>
+    <div>Opiskelija Heebo</div>
+    <div>
+      <p>Kolmas yritys</p>
+    </div>
+  </div>
+  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_PASS">
+    <div>9.2.2018</div>
+    <div>Opettaja Heebo</div>
+    <div>9</div>
+    <div>
+      <p>Jah</p>
+    </div>
+    <div class="edit-event-button">Muokkaa</div>
+    <div class="remove-event-button">Poista</div>
+  </div>
+  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_REQUEST">
+    <div>10.2.2018</div>
+    <div>Opiskelija Heebo</div>
+    <div>
+      <p>Korottaa tahtoo hän</p>
+    </div>
+  </div>
+  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_PASS">
+    <div>11.2.2018</div>
+    <div>Opettaja Heebo</div>
+    <div>10</div>
+    <div>
+      <p>Purrrrr-fection</p>
+    </div>
+    <div class="edit-event-button">Muokkaa</div>
+    <div class="remove-event-button">Poista</div>
+  </div>
+
+!}
