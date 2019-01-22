@@ -1,5 +1,7 @@
 <div class="eval-modal-close icon-close-small"><span class="tooltip"></span></div>
 
+{! Left side; materials !}
+
 <section class="eval-modal-student-container" id="evaluationStudentContainer" data-user-entity-id="{userEntityId}">
   <header class="eval-modal-student-header flex-row flex-align-items-center">
     <div class="eval-modal-student-name">{studentName} ({studyProgrammeName})</div>
@@ -13,6 +15,29 @@
   </div>
 </section>
 
+{! Right side; events !}
+
+<section>
+  <div id="workspaceEventsContainer"></div>
+  <div>
+    <div id="workspaceGradeNew">Anna kurssiarvio</div>
+    <div id="workspaceSupplementationNew">Pyydä täydennystä</div>
+  </div>
+</section>
+
+{! Right side; workspace grade !}
+
+<section id="workspaceGradeEditorContainer" style="display:none;">
+  {>"evaluation/workspace-grade-editor.dust"/}
+</section>
+
+{! Right side; workspace supplementation request !}
+
+<section id="workspaceSupplementationEditorContainer" style="display:none;">
+  {>"evaluation/workspace-supplementation-editor.dust"/}
+</section>
+
+{! OLD WORKSPACE EDITOR IN COMMENTS; NO LONGER USED
 <section class="eval-modal-workspace-evaluate-container" id="evaluationEvaluateContainer">
   <header class="eval-modal-evaluate-header flex-row flex-align-items-center">
     <div class="eval-modal-workspace-name">{courseName}</div>
@@ -23,6 +48,9 @@
     
   </div>
 </section>
+!}
+
+{! Right side; assignment editor !}
 
 <section class="eval-modal-assignment-evaluate-container" id="evaluationAssignmentEvaluateContainer" style="display:none;">
   <header class="eval-modal-assignment-evaluate-header flex-row flex-align-items-center">

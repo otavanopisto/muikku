@@ -1,0 +1,12 @@
+{#events}
+  <div class="workspaceEvent" data-identifier="{identifier}" data-type="{type}">
+    <div>{date|formatDate}</div>
+    <div>{author}</div>
+    {?grade}<div>{grade}</div>{/grade}
+    <div>{text|s}</div>
+    {@ne key=type value=EVALUATION_REQUEST}
+      <div class="edit-event-button">Muokkaa</div>
+      <div class="remove-event-button">Poista</div>
+    {/ne}
+  </div>
+{/events}

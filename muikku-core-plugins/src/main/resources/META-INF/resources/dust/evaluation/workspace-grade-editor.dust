@@ -1,0 +1,29 @@
+<div> 
+  <input type="hidden" name="workspaceGradeWorkspaceUserEntityId" id="workspaceGradeWorkspaceUserEntityId"/>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="workspaceGradeText">Sanallinen arviointi</label>
+    <textarea id="workspaceGradeText"></textarea>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="workspaceGradeDate">Päivämäärä</label>
+    <input required="required" type="date" name="workspaceGradeDate" id="workspaceGradeDate"/>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="workspaceGradeGrade">Arvosana</label>
+    <select name="workspaceGradeGrade" id="workspaceGradeGrade">
+      {#gradingScales}
+        <optgroup label="{name}">
+        {#grades scaleid=id scaleds=dataSource}
+          <option value="{scaleds}-{scaleid}@{dataSource}-{id}">
+            {name}
+          </option>
+        {/grades}
+        </optgroup>
+      {/gradingScales}
+    </select>
+  </div>
+  <div>
+    <div id="workspaceGradeSave">Tallenna</div>
+    <div id="workspaceGradeCancel">Peruuta</div>
+  </div>
+</div>
