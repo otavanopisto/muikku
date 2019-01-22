@@ -140,6 +140,8 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
             let className = null;
             if (markRightAnswers && o.correct){
               className = "muikku-select-field-right-answer"
+            } else if (markRightAnswers){
+              className = "muikku-select-field-wrong-answer"
             }
             return <option className={className} key={o.name} value={o.name}>{o.text}</option>
           })}
@@ -153,6 +155,8 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
         let className = null;
         if (markRightAnswers && o.correct){
           className = "muikku-select-field-right-answer"
+        } else if (markRightAnswers){
+          className = "muikku-select-field-wrong-answer"
         }
         return <span className={className} key={o.name}>
           <input type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>

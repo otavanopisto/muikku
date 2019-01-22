@@ -147,6 +147,8 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
         let className = null;
         if (markRightAnswers && o.correct){
           className = "muikku-select-field-right-answer"
+        } else if (markRightAnswers){
+          className = "muikku-select-field-wrong-answer"
         }
         return <span key={o.name} className={className}>
           <input type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
