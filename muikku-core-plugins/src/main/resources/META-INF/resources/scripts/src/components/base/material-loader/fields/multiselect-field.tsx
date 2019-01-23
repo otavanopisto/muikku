@@ -82,6 +82,11 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     }
     
     let isRight = newRightnessState.includes("FAIL");
+    if (!this.state.rightnessState){
+      this.props.onRightnessChange(this.props.content.name, isRight);
+      return;
+    }
+    
     let wasRight = this.state.rightnessState === "UNKNOWN" || !this.state.rightnessState.includes("FAIL");
     if (isRight && !wasRight){
       this.props.onRightnessChange(this.props.content.name, true);
@@ -112,7 +117,9 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
   render(){
     let markRightAnswers = false;
     let rightAnswerSummaryComponent = null;
-    if (this.props.displayRightAnswers && !(this.props.checkForRightness && this.state.rightnessState !== "UNKNOWN" && !this.state.rightnessState.includes("FAIL"))){
+    let answerIsBeingCheckedAndItIsRight = this.props.checkForRightness && this.state.rightnessState && 
+      this.state.rightnessState !== "UNKNOWN" && !this.state.rightnessState.includes("FAIL");
+    if (this.props.displayRightAnswers && !answerIsBeingCheckedAndItIsRight){
       let rightAnswersFound = this.props.content.options.filter(a=>a.correct);
       if (rightAnswersFound.length){
         markRightAnswers = true
@@ -155,6 +162,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
           <label>{o.text}</label>
         </span>
       })}
+      {rightAnswerSummaryComponent}
     </span>
   }
 }

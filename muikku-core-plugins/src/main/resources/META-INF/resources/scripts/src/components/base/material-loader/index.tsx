@@ -29,7 +29,6 @@ import equals = require("deep-equal");
 const STATES = [{
   'assignment-type': 'EXERCISE',
   'state': ['UNANSWERED', 'ANSWERED', 'WITHDRAWN'],
-  'checks-answers': true,
   'displays-hide-show-answers-on-request-button-if-allowed': false,
   'button-class': 'muikku-check-exercises',
   'button-text': "plugin.workspace.materialsLoader.sendExerciseButton",
@@ -41,7 +40,6 @@ const STATES = [{
   'assignment-type': 'EXERCISE',
   'state': ['SUBMITTED', 'PASSED', 'FAILED', 'INCOMPLETE'],
   'checks-answers': true,
-  'answers-always-checked': true,
   'displays-hide-show-answers-on-request-button-if-allowed': true,
   'button-class': 'muikku-check-exercises',
   'button-text': "plugin.workspace.materialsLoader.exerciseSentButton",
@@ -163,7 +161,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         return statesInIt === stateRequired || ((statesInIt instanceof Array) && statesInIt.includes(stateRequired));
       });
       
-      if (this.stateConfiguration && this.stateConfiguration['answers-always-checked']){
+      if (this.stateConfiguration && this.stateConfiguration['checks-answers']){
         state.answersChecked = true;
         if (!props.material || props.material.correctAnswers === "ALWAYS"){
           state.answersVisible = true;
@@ -190,15 +188,22 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         return statesInIt === stateRequired || ((statesInIt instanceof Array) && statesInIt.includes(stateRequired));
       });
       
-      if (this.stateConfiguration && this.stateConfiguration['answers-always-checked'] && !nextState.answersChecked){
-        if (!nextProps.material || nextProps.material.correctAnswers === "ALWAYS"){
+      if (this.stateConfiguration){
+        if (this.stateConfiguration['checks-answers'] && !nextState.answersChecked){
+          if (!nextProps.material || nextProps.material.correctAnswers === "ALWAYS"){
+            this.setState({
+              answersVisible: true,
+              answersChecked: true
+            });
+          } else {
+            this.setState({
+              answersChecked: true
+            });
+          }
+        } else if (!this.stateConfiguration['checks-answers'] && nextState.answersChecked){
           this.setState({
-            answersVisible: true,
-            answersChecked: true
-          });
-        } else {
-          this.setState({
-            answersChecked: true
+            answersVisible: false,
+            answersChecked: false
           });
         }
       }
@@ -230,19 +235,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     return this.refs["root"] as HTMLDivElement;
   }
   onPushAnswer(){
-    if (this.stateConfiguration['checks-answers']){
-      if (!this.props.material.correctAnswers || this.props.material.correctAnswers === "ALWAYS"){
-        this.setState({
-          answersVisible: true,
-          answersChecked: true
-        });
-      } else {
-        this.setState({
-          answersChecked: true
-        });
-      }
-    }
-    
     if (this.stateConfiguration['success-state']){
       let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
       //We make it be the success state that was given
@@ -270,13 +262,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       this.props.updateAssignmentState(this.stateConfiguration['modify-state'], false,
           this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
           this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAssignmentStateModified);
-    }
-    
-    if (this.stateConfiguration['checks-answers'] && (this.state.answersVisible || this.state.answersChecked)){
-      this.setState({
-        answersVisible: false,
-        answersChecked: false
-      });
     }
   }
   toggleAnswersVisible(){

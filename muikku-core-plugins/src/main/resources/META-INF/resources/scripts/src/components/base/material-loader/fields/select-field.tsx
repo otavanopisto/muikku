@@ -102,7 +102,8 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
   render(){
     let markRightAnswers = false;
     let rightAnswerSummaryComponent = null;
-    if (this.props.displayRightAnswers && !(this.props.checkForRightness && this.state.rightnessState === "PASS")){
+    let answerIsCheckedAndItIsRight = this.props.checkForRightness && this.state.rightnessState === "PASS"
+    if (this.props.displayRightAnswers && !answerIsCheckedAndItIsRight){
       let rightAnswersFound = this.props.content.options.filter(a=>a.correct);
       if (rightAnswersFound.length){
         markRightAnswers = true;
