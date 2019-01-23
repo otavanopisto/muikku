@@ -254,6 +254,14 @@
         .css({'z-index': 999, 'position': 'relative'})
         .attr('type', 'text')
         .datepicker();
+      
+      $('#workspaceGradeCancel').click($.proxy(function(event) {
+          this._toggleWorkspaceGradeEditor(false);
+        }, this));
+      
+      $('.eval-modal-grade-close').click($.proxy(function(event) {
+          this._toggleWorkspaceGradeEditor(false);
+        }, this));
     },
     
     _setupWorkspaceSupplementationEditor: function() {
@@ -267,6 +275,14 @@
         .css({'z-index': 999, 'position': 'relative'})
         .attr('type', 'text')
         .datepicker();
+      
+      $('#workspaceSupplementationCancel').click($.proxy(function(event) {
+          this._toggleWorkspaceSupplementationEditor(false);
+        }, this));
+      
+      $('.eval-modal-supplementation-close').click($.proxy(function(event) {
+          this._toggleWorkspaceSupplementationEditor(false);
+        }, this));
     },
     
     _setupAssignmentEditor: function() {
@@ -718,7 +734,7 @@
     // Shows/hides workspace supplementation request editor 
     // --------------------------------------------------
     
-    _toggleWorkspaceGradeEditor: function(show, callback) {
+    _toggleWorkspaceSupplementationEditor: function(show, callback) {
       var slidePosition = $(document).width() > 1023 ? 50 : 2;
       var boxShadow = $(document).width() > 1023 ? '-5px 0 30px rgba(0,0,0,0.25)' : '-5px 0 30px rgba(0,0,0,1)';
       if (show) {

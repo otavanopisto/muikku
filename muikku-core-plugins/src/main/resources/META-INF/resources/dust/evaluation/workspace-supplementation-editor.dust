@@ -8,8 +8,10 @@
     <label for="workspaceSupplementationDate">Päivämäärä</label>
     <input required="required" type="date" name="workspaceSupplementationDate" id="workspaceGradeDate"/>
   </div>
-  <div>
-    <div id="workspaceSupplementationSave">Tallenna</div>
-    <div id="workspaceSupplementationCancel">Peruuta</div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <div class="eval-modal-evaluate-buttonset">
+      <div class="eval-modal-evaluate-button button-supplementation-request" id="workspaceSupplementationSave">Tallenna</div>
+      <div class="eval-modal-evaluate-button button-cancel" id="workspaceSupplementationCancel">Peruuta</div>
+    </div>
   </div>
 </div>

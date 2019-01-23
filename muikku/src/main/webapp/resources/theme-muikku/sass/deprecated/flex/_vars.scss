@@ -324,6 +324,7 @@ $evaluation-passed-color: #2ed31c;
 $evaluation-failed-color: #d31111;
 $evaluation-incomplete-color: #ea7503;
 $evaluation-requested-color: #009fe3;
+$evaluation-start-evaluation-color: #009fe3;
 $evaluation-archive-color: #4c4c4c;
 $evaluation-delete-color: #d50b36;
 $evaluation-cancel-color: #7391a7;
@@ -412,8 +413,8 @@ $evaluation-modal-button-font-color: #fff;
 
 // Evaluation Modal - Assignment Evaluation 
 
-$evaluation-modal-assignment-evaluation-background-color: #fff;
-$evaluation-modal-assignment-evaluation-header-background-color: #fff;
+$evaluation-modal-editor-background-color: #fff;
+$evaluation-modal-editor-header-background-color: #fff;
 
 // Evaluation Modal Assignment & Journal Listing
 

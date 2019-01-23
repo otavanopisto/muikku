@@ -31,7 +31,9 @@
   
 }
 
-.eval-modal-assignment-close {
+.eval-modal-assignment-close,
+.eval-modal-grade-close,
+.eval-modal-supplementation-close {
   cursor: pointer;
   position: absolute;
   right: 0;
@@ -52,7 +54,16 @@
     padding: 4px;
     width: 16px;
   }
-  
+}
+
+.eval-modal-grade-close.icon-arrow-right {
+  border: 1px solid $evaluation-start-evaluation-color;
+  color: $evaluation-start-evaluation-color;
+}
+
+.eval-modal-supplementation-close.icon-arrow-right {
+  border: 1px solid $evaluation-incomplete-color;
+  color: $evaluation-incomplete-color;
 }
 
 // STUDENT INFO & ASSIGNMENTS <section>
@@ -61,6 +72,15 @@
   left: 0;
   position: absolute;
   right: 50%;
+  top: 0;
+}
+
+// WORKSPACE INFO & EVALUATION FORMS <section>
+.eval-modal-student-events-container {
+  bottom: 0;
+  left: 50%;
+  position: absolute;
+  right: 0;
   top: 0;
 }
 
@@ -74,8 +94,10 @@
 }
 
 // ASSIGNMENT EVALUATION FORM <section>
-.eval-modal-assignment-evaluate-container {
-  background: $evaluation-modal-assignment-evaluation-background-color;
+.eval-modal-assignment-evaluate-container,
+.eval-modal-workspace-grade-evaluate-container,
+.eval-modal-workspace-supplementation-evaluate-container {
+  background: $evaluation-modal-editor-background-color;
   bottom: 0;
   display: none;
   left: 100%;
@@ -88,7 +110,7 @@
 
 // STUDENT & WORKSPACE HEADER'S <header>
 .eval-modal-student-header,
-.eval-modal-evaluate-header {
+.eval-modal-events-header {
   background: $evaluation-modal-header-background-color;
   min-height: 30px;
   padding: 10px 0;
@@ -97,9 +119,9 @@
   width: 100%;
 }
 
-// ASSIGNMENT EVALUATION HEADER <header>
-.eval-modal-assignment-evaluate-header {
-  background: $evaluation-modal-assignment-evaluation-header-background-color;
+// EVALUATION EDITOR HEADER <header>
+.eval-modal-editor-header {
+  background: $evaluation-modal-editor-header-background-color;
   min-height: 30px;
   padding: 10px 0;
   position: relative;
@@ -121,7 +143,9 @@
   width: 100%;
 }
 
-.eval-modal-assignment-title {
+.eval-modal-assignment-title,
+.eval-modal-grade-title,
+.eval-modal-supplementation-title {
   box-sizing: border-box;
   color: $assignment-color;
   display: inline-block;
@@ -134,8 +158,17 @@
   white-space: nowrap;
   width: 100%;
 }
+
+.eval-modal-grade-title {
+  color: $evaluation-start-evaluation-color;
+}
+
+.eval-modal-supplementation-title {
+  color: $evaluation-incomplete-color;
+}
   
 .eval-modal-materials-content,
+.eval-modal-events-content,
 .eval-modal-evaluate-workspace-content,
 .eval-modal-evaluate-assignment-content {
   bottom: 0;
@@ -315,12 +348,16 @@
     background: $evaluation-cancel-color;
   }
   
-  &.button-evaluate-passing {
-    background: $evaluation-passed-color;
+  &.button-start-evaluation {
+    background: $evaluation-start-evaluation-color;
   }
   
-  &.button-delete {
-    background: $evaluation-delete-color;
+  &.button-supplementation-request {
+    background: $evaluation-incomplete-color;
+  }
+  
+  &.button-evaluate-passing {
+    background: $evaluation-passed-color;
   }
   
   &.button-evaluate-nonpassing {
