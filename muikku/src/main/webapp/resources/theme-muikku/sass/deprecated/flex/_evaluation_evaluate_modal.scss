@@ -293,43 +293,120 @@
 }
 
 .eval-modal-workspace-event {
+  border-bottom: 1px solid $evaluation-modal-seperator-border-color;
+  display: flex;
+  flex-flow: column wrap;
+  margin: 5px 0;
+  padding: 10px 10px 15px 10px;
   
   &[data-type="EVALUATION_REQUEST"] {
   
+    .eval {
+      color: $evaluation-requested-color;
+      font-weight: bold;
+    }
   }
   
   &[data-type="SUPPLEMENTATION_REQUEST"] {
-  
+
+    .eval {
+      color: $evaluation-incomplete-color;
+      font-weight: bold;
+    }
   }
   
   &[data-type="EVALUATION_FAIL"] {
-  
+ 
+    .eval {
+      color: $evaluation-failed-color;
+      font-weight: bold;
+    }
   }
   
   &[data-type="EVALUATION_PASS"] {
-  
+   
+   .eval {
+      color: $evaluation-passed-color;
+      font-weight: bold;
+    }
   }
-  
+}
+
+.eval-modal-workspace-event-header {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 13px;
+  padding: 0 0 0 5px;
 }
 
 .eval-modal-workspace-event-date {
-  font-size: 13px;
+  background: $evaluation-events-date-text-background-color;
+  border-radius: 2px;
+  color: $evaluation-events-date-text-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1;
+  margin: 0 10px 0 0;
+  padding: 3px 6px;
 }
 
-.eval-modal-workspace-event-author {
-  font-weight: bold;
+.eval-modal-workspace-event-details {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 10px 0 0;
+  
+  .author {
+    font-weight: 400;
+  }
 }
 
 .eval-modal-workspace-event-grade {
   border-radius: 3px;
   color: $evaluation-events-grade-text-color;
-  display: inline-block;
-  font-size: 15px;
+  display: flex;
+  flex-basis: 20px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 14px;
   font-weight: bold;
   margin: 0 0 0 5px;
-  min-width: 16px;
-  padding: 0 2px;
+  min-width: 20px;
+  padding: 2px;
   text-align: center;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  line-height: 1;
+}
+
+.eval-modal-workspace-event-data {
+  padding: 5px;
+}
+
+.eval-modal-workspace-event-buttonset {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+}
+
+.eval-modal-workspace-event-button {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 5px 0 5px 10px;
+  text-decoration: underline;
+  
+  &.button-edit-event {
+    color: $evaluation-requested-color;
+  }
+  
+  &.button-remove-event {
+    color: $evaluation-failed-color;
+  }
 }
 
 // Failed grade
