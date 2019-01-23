@@ -18,7 +18,7 @@
   <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
     <div class="eval-modal-workspace-event-header">
       <div class="eval-modal-workspace-event-date">3.2.2018</div>
-      <div class="eval-modal-workspace-event-details"><span class="eval-highlight">Arviointipyyntö</span> opiskelijalta <span class="highlight">Aimo Darra</span></div>
+      <div class="eval-modal-workspace-event-details"><span class="eval">Arviointipyyntö</span> opiskelijalta <span class="author">Aimo Darra</span></div>
     </div>
   </div>
   
