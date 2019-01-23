@@ -14,6 +14,7 @@ import SorterField from './fields/sorter-field';
 import { StatusType } from '~/reducers/base/status';
 import Image from './static/image';
 import WordDefinition from './static/word-definition';
+import IFrame from './static/iframe';
 import { extractDataSet, guidGenerator } from '~/util/modifiers';
 import { processMathInPage } from '~/lib/mathjax';
 import MathField from './fields/math-field';
@@ -77,6 +78,9 @@ const statics:{[componentKey:string]: {
    },
    'mark[data-muikku-word-definition]': {
      handler: WordDefinition
+   },
+   'iframe[data-url]': {
+     handler: IFrame
    }
 };
 
