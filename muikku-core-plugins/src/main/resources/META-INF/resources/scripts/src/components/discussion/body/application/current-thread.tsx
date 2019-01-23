@@ -62,7 +62,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     }
 
     let canRemoveThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.removeThread;
-    let canEditThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.editMessage;
+    let canEditThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.editMessages;
     let threadLocked = this.props.discussion.current.locked === true;
     let student = this.props.status.isStudent === true;
 
