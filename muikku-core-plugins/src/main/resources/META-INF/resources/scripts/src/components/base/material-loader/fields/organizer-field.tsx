@@ -93,7 +93,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     
     Object.keys(this.state.boxes).forEach((boxId)=>{
       let categoryTermCorrelation = this.props.content.categoryTerms.find(categoryTerm=>categoryTerm.category === boxId);
-      let elementsLeft = new Set(this.state.boxes[boxId]);
+      let elementsLeft = new Set(categoryTermCorrelation.terms);
       newRightnessState[boxId] = {"*": "PASS"};
       this.state.boxes[boxId].forEach((termId)=>{
         let isCorrect = categoryTermCorrelation.terms.includes(termId);
@@ -102,6 +102,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
           overallRightnessState = "FAIL";
           newRightnessState[boxId]["*"] = "FAIL";
         }
+        
         elementsLeft.delete(termId);
       });
       

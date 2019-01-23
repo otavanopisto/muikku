@@ -103,7 +103,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
     let nValues = this.state.values.slice(0);
     if (this.state.values.includes(e.target.value)){
-      nValues.filter(v=>v!==e.target.value)
+      nValues = nValues.filter(v=>v!==e.target.value)
     } else {
       nValues.push(e.target.value);
       nValues.sort();

@@ -131,6 +131,8 @@ let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 //you can add styles here but don't mess up with the low level rendering
 class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
   private stateConfiguration:any;
+  private rightnessRegistrySync: {[name: string]: any};
+  
   constructor(props: MaterialLoaderProps){
     super(props);
 
@@ -144,6 +146,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       answerCheckable: true,
       rightnessRegistry: {}
     };
+    
+    this.rightnessRegistrySync = {};
     
     this.onConfirmedAndSyncedModification = this.onConfirmedAndSyncedModification.bind(this);
     this.onModification = this.onModification.bind(this);
@@ -270,8 +274,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     });
   }
   onRightnessChange(name: string, value: boolean){
-    let newObj:any = {...this.state.rightnessRegistry};
-    newObj[name] = value;
+    this.rightnessRegistrySync[name] = value;
+    let newObj:any = {...this.rightnessRegistrySync};
     this.setState({
       rightnessRegistry: newObj
     })
@@ -314,7 +318,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       {this.state.answersChecked && Object.keys(this.state.rightnessRegistry).length ? <div className="correct-answers-count-container">
         <span className="correct-answers-count-label">{this.props.i18n.text.get("plugin.workspace.materialsLoader.correctAnswersCountLabel")}</span>
         <span className="correct-answers-count-data">
-          {Object.keys(this.state.rightnessRegistry).filter((key)=>this.state.rightnessRegistry).length} / {Object.keys(this.state.rightnessRegistry).length}
+          {Object.keys(this.state.rightnessRegistry).filter((key)=>this.state.rightnessRegistry[key]).length} / {Object.keys(this.state.rightnessRegistry).length}
         </span>
       </div> : null}
       {this.props.material.license ?

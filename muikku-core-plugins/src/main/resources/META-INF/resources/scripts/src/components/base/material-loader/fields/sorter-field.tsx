@@ -101,6 +101,11 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     }
     
     let isRight = newRightnessState.includes("FAIL");
+    if (!this.state.rightnessState){
+      this.props.onRightnessChange(this.props.content.name, isRight);
+      return;
+    }
+    
     let wasRight = !this.state.rightnessState.includes("FAIL");
     if (isRight && !wasRight){
       this.props.onRightnessChange(this.props.content.name, true);
@@ -116,7 +121,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
   }
   render(){
     let rightAnswerSummaryComponent = null;
-    if (this.props.displayRightAnswers && !(this.props.checkForRightness && !this.state.rightnessState.includes("FAIL"))){
+    let answerIsBeingCheckedAndItIsRight = this.props.checkForRightness && this.state.rightnessState && !this.state.rightnessState.includes("FAIL");
+    if (this.props.displayRightAnswers && !answerIsBeingCheckedAndItIsRight){
       rightAnswerSummaryComponent = <span className="muikku-field-examples">
         <span className="muikku-field-examples-title">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
