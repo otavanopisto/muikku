@@ -1,22 +1,22 @@
 {#events}
-  <div class="workspaceEvent" data-identifier="{identifier}" data-type="{type}">
-    <div>{date|formatDate}</div>
-    <div>{author}</div>
-    {?grade}<div>{grade}</div>{/grade}
-    <div>{text|s}</div>
+  <div class="eval-modal-workspace-event" data-identifier="{identifier}" data-type="{type}">
+    <div class="eval-modal-workspace-event-date">{date|formatDate}</div>
+    <div class="eval-modal-workspace-event-author">{author}</div>
+    {?grade}<div class="eval-modal-workspace-event-grade">{grade}</div>{/grade}
+    <div class="eval-modal-workspace-event-data">{text|s}</div>
     {@ne key=type value=EVALUATION_REQUEST}
-      <div class="edit-event-button">Muokkaa</div>
-      <div class="remove-event-button">Poista</div>
+      <div class="eval-modal-workspace-event-buttonset">
+        <div class="eval-modal-workspace-event-button button-edit-event-button">Muokkaa</div>
+        <div class="eval-modal-workspace-event-button button-remove-event-button">Poista</div>
+      </div>
     {/ne}
   </div>
 {/events}
 
-{!
-
-  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_REQUEST">
-    <div>3.2.2018</div>
-    <div>Opiskelija Heebo</div>
-    <div>
+  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
+    <div class="eval-modal-workspace-event-date">3.2.2018</div>
+    <div class="eval-modal-workspace-event-author">Opiskelija Heebo</div>
+    <div class="eval-modal-workspace-event-data">
       <p>Anna arvio</p>
       <p>Anna arvio</p>
       <p>Anna arvio</p>
@@ -24,67 +24,82 @@
       <p>Anna</p>
     </div>
   </div>
-  <div class="workspaceEvent" data-identifier="xxx" data-type="SUPPLEMENTATION_REQUEST">
-    <div>5.2.2018</div>
-    <div>Opettaja Heebo</div>
-    <div>
+  
+  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="SUPPLEMENTATION_REQUEST">
+    <div class="eval-modal-workspace-event-date">5.2.2018</div>
+    <div class="eval-modal-workspace-event-author">Opettaja Diiba</div>
+    <div class="eval-modal-workspace-event-grade">T</div>
+    <div class="eval-modal-workspace-event-data">
       <h3>Jaahas</h3>
       <p>Täydennyspyyntö</p>
       <p>Tekstiä runsaasti</p>
     </div>
-    <div class="edit-event-button">Muokkaa</div>
-    <div class="remove-event-button">Poista</div>
+    <div class="eval-modal-workspace-event-buttonset">
+      <div class="eval-modal-workspace-event-button button-edit-event-button">Muokkaa</div>
+      <div class="eval-modal-workspace-event-button button-remove-event-button">Poista</div>
+    </div>
   </div>
-  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_REQUEST">
-    <div>6.2.2018</div>
-    <div>Opiskelija Heebo</div>
-    <div>
+  
+  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
+    <div class="eval-modal-workspace-event-date">6.2.2018</div>
+    <div class="eval-modal-workspace-event-author">Opiskelija Heebo</div>
+    <div class="eval-modal-workspace-event-data">
       <p>Uusi yritys</p>
     </div>
   </div>
-  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_FAIL">
-    <div>7.2.2018</div>
-    <div>Opettaja Heebo</div>
-    <div>4</div>
-    <div>
+  
+  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_FAIL">
+    <div class="eval-modal-workspace-event-date">7.2.2018</div>
+    <div class="eval-modal-workspace-event-author">Opettaja Diiba</div>
+    <div class="eval-modal-workspace-event-grade">4</div>
+    <div class="eval-modal-workspace-event-data">
       <p><b>NO!</b></p>
     </div>
-    <div class="edit-event-button">Muokkaa</div>
-    <div class="remove-event-button">Poista</div>
+    <div class="eval-modal-workspace-event-buttonset">
+      <div class="eval-modal-workspace-event-button button-edit-event-button">Muokkaa</div>
+      <div class="eval-modal-workspace-event-button button-remove-event-button">Poista</div>
+    </div>
   </div>
-  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_REQUEST">
-    <div>8.2.2018</div>
-    <div>Opiskelija Heebo</div>
+  
+  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
+    <div class="eval-modal-workspace-event-date">8.2.2018</div>
+    <div class="eval-modal-workspace-event-author">Opiskelija Heebo</div>
     <div>
       <p>Kolmas yritys</p>
     </div>
   </div>
-  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_PASS">
-    <div>9.2.2018</div>
-    <div>Opettaja Heebo</div>
-    <div>9</div>
-    <div>
+  
+  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_PASS">
+    <div class="eval-modal-workspace-event-date">9.2.2018</div>
+    <div class="eval-modal-workspace-event-author">Opettaja Diiba</div>
+    <div class="eval-modal-workspace-event-grade">9</div>
+    <div class="eval-modal-workspace-event-data">
       <p>Jah</p>
     </div>
-    <div class="edit-event-button">Muokkaa</div>
-    <div class="remove-event-button">Poista</div>
+    <div class="eval-modal-workspace-event-buttonset">
+      <div class="eval-modal-workspace-event-button button-edit-event-button">Muokkaa</div>
+      <div class="eval-modal-workspace-event-button button-remove-event-button">Poista</div>
+    </div>
   </div>
-  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_REQUEST">
-    <div>10.2.2018</div>
-    <div>Opiskelija Heebo</div>
-    <div>
+  
+  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
+    <div class="eval-modal-workspace-event-date">10.2.2018</div>
+    <div class="eval-modal-workspace-event-author">Opiskelija Heebo</div>
+    <div class="eval-modal-workspace-event-data">
       <p>Korottaa tahtoo hän</p>
     </div>
   </div>
-  <div class="workspaceEvent" data-identifier="xxx" data-type="EVALUATION_PASS">
-    <div>11.2.2018</div>
-    <div>Opettaja Heebo</div>
-    <div>10</div>
-    <div>
+  
+  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_PASS">
+    <div class="eval-modal-workspace-event-date">11.2.2018</div>
+    <div class="eval-modal-workspace-event-author">Opettaja Diiba</div>
+    <div class="eval-modal-workspace-event-grade">10</div>
+    <div class="eval-modal-workspace-event-data">
       <p>Purrrrr-fection</p>
     </div>
-    <div class="edit-event-button">Muokkaa</div>
-    <div class="remove-event-button">Poista</div>
+    <div class="eval-modal-workspace-event-buttonset">
+      <div class="eval-modal-workspace-event-button button-edit-event-button">Muokkaa</div>
+      <div class="eval-modal-workspace-event-button button-remove-event-button">Poista</div>
+    </div>
   </div>
 
-!}

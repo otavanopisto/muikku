@@ -180,87 +180,6 @@
   top: 50px;
 }
 
-// EVALUATE FORM DISABLES OVERLAY
-.workspace-evaluation-form-overlay {
-  background: $evaluation-modal-workspace-evaluation-form-overlay-background-color;
-  bottom: 0;
-  left: 0;
-  opacity: 0.9;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 9998;
-}
-
-.workspace-evaluation-form-activate-button {
-  @include flexbox;
-  align-items: center;
-  background: $evaluation-modal-workspace-evaluation-form-activate-button-background-color;
-  border-radius: 100%;
-  box-sizing: border-box;
-  color: $evaluation-modal-workspace-evaluation-form-activate-button-font-color;
-  cursor: pointer;
-  font-size: 18px;
-  height: 180px;
-  left: 50%;
-  line-height: 24px;
-  margin: -80px;
-  opacity: 1;
-  padding: 44px 20px;
-  position: absolute;
-  text-align: center;
-  text-transform: uppercase;
-  top: 50%;
-  transition: all 0.3s ease-in-out;
-  width: 180px;
-  vertical-align: middle;
-  z-index: 9999;
-  
-  &:hover {
-    background: $evaluation-passed-color;
-  }
-
-}
-
-// RE-EVALUATE OVERLAY
-.workspace-re-evaluation-form-overlay {
-  align-items: center;
-  background: $evaluation-modal-workspace-evaluation-form-overlay-background-color;
-  bottom: 0;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.workspace-re-evaluation-form-activate-description {
-  color: $evaluation-delete-color;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 16px;
-  font-weight: 400;
-  padding: 0 5px 10px;
-  text-align: left;
-  text-transform: none;
-}
-
-.workspace-re-evaluation-form-activate-button {
-  background: $evaluation-delete-color;
-  border-radius: 3px;
-  color: $evaluation-modal-workspace-evaluation-form-activate-button-font-color;
-  cursor: pointer;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 1;
-  font-size: 16px;
-  margin: 0 0 20px;
-  padding: 8px 12px;
-}
-
 // EVALUATE FORM
 .evaluation-modal-evaluate-form {
 
@@ -363,6 +282,72 @@
   &.button-evaluate-nonpassing {
     background: $evaluation-incomplete-color;
   }
+  
+}
+
+// EVENTS
+.eval-modal-events-title {
+  font-size: 22px;
+  font-weight: 400;
+  padding: 10px;
+}
+
+.eval-modal-workspace-event {
+  
+  &[data-type="EVALUATION_REQUEST"] {
+  
+  }
+  
+  &[data-type="SUPPLEMENTATION_REQUEST"] {
+  
+  }
+  
+  &[data-type="EVALUATION_FAIL"] {
+  
+  }
+  
+  &[data-type="EVALUATION_PASS"] {
+  
+  }
+  
+}
+
+.eval-modal-workspace-event-date {
+  font-size: 13px;
+}
+
+.eval-modal-workspace-event-author {
+  font-weight: bold;
+}
+
+.eval-modal-workspace-event-grade {
+  border-radius: 3px;
+  color: $evaluation-events-grade-text-color;
+  display: inline-block;
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0 0 0 5px;
+  min-width: 16px;
+  padding: 0 2px;
+  text-align: center;
+}
+
+// Failed grade
+.eval-modal-workspace-event[data-type="EVALUATION_FAIL"] .eval-modal-workspace-event-grade {
+  background: $evaluation-failed-color;
+}
+
+// Passed grade
+.eval-modal-workspace-event[data-type="EVALUATION_PASS"] .eval-modal-workspace-event-grade {
+  background: $evaluation-passed-color;
+}
+
+// Supplement grade
+.eval-modal-workspace-event[data-type="SUPPLEMENTATION_REQUEST"] .eval-modal-workspace-event-grade {
+  background: $evaluation-incomplete-color;
+}
+
+.eval-modal-workspace-event-data {
   
 }
 

@@ -24,7 +24,7 @@
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">
-      <div class="eval-modal-evaluate-button button-start-evaluation" id="workspaceGradeSave">Tallenna</div>
+      <div class="eval-modal-evaluate-button button-evaluate-passing" id="workspaceGradeSave">Tallenna</div>
       <div class="eval-modal-evaluate-button button-cancel" id="workspaceGradeCancel">Peruuta</div>
     </div>
   </div>
