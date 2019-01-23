@@ -163,7 +163,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       
       if (this.stateConfiguration && this.stateConfiguration['checks-answers']){
         state.answersChecked = true;
-        if (!props.material || props.material.correctAnswers === "ALWAYS"){
+        if ((props.material.correctAnswers || "ALWAYS") === "ALWAYS"){
           state.answersVisible = true;
         }
       }
@@ -190,7 +190,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       
       if (this.stateConfiguration){
         if (this.stateConfiguration['checks-answers'] && !nextState.answersChecked){
-          if (!nextProps.material || nextProps.material.correctAnswers === "ALWAYS"){
+          if ((nextProps.material.correctAnswers || "ALWAYS") === "ALWAYS"){
             this.setState({
               answersVisible: true,
               answersChecked: true

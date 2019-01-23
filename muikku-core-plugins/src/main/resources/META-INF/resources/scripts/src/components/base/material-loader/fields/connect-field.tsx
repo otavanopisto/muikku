@@ -54,19 +54,14 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     let editedIdsArray:Array<string> = [];
     if (props.initialValue){
       let value = JSON.parse(props.initialValue);
-      fields = [];
+      fields = props.content.fields;
       counterparts = [];
       
-      Object.keys(value).forEach((fieldId)=>{
-        let counterpartId = value[fieldId];
-        editedIdsArray.push(fieldId);
-        editedIdsArray.push(counterpartId);
-        
-        fields.push(props.content.fields.find((f)=>f.name === fieldId));
+      fields.forEach((field)=>{
+        let counterpartId = value[field.name];
         counterparts.push(props.content.counterparts.find((c)=>c.name === counterpartId))
       });
     } else {
-      fields = shuffle(props.content.fields);
       counterparts = shuffle(props.content.counterparts);
     }
     
@@ -105,6 +100,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     if (!this.props.onChange){
       return;
     }
+    
     let newValue:any = {};
     this.state.fields.forEach((field, index)=>{
       let counterpart = this.state.counterparts[index];
@@ -130,6 +126,11 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     }
     
     let isRight = newRightnessState.includes("FAIL");
+    if (!this.state.rightnessState){
+      this.props.onRightnessChange(this.props.content.name, isRight);
+      return;
+    }
+    
     let wasRight = !this.state.rightnessState.includes("FAIL");
     if (isRight && !wasRight){
       this.props.onRightnessChange(this.props.content.name, true);
@@ -171,7 +172,6 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     }, this.triggerChange)
   }
   pickField(field: FieldType, isCounterpart: boolean, index: number){
-    console.log(arguments);
     if (!this.state.selectedField){
       this.setState({
         selectedField: field,
@@ -269,7 +269,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
          let itemRightAnswerComponent = null;
          if (this.props.displayRightAnswers && !(this.props.checkForRightness && itemRightness === "PASS")){
            itemRightAnswerComponent = <span className="muikku-connect-field-number">
-             {this.state.fields.findIndex(f=>f.name === (this.props.content.connections.find(c=>c.counterpart === field.name) || {field: null}).field)}
+             {this.state.fields.findIndex(f=>f.name === (this.props.content.connections.find(c=>c.counterpart === field.name) || {field: null}).field) + 1}
            </span>
          }
          
