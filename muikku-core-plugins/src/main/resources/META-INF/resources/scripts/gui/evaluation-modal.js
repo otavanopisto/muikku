@@ -312,27 +312,26 @@
     },
     
     _setupEventsContainer: function() {
-      this._loadEvents();
-      $('.button-edit-event').on('click', $.proxy(function(event) {
-        alert('TODO: Implement');
-      }, this));
-      $('.button-remove-event').on('click', $.proxy(function(event) {
-        alert('TODO: Implement');
-      }, this));
-      
-      $('.workspace-event-content-toggle').on('click', $.proxy(function(event) {
-        $('.workspace-event-content-text').toggle();
-      }, this));
-      
-      $('#workspaceGradeNew').on('click', $.proxy(function(event) {
-        this._toggleWorkspaceGradeEditor(true);
-      }, this));
-      $('#workspaceSupplementationNew').on('click', $.proxy(function(event) {
-        this._toggleWorkspaceSupplementationEditor(true);
+      this._loadEvents($.proxy(function() {
+        $('.button-edit-event').on('click', $.proxy(function(event) {
+          alert('TODO: Implement');
+        }, this));
+        $('.button-remove-event').on('click', $.proxy(function(event) {
+          alert('TODO: Implement');
+        }, this));
+        $('.workspace-event-content-toggle').on('click', $.proxy(function(event) {
+          $('.workspace-event-content-text').toggle();
+        }, this));
+        $('#workspaceGradeNew').on('click', $.proxy(function(event) {
+          this._toggleWorkspaceGradeEditor(true);
+        }, this));
+        $('#workspaceSupplementationNew').on('click', $.proxy(function(event) {
+          this._toggleWorkspaceSupplementationEditor(true);
+        }, this));
       }, this));
     },
     
-    _loadEvents: function() {
+    _loadEvents: function(callback) {
       var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
       mApi().evaluation.workspaceuser.events
         .read(workspaceUserEntityId)
@@ -345,6 +344,9 @@
               events: result
             }, $.proxy(function(html) {
               $('#workspaceEventsContainer').html(html);
+              if (callback) {
+                callback();
+              }
             }, this));
           }
       }, this));
