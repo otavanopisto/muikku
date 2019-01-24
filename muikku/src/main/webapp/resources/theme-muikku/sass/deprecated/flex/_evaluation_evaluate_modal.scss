@@ -381,8 +381,41 @@
   line-height: 1;
 }
 
-.eval-modal-workspace-event-data {
-  padding: 5px;
+.eval-modal-workspace-event-content {
+  padding: 5px 0;
+}
+
+.workspace-event-content-toggle {
+  align-items: center;
+  font-size: 13px;
+  display: flex;
+  
+  span {
+    cursor: pointer;
+  }
+  
+  span:not(:first-child) {
+    font-weight: 400;
+    padding: 0 0 0 5px;
+  }
+  
+  .icon-arrow-down-thin::before,
+  .icon-arrow-up-thin::before {
+    border-radius: 100%;
+    font-size: 12px;
+    height: 14px;
+    line-height: 1;
+    padding: 4px;
+    width: 14px;
+  }
+}
+
+.workspace-event-content-text {
+  background-color: $evaluation-modal-events-content-text-background-color;
+  border-radius: 3px;
+  font-size: 13px;
+  margin: 5px 0 0;
+  padding: 5px 10px;
 }
 
 .eval-modal-workspace-event-buttonset {

@@ -313,12 +313,17 @@
     
     _setupEventsContainer: function() {
       this._loadEvents();
-      $('.edit-event-button').on('click', $.proxy(function(event) {
+      $('.button-edit-event').on('click', $.proxy(function(event) {
         alert('TODO: Implement');
       }, this));
-      $('.remove-event-button').on('click', $.proxy(function(event) {
+      $('.button-remove-event').on('click', $.proxy(function(event) {
         alert('TODO: Implement');
       }, this));
+      
+      $('.workspace-event-content-toggle').on('click', $.proxy(function(event) {
+        $('.workspace-event-content-text').toggle();
+      }, this));
+      
       $('#workspaceGradeNew').on('click', $.proxy(function(event) {
         this._toggleWorkspaceGradeEditor(true);
       }, this));

@@ -6,6 +6,14 @@
           <div class="eval-modal-workspace-event-date">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details"><span class="eval">Arviointipyyntö</span> opiskelijalta <span class="author">{student}</span></div>
         </div>
+        <div class="eval-modal-workspace-event-content">
+          <div class="workspace-event-content-toggle"><span class="icon-arrow-down-thin"></span><span>Arviointipyyntö</span></div>
+          <div class="workspace-event-content-text" style="display: none;">{text|s}</div>
+        </div>
+        <div class="eval-modal-workspace-event-buttonset">
+          <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
+          <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
+        </div>
       </div>
     {/eq}
     {@eq value="SUPPLEMENTATION_REQUEST"}
@@ -55,10 +63,10 @@
     <div class="eval-modal-workspace-event-header">
       <div class="eval-modal-workspace-event-date">3.2.2018</div>
       <div class="eval-modal-workspace-event-details"><span class="eval">Arviointipyyntö</span> opiskelijalta <span class="author">Aimo Darra</span></div>
-      <div class="eval-modal-workspace-event-content-trigger"></div>
       <div class="eval-modal-workspace-event-content">
-        <div class="workspace-event-content-show icon-"></div>
-        <div class="workspace-event-content-hide" style="display: none;></div>
+        <div class="workspace-event-content-show icon-arrow-down-thin">Näytä arviointipyyntö</div>
+        <div class="workspace-event-content-hide icon-arrow-up-thin" style="display: none;>Piilota arviointipyyntö</div>
+        <div class="workspace-event-content-text">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam faucibus tellus neque, eget placerat ligula aliquet sed. Sed vel diam eget lacus ultrices cursus. Duis finibus aliquet ligula ut efficitur. Phasellus pretium tellus nec felis dapibus ullamcorper. Nullam quis ipsum vestibulum, aliquet nulla sed, ultrices urna. Nam a nunc eu ipsum imperdiet congue. Curabitur nec mollis lacus. Aliquam erat volutpat. Mauris fermentum nunc commodo, mollis ante id, vulputate nunc. Ut in euismod elit, sit amet faucibus nibh. In sit amet lectus urna.</p>
           <p>Vivamus eu mattis nulla, finibus efficitur enim. Nam lobortis risus urna, sit amet malesuada tellus blandit quis. Duis efficitur elit ac massa sodales consequat. Nulla facilisi. Pellentesque finibus ante a tincidunt interdum. Proin sagittis molestie diam nec venenatis. Integer tempor lorem nulla, ut faucibus libero consectetur eu. Suspendisse potenti. Morbi magna libero, pretium ut vestibulum in, tristique a urna.</p>
           <p>Donec consequat nisl velit, nec volutpat odio commodo id. Nunc aliquam luctus tortor quis malesuada. Pellentesque ante sapien, lobortis nec suscipit ut, iaculis nec nisl. Vivamus id tellus eros. Duis porttitor risus quis sapien pretium, id pulvinar massa venenatis. Pellentesque eget diam auctor, hendrerit dolor a, suscipit augue. Pellentesque eleifend aliquet vehicula. Nam eget elementum enim.</p>
