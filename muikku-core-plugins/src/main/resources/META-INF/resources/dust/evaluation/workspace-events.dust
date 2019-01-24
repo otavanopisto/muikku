@@ -14,10 +14,13 @@
     {@eq value="SUPPLEMENTATION_REQUEST"}
       <div class="eval-modal-workspace-event" data-identifier="{identifier}" data-type="SUPPLEMENTATION_REQUEST">
         <div class="eval-modal-workspace-event-header">
+          <div class="eval-modal-workspace-event-arrow icon-arrow-down-thin is-hidden"></div>
+          <div class="eval-modal-workspace-event-arrow icon-arrow-right-thin"></div>
           <div class="eval-modal-workspace-event-date">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details"><span class="eval">Täydennyspyyntö</span> opettajalta <span class="author">{author}</span></div>
           <div class="eval-modal-workspace-event-grade">T</div>
         </div>
+        <div class="eval-modal-workspace-event-content is-hidden">{text|s}</div>
         <div class="eval-modal-workspace-event-buttonset">
           <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
           <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
@@ -27,10 +30,13 @@
     {@eq value="EVALUATION_FAIL"}
       <div class="eval-modal-workspace-event" data-identifier="{identifier}" data-type="EVALUATION_FAIL">
         <div class="eval-modal-workspace-event-header">
+          <div class="eval-modal-workspace-event-arrow icon-arrow-down-thin is-hidden"></div>
+          <div class="eval-modal-workspace-event-arrow icon-arrow-right-thin"></div>
           <div class="eval-modal-workspace-event-date">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details">Opettaja <span class="author">{author}</span> arvioi kurssisuorituksen <span class="eval">hylätyksi</span></div>
           <div class="eval-modal-workspace-event-grade">{grade}</div>
         </div>
+        <div class="eval-modal-workspace-event-content is-hidden">{text|s}</div>
         <div class="eval-modal-workspace-event-buttonset">
           <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
           <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
@@ -40,10 +46,13 @@
     {@eq value="EVALUATION_PASS"}
       <div class="eval-modal-workspace-event" data-identifier="{identifier}" data-type="EVALUATION_PASS">
         <div class="eval-modal-workspace-event-header">
+          <div class="eval-modal-workspace-event-arrow icon-arrow-down-thin is-hidden"></div>
+          <div class="eval-modal-workspace-event-arrow icon-arrow-right-thin"></div>
           <div class="eval-modal-workspace-event-date">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details">Opettaja <span class="author">{author}</span> arvioi kurssisuorituksen <span class="eval">hyväksytyksi</span></div>
           <div class="eval-modal-workspace-event-grade">{grade}</div>
         </div>
+        <div class="eval-modal-workspace-event-content is-hidden">{text|s}</div>
         <div class="eval-modal-workspace-event-buttonset">
           <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
           <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
@@ -52,92 +61,3 @@
     {/eq}
   {/select}
 {/events}
-
-{!
-  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
-    <div class="eval-modal-workspace-event-header">
-      <div class="eval-modal-workspace-event-date">3.2.2018</div>
-      <div class="eval-modal-workspace-event-details"><span class="eval">Arviointipyyntö</span> opiskelijalta <span class="author">Aimo Darra</span></div>
-      <div class="eval-modal-workspace-event-content">
-        <div class="workspace-event-content-show icon-arrow-down-thin">Näytä arviointipyyntö</div>
-        <div class="workspace-event-content-hide icon-arrow-up-thin" style="display: none;>Piilota arviointipyyntö</div>
-        <div class="workspace-event-content-text">
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam faucibus tellus neque, eget placerat ligula aliquet sed. Sed vel diam eget lacus ultrices cursus. Duis finibus aliquet ligula ut efficitur. Phasellus pretium tellus nec felis dapibus ullamcorper. Nullam quis ipsum vestibulum, aliquet nulla sed, ultrices urna. Nam a nunc eu ipsum imperdiet congue. Curabitur nec mollis lacus. Aliquam erat volutpat. Mauris fermentum nunc commodo, mollis ante id, vulputate nunc. Ut in euismod elit, sit amet faucibus nibh. In sit amet lectus urna.</p>
-          <p>Vivamus eu mattis nulla, finibus efficitur enim. Nam lobortis risus urna, sit amet malesuada tellus blandit quis. Duis efficitur elit ac massa sodales consequat. Nulla facilisi. Pellentesque finibus ante a tincidunt interdum. Proin sagittis molestie diam nec venenatis. Integer tempor lorem nulla, ut faucibus libero consectetur eu. Suspendisse potenti. Morbi magna libero, pretium ut vestibulum in, tristique a urna.</p>
-          <p>Donec consequat nisl velit, nec volutpat odio commodo id. Nunc aliquam luctus tortor quis malesuada. Pellentesque ante sapien, lobortis nec suscipit ut, iaculis nec nisl. Vivamus id tellus eros. Duis porttitor risus quis sapien pretium, id pulvinar massa venenatis. Pellentesque eget diam auctor, hendrerit dolor a, suscipit augue. Pellentesque eleifend aliquet vehicula. Nam eget elementum enim.</p>
-          <p>Donec neque eros, efficitur eu quam vitae, imperdiet finibus mi. Praesent dapibus est sit amet mattis placerat. Fusce quis lorem massa. Aliquam erat volutpat. Nunc quis tristique nibh. Duis sodales, elit vitae molestie sagittis, ipsum elit tristique tortor, nec rutrum ante velit ut neque. Duis non scelerisque sapien. Nunc id lorem dictum, rhoncus lectus auctor, vestibulum nibh. Nullam lobortis purus nibh, sed faucibus est euismod eu. Quisque tortor sapien, pellentesque sit amet elit non, auctor dapibus ex. Mauris sed viverra ante. Integer aliquam risus et lacus blandit, sed aliquam ante lacinia. In ullamcorper lectus eu quam bibendum hendrerit vitae ac ipsum.</p>
-          <p>Maecenas in ante vitae odio vulputate varius. Curabitur erat sapien, placerat ut vulputate id, ultricies a turpis. Donec a fringilla lorem, vitae faucibus tellus. Mauris fringilla nunc a neque porta interdum. Morbi ornare, nulla et pulvinar vestibulum, quam massa hendrerit neque, et laoreet mauris neque eget ipsum. Aliquam eu lectus mattis, dapibus eros id, lacinia est. Duis ut aliquam est. Nulla aliquam est sed lorem condimentum, ac iaculis nulla tristique. Integer tristique scelerisque dui, vitae tincidunt orci tristique et.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="SUPPLEMENTATION_REQUEST">
-    <div class="eval-modal-workspace-event-header">
-      <div class="eval-modal-workspace-event-date">5.2.2018</div>
-      <div class="eval-modal-workspace-event-details"><span class="eval">Täydennyspyyntö</span> opettajalta <span class="author">Jäätävä Polte</span></div>
-      <div class="eval-modal-workspace-event-grade">T</div>
-    </div>
-    <div class="eval-modal-workspace-event-buttonset">
-      <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
-      <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
-    </div>
-  </div>
-  
-  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
-    <div class="eval-modal-workspace-event-header">
-      <div class="eval-modal-workspace-event-date">6.2.2018</div>
-      <div class="eval-modal-workspace-event-details"><span class="eval">Arviointipyyntö</span> opiskelijalta <span class="author">Aimo Darra</span></div>
-    </div>
-  </div>
-  
-  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_FAIL">
-    <div class="eval-modal-workspace-event-header">
-      <div class="eval-modal-workspace-event-date">7.2.2018</div>
-      <div class="eval-modal-workspace-event-details">Opettaja <span class="author">Jäätävä Polte</span> arvioi kurssiuorituksen <span class="eval">hylätyksi</span></div>
-      <div class="eval-modal-workspace-event-grade">4</div>
-    </div>
-    <div class="eval-modal-workspace-event-buttonset">
-      <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
-      <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
-    </div>
-  </div>
-  
-  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
-    <div class="eval-modal-workspace-event-header">
-      <div class="eval-modal-workspace-event-date">8.2.2018</div>
-      <div class="eval-modal-workspace-event-details"><span class="eval">Arviointipyyntö</span> opiskelijalta <span class="author">Aimo Darra</span></div>
-    </div>
-  </div>
-  
-  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_PASS">
-    <div class="eval-modal-workspace-event-header">
-      <div class="eval-modal-workspace-event-date">9.2.2018</div>
-      <div class="eval-modal-workspace-event-details">Opettaja <span class="author">Mahti Sonni</span> arvioi kurssisuorituksen <span class="eval">hyväksytyksi</span></div>
-      <div class="eval-modal-workspace-event-grade">9</div>
-    </div>
-    <div class="eval-modal-workspace-event-buttonset">
-      <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
-      <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
-    </div>
-  </div>
-  
-  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_REQUEST">
-    <div class="eval-modal-workspace-event-header">
-      <div class="eval-modal-workspace-event-date">10.2.2018</div>
-      <div class="eval-modal-workspace-event-details">Kurssin <span class="eval">korotuspyyntö</span> opiskelijalta <span class="author">Aimo Darra</span></div>
-    </div>
-  </div>
-  
-  <div class="eval-modal-workspace-event" data-identifier="xxx" data-type="EVALUATION_PASS">
-    <div class="eval-modal-workspace-event-header">
-      <div class="eval-modal-workspace-event-date">11.2.2018</div>
-      <div class="eval-modal-workspace-event-details">Opettaja <span class="author">Spede Pasanen</span> arvioi kurssin <span class="eval">korotetuksi</span></div>
-      <div class="eval-modal-workspace-event-grade">10</div>
-    </div>
-    <div class="eval-modal-workspace-event-buttonset">
-      <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
-      <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
-    </div>
-  </div>
-!}
