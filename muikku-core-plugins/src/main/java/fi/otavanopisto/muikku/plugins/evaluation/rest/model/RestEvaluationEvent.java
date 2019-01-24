@@ -55,8 +55,17 @@ public class RestEvaluationEvent {
     this.type = type;
   }
 
+  public String getStudent() {
+    return student;
+  }
+
+  public void setStudent(String student) {
+    this.student = student;
+  }
+
   private String identifier;
   private Date date;
+  private String student;
   private String author;
   private String grade;
   private String text;

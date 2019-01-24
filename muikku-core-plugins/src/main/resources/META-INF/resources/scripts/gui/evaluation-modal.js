@@ -254,11 +254,7 @@
         .attr('type', 'text')
         .datepicker();
       
-      $('#workspaceGradeCancel').click($.proxy(function(event) {
-          this._toggleWorkspaceGradeEditor(false);
-        }, this));
-      
-      $('.eval-modal-grade-close').click($.proxy(function(event) {
+      $('#workspaceGradeCancel,.eval-modal-grade-close').click($.proxy(function(event) {
           this._toggleWorkspaceGradeEditor(false);
         }, this));
     },
@@ -274,11 +270,7 @@
         .attr('type', 'text')
         .datepicker();
       
-      $('#workspaceSupplementationCancel').click($.proxy(function(event) {
-          this._toggleWorkspaceSupplementationEditor(false);
-        }, this));
-      
-      $('.eval-modal-supplementation-close').click($.proxy(function(event) {
+      $('#workspaceSupplementationCancel,.eval-modal-supplementation-close').click($.proxy(function(event) {
           this._toggleWorkspaceSupplementationEditor(false);
         }, this));
     },

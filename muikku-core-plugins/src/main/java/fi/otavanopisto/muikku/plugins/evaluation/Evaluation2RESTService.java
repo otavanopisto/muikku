@@ -233,6 +233,7 @@ public class Evaluation2RESTService {
       // Event
       
       RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setStudent(student.getDisplayName());
       event.setAuthor(assessor.getDisplayName());
       event.setDate(workspaceAssessment.getDate());
       event.setGrade(gradingScaleItem.getName());
@@ -255,6 +256,7 @@ public class Evaluation2RESTService {
       User assessor = userController.findUserByIdentifier(assessorIdentifier);
       
       RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setStudent(student.getDisplayName());
       event.setAuthor(assessor.getDisplayName());
       event.setDate(supplementationRequest.getRequestDate());
       event.setIdentifier(supplementationRequest.getId().toString());
@@ -271,6 +273,7 @@ public class Evaluation2RESTService {
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
       RestEvaluationEvent event = new RestEvaluationEvent();
+      event.setStudent(student.getDisplayName());
       event.setAuthor(student.getDisplayName());
       event.setDate(assessmentRequest.getDate());
       event.setIdentifier(assessmentRequest.getIdentifier());
