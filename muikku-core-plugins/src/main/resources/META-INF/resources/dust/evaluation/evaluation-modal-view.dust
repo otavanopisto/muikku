@@ -21,7 +21,7 @@
     <div class="eval-modal-workspace-name">{courseName}</div>
   </header>
   <div class="eval-modal-events-content">
-    <div class="eval-modal-events-title">Opiskelijan kurssin arviointihistoria</div>
+    <div class="eval-modal-events-title">Työtilan arviointihistoria</div>
     <div id="workspaceEventsContainer"></div>
     <div class="eval-modal-evaluate-buttonset">
       <div class="eval-modal-evaluate-button button-start-evaluation" id="workspaceGradeNew">Anna kurssiarvio</div>
