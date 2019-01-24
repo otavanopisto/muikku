@@ -35,6 +35,7 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.mathexercise": MathField
 }
 
+//Objects that can check for answers
 const answerCheckables = [
   "application/vnd.muikku.field.text",
   "application/vnd.muikku.field.select",
@@ -67,9 +68,13 @@ interface BaseState {
   
 }
 
+//The typing of the user will stack until the user stops typing for this amount of milliseconds
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT = 600;
+//The client will wait this amount of milliseconds and otherwise it will consider the answer unsynced 
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_REPLY = 2000;
 
+//The handlers that do more to html static items
+//That are somehow brokeeeen
 const statics:{[componentKey:string]: {
   handler: Function
 }} = {
@@ -207,17 +212,17 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     //So we take all the elements and append them to the base in the reference
     this.elements.forEach((e)=>(this.refs["base"] as HTMLElement).appendChild(e));
     
+    let originalAnswerCheckable = this.answerCheckable;
+    this.answerCheckable = false;
+    
     //First we find all the interactive
     $(this.elements).find("object").addBack("object").each((index: number, element: HTMLElement)=>{
       //We get the object element as in, the react component that it will be replaced with
       let rElement:React.ReactElement<any> = this.getObjectElement(element, props);
     
-      if (this.props.onAnswerCheckableChange){
-        let newAnswerCheckableState = answerCheckables.includes(element.getAttribute("type"));
-        if (newAnswerCheckableState !== this.answerCheckable){
-          this.answerCheckable = newAnswerCheckableState;
-          this.props.onAnswerCheckableChange(newAnswerCheckableState);
-        }
+      let newAnswerCheckableState = answerCheckables.includes(element.getAttribute("type"));
+      if (newAnswerCheckableState && !this.answerCheckable){
+        this.answerCheckable = true;
       }
     
       //We get the parent element of that object
@@ -241,6 +246,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         element
       });
     });
+    
+    if (this.props.onAnswerCheckableChange && originalAnswerCheckable !== this.answerCheckable){
+      this.props.onAnswerCheckableChange(this.answerCheckable);
+    }
     
     //The statics follow a similar process
     Object.keys(statics).forEach((componentKey)=>{

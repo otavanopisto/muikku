@@ -18,6 +18,10 @@ interface MathFieldProps {
 
 interface MathFieldState {
   value: string,
+  
+  //This state comes from the context handler in the base
+  //We can use it but it's the parent managing function that modifies them
+  //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string
@@ -29,6 +33,8 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     
     this.state = {
       value: props.initialValue || '',
+      
+      //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null

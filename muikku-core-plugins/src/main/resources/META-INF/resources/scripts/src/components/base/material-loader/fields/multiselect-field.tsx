@@ -27,6 +27,10 @@ interface MultiSelectFieldProps {
 
 interface MultiSelectFieldState {
   values: Array<string>,
+  
+  //This state comes from the context handler in the base
+  //We can use it but it's the parent managing function that modifies them
+  //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string,
@@ -44,6 +48,8 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     let values:Array<string> = ((props.initialValue && JSON.parse(props.initialValue)) || []) as Array<string>;
     this.state = {
       values: values.sort(),
+      
+      //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
@@ -65,7 +71,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
         this.setState({
           rightnessState: "UNKNOWN"
         });
-        this.props.onRightnessChange(this.props.content.name, true);
+        this.props.onRightnessChange(this.props.content.name, null);
       }
       return;
     }

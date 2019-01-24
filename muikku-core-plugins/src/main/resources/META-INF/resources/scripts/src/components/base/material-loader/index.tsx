@@ -26,31 +26,54 @@ import { bindActionCreators } from 'redux';
 import { UpdateAssignmentStateTriggerType, updateAssignmentState } from '~/actions/workspaces';
 import equals = require("deep-equal");
 
+//These represent the states assignments and exercises can be in
 const STATES = [{
   'assignment-type': 'EXERCISE',
+  //usually exercises cannot be withdrawn but they might be in extreme cases when a evaluated has
+  //been modified
   'state': ['UNANSWERED', 'ANSWERED', 'WITHDRAWN'],
+  
+  //when an exercise is in the state unanswered answered or withdrawn then it doesn't
+  //display this button
   'displays-hide-show-answers-on-request-button-if-allowed': false,
   'button-class': 'muikku-check-exercises',
+  
+  //This is what by default appears on the button
   'button-text': "plugin.workspace.materialsLoader.sendExerciseButton",
+  
+  //This is what appears when the answer can be checked
+  //this appears when at least one of the entry fields are checkable
+  //in the page
   'button-check-text': "plugin.workspace.materialsLoader.checkExerciseButton",
+  
+  //Buttons are not disabled
   'button-disabled': false,
+  
+  //When the button is pressed, the composite reply will change state to this one
   'success-state': 'SUBMITTED',
+  
+  //Whether or not the fields are read only
   'fields-read-only': false
 }, {
   'assignment-type': 'EXERCISE',
   'state': ['SUBMITTED', 'PASSED', 'FAILED', 'INCOMPLETE'],
+  
+  //With this property active whenever in this state the answers will be checked
   'checks-answers': true,
   'displays-hide-show-answers-on-request-button-if-allowed': true,
   'button-class': 'muikku-check-exercises',
   'button-text': "plugin.workspace.materialsLoader.exerciseSentButton",
   'button-check-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
   'button-disabled': false,
+  
+  //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
   'modify-state': 'ANSWERED'
 }, {
   'assignment-type': 'EVALUATED',
   'state': ['UNANSWERED', 'ANSWERED'],
   'button-class': 'muikku-submit-assignment',
   'button-text': "plugin.workspace.materialsLoader.submitAssignmentButton",
+  //Represents a message that will be shown once the state changes to the success state
   'success-text': "plugin.workspace.materialsLoader.assignmentSubmitted",
   'button-disabled': false,
   'success-state': 'SUBMITTED',
@@ -99,26 +122,41 @@ interface MaterialLoaderProps {
   modifiers?: string | Array<string>,
   id?: string,
   websocket: WebsocketStateType,
+  
+  //Whether or not the thing can be answered
+  //and then it will use the state configuration
   answerable?: boolean,
+      
+  //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
 
+  //A boolean to load the composite replies if they haven't been given
+  //Shouldn't use if answerable as the updateAssignmentState function is
+  //used
   loadCompositeReplies?: boolean,
-  readOnly?: boolean,
   compositeReplies?: MaterialCompositeRepliesType,
+      
+  readOnly?: boolean,
   
   updateAssignmentState: UpdateAssignmentStateTriggerType
 }
 
 interface MaterialLoaderState {
+  //Composite replies as loaded when using loadCompositeReplies boolean
   compositeReplies: MaterialCompositeRepliesType,
   
+  //whether the answers are visible and checked
   answersVisible: boolean,
   answersChecked: boolean,
+  
+  //whether the material can be checked at all
   answerCheckable: boolean,
   
+  //A registry for the right and wrong answers as told by the material
   rightnessRegistry: {[name: string]: any}
 }
 
+//A cheap cache for material replies and composite replies used by the hack
 let materialRepliesCache:{[key: string]: any} = {};
 let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 
@@ -136,17 +174,26 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   constructor(props: MaterialLoaderProps){
     super(props);
 
+    //stop propagation of clicks
     this.stopPropagation = this.stopPropagation.bind(this);
 
+    //initial state has no composite replies and the asnwers are not visible or checked
     let state:MaterialLoaderState = {
       compositeReplies: null,
       answersVisible: false,
       answersChecked: false,
-      //assume true, as it is usually true
+      
+      //assume true, as it is usually true; this is
+      //basically only in used for exercises to show button-check-text instead
+      //of just the normal text that doesn't check
       answerCheckable: true,
+      
+      //The rightness registry start empty
       rightnessRegistry: {}
     };
     
+    //A sync version of the righness registry, it can change so fast
+    //setStates might stack
     this.rightnessRegistrySync = {};
     
     this.onConfirmedAndSyncedModification = this.onConfirmedAndSyncedModification.bind(this);
@@ -156,15 +203,20 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.onRightnessChange = this.onRightnessChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
     
+    //if it is answerable
     if (props.answerable && props.material){
+      //lets try and get the state configuration
       this.stateConfiguration = STATES.filter((state:any)=>{
+        //by assignment type first
         return state['assignment-type'] === props.material.assignmentType;
       }).find((state:any)=>{
+        //then by state, if no composite reply is given assume UNANSWERED
         let stateRequired = (props.compositeReplies && props.compositeReplies.state) || "UNANSWERED";
         let statesInIt = state['state'];
         return statesInIt === stateRequired || ((statesInIt instanceof Array) && statesInIt.includes(stateRequired));
       });
       
+      //If checks answers, make it with answersChecked and answersVisible starting as true
       if (this.stateConfiguration && this.stateConfiguration['checks-answers']){
         state.answersChecked = true;
         if ((props.material.correctAnswers || "ALWAYS") === "ALWAYS"){
@@ -173,17 +225,24 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       }
     }
     
+    //set the state
     this.state = state;
   }
   componentDidMount(){
+    //create the composite replies if using the boolean flag
     this.create();
   }
   stopPropagation(e: React.MouseEvent<HTMLDivElement>){
     e.stopPropagation();
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
+    //if the component will update we need to do some changes if it's gonna be answerable
+    //and there's a material
     if (nextProps.answerable && nextProps.material){
+      //we get the composite replies
       let compositeReplies = nextProps.compositeReplies || nextState.compositeReplies;
+      
+      //The state configuration
       this.stateConfiguration = STATES.filter((state:any)=>{
         return state['assignment-type'] === nextProps.material.assignmentType;
       }).find((state:any)=>{
@@ -192,19 +251,27 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         return statesInIt === stateRequired || ((statesInIt instanceof Array) && statesInIt.includes(stateRequired));
       });
       
+      //There should be one but add this check just in case
       if (this.stateConfiguration){
+        //if the thing has the flag to checks-answers but they are not going to be
         if (this.stateConfiguration['checks-answers'] && !nextState.answersChecked){
+          //Depending on whether correctAnswers are ALWAYS (and the default is always if not set)
           if ((nextProps.material.correctAnswers || "ALWAYS") === "ALWAYS"){
+            //We set the answers visible and checked
             this.setState({
               answersVisible: true,
               answersChecked: true
             });
           } else {
+            //Otherwise the answers only get checked, this is for example
+            //For the ON_REQUEST or NEVER types
             this.setState({
               answersChecked: true
             });
           }
+        //If the opposite is true and they are not with the checks-answers flags but they are currently checked
         } else if (!this.stateConfiguration['checks-answers'] && nextState.answersChecked){
+          //hide all that, and answersVisible too, it might be active too
           this.setState({
             answersVisible: false,
             answersChecked: false
@@ -238,27 +305,45 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   getComponent():HTMLDivElement {
     return this.refs["root"] as HTMLDivElement;
   }
+  //This gets called once an answer is pushed with the button to push the answer
+  //To change its state
   onPushAnswer(){
+    //So now we need that juicy success state
     if (this.stateConfiguration['success-state']){
+      //Get the composite reply
       let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
-      //We make it be the success state that was given
+      //We make it be the success state that was given, call this function
+      //We set first the state we want
+      //false because we want to call and update the state server side
+      //we put the required workspace id and workspace material id
+      //add a worspaceMaterialReplyId if we have one, and hopefully we will, for most of the cases that is
+      //We add the success text if we have one, ofc it is a string to translate
       this.props.updateAssignmentState(this.stateConfiguration['success-state'], false,
           this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
           this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAssignmentStateModified);
     }
   }
+  //This gets called once the material modified and the server comfirmed it was modified
   onConfirmedAndSyncedModification(){
+    //What we basically want to do this is because when the websocket gets called
+    //the state gets changed to ANSWERED from UNANSWERED but our client side
+    //tree is not aware of this change
     let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
+    //So we check if it is UNASWERED or has no reply in which case is unanswered too
     if (!compositeReplies || compositeReplies.state === "UNANSWERED"){
       //We make the call using true to avoid the server call since that would be redundant
       //We just want to make the answer answered and we know that it has been updated
       //already as the answer has been synced
+      //that is why the true flag is there not to call the server
       this.props.updateAssignmentState("ANSWERED", true,
           this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
           this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']));
     }
   }
+  //Gets called on any modification of the material task
   onModification(){
+    //We use this function to basically modify the state with the modify state
+    //Currently only used in exercises when the modify state sends them back to be answered
     let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
     if (this.stateConfiguration['modify-state'] &&
         (compositeReplies || {state: "UNANSWERED"}).state !== this.stateConfiguration['modify-state']){
@@ -268,27 +353,60 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAssignmentStateModified);
     }
   }
+  //Toggles answers visible or not
   toggleAnswersVisible(){
     this.setState({
       answersVisible: !this.state.answersVisible
     });
   }
-  onRightnessChange(name: string, value: boolean){
-    this.rightnessRegistrySync[name] = value;
+  //This function gets called every time a field rightness state changes
+  //because of the way it works it will only be called if checkForRightness boolean attribute
+  //is set to true and it will fire immediately all the on rightness change events, as everything
+  //starts with unknown rightness, only things that can be righted call this, the name represents the field
+  //and the value the rightness that came as a result
+  //Some items do not trigger this function, which means your rightness count might differ from the
+  //amount of fields, because fields self register
+  onRightnessChange(name: string, value?: boolean){
+    
+    //The reason we need a sync registry is that the rightness can change so fast
+    //that it can overwritte itself in async opperations like setState and this.state
+    
+    //A value of null represents no rightness, some fields can have unknown rightness
+    if (value === null){
+      delete this.rightnessRegistrySync[name];
+    } else {
+      this.rightnessRegistrySync[name] = value;
+    }
     let newObj:any = {...this.rightnessRegistrySync};
     this.setState({
       rightnessRegistry: newObj
     })
+    
+    //NOTE if you would rather have 3 rightness states here in order
+    //to make all fields show in the correct answer count you might modify and change how
+    //the function operates within the fields freely
   }
+  //this function gets called when the material in question
+  //answer checkable state changes
+  //now by default this state is unknown
+  //so it will always trigger on setup
+  //however here we set it to true and check
+  //because changes are it will be true so we
+  //need not to update anything
+  //if that's the case
+  //feel free to go on top and change it to false
+  //if chances are it is more likely to be false
+  //should save a couple of bytes
   onAnswerCheckableChange(answerCheckable: boolean){
     if (answerCheckable !== this.state.answerCheckable){
       this.setState({answerCheckable});
     }
   }
   render(){
-    //TODO remove this __deprecated container once things are done and classes are cleared up, or just change the classname to something
-    //more reasonable
+    //The modifieers in use
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
+    
+    //Setting this up
     return <div className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} rich-text`} ref="root" id={this.props.id}>
       {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
           <div className="">

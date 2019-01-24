@@ -50,6 +50,10 @@ interface AudioFieldState {
   }>,
   supportsMediaAPI: boolean,
   time: number,
+  
+  //This state comes from the context handler in the base
+  //We can use it but it's the parent managing function that modifies them
+  //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string
@@ -68,6 +72,8 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
       recording: false,
       time: 0,
       values: [],
+      
+      //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
