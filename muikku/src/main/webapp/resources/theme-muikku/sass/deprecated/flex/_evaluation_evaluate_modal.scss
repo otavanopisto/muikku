@@ -334,6 +334,7 @@
 
 .eval-modal-workspace-event-header {
   align-items: center;
+  cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
   font-size: 13px;
@@ -381,36 +382,21 @@
   line-height: 1;
 }
 
-.eval-modal-workspace-event-content {
-  padding: 5px 0;
-}
-
-.workspace-event-content-toggle {
+.eval-modal-workspace-event-arrow {
   align-items: center;
-  font-size: 13px;
+  border-radius: 100%;
+  color: $evaluation-requested-color;
   display: flex;
-  
-  span {
-    cursor: pointer;
-  }
-  
-  span:not(:first-child) {
-    font-weight: 400;
-    padding: 0 0 0 5px;
-  }
-  
-  .icon-arrow-down-thin::before,
-  .icon-arrow-up-thin::before {
-    border-radius: 100%;
-    font-size: 12px;
-    height: 14px;
-    line-height: 1;
-    padding: 4px;
-    width: 14px;
-  }
+  font-size: 10px;
+  line-height: 1;
+  padding: 4px;
 }
 
-.workspace-event-content-text {
+.is-hidden {
+  display: none;
+}
+
+.eval-modal-workspace-event-content {
   background-color: $evaluation-modal-events-content-text-background-color;
   border-radius: 3px;
   font-size: 13px;

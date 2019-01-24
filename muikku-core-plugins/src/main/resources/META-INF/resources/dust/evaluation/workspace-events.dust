@@ -3,17 +3,12 @@
     {@eq value="EVALUATION_REQUEST"}
       <div class="eval-modal-workspace-event" data-identifier="{identifier}" data-type="EVALUATION_REQUEST">
         <div class="eval-modal-workspace-event-header">
+          <div class="eval-modal-workspace-event-arrow icon-arrow-down-thin is-hidden"></div>
+          <div class="eval-modal-workspace-event-arrow icon-arrow-right-thin"></div>
           <div class="eval-modal-workspace-event-date">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details"><span class="eval">Arviointipyyntö</span> opiskelijalta <span class="author">{student}</span></div>
         </div>
-        <div class="eval-modal-workspace-event-content">
-          <div class="workspace-event-content-toggle"><span class="icon-arrow-down-thin"></span><span>Arviointipyyntö</span></div>
-          <div class="workspace-event-content-text" style="display: none;">{text|s}</div>
-        </div>
-        <div class="eval-modal-workspace-event-buttonset">
-          <div class="eval-modal-workspace-event-button button-edit-event">Muokkaa</div>
-          <div class="eval-modal-workspace-event-button button-remove-event">Poista</div>
-        </div>
+        <div class="eval-modal-workspace-event-content is-hidden">{text|s}</div>
       </div>
     {/eq}
     {@eq value="SUPPLEMENTATION_REQUEST"}

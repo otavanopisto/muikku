@@ -319,8 +319,12 @@
         $('.button-remove-event').on('click', $.proxy(function(event) {
           alert('TODO: Implement');
         }, this));
-        $('.workspace-event-content-toggle').on('click', $.proxy(function(event) {
-          $('.workspace-event-content-text').toggle();
+        $('.eval-modal-workspace-event-header').on('click', $.proxy(function(event) {
+          var $arrows = $(this).find('.eval-modal-workspace-event-arrow');
+          $('.eval-modal-workspace-event-content').stop().slideToggle(200);
+          // $arrows.toggle();
+          // $(event.target).find('.eval-modal-workspace-event-arrow').toggle();
+          // $(this).find(".icon-arrow-down-thin, .icon-arrow-right-thin").toggle(); 
         }, this));
         $('#workspaceGradeNew').on('click', $.proxy(function(event) {
           this._toggleWorkspaceGradeEditor(true);
