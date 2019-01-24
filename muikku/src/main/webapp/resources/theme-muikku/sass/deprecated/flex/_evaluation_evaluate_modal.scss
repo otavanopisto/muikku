@@ -44,7 +44,7 @@
     text-shadow: 0 0 15px $evaluation-modal-assignment-close-textshadow-color;
   }
   
-  &.icon-arrow-right {
+  &.icon-arrow-right-thin {
     border: 1px solid $assignment-color;
     border-radius: 100%;
     color: $assignment-color;
@@ -56,12 +56,12 @@
   }
 }
 
-.eval-modal-grade-close.icon-arrow-right {
+.eval-modal-grade-close.icon-arrow-right-thin {
   border: 1px solid $evaluation-start-evaluation-color;
   color: $evaluation-start-evaluation-color;
 }
 
-.eval-modal-supplementation-close.icon-arrow-right {
+.eval-modal-supplementation-close.icon-arrow-right-thin {
   border: 1px solid $evaluation-incomplete-color;
   color: $evaluation-incomplete-color;
 }
