@@ -301,7 +301,8 @@
   
   &[data-type="EVALUATION_REQUEST"] {
   
-    .eval {
+    .eval,
+    .eval-modal-workspace-event-arrow {
       color: $evaluation-requested-color;
       font-weight: bold;
     }
@@ -309,7 +310,8 @@
   
   &[data-type="SUPPLEMENTATION_REQUEST"] {
 
-    .eval {
+    .eval,
+    .eval-modal-workspace-event-arrow {
       color: $evaluation-incomplete-color;
       font-weight: bold;
     }
@@ -317,7 +319,8 @@
   
   &[data-type="EVALUATION_FAIL"] {
  
-    .eval {
+    .eval,
+    .eval-modal-workspace-event-arrow {
       color: $evaluation-failed-color;
       font-weight: bold;
     }
@@ -325,7 +328,8 @@
   
   &[data-type="EVALUATION_PASS"] {
    
-   .eval {
+   .eval,
+   .eval-modal-workspace-event-arrow {
       color: $evaluation-passed-color;
       font-weight: bold;
     }
@@ -384,8 +388,6 @@
 
 .eval-modal-workspace-event-arrow {
   align-items: center;
-  border-radius: 100%;
-  color: $evaluation-requested-color;
   display: flex;
   font-size: 10px;
   line-height: 1;
