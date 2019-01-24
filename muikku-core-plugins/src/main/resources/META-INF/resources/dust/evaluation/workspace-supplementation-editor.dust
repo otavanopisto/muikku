@@ -6,7 +6,7 @@
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="workspaceSupplementationDate">Päivämäärä</label>
-    <input required="required" type="date" name="workspaceSupplementationDate" id="workspaceGradeDate"/>
+    <input required="required" type="date" name="workspaceSupplementationDate" id="workspaceSupplementationDate"/>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">

@@ -249,8 +249,7 @@
         manualDraftStart: true,
         draftKey: 'workspace-grade-draft-' + workspaceUserEntityId
       }));
-      var dateField = $(this._evaluationModal).find('#workspaceGradeDate'); 
-      $(dateField)
+      $('#workspaceGradeDate')
         .css({'z-index': 999, 'position': 'relative'})
         .attr('type', 'text')
         .datepicker();
@@ -270,8 +269,7 @@
         manualDraftStart: true,
         draftKey: 'workspace-supplementation-draft-' + workspaceUserEntityId
       }));
-      var dateField = $(this._evaluationModal).find('#workspaceSupplementationDate'); 
-      $(dateField)
+      $('#workspaceSupplementationDate')
         .css({'z-index': 999, 'position': 'relative'})
         .attr('type', 'text')
         .datepicker();
