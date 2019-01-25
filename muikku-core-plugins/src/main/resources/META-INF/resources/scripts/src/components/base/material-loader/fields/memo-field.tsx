@@ -33,9 +33,7 @@ interface MemoFieldState {
   //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
-  syncError: string,
-  
-  rightnessState: "UNKNOWN"
+  syncError: string
 }
 
 const ckEditorConfig = {
@@ -60,10 +58,12 @@ const extraPlugins = {
   'muikku-mathjax': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/'
 }
 
+//Counts the amount of characters, stolen from the old code, no idea how it exactly works
 function characterCount(rawText: string){
   return rawText === '' ? 0 : rawText.trim().replace(/(\s|\r\n|\r|\n)+/g,'').split("").length;
 }
 
+//Counts the amount of words, stolen too
 function wordCount(rawText: string){
   return rawText === '' ? 0 : rawText.trim().split(/\s+/).length;
 }
@@ -72,8 +72,12 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
   constructor(props: MemoFieldProps){
     super(props);
     
+    //get the initial value
     let value = props.initialValue || '';
+    //and get the raw text if it's richedit
     let rawText = this.props.content.richedit ? $(value).text() : value;
+    
+    //set the state with the counts
     this.state = {
       value,
       words: wordCount(rawText),
@@ -82,9 +86,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
-      syncError: null,
-      
-      rightnessState: "UNKNOWN"
+      syncError: null
     }
     
     this.onInputChange = this.onInputChange.bind(this);
@@ -94,17 +96,24 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
     || this.props.i18n !== nextProps.i18n || this.props.displayRightAnswers !== nextProps.displayRightAnswers || this.props.checkForRightness !== nextProps.checkForRightness;
   }
+  //very simple this one is for only when raw input from the textarea changes
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>){
+    //we call the on change
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
+    //and update the count
     this.setState({
       value: e.target.value,
       words: wordCount(e.target.value),
       characters: characterCount(e.target.value)
     });
   }
+  //this one is for a ckeditor change
   onCKEditorChange(value: string){
+    //we need the raw text
     let rawText = $(value).text();
+    //call the update
     this.props.onChange && this.props.onChange(this, this.props.content.name, value);
+    //and update the state
     this.setState({
       value,
       words: wordCount(rawText),
@@ -112,10 +121,13 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     });
   }
   render(){
-    let classNameState = this.state.rightnessState && this.props.checkForRightness ? "state-" + this.state.rightnessState : "";
-    let rightAnswerExampleComponent = null;
+    //we have a right answer example for when
+    //we are asked for displaying right answer
+    //so we need to set it up
+    let answerExampleComponent = null;
+    //it's simply set when we get it
     if (this.props.displayRightAnswers && this.props.content.example){
-      rightAnswerExampleComponent = <span className="muikku-field-examples">
+      answerExampleComponent = <span className="muikku-field-examples">
         <span className="muikku-field-examples-title">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
         </span>
@@ -123,18 +135,25 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       </span>
     }
     
-    let fields;
+    //now we need the field
+    let field;
+    //if readonly
     if  (this.props.readOnly){
-      fields = !this.props.content.richedit ? <div className={`muikku-memo-field muikku-field ${classNameState}`}>{this.state.value}</div> :
+      //depending to whether richedit or not we make it be with the value as inner html or just raw text
+      field = !this.props.content.richedit ? <div className="muikku-memo-field muikku-field">{this.state.value}</div> :
               <div className="muikku-memo-field muikku-field" dangerouslySetInnerHTML={{__html:this.state.value}}/>
     } else {
-      fields = !this.props.content.richedit ? <textarea className={`muikku-memo-field muikku-field ${classNameState}`} cols={parseInt(this.props.content.columns)}
+      //here we make it be a simple textarea or a rich text editor
+      //note how somehow numbers come as string...
+      field = !this.props.content.richedit ? <textarea className="muikku-memo-field muikku-field" cols={parseInt(this.props.content.columns)}
           rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
             <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
              onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
     }
+    
+    //and here the element itself
     return <div>
-      {fields}
+      {field}
       <div className="count-container">
         <div className="word-count-container">
           <div className="word-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}</div>
@@ -145,7 +164,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
           <div className="character-count">{this.state.characters}</div>
         </div>
       </div>
-      {rightAnswerExampleComponent}
+      {answerExampleComponent}
     </div>
   }
 }

@@ -35,16 +35,21 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.mathexercise": MathField
 }
 
-//Objects that can check for answers
-const answerCheckables = [
-  "application/vnd.muikku.field.text",
-  "application/vnd.muikku.field.select",
-  "application/vnd.muikku.field.multiselect",
-  "application/vnd.muikku.field.memo",
-  "application/vnd.muikku.field.connect",
-  "application/vnd.muikku.field.organizer",
-  "application/vnd.muikku.field.sorter"
-]
+//Wheteher the object can check or not for an answer
+const answerCheckables: {[key: string]: (params:any)=>boolean} = {
+  "application/vnd.muikku.field.text": (params: any)=>{
+    return params.content.rightAnswers.filter((option:any)=>option.correct).lenght;
+  },
+  "application/vnd.muikku.field.select": (params: any)=>{
+    return params.content.options.filter((option:any)=>option.correct).lenght;
+  },
+  "application/vnd.muikku.field.multiselect": (params: any)=>{
+    return params.content.options.filter((option:any)=>option.correct).lenght;
+  },
+  "application/vnd.muikku.field.connect": ()=>true,
+  "application/vnd.muikku.field.organizer": ()=>true,
+  "application/vnd.muikku.field.sorter": ()=>true
+}
 
 interface BaseProps {
   material: MaterialContentNodeType,
@@ -220,7 +225,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       //We get the object element as in, the react component that it will be replaced with
       let rElement:React.ReactElement<any> = this.getObjectElement(element, props);
     
-      let newAnswerCheckableState = answerCheckables.includes(element.getAttribute("type"));
+      let newAnswerCheckableState = answerCheckables[element.getAttribute("type")] &&
+        answerCheckables[element.getAttribute("type")](rElement.props);
       if (newAnswerCheckableState && !this.answerCheckable){
         this.answerCheckable = true;
       }
