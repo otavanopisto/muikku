@@ -1204,7 +1204,7 @@ public class Evaluation2RESTService {
           userEntity.getId(),
           workspaceEntity.getId(),
           Boolean.FALSE);
-      if (supplementationRequest != null) {
+      if (supplementationRequest != null && (evaluationDate == null || evaluationDate.before(supplementationRequest.getRequestDate()))) {
         graded = Boolean.FALSE;
         passing = Boolean.FALSE;
         evaluationDate = supplementationRequest.getRequestDate();
