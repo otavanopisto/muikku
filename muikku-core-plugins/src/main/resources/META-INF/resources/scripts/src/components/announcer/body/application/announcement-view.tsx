@@ -13,10 +13,12 @@ import '~/sass/elements/label.scss';
 import '~/sass/elements/article.scss';
 import '~/sass/elements/glyph.scss';
 import { AnnouncementsType } from '~/reducers/main-function/announcements';
+import { UserIndexType } from '~/reducers/main-function/user-index';
 
 interface MessageViewProps {
   i18n: i18nType,
   announcements: AnnouncementsType,
+  userIndex: UserIndexType
 }
 
 interface MessageVitewState {
@@ -53,6 +55,18 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
                   </span>
                 })}
                 </div> : null}
+            {this.props.announcements.current.userGroupEntityIds && this.props.announcements.current.userGroupEntityIds.length ? 
+                <div className="labels item-list__announcement-usergroups">
+                {this.props.announcements.current.userGroupEntityIds.map((userGroupId)=>{
+                  if (!this.props.userIndex.groups[userGroupId]){
+                    return null;
+                  }
+                  return <span className="label" key={userGroupId}>
+                    <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
+                    <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
+                  </span>
+                })}
+                </div> : null}
           </div>
           <div className="application-list__item-body article">
             <header className="article__header">{this.props.announcements.current.caption}</header>
@@ -68,7 +82,8 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: state.announcements,
+    userIndex: state.userIndex
   }
 };
 

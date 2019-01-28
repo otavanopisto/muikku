@@ -24,10 +24,12 @@ import { AddToAnnouncementsSelectedTriggerType, RemoveFromAnnouncementsSelectedT
   removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/main-function/announcements';
 import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemFooter, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
+import { UserIndexType } from '~/reducers/main-function/user-index';
 
 interface AnnouncementsProps {
   i18n: i18nType,
   announcements: AnnouncementsType,
+  userIndex: UserIndexType,
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType
 }
@@ -84,6 +86,18 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                       </span>
                     })}
                     </div> : null}
+                  {announcement.userGroupEntityIds && announcement.userGroupEntityIds.length ? 
+                      <div className="labels item-list__announcement-usergroups">
+                      {announcement.userGroupEntityIds.map((userGroupId)=>{
+                        if (!this.props.userIndex.groups[userGroupId]){
+                          return null;
+                        }
+                        return <span className="label" key={userGroupId}>
+                          <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
+                          <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
+                        </span>
+                      })}
+                      </div> : null}
                   <ApplicationListItemFooter modifiers="announcement-actions">  
                     <NewEditAnnouncement announcement={announcement}>
                       <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
@@ -105,7 +119,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: state.announcements,
+    userIndex: state.userIndex
   }
 };
 
