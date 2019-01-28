@@ -65,7 +65,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
         </object>
         <div className="application-sub-panel__header-main-container">
-          <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic)}</div>
+          <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic, true)}</div>
           <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</div>
         </div>
         <div className="application-sub-panel__header-aside-container">
