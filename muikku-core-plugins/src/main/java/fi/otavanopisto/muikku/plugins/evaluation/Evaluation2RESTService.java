@@ -237,6 +237,8 @@ public class Evaluation2RESTService {
       event.setAuthor(assessor.getDisplayName());
       event.setDate(workspaceAssessment.getDate());
       event.setGrade(gradingScaleItem.getName());
+      // TODO Why do grade and scale identifiers lack source?  
+      event.setGradeIdentifier(String.format("PYRAMUS-%s@PYRAMUS-%s", gradingScale.getIdentifier(), gradingScaleItem.getIdentifier()));
       event.setIdentifier(workspaceAssessment.getIdentifier().toId());
       event.setText(workspaceAssessment.getVerbalAssessment());
       event.setType(gradingScaleItem.isPassingGrade() ? RestEvaluationEventType.EVALUATION_PASS : RestEvaluationEventType.EVALUATION_FAIL);
@@ -1030,7 +1032,7 @@ public class Evaluation2RESTService {
     SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
     GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
     
-    // Create workspace assessment
+    // Update workspace assessment
     
     WorkspaceAssessment workspaceAssessment = gradingController.updateWorkspaceAssessment(
         workspaceAssessmentIdentifier,

@@ -63,11 +63,20 @@ public class RestEvaluationEvent {
     this.student = student;
   }
 
+  public String getGradeIdentifier() {
+    return gradeIdentifier;
+  }
+
+  public void setGradeIdentifier(String gradeIdentifier) {
+    this.gradeIdentifier = gradeIdentifier;
+  }
+
   private String identifier;
   private Date date;
   private String student;
   private String author;
   private String grade;
+  private String gradeIdentifier;
   private String text;
   private RestEvaluationEventType type;
 
