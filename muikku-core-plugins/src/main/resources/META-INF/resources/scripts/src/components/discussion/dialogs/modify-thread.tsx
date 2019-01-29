@@ -142,7 +142,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
          <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
        </div>, 
-       (this.props.status.permissions.LOCK_STICKY_PERMISSION ? <div key="2" className="env-dialog__row  env-dialog__row--new-discussion-thread-states">
+       (this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? <div key="2" className="env-dialog__row  env-dialog__row--new-discussion-thread-states">
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
          <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>

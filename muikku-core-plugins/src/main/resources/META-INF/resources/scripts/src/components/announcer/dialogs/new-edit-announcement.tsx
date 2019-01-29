@@ -283,7 +283,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           hasWorkspacePermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_WORKSPACES}
           workspacePermissionIsOnlyMyWorkspaces={!this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT}
           placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-        selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
+          selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}
+          showFullNames={false}/>),
       (
       <div className="env-dialog__row" key="3">    
        <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">  
