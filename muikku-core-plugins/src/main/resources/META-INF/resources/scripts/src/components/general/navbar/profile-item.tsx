@@ -39,7 +39,8 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       {
         icon: "forgotpassword",
         text: 'plugin.profileBadge.links.userGuide',
-        href: "https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials"
+        href: "https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials",
+        openInNewTab: "_blank"
       },
       {
         icon: "helpdesk",
@@ -55,7 +56,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
     return <Dropdown modifier="profile" items={items.map((item)=>{
         return (closeDropdown: ()=>any)=>{return <Link href={item.href} to={item.to ? item.href : null}
          className={`link link--full link--profile`}
-         onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}}>
+         onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}} openInNewTab={item.openInNewTab}>
           <span className={`link__icon icon-${item.icon}`}></span>
           <span>{this.props.i18n.text.get(item.text)}</span>
         </Link>}
