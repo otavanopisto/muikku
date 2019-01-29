@@ -50,10 +50,10 @@
   }
 }
 
-.label__text--announcement-workspace, 
+.label__text--announcement-workspace,
 .label__text--announcement-usergroup {
   font-size: calc(#{$text-mobile-font-size} / 1.1);
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: calc(#{$text-desktop-font-size} / 1.1);
   }
