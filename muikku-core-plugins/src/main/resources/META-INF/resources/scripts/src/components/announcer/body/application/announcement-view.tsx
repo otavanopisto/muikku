@@ -46,36 +46,32 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
                 </div>
               </div>
             </div>
-            {this.props.announcements.current.workspaces && this.props.announcements.current.workspaces.length ? 
-                <div className="labels labels--announcer-announcement item-list__announcement-workspaces">
-                {this.props.announcements.current.workspaces.map((workspace)=>{ 
-                  return <span className="label" key={workspace.id}>
-                    <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                    <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
-                  </span>
-                })}
-                </div> : null}
-            {this.props.announcements.current.userGroupEntityIds && this.props.announcements.current.userGroupEntityIds.length ? 
-                <div className="labels item-list__announcement-usergroups">
-                {this.props.announcements.current.userGroupEntityIds.map((userGroupId)=>{
-                  if (!this.props.userIndex.groups[userGroupId]){
-                    return null;
-                  }
-                  return <span className="label" key={userGroupId}>
-                    <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
-                    <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
-                  </span>
-                })}
-                </div> : null}
+            {this.props.announcements.current.workspaces.length || this.props.announcements.current.userGroupEntityIds.length ? <div className="labels labels--announcer-announcement">
+              {this.props.announcements.current.workspaces.length && this.props.announcements.current.workspaces.map((workspace)=>
+                <span className="label" key={workspace.id}>
+                  <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                  <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                </span>
+              )}
+              {this.props.announcements.current.userGroupEntityIds.length ? this.props.announcements.current.userGroupEntityIds.map((userGroupId)=>{
+                if (!this.props.userIndex.groups[userGroupId]){
+                  return null;
+                }
+                return <span className="label" key={userGroupId}>
+                  <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
+                  <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
+                </span>
+              }) : null}
+            </div> : null }
           </div>
           <div className="application-list__item-body article">
             <header className="article__header">{this.props.announcements.current.caption}</header>
             <section className="article__body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
-          </div>  
-        </div>                 
+          </div>
+        </div>
       </div>
     )
-  }       
+  }
 }
 
 //TODO fix this is using the other version of announcements
