@@ -5,7 +5,7 @@
         <div class="eval-modal-workspace-event-header">
           <div class="eval-modal-workspace-event-arrow icon-arrow-down-thin is-hidden"></div>
           <div class="eval-modal-workspace-event-arrow icon-arrow-right-thin"></div>
-          <div class="eval-modal-workspace-event-date" data-date-raw="{date}">{date|formatDate}</div>
+          <div class="eval-modal-workspace-event-date" data-date-raw="{date|timestamp}">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details"><span class="eval">Arviointipyyntö</span> opiskelijalta <span class="author">{student}</span></div>
         </div>
         <div class="eval-modal-workspace-event-content is-hidden">{text|s}</div>
@@ -16,7 +16,7 @@
         <div class="eval-modal-workspace-event-header">
           <div class="eval-modal-workspace-event-arrow icon-arrow-down-thin is-hidden"></div>
           <div class="eval-modal-workspace-event-arrow icon-arrow-right-thin"></div>
-          <div class="eval-modal-workspace-event-date" data-date-raw="{date}">{date|formatDate}</div>
+          <div class="eval-modal-workspace-event-date" data-date-raw="{date|timestamp}">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details"><span class="eval">Täydennyspyyntö</span> opettajalta <span class="author">{author}</span></div>
           <div class="eval-modal-workspace-event-grade">T</div>
         </div>
@@ -32,7 +32,7 @@
         <div class="eval-modal-workspace-event-header">
           <div class="eval-modal-workspace-event-arrow icon-arrow-down-thin is-hidden"></div>
           <div class="eval-modal-workspace-event-arrow icon-arrow-right-thin"></div>
-          <div class="eval-modal-workspace-event-date" data-date-raw="{date}">{date|formatDate}</div>
+          <div class="eval-modal-workspace-event-date" data-date-raw="{date|timestamp}">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details">Opettaja <span class="author">{author}</span> arvioi kurssisuorituksen <span class="eval">hylätyksi</span></div>
           <div class="eval-modal-workspace-event-grade" data-identifier="{gradeIdentifier}">{grade}</div>
         </div>
@@ -48,7 +48,7 @@
         <div class="eval-modal-workspace-event-header">
           <div class="eval-modal-workspace-event-arrow icon-arrow-down-thin is-hidden"></div>
           <div class="eval-modal-workspace-event-arrow icon-arrow-right-thin"></div>
-          <div class="eval-modal-workspace-event-date" data-date-raw="{date}">{date|formatDate}</div>
+          <div class="eval-modal-workspace-event-date" data-date-raw="{date|timestamp}">{date|formatDate}</div>
           <div class="eval-modal-workspace-event-details">Opettaja <span class="author">{author}</span> arvioi kurssisuorituksen <span class="eval">hyväksytyksi</span></div>
           <div class="eval-modal-workspace-event-grade" data-identifier="{gradeIdentifier}">{grade}</div>
         </div>

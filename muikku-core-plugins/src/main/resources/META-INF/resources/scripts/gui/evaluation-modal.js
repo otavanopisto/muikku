@@ -249,10 +249,6 @@
         manualDraftStart: true,
         draftKey: 'workspace-grade-draft-' + workspaceUserEntityId
       }));
-      $('#workspaceGradeDate')
-        .css({'z-index': 999, 'position': 'relative'})
-        .attr('type', 'text')
-        .datepicker();
       
       $('#workspaceGradeCancel,.eval-modal-grade-close').on('click', $.proxy(function(event) {
         this._toggleWorkspaceGradeEditor(false);
@@ -269,7 +265,7 @@
             gradingScaleIdentifier: scaleAndGrade[0],
             gradeIdentifier: scaleAndGrade[1],
             verbalAssessment: CKEDITOR.instances.workspaceGradeText.getData(),
-            assessmentDate: $('#workspaceGradeDate').datepicker('getDate').getTime()
+            assessmentDate: $('#workspaceGradeDate').val()
           })
           .callback($.proxy(function (err) {
             if (err) {
@@ -289,7 +285,7 @@
             gradingScaleIdentifier: scaleAndGrade[0],
             gradeIdentifier: scaleAndGrade[1],
             verbalAssessment: CKEDITOR.instances.workspaceGradeText.getData(),
-            assessmentDate: $('#workspaceGradeDate').datepicker('getDate').getTime()
+            assessmentDate: $('#workspaceGradeDate').val()
           })
           .callback($.proxy(function (err) {
             if (err) {
@@ -373,7 +369,7 @@
               $('#workspaceGradeIdentifier').val($(eventElement).attr('data-identifier'));
               $('#workspaceGradeWorkspaceUserEntityId').val(workspaceUserEntityId);
               $('#workspaceGradeGrade').val($(eventElement).find('.eval-modal-workspace-event-grade').attr('data-identifier'));
-              $('#workspaceGradeDate').datepicker('setDate', moment($(eventElement).find('.eval-modal-workspace-event-date').attr('data-date-raw')).toDate());
+              $('#workspaceGradeDate').val($(eventElement).find('.eval-modal-workspace-event-date').attr('data-date-raw'));
               CKEDITOR.instances.workspaceGradeText.setData($(eventElement).find('.eval-modal-workspace-event-content').html());
               CKEDITOR.instances.workspaceGradeText.startDrafting();
             }
@@ -395,7 +391,8 @@
             $('#workspaceGradeEditor').attr('data-mode', 'new');
             $('#workspaceGradeIdentifier').val('');
             $('#workspaceGradeWorkspaceUserEntityId').val($(this._requestCard).attr('data-workspace-user-entity-id'));
-            $('#workspaceGradeDate').datepicker('setDate', new Date());
+            $('#workspaceGradeDate').val(new Date().getTime());
+            CKEDITOR.instances.workspaceGradeText.setData('');
             CKEDITOR.instances.workspaceGradeText.startDrafting();
           }
           this._toggleWorkspaceGradeEditor(true);

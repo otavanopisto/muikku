@@ -1,13 +1,10 @@
 <div id="workspaceGradeEditor"> 
   <input type="hidden" name="workspaceGradeIdentifier" id="workspaceGradeIdentifier"/>
   <input type="hidden" name="workspaceGradeWorkspaceUserEntityId" id="workspaceGradeWorkspaceUserEntityId"/>
+  <input type="hidden" name="workspaceGradeDate" id="workspaceGradeDate"/>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="workspaceGradeText">Sanallinen arviointi</label>
     <textarea id="workspaceGradeText"></textarea>
-  </div>
-  <div class="evaluation-modal-evaluate-form-row">
-    <label for="workspaceGradeDate">Päivämäärä</label>
-    <input required="required" type="date" name="workspaceGradeDate" id="workspaceGradeDate"/>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="workspaceGradeGrade">Arvosana</label>
