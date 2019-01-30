@@ -255,6 +255,16 @@
       }, this));
       
       $('#workspaceGradeSave').on('click', $.proxy(function(event) {
+        
+        var successCallback = $.proxy(function(assessment) {
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
+          this.element.trigger("workspaceAssessmentSaved", {
+            assessment: assessment
+          });
+          $('#workspaceGradeEditor').attr('data-mode', '');
+          this._setupEventsContainer(); // reload events
+        }, this);
+        
         CKEDITOR.instances.workspaceGradeText.discardDraft();
         var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
         var scaleAndGrade = $('#workspaceGradeGrade').val().split('@');
@@ -267,14 +277,12 @@
             verbalAssessment: CKEDITOR.instances.workspaceGradeText.getData(),
             assessmentDate: $('#workspaceGradeDate').val()
           })
-          .callback($.proxy(function (err) {
+          .callback($.proxy(function (err, assessment) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              $('#workspaceGradeEditor').attr('data-mode', '');
-              this._setupEventsContainer(); // reload events
-              this._toggleWorkspaceGradeEditor(false);
+              successCallback(assessment);
             }
           }, this));
         }
@@ -287,14 +295,12 @@
             verbalAssessment: CKEDITOR.instances.workspaceGradeText.getData(),
             assessmentDate: $('#workspaceGradeDate').val()
           })
-          .callback($.proxy(function (err) {
+          .callback($.proxy(function (err, assessment) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              $('#workspaceGradeEditor').attr('data-mode', '');
-              this._setupEventsContainer(); // reload events
-              this._toggleWorkspaceGradeEditor(false);
+              successCallback(assessment);
             }
           }, this));
         }
@@ -305,19 +311,70 @@
     },
     
     _setupWorkspaceSupplementationEditor: function() {
+      
+      // Workspace supplementation request editor initialization
+      
       var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
       CKEDITOR.replace($('#workspaceSupplementationText')[0], $.extend({}, this.options.ckeditor, {
         manualDraftStart: true,
         draftKey: 'workspace-supplementation-draft-' + workspaceUserEntityId
       }));
-      $('#workspaceSupplementationDate')
-        .css({'z-index': 999, 'position': 'relative'})
-        .attr('type', 'text')
-        .datepicker();
+      
+      // Close workspace supplementation request editor
       
       $('#workspaceSupplementationCancel,.eval-modal-supplementation-close').click($.proxy(function(event) {
         this._toggleWorkspaceSupplementationEditor(false);
       }, this));
+      
+      // Save workspace supplementation request
+      
+      $('#workspaceSupplementationSave').on('click', $.proxy(function(event) {
+        
+        var successCallback = $.proxy(function(supplementationRequest) {
+          CKEDITOR.instances.workspaceSupplementationText.discardDraft();
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
+          this.element.trigger("workspaceSupplementationRequestSaved", {
+            supplementationRequest: supplementationRequest
+          });
+          $('#workspaceSupplementationEditor').attr('data-mode', '');
+          this._setupEventsContainer(); // reload events
+        }, this);
+        
+        var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
+        var mode = $('#workspaceSupplementationEditor').attr('data-mode');
+        if (mode == 'new') {
+          mApi().evaluation.workspaceuser.supplementationrequest.create(workspaceUserEntityId, {
+            requestDate: $('#workspaceSupplementationDate').val(),
+            requestText: CKEDITOR.instances.workspaceSupplementationText.getData()
+          })
+          .callback($.proxy(function (err, supplementationRequest) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              successCallback(supplementationRequest);
+            }
+          }, this));
+        }
+        else if (mode == 'edit') {
+          mApi().evaluation.workspaceuser.supplementationrequest.update(workspaceUserEntityId, {
+            id: $('#workspaceSupplementationIdentifier').val(),
+            requestDate: $('#workspaceSupplementationDate').val(),
+            requestText: CKEDITOR.instances.workspaceSupplementationText.getData()
+          })
+          .callback($.proxy(function (err, supplementationRequest) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              successCallback(supplementationRequest);
+            }
+          }, this));
+        }
+        else {
+          this._toggleWorkspaceSupplementationEditor(false);
+        }
+      }, this)); 
     },
     
     _setupAssignmentEditor: function() {
@@ -367,14 +424,24 @@
             if (mode != 'edit' || $('#workspaceGradeIdentifier').val() != $(eventElement).attr('data-identifier')) {
               $('#workspaceGradeEditor').attr('data-mode', 'edit');
               $('#workspaceGradeIdentifier').val($(eventElement).attr('data-identifier'));
-              $('#workspaceGradeWorkspaceUserEntityId').val(workspaceUserEntityId);
               $('#workspaceGradeGrade').val($(eventElement).find('.eval-modal-workspace-event-grade').attr('data-identifier'));
               $('#workspaceGradeDate').val($(eventElement).find('.eval-modal-workspace-event-date').attr('data-date-raw'));
               CKEDITOR.instances.workspaceGradeText.setData($(eventElement).find('.eval-modal-workspace-event-content').html());
               CKEDITOR.instances.workspaceGradeText.startDrafting();
             }
+            this._toggleWorkspaceGradeEditor(true);
           }
-          this._toggleWorkspaceGradeEditor(true);
+          else if (eventType == 'SUPPLEMENTATION_REQUEST') {
+            var mode = $('#workspaceSupplementationEditor').attr('data-mode');
+            if (mode != 'edit' || $('#workspaceSupplementationIdentifier').val() != $(eventElement).attr('data-identifier')) {
+              $('#workspaceSupplementationEditor').attr('data-mode', 'edit');
+              $('#workspaceSupplementationIdentifier').val($(eventElement).attr('data-identifier'));
+              $('#workspaceSupplementationDate').val($(eventElement).find('.eval-modal-workspace-event-date').attr('data-date-raw'));
+              CKEDITOR.instances.workspaceSupplementationText.setData($(eventElement).find('.eval-modal-workspace-event-content').html());
+              CKEDITOR.instances.workspaceSupplementationText.startDrafting();
+            }
+            this._toggleWorkspaceSupplementationEditor(true);
+          }
         }, this));
         $('.button-remove-event').on('click', $.proxy(function(event) {
           alert('TODO: Implement');
@@ -390,7 +457,6 @@
           if (mode != 'new') {
             $('#workspaceGradeEditor').attr('data-mode', 'new');
             $('#workspaceGradeIdentifier').val('');
-            $('#workspaceGradeWorkspaceUserEntityId').val($(this._requestCard).attr('data-workspace-user-entity-id'));
             $('#workspaceGradeDate').val(new Date().getTime());
             CKEDITOR.instances.workspaceGradeText.setData('');
             CKEDITOR.instances.workspaceGradeText.startDrafting();
@@ -399,6 +465,14 @@
         }, this));
         
         $('#workspaceSupplementationNew').on('click', $.proxy(function(event) {
+          var mode = $('#workspaceSupplementationEditor').attr('data-mode');
+          if (mode != 'new') {
+            $('#workspaceSupplementationEditor').attr('data-mode', 'new');
+            $('#workspaceSupplementationIdentifier').val('');
+            $('#workspaceSupplementationDate').val(new Date().getTime());
+            CKEDITOR.instances.workspaceSupplementationText.setData('');
+            CKEDITOR.instances.workspaceSupplementationText.startDrafting();
+          }
           this._toggleWorkspaceSupplementationEditor(true);
         }, this));
       }, this));
@@ -636,7 +710,6 @@
       this.element.trigger("loadEnd", $('.eval-modal-assignments-content'));
     },
     
-    /* TODO Refactor these
     _onWorkspaceAssessmentSaved: function(event, data) {
       this.confirmStudentArchive(this._requestCard, $.proxy(function(archived) {
         var assessment = data.assessment;
@@ -651,7 +724,7 @@
             passing: assessment.passing,
             evaluationDate: moment(assessment.assessmentDate).toDate()});
         }
-        this.close();
+        this._toggleWorkspaceGradeEditor(false);
       }, this));
     },
 
@@ -667,9 +740,8 @@
           passing: false,
           evaluationDate: moment(data.supplementationRequest.requestDate).toDate()});
       }
-      this.close();
+      this._toggleWorkspaceSupplementationEditor(false);
     },
-    */
     
     activeAssignment: function(val) {
       if (val) {

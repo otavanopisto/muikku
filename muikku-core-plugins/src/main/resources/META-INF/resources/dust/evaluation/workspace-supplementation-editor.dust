@@ -1,12 +1,9 @@
-<div> 
-  <input type="hidden" name="workspaceSupplementationWorkspaceUserEntityId" id="workspaceSupplementationWorkspaceUserEntityId"/>
+<div id="workspaceSupplementationEditor"> 
+  <input type="hidden" name="workspaceSupplementationIdentifier" id="workspaceSupplementationIdentifier"/>
+  <input type="hidden" name="workspaceSupplementationDate" id="workspaceSupplementationDate"/>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="workspaceSupplementationText">Täydennyspyyntö</label>
     <textarea id="workspaceSupplementationText"></textarea>
-  </div>
-  <div class="evaluation-modal-evaluate-form-row">
-    <label for="workspaceSupplementationDate">Päivämäärä</label>
-    <input required="required" type="date" name="workspaceSupplementationDate" id="workspaceSupplementationDate"/>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">

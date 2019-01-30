@@ -614,9 +614,6 @@ public class Evaluation2RESTService {
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspaceMaterialAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, RestAssessment payload) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -759,14 +756,85 @@ public class Evaluation2RESTService {
         gradingScaleItem.isPassingGrade());
     return Response.ok(restAssessment).build();
   }
+  
+  @POST
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/supplementationrequest")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceSupplementationRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestSupplementationRequest payload) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (payload.getId() != null) {
+      return Response.status(Status.BAD_REQUEST).entity("POST with payload identifier").build();
+    }
+    
+    // Entities
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    // Creation
+    
+    SupplementationRequest supplementationRequest = evaluationController.createSupplementationRequest(
+      userEntity.getId(),
+      studentEntity.getId(),
+      workspaceEntity.getId(),
+      null, // workspace material
+      payload.getRequestDate(),
+      payload.getRequestText());
+    
+    // Notifications (evaluationController.createSupplementationRequest has already done most of them, though)
+
+    activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.EVALUATION_GOTINCOMPLETED, workspaceEntity.getId(), null);
+
+    return Response.ok(supplementationRequest).build();
+  }
+  
+  @PUT
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/supplementationrequest")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceSupplementationRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestSupplementationRequest payload) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (payload.getId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
+    }
+    
+    // Entities
+    
+    SupplementationRequest supplementationRequest = evaluationController.findSupplementationRequestById(payload.getId());
+    if (supplementationRequest == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing workspaceUserEntity").build();
+    }
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    // Update
+    
+    supplementationRequest = evaluationController.updateSupplementationRequest(supplementationRequest,
+      userEntity.getId(),
+      payload.getRequestDate(),
+      payload.getRequestText());
+
+    return Response.ok(supplementationRequest).build();
+  }
 
   @POST
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/supplementationrequest")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createWorkspaceSupplementationRequest(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, RestSupplementationRequest payload) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }

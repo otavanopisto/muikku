@@ -242,7 +242,8 @@ public class EvaluationController {
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     
-    // List assessment requests (from Pyramus)  
+    // List assessment requests (from Pyramus)
+    // TODO Could be optimized by only fetching requests that are not yet handled
     
     List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(),
@@ -252,6 +253,9 @@ public class EvaluationController {
     // Mark each assessment request as handled (to Pyramus)
     
     for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
+      if (assessmentRequest.getHandled()) {
+        continue;
+      }
       gradingController.updateWorkspaceAssessmentRequest(
           assessmentRequest.getSchoolDataSource(),
           assessmentRequest.getIdentifier(),

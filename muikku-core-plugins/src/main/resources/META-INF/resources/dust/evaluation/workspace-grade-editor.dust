@@ -1,6 +1,5 @@
 <div id="workspaceGradeEditor"> 
   <input type="hidden" name="workspaceGradeIdentifier" id="workspaceGradeIdentifier"/>
-  <input type="hidden" name="workspaceGradeWorkspaceUserEntityId" id="workspaceGradeWorkspaceUserEntityId"/>
   <input type="hidden" name="workspaceGradeDate" id="workspaceGradeDate"/>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="workspaceGradeText">Sanallinen arviointi</label>
