@@ -51,6 +51,8 @@ function checkHasPermission(which: boolean, defaultValue?: boolean){
 export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
   private blurTimeout:NodeJS.Timer;
   private selectedHeight:number;
+  private activeSearchId:number;
+  private activeSearchTimeout:number;
 
   constructor(props: InputContactsAutofillProps){
     super(props);
@@ -67,11 +69,15 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.blurTimeout = null;
     this.selectedHeight= null;
     this.onInputChange = this.onInputChange.bind(this);
+    this.autocompleteDataFromServer = this.autocompleteDataFromServer.bind(this);
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.setBodyMargin = this.setBodyMargin.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    
+    this.activeSearchId = null;
+    this.activeSearchTimeout = null;
   }
   componentWillReceiveProps(nextProps: InputContactsAutofillProps){
     if (nextProps.selectedItems !== this.props.selectedItems){
@@ -98,56 +104,65 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     clearTimeout(this.blurTimeout);
     this.setState({isFocused: true});
   }
-  async onInputChange(e: React.ChangeEvent<HTMLInputElement>){
+  onInputChange(e: React.ChangeEvent<HTMLInputElement>){
     let textInput = e.target.value;
     this.setState({textInput, autocompleteOpened: true});
-    
+    clearTimeout(this.activeSearchTimeout);
     if (textInput){
-      let loaders = this.props.loaders || {};
-      
-      let getStudentsLoader = () =>  {
-        return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
-          searchString: textInput,
-          onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
-        }), 'callback');
-      }
-      let getUserGroupsLoader = () => { 
-        return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
-          searchString: textInput
-        }), 'callback');
-      }
-      let getWorkspacesLoader = () => { 
-        return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
-          searchString: textInput,
-          myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
-        }), 'callback');
-      }
-      let getStaffLoader = () => { 
-        return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
-          searchString: textInput
-        }), 'callback');
-      }
-      
-      let searchResults = await Promise.all(
-        [
-          checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
-          checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
-        ]
-      );
-      
-      let userItems:ContactRecepientType[] = searchResults[0].map((item: UserType)=>({type: "user", value: item} as any as UserRecepientType));
-      let userGroupItems:ContactRecepientType[] = searchResults[1].map((item: UserGroupType)=>({type: "usergroup", value: item} as any as UserGroupRecepientType));
-      let workspaceItems:ContactRecepientType[] = searchResults[2].map((item: WorkspaceType)=>({type: "workspace", value: item} as any as WorkspaceRecepientType))
-      let staffItems:ContactRecepientType[] = searchResults[3].map((item: UserStaffType)=>({type: "staff", value: item} as any as StaffRecepientType))
-      let allItems:ContactRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
-      this.setState({
-        autocompleteSearchItems: allItems
-      });
+      this.activeSearchTimeout = setTimeout(this.autocompleteDataFromServer.bind(this, textInput), 100);
     } else {
       this.setState({
         autocompleteSearchItems: []
+      });
+    }
+  }
+  async autocompleteDataFromServer(textInput: string){
+    let searchId = (new Date()).getTime();
+    this.activeSearchId = searchId;
+    let loaders = this.props.loaders || {};
+      
+    let getStudentsLoader = () =>  {
+      return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
+        searchString: textInput,
+        onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
+      }), 'callback');
+    }
+    let getUserGroupsLoader = () => { 
+      return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
+        searchString: textInput
+      }), 'callback');
+    }
+    let getWorkspacesLoader = () => { 
+      return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
+        searchString: textInput,
+        myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
+      }), 'callback');
+    }
+    let getStaffLoader = () => { 
+      return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
+         searchString: textInput
+      }), 'callback');
+    }
+      
+    let searchResults = await Promise.all(
+      [
+        checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
+        checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
+        checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+        checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+      ]
+    );
+      
+    let userItems:ContactRecepientType[] = searchResults[0].map((item: UserType)=>({type: "user", value: item} as any as UserRecepientType));
+    let userGroupItems:ContactRecepientType[] = searchResults[1].map((item: UserGroupType)=>({type: "usergroup", value: item} as any as UserGroupRecepientType));
+    let workspaceItems:ContactRecepientType[] = searchResults[2].map((item: WorkspaceType)=>({type: "workspace", value: item} as any as WorkspaceRecepientType))
+    let staffItems:ContactRecepientType[] = searchResults[3].map((item: UserStaffType)=>({type: "staff", value: item} as any as StaffRecepientType))
+    let allItems:ContactRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
+      
+    //ensuring that the current search is the last search
+    if (this.activeSearchId === searchId){
+      this.setState({
+        autocompleteSearchItems: allItems
       });
     }
   }
