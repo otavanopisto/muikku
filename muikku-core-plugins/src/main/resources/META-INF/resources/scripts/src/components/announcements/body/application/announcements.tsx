@@ -46,13 +46,13 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
         <article className="article">
           <header className="article__header">{this.props.announcement.caption}</header>
           {this.props.announcement.workspaces.length || this.props.announcement.userGroupEntityIds.length ? <div className="labels">
-            {this.props.announcement.workspaces.length && this.props.announcement.workspaces.map((workspace)=>
+            {this.props.announcement.workspaces.map((workspace)=>
               <span className="label" key={workspace.id}>
                 <span className="label__icon label__icon--announcement-workspace icon-books"></span>
                 <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
               </span>
             )}
-            {this.props.announcement.userGroupEntityIds.length ? this.props.announcement.userGroupEntityIds.map((userGroupId)=>{
+            {this.props.announcement.userGroupEntityIds.map((userGroupId)=>{
               if (!this.props.userIndex.groups[userGroupId]){
                 return null;
               }
@@ -60,7 +60,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
                 <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
                 <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
               </span>
-            }) : null}
+            })}
           </div> : null}
           <div className="article__date">{this.props.i18n.time.format(this.props.announcement.startDate)}</div>
           <section className="article__body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcement.content}}></section>

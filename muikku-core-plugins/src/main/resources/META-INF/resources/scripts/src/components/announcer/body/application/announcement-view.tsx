@@ -47,13 +47,13 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
               </div>
             </div>
             {this.props.announcements.current.workspaces.length || this.props.announcements.current.userGroupEntityIds.length ? <div className="labels labels--announcer-announcement">
-              {this.props.announcements.current.workspaces.length && this.props.announcements.current.workspaces.map((workspace)=>
+              {this.props.announcements.current.workspaces.map((workspace)=>
                 <span className="label" key={workspace.id}>
                   <span className="label__icon label__icon--announcement-workspace icon-books"></span>
                   <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
                 </span>
               )}
-              {this.props.announcements.current.userGroupEntityIds.length ? this.props.announcements.current.userGroupEntityIds.map((userGroupId)=>{
+              {this.props.announcements.current.userGroupEntityIds.map((userGroupId)=>{
                 if (!this.props.userIndex.groups[userGroupId]){
                   return null;
                 }
@@ -61,7 +61,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
                   <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
                   <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
                 </span>
-              }) : null}
+              })}
             </div> : null }
           </div>
           <div className="application-list__item-body article">
