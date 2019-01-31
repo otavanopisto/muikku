@@ -34,8 +34,12 @@
   padding: 0 5px 0 0;
 }
 
-.label__icon--announcement-workspace, .label__icon--announcement-usergroup {
+.label__icon--announcement-workspace {
   color: $color-workspace;
+}
+
+.label__icon--announcement-usergroup {
+  color: $color-default-contrast;
 }
 
 .label__text {
@@ -46,9 +50,10 @@
   }
 }
 
-.label__text--announcement-workspace, .label__text--announcement-usergroup {
+.label__text--announcement-workspace,
+.label__text--announcement-usergroup {
   font-size: calc(#{$text-mobile-font-size} / 1.1);
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: calc(#{$text-desktop-font-size} / 1.1);
   }
