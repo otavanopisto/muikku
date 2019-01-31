@@ -11,8 +11,9 @@
 }
 
 .footer__container {
-  display: inline-flex;
+  display: flex;
   justify-content: center;
+  margin: 0 auto;
   max-width: $breakpoint-max-usable-screen;
   position: relative;
   width: 100%;
@@ -20,9 +21,8 @@
 
 .footer__container--plagscan {
   background-color: $color-footer-plagscan-background;
-  display: inline-flex;
+  display: flex;
   justify-content: center;
-  max-width: $breakpoint-max-usable-screen;
   position: relative;
   width: 100%;
 }
@@ -55,6 +55,8 @@
   font-size: $text-mobile-font-size;
   font-weight: 400;
   justify-content: flex-start;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
   padding: 20px 30px 15px;
 
   @include breakpoint($breakpoint-pad) {
