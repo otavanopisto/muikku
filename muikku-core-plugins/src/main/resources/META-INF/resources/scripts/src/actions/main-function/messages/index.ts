@@ -154,7 +154,7 @@ export interface RemoveLabelFromCurrentMessageThreadTriggerType {
 }
 
 export interface ToggleMessageThreadReadStatusTriggerType {
-  ( thread: MessageThreadType, dontLockToolbar?: boolean, callback?: ()=>any): AnyActionType
+  (thread: MessageThreadType | number, markAsStatus?: boolean, dontLockToolbar?: boolean, callback?: ()=>any): AnyActionType
 }
 
 export interface ToggleMessageThreadsReadStatusTriggerType {
@@ -285,7 +285,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
             });
             
             if (weJustSentThatMessageAndWeAreInCurrent && weAreOneOfTheRecepients && threads[0].unreadMessagesInThread) {
-              dispatch(toggleMessageThreadReadStatus(threads[0], true));
+              dispatch(toggleMessageThreadReadStatus(threads[0], true, true));
             }
           }
         } catch ( err ) { if (!(err instanceof MApiError)){
@@ -355,7 +355,7 @@ let removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTrig
   return setLabelStatusCurrentMessage.bind( this, label, false );
 }
 
-let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = function toggleMessageThreadReadStatus(thread, dontLockToolbar=false, callback) {
+let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = function toggleMessageThreadReadStatus(threadOrId, markAsStatus, dontLockToolbar=false, callback) {
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
     if (!dontLockToolbar){
       dispatch({
@@ -379,21 +379,33 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
       return;
     }
 
-    dispatch( {
-      type: "UPDATE_ONE_MESSAGE_THREAD",
-      payload: {
-        thread,
-        update: {
-          unreadMessagesInThread: !thread.unreadMessagesInThread
+    let actualThread:MessageThreadType = null;
+    let communicatorMessageId:number = null;
+    if (typeof threadOrId === "number"){
+      actualThread = state.messages.threads.find(t=>t.communicatorMessageId===threadOrId);
+      communicatorMessageId = threadOrId;
+    } else {
+      actualThread = threadOrId;
+      communicatorMessageId = actualThread.communicatorMessageId;
+    }
+     
+    if (actualThread){
+      dispatch( {
+        type: "UPDATE_ONE_MESSAGE_THREAD",
+        payload: {
+          thread: actualThread,
+          update: {
+            unreadMessagesInThread: typeof markAsStatus === "boolean" ? !markAsStatus: !actualThread.unreadMessagesInThread
+          }
         }
-      }
-    });
-
+      });
+    }
+   
     try {
-      if ( thread.unreadMessagesInThread ) {
-        await promisify( mApi().communicator[getApiId( item )].markasread.create( thread.communicatorMessageId ), 'callback' )();
-      } else {
-        await promisify( mApi().communicator[getApiId( item )].markasunread.create( thread.communicatorMessageId ), 'callback' )();
+      if ((actualThread && actualThread.unreadMessagesInThread) || markAsStatus === true ) {
+        await promisify( mApi().communicator[getApiId( item )].markasread.create(communicatorMessageId), 'callback' )();
+      } else if ((actualThread && !actualThread.unreadMessagesInThread) || markAsStatus === false ) {
+        await promisify( mApi().communicator[getApiId( item )].markasunread.create(communicatorMessageId), 'callback' )();
       }
       dispatch(updateUnreadMessageThreadsCount());
     } catch ( err ) {
@@ -401,15 +413,17 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.changeStatusFailed"),'error'));
-      dispatch({
-        type: "UPDATE_ONE_MESSAGE_THREAD",
-        payload: {
-          thread,
-          update: {
-            unreadMessagesInThread: thread.unreadMessagesInThread
+      if (actualThread){
+        dispatch({
+          type: "UPDATE_ONE_MESSAGE_THREAD",
+          payload: {
+            thread: actualThread,
+            update: {
+              unreadMessagesInThread: actualThread.unreadMessagesInThread
+            }
           }
-        }
-      });
+        });
+      }
     }
 
     mApi().communicator[getApiId( item )].cacheClear();
@@ -446,7 +460,7 @@ let toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType = 
       if (thread.unreadMessagesInThread === !threads[0].unreadMessagesInThread){
         cb();
       } else {
-        dispatch(toggleMessageThreadReadStatus(thread, true, cb))
+        dispatch(toggleMessageThreadReadStatus(thread, null, true, cb))
       }
     });
   }
@@ -588,20 +602,8 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
       dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.threadLoadFailed"),'error'));
     }
 
-    let existantMessage:MessageThreadType = state.messages.threads.find((message)=>{
-      return message.communicatorMessageId === currentThread.messages[0].communicatorMessageId;
-    });
-
-    if ( existantMessage && existantMessage.unreadMessagesInThread ) {
-      dispatch( toggleMessageThreadReadStatus(existantMessage, true) );
-    } else if ( !existantMessage && item.location !== "sent") {
-      try {
-        await promisify( mApi().communicator[getApiId( item )].markasread.create( currentThread.messages[0].communicatorMessageId ), 'callback' )();
-      } catch ( err ) {
-        if (!(err instanceof MApiError)){
-          throw err;
-        }
-      }
+    if (item.location !== "sent") {
+      dispatch(toggleMessageThreadReadStatus(currentThread.messages[0].communicatorMessageId, true, true));
     }
   }
 }
@@ -640,7 +642,7 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
               payload: result
             });
             if (threads[0].unreadMessagesInThread){
-              dispatch(toggleMessageThreadReadStatus(threads[0], true));
+              dispatch(toggleMessageThreadReadStatus(threads[0], true, true));
             }
           }
         }
