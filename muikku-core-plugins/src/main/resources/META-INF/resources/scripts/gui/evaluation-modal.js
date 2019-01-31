@@ -977,65 +977,6 @@
     _enableModalScrolling: function() {
       $('.eval-modal').removeClass('no-scroll');
     },
-    
-    /* TODO Refactor these
-    _loadWorkspaceAssessment: function(workspaceUserEntityId) {
-      mApi().evaluation.workspaceuser.assessment
-        .read(workspaceUserEntityId)
-        .callback($.proxy(function (err, assessment) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            // Verbal assessment
-            CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
-            // Date
-            $('#workspaceEvaluationDate').datepicker('setDate', new Date());
-            // Assessor
-            $('#workspaceAssessor').val(assessment.assessorIdentifier);
-            // Grading
-            $('#workspaceGradedButton').prop('checked', true);
-            // Grade
-            $('#workspaceGrade').prop('disabled', false);
-            $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
-            // Grade (with filtered scale fallback)
-            var gradeValue = assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier;
-            var gradeExists = $("#workspaceGrade option[value='" + gradeValue + "']").length !== 0;
-            if (!gradeExists) {
-              $('#workspaceGrade').append('<option value="' + gradeValue + '"></option>');
-            }
-            $('#workspaceGrade').val(gradeValue);
-            // Remove assessment button
-            $('.button-delete').show();
-          }
-        }, this));
-    },
-    
-    _loadWorkspaceSupplementationRequest: function(workspaceEntityId, userEntityId) {
-      mApi().evaluation.workspace.user.supplementationrequest
-        .read(workspaceEntityId, userEntityId)
-        .callback($.proxy(function (err, supplementationRequest) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            // Verbal assessment
-            CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.setData(supplementationRequest.requestText);
-            // Date
-            $('#workspaceEvaluationDate').datepicker('setDate', new Date());
-            // Assessor
-            $('#workspaceAssessor option[data-user-entity-id="' + supplementationRequest.userEntityId + '"]').attr('selected','selected');
-            // Grading
-            $('#workspaceIncompleteButton').prop('checked', true);
-            // Grade
-            $('#workspaceGrade').prop('disabled', true);
-            $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
-            // Remove supplementation request button
-            $('.button-delete').show();
-          }
-        }, this));
-    },
-    */
 
     confirmStudentArchive: function(card, callback) {
       var workspaceEntityId = $(card).attr('data-workspace-entity-id');
@@ -1180,54 +1121,6 @@
             this.element.trigger("cardStateChange", {card: $(this._requestCard), evaluated: false, graded: false});
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.deleteSuccessful"));
             this.close();
-          }
-        }, this));
-    },
-
-    _saveWorkspaceAssessment: function() {
-      var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
-      var scaleAndGrade = $('#workspaceGrade').val().split('@');
-      mApi().evaluation.workspaceuser.assessment
-        .create(workspaceUserEntityId, {
-          assessorIdentifier: $('#workspaceAssessor').val(),
-          gradingScaleIdentifier: scaleAndGrade[0],
-          gradeIdentifier: scaleAndGrade[1],
-          verbalAssessment: CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData(),
-          assessmentDate: $('#workspaceEvaluationDate').datepicker('getDate').getTime()
-        })
-        .callback($.proxy(function (err, assessment) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
-            this.element.trigger("workspaceAssessmentSaved", {
-              assessment: assessment
-            });
-          }
-        }, this));
-    },
-    
-    _saveWorkspaceSupplementationRequest: function() {
-      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-      mApi().evaluation.workspace.user.supplementationrequest
-        .create(workspaceEntityId, userEntityId, {
-          userEntityId: $('#workspaceAssessor option:selected').attr('data-user-entity-id'),
-          studentEntityId: userEntityId,
-          workspaceEntityId: workspaceEntityId,
-          requestDate: $('#workspaceEvaluationDate').datepicker('getDate').getTime(),
-          requestText: CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData()
-        })
-        .callback($.proxy(function (err, supplementationRequest) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
-            this.element.trigger("workspaceSupplementationRequestSaved", {
-              supplementationRequest: supplementationRequest
-            });
           }
         }, this));
     },
