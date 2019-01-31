@@ -17,13 +17,11 @@
     a.remove-clip {
       display: none !important;
     }
-    
   }
 
   .controls {
     display: none;
   }
-
 } 
 
 .audio-record {
@@ -38,7 +36,6 @@
     &:hover {
       border:2px solid #e4e630;
     }
-    
   }
   
   &.muikku-field-saving {
@@ -51,7 +48,6 @@
     &:hover {
       border: 2px solid #9cf3c7;
     }
-    
   }
   
   &:hover {
@@ -67,13 +63,14 @@
       border: 2px dotted #eee;
       color: #555555 !important;
     }
-
   }
 
   .clip {
-    margin: 5px 0 10px;
-    background: #f9f9f9;
+    align-items: center;
     border-radius: 5px;
+    disply: flex;
+    flex-flow: row nowrap;
+    margin: 5px 0 10px;
     
     progress {
       height: 22px;
@@ -81,109 +78,81 @@
     }
     
     audio {
-      width: calc(100% - 32px);
+      flex-basis: auto;
+      flex-grow:1;
+      flex-shrink: 1;
     }
 
     .remove-clip {
+      color: #de3211;
+      flex-basis: auto;
+      flex-grow:0;
+      flex-shrink: 0;
+      font-size: 20px;
+      margin: 0 0 0 5px;
+      padding: 5px;
+      position: relative;
       text-decoration: none;
       text-transform: uppercase;
-      font-size: 12px;
-      color: #2c2c2c;
-      padding: 2px 0 2px 5px;
-      border-radius: 2px;
+    }
+    
+    .download-clip {
+      color: #288fcd;
+      flex-basis: auto;
+      flex-grow:0;
+      flex-shrink: 0;
+      font-size: 20px;
+      margin: 0 0 0 5px;
+      padding: 5px;
       position: relative;
-
-      &.icon-remove-clip::before {
-        content: "\e63b";
-        color: #de3211;
-        font-size: 22px;
-        font-weight: normal;
-        font-family: 'muikku';
-        speak: none;
-        font-style: normal;
-        text-decoration: none;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
+      text-decoration: none;
+      text-transform: uppercase;
     }
     
     .progress-label {
       padding: 5px;
       margin: 0;
     }
-
   }
     
   .controls {
   
     .hint-text {
       display: block;
+      font-style: italic;
       margin: 0;
       padding: 5px 0;
-      font-style: italic;
     }
     
     a {
+      align-items: center;
+      background: #fff;
+      border: 1px solid #7391a7;
+      border-radius: 2px;
+      color: #2c2c2c;
+      display: inline-flex;
+      font-size: 12px;
+      margin: 5px 10px 5px 0;
+      padding: 5px 5px 5px 7px;
+      position: relative;
       text-decoration: none;
       text-transform: uppercase;
-      font-size: 12px;
-      color: #2c2c2c;
-      display: inline-block;
-      padding: 5px 5px 5px 22px;
-      border-radius: 2px;
-      border: 1px solid #7391a7;
-      position: relative;
-      transition: all 0.2s ease-in-out;
-      margin: 5px 10px 5px 0;
-      
-      &.start-record:hover {
+
+      &.start-record {
         border: 1px solid #f7846d;
+        color: #de3211;
       }
-      
-      &.stop-record:hover {
+
+      &.stop-record {
         border: 1px solid #000;
-      }
-      
-      &.icon-record::before,
-      &.icon-stop::before {
-        color: #de3211;
-        display: inline-block;
-        font-size: 16px;
-        left: 4px;
-        position: absolute;
-        top: 4px;
-        transition: all 0.2s ease-in-out;
-      }
-      
-      &.icon-record::before {
-        color: #de3211;
-      }
-      
-      &.icon-stop::before {
         color: #000;
       }
-      
+
       span {
         font-family: 'Open Sans', Arial, sans-serif;
-        display: inline-block;
         margin: 0 5px 0 0;
         vertical-align: middle;
       }
-      
     }
-    
-    .start-record {
-      background: #fff;
-    }
-    
-    .stop-record {
-      background: #fff;
-    }
-  
   }
-
 }
