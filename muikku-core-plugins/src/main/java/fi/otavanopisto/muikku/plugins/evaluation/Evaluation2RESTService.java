@@ -144,50 +144,63 @@ public class Evaluation2RESTService {
   private ActivityLogController activityLogController;
   
   @DELETE
-  @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/evaluationdata")
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/workspaceassessment/{IDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  @Deprecated // separate end points needed to remove assessments, supplementation requests, and evaluation requests
-  public Response deleteWorkspaceAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
+  public Response deleteWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("IDENTIFIER") String identifier) {
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    // Entities and identifiers
-    
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    if (workspaceEntity == null || userEntity == null) {
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    if (workspaceUser == null) {
+      logger.warning(String.format("Workspace user for workspaceUserEntityId %d not found", workspaceUserEntityId));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspaceEntity == null || userSchoolDataIdentifier == null || workspace == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
+    SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(identifier);
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
-    
-    // If the workspace user has been given a graded evaluation, remove that  
-    
-    // TODO listWorkspaceAssessments is incorrect; one student in one workspace should have one assessment at most
-    List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(workspaceIdentifier, userIdentifier);
-    WorkspaceAssessment workspaceAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
-    if (workspaceAssessment != null) {
-      gradingController.deleteWorkspaceAssessment(workspaceIdentifier, userIdentifier, workspaceAssessment.getIdentifier());
-    }
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), userSchoolDataIdentifier.getDataSource().getIdentifier());
 
-    // If the workspace user has been given a supplementation request, remove that
-
-    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(userEntityId, workspaceEntityId, Boolean.FALSE);
-    if (supplementationRequest != null) {
-      evaluationController.deleteSupplementationRequest(supplementationRequest);
-    }
-    
-    // If student has assessment requests, restore the latest one (issue #2716)
-    
-    gradingController.restoreLatestAssessmentRequest(workspaceIdentifier, userIdentifier);
+    gradingController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssessmentIdentifier);
     
     return Response.noContent().build();
   }
-  
+
+  @DELETE
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/supplementationrequest/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteSupplementationRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ID") Long supplementationRequestId) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    SupplementationRequest supplementationRequest = evaluationController.findSupplementationRequestById(supplementationRequestId);
+    if (supplementationRequest == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!supplementationRequest.getStudentEntityId().equals(studentEntity.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Student mismatch").build();
+    }
+    if (!supplementationRequest.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Workspace mismatch").build();
+    }
+    evaluationController.deleteSupplementationRequest(supplementationRequest);
+
+    return Response.noContent().build();
+  }
+
   @GET
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/events")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -1120,7 +1133,6 @@ public class Evaluation2RESTService {
     return Response.ok(restAssessmentRequests).build();
   }
   
-  //TODO update only one, find by id
   @PUT
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/evaluationrequestarchive")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

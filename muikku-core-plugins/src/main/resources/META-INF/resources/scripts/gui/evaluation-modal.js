@@ -444,7 +444,36 @@
           }
         }, this));
         $('.button-remove-event').on('click', $.proxy(function(event) {
-          alert('TODO: Implement');
+          var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
+          var eventElement = $(event.target).closest('.eval-modal-workspace-event');
+          var eventType = $(eventElement).attr('data-type');
+          this._confirmAssessmentDeletion($.proxy(function () {
+            var identifier = $(eventElement).attr('data-identifier');
+            if (eventType == 'EVALUATION_PASS' || eventType == 'EVALUATION_FAIL') {
+              mApi().evaluation.workspaceuser.workspaceassessment
+                .del(workspaceUserEntityId, identifier)
+                .callback($.proxy(function (err, result) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  }
+                  else {
+                    this._setupEventsContainer(); // reload events
+                  }
+              }, this));
+            }
+            else if (eventType == 'SUPPLEMENTATION_REQUEST') {
+              mApi().evaluation.workspaceuser.supplementationrequest
+                .del(workspaceUserEntityId, identifier)
+                .callback($.proxy(function (err, result) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  }
+                  else {
+                    this._setupEventsContainer(); // reload events
+                  }
+              }, this));
+            }
+          }, this));
         }, this));
         
         $('.eval-modal-workspace-event-header').on('click', function(event) {
