@@ -97,6 +97,18 @@
 .hero__header--frontpage-muikku {
   color: $color-frontpage-text-muikku;
   font-weight: 900;
+  position: relative;
+}
+
+.hero__header--frontpage-muikku-hyphen {
+  background-color: $color-frontpage-text-muikku;
+  display: block;
+  height: 6px;
+  right: 2px;
+  position: absolute;
+  text-shadow: none;
+  top: 21px;
+  width: 10px;
 }
 
 .hero__header--frontpage-verkko {

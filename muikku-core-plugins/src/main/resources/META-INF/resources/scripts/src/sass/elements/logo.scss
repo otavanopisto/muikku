@@ -24,7 +24,7 @@
   }
 }
 
-.logo--otavan-opisto {
+.logo--organization {
   display: inline-block;
   height: $logo-text-mobile-size;
   
@@ -36,3 +36,8 @@
     height: $logo-text-desktop-size;
   }
 }
+
+.logo--organization-footer {
+  height: calc(#{$logo-text-mobile-size} / 1.2);
+}
+
