@@ -8,7 +8,7 @@ import { loadAnnouncementsHelper } from './helpers';
 import { AnnouncerNavigationItemListType } from '~/reducers/announcements';
 import moment from '~/lib/moment';
 import { StateType } from '~/reducers';
-import { loadUserGroupIndex } from '~/actions/main-function/user-index';
+import { loadUserGroupIndex } from '~/actions/user-index';
 
 export interface UPDATE_ANNOUNCEMENTS_STATE extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_STATE", AnnouncementsStateType>{}
 export interface UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES", AnnouncementsPatchType>{}

@@ -16,7 +16,7 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';
 import {StateType} from '~/reducers';
-import { UserIndexType } from '~/reducers/main-function/user-index';
+import { UserIndexType } from '~/reducers/user-index';
 
 
 interface AnnouncementProps {

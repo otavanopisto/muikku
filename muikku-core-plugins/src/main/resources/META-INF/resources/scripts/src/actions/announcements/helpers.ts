@@ -5,7 +5,7 @@ import promisify from "~/util/promisify";
 import mApi, { MApiError } from '~/lib/mApi';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from "~/reducers";
-import { loadUserGroupIndex } from "~/actions/main-function/user-index";
+import { loadUserGroupIndex } from "~/actions/user-index";
 
 const MAX_LOADED_AT_ONCE = 30;
 

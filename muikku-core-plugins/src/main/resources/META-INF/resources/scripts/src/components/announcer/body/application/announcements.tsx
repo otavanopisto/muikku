@@ -23,7 +23,7 @@ import { AddToAnnouncementsSelectedTriggerType, RemoveFromAnnouncementsSelectedT
   removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/announcements';
 import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemFooter, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
-import { UserIndexType } from '~/reducers/main-function/user-index';
+import { UserIndexType } from '~/reducers/user-index';
 
 interface AnnouncementsProps {
   i18n: i18nType,
