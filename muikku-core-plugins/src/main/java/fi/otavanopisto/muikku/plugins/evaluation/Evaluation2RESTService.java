@@ -304,47 +304,6 @@ public class Evaluation2RESTService {
   }
   
   @GET
-  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  @Deprecated // use /workspaceuser/{WORKSPACEUSERENTITYID}/assessment/{ASSESSMENTIDENTIFIER} instead
-  public Response findWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    // Entities and identifiers
-    
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
-    if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
-    if (workspaceUser == null) {
-      logger.warning(String.format("Workspace user for workspaceUserEntityId %d not found", workspaceUserEntityId));
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-    SchoolDataIdentifier userIdentifier = workspaceUser.getUserIdentifier();
-    
-    // TODO listWorkspaceAssessments is incorrect; one student in one workspace should have one assessment at most
-    List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(workspaceIdentifier, userIdentifier);
-    WorkspaceAssessment workspaceAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
-    if (workspaceAssessment == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    RestAssessment restAssessment = new RestAssessment(
-        workspaceAssessment.getIdentifier().toId(),
-        workspaceAssessment.getAssessingUserIdentifier().toId(),
-        workspaceAssessment.getGradingScaleIdentifier().toId(),
-        workspaceAssessment.getGradeIdentifier().toId(),
-        workspaceAssessment.getVerbalAssessment(),
-        workspaceAssessment.getDate(),
-        workspaceAssessment.getPassing());
-    return Response.ok(restAssessment).build();
-  }
-
-  @GET
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment/{ASSESSMENTIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response findWorkspaceAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ASSESSMENTIDENTIFIER") String assessmentIdentifier) {
