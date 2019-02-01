@@ -24,7 +24,6 @@ interface AnnouncementsAsideState {
 }
 
 class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, AnnouncementsAsideState> {
-  
   render(){
     return (<section className="toc">
         <div className="toc__container">

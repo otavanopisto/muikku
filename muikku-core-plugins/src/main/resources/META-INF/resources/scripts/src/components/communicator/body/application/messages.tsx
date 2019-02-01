@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {colorIntToHex} from '~/util/modifiers';
+import {colorIntToHex, getName} from '~/util/modifiers';
+import equals = require("deep-equal");
 
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
@@ -63,14 +64,14 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
       if (thread.senderId === userId){
         return this.props.i18n.text.get("plugin.communicator.sender.self");
       }
-      return (thread.sender.firstName ? thread.sender.firstName + " " : "")+(thread.sender.lastName ? thread.sender.lastName : "");
+      return getName(thread.sender, !this.props.status.isStudent);
     }
     
     return thread.recipients.map((recipient)=>{
       if (recipient.userId === userId){
         return this.props.i18n.text.get("plugin.communicator.sender.self");
       }
-      return (recipient.firstName ? recipient.firstName + " " : "")+(recipient.lastName ? recipient.lastName : "");
+      return getName(recipient as any, !this.props.status.isStudent);
     })
     .concat(thread.userGroupRecipients.map(group=>group.name))
     .concat(thread.workspaceRecipients.filter((w, pos, self)=>{

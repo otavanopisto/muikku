@@ -8,6 +8,7 @@ import { loadAnnouncementsHelper } from './helpers';
 import { AnnouncerNavigationItemListType } from '~/reducers/announcements';
 import moment from '~/lib/moment';
 import { StateType } from '~/reducers';
+import { loadUserGroupIndex } from '~/actions/main-function/user-index';
 
 export interface UPDATE_ANNOUNCEMENTS_STATE extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_STATE", AnnouncementsStateType>{}
 export interface UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES", AnnouncementsPatchType>{}
@@ -115,6 +116,7 @@ let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(loc
     try {
       if (!announcement){
         announcement = <AnnouncementType>await promisify(mApi().announcer.announcements.read(announcementId), 'callback')();
+        announcement.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id)));
         //TODO we should be able to get the information of wheter there is an announcement later or not, trace all this
         //and remove the unnecessary code
 
@@ -285,6 +287,7 @@ let loadAnnouncementsAsAClient:LoadAnnouncementsAsAClientTriggerType = function 
       });
       
       let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')();
+      announcements.forEach(a=>a.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id))));
       
       let payload:AnnouncementsPatchType = {
         state: "READY",

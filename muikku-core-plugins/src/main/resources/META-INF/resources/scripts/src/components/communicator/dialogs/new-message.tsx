@@ -183,7 +183,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-        selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
+          selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
+          showFullNames={!this.props.status.isStudent}/>),
       (
        <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">  

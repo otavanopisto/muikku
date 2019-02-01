@@ -171,6 +171,11 @@
 .item-list__item--has-workspaces .item-list__icon {
   color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
 }
+<<<<<<< HEAD
+=======
+
+// List item texts
+>>>>>>> 4fe4e773e7d05697e136321185c47f3fd31ad2bd
 
 // List item for listing users (teachers and students alike)
 .item-list__profile-picture {
@@ -221,8 +226,12 @@
 .item-list__text-body--multiline {
   align-items: flex-start;
   display: flex;
+<<<<<<< HEAD
   flex-flow: column wrap;
   white-space: initial;
+=======
+  flex-direction: column;
+>>>>>>> 4fe4e773e7d05697e136321185c47f3fd31ad2bd
 }
 
 
@@ -241,6 +250,12 @@
 }
 
 // List item labels (and similar)
+<<<<<<< HEAD
 .item-list__announcement-workspaces {
+=======
+
+.item-list__announcement-workspaces,
+.item-list__announcement-usergroups {
+>>>>>>> 4fe4e773e7d05697e136321185c47f3fd31ad2bd
   margin: 10px 0 0;
 }

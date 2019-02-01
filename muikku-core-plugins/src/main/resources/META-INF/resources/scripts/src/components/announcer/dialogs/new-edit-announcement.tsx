@@ -20,6 +20,7 @@ import SessionStateComponent from '~/components/general/session-state-component'
 import Button from '~/components/general/button';
 import { StatusType } from '~/reducers/base/status';
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
+import equals = require("deep-equal");
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -51,7 +52,6 @@ interface NewEditAnnouncementProps {
   children: React.ReactElement<any>,
   i18n: i18nType,
   announcement?: AnnouncementType,
-  loadUserGroupIndex: LoadUserGroupIndexTriggerType,
   userIndex: UserIndexType,
   createAnnouncement: CreateAnnouncementTriggerType,
   updateAnnouncement: UpdateAnnouncementTriggerType,
@@ -79,7 +79,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     this.setTargetItems = this.setTargetItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
-    this.loadUserGroups = this.loadUserGroups.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
@@ -89,7 +88,12 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         type: "workspace",
         value: w
       } as WorkspaceRecepientType;
-    }) : [];
+    }).concat(props.announcement.userGroupEntityIds.filter(id=>props.userIndex.groups[id]).map(id=>{
+      return {
+        type: "usergroup",
+        value: props.userIndex.groups[id]
+      } as UserGroupRecepientType;
+    }) as any) : [];
     
     this.baseAnnouncementCurrentTarget = this.baseAnnouncementCurrentTarget.concat(this.getPredefinedWorkspaceByIdToConcat(props));
     
@@ -101,9 +105,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       startDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.startDate) : props.i18n.time.getLocalizedMoment(),
       endDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.endDate) : props.i18n.time.getLocalizedMoment().add(1, "day")
     }, (props.announcement ? props.announcement.id + "-" : "") + (props.workspaceId || ""));
-  }
-  loadUserGroups(announcement: AnnouncementType){
-    announcement.userGroupEntityIds.forEach(this.props.loadUserGroupIndex);
   }
   checkAgainstStoredState(){
     if (this.props.announcement){
@@ -154,8 +155,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         startDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
         endDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
       }, this.props.workspaceId || "");
-      
-      this.setUpGroupEntitiesIds();
     }
   }
   getPredefinedWorkspaceByIdToConcat(props: NewEditAnnouncementProps){
@@ -178,15 +177,26 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
   }
   componentWillReceiveProps(nextProps: NewEditAnnouncementProps){
     if ((this.props.announcement && nextProps.announcement && nextProps.announcement.id !== this.props.announcement.id) ||
-        (!this.props.announcement && nextProps.announcement)){
+        (!this.props.announcement && nextProps.announcement) || (nextProps.userIndex !== this.props.userIndex && nextProps.announcement)){
       
+      let prevBaseAnnouncementCurrentTarget = this.baseAnnouncementCurrentTarget;
       this.baseAnnouncementCurrentTarget = nextProps.announcement.workspaces.map(w=>{
         //NOTE this workspace type is incomplete, but should do the job regardless
         return {
           type: "workspace",
           value: w
         } as WorkspaceRecepientType
-      });
+      }).concat(nextProps.announcement.userGroupEntityIds.filter(id=>nextProps.userIndex.groups[id]).map(id=>{
+        return {
+          type: "usergroup",
+          value: nextProps.userIndex.groups[id]
+        } as UserGroupRecepientType;
+      }) as any);
+      
+      if (equals(prevBaseAnnouncementCurrentTarget, this.baseAnnouncementCurrentTarget) &&
+          equals(this.props.announcement, nextProps.announcement)){
+        return;
+      }
       
       this.setState(this.getRecoverStoredState({
         subject: nextProps.announcement.caption,
@@ -195,8 +205,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         startDate: nextProps.i18n.time.getLocalizedMoment(nextProps.announcement.startDate),
         endDate: nextProps.i18n.time.getLocalizedMoment(nextProps.announcement.endDate)
       }, nextProps.announcement.id + "-" + (nextProps.workspaceId || "")));
-      
-      this.loadUserGroups(nextProps.announcement);
     } else if (this.props.announcement && !nextProps.announcement){
       this.baseAnnouncementCurrentTarget = this.getPredefinedWorkspaceByIdToConcat(nextProps);
       
@@ -215,23 +223,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         currentTarget: this.baseAnnouncementCurrentTarget,
       }, nextProps.workspaceId || ""));
     }
-    
-    if (nextProps.userIndex.groups !== this.props.userIndex.groups && nextProps.announcement && !this.recovered){
-      this.setUpGroupEntitiesIds(nextProps);
-    }
-  }
-  
-  setUpGroupEntitiesIds(props:NewEditAnnouncementProps = this.props){
-    this.setState({
-      currentTarget: props.announcement.userGroupEntityIds
-       .filter(groupId=>props.userIndex.groups[groupId])
-       .map((groupId: number)=>{
-          return {
-            type: "usergroup",
-            value: props.userIndex.groups[groupId]
-          } as UserGroupRecepientType 
-        }).concat(this.baseAnnouncementCurrentTarget as any)
-    });
   }
   onCKEditorChange(text: string){
     this.setState({text});
@@ -317,7 +308,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           hasWorkspacePermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_WORKSPACES}
           workspacePermissionIsOnlyMyWorkspaces={!this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT}
           placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-        selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
+          selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}
+          showFullNames={false}/>),
       (
       <div className="env-dialog__row" key="3">    
        <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">  
@@ -355,7 +347,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     }
     
     return <JumboDialog modifier="new-edit-announcement"
-      onOpen={this.props.announcement ? ()=>{this.loadUserGroups(this.props.announcement); this.checkAgainstStoredState()} : this.checkAgainstStoredState}
+      onOpen={this.checkAgainstStoredState}
       title={this.props.announcement ?
         this.props.i18n.text.get('plugin.announcer.editannouncement.topic') :
         this.props.i18n.text.get('plugin.announcer.createannouncement.topic')}
@@ -379,7 +371,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({loadUserGroupIndex, createAnnouncement, updateAnnouncement}, dispatch);
+  return bindActionCreators({createAnnouncement, updateAnnouncement}, dispatch);
 };
 
 export default connect(

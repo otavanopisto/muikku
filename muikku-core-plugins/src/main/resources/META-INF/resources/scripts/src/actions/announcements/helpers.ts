@@ -5,6 +5,7 @@ import promisify from "~/util/promisify";
 import mApi, { MApiError } from '~/lib/mApi';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from "~/reducers";
+import { loadUserGroupIndex } from "~/actions/main-function/user-index";
 
 const MAX_LOADED_AT_ONCE = 30;
 
@@ -76,6 +77,8 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
   
   try {
     let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(params), 'callback')();
+    announcements.forEach(a=>a.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id))));
+    
     //Create the payload for updating all the announcer properties
     let properLocation = location || item.location;
     let payload:AnnouncementsPatchType = {

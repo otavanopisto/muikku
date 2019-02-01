@@ -133,11 +133,27 @@ export function unescapeHTML(str: string){
   return doc.documentElement.textContent;
 }
 
-export function getName(user: UserType | UserWithSchoolDataType){
+export function getName(user: UserType | UserWithSchoolDataType, hasFullNamePermission: boolean){
   if (!user){
     return "";
   }
-  return user.firstName + (user.lastName ? " " + user.lastName : "");
+  let userText = "";
+  
+  if (user.firstName && (hasFullNamePermission || !user.nickName)){
+    userText += user.firstName;
+  }
+  
+  if (user.nickName && hasFullNamePermission){
+    userText += (userText ? ' "' : '"') + user.nickName + '"';
+  } else if (user.nickName) {
+    userText += (userText ? ' ' : '') + user.nickName;
+  }
+  
+  if (user.lastName){
+    userText += (userText ? ' ' : '') + user.lastName;
+  }
+  
+  return userText;
 }
 
 export function getUserImageUrl(user: UserType | number, type?: number | string, version?: number){

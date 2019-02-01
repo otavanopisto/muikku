@@ -238,6 +238,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   }
 
+  @Test
   public void courseMaterialEvaluatedClassTest() throws Exception {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
@@ -249,22 +250,21 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
           "EVALUATED");
       try {
-        getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-        waitForElementToBePresent(By.cssSelector(".muikku-page-assignment-type"));
-        String actual = findElementByCssSelector("#page-45>div").getAttribute("class");
-        String expected = new String("muikku-page-assignment-type evaluated");
-        assertEquals(expected, actual);
-        WireMock.reset();
+        selectFinnishLocale();
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent(".muikku-page-assignment-type.assignment");
+        assertTextIgnoreCase(".muikku-page-assignment-type.assignment", "Arvioitava tehtävä");
       } finally {
+        WireMock.reset();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
       }
       
     } finally {
       deleteWorkspace(workspace.getId());
-      WireMock.reset();
     }
   }
-  
+
+  @Test
   public void courseMaterialExerciseClassTest() throws Exception {
     loginAdmin();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
@@ -276,12 +276,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
           "EXERCISE");
       try {
-        getWebDriver().get(getAppUrl(true) + "/workspace/testcourse/materials");
-        waitForElementToBePresent(By.cssSelector(".muikku-page-assignment-type"));
-        String actual = findElementByCssSelector(String.format("#page-%d>div", htmlMaterial1.getId())).getAttribute("class");
-        String expected = new String("muikku-page-assignment-type exercise");
-        assertEquals(expected, actual);
-        WireMock.reset();
+        selectFinnishLocale();
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent(".muikku-page-assignment-type.exercise");
+        assertTextIgnoreCase(".muikku-page-assignment-type.exercise", "Harjoitustehtävä");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
       }
@@ -296,6 +294,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
@@ -340,6 +339,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
@@ -391,6 +391,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
@@ -434,6 +435,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
@@ -484,6 +486,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
@@ -527,6 +530,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
@@ -573,6 +577,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
@@ -616,6 +621,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.SAFARI,
@@ -666,6 +672,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.SAFARI,
       TestEnvironments.Browser.INTERNET_EXPLORER,
@@ -725,6 +732,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
@@ -877,6 +885,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
     }
   )
@@ -928,6 +937,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
     }
@@ -985,6 +995,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
       browsers = {
         TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.CHROME_HEADLESS,
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
@@ -1032,6 +1043,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.SAFARI,
       TestEnvironments.Browser.INTERNET_EXPLORER,
@@ -1090,6 +1102,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
       TestEnvironments.Browser.FIREFOX,
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,

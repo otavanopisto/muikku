@@ -130,7 +130,7 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
       return (
         <InputContactsAutofill modifier="guider" onChange={this.onSharedMembersChange}
           selectedItems={this.state.selectedItems} hasGroupPermission={false} hasUserPermission={false}
-          hasWorkspacePermission={false} hasStaffPermission autofocus showEmails={false}/>
+          hasWorkspacePermission={false} hasStaffPermission autofocus showEmails={false} showFullNames/>
       )
     }
     
