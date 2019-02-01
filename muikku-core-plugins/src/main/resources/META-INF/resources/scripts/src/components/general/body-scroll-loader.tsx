@@ -22,7 +22,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     if ((this.props as any)[this.statePropertyLocation] as string === "READY" &&
         (this.props as any)[this.hasMorePropertyLocation] as boolean){
       let scrollBottomRemaining = document.documentElement.scrollHeight -
-        (document.documentElement.scrollTop + document.documentElement.offsetHeight)
+        ((document.body.scrollTop || document.documentElement.scrollTop) + document.documentElement.offsetHeight)
       if (scrollBottomRemaining <= 100){
         let currentlyCalled = (new Date()).getTime();
         if (currentlyCalled - this.lastTimeCalledLoadMore < 300){
