@@ -22,9 +22,9 @@
 
 .item-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-  align-items: center;
+  align-items: flex-start;
   background-color: $color-item-list-item-background;
-  color: $color-text-default;    
+  color: $color-text-default;
   cursor: pointer;
   display: flex;
   padding: 12px;
@@ -94,7 +94,7 @@
   
     .text,
     .item-list__icon {
-      color: $color-item-list-item-font-color-active;            
+      color: $color-item-list-item-font-color-active;
     }
   }
 }
@@ -148,7 +148,7 @@
 .item-list__item--has-workspaces .item-list__icon {
   color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
 }
-    
+
 // List item texts
 
 .item-list__text-body {
@@ -158,9 +158,9 @@
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
   margin-left: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+//  overflow: hidden;
+//  text-overflow: ellipsis;
+//  white-space: nowrap;
   
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -170,7 +170,7 @@
 .item-list__text-body--multiline {
   white-space: initial;
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
 }
 
 // List item dates
@@ -189,6 +189,7 @@
 
 // List item labels (and similar)
 
-.item-list__announcement-workspaces {
+.item-list__announcement-workspaces,
+.item-list__announcement-usergroups {
   margin: 10px 0 0;
 }

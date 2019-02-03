@@ -25,15 +25,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityFile;
 import fi.otavanopisto.muikku.model.users.UserEntityFileVisibility;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.user.UserEntityFileController;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -46,14 +47,14 @@ public class UserEntityFileRESTService extends PluginRESTService {
   private static final long serialVersionUID = 8589224539219569240L;
   
   @Inject
-  private EnvironmentUserController environmentUserController;
-
-  @Inject
   private UserEntityController userEntityController;
 
   @Inject
   private UserEntityFileController userEntityFileController;
 
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
   @Inject
   private SessionController sessionController;
   
@@ -112,7 +113,7 @@ public class UserEntityFileRESTService extends PluginRESTService {
   
   @GET
   @Path("/user/{USERENTITYID}/identifier/{IDENTIFIER}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getFileContent(@PathParam("USERENTITYID") Long userEntityId, @PathParam("IDENTIFIER") String identifier, @Context Request request) {
     
     // Check if the file exists
@@ -135,8 +136,8 @@ public class UserEntityFileRESTService extends PluginRESTService {
       }
       else if (!userEntityFile.getUserEntity().getId().equals(loggedUserEntity.getId())) {
         if (userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF) {
-          EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUserEntity);
-          if (environmentUser == null || environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+          EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+          if (roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
             return Response.status(Status.NOT_FOUND).build();
           }
         }
@@ -168,35 +169,37 @@ public class UserEntityFileRESTService extends PluginRESTService {
   
   @DELETE
   @Path("/{USERENTITYID}/identifier/{IDENTIFIER}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteFile(@PathParam("USERENTITYID") Long userEntityId, @PathParam("IDENTIFIER") String identifier, @Context Request request) {
-	// Check if the file exist
-	UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-	if (userEntity == null) {
-	  return Response.status(Status.NOT_FOUND).build();
-	}
-	UserEntityFile userEntityFile = userEntityFileController.findByUserEntityAndIdentifier(userEntity, identifier);
-	if (userEntityFile == null) {
-	  return Response.status(Status.NOT_FOUND).build();
-	}
-	
-	//Check wheter the logged in user is the same as this user or whether it's an administrator
-	UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-	if (loggedUserEntity == null) {
-		return Response.status(Status.FORBIDDEN).build();
-	}
-	EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUserEntity);
-	boolean isOwnerOfTheFile = userEntity.getId().equals(loggedUserEntity.getId());
-	boolean isAdministrator = environmentUser != null && environmentUser.getRole() != null && environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR;
-	boolean isStaff = environmentUser != null && environmentUser.getRole() != null && environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT;
-	boolean isStaffAndFileIsAccessibleByStaff = isStaff && (
-			userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF || userEntityFile.getVisibility() == UserEntityFileVisibility.PUBLIC);
-	if (!isOwnerOfTheFile && !isAdministrator && !isStaffAndFileIsAccessibleByStaff) {
-		return Response.status(Status.FORBIDDEN).build();
-	}
-	
-	userEntityFileController.deleteUserEntityFile(userEntityFile);
-	
+    // Check if the file exist
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    UserEntityFile userEntityFile = userEntityFileController.findByUserEntityAndIdentifier(userEntity, identifier);
+    if (userEntityFile == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    //Check wheter the logged in user is the same as this user or whether it's an administrator
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    UserEntity loggedUserEntity = userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getUserEntity() : null;
+    if (userSchoolDataIdentifier == null || loggedUserEntity == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
+    boolean isOwnerOfTheFile = userEntity.getId().equals(loggedUserEntity.getId());
+    boolean isAdministrator = roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR;
+    boolean isStaff = roleEntity != null && roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT;
+    boolean isStaffAndFileIsAccessibleByStaff = isStaff && (
+        userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF || userEntityFile.getVisibility() == UserEntityFileVisibility.PUBLIC);
+    if (!isOwnerOfTheFile && !isAdministrator && !isStaffAndFileIsAccessibleByStaff) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    userEntityFileController.deleteUserEntityFile(userEntityFile);
+  
     return Response.noContent().build();
   }
 

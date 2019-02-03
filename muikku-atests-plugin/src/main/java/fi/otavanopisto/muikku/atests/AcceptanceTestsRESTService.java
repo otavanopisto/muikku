@@ -933,7 +933,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.UNSECURED)
   public Response cleanupDiscussions() {
     List<EnvironmentForumArea> forumAreas = environmentForumAreaDAO.listAllNonArchived();
-    List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
+//    List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
     List<ForumThread> threads = new ArrayList<>();
     List<ForumThreadReply> replies = new ArrayList<>();
     for(EnvironmentForumArea forumArea : forumAreas) {
@@ -998,6 +998,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
+  @PUT
+  @Path("/users/archive/{EMAIL}")
+  @Produces("text/plain")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response archiveUserByEmail(@PathParam ("EMAIL") String email) {
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
+    userEntity.setArchived(true);
+    userEntityController.archiveUserEntity(userEntity);
+    userIndexer.removeUser(userEntity.getDefaultSchoolDataSource().getIdentifier(), userEntity.getDefaultIdentifier());
+    return Response.ok().build();
+  }
+  
   private fi.otavanopisto.muikku.atests.Workspace createRestEntity(WorkspaceEntity workspaceEntity, String name) {
     return new fi.otavanopisto.muikku.atests.Workspace(workspaceEntity.getId(), 
         name, 

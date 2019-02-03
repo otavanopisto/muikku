@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.user;
+package fi.otavanopisto.muikku.users;
 
 import javax.inject.Inject;
 
@@ -15,6 +15,10 @@ public class UserEntityFileController {
 
   @Inject
   private UserEntityFileDAO userEntityFileDAO;
+  
+  public boolean hasProfilePicture(UserEntity userEntity) {
+    return findByUserEntityAndIdentifier(userEntity, "profile-image-original") != null;
+  }
 
   public UserEntityFile storeUserEntityFile(String identifier, String name, String contentType, byte[] data, UserEntityFileVisibility visibility) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();

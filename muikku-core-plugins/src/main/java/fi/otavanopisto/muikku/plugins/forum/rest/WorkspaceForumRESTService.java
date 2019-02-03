@@ -73,6 +73,9 @@ public class WorkspaceForumRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private ForumRESTModels restModels;
   
   @GET
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas")
@@ -306,11 +309,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       List<ForumThread> threads = forumController.listForumThreads(forumArea, firstResult, maxResults);
       
       List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
-      
-      for (ForumThread thread : threads) {
-        long numReplies = forumController.getThreadReplyCount(thread);
-        result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
-      }
+      threads.forEach(thread -> result.add(restModels.restModel(thread)));
       
       return Response.ok(
         result
@@ -345,11 +344,8 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_READ_WORKSPACE_MESSAGES, workspaceEntity)) {
-      long numReplies = forumController.getThreadReplyCount(thread);
-      ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified());
-      
       return Response.ok(
-        result
+        restModels.restModel(thread)
       ).build();
     } else {
       return Response.status(Status.FORBIDDEN).build();
@@ -404,13 +400,8 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           updThread.getSticky(), 
           updThread.getLocked());
       
-      long numReplies = forumController.getThreadReplyCount(forumThread);
-      ForumThreadRESTModel result = new ForumThreadRESTModel(forumThread.getId(), forumThread.getTitle(), 
-          forumThread.getMessage(), forumThread.getCreator(), forumThread.getCreated(), forumThread.getForumArea().getId(), 
-          forumThread.getSticky(), forumThread.getLocked(), forumThread.getUpdated(), numReplies, forumThread.getLastModified());
-      
       return Response.ok(
-        result
+        restModels.restModel(forumThread)
       ).build();
     } else {
       return Response.status(Status.FORBIDDEN).build();
@@ -488,10 +479,8 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           newThread.getSticky(), 
           newThread.getLocked());
   
-      ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), 1l, thread.getLastModified());
-      
       return Response.ok(
-        result
+        restModels.restModel(thread)
       ).build();
     } else {
       return Response.status(Status.FORBIDDEN).build();
@@ -522,11 +511,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     List<ForumThread> threads = forumController.listLatestForumThreadsFromWorkspace(workspaceEntity, firstResult, maxResults);
     
     List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
-    
-    for (ForumThread thread : threads) {
-      long numReplies = forumController.getThreadReplyCount(thread);
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated(), numReplies, thread.getLastModified()));
-    }
+    threads.forEach(thread -> result.add(restModels.restModel(thread)));
     
     return Response.ok(
       result
@@ -842,7 +827,8 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     if (entity.getDeleted())
       message = null;
     
-    return new ForumThreadReplyRESTModel(entity.getId(), message, entity.getCreator(), entity.getCreated(), 
+    ForumMessageUserRESTModel creatorRestModel = restModels.createUserRESTModel(entity.getCreator());
+    return new ForumThreadReplyRESTModel(entity.getId(), message, creatorRestModel, entity.getCreated(), 
         entity.getForumArea().getId(), parentReplyId, entity.getLastModified(), entity.getChildReplyCount(), 
         entity.getDeleted());
   }

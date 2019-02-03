@@ -224,7 +224,8 @@ public class CourseTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.CHROME_HEADLESS
       }
     )
   public void courseProgressWidgetTest() throws Exception {
@@ -279,7 +280,7 @@ public class CourseTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
         waitForPresentAndVisible(".notification-queue-item-success");
         waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
-        
+
         waitForPresent(".materials-progress-evaluated-status");
         assertTextIgnoreCase(".materials-progress-evaluated-status span", "1/1");
         
@@ -291,6 +292,8 @@ public class CourseTestsBase extends AbstractUITest {
         waitAndClick(String.format("#page-%d .muikku-assignment-button", exerciseMaterial.getId()));
         waitUntilAnimationIsDone(".materials-progress-practice-status .slice .bar");
         waitForPresent(".materials-progress-practice-status");
+        waitUntilContentChanged(".materials-progress-practice-status span", "0/1");
+        
         assertTextIgnoreCase(".materials-progress-practice-status span", "1/1");
         
         waitAndClick(".materials-progress-evaluated-status.evaluable span");
@@ -321,58 +324,4 @@ public class CourseTestsBase extends AbstractUITest {
     }
   }  
 
-  @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
-      }
-    )
-  public void courseTeacherVacationInfoTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    long courseId = 1l;
-    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
-    MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
-    
-    mockBuilder
-    .addStudent(student)
-    .addStaffMember(admin)
-    .mockLogin(admin)
-    .build();
-    
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", Long.toString(courseId), Boolean.TRUE);
-    
-    mockBuilder
-    .addCourseStaffMember(courseId, courseStaffMember)
-    .addCourseStudent(courseId, courseStudent)
-    .build();
-    try{
-      navigate("/profile", false);
-      waitForPresent(".profile-element__item:nth-child(2) .react-datepicker-wrapper .react-datepicker__input-container input");
-      sendKeys(".profile-element__item:nth-child(2) .react-datepicker-wrapper .react-datepicker__input-container input", "21.12.2010");
-      waitAndClick(".profile-element__title");
-      waitAndClick(".profile-element__title");
-      waitForPresent(".profile-element__item:nth-child(3) .react-datepicker-wrapper .react-datepicker__input-container input");
-      sendKeys(".profile-element__item:nth-child(3) .react-datepicker-wrapper .react-datepicker__input-container input", "21.12.2025");
-      waitAndClick(".profile-element__title");
-      waitAndClick(".profile-element__title");
-      waitAndClick(".button--primary-function-save");
-      logout();
-      mockBuilder.mockLogin(student);
-      login();
-      selectFinnishLocale();
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".workspace-teacher-info .vacation-period");
-      assertTextIgnoreCase(".workspace-teacher-info .vacation-period", "Poissa 21.12.2010 - 21.12.2025");      
-    }finally{
-      WireMock.reset();
-      deleteWorkspace(workspace.getId());  
-    }
-  }
 }

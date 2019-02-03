@@ -298,7 +298,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       }
     }
     else {
-      logger.severe(String.format("null courseId %d or userId &d", courseId, userId));
+      logger.severe(String.format("null courseId %d or userId %d", courseId, userId));
     }
     return null;
   }

@@ -67,7 +67,7 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
   }
   
   try {
-    let students:GuiderStudentListType = <GuiderStudentListType>await promisify(mApi().user.students.cacheClear().read(params), 'callback')();
+    let students:GuiderStudentListType = <GuiderStudentListType>await promisify(mApi().guider.students.cacheClear().read(params), 'callback')();
   
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side

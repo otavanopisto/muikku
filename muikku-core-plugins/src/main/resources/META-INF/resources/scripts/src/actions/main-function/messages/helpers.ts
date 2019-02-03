@@ -98,7 +98,6 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
     //If we got a label
   } else if (item.type === 'label') {
     params = {
-        labelId: item.id,
         firstResult,
         //We load one more to check if they have more
         maxResults: MAX_LOADED_AT_ONCE + 1
@@ -111,8 +110,13 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
     });
   }
   
+  let threads:MessageThreadListType;
   try {
-    let threads:MessageThreadListType = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+    if (item.type !== "label"){
+      threads = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+    } else {
+      threads = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback' )();
+    }
     let hasMore:boolean = threads.length === MAX_LOADED_AT_ONCE + 1;
     
     //This is because of the array is actually a reference to a cached array

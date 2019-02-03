@@ -43,7 +43,7 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     
     return result;
   }
-  checkAgainstDefaultState(base: Partial<S>, namespace?: any): void {
+  checkStoredAgainstThisState(base: Partial<S>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace){
       internalStorage = this.storage.namespace(namespace + "");

@@ -33,11 +33,9 @@ install:
 - . travis-install.sh
 before_script:
 - export _JAVA_OPTIONS="-Xmx2048m -Xms512m -Djava.net.preferIPv4Addresses=true -Djava.net.preferIPv4Stack=true"
-- . travis-before-script.sh
 script:
 - . travis-script.sh
 after_script:
-- if [ $start_sc_tunnel = true ]; then kill -9 `cat /tmp/sc.pid`; fi;
 env:
   global:
   - secure: "aOQe+UgT52sFJnbyeYfdAcgDu910G6G1UKVV2YIOVrjtR0PvYxwztrMOZjnECBtcxAZqLCA57Ao17yuPj0LXP258jeJbufofeSYe7ZBAi5OUQCvp4UsSFMQKsglxgM6xXrpw9jhr9PJXjYpmv5oPtTynjNCQClYCMIFgPiQyXp0="
@@ -80,7 +78,6 @@ env:
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/journal
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/users
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/announcer
-  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=evaluation
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=newevaluation
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=indexpage
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=announcer
@@ -100,7 +97,6 @@ env:
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/journal
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/users
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/announcer
-  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=evaluation
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=newevaluation
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=indexpage
   - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=announcer
@@ -112,14 +108,11 @@ env:
 after_success:
 - . travis-after-success.sh
 after_failure:
-- if [[ $start_sc_tunnel = "true" ]]; then killall sc; fi;
-#- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
-- pushd .;
 - cat muikku-atests/target/cargo/configurations/wildfly10x/log/server.log;
 notifications:
   webhooks:
     urls:
-    - http://build.staging.fi/travis.php
+    - http://build.muikkuverkko.fi/travis.php
     on_success: always
     on_failure: never
     on_start: false

@@ -7,7 +7,8 @@ import '~/sass/elements/form-elements.scss';
 
 interface StudiesPrimaryOptionProps {
   i18n: i18nType,
-  location: TranscriptOfRecordLocationType
+  location: TranscriptOfRecordLocationType,
+  isHopsEnabled: boolean
 }
 
 interface StudiesPrimaryOptionState {
@@ -29,21 +30,27 @@ class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, St
     let sections = [
       {
         name: this.props.i18n.text.get("plugin.records.category.records"),
-        hash: ""
+        hash: "",
+        enabled: true
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.hops"),
-        hash: "hops"
+        hash: "hops",
+        enabled: this.props.isHopsEnabled
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.vops"),
-        hash: "vops"
+        hash: "vops",
+        enabled: this.props.isHopsEnabled
       }
     ]    
     return <div className="application-panel__toolbar">
       <div className="form-element form-element--studies-toolbar">
         <select className="form-element__select form-element__select--main-action" onChange={this.onSelectChange} value={this.props.location || ""}>
           {sections.map((section, index)=>{
+            if (!section.enabled){
+              return null;
+            }
             return <option key={index} value={section.hash} >
                 {section.name}
             </option>
@@ -57,7 +64,8 @@ class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, St
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    location: state.records.location
+    location: state.records.location,
+    isHopsEnabled: state.status.hopsEnabled
   }
 };
 

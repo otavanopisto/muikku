@@ -2,12 +2,19 @@ import * as React from 'react';
 import Autocomplete from '~/components/general/autocomplete';
 import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
-import {filterHighlight} from '~/util/modifiers';
+import {filterHighlight, getName} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
 import {WorkspaceType} from '~/reducers/main-function/workspaces';
 import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/main-function/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
+
+export interface InputContactsAutofillLoaders {
+  studentsLoader?: (searchString: string) => any,
+  staffLoader?: (searchString: string) => any,
+  userGroupsLoader?: (searchString: string) => any,
+  workspacesLoader?: (searchString: string) => any  
+}
 
 export interface InputContactsAutofillProps {
   placeholder?: string,
@@ -20,8 +27,10 @@ export interface InputContactsAutofillProps {
   hasStaffPermission?: boolean,
   userPermissionIsOnlyDefaultUsers?: boolean,
   workspacePermissionIsOnlyMyWorkspaces?: boolean,
+  showFullNames: boolean,
   showEmails?: boolean,
-  autofocus?: boolean
+  autofocus?: boolean,
+  loaders?: InputContactsAutofillLoaders
 }
 
 export interface InputContactsAutofillState {
@@ -43,6 +52,8 @@ function checkHasPermission(which: boolean, defaultValue?: boolean){
 export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
   private blurTimeout:NodeJS.Timer;
   private selectedHeight:number;
+  private activeSearchId:number;
+  private activeSearchTimeout:number;
 
   constructor(props: InputContactsAutofillProps){
     super(props);
@@ -59,11 +70,15 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.blurTimeout = null;
     this.selectedHeight= null;
     this.onInputChange = this.onInputChange.bind(this);
+    this.autocompleteDataFromServer = this.autocompleteDataFromServer.bind(this);
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.setBodyMargin = this.setBodyMargin.bind(this);
     this.onDelete = this.onDelete.bind(this);
+    
+    this.activeSearchId = null;
+    this.activeSearchTimeout = null;
   }
   componentWillReceiveProps(nextProps: InputContactsAutofillProps){
     if (nextProps.selectedItems !== this.props.selectedItems){
@@ -90,41 +105,65 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     clearTimeout(this.blurTimeout);
     this.setState({isFocused: true});
   }
-  async onInputChange(e: React.ChangeEvent<HTMLInputElement>){
+  onInputChange(e: React.ChangeEvent<HTMLInputElement>){
     let textInput = e.target.value;
     this.setState({textInput, autocompleteOpened: true});
-    
+    clearTimeout(this.activeSearchTimeout);
     if (textInput){
-      let searchResults = await Promise.all(
-        [
-          checkHasPermission(this.props.hasUserPermission) ? promisify(mApi().user.users.read({
-            searchString: textInput,
-            onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
-          }), 'callback')().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasGroupPermission) ? promisify(mApi().usergroup.groups.read({
-            searchString: textInput
-          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasWorkspacePermission) ? promisify(mApi().coursepicker.workspaces.read({
-            search: textInput,
-            myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces),
-          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
-          checkHasPermission(this.props.hasStaffPermission, false) ? promisify(mApi().user.staffMembers.read({
-            searchString: textInput
-          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
-        ]
-      );
-      
-      let userItems:ContactRecepientType[] = searchResults[0].map((item: UserType)=>({type: "user", value: item} as any as UserRecepientType));
-      let userGroupItems:ContactRecepientType[] = searchResults[1].map((item: UserGroupType)=>({type: "usergroup", value: item} as any as UserGroupRecepientType));
-      let workspaceItems:ContactRecepientType[] = searchResults[2].map((item: WorkspaceType)=>({type: "workspace", value: item} as any as WorkspaceRecepientType))
-      let staffItems:ContactRecepientType[] = searchResults[3].map((item: UserStaffType)=>({type: "staff", value: item} as any as StaffRecepientType))
-      let allItems:ContactRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
-      this.setState({
-        autocompleteSearchItems: allItems
-      });
+      this.activeSearchTimeout = setTimeout(this.autocompleteDataFromServer.bind(this, textInput), 100);
     } else {
       this.setState({
         autocompleteSearchItems: []
+      });
+    }
+  }
+  async autocompleteDataFromServer(textInput: string){
+    let searchId = (new Date()).getTime();
+    this.activeSearchId = searchId;
+    let loaders = this.props.loaders || {};
+      
+    let getStudentsLoader = () =>  {
+      return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
+        searchString: textInput,
+        onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
+      }), 'callback');
+    }
+    let getUserGroupsLoader = () => { 
+      return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
+        searchString: textInput
+      }), 'callback');
+    }
+    let getWorkspacesLoader = () => { 
+      return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
+        searchString: textInput,
+        myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
+      }), 'callback');
+    }
+    let getStaffLoader = () => { 
+      return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
+         searchString: textInput
+      }), 'callback');
+    }
+      
+    let searchResults = await Promise.all(
+      [
+        checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
+        checkHasPermission(this.props.hasGroupPermission) ? getUserGroupsLoader()().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
+        checkHasPermission(this.props.hasWorkspacePermission) ? getWorkspacesLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+        checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+      ]
+    );
+      
+    let userItems:ContactRecepientType[] = searchResults[0].map((item: UserType)=>({type: "user", value: item} as any as UserRecepientType));
+    let userGroupItems:ContactRecepientType[] = searchResults[1].map((item: UserGroupType)=>({type: "usergroup", value: item} as any as UserGroupRecepientType));
+    let workspaceItems:ContactRecepientType[] = searchResults[2].map((item: WorkspaceType)=>({type: "workspace", value: item} as any as WorkspaceRecepientType))
+    let staffItems:ContactRecepientType[] = searchResults[3].map((item: UserStaffType)=>({type: "staff", value: item} as any as StaffRecepientType))
+    let allItems:ContactRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
+      
+    //ensuring that the current search is the last search
+    if (this.activeSearchId === searchId){
+      this.setState({
+        autocompleteSearchItems: allItems
       });
     }
   }
@@ -169,7 +208,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
           node: <span className="autocomplete__selected-item">
             <span className="glyph glyph--selected-recipient icon-user"/>
             {
-              (item.value.firstName + " " || "") + (item.value.lastName || "")
+              getName(item.value as UserType, this.props.showFullNames)
             } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
           </span>,
           value: item
@@ -198,7 +237,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         node = <div className="autocomplete__recipient">
           <span className="glyph glyph--autocomplete-recipient icon-user"></span>
           {
-            filterHighlight((item.value.firstName + " " || "") + (item.value.lastName || ""), this.state.textInput)
+            filterHighlight(getName(item.value as UserType, this.props.showFullNames), this.state.textInput)
           } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
         </div>;
       } else if (item.type === "usergroup"){
@@ -209,7 +248,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       } else if (item.type === "workspace"){
         node = <div className="autocomplete__recipient">
           <span className="glyph glyph--autocomplete-recipient icon-books"></span>
-          {filterHighlight(item.value.name, this.state.textInput)}
+          {filterHighlight(item.value.name + (item.value.nameExtension ? (" (" + item.value.nameExtension + ")") : ""), this.state.textInput)}
         </div>;
       }
       return {

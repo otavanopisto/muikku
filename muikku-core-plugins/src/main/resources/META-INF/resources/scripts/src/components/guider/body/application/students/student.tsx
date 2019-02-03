@@ -24,7 +24,7 @@ export default class Student extends React.Component<StudentProps, StudentState>
       {this.props.checkbox}
     </div>}>
       <ApplicationListItemHeader>
-        <span className="application-list__header-primary"><span>{getName(this.props.student as any as UserType)}</span> <span className="application-list__header-helper">{this.props.student.email}</span></span>
+        <span className="application-list__header-primary"><span>{getName(this.props.student as any as UserType, true)}</span> <span className="application-list__header-helper">{this.props.student.email}</span></span>
         <span className="application-list__header-secondary">{this.props.student.studyProgrammeName}</span>
       </ApplicationListItemHeader>
         
@@ -37,7 +37,7 @@ export default class Student extends React.Component<StudentProps, StudentState>
           </div>
         })}
         </div>
-      </ApplicationListItemFooter> : null}   
+      </ApplicationListItemFooter> : null}
     </ApplicationListItemContentWrapper>
   }
 }

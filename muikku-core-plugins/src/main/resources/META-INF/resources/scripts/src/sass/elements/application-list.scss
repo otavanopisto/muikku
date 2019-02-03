@@ -80,6 +80,12 @@
   }
 }
 
+.application-list__fee-indicatoricon-coin-euro {
+  color: $color-info;
+  font-size: 1rem;
+  padding: 4px;
+}
+
 .application-list__header-secondary {
   align-items: center;
   display: inline-flex;
@@ -480,6 +486,18 @@
   &::after {
     content: ">";
     margin: 0 10px;
+  }
+}
+
+.application-list__item-header-main-content--communicator-recipients {
+
+  span:not(:last-child) {
+
+    &::after {
+      content: ",";
+      padding: 0 5px 0 0;
+    }
+
   }
 }
 

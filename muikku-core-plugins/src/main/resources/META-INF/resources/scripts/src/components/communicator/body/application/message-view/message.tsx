@@ -7,7 +7,7 @@ import { i18nType } from '~/reducers/base/i18n';
 import { connect, Dispatch } from 'react-redux';
 import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType } from '~/reducers/main-function/user-index';
 import { StatusType } from '~/reducers/base/status';
-import { colorIntToHex } from '~/util/modifiers';
+import { colorIntToHex, getName } from '~/util/modifiers';
 
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
@@ -36,7 +36,7 @@ class Message extends React.Component<MessageProps, MessageState> {
     };
   
     //These are the receipients of the message
-    let recipientsObject: Array<UserRecepientType> = this.props.message.recipients.map( ( r ): UserRecepientType => ( {
+    let recipientsObject: Array<UserRecepientType> = this.props.message.recipients.map(( r ): UserRecepientType => ( {
       type: "user",
       value: {
         id: r.userId,
@@ -84,13 +84,13 @@ class Message extends React.Component<MessageProps, MessageState> {
         <div className="application-list__item-meta">
           <div className="application-list__item-header-main application-list__item-header-main--communicator-message-participants">
             <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender">
-              {this.props.message.sender.firstName ? this.props.message.sender.firstName + " " : ""} {this.props.message.sender.lastName ? this.props.message.sender.lastName : ""}
+              {getName(this.props.message.sender, !this.props.status.isStudent)}
             </span>
-            <span className="application-list__item-header-main-content">
+            <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-recipients">
               {this.props.message.recipients.map((recipient)=>{
                 return (
                   <span key={recipient.recipientId}>
-                    {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
+                    {getName(recipient as any, !this.props.status.isStudent)}
                   </span>
                 )
               })}

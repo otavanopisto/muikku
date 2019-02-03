@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,6 +25,8 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialOrganizerFi
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
@@ -82,6 +85,9 @@ public class WorkspaceMaterialFieldAnswerController {
   
   @Inject
   private QueryMultiSelectFieldOptionDAO queryMultiSelectFieldOptionDAO;
+  
+  @Inject
+  private FileAnswerUtils fileAnswerUtils;
   
   /* Generic */
 
@@ -218,7 +224,12 @@ public class WorkspaceMaterialFieldAnswerController {
   
   /* FileFieldFile */
 
-  public WorkspaceMaterialFileFieldAnswerFile createWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswer fieldAnswer, byte[] content, String contentType, String fileId, String fileName) {
+  public WorkspaceMaterialFileFieldAnswerFile createWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswer fieldAnswer, byte[] content, String contentType, String fileId, String fileName) throws IOException {
+    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.FILE)) {
+      Long userEntityId = fieldAnswer.getReply().getUserEntityId();
+      fileAnswerUtils.storeFileToFileSystem(FileAnswerType.FILE, userEntityId, fileId, content);
+      content = null;
+    }
     return workspaceMaterialFileFieldAnswerFileDAO.create(fieldAnswer, content, contentType, fileId, fileName);
   }
 
@@ -230,24 +241,14 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialFileFieldAnswerFileDAO.listByFieldAnswer(fieldAnswer);
   }
   
-  public void deleteWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile) {
+  public void deleteWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile) throws IOException {
+    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.FILE)) {
+      Long userEntityId = fieldAnswerFile.getFieldAnswer().getReply().getUserEntityId();
+      if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.FILE, userEntityId, fieldAnswerFile.getFileId())) {
+        fileAnswerUtils.removeFileFromFileSystem(FileAnswerType.FILE, userEntityId, fieldAnswerFile.getFileId());
+      }
+    }
     workspaceMaterialFileFieldAnswerFileDAO.delete(fieldAnswerFile);
-  }
-
-  public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileFileId(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, String fileId) {
-    return workspaceMaterialFileFieldAnswerFileDAO.updateFileId(fieldAnswerFile, fileId);
-  }
-
-  public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileContentType(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, String contentType) {
-    return workspaceMaterialFileFieldAnswerFileDAO.updateContentType(fieldAnswerFile, contentType);
-  }
-
-  public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileFileName(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, String fileName) {
-    return workspaceMaterialFileFieldAnswerFileDAO.updateFileName(fieldAnswerFile, fileName);
-  }
-
-  public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileContent(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, byte[] content) {
-    return workspaceMaterialFileFieldAnswerFileDAO.updateContent(fieldAnswerFile, content);
   }
 
   /* AudioField */
@@ -262,7 +263,12 @@ public class WorkspaceMaterialFieldAnswerController {
   
   /* AudioFieldClip */
 
-  public WorkspaceMaterialAudioFieldAnswerClip createWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswer fieldAnswer, byte[] content, String contentType, String audioId, String audioName) {
+  public WorkspaceMaterialAudioFieldAnswerClip createWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswer fieldAnswer, byte[] content, String contentType, String audioId, String audioName) throws IOException {
+    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.AUDIO)) {
+      Long userEntityId = fieldAnswer.getReply().getUserEntityId();
+      fileAnswerUtils.storeFileToFileSystem(FileAnswerType.AUDIO, userEntityId, audioId, content);
+      content = null;
+    }
     return workspaceMaterialAudioFieldAnswerClipDAO.create(fieldAnswer, content, contentType, audioId, audioName);
   }
 
@@ -274,7 +280,13 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialAudioFieldAnswerClipDAO.listByFieldAnswer(fieldAnswer);
   }
   
-  public void deleteWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio) {
+  public void deleteWorkspaceMaterialAudioFieldAnswerClip(WorkspaceMaterialAudioFieldAnswerClip fieldAnswerAudio) throws IOException {
+    if (fileAnswerUtils.isFileSystemStorageEnabled(FileAnswerType.AUDIO)) {
+      Long userEntityId = fieldAnswerAudio.getFieldAnswer().getReply().getUserEntityId();
+      if (fileAnswerUtils.isFileInFileSystem(FileAnswerType.AUDIO, userEntityId, fieldAnswerAudio.getClipId())) {
+        fileAnswerUtils.removeFileFromFileSystem(FileAnswerType.AUDIO, userEntityId, fieldAnswerAudio.getClipId());
+      }
+    }
     workspaceMaterialAudioFieldAnswerClipDAO.delete(fieldAnswerAudio);
   }
 

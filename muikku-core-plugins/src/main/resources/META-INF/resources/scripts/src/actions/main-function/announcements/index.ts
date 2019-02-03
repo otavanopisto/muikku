@@ -8,6 +8,7 @@ import { loadAnnouncementsHelper } from './helpers';
 import { AnnouncerNavigationItemListType } from '~/reducers/main-function/announcements';
 import moment from '~/lib/moment';
 import { StateType } from '~/reducers';
+import { loadUserGroupIndex } from '~/actions/main-function/user-index';
 
 export interface UPDATE_ANNOUNCEMENTS_STATE extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_STATE", AnnouncementsStateType>{}
 export interface UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES", AnnouncementsPatchType>{}
@@ -85,39 +86,44 @@ export interface CreateAnnouncementTriggerType {
 
 function validateAnnouncement(dispatch:(arg:AnyActionType)=>any, getState:()=>StateType, announcement: AnnouncementGeneratorType){
   if (!announcement.caption){
-    return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs a caption"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.caption"), 'error'));
+    return false;
   } else if (!announcement.content){
-    return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs content"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.content"), 'error'));
+    return false;
   } else if (!announcement.endDate){
-    return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs an end date"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.endDate"), 'error'));
+    return false;
   } else if (!announcement.startDate){
-    return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs an start date"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement.missing.startDate"), 'error'));
+    return false;
   }
-  
+
   return true;
 }
 
 let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId, notOverrideCurrent, force){
   return loadAnnouncementsHelper.bind(this, location, workspaceId, notOverrideCurrent, force);
 }
-  
+
 let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(location, announcementId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let navigation:AnnouncerNavigationItemListType = state.announcements.navigation;
     let announcements:AnnouncementsType = state.announcements;
-    
+
     let announcement:AnnouncementType = state.announcements.announcements.find((a:AnnouncementType)=>a.id === announcementId);
     try {
       if (!announcement){
         announcement = <AnnouncementType>await promisify(mApi().announcer.announcements.read(announcementId), 'callback')();
+        announcement.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id)));
         //TODO we should be able to get the information of wheter there is an announcement later or not, trace all this
         //and remove the unnecessary code
-        
+
         //this is where notOverrideCurrent plays a role when loading all the other announcements after itself
         dispatch(loadAnnouncements(location, null, false, false));
       }
-      
+
       dispatch({
         type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
         payload: {
@@ -152,13 +158,13 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let announcements:AnnouncementsType = state.announcements;
-    
+
     if (!validateAnnouncement(dispatch, getState, data.announcement)){return data.fail && data.fail()};
-    
+
     try {
       let nAnnouncement:AnnouncementType = Object.assign({}, data.announcement, data.update);
       await promisify(mApi().announcer.announcements.update(data.announcement.id, nAnnouncement), 'callback')();
-      
+
       let diff = moment(nAnnouncement.endDate).diff(moment(), 'days');
       if (announcements.location !== "active" && diff >= 0){
         if (data.cancelRedirect){
@@ -202,7 +208,7 @@ let deleteAnnouncement:DeleteAnnouncementTriggerType = function deleteAnnounceme
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let announcements:AnnouncementsType = state.announcements;
-    
+
     try {
       await promisify(mApi().announcer.announcements.del(data.announcement.id), 'callback')();
       dispatch({
@@ -223,7 +229,7 @@ let deleteSelectedAnnouncements:DeleteSelectedAnnouncementsTriggerType = functio
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let announcements:AnnouncementsType = state.announcements;
-    
+
     await Promise.all(announcements.selected.map(async (announcement)=>{
       try {
         await promisify(mApi().announcer.announcements.del(announcement.id), 'callback')();
@@ -245,12 +251,12 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let announcements:AnnouncementsType = state.announcements;
-    
+
     if (!validateAnnouncement(dispatch, getState, data.announcement)){return data.fail && data.fail()};
-    
+
     try {
       await promisify(mApi().announcer.announcements.create(data.announcement), 'callback')();
-      
+
       let diff = moment(data.announcement.endDate).diff(moment(), 'days');
       if (announcements.location !== "active" && diff >= 0){
         location.hash = "#active";
@@ -275,11 +281,28 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
 let loadAnnouncementsAsAClient:LoadAnnouncementsAsAClientTriggerType = function loadAnnouncementsFromServer(options={hideWorkspaceAnnouncements: "false"}, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')();
       dispatch({
-        type: 'UPDATE_ANNOUNCEMENTS',
-        payload: announcements
+        type: "UPDATE_ANNOUNCEMENTS_STATE",
+        payload: <AnnouncementsStateType>"LOADING"
       });
+      
+      let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')();
+      announcements.forEach(a=>a.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id))));
+      
+      let payload:AnnouncementsPatchType = {
+        state: "READY",
+        announcements,
+        location: null,
+        selected: [],
+        selectedIds: []
+      }
+      
+      //And there it goes
+      dispatch({
+        type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
+        payload
+      });
+      
       callback && callback(announcements);
     } catch (err){
       if (!(err instanceof MApiError)){

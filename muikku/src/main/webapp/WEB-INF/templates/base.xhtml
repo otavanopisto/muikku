@@ -31,6 +31,7 @@
       studyStartDate: '#{sessionBackingBean.studyStartDate}'  || null,
       studyTimeEnd: '#{sessionBackingBean.studyTimeEnd}' || null
     }
+    var HOPS_ENABLED = #{sessionBackingBean.getUserPropertyAsBoolean('hops.enabled')};
 
     var MUIKKU_PERMISSIONS = {
       FORUM_ACCESSENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_ACCESSENVIRONMENTFORUM')},
@@ -46,8 +47,8 @@
       COMMUNICATOR_WORKSPACE_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_WORKSPACE_MESSAGING')},
 
       AREA_PERMISSIONS: #{sessionBackingBean.areaPermissions},
-      LOCK_STICKY_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_LOCK_OR_STICKIFY_MESSAGES')},
-      SHOW_FULL_NAME_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_SHOW_FULL_NAMES')},
+      FORUM_LOCK_STICKY_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_LOCK_OR_STICKIFY_MESSAGES')},
+      FORUM_SHOW_FULL_NAME_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_SHOW_FULL_NAMES')},
       FORUM_CREATEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')},
       FORUM_UPDATEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')},
       FORUM_DELETEENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')}

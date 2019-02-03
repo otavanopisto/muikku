@@ -1,9 +1,12 @@
 import * as React from 'react';
+import promisify from '~/util/promisify';
+import mApi from '~/lib/mApi';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
+import InputContactsAutofillLoaders from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/environment-dialog';
 import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messages';
 import {AnyActionType} from '~/actions';
@@ -14,6 +17,7 @@ import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
 import { StatusType } from '~/reducers/base/status';
+import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -29,14 +33,14 @@ const ckEditorConfig = {
   resize_enabled: false
 }
 const extraPlugins = {
-  'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.9/',
-  'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.9/',
-  'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.9/',
-  'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
-  'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
+  'widget': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/${CKEDITOR_VERSION}/`,
+  'lineutils': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/${CKEDITOR_VERSION}/`,
+  'filetools' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/${CKEDITOR_VERSION}/`,
+  'notification' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/${CKEDITOR_VERSION}/`,
+  'notificationaggregator' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/${CKEDITOR_VERSION}/`,
   'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
-  'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
+  'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
+  'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`
 }
 
 type SelectedItemListType = Array<WorkspaceRecepientType | UserRecepientType | UserGroupRecepientType>;
@@ -81,7 +85,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     this.onSignatureToggleClick = this.onSignatureToggleClick.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-    
+
     this.state = this.getRecoverStoredState({
       text: "",
       selectedItems: props.initialSelectedItems || [],
@@ -91,7 +95,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     }, getStateIdentifier(props));
   }
   checkAgainstStoredState(){
-    this.checkAgainstDefaultState({
+    this.checkStoredAgainstThisState({
       text: "",
       selectedItems: this.props.initialSelectedItems || [],
       subject: "",
@@ -146,12 +150,25 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       locked: false
     }, getStateIdentifier(this.props));
   }
+  inputContactsAutofillLoaders() {
+    return {
+      studentsLoader: (searchString: string) => promisify(mApi().communicator.recipientsUsersSearch.read({
+        searchString: searchString
+      }), 'callback'),
+      workspacesLoader: (searchString: string) => promisify(mApi().communicator.recipientsWorkspacesSearch.read({
+        searchString: searchString
+      }), 'callback')
+    }
+  }
   render(){
     let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill modifier="new-message" key="1" hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+      (<InputContactsAutofill modifier="new-message" key="1" 
+          loaders={this.inputContactsAutofillLoaders()}
+          hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
           placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-        selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
+          selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}
+          showFullNames={!this.props.status.isStudent}/>),
       (
        <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">  

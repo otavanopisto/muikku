@@ -8,27 +8,28 @@
   $.extend(window.DiscussionIOController.prototype, {
 
     loadThreadDetails: function(thread, callback) {
-      var tasks = [this._createUserInfoLoad(thread.creator), this._createLoadArea(thread.forumAreaId)];
+      var tasks = [this._createLoadArea(thread.forumAreaId)];
 
+      var user = thread.creator;
+      var creatorFullName;
+
+      if (user.nickName) {
+        if (this.options.showFullNamePermission)
+          creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+        else
+          creatorFullName = user.nickName + ' ' + user.lastName;
+      } else {
+        creatorFullName = user.firstName + ' ' + user.lastName;
+      }
+      
       async.parallel(tasks, $.proxy(function (err, results) {
         if (err) {
           callback(err);
         } else {
-          var user = results[0];
-          var area = results[1];
+          var area = results[0];
           var d = moment(thread.created).toDate();
           var ud = moment(thread.updated).toDate();
-
-          var creatorFullName;
-
-          if (user.nickName) {
-            if (this.options.showFullNamePermission)
-              creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
-            else
-              creatorFullName = user.nickName + ' ' + user.lastName;
-          } else {
-            creatorFullName = user.firstName + ' ' + user.lastName;
-          }
+          var globalEdit = $('.discussion').discussion('mayEditMessages', thread.forumAreaId);
 
           callback(null, $.extend({}, thread, {
             areaName: area.name,
@@ -40,7 +41,7 @@
             userEntityId: user.id,
             nameLetter: creatorFullName.substring(0,1),
             isEdited: thread.lastModified == thread.created ? false : true,
-            canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
+            canEdit: globalEdit || (thread.creator.id === MUIKKU_LOGGED_USER_ID ? true : false)
           }));
         }
       }, this));
@@ -65,75 +66,47 @@
         }
       }).bind(this);
 
-      var calls = $.map(replies, $.proxy(function (reply) {
-        return this._createUserInfoLoad(reply.creator);
-      }, this));
+      callback(null, $.map(replies, $.proxy(function (reply, index) {
+        var user = reply.creator;
 
-      async.parallel(calls, $.proxy(function (err, users) {
-        if (err) {
-          callback(err);
-        } else {
-          callback(null, $.map(users, $.proxy(function (user, index) {
-            var reply = replies[index];
+        // TODO: remove pretty dates
+        var d = moment(reply.created).toDate();
+        var ld = moment(reply.lastModified).toDate();
+        var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
+        var creatorFullName = generateFullName(user);
+        var replyParentCreatorFullName = null;
+        let replyParentTime = null;
 
-            // TODO: remove pretty dates
-            var d = moment(reply.created).toDate();
-            var ld = moment(reply.lastModified).toDate();
-            var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
-            var creatorFullName = generateFullName(user);
-            var replyParentCreatorFullName = null;
-            let replyParentTime = null;
+        //I must search for the creator rather than indexing it in an object
+        //because the calls are parallell and are tangled, this is to refactor...
+        //everything should be done with promises
+        if (reply.parentReplyId && replyCreatedMap[reply.parentReplyId]){
+          var replyCreator = replyCreatedMap[reply.parentReplyId].creator;
 
-            //I must search for the creator rather than indexing it in an object
-            //because the calls are parallell and are tangled, this is to refactor...
-            //everything should be done with promises
-            if (reply.parentReplyId && replyCreatedMap[reply.parentReplyId]){
-              var replyCreatorId = replyCreatedMap[reply.parentReplyId].creator;
-
-              //Array find not supported in IE :(
-              users.forEach(function(usr){
-                if (usr.id === replyCreatorId){
-                  replyParentCreatorFullName = generateFullName(usr);
-                }
-              });
-              
-              replyParentTime = formatDate(moment(replyCreatedMap[reply.parentReplyId].created).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId].created).toDate());
-            }
-
-            return {
-              creatorFullName: creatorFullName,
-              isEdited: reply.lastModified == reply.created ? false : true,
-              canEdit: globalEdit || (reply.creator === MUIKKU_LOGGED_USER_ID ? true : false),
-              date: d,
-              prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
-              userRandomNo: (user.id % 6) + 1,
-              userEntityId: user.id,
-              nameLetter: creatorFullName.substring(0,1),
-              isReply: reply.parentReplyId ? true : false,
-              replyParentTime: replyParentTime,
-              replyParentCreatorFullName: replyParentCreatorFullName
-            };
-          }, this)));
+          replyParentCreatorFullName = generateFullName(replyCreator);
+          replyParentTime = formatDate(moment(replyCreatedMap[reply.parentReplyId].created).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId].created).toDate());
         }
-      }, this));
-    },
 
-    _createUserInfoLoad: function (userEntityId) {
-      return $.proxy(function (callback) {
-        this._loadUserInfo(userEntityId, callback);
-      }, this);
+        return {
+          creatorFullName: creatorFullName,
+          isEdited: reply.lastModified == reply.created ? false : true,
+          canEdit: globalEdit || (reply.creator.id === MUIKKU_LOGGED_USER_ID ? true : false),
+          date: d,
+          prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
+          userRandomNo: (user.id % 6) + 1,
+          userEntityId: user.id,
+          nameLetter: creatorFullName.substring(0,1),
+          isReply: reply.parentReplyId ? true : false,
+          replyParentTime: replyParentTime,
+          replyParentCreatorFullName: replyParentCreatorFullName
+        };
+      }, this)));
     },
 
     _createLoadArea: function (forumAreaId) {
       return $.proxy(function (callback) {
         this.loadArea(forumAreaId, callback);
       }, this);
-    },
-
-    _loadUserInfo: function (userEntityId, callback) {
-      mApi().user.users.basicinfo
-        .read(userEntityId)
-        .callback(callback);
     }
   });
 

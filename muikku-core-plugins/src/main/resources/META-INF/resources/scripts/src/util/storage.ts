@@ -9,21 +9,21 @@ class StringStorage {
       return;
     }
     
-    localStorage.setItem(this.ns + key, value);
+    localStorage.setItem(this.ns + "." + key, value);
   }
   recover(key: string): any {
     if (!localStorage){
       return null;
     }
     
-    return localStorage.getItem(this.ns + key);
+    return localStorage.getItem(this.ns + "." + key);
   }
   clear(key: string): void {
     if (!localStorage){
       return;
     }
     
-    localStorage.removeItem(this.ns + key);
+    localStorage.removeItem(this.ns + "." + key);
   }
   namespace(namespace: string): StringStorage {
     return new StringStorage(this.ns + "." + namespace);

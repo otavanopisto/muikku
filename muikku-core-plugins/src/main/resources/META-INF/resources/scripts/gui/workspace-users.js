@@ -11,7 +11,7 @@
     
     _loadTeacherList: function () {
       this.element.find('.workspace-teachers-list').addClass('loading');
-      mApi().workspace.workspaces.staffMembers.read(this.options.workspaceEntityId, {orderBy: 'name'}).callback($.proxy(function (err, teachers) {
+      mApi().workspace.staffMembers.read(this.options.workspaceEntityId).callback($.proxy(function (err, teachers) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
@@ -43,7 +43,7 @@
       this.element.find('.workspace-students-list').empty();
       this.element.find('.workspace-students-list').addClass('loading');
       
-      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {active: active, orderBy: 'name'}).callback($.proxy(function (err, students) {
+      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {active: active}).callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
@@ -78,7 +78,7 @@
       var userElement = $(event.target).closest('.workspace-users');
       var userName = $(event.target).attr('data-user-name');
       this._confirmArchive($.proxy(function() {
-        this._archive(userElement);
+        this._toggleActivity(userElement, false);
       }, this), userName);
     },
 
@@ -86,7 +86,7 @@
       var userElement = $(event.target).closest('.workspace-users');
       var userName = $(event.target).attr('data-user-name');
       this._confirmUnarchive($.proxy(function() {
-        this._unarchive(userElement);
+        this._toggleActivity(userElement, true);
       }, this), userName);
     },
     
@@ -100,7 +100,7 @@
           width : 560,
           dialogClass : "workspace-user-confirm-dialog",
           buttons : [ {
-            'text' : dialog.data('button-archive-text'),
+            'text' : dialog.attr('data-button-archive-text'),
             'class' : 'archive-button',
             'click' : function(event) {
               event.stopPropagation();
@@ -108,7 +108,7 @@
               $(this).dialog("destroy").remove();
             }
           }, {
-            'text' : dialog.data('button-cancel-text'),
+            'text' : dialog.attr('data-button-cancel-text'),
             'class' : 'cancel-button',
             'click' : function(event) {
               $(this).dialog("destroy").remove();
@@ -128,7 +128,7 @@
           width : 560,
           dialogClass : "workspace-user-confirm-dialog",
           buttons : [ {
-            'text' : dialog.data('button-unarchive-text'),
+            'text' : dialog.attr('data-button-unarchive-text'),
             'class' : 'unarchive-button',
             'click' : function(event) {
               event.stopPropagation();
@@ -136,7 +136,7 @@
               $(this).dialog("destroy").remove();
             }
           }, {
-            'text' : dialog.data('button-cancel-text'),
+            'text' : dialog.attr('data-button-cancel-text'),
             'class' : 'cancel-button',
             'click' : function(event) {
               $(this).dialog("destroy").remove();
@@ -146,44 +146,19 @@
       }, this));
     },
 
-    _archive: function(userElement) {
+    _toggleActivity: function(userElement, active) {
       var workspaceEntityId = this.options.workspaceEntityId;
-      var workspaceUserEntityId = userElement.data('user-id');
-      mApi().workspace.workspaces.students.read(workspaceEntityId, workspaceUserEntityId).callback(function (err, workspaceUserEntity) {
+      var workspaceUserEntityId = userElement.attr('data-workspaceuserentity-id');
+      var payload = {
+        workspaceUserEntityId: workspaceUserEntityId,
+        active: active
+      };
+      mApi().workspace.workspaces.students.update(workspaceEntityId, workspaceUserEntityId, payload).callback(function (err) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          workspaceUserEntity.active = false;
-          mApi().workspace.workspaces.students.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }
-            else {
-              $(userElement).remove();
-            }
-          });
-        }
-      });
-    },
-    
-    _unarchive: function(userElement) {
-      var workspaceEntityId = this.options.workspaceEntityId;
-      var workspaceUserEntityId = userElement.data('user-id');
-      mApi().workspace.workspaces.students.read(workspaceEntityId, workspaceUserEntityId).callback(function (err, workspaceUserEntity) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        }
-        else {
-          workspaceUserEntity.active = true;
-          mApi().workspace.workspaces.students.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }
-            else {
-              $(userElement).remove();
-            }
-          });
+          $(userElement).remove();
         }
       });
     }

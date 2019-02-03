@@ -41,7 +41,7 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
-      let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
+      let canGoBack = (!document.referrer || document.referrer.indexOf(window.location.host) !== -1) && (history.length);
       if (canGoBack){
         history.back();
       } else {
@@ -73,21 +73,21 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
       </div>
     }
     
-    return <ApplicationPanelToolbar>   
-      <div className="form-element">
-        <select className="form-element__select form-element__select--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>
-          <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
-          {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
-            {area.name}
-          </option>)}
-        </select>
-      </div>  
+    return <ApplicationPanelToolbar>
       {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ?
           <NewArea><ButtonPill icon="add" buttonModifiers={["discussion-toolbar"]}/></NewArea> : null}
-      {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM && this.props.discussion.areaId ?
-          <ModifyArea><ButtonPill icon="edit" buttonModifiers={["discussion-toolbar"]}/></ModifyArea> : null}
-      {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM && this.props.discussion.areaId ? 
-          <DeleteArea><ButtonPill icon="delete" buttonModifiers={["discussion-toolbar"]}/></DeleteArea> : null}
+      {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ?
+          <ModifyArea><ButtonPill disabled={!this.props.discussion.areaId} icon="edit" buttonModifiers={["discussion-toolbar"]}/></ModifyArea> : null}
+      {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? 
+          <DeleteArea><ButtonPill disabled={!this.props.discussion.areaId} icon="delete" buttonModifiers={["discussion-toolbar"]}/></DeleteArea> : null}
+      <div className="form-element">
+      <select className="form-element__select form-element__select--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>
+        <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
+        {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
+          {area.name}
+        </option>)}
+      </select>
+    </div>
     </ApplicationPanelToolbar>
   }
 }

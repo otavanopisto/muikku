@@ -41,7 +41,7 @@ interface GuiderStudentsState {
 class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudentsState> {
   constructor(props: GuiderStudentsProps){
     super(props);
-    
+
     //once this is in state READY only then a loading more event can be triggered
     this.statePropertyLocation = "guiderStudentsState";
     //it will only call the function if this is true
@@ -50,10 +50,10 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
     this.loadMoreTriggerFunctionLocation = "loadMoreStudents";
     //Cancel loading more if that property exists
     this.cancellingLoadingPropertyLocation = "guiderStudentsCurrent";
-    
+
     this.onStudentClick = this.onStudentClick.bind(this);
   }
-  
+
   onStudentClick(student: GuiderStudentType){
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     locationData.c = student.id;
@@ -64,13 +64,11 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
     if (this.props.guiderStudentsState === "LOADING"){
       return null;
     } else if (this.props.guiderStudentsState === "ERROR"){
-      //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
-      //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
     } else if (this.props.guiderStudentsState.length === 0 && !this.props.guiderStudentsCurrent){
-      return <div className="empty"><span>{this.props.i18n.text.get("TODO it's empty")}</span></div>
+      return <div className="empty"><span>{this.props.i18n.text.get('plugin.guider.errormessage.users')}</span></div>
     }
-        
+
     return <BodyScrollKeeper hidden={!!this.props.guiderStudentsCurrent}>
       <SelectableList as={ApplicationList} selectModeModifiers="select-mode"
         extra={this.props.guiderStudentsState === "LOADING_MORE" ?

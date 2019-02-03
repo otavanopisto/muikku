@@ -1,100 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>fi.otavanopisto.muikku</groupId>
-	<artifactId>bom</artifactId>
-	<version>1.1.107-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Muikku BOM</name>
+  <groupId>fi.otavanopisto.muikku</groupId>
+  <artifactId>bom</artifactId>
+  <version>1.1.111-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Muikku BOM</name>
 
-	<properties>
-		<!-- WildFly -->
+  <properties>
+    <!-- WildFly -->
 
-		<wildfly-spec-api.version>10.0.0.Final</wildfly-spec-api.version>
+    <wildfly-spec-api.version>10.0.0.Final</wildfly-spec-api.version>
 
-		<!-- Commons -->
+    <!-- Commons -->
 
-		<commons-lang3.version>3.2.1</commons-lang3.version>
-		<commons-collections.version>3.2.2</commons-collections.version>
-        <commons-validator.version>1.5.0</commons-validator.version>
+    <commons-lang3.version>3.2.1</commons-lang3.version>
+    <commons-collections.version>3.2.2</commons-collections.version>
+    <commons-validator.version>1.5.0</commons-validator.version>
 
-		<!-- Jackson -->
-		
-		<jackson.version>2.6.2</jackson.version>
-		
-		<!-- Scribe -->
+    <!-- Jackson -->
 
-		<scribe.version>1.3.5</scribe.version>
+    <jackson.version>2.8.11</jackson.version>
+    <jackson-databind.version>2.8.11.3</jackson-databind.version>
 
-		<!-- Rewrite -->
+    <!-- Scribe -->
 
-		<rewrite.version>2.0.12.Final</rewrite.version>
+    <scribe.version>1.3.5</scribe.version>
 
-		<!-- Neko -->
+    <!-- Rewrite -->
 
-		<nekohtml.version>1.9.22</nekohtml.version>
+    <rewrite.version>2.0.12.Final</rewrite.version>
+
+    <!-- Neko -->
+
+    <nekohtml.version>1.9.22</nekohtml.version>
 
 
     <!-- Jade -->
-    
+
     <jade4j.version>0.4.2</jade4j.version>
 
-		<!-- Muikku -->
+    <!-- Muikku -->
 
-		<muikku.version>1.1.107-SNAPSHOT</muikku.version>
+    <muikku.version>1.1.111-SNAPSHOT</muikku.version>
 
-		<!-- Coops -->
-		<coops-spec.version>1.0.0</coops-spec.version>
-		<coops-ws-spec.version>1.0.0</coops-ws-spec.version>
+    <!-- Coops -->
+    <coops-spec.version>1.0.0</coops-spec.version>
+    <coops-ws-spec.version>1.0.0</coops-ws-spec.version>
 
-		<!-- Webapp-permission -->
+    <!-- Webapp-permission -->
 
-		<webapp-permission.version>1.0.2</webapp-permission.version>
-		
-		<!--  Mail -->
-		<mail-api.version>1.5.4</mail-api.version>
-		
-		<!--  Tests -->
-		<cdi-unit.version>3.1.0</cdi-unit.version>
-		<rest-assured.version>2.3.4</rest-assured.version>
-		
-    
-    <!--  JSR310 -->
+    <webapp-permission.version>1.0.2</webapp-permission.version>
+
+    <!-- Mail -->
+    <mail-api.version>1.5.4</mail-api.version>
+
+    <!-- Tests -->
+    <cdi-unit.version>3.1.0</cdi-unit.version>
+    <rest-assured.version>2.3.4</rest-assured.version>
+
+
+    <!-- JSR310 -->
     <jackson-datatype-jsr310.version>2.5.4</jackson-datatype-jsr310.version>
-    
+
     <!-- ROME -->
     <rome.version>1.7.1</rome.version>
-    
+
     <xmpp.rocks.version>0.7.4</xmpp.rocks.version>
-	</properties>
+  </properties>
 
-	<dependencyManagement>
-		<dependencies>
+  <dependencyManagement>
+    <dependencies>
 
-			<!-- WildFly -->
+      <!-- WildFly -->
 
-			<dependency>
-				<groupId>org.wildfly</groupId>
-				<artifactId>wildfly-spec-api</artifactId>
-				<version>${wildfly-spec-api.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+      <dependency>
+        <groupId>org.wildfly</groupId>
+        <artifactId>wildfly-spec-api</artifactId>
+        <version>${wildfly-spec-api.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
 
-			<!-- Commons -->
+      <!-- Commons -->
 
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${commons-lang3.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>commons-collections</groupId>
-				<artifactId>commons-collections</artifactId>
-				<version>${commons-collections.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>${commons-collections.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>commons-validator</groupId>
@@ -102,73 +103,73 @@
         <version>${commons-validator.version}</version>
       </dependency>
 
-			<!-- Jackson -->
+      <!-- Jackson -->
 
-			<dependency>
-				<groupId>com.fasterxml.jackson.jaxrs</groupId>
-				<artifactId>jackson-jaxrs-json-provider</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-			
-			<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-databind</artifactId>
-		    <version>${jackson.version}</version>
-			</dependency>
-			
-			<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-core</artifactId>
-		    <version>${jackson.version}</version>
-			</dependency>
-			
-			<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-annotations</artifactId>
-		    <version>${jackson.version}</version>
-			</dependency> 
-			
-			<!-- Scribe -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>org.scribe</groupId>
-				<artifactId>scribe</artifactId>
-				<version>${scribe.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson-databind.version}</version>
+      </dependency>
 
-			<!-- Rewrite -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>org.ocpsoft.rewrite</groupId>
-				<artifactId>rewrite-servlet</artifactId>
-				<version>${rewrite.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>org.ocpsoft.rewrite</groupId>
-				<artifactId>rewrite-config-annotations</artifactId>
-				<version>${rewrite.version}</version>
-			</dependency>
+      <!-- Scribe -->
 
-			<dependency>
-				<groupId>org.ocpsoft.rewrite</groupId>
-				<artifactId>rewrite-integration-faces</artifactId>
-				<version>${rewrite.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>org.scribe</groupId>
+        <artifactId>scribe</artifactId>
+        <version>${scribe.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>org.ocpsoft.rewrite</groupId>
-				<artifactId>rewrite-integration-cdi</artifactId>
-				<version>${rewrite.version}</version>
-			</dependency>
+      <!-- Rewrite -->
 
-			<!-- Neko -->
-      
-			<dependency>
-				<groupId>net.sourceforge.nekohtml</groupId>
-				<artifactId>nekohtml</artifactId>
-				<version>${nekohtml.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>org.ocpsoft.rewrite</groupId>
+        <artifactId>rewrite-servlet</artifactId>
+        <version>${rewrite.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ocpsoft.rewrite</groupId>
+        <artifactId>rewrite-config-annotations</artifactId>
+        <version>${rewrite.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ocpsoft.rewrite</groupId>
+        <artifactId>rewrite-integration-faces</artifactId>
+        <version>${rewrite.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ocpsoft.rewrite</groupId>
+        <artifactId>rewrite-integration-cdi</artifactId>
+        <version>${rewrite.version}</version>
+      </dependency>
+
+      <!-- Neko -->
+
+      <dependency>
+        <groupId>net.sourceforge.nekohtml</groupId>
+        <artifactId>nekohtml</artifactId>
+        <version>${nekohtml.version}</version>
+      </dependency>
 
 
       <!-- Jade -->
@@ -180,13 +181,13 @@
       </dependency>
 
 
-			<!-- Muikku -->
+      <!-- Muikku -->
 
-			<dependency>
-				<groupId>fi.otavanopisto.muikku</groupId>
-				<artifactId>plugin</artifactId>
-				<version>${muikku.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>plugin</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
@@ -194,29 +195,29 @@
         <version>${muikku.version}</version>
       </dependency>
 
-			<dependency>
-				<groupId>fi.otavanopisto.muikku</groupId>
-				<artifactId>rest</artifactId>
-				<version>${muikku.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>rest</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>fi.otavanopisto.muikku</groupId>
-				<artifactId>persistence</artifactId>
-				<version>${muikku.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>fi.otavanopisto.muikku</groupId>
-				<artifactId>core</artifactId>
-				<version>${muikku.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>core</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>fi.otavanopisto.muikku</groupId>
-				<artifactId>core-plugins</artifactId>
-				<version>${muikku.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>core-plugins</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
@@ -230,42 +231,42 @@
         <version>${muikku.version}</version>
       </dependency>
 
-			<dependency>
-				<groupId>fi.otavanopisto.muikku</groupId>
-				<artifactId>muikku-school-data-pyramus</artifactId>
-				<version>${muikku.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>muikku-school-data-pyramus</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>muikku-school-data-pyramus-persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
-    
+
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>evaluation-plugin</artifactId>
         <version>${muikku.version}</version>
       </dependency>
-    
+
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>evaluation-plugin-persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
-    
+
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>evaluation-plugin-rest-model</artifactId>
         <version>${muikku.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>timed-notifications-plugin</artifactId>
         <version>${muikku.version}</version>
       </dependency>
-      
+
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>timed-notifications-plugin-persistence</artifactId>
@@ -277,6 +278,7 @@
         <artifactId>openfire-rest-client</artifactId>
         <version>${muikku.version}</version>
       </dependency>
+<<<<<<< HEAD
     
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
@@ -290,95 +292,104 @@
 				<artifactId>coops-spec</artifactId>
 				<version>${coops-spec.version}</version>
 			</dependency>
+=======
+>>>>>>> refs/remotes/upstream/devel
 
-			<dependency>
-				<groupId>fi.foyt.coops</groupId>
-				<artifactId>coops-ws-spec</artifactId>
-				<version>${coops-ws-spec.version}</version>
-			</dependency>
+      <!-- Coops -->
+      <dependency>
+        <groupId>fi.foyt.coops</groupId>
+        <artifactId>coops-spec</artifactId>
+        <version>${coops-spec.version}</version>
+      </dependency>
 
-			<!-- Webapp-permission -->
+      <dependency>
+        <groupId>fi.foyt.coops</groupId>
+        <artifactId>coops-ws-spec</artifactId>
+        <version>${coops-ws-spec.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>fi.otavanopisto</groupId>
-			<artifactId>webapp-permission</artifactId>
-				<version>${webapp-permission.version}</version>
-			</dependency>
+      <!-- Webapp-permission -->
 
-			<!-- Test -->
+      <dependency>
+        <groupId>fi.otavanopisto</groupId>
+        <artifactId>webapp-permission</artifactId>
+        <version>${webapp-permission.version}</version>
+      </dependency>
 
-			<dependency>
-				<groupId>com.jayway.restassured</groupId>
-				<artifactId>rest-assured</artifactId>
-				<version>${rest-assured.version}</version>
-			</dependency>
+      <!-- Test -->
 
-			<dependency>
-			  <groupId>org.jglue.cdi-unit</groupId>
-			  <artifactId>cdi-unit</artifactId>
-			  <version>${cdi-unit.version}</version>
-			  <exclusions>
+      <dependency>
+        <groupId>com.jayway.restassured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${rest-assured.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jglue.cdi-unit</groupId>
+        <artifactId>cdi-unit</artifactId>
+        <version>${cdi-unit.version}</version>
+        <exclusions>
           <exclusion>
             <groupId>org.jboss.weld.se</groupId>
             <artifactId>weld-se-core</artifactId>
           </exclusion>
         </exclusions>
-			</dependency>
+      </dependency>
 
-			<!-- Mail API -->
+      <!-- Mail API -->
 
-			<dependency>
-				<groupId>javax.mail</groupId>
-				<artifactId>javax.mail-api</artifactId>
-				<version>${mail-api.version}</version>
-			</dependency>
-          <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson-datatype-jsr310.version}</version>
-            <exclusions>
-              <exclusion>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          
-          <dependency>
-            <groupId>com.rometools</groupId>
-            <artifactId>rome</artifactId>
-            <version>${rome.version}</version>
-          </dependency>
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>javax.mail-api</artifactId>
+        <version>${mail-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${jackson-datatype-jsr310.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
-          <dependency>
-              <groupId>rocks.xmpp</groupId>
-              <artifactId>xmpp-core-client</artifactId>
-              <version>${xmpp.rocks.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>rocks.xmpp</groupId>
-              <artifactId>xmpp-extensions-client</artifactId>
-            <version>${xmpp.rocks.version}</version>
-          </dependency>
-        </dependencies>
-	</dependencyManagement>
+      <dependency>
+        <groupId>com.rometools</groupId>
+        <artifactId>rome</artifactId>
+        <version>${rome.version}</version>
+      </dependency>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>otavanopisto-snapshots</id>
-			<name>Otavan Opisto Snapshots</name>
-			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>otavanopisto-releases</id>
-			<name>Otavan Opisto Releases</name>
-			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-		</repository>
-	</distributionManagement>
+      <dependency>
+        <groupId>rocks.xmpp</groupId>
+        <artifactId>xmpp-core-client</artifactId>
+        <version>${xmpp.rocks.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>rocks.xmpp</groupId>
+        <artifactId>xmpp-extensions-client</artifactId>
+        <version>${xmpp.rocks.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>otavanopisto-snapshots</id>
+      <name>Otavan Opisto Snapshots</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>otavanopisto-releases</id>
+      <name>Otavan Opisto Releases</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+    </repository>
+  </distributionManagement>
 </project>

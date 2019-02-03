@@ -1,6 +1,6 @@
 import { ActionType } from '~/actions';
 import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/main-function/user-index';
-import { WorkspaceType, WorkspaceListType } from "~/reducers/main-function/workspaces";
+import { WorkspaceType, WorkspaceListType, ActivityLogType} from "~/reducers/main-function/workspaces";
 
 //TODO remove or comment out, this is mocking code
 //import hops from './mock/hops';
@@ -62,7 +62,7 @@ export interface GuiderStudentUserProfileType {
   lastLogin: LastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,
   workspaces: WorkspaceListType,
-  logins: string[]
+  activityLogs: ActivityLogType[]
 }
 
 export interface GuiderType {
@@ -97,6 +97,12 @@ export interface GuiderStudentUserProfileLabelType {
   flagName: string,
   flagColor: string,
   studentIdentifier: string
+}
+
+function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType){ 
+  let labelAUpperCase = labelA.name.toUpperCase();
+  let labelBUpperCase = labelB.name.toUpperCase();
+  return (labelAUpperCase < labelBUpperCase) ? -1 : (labelAUpperCase > labelBUpperCase) ? 1 : 0;
 }
 
 export default function guider( state: GuiderType = {
@@ -276,7 +282,7 @@ export default function guider( state: GuiderType = {
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS"){
     return Object.assign({}, state, {
-      availableFilters: Object.assign({}, state.availableFilters, {labels: action.payload})
+      availableFilters: Object.assign({}, state.availableFilters, {labels: action.payload.sort(sortLabels)})
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES"){
     return Object.assign({}, state, {
@@ -284,7 +290,7 @@ export default function guider( state: GuiderType = {
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL"){
     return Object.assign({}, state, {
-      availableFilters: Object.assign({}, state.availableFilters, {labels: state.availableFilters.labels.concat([action.payload])})
+      availableFilters: Object.assign({}, state.availableFilters, {labels: state.availableFilters.labels.concat([action.payload]).sort(sortLabels)})
     });
   } else if (action.type === "UPDATE_GUIDER_AVAILABLE_FILTER_LABEL"){
     return Object.assign({}, state, {
@@ -293,7 +299,7 @@ export default function guider( state: GuiderType = {
           return Object.assign({}, label, action.payload.update)
         }
         return label;
-      })})
+      }).sort(sortLabels)})
     });
   } else if (action.type === "DELETE_GUIDER_AVAILABLE_FILTER_LABEL"){
     return Object.assign({}, state, {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { colorIntToHex, getUserImageUrl } from '~/util/modifiers';
+import { colorIntToHex, getUserImageUrl, getName } from '~/util/modifiers';
 import equals = require( "deep-equal" );
 import { i18nType } from '~/reducers/base/i18n';
 
@@ -12,19 +12,20 @@ import '~/sass/elements/discussion.scss';
 import '~/sass/elements/avatar.scss';
 
 
-import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
-import { UserIndexType, UserType } from '~/reducers/main-function/user-index';
+import { DiscussionUserType, DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
+import { UserType } from '~/reducers/main-function/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import { StateType } from '~/reducers';
 import OverflowDetector from '~/components/general/overflow-detector';
 import { DiscussionThreads, DiscussionThread, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from './threads/threads';
+import { StatusType } from '~/reducers/base/status';
 
 interface DiscussionThreadsProps {
   discussion: DiscussionType,
   i18n: i18nType,
-  userIndex: UserIndexType
+  status: StatusType
 }
 
 interface DiscussionThreadsState {
@@ -62,12 +63,9 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
     return <BodyScrollKeeper hidden={!!this.props.discussion.current}>
       <DiscussionThreads>{
         this.props.discussion.threads.map( ( thread: DiscussionThreadType, index: number ) => {
+          let user: DiscussionUserType = thread.creator;
 
-          //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
-          //round so put something as a placeholder in order to be efficient and make short rendering cycles
-          let user: UserType = this.props.userIndex.users[thread.creator];
-
-          let userCategory = thread.creator > 10 ? thread.creator % 10 + 1 : thread.creator;
+          let userCategory = thread.creator.id > 10 ? thread.creator.id % 10 + 1 : thread.creator.id;
           let avatar;
           if ( !user ) {
             //This is what it shows when the user is not ready
@@ -102,7 +100,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
               }
               <DiscussionThreadFooter>
                 <div className="application-list__item-footer-content-main">
-                  <span>{user && user.firstName + ' ' + user.lastName}, {this.props.i18n.time.format( thread.created )}</span>
+                  <span>{user && getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}, {this.props.i18n.time.format( thread.created )}</span>
                 </div>
                 <div className="application-list__item-footer-content-aside">
                   <div className="application-list__item-counter-container">
@@ -127,7 +125,7 @@ function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n,
     discussion: state.discussion,
-    userIndex: state.userIndex
+    status: state.status
   }
 };
 

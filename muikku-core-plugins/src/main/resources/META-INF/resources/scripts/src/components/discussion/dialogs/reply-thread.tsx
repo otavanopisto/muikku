@@ -11,6 +11,7 @@ import { replyToCurrentDiscussionThread, ReplyToCurrentDiscussionThreadTriggerTy
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
+import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 interface ReplyThreadProps {
   i18n: i18nType,
@@ -18,7 +19,7 @@ interface ReplyThreadProps {
   reply?: DiscussionThreadReplyType,
   quote?: string,
   quoteAuthor?: string,
-  currentId: number,      
+  currentId: number,
   replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
 }
 
@@ -41,48 +42,41 @@ const ckEditorConfig = {
   resize_enabled: false
 }
 const extraPlugins = {
-    'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.9/',
-    'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.9/',
-    'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.9/',
-    'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
-    'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
+    'widget': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/${CKEDITOR_VERSION}/`,
+    'lineutils': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/${CKEDITOR_VERSION}/`,
+    'filetools' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/${CKEDITOR_VERSION}/`,
+    'notification' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/${CKEDITOR_VERSION}/`,
+    'notificationaggregator' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/${CKEDITOR_VERSION}/`,
     'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-    'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
-    'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
+    'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
+    'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`
 }
 
 class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadState> {
   constructor(props: ReplyThreadProps){
     super(props, "discussion-reply-thread");
-    
+
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.createReply = this.createReply.bind(this);
     this.clearUp = this.clearUp.bind(this);
-    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-    
+    this.onDialogOpen = this.onDialogOpen.bind(this);
+
     this.state = this.getRecoverStoredState({
       locked: false,
       text: (props.quote && props.quoteAuthor ? 
           "<blockquote><p><strong>" + props.quoteAuthor + "</strong></p>" + props.quote + "</blockquote> <p></p>" :
             "")
-    }, (props.reply && props.reply.id) || props.currentId);
+    }, props.currentId + (props.quote ? "-q" : "") + (props.reply ? "-" + props.reply.id : ""));
   }
   onCKEditorChange(text: string){
-    this.setStateAndStore({text}, (this.props.reply && this.props.reply.id) || this.props.currentId);
-  }
-  checkAgainstStoredState(){
-    this.checkAgainstDefaultState({
-      text: (this.props.quote && this.props.quoteAuthor ? 
-          "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
-      ""),
-    }, (this.props.reply && this.props.reply.id) || this.props.currentId);
+    this.setStateAndStore({text}, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
   }
   clearUp(){
     this.setStateAndClear({
       text: (this.props.quote && this.props.quoteAuthor ? 
           "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
       ""),
-    }, (this.props.reply && this.props.reply.id) || this.props.currentId);
+    }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
   }
   createReply(closeDialog: ()=>any){
     this.setState({
@@ -94,9 +88,11 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
       success: ()=>{
         closeDialog();
         this.setStateAndClear({
-          text: "",
+          text: this.props.quote && this.props.quoteAuthor ? 
+              "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
+                "",
           locked: false
-        }, (this.props.reply && this.props.reply.id) || this.props.currentId);
+        }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
       },
       fail: ()=>{
         this.setState({
@@ -106,15 +102,22 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     });
   }
   onDialogOpen(){
-    if (this.props.quote && this.state.text !== this.props.quote){
-      this.setState({
+    //Text might have not loaded if quoteAuthor or quote wasn't ready
+    if (this.props.quote && this.props.quoteAuthor && !this.state.text){
+      this.setState(this.getRecoverStoredState({
         text: "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>"
-      });
+      }, this.props.currentId + "-q" + (this.props.reply ? "-" + this.props.reply.id : "")))
+    } else {
+      this.checkStoredAgainstThisState({
+        text: this.props.quote && this.props.quoteAuthor ? 
+            "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
+              "",
+      }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
     }
-  }  
+  }
   render(){
-    let content = (closeDialog: ()=>any) => [    
-    <div className="env-dialog__row" key="1">     
+    let content = (closeDialog: ()=>any) => [
+    <div className="env-dialog__row" key="1">
       <div className="env-dialog__form-element-container">
         <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div> 
         <CKEditor autofocus key="1" width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
@@ -123,8 +126,8 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     </div>
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
-         <div className="env-dialog__actions">   
+      return (
+         <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
@@ -133,14 +136,14 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
           </Button>
           {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
               {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
-            </Button> : null}                  
+            </Button> : null}
         </div>
       )
     }
-    
+
     return <JumboDialog modifier="reply-thread"
       title={this.props.i18n.text.get('plugin.discussion.reply.topic')}
-      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
+      content={content} footer={footer} onOpen={this.onDialogOpen}>
       {this.props.children}
     </JumboDialog>
   }

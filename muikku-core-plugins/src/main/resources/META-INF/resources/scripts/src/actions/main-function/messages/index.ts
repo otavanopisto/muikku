@@ -209,13 +209,13 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
     if (!message.subject){
       message.fail && message.fail();
-      return dispatch(displayNotification(getState().i18n.text.get("TODO ERRORMSG message needs a subject"), 'error'));
+      return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createMessage.missing.subject"), 'error'));
     } else if (!message.text){
       message.fail && message.fail();
-      return dispatch(displayNotification(getState().i18n.text.get("TODO ERRORMSG message needs content"), 'error'));
+      return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createMessage.missing.content"), 'error'));
     } else if (!message.to.length){
       message.fail && message.fail();
-      return dispatch(displayNotification(getState().i18n.text.get("TODO ERRORMSG message needs recepients"), 'error'));
+      return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createMessage.missing.recipients"), 'error'));
     }
     
     try {
@@ -232,51 +232,8 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
 
       let state = getState();
       let status: StatusType = state.status;
-
-      //This as in the main thread list will check wheter the message was sent and we are in the inbox or unreadlocation, that will work if
-      //and only if one of the receivers is us, otherwise it's always active for when a message is sent
-      const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
-      const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && result.recipients
-        .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
-      const weAreInSentLocation = state.messages.location === "sent";
-      const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
-      if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients || weJustSentThatMessageAndWeAreInCurrent) {
-        let item = state.messages.navigation.find((item)=>{
-          return item.location === state.messages.location;
-        });
-        if (!item) {
-          return;
-        }
-        let params = {
-          firstResult: 0,
-          maxResults: 1,
-        }
-
-        try {
-          let threads: MessageThreadListType = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback' )();
-          if (threads[0]) {
-            dispatch({
-              type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
-              payload: threads[0]
-            });
-
-            if ( state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId ) {
-              dispatch({
-                type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-                payload: result
-              });
-              if (state.messages.location !== "sent" && threads[0].unreadMessagesInThread) {
-                dispatch(toggleMessageThreadReadStatus(threads[0], true));
-              }
-            }
-
-          }
-        } catch ( err ) { if (!(err instanceof MApiError)){
-          throw err;
-        }}
-      }
       
-      //Also we need to update the specific message in the thread view if it's there
+      //First lets check and update the thread count in case the thread is there somewhere for that specific message
       let thread:MessageThreadType = state.messages.threads.find((thread)=>thread.communicatorMessageId === result.communicatorMessageId);
       if (thread){
         let newCount = thread.messageCountInThread + 1;
@@ -288,6 +245,58 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
               messageCountInThread: newCount
             }
           }
+        });
+      }
+
+      //This as in the main thread list will check wheter the message was sent and we are in the inbox or unreadlocation, that will work if
+      //and only if one of the receivers is us, otherwise it's always active for when a message is sent
+      const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
+      const weAreOneOfTheRecepients = result.recipients
+        .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
+      const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && weAreOneOfTheRecepients;
+      const weAreInSentLocation = state.messages.location === "sent";
+      const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
+      
+      //if we are in sent location or are one of the recipients then the message should become the first one
+      if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients) {
+        let item = state.messages.navigation.find((item)=>{
+          return item.location === state.messages.location;
+        });
+        if (!item) {
+          return;
+        }
+        let params = {
+          firstResult: 0,
+          maxResults: 1,
+        }
+        
+        //we basically conduct a search for the first result which should be our thread
+
+        try {
+          let threads: MessageThreadListType = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback' )();
+          if (threads[0]) {
+            if (threads[0].communicatorMessageId !== result.communicatorMessageId){
+              console.warn("Mismatch between result of new thread and thread itself", threads[0].communicatorMessageId, result.communicatorMessageId);
+              return;
+            }
+            dispatch({
+              type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
+              payload: threads[0]
+            });
+            
+            if (weJustSentThatMessageAndWeAreInCurrent && weAreOneOfTheRecepients && threads[0].unreadMessagesInThread) {
+              dispatch(toggleMessageThreadReadStatus(threads[0], true));
+            }
+          }
+        } catch ( err ) { if (!(err instanceof MApiError)){
+          throw err;
+        }}
+      }
+      
+      if (weJustSentThatMessageAndWeAreInCurrent){
+        dispatch({
+          type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
+          payload: result
         });
       }
       
@@ -457,7 +466,7 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
     });
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification("plugin.communicator.errormessage.badLocation",'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"),'error'));
       dispatch( {
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -707,11 +716,11 @@ export interface AddMessagesNavigationLabelTriggerType {
 }
 
 export interface UpdateMessagesNavigationLabelTriggerType {
-  (label:MessagesNavigationItemType, newName:string, newColor:string):AnyActionType
+  (data:{label:MessagesNavigationItemType, newName:string, newColor:string, success?: ()=>any, fail?: ()=>any}):AnyActionType
 }
 
 export interface RemoveMessagesNavigationLabelTriggerType {
-  (label: MessagesNavigationItemType):AnyActionType
+  (data:{label: MessagesNavigationItemType, success?: ()=>any, fail?: ()=>any}):AnyActionType
 }
 
 let loadMessagesNavigationLabels:LoadMessagesNavigationLabelsTriggerType = function loadMessagesNavigationLabels(callback){
@@ -743,12 +752,16 @@ let loadMessagesNavigationLabels:LoadMessagesNavigationLabelsTriggerType = funct
 
 let addMessagesNavigationLabel:AddMessagesNavigationLabelTriggerType = function addMessagesNavigationLabel(name){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    if (!name){
+      return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createUpdateLabels.missing.title"), 'error'));
+    }
+    
     let color = Math.round(Math.random() * 16777215);
     let label = {
       name,
       color
     };
-    
+
     try {
       let newLabel:LabelType = <LabelType>await promisify(mApi().communicator.userLabels.create(label), 'callback')();
       dispatch({
@@ -771,20 +784,25 @@ let addMessagesNavigationLabel:AddMessagesNavigationLabelTriggerType = function 
   }
 }
 
-let updateMessagesNavigationLabel:UpdateMessagesNavigationLabelTriggerType = function updateMessagesNavigationLabel(label, newName, newColor){
+let updateMessagesNavigationLabel:UpdateMessagesNavigationLabelTriggerType = function updateMessagesNavigationLabel(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    if (!data.newName){
+      data.fail && data.fail();
+      return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createUpdateLabels.missing.title"), 'error'));
+    }
+    
     let newLabelData = {
-      name: newName,
-      color: hexToColorInt(newColor),
-      id: label.id
+      name: data.newName,
+      color: hexToColorInt(data.newColor),
+      id: data.label.id
     };
     
     try {
-      await promisify(mApi().communicator.userLabels.update(label.id, newLabelData), 'callback')();
+      await promisify(mApi().communicator.userLabels.update(data.label.id, newLabelData), 'callback')();
       dispatch({
         type: "UPDATE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
         payload: {
-          labelId: <number>label.id,
+          labelId: <number>data.label.id,
           update: {
             labelName: newLabelData.name,
             labelColor: newLabelData.color
@@ -794,49 +812,53 @@ let updateMessagesNavigationLabel:UpdateMessagesNavigationLabelTriggerType = fun
       dispatch({
         type: "UPDATE_MESSAGES_NAVIGATION_LABEL",
         payload: {
-          labelId: <number>label.id,
+          labelId: <number>data.label.id,
           update: {
             text: ()=>newLabelData.name,
-            color: newColor
+            color: data.newColor
           }
         }
       });
+      data.success && data.success();
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;
       }
+      data.fail && data.fail();
       dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.label.updateFailed"), 'error'));
     }
   }
 }
 
-let removeMessagesNavigationLabel:RemoveMessagesNavigationLabelTriggerType = function removeMessagesNavigationLabel(label){
+let removeMessagesNavigationLabel:RemoveMessagesNavigationLabelTriggerType = function removeMessagesNavigationLabel(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      await promisify(mApi().communicator.userLabels.del(label.id), 'callback')();
+      await promisify(mApi().communicator.userLabels.del(data.label.id), 'callback')();
       let {messages} = getState();
       
       //Notice this is an external trigger, not the nicest thing, but as long as we use hash navigation, meh
-      if (messages.location === label.location){
+      if (messages.location === data.label.location){
         location.hash = "#inbox";
       }
       
       dispatch({
         type: "DELETE_MESSAGE_THREADS_NAVIGATION_LABEL",
         payload: {
-          labelId: <number>label.id
+          labelId: <number>data.label.id
         }
       });
       dispatch({
         type: "REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS",
         payload: {
-          labelId: <number>label.id
+          labelId: <number>data.label.id
         }
       });
+      data.success && data.success();
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
       }
+      data.fail && data.fail();
       dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.label.deleteFailed"), 'error'));
     }
   }
