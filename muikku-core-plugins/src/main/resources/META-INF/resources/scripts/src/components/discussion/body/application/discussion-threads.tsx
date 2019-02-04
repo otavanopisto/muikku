@@ -66,6 +66,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
           let user: DiscussionUserType = thread.creator;
 
           let userCategory = thread.creator.id > 10 ? thread.creator.id % 10 + 1 : thread.creator.id;
+          let threadCategory = thread.forumAreaId > 10 ? thread.forumAreaId % 10 + 1 : thread.forumAreaId;
           let avatar;
           if ( !user ) {
             //This is what it shows when the user is not ready
@@ -88,7 +89,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
                 {thread.sticky ?
                   <div className="discussion__icon icon-pin"></div> : null
                 }
-                <div className={`discussion-category discussion-category--category-${thread.forumAreaId}`}>
+                <div className={`discussion-category discussion-category--category-${threadCategory}`}>
                   <span>{thread.title}</span>
                 </div>
               </DiscussionThreadHeader>                                   
