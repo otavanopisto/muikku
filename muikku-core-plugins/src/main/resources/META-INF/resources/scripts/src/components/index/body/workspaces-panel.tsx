@@ -27,7 +27,11 @@ class WorkspacesPanel extends React.Component<WorkspacesPanelProps, WorkspacesPa
       <Panel modifier="index">
         {this.props.workspaces.length ? (
           <div className="item-list item-list--panel-workspaces">
-            {this.props.workspaces.map((workspace: WorkspaceType)=>{
+            {this.props.workspaces.sort((workspaceA: WorkspaceType, workspaceB: WorkspaceType)=>{
+              if(workspaceA.name.toLocaleLowerCase() < workspaceB.name.toLocaleLowerCase()) { return -1; }
+              if(workspaceA.name > workspaceB.name) { return 1; }
+              return 0;
+             }).map((workspace: WorkspaceType)=>{
               return <Link key={workspace.id} className="item-list__item item-list__item--workspaces" href={`/workspace/${workspace.urlName}`}>
                 <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
                 <span className="item-list__text-body">

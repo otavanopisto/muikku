@@ -46,6 +46,7 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
       course: this.props.course,
       success: ()=>{
         this.setState({locked: false, message: ""});
+        closeDialog();
       },
       fail: ()=>{
         this.setState({locked: false});

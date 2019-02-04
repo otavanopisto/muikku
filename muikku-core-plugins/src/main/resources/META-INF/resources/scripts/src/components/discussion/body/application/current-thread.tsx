@@ -62,7 +62,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     }
 
     let canRemoveThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.removeThread;
-    let canEditThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.editMessage;
+    let canEditThread = this.props.userId === this.props.discussion.current.creator.id || areaPermissions.editMessages;
     let threadLocked = this.props.discussion.current.locked === true;
     let student = this.props.status.isStudent === true;
 
@@ -70,7 +70,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       title={<h3 className="application-list__header-title">{this.props.discussion.current.title}</h3>}>
         <DiscussionCurrentThreadElement isOpMessage avatar={<div className="avatar avatar--category-1">{avatar}</div>}>
           <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(this.props.discussion.current.created)}</span>}>
-            <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(userCreator)}</span>
+            <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(userCreator, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span>
           </DiscussionThreadHeader>
           <DiscussionThreadBody>
             <article className="rich-text" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
@@ -84,7 +84,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
               </ReplyThread> : null}
             {!threadLocked || !student ?
-              <ReplyThread quote={this.props.discussion.current.message} quoteAuthor={getName(userCreator)}>
+              <ReplyThread quote={this.props.discussion.current.message} quoteAuthor={getName(userCreator, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}>
                 <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
               </ReplyThread> : null}
             {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
@@ -118,7 +118,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           return (
             <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar}>
               <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(reply.created)}</span>}>
-                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user)}</span> 
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span> 
               </DiscussionThreadHeader>
               <DiscussionThreadBody>
                 {reply.deleted ? 
@@ -135,7 +135,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                   </ReplyThread> : null}
               {!threadLocked || !student ?
                   <ReplyThread reply={reply}
-                   quote={reply.message} quoteAuthor={getName(user)}>
+                   quote={reply.message} quoteAuthor={getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
                   </ReplyThread> : null}
                 {canEditMessage ? <ModifyThreadReply reply={reply}>
