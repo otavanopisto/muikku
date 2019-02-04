@@ -40,7 +40,6 @@ function loadCurrentLocation(){
     store.dispatch(<Action>updateVops());
   } else if (givenLocation === "hops"){
     store.dispatch(<Action>setLocationToHopsInTranscriptOfRecords());
-
   } else if (givenLocation === "yo"){
     store.dispatch(<Action>setLocationToYoInTranscriptOfRecords());
     store.dispatch(<Action>updateYO());
