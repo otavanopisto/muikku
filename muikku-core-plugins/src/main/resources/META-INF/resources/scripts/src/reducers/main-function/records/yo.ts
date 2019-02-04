@@ -3,7 +3,6 @@ import { ActionType } from "actions";
 export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 
-
 export interface YODataType{
   studyStartDate: string,
   studyTimeEnd: string,

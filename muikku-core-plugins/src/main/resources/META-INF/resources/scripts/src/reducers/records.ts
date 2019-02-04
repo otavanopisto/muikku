@@ -5,7 +5,6 @@ import i18n from './base/i18n';
 import title from './base/title';
 import websocket from './util/websocket';
 import messages from './main-function/messages';
-
 import {combineReducers} from 'redux';
 import records from '~/reducers/main-function/records/records';
 import vops from '~/reducers/main-function/vops';
