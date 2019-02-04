@@ -4,6 +4,10 @@ import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { YODataType, YOStatusType, YOMatriculationSubjectType, YOEligibilityStatusType, YOEligibilityType } from '~/reducers/main-function/records/yo';
+import { SubjectEligibilityType } from '~/reducers/main-function/records/subject_eligibility';
+
+import { updateMatriculationSubjectEligibility } from '~/actions/main-function/records/subject_eligibility';
+
 import { StateType } from '~/reducers';
 
 
@@ -31,19 +35,18 @@ let updateYO:UpdateYOTriggerType = function updateYO() {
       }), 'callback')() as YOMatriculationSubjectType;
 
       dispatch({
-          type: 'UPDATE_STUDIES_YO_SUBJECTS',
-          payload: subjects
-        });
-      
+        type: 'UPDATE_STUDIES_YO_SUBJECTS',
+        payload: subjects
+      });
     
-      let data:any = await promisify( mApi().records.studentMatriculationEligibility
+      let egilibity:any = await promisify( mApi().records.studentMatriculationEligibility
               .read((window as any).MUIKKU_LOGGED_USER), 'callback')();      
-      let eligibilityStatus = data.status;
+      let eligibilityStatus = egilibity.status;
       let eligibilityData = {
-              coursesCompleted: data.coursesCompleted,
-              coursesRequired: data.coursesRequired,
-              enrollmentDate: data.enrollmentDate,
-              examDate: data.examDate                        
+              coursesCompleted: egilibity.coursesCompleted,
+              coursesRequired: egilibity.coursesRequired,
+              enrollmentDate: egilibity.enrollmentDate,
+              examDate: egilibity.examDate                        
             };
       
       dispatch({
@@ -54,7 +57,7 @@ let updateYO:UpdateYOTriggerType = function updateYO() {
       dispatch({
           type: 'UPDATE_STUDIES_YO_ELIGIBILITY',
           payload: eligibilityData
-        });      
+        });
     }
     catch(err) {
       //TODO: ERR

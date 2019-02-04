@@ -3,30 +3,6 @@ import { ActionType } from "actions";
 export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 
-/**
- * Enum describing matriculation eligibility
- * 
- * @author Antti Leppä <antti.leppa@metatavu.fi>
- */
-
-export enum YOEligbleEnum { 
-  FALSE,
-  TRUE, 
-  UNKNOWN
-}
-
-/**
- * Interface representing matriculation eligibility REST model 
- * 
- * @author Antti Leppä <antti.leppa@metatavu.fi>
- */
-
-export interface YOMatriculationEligibilityType {
-  eligible: boolean;
-  requirePassingGrades: number;
-  acceptedCourseCount: number;
-  acceptedTransferCreditCount: number;
-}
 
 export interface YODataType{
   studyStartDate: string,
@@ -80,7 +56,7 @@ export default function yo(state:YOType={
   } else if (action.type === "UPDATE_STUDIES_YO_ELIGIBILITY"){
      return Object.assign({}, state, {
        eligibility: action.payload
-     });       
+     });
    }
   return state;
 }

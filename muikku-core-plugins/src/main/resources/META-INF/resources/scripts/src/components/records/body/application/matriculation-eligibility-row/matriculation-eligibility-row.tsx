@@ -1,59 +1,32 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { Dispatch } from "redux";
+import { Dispatch, bindActionCreators } from "redux";
 import { StateType } from '~/reducers';
+import { SubjectEligibilityType } from '~/reducers/main-function/records/subject_eligibility';
+import {updateMatriculationSubjectEligibility, UpdateMatriculationSubjectEligibilityTriggerType} from '~/actions/main-function/records/subject_eligibility';
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify from "~/util/promisify";
-
-
-/**
- * Enum describing matriculation eligibility
- * 
- * @author Antti Leppä <antti.leppa@metatavu.fi>
- */
-
-export enum EligbleEnum { 
-  FALSE,
-  TRUE, 
-  UNKNOWN
-}
-
-/**
- * Interface representing matriculation eligibility REST model 
- * 
- * @author Antti Leppä <antti.leppa@metatavu.fi>
- */
-
-export interface MatriculationEligibilityType {
-  eligible: boolean;
-  requirePassingGrades: number;
-  acceptedCourseCount: number;
-  acceptedTransferCreditCount: number;
-}
-
 
 /**
  * Interface representing MatriculationEligibilityRow component properties
  * 
- * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
  */
 
 interface MatriculationEligibilityRowProps {
+  subjectEligibility: SubjectEligibilityType,
   code: string,
-  subjectCode: string,
-  i18n: i18nType
+  subjectCode: string,  
+  i18n: i18nType,
+  updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityTriggerType
 }
 
 /**
  * Interface representing MatriculationEligibilityRow component state
  * 
- * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
  */
+
 interface MatriculationEligibilityRowState {
-  eligible: EligbleEnum,
-  requiredCount: number;
-  acceptedCount: number;
   loading: boolean
 }
 
@@ -62,52 +35,26 @@ interface MatriculationEligibilityRowState {
  * 
  * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
  */
+
 class MatriculationEligibilityRow extends React.Component<MatriculationEligibilityRowProps, MatriculationEligibilityRowState> {
   constructor(props: MatriculationEligibilityRowProps){
     super(props);
-    
-    this.state = {
-      eligible: EligbleEnum.UNKNOWN,
-      requiredCount: 0,
-      acceptedCount: 0,
-      loading: true
-    }
-  }
-
-  /**
-   * Component will mount life-cycle method  
-   * 
-   * Reads available matriculation subjects from REST API
-   */
-  async componentWillMount() {
-    try {
-      const result = await promisify(mApi().records.matriculationEligibility.read({"subjectCode": this.props.subjectCode}), 'callback')() as MatriculationEligibilityType;
-      this.setState({
-        eligible: result.eligible ? EligbleEnum.TRUE : EligbleEnum.FALSE,
-        requiredCount: result.requirePassingGrades,
-        acceptedCount: result.acceptedCourseCount + result.acceptedTransferCreditCount,
-        loading: false
-      });
-    } catch (err) {
-      if (!(err instanceof MApiError)) {
-        throw err;
-      }
-
-      this.setState({
-        eligible: EligbleEnum.UNKNOWN,
-        loading: false
-      });
-    }
+    this.state = {loading : true};    
   }
   
-  /**
-   * Component render method  
-   * 
-   * Renders component
-   */
+  componentWillMount () {
+    this.props.updateMatriculationSubjectEligibility(this.props.subjectCode);
+  }
+  
+  componentDidMount () {
+    this.setState({
+      loading: false
+    });
+  }
+  
   render() {
     return (
-      <div title={this.getEligibleTooltip()}>
+       <div title={this.getEligibleTooltip()}>
         <span>{this.getName()}</span>
         <span style={{float: 'right'}}>{this.state.loading ? this.props.i18n.text.get("plugin.records.hops.matriculationEligibleLoading") : (this.getEligibleText())}</span>
       </div>
@@ -119,20 +66,21 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
    * 
    * @returns matriculation subject name or empty string if not found 
    */
+  
   getName(): string {
     return this.props.i18n.text.get(`plugin.records.hops.matriculationSubject.${this.props.code}`);
   }
-
+  
   /**
    * Returns list text for student matriculation eligibility
    * 
    * @returns list text for student matriculation eligibility
    */
   getEligibleText(): string {
-    switch (this.state.eligible) { 
-      case EligbleEnum.TRUE:
+    switch (this.props.subjectEligibility.egilibility) { 
+      case "TRUE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.true");
-      case EligbleEnum.FALSE:
+      case "FALSE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.false");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.error");
@@ -143,17 +91,22 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
    * Returns item tooltip for student matriculation eligibility
    * 
    * @returns item tooltip for student matriculation eligibility
+   * 
+   * 
+   * 
+   * , this.state.acceptedCount, this.state.requiredCount
+   * 
    */
+  
   getEligibleTooltip(): string {
     if (this.state.loading) {
       return "";
     }
-
-    switch (this.state.eligible) {
-      case EligbleEnum.TRUE:
-        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.true", this.state.acceptedCount, this.state.requiredCount);
-      case EligbleEnum.FALSE:
-        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.false", this.state.acceptedCount, this.state.requiredCount);
+    switch (this.props.subjectEligibility.egilibility) {
+      case "TRUE":
+        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.true");
+      case "FALSE":
+        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.false");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.error");
     } 
@@ -162,12 +115,13 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
 
 function mapStateToProps( state: StateType ) {
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    subjectEligibility: state.subjectEligibility
   }
 };
 
 function mapDispatchToProps( dispatch: Dispatch<any> ) {
-  return {}
+  return bindActionCreators({updateMatriculationSubjectEligibility}, dispatch);
 };
 
 export default connect(

@@ -14,6 +14,7 @@ import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records/records';
 import { YOType } from './main-function/records/yo';
+import { SubjectEligibilityType } from './main-function/records/subject_eligibility';
 import { ErrorType } from './base/error';
 import { ProfileType } from './main-function/profile';
 
@@ -25,6 +26,7 @@ export interface StateType {
   title: string,
   websocket?: WebsocketStateType,          
   yo?: YOType,
+  subjectEligibility?: SubjectEligibilityType
   announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
