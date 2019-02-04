@@ -257,6 +257,7 @@
         break;
         case 'UPLOADED':
           $(clip).find('.remove-clip').show();
+          $(clip).find('.download-clip').show();
           $(clip).find('audio').show();
         break;
       }
@@ -303,11 +304,21 @@
         .appendTo(clip);
       
       $('<a>')
+      .hide()
+      .attr({
+        'href': '/rest/workspace/audioanswer/' + clipId
+      })
+      .addClass('download-clip icon-download')
+      .attr('download', clipId)
+      .attr('title', getLocaleText('plugin.workspace.audioField.downloadLink'))
+      .appendTo(clip);
+      
+      $('<a>')
         .hide()
         .attr({
           'href': 'javascript:void(null)'
         })
-        .addClass('remove-clip icon-remove-clip')
+        .addClass('remove-clip icon-close-small')
         .attr('title', getLocaleText('plugin.workspace.audioField.removeLink'))
         .appendTo(clip);
 
