@@ -9,7 +9,8 @@ import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelF
   AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType,
   ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
   RemoveLabelFromCurrentMessageThreadTriggerType, restoreCurrentMessageThread, RestoreCurrentMessageThreadTriggerType,
-  restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType} from '~/actions/main-function/messages';
+  restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType,
+  toggleMessageThreadReadStatus, ToggleMessageThreadReadStatusTriggerType} from '~/actions/main-function/messages';
 import {filterMatch, filterHighlight, intersect, difference, flatten} from '~/util/modifiers';
 import LabelUpdateDialog from '../../dialogs/label-update';
 import {MessagesType} from '~/reducers/main-function/messages';
@@ -38,11 +39,13 @@ interface CommunicatorToolbarProps {
   addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType,
   removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType,
   restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType,
-  restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType
+  restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType,
+  toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType
 }
 
 interface CommunicatorToolbarState {
-  labelFilter: string
+  labelFilter: string,
+  isCurrentRead: boolean
 }
 
 class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, CommunicatorToolbarState> {
@@ -54,9 +57,11 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     this.loadMessage = this.loadMessage.bind(this);
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     this.resetLabelFilter = this.resetLabelFilter.bind(this);
+    this.toggleCurrentMessageReadStatus = this.toggleCurrentMessageReadStatus.bind(this);
 
     this.state = {
-      labelFilter: ""
+      labelFilter: "",
+      isCurrentRead: true
     }
   }
   loadMessage(messageId: number){
@@ -98,6 +103,19 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       labelFilter: ""
     });
   }
+  componentWillUpdate(nextProps: CommunicatorToolbarProps, nextState: CommunicatorToolbarState){
+    if (nextProps.messages.currentThread !== this.props.messages.currentThread){
+      this.setState({
+        isCurrentRead: true
+      });
+    }
+  }
+  toggleCurrentMessageReadStatus(){
+    this.props.toggleMessageThreadReadStatus(this.props.messages.currentThread.messages[0].communicatorMessageId, !this.state.isCurrentRead);
+    this.setState({
+      isCurrentRead: !this.state.isCurrentRead
+    });
+  }
   render(){
     let currentLocation = this.props.messages.navigation.find((item)=>{
       return (item.location === this.props.messages.location);
@@ -106,6 +124,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     if (!currentLocation){
       return null;
     }
+    
+    let isUnreadOrInboxOrLabel:boolean = (this.props.messages.location === "unread" || this.props.messages.location === "inbox" || this.props.messages.location.startsWith("label"));
+    
     if (this.props.messages.currentThread){
       return ( 
         <ApplicationPanelToolbar>
@@ -144,6 +165,8 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             }>
               <ButtonPill buttonModifiers="label" icon="tag"/>
             </Dropdown>
+            {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`message-${this.state.isCurrentRead ? "" : "un"}read`}
+              onClick={this.props.messages.toolbarLock ? null : this.toggleCurrentMessageReadStatus}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
             <ButtonPill buttonModifiers="next-page" icon="arrow-left"
@@ -166,8 +189,6 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(allInCommon, flatten(...partialIds));
     }
-    
-    let isUnreadOrInboxOrLabel:boolean = (this.props.messages.location === "unread" || this.props.messages.location === "inbox" || this.props.messages.location.startsWith("label"));
     
     return <ApplicationPanelToolbar>
       <div className="application-panel__tool--current-folder">
@@ -223,7 +244,7 @@ function mapStateToProps(state: StateType){
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({deleteCurrentMessageThread, addLabelToCurrentMessageThread,
-    removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads,
+    removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads, toggleMessageThreadReadStatus,
     toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
     removeLabelFromCurrentMessageThread, restoreCurrentMessageThread, restoreSelectedMessageThreads}, dispatch);
 };
