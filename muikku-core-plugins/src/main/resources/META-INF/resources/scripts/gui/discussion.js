@@ -29,6 +29,7 @@
           var area = results[0];
           var d = moment(thread.created).toDate();
           var ud = moment(thread.updated).toDate();
+          var globalEdit = $('.discussion').discussion('mayEditMessages', thread.forumAreaId);
 
           callback(null, $.extend({}, thread, {
             areaName: area.name,
@@ -40,7 +41,7 @@
             userEntityId: user.id,
             nameLetter: creatorFullName.substring(0,1),
             isEdited: thread.lastModified == thread.created ? false : true,
-            canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
+            canEdit: globalEdit || (thread.creator.id === MUIKKU_LOGGED_USER_ID ? true : false)
           }));
         }
       }, this));
@@ -89,7 +90,7 @@
         return {
           creatorFullName: creatorFullName,
           isEdited: reply.lastModified == reply.created ? false : true,
-          canEdit: globalEdit || (reply.creator === MUIKKU_LOGGED_USER_ID ? true : false),
+          canEdit: globalEdit || (reply.creator.id === MUIKKU_LOGGED_USER_ID ? true : false),
           date: d,
           prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
           userRandomNo: (user.id % 6) + 1,

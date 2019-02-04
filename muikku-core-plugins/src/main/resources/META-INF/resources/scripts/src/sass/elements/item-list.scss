@@ -94,7 +94,7 @@
   
     .text,
     .item-list__icon {
-      color: $color-item-list-item-font-color-active;            
+      color: $color-item-list-item-font-color-active;
     }
   }
 }
@@ -148,7 +148,7 @@
 .item-list__item--has-workspaces .item-list__icon {
   color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
 }
-    
+
 // List item texts
 
 .item-list__text-body {
@@ -170,7 +170,7 @@
 .item-list__text-body--multiline {
   white-space: initial;
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
 }
 
 // List item dates
@@ -189,6 +189,7 @@
 
 // List item labels (and similar)
 
-.item-list__announcement-workspaces {
+.item-list__announcement-workspaces,
+.item-list__announcement-usergroups {
   margin: 10px 0 0;
 }
