@@ -136,8 +136,8 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
      return;
     }
     let top = (document.documentElement.scrollTop || document.body.scrollTop);
-    let height = (document.documentElement.offsetHeight || document.body.offsetHeight);
-    let scrollHeight = (document.documentElement.scrollHeight || document.body.scrollHeight);
+    let height = document.documentElement.offsetHeight;
+    let scrollHeight = document.documentElement.scrollHeight;
     let offsetTopHeight = isSticky ? 
       this.offsetElementAgainstTop + (this.refs["sticky"] as HTMLElement).offsetHeight : 
       (this.refs["sticky"] as HTMLElement).offsetHeight + (this.refs["sticky"] as HTMLElement).offsetTop - top;

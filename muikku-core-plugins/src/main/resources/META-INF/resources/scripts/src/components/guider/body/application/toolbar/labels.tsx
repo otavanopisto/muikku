@@ -63,7 +63,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
           return (<Link className={`link link--full link--guider-label ${isSelected ? "selected" : ""}`}
             onClick={!isSelected ? this.props.addGuiderLabelToCurrentUser.bind(null, label) : this.props.removeGuiderLabelFromCurrentUser.bind(null, label)}>
             <span className="link__icon icon-flag" style={{color: label.color}}></span>
-            <span className="text">{filterHighlight(label.name, this.state.labelFilter)}</span>
+            <span className="link__text">{filterHighlight(label.name, this.state.labelFilter)}</span>
           </Link>);
         }))
       }>
@@ -104,7 +104,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
             this.props.addGuiderLabelToSelectedUsers.bind(null, label) :
             this.props.removeGuiderLabelFromSelectedUsers.bind(null, label)}>
            <span className="link__icon icon-flag" style={{color: label.color}}></span>
-           <span className="text">{filterHighlight(label.name, this.state.labelFilter)}</span>
+           <span className="link__text">{filterHighlight(label.name, this.state.labelFilter)}</span>
         </Link>);
       }))
     }>

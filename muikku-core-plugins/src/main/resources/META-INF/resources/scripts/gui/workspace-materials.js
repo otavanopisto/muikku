@@ -39,19 +39,26 @@
   function setLastWorkspace(){
     var tocItem = $('#materialsScrollableTOC').find('a.active'); 
     if (tocItem.length) {
-      var url = window.location.href;
-      var workspaceName = $('.workspaceName').val();
-      var workspaceNameExtension = $('.workspaceNameExtension').val();
-      if (workspaceNameExtension) {
-        workspaceName += ' (' + workspaceNameExtension + ')';
-      }
-      var materialName = $(tocItem).text();
-      var lastWorkspace = {
-        url: url,
-        workspaceName: workspaceName,
-        materialName: materialName
-      }
-      mApi().user.property.create({key: 'last-workspace', value: JSON.stringify(lastWorkspace)});
+      var workspaceEntityId = $('.workspaceEntityId').val();
+      mApi().workspace.workspaces.amIMember
+        .read(workspaceEntityId)
+        .callback(function(err, result) {
+          if (!err && result) {
+            var url = window.location.href;
+            var workspaceName = $('.workspaceName').val();
+            var workspaceNameExtension = $('.workspaceNameExtension').val();
+            if (workspaceNameExtension) {
+              workspaceName += ' (' + workspaceNameExtension + ')';
+            }
+            var materialName = $(tocItem).text();
+            var lastWorkspace = {
+              url: url,
+              workspaceName: workspaceName,
+              materialName: materialName
+            }
+            mApi().user.property.create({key: 'last-workspace', value: JSON.stringify(lastWorkspace)});
+          }
+        });
     }
   }
   
