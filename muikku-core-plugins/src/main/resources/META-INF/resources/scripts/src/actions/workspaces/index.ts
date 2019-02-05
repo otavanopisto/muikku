@@ -2,7 +2,7 @@ import actions, { displayNotification } from '../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {WorkspaceListType, ShortWorkspaceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType} from '~/reducers/workspaces';
+import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType } from '~/reducers/user-index';
@@ -13,7 +13,7 @@ export interface LoadUserWorkspacesFromServerTriggerType {
 }
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
-export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", ShortWorkspaceType>;
+export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
 export type SET_CURRENT_WORKSPACE = SpecificActionType<"SET_CURRENT_WORKSPACE", WorkspaceType>;
 export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<"UPDATE_WORKSPACE_ASSESSMENT_STATE", {
   workspace: WorkspaceType,
@@ -71,13 +71,33 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
     try {
       dispatch({
         type: 'UPDATE_LAST_WORKSPACE',
-        payload: <ShortWorkspaceType>JSON.parse(((await promisify(mApi().user.property.read('last-workspace'), 'callback')()) as any).value)
+        payload: <WorkspaceMaterialReferenceType>JSON.parse(((await promisify(mApi().user.property.read('last-workspace'), 'callback')()) as any).value)
       });
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(actions.displayNotification(getState().i18n.text.get("plugin.workspace.errormessage.lastWorkspaceLoadFailed"), 'error'));
+    }
+  }
+}
+  
+export interface UpdateLastWorkspaceTriggerType {
+  (newReference:WorkspaceMaterialReferenceType):AnyActionType
+}
+
+let updateLastWorkspace:UpdateLastWorkspaceTriggerType = function updateLastWorkspace(newReference) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(mApi().user.property.create({key: 'last-workspace', value: JSON.stringify(newReference)}), 'callback')();
+      dispatch({
+        type: 'UPDATE_LAST_WORKSPACE',
+        payload: newReference
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
     }
   }
 }
@@ -125,13 +145,9 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let contentDescription:MaterialContentNodeType;
       let help:MaterialContentNodeType;
       let producers:Array<WorkspaceProducerType>;
+      let isCourseMember:boolean;
       let status = getState().status;
-      let ridiculousArray = getState().status.loggedIn ? reuseExistantValue(true,
-          //The way refresh works is by never giving an existant value to the reuse existant value function that way it will think that there's no value
-          //And rerequest
-          typeof data.refreshActivity !== "undefined" && data.refreshActivity ? null : workspace && workspace.studentActivity,
-          ()=>promisify(mApi().guider.workspaces.activity.read(data.workspaceId), 'callback')()) : null;
-      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help] = await Promise.all([
+      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help, isCourseMember] = await Promise.all([
                                                  reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
@@ -161,7 +177,12 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                      ()=>promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(true, workspace && workspace.help,
-                                                     ()=>promisify(mApi().workspace.workspaces.help.cacheClear().read(data.workspaceId), 'callback')())]) as any
+                                                     ()=>promisify(mApi().workspace.workspaces.help.cacheClear().read(data.workspaceId), 'callback')()),
+                                                     
+                                                 reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined",
+                                                     ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')())
+                                                     
+                                                  ]) as any
       workspace.studentAssessments = assesments;
       workspace.feeInfo = feeInfo;
       workspace.assessmentRequests = assessmentRequests;
@@ -170,6 +191,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       workspace.contentDescription = contentDescription;
       workspace.producers = producers;
       workspace.help = help;
+      workspace.isCourseMember = isCourseMember;
 
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',
@@ -536,4 +558,4 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
-  updateAssignmentState}
+  updateAssignmentState, updateLastWorkspace}

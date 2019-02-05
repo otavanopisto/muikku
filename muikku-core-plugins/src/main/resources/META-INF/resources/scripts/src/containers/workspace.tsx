@@ -19,7 +19,9 @@ import WorkspaceAnnouncerBody from '~/components/workspace/workspaceAnnouncer';
 import WorkspaceMaterialsBody from '~/components/workspace/workspaceMaterials';
 
 import { RouteComponentProps } from 'react-router';
-import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies } from '~/actions/workspaces';
+import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials,
+  setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
+  updateLastWorkspace} from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
@@ -87,16 +89,44 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     }
   }
   onWorkspaceMaterialsBodyActiveNodeIdChange(newId: number){
+    let state:StateType = this.props.store.getState();
+  
     if (!newId){
       history.pushState(null, null, '#');
-      if (this.props.store.getState().workspaces.currentMaterials &&
-          this.props.store.getState().workspaces.currentMaterials[0] &&
-          this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
-        this.loadWorkspaceMaterialsData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+      if (state.workspaces.currentMaterials &&
+          state.workspaces.currentMaterials[0] &&
+          state.workspaces.currentMaterials[0].children[0]) {
+        this.loadWorkspaceMaterialsData(state.workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+        
+        if (state.workspaces.currentWorkspace.isCourseMember){
+          this.props.store.dispatch(updateLastWorkspace({
+            url: location.origin + location.pathname,
+            workspaceName: state.workspaces.currentWorkspace.name,
+            materialName: state.workspaces.currentMaterials[0].children[0].title
+          }) as Action)
+        }
       }
     } else {
       history.pushState(null, null, '#p-' + newId);
       this.loadWorkspaceMaterialsData(newId);
+      
+      if (state.workspaces.currentWorkspace.isCourseMember){
+        let indexFound = -1;
+        let materialChapter = state.workspaces.currentMaterials.find(m=>{
+          let index = m.children.findIndex(s=>s.workspaceMaterialId === newId);
+          if (index !== -1){
+            indexFound = index;
+          }
+          return index !== -1;
+        });
+        if (indexFound !== -1){
+          this.props.store.dispatch(updateLastWorkspace({
+            url: location.origin + location.pathname + '#p-' + newId,
+            workspaceName: state.workspaces.currentWorkspace.name,
+            materialName: materialChapter.children[indexFound].title
+          }) as Action);
+        }
+      }
     }
   }
   renderWorkspaceHome(props: RouteComponentProps<any>){

@@ -147,6 +147,7 @@ export interface WorkspaceType {
   //These appear in certain circumstances
   //Usually available if externally loaded (eg. coursepicker)
   canSignup?: boolean,
+  //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean,
   educationTypeName?: string,
 
@@ -196,7 +197,7 @@ export interface WorkspaceUpdateType {
   activityLogs?: ActivityLogType[]
 }
 
-export interface ShortWorkspaceType {
+export interface WorkspaceMaterialReferenceType {
   workspaceName: string,
   materialName: string,
   url: string
@@ -239,7 +240,7 @@ export interface WorkspacesActiveFiltersType {
 export interface WorkspacesType {
   availableWorkspaces: WorkspaceListType,
   userWorkspaces: WorkspaceListType,
-  lastWorkspace?: ShortWorkspaceType,
+  lastWorkspace?: WorkspaceMaterialReferenceType,
   currentWorkspace?: WorkspaceType,
   avaliableFilters: WorkspacesAvaliableFiltersType,
   state: WorkspacesStateType,
@@ -254,7 +255,7 @@ export interface WorkspacesType {
 export interface WorkspacesPatchType {
   availableWorkspaces?: WorkspaceListType,
   userWorkspaces?: WorkspaceListType,
-  lastWorkspace?: ShortWorkspaceType,
+  lastWorkspace?: WorkspaceMaterialReferenceType,
   currentWorkspace?: WorkspaceType,
   avaliableFilters?: WorkspacesAvaliableFiltersType,
   state?: WorkspacesStateType,
@@ -432,7 +433,7 @@ export default function workspaces(state: WorkspacesType={
     });
   } else if (action.type === 'UPDATE_LAST_WORKSPACE'){
     return Object.assign({}, state, {
-      lastWorkspace: <ShortWorkspaceType>action.payload
+      lastWorkspace: <WorkspaceMaterialReferenceType>action.payload
     });
   } else if (action.type === 'SET_CURRENT_WORKSPACE'){
     return Object.assign({}, state, {
