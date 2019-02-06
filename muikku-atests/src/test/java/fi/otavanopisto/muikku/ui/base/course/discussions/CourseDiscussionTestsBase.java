@@ -14,15 +14,6 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 public class CourseDiscussionTestsBase extends AbstractUITest {
   
   @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
-      }
-    )
   public void courseDiscussionSendMessageTest() throws Exception {
     loginAdmin();
     
@@ -54,15 +45,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   }
   
   @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
-      }
-    )
   public void courseDiscussionAdminCreateAreaTest() throws Exception {
     loginAdmin();
     
@@ -91,15 +73,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   }
   
   @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
-      }
-    )
   public void courseDiscussionReplyTest() throws Exception {
     loginAdmin();
     
@@ -134,15 +107,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   }
   
   @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
-      }
-    )
   public void courseDiscussionDeleteThreadTest() throws Exception {
     Long courseId = 1l;
     loginAdmin();
@@ -181,15 +145,6 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   }
 
   @Test
-  @TestEnvironments (
-      browsers = {
-        TestEnvironments.Browser.CHROME,
-        TestEnvironments.Browser.FIREFOX,
-        TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
-      }
-    )
   public void courseDiscussionReplyReplyTest() throws Exception {
     loginAdmin();
     try{      

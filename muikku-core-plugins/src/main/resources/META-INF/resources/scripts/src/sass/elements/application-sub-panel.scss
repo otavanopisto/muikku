@@ -4,7 +4,6 @@
 @import "../base/breakpoints";
 
 .application-sub-panel {
-  border-bottom: 1px solid $color-default-contrast;
   margin: 0 0 20px;
 
   &:last-child {
@@ -153,6 +152,12 @@
 
 .application-sub-panel__notification-body--yo-status-incomplete {
   color: $color-default;
+  display: flex;
+  align-items: center;
+}
+
+.application-sub-panel__notification-content:not(:first-child) {
+  margin-left: 0.5rem;
 }
 
 .application-sub-panel__notification-footer {
