@@ -76,6 +76,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     
     this.swap = this.swap.bind(this);
     this.selectItem = this.selectItem.bind(this);
+    this.cancelSelectedItem = this.cancelSelectedItem.bind(this);
   }
   shouldComponentUpdate(nextProps: SorterFieldProps, nextState: SorterFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
@@ -164,6 +165,11 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       selectedItem: item
     });
   }
+  cancelSelectedItem(){
+    this.setState({
+      selectedItem: null
+    });
+  }
   render(){
     //The summary for the right answers
     let rightAnswerSummaryComponent = null;
@@ -217,7 +223,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
            className={`muikku-sorter-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
          "muikku-sorter-item-selected" : ""} ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
-           onClick={this.selectItem.bind(this, item)}>{text}</Draggable>
+           onClick={this.selectItem.bind(this, item)} onDrag={this.cancelSelectedItem}>{text}</Draggable>
        })}
       </Element>
       {rightAnswerSummaryComponent}

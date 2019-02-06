@@ -56,6 +56,7 @@ interface OrganizerFieldState {
   },
   order: Array<string>,
   useList: Array<string>,
+  selectedItemId: string,
   
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
@@ -108,6 +109,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         return [] as Array<string>
       }),
       useList,
+      selectedItemId: null,
       
       //modified synced and syncerror are false, true and null by default
       modified: false,
@@ -119,6 +121,11 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       rightnessState: null,
       rightnessStateMissingTerms: null
     };
+    
+    this.cancelSelectedItemId = this.cancelSelectedItemId.bind(this);
+    this.selectItemId = this.selectItemId.bind(this);
+    this.selectBox = this.selectBox.bind(this);
+    this.preventPropagation = this.preventPropagation.bind(this);
   }
   shouldComponentUpdate(nextProps: OrganizerFieldProps, nextState: OrganizerFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
@@ -248,6 +255,29 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     //Call the onchange function stringifying as usual
     this.props.onChange && this.props.onChange(this, this.props.content.name, JSON.stringify(nBox));
   }
+  selectItemId(id: string){
+    this.setState({
+      selectedItemId: id
+    });
+  }
+  selectBox(box: CategoryType){
+    if (this.state.selectedItemId){
+      this.onDropDraggableItem(this.state.selectedItemId, box.id);
+      this.setState({
+        selectedItemId: null
+      });
+    }
+  }
+  cancelSelectedItemId(){
+    this.setState({
+      selectedItemId: null
+    });
+  }
+  preventPropagation(e: React.MouseEvent<any>){
+    e.stopPropagation();
+    e.preventDefault();
+    return false;
+  }
   render(){
     //The overall state if we got one and we check for rightness
     let elementClassNameState = this.props.checkForRightness && this.state.rightnessStateOverall ?
@@ -263,7 +293,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         <div className="muikku-terms-data">
           {this.state.order.map((id)=>{
             //add the term in use class if in the uselist
-            let className = `muikku-term ${this.state.useList.indexOf(id) !== -1 ? "term-in-use" : ""}`;
+            let className = `muikku-term ${this.state.useList.indexOf(id) !== -1 ? "term-in-use" : ""} ${this.state.selectedItemId === id ? "term-selected" : ""}`;
             if (this.props.readOnly){
               //if readOnly we just return a non draggable thingy
               return <div className={className} key={id}>{this.state.terms[id]}</div>
@@ -274,7 +304,8 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
             //calls the on drop into function using its own termId binding and the argument will be the data of the droppables
             return <Draggable parentContainerSelector=".muikku-organizer-field"
               className={className} interactionGroup={this.props.content.name}
-              clone key={id} onDropInto={this.onDropDraggableItem.bind(this, id)}>{this.state.terms[id]}</Draggable>
+              clone key={id} onDropInto={this.onDropDraggableItem.bind(this, id)}
+              onDrag={this.cancelSelectedItemId} onClick={this.selectItemId.bind(this, id)}>{this.state.terms[id]}</Draggable>
           })}
         </div>
       </div>
@@ -299,7 +330,8 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
             });
           }
           
-          return <Droppable interactionGroup={this.props.content.name} className={`muikku-category-container ${categoryClassNameState}`}
+          return <Droppable interactionGroup={this.props.content.name} onClick={this.selectBox.bind(this, category)}
+            className={`muikku-category-container ${categoryClassNameState}`}
             key={category.id} interactionData={category.id}>
             <div className="muikku-category-title">{category.name}</div>
             <div className="muikku-category">{this.state.boxes[category.id].map((termId)=>{
@@ -308,7 +340,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
               let termClassNameState = this.props.checkForRightness && !answerIsCheckedAndItIsRight && 
                 this.state.rightnessState && this.state.rightnessState[category.id] && this.state.rightnessState[category.id]["*"] === "FAIL" ?
                   "state-" + this.state.rightnessState[category.id][termId] : "";
-              return <div key={termId} className={`muikku-term term-in-use ${termClassNameState}`}>{this.state.terms[termId]}
+              return <div onClick={this.preventPropagation} key={termId} className={`muikku-term term-in-use ${termClassNameState}`}>{this.state.terms[termId]}
                 {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="icon-delete"></span> : null}
               </div>
             })}{itemRightAnswerMissingTerms}</div>
