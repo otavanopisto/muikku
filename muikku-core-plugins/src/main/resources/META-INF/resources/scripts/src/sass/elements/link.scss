@@ -128,11 +128,6 @@
   text-transform: none;
 }
 
-.link--selected {
-  color: $color-text-link-selected;
-  font-weight: 600;  
-}
-
 .link--highlight {
   background-color: $color-link-highlight-background;
   color: $color-link-highlight-text;
@@ -324,14 +319,19 @@
   &.selected {
     background-color: $color-main-function-label-link-selected-background;
 
-    .text {
-      color: $color-default;
+    .link__text {
+      color: $color-text-link-selected;
       font-weight: 600;
     }
   }
 
   &.semi-selected {
-    background-color: lighten($color-main-function-label-link-selected-background, 5%);
+     background-color: lighten($color-main-function-label-link-selected-background, 20%);
+     
+    .link__text {
+       color: $color-text-link-selected;
+      font-weight: 600;
+    }
   }
 }
 
