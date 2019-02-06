@@ -41,9 +41,8 @@ export default function yo(state:YOType={
       status: action.payload
     });
   } else if (action.type === "UPDATE_STUDIES_YO"){
-    return Object.assign({}, state, {
-      value: action.payload
-    });
+    let yoProperties : YODataType = action.payload; 
+    return Object.assign({}, state, yoProperties);
   } else if (action.type === "UPDATE_STUDIES_YO_SUBJECTS"){
      return Object.assign({}, state, {
        subjects: action.payload
