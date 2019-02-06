@@ -257,6 +257,7 @@
         break;
         case 'UPLOADED':
           $(clip).find('.remove-clip').show();
+          $(clip).find('.download-clip').show();
           $(clip).find('audio').show();
         break;
       }
@@ -303,11 +304,21 @@
         .appendTo(clip);
       
       $('<a>')
+      .hide()
+      .attr({
+        'href': '/rest/workspace/audioanswer/' + clipId
+      })
+      .addClass('download-clip icon-download')
+      .attr('download', clipId)
+      .attr('title', getLocaleText('plugin.workspace.audioField.downloadLink'))
+      .appendTo(clip);
+      
+      $('<a>')
         .hide()
         .attr({
           'href': 'javascript:void(null)'
         })
-        .addClass('remove-clip icon-remove-clip')
+        .addClass('remove-clip icon-close-small')
         .attr('title', getLocaleText('plugin.workspace.audioField.removeLink'))
         .appendTo(clip);
 
@@ -673,30 +684,12 @@
       if (this.readonly()) {
         return;
       }
-      
       var file = this.element.find(".controls input[type='file']")[0].files[0];
-      
-      var type = this._normalizeMimeType(file.type);
-      var name = file.name;
-      
-      if (type == 'audio/wav') {
-        this._addClip(this._prepareClip(), {
-          name: name,
-          type: type,
-          blob: file
-        });
-      }
-      else if (type == 'audio/flac') {
-        this._addClip(this._prepareClip(), {
-          name: name,
-          type: type,
-          blob: file
-        });
-      }
-      else {
-        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.audioField.unsupportedFileType', type, 'audio/wav, audio/flac'));
-      }
-
+      this._addClip(this._prepareClip(), {
+        name: file.name,
+        type: file.type,
+        blob: file
+      });
       this._recreateFileField();
     },
     
