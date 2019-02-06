@@ -7,6 +7,7 @@ import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType, Ma
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
 import MaterialLoader from "~/components/base/material-loader";
 import { StatusType } from "~/reducers/base/status";
+import equals = require("deep-equal");
 
 import WorkspaceMaterial from './material';
 
@@ -256,7 +257,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     return winner;
   }
   recalculateHash(){
-    console.log("recalculating hash");
+    //console.log("recalculating hash");
     
     //we get the currently active element as defined by the rules
     let active = this.getActive();
@@ -271,14 +272,14 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     
     //if we get a new hash that is not the same as the current hash
     if (newHash !== location.hash.replace("#","").replace("p-","")){
-      console.log("active node changed");
+      //console.log("active node changed");
       
       //we get the chapter for that new active
       let newActiveChapter = this.getChapter(newActive || this.flattenedMaterial[0].workspaceMaterialId);
       
       //if it's not loaded
       if (!this.state.loadedChapters[newActiveChapter.chapter.workspaceMaterialId]){
-        console.log("couldn't find the chapter");
+        //console.log("couldn't find the chapter");
         
         //we recalculate the loaded
         //allowing animation
@@ -286,14 +287,14 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         //we override the active chapter to be the chapter that we just got as
         //the new active since the state is still stuck to the previous active
         this.recalculateLoaded(false, ()=>{
-          console.log("now it has been updated, chaging active");
+          //console.log("now it has been updated, chaging active");
           //After that is done we call the callback for the active node id change
           //this will end up triggering a change on the prop of the activeNodeId
           //but we will be ready for that then
           this.props.onActiveNodeIdChange(newActive);
         }, true, newActiveChapter);
       } else {
-        console.log("the chapter exists");
+        //console.log("the chapter exists");
         //if the chapter then we just trigger the active node id change
         this.props.onActiveNodeIdChange(newActive);
       }
@@ -344,7 +345,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return;
     }
     
-    console.log("recalculate loaded", dontWaitForExpand, onDone, onlyActive);
+    //console.log("recalculate loaded", dontWaitForExpand, onDone, onlyActive);
     
     //so we need to check which will be the new loaded chapters
     let newLoadedChapters = {...this.state.loadedChapters};
@@ -398,9 +399,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     }
     
     //If we actually get something new
-    if (JSON.stringify(newLoadedChapters) !== JSON.stringify(this.state.loadedChapters)){
+    if (!equals(newLoadedChapters, this.state.loadedChapters)){
       
-      console.log("recalculate loaded, got new");
+      //console.log("recalculate loaded, got new");
       
       //Then we update the UI and then call the callback
       this.setState({

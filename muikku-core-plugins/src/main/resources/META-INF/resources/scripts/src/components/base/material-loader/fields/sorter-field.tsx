@@ -30,6 +30,7 @@ interface SorterFieldProps {
 
 interface SorterFieldState {
   items: Array<SorterFieldItemType>,
+  selectedItem: SorterFieldItemType,
   
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
@@ -62,6 +63,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     
     this.state = {
       items,
+      selectedItem: null,
       
       //modified synced and syncerror are false, true and null by default
       modified: false,
@@ -73,6 +75,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     }
     
     this.swap = this.swap.bind(this);
+    this.selectItem = this.selectItem.bind(this);
   }
   shouldComponentUpdate(nextProps: SorterFieldProps, nextState: SorterFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
@@ -148,6 +151,19 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
   componentDidUpdate(prevProps: SorterFieldProps, prevState: SorterFieldState){
     this.checkForRightness();
   }
+  selectItem(item: SorterFieldItemType){
+    if (this.state.selectedItem){
+      this.swap(item, this.state.selectedItem);
+      this.setState({
+        selectedItem: null
+      });
+      return;
+    }
+    
+    this.setState({
+      selectedItem: item
+    });
+  }
   render(){
     //The summary for the right answers
     let rightAnswerSummaryComponent = null;
@@ -198,8 +214,10 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
          //the parent component is a class name always make sure to have the right class name not to overflow
          //the interaction data is the item itself so the argument would be that
          return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as={Element} parentContainerSelector=".muikku-sorter-items-container"
-           className={`muikku-sorter-item ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
-           interactionData={item} onInteractionWith={this.swap.bind(this, item)}>{text}</Draggable>
+           className={`muikku-sorter-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
+         "muikku-sorter-item-selected" : ""} ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
+           interactionData={item} onInteractionWith={this.swap.bind(this, item)}
+           onClick={this.selectItem.bind(this, item)}>{text}</Draggable>
        })}
       </Element>
       {rightAnswerSummaryComponent}

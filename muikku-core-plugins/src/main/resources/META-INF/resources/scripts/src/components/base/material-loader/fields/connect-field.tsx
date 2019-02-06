@@ -81,6 +81,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     } else {
       //otherwise we just shuffle the thing
       counterparts = shuffle(props.content.counterparts);
+      fields = props.content.fields;
     }
     
     //set the state
