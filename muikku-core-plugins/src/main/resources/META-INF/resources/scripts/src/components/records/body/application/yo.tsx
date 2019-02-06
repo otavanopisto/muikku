@@ -59,7 +59,7 @@ class YO extends React.Component<YOProps, YOState> {
   render() {      
     let i18n = this.props.i18n;
     
-    if (this.props.records.location !== "yo") {
+    if (this.props.records.location !== "yo" || this.props.yo.status != "READY") {
       return null;
     } else {
       const loaded = this.props.hops.status === "READY" && !!this.props.hops.value;
