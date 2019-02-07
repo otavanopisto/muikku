@@ -111,11 +111,11 @@
 }
 
 .application-sub-panel__body--yo-status-incomplete {
-  background-color: $color-sub-panel-status-incomplete-background-color;
+  background-color: $color-sub-panel-status-incomplete-background;
 }
 
 .application-sub-panel__body--yo-status-complete {
-  background-color: $color-sub-panel-status-complete-background-color;
+  background-color: $color-sub-panel-status-complete-background;
 }
 
 .application-sub-panel__body--studies-summary-dates {
@@ -196,24 +196,27 @@
   padding: 10px 0;
 }
 
-.application-sub-panel__card-header--summary-evaluated, .application-sub-panel__card-highlight--summary-evaluated  {
-  color: $color-sub-panel-card-1-font-color;
+.application-sub-panel__card-header--summary-evaluated,
+.application-sub-panel__card-highlight--summary-evaluated {
+  color: $color-sub-panel-card-1-font;
 }
 
 .application-sub-panel__card-item--summary-activity {
   background-color: $color-sub-panel-card-2-background;
 }
 
-.application-sub-panel__card-header--summary-activity, .application-sub-panel__card-highlight--summary-activity  {
-  color: $color-sub-panel-card-2-font-color;
+.application-sub-panel__card-header--summary-activity,
+.application-sub-panel__card-highlight--summary-activity {
+  color: $color-sub-panel-card-2-font;
 }
 
 .application-sub-panel__card-item--summary-returned {
   background-color: $color-sub-panel-card-3-background;
 }
 
-.application-sub-panel__card-header--summary-returned, .application-sub-panel__card-highlight--summary-returned  {
-  color: $color-sub-panel-card-3-font-color;
+.application-sub-panel__card-header--summary-returned,
+.application-sub-panel__card-highlight--summary-returned {
+  color: $color-sub-panel-card-3-font;
 }
 
 .application-sub-panel__item-header {
@@ -229,13 +232,9 @@
   flex-shrink: 1;
   padding: 10px;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid $color-default-item-separator-border;
-  } 
-
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
-  } 
+  }
 
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
@@ -247,10 +246,35 @@
   flex-flow: column wrap;
   flex-basis: 50;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-flow: column nowrap;
-  }  
+  }
+}
+
+.application-sub-panel__summary-highlight {
+  color: $color-sub-panel-summary-highlight-font;
+  font-size: 2.5rem;
+
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.application-sub-panel__summary-highlight--total {
+  color: $color-sub-panel-summary-highlight-total-font;
+}
+
+.application-sub-panel__summary-highlight--done {
+  color: $color-sub-panel-card-1-font;
+}
+
+.application-sub-panel__summary-highlight--undone {
+  color: $color-sub-panel-card-2-font;
+}
+
+.application-sub-panel__summary-definition {
+  margin-left: 5px;
 }
 
 .application-sub-panel__item-body {
@@ -258,7 +282,9 @@
 }
 
 .application-sub-panel__item-body--summarizer {
-  background-color: $color-sub-panel-summarizer-background-color;
+  align-items: center;
+  background-color: $color-sub-panel-summarizer-background;
+  display: flex;
 }
 
 .application-sub-panel__item-header--hops {
@@ -314,7 +340,7 @@
     margin: 2px 5px 2px 0;
     padding: 4px;
   }
-} 
+}
 
 .application-sub-panel__item-data--summary-start-date span {
   background-color: $color-sub-panel-data-1-background;

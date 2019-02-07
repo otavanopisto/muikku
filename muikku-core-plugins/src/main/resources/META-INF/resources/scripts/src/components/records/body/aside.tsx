@@ -45,39 +45,38 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   render() {
     
     let sections = [
-        {
-          name: this.props.i18n.text.get("plugin.records.category.records"),
-          hash: "records"
-        },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.hops"),
-          hash: "hops"
-        },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.vops"),
-          hash: "vops"
-        },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.yo"),
-          hash: "yo"
-        },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.statistics"),
-          hash: "statistics"
-        },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.summary"),
-          hash: "summary"
-        }                    
-        ]        
-    
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.summary"),
+                      hash: "summary"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.records"),
+                      hash: "records"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.hops"),
+                      hash: "hops"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.vops"),
+                      hash: "vops"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.yo"),
+                      hash: "yo"
+                    },
+                    {
+                      name: this.props.i18n.text.get("plugin.records.category.statistics"),
+                      hash: "statistics"
+                    }
+                    ]
     return ( 
       <NavigationMenu>
           {sections.filter(section => this.isVisible(section.hash)).map((item, index)=>{
             return <NavigationElement isActive={this.props.location === item.hash} hash={item.hash} key={index}
             >{item.name}</NavigationElement> 
           })}
-      </NavigationMenu>    
+      </NavigationMenu>
     )
   }
 }
