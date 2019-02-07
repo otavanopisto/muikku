@@ -206,8 +206,49 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessmentstate")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceAssessmentState(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTID") String studentId) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentId);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST)
+        .entity(String.format("Malformed student identifier %s", studentId))
+        .build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND)
+        .entity(String.format("Could not find workspace entity %d", workspaceEntityId))
+        .build();
+    }
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
+    }
+    
+    UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentUserEntity == null) {
+      return Response.status(Status.NOT_FOUND)
+          .entity(String.format("Could not find user entity for student identifier %s", studentIdentifier))
+          .build();
+    }
+    
+    if (!sessionController.getLoggedUserEntity().getId().equals(studentUserEntity.getId())) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+
+    WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+    return Response.ok(assessmentState).build();
+  }
+
+  @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @Deprecated // Use /workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessmentstate instead
   public Response listWorkspaceStudentAssessments(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTID") String studentId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
