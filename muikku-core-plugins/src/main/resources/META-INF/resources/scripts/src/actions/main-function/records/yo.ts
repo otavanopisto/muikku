@@ -17,11 +17,12 @@ export interface UPDATE_STUDIES_YO_ELIGIBILITY extends SpecificActionType<"UPDAT
 export interface UPDATE_STUDIES_YO_SUBJECTS extends SpecificActionType<"UPDATE_STUDIES_YO_SUBJECTS", YOMatriculationSubjectType> {}
 export interface UPDATE_STUDIES_YO_STATUS extends SpecificActionType<"UPDATE_STUDIES_YO_STATUS", YOStatusType>{}
 
-export interface UpdateYOTriggerType {
+
+export interface updateYOTriggerType {
   ():AnyActionType
 }
 
-let updateYO:UpdateYOTriggerType = function updateYO() {
+let updateYO:updateYOTriggerType = function updateYO() {
 
    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
@@ -29,7 +30,10 @@ let updateYO:UpdateYOTriggerType = function updateYO() {
         type: 'UPDATE_STUDIES_YO',
         payload: null
       });
-          
+      dispatch({
+        type: 'UPDATE_STUDIES_YO_STATUS',
+        payload: <YOStatusType>"LOADING"
+      });
       let subjects:YOMatriculationSubjectType = await promisify(mApi().records.matriculationSubjects.read({
           matriculationSubjectsLoaded: true          
       }), 'callback')() as YOMatriculationSubjectType;
@@ -57,7 +61,12 @@ let updateYO:UpdateYOTriggerType = function updateYO() {
       dispatch({
           type: 'UPDATE_STUDIES_YO_ELIGIBILITY',
           payload: eligibilityData
-        });
+       });
+
+      dispatch({
+        type: 'UPDATE_STUDIES_YO_STATUS',
+        payload: <YOStatusType>"READY"
+      });
     }
     catch(err) {
       //TODO: ERR
