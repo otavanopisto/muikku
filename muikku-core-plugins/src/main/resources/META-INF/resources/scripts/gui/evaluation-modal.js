@@ -427,9 +427,10 @@
               $('#workspaceGradeGrade').val($(eventElement).find('.eval-modal-workspace-event-grade').attr('data-identifier'));
               $('#workspaceGradeDate').val($(eventElement).find('.eval-modal-workspace-event-date').attr('data-date-raw'));
               CKEDITOR.instances.workspaceGradeText.setData($(eventElement).find('.eval-modal-workspace-event-content').html());
-              CKEDITOR.instances.workspaceGradeText.startDrafting();
             }
-            this._toggleWorkspaceGradeEditor(true);
+            this._toggleWorkspaceGradeEditor(true, function() {
+              CKEDITOR.instances.workspaceGradeText.startDrafting();
+            });
           }
           else if (eventType == 'SUPPLEMENTATION_REQUEST') {
             var mode = $('#workspaceSupplementationEditor').attr('data-mode');
@@ -438,9 +439,10 @@
               $('#workspaceSupplementationIdentifier').val($(eventElement).attr('data-identifier'));
               $('#workspaceSupplementationDate').val($(eventElement).find('.eval-modal-workspace-event-date').attr('data-date-raw'));
               CKEDITOR.instances.workspaceSupplementationText.setData($(eventElement).find('.eval-modal-workspace-event-content').html());
-              CKEDITOR.instances.workspaceSupplementationText.startDrafting();
             }
-            this._toggleWorkspaceSupplementationEditor(true);
+            this._toggleWorkspaceSupplementationEditor(true, function() {
+              CKEDITOR.instances.workspaceSupplementationText.startDrafting();
+            });
           }
         }, this));
         $('.button-remove-event').on('click', $.proxy(function(event) {
@@ -488,9 +490,10 @@
             $('#workspaceGradeIdentifier').val('');
             $('#workspaceGradeDate').val(new Date().getTime());
             CKEDITOR.instances.workspaceGradeText.setData('');
-            CKEDITOR.instances.workspaceGradeText.startDrafting();
           }
-          this._toggleWorkspaceGradeEditor(true);
+          this._toggleWorkspaceGradeEditor(true, function() {
+            CKEDITOR.instances.workspaceGradeText.startDrafting();
+          });
         }, this));
         
         $('#workspaceSupplementationNew').on('click', $.proxy(function(event) {
@@ -500,9 +503,10 @@
             $('#workspaceSupplementationIdentifier').val('');
             $('#workspaceSupplementationDate').val(new Date().getTime());
             CKEDITOR.instances.workspaceSupplementationText.setData('');
-            CKEDITOR.instances.workspaceSupplementationText.startDrafting();
           }
-          this._toggleWorkspaceSupplementationEditor(true);
+          this._toggleWorkspaceSupplementationEditor(true, function() {
+            CKEDITOR.instances.workspaceSupplementationText.startDrafting();
+          });
         }, this));
       }, this));
     },
