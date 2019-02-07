@@ -56,6 +56,15 @@ export interface UserStaffType {
   userEntityId: number
 }
 
+export interface ShortWorkspaceUserWithActiveStatusType {
+  workspaceUserEntityId: number,
+  userEntityId: number,
+  firstName: string,
+  lastName: string,
+  studyProgrammeName: string,
+  active: boolean
+}
+
 export type UserGroupListType = Array<UserGroupType>;
 
 export interface UserBaseIndexType {

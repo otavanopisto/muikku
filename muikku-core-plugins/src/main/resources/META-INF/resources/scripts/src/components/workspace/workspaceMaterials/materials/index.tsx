@@ -437,6 +437,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     
     return <ContentPanel onOpen={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation}
       title={this.props.workspace.name} ref="content-panel">
+      {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
       {this.props.materials.map((chapter)=>{
         return <section key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
           height: this.state.loadedChapters[chapter.workspaceMaterialId] ?

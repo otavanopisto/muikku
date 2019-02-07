@@ -5,7 +5,7 @@ import {AnyActionType, SpecificActionType} from '~/actions';
 import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
-import { UserStaffType } from '~/reducers/user-index';
+import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
@@ -342,6 +342,14 @@ export interface LoadStaffMembersOfWorkspaceTriggerType {
   (workspace: WorkspaceType):AnyActionType
 }
 
+export interface LoadStudentsOfWorkspaceTriggerType {
+  (workspace: WorkspaceType, active?: boolean):AnyActionType
+}
+
+export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
+  (workspace: WorkspaceType, student: ShortWorkspaceUserWithActiveStatusType):AnyActionType
+}
+
 let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType= function loadWorkspacesFromServer(filters){
   return loadWorkspacesHelper.bind(this, filters, true);
 }
@@ -413,6 +421,8 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(origin
     delete actualOriginal["assessmentRequests"];
     delete actualOriginal["additionalInfo"];
     delete actualOriginal["staffMembers"];
+    delete actualOriginal["activeStudents"];
+    delete actualOriginal["archivedStudents"];
     
     dispatch({
       type: 'UPDATE_WORKSPACE',
@@ -468,11 +478,98 @@ let loadStaffMembersOfWorkspace:LoadStaffMembersOfWorkspaceTriggerType = functio
   }
 }
 
+let loadStudentsOfWorkspace:LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace, active){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let students = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id, {
+        active
+      }), 'callback')());
+      
+      let update:WorkspaceUpdateType = {};
+      if (active){
+        update.activeStudents = students;
+      } else {
+        update.archivedStudents = students;
+      }
+      
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: {
+          original: workspace,
+          update
+        }
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load students'), 'error'));
+    }
+  }
+}
+
+function removeStudent(arr: Array<ShortWorkspaceUserWithActiveStatusType>, student:ShortWorkspaceUserWithActiveStatusType):Array<ShortWorkspaceUserWithActiveStatusType> {
+  return arr.filter(s=>s.userEntityId !== student.userEntityId);
+}
+
+function addOrReplaceStudent(arr: Array<ShortWorkspaceUserWithActiveStatusType>, student:ShortWorkspaceUserWithActiveStatusType):Array<ShortWorkspaceUserWithActiveStatusType>{
+  let currentIndex = arr.findIndex(s=>s.userEntityId === student.userEntityId);
+  if (currentIndex !== -1){
+    let nArr = [...arr];
+    nArr[currentIndex] = student;
+    return nArr;
+  }
+  return arr.concat([student]).sort((studentA, studentB)=>{ 
+    let lastNameAUpperCase = studentA.lastName.toUpperCase();
+    let lastNameBUpperCase = studentB.lastName.toUpperCase();
+    return (lastNameAUpperCase < lastNameBUpperCase) ? -1 : (lastNameAUpperCase > lastNameBUpperCase) ? 1 : 0;
+  })
+}
+
+let toggleActiveStateOfStudentOfWorkspace:ToggleActiveStateOfStudentOfWorkspaceTriggerType = function toggleActiveStateOfStudentOfWorkspace(workspace, student){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let newStudent = {...student, active: !student.active}
+      let newActiveStudents = workspace.activeStudents;
+      let newArchivedStudents = workspace.archivedStudents;
+      
+      if (newActiveStudents && student.active){
+        newActiveStudents = removeStudent(newActiveStudents, student);
+      }
+      if (newActiveStudents && newStudent.active){
+        newActiveStudents = addOrReplaceStudent(newActiveStudents, newStudent);
+      }
+      if (newArchivedStudents && !student.active){
+        newArchivedStudents = removeStudent(newArchivedStudents, student);
+      }
+      if (newArchivedStudents && !newStudent.active){
+        newArchivedStudents = addOrReplaceStudent(newArchivedStudents, newStudent);
+      }
+      
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: {
+          original: workspace,
+          update: {
+            activeStudents: newActiveStudents,
+            archivedStudents: newArchivedStudents
+          }
+        }
+      });
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load students'), 'error'));
+    }
+  }
+}
+
 let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = function loadWholeWorkspaceMaterials(workspaceId, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let contentNodes:Array<MaterialContentNodeType> = <Array<MaterialContentNodeType>>(await promisify(mApi().workspace.
-          workspaces.materialContentNodes.read(workspaceId), 'callback')());
+          workspaces.materialContentNodes.read(workspaceId), 'callback')()) || [];
       dispatch({
         type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
         payload: contentNodes
@@ -558,4 +655,4 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
-  updateAssignmentState, updateLastWorkspace}
+  updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace}

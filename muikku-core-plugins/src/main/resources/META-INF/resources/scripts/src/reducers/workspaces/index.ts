@@ -1,5 +1,5 @@
 import {ActionType} from '~/actions';
-import { UserStaffType } from '~/reducers/user-index';
+import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
@@ -163,7 +163,9 @@ export interface WorkspaceType {
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
   help?: MaterialContentNodeType,
-  activityLogs?: ActivityLogType[]
+  activityLogs?: ActivityLogType[],
+  activeStudents?: Array<ShortWorkspaceUserWithActiveStatusType>,
+  archivedStudents?: Array<ShortWorkspaceUserWithActiveStatusType>
 }
 
 export interface WorkspaceUpdateType {
@@ -194,7 +196,9 @@ export interface WorkspaceUpdateType {
   additionalInfo?: WorkspaceAdditionalInfoType,
   staffMembers?: Array<UserStaffType>,
   contentDescription?: MaterialContentNodeType,
-  activityLogs?: ActivityLogType[]
+  activityLogs?: ActivityLogType[],
+  activeStudents?: Array<ShortWorkspaceUserWithActiveStatusType>,
+  archivedStudents?: Array<ShortWorkspaceUserWithActiveStatusType>
 }
 
 export interface WorkspaceMaterialReferenceType {

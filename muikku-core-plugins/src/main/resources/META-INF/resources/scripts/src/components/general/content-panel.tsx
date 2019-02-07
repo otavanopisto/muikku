@@ -7,7 +7,7 @@ import '~/sass/elements/loaders.scss';
 interface ContentPanelProps {
   modifier: string,
   title?: React.ReactElement<any> | string,
-  navigation: React.ReactElement<any>,
+  navigation?: React.ReactElement<any>,
   onOpen?: ()=>any
 }
 
@@ -133,15 +133,15 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
         
         <div className="content-panel__body" ref="body">
           <div className="content-panel__content">
-            <div ref="menu-overlay"
+            {this.props.navigation && <div ref="menu-overlay"
              className={`content-panel__navigation ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
              onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
               <div className="content-panel__navigation-content" style={{right: this.state.drag !== null ? -this.state.drag : null}}>{
                this.props.navigation
               }</div>
-            </div>
+            </div>}
             <div className={`content-panel__main-container loader-empty`}>{this.props.children}</div>
-            <div className="content-panel__navigation-open" onClick={this.open}/>
+            {this.props.navigation && <div className="content-panel__navigation-open" onClick={this.open}/>}
           </div>
         </div>
       </div>

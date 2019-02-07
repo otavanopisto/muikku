@@ -44,7 +44,7 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
     }
   }
   render(){
-    if (!this.props.materials){
+    if (!this.props.materials || !this.props.materials.length){
       return null;
     }
     
