@@ -31,8 +31,8 @@ export default class FrontpageHero extends React.Component<FrontpageHeroProps, F
           <div className="hero__item-logo-container">
             <img className="logo logo--muikku-verkko" src="/gfx/oo-branded-site-logo.png"></img>
             <div className="hero__header-container">
-              <div className="hero__header hero__header--frontpage-muikku-author">{this.props.i18n.text.get( 'plugin.header.site.author' )}</div>
-              <div className="hero__header hero__header--frontpage-muikku">MUIKKU</div>
+              {/* <div className="hero__header hero__header--frontpage-muikku-author">{this.props.i18n.text.get( 'plugin.header.site.author' )}</div> */}
+              <div className="hero__header hero__header--frontpage-muikku">MUIKKU<span className="hero__header--frontpage-muikku-hyphen"></span></div>
               <div className="hero__header hero__header--frontpage-verkko">VERKKO</div>
             </div>
           </div>
