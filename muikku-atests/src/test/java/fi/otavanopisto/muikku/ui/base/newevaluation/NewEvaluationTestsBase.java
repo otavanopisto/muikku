@@ -95,20 +95,22 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       login();
       navigate(String.format("/evaluation2"), false);
       waitAndClick(".evaluate-button");
-      waitAndClick(".workspace-evaluation-form-activate-button");
-      waitForNotVisible(".workspace-evaluation-form-overlay");
-      waitForPresentAndVisible(".cke_contents");
-      waitAndClick(".cke_contents");
-      getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
-      selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
+      
+      waitAndClick(".eval-modal-evaluate-buttonset .button-start-evaluation");
+      
+      waitUntilAnimationIsDone(".eval-modal #workspaceGradeEditorContainer");
+      waitForPresentAndVisible(".eval-modal #workspaceGradeEditorContainer");
+      
+      addTextToCKEditor("Test evaluation.");
+      selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
       
       mockBuilder
       .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
       .mockStaffCompositeCourseAssessmentRequests()
-      .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date);
+      .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date);
     
       mockBuilder.mockCourseAssessments(courseStudent, admin);          
-      waitAndClick("#workspaceSaveButton");
+      waitAndClick("#workspaceGradeSave");
       waitForPresent(".notification-queue-item-success");
       waitAndClick(".remove-button .ui-button-text");
       assertVisible(".evaluation-well-done-container");
@@ -199,11 +201,22 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
         waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
+        
+        waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
         getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
         sendKeys(".cke_contents_ltr", "Test evaluation.");
         getWebDriver().switchTo().defaultContent();
         
-        selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
+//        waitForPresentAndVisible("#cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame");
+//        if(getBrowser().equals("chrome_headless")) {
+//          sleep(500);
+//        }
+//        waitAndClick("#cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame");
+//        getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
+//        sendKeys(".cke_contents_ltr", "Test evaluation.");
+//        getWebDriver().switchTo().defaultContent();
+        
+        selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
   
         waitAndClick("#assignmentSaveButton");
         waitForPresent(".notification-queue-item-success");
@@ -378,12 +391,23 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
         waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
+
         waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-//        click("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
         getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
         sendKeys(".cke_contents_ltr", "Test evaluation.");
         getWebDriver().switchTo().defaultContent();
-        selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
+        
+//        waitForPresentAndVisible("#cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame");
+//        if(getBrowser().equals("chrome_headless")) {
+//          sleep(500);
+//        }
+//        
+//        waitAndClick("#cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame");
+//        getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
+//        sendKeys(".cke_contents_ltr", "Test evaluation.");
+//        getWebDriver().switchTo().defaultContent();
+        
+        selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
   
         waitAndClick("#assignmentSaveButton");
         waitForPresent(".notification-queue-item-success");
@@ -397,8 +421,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         waitAndClick(".muikku-show-evaluation-button");
-        waitForPresentAndVisible(".evaluation-container .assignment-literal-container .assignment-literal-data");
+        
+        waitForPresentAndVisible(".evaluation-container .assignment-literal-container .assignment-literal-data p");
         assertText(".evaluation-container .assignment-literal-container .assignment-literal-data p", "Test evaluation.");
+        waitForPresentAndVisible(".evaluation-container .assignment-grade-container span.assignment-grade-data");
         assertText(".evaluation-container .assignment-grade-container span.assignment-grade-data", "Excellent");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
