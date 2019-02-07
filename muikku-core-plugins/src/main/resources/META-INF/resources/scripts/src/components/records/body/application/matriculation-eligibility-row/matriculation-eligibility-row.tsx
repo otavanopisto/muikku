@@ -76,11 +76,12 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
    * 
    * @returns list text for student matriculation eligibility
    */
+  
   getEligibleText(): string {
     switch (this.props.subjectEligibility.egilibility) { 
-      case "TRUE":
+      case "ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.true");
-      case "FALSE":
+      case "NOT_ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.false");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.error");
@@ -103,9 +104,9 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
       return "";
     }
     switch (this.props.subjectEligibility.egilibility) {
-      case "TRUE":
+      case "ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.true");
-      case "FALSE":
+      case "NOT_ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.false");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.error");

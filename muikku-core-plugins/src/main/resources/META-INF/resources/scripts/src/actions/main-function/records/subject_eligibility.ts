@@ -5,9 +5,7 @@ import {AnyActionType, SpecificActionType} from '~/actions';
 import { SubjectEligibilityType, EligibleStatusType } from '~/reducers/main-function/records/subject_eligibility';
 import { StateType } from '~/reducers';
 
-
 export interface UPDATE_STUDIES_SUBJECT_ELIGIBILITY extends SpecificActionType<"UPDATE_STUDIES_SUBJECT_ELIGIBILITY", SubjectEligibilityType> {}
-
 
 export interface UpdateMatriculationSubjectEligibilityTriggerType {
   (subjectCode?:string):AnyActionType
@@ -19,7 +17,7 @@ let updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityT
     try {
       let subjectEligibility:any = await promisify(mApi().records.matriculationEligibility.read({"subjectCode" : subjectCode}), 'callback')();
       let subjectEligibilityData = {
-          egilibility: subjectEligibility.eligible ? <EligibleStatusType>"TRUE" : <EligibleStatusType>"FALSE",
+          egilibility: subjectEligibility.eligible ? <EligibleStatusType>"ELIGIBLE" : <EligibleStatusType>"NOT_ELIGIBLE",
           requiredCount: subjectEligibility.requirePassingGrades,
           acceptedCount: subjectEligibility.acceptedCourseCount + subjectEligibility.acceptedTransferCreditCount,
           loading: false

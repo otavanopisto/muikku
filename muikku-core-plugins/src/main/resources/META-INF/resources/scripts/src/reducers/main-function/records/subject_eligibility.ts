@@ -7,7 +7,7 @@ import { ActionType } from "actions";
  * @author Antti Leppä <antti.leppa@metatavu.fi>
  */
 
-export type EligibleStatusType = "FALSE" | "TRUE" | "UNKNOWN";
+export type EligibleStatusType = "ELIGIBLE" | "NOT_ELIGIBLE";
 
 
 /**
@@ -23,7 +23,7 @@ export interface SubjectEligibilityType {
 }
 
 export default function subjectEligibility(state:SubjectEligibilityType={
-  egilibility: <EligibleStatusType>"UNKNOWN",  
+  egilibility: <EligibleStatusType>"NOT_ELIGIBLE",  
   requiredCount: 0,
   acceptedCount: 0,
   loading: true
