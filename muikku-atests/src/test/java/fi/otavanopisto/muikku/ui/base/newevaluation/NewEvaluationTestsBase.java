@@ -96,12 +96,19 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       navigate(String.format("/evaluation2"), false);
       waitAndClick(".evaluate-button");
       
+      waitForPresent(".eval-modal-evaluate-buttonset .button-start-evaluation");
       waitAndClick(".eval-modal-evaluate-buttonset .button-start-evaluation");
       
       waitUntilAnimationIsDone(".eval-modal #workspaceGradeEditorContainer");
-      waitForPresentAndVisible(".eval-modal #workspaceGradeEditorContainer");
+      if(getBrowser().equals("chrome_headless")) {
+        sleep(500);
+      }
+//    
+      waitForPresent("#workspaceGradeEditorContainer .eval-modal-evaluate-workspace-content #cke_workspaceGradeText .cke_contents");
+      getWebDriver().switchTo().frame(findElementByCssSelector("#workspaceGradeEditorContainer .eval-modal-evaluate-workspace-content #cke_workspaceGradeText .cke_wysiwyg_frame"));
+      sendKeys(".cke_contents_ltr", "Test evaluation.");
+      getWebDriver().switchTo().defaultContent();
       
-      addTextToCKEditor("Test evaluation.");
       selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
       
       mockBuilder
