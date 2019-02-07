@@ -103,7 +103,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       if(getBrowser().equals("chrome_headless")) {
         sleep(500);
       }
-//    
+
       waitForPresent("#workspaceGradeEditorContainer .eval-modal-evaluate-workspace-content #cke_workspaceGradeText .cke_contents");
       getWebDriver().switchTo().frame(findElementByCssSelector("#workspaceGradeEditorContainer .eval-modal-evaluate-workspace-content #cke_workspaceGradeText .cke_wysiwyg_frame"));
       sendKeys(".cke_contents_ltr", "Test evaluation.");
@@ -213,16 +213,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
         sendKeys(".cke_contents_ltr", "Test evaluation.");
         getWebDriver().switchTo().defaultContent();
-        
-//        waitForPresentAndVisible("#cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame");
-//        if(getBrowser().equals("chrome_headless")) {
-//          sleep(500);
-//        }
-//        waitAndClick("#cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame");
-//        getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
-//        sendKeys(".cke_contents_ltr", "Test evaluation.");
-//        getWebDriver().switchTo().defaultContent();
-        
+       
         selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
   
         waitAndClick("#assignmentSaveButton");
@@ -403,16 +394,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
         sendKeys(".cke_contents_ltr", "Test evaluation.");
         getWebDriver().switchTo().defaultContent();
-        
-//        waitForPresentAndVisible("#cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame");
-//        if(getBrowser().equals("chrome_headless")) {
-//          sleep(500);
-//        }
-//        
-//        waitAndClick("#cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame");
-//        getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
-//        sendKeys(".cke_contents_ltr", "Test evaluation.");
-//        getWebDriver().switchTo().defaultContent();
         
         selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
   
