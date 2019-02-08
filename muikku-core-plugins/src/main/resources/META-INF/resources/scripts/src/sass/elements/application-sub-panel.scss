@@ -291,12 +291,12 @@
 }
 
 .application-sub-panel__summary-item-state--eligible{
-  background-color: green;
+  background-color: $color-sub-panel-summarizer-true-background-color;
 }
 
 .application-sub-panel__summary-item-state--not-eligible{
-  background-color: red;
-  color: #fff;
+  background-color: $color-sub-panel-summarizer-false-background-color;
+  color: $color-sub-panel-summarizer-false-font-color;
 }
 
 .application-sub-panel__item-header--hops {
