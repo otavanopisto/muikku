@@ -259,6 +259,40 @@
 
 .application-sub-panel__item-body--summarizer {
   background-color: $color-sub-panel-summarizer-background-color;
+  display:flex;
+  flex-wrap: wrap;
+}
+
+.application-sub-panel__summary-item {
+  display:flex;
+}
+
+.application-sub-panel__summary-item--subject-egilibility {
+  display: flex;
+  flex-basis: 50%;
+  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.application-sub-panel__summary-item-label {
+  padding: 5px; 
+}
+
+.application-sub-panel__summary-item-state{
+  justify-content: center;
+  display: flex;
+  padding: 5px;
+  width: 40px;
+}
+
+.application-sub-panel__summary-item-state--eligible{
+  background-color: green;
+}
+
+.application-sub-panel__summary-item-state--not-eligible{
+  background-color: red;
+  color: #fff;
 }
 
 .application-sub-panel__item-header--hops {

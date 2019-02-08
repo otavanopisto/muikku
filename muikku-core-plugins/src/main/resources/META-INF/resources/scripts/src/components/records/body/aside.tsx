@@ -45,6 +45,11 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   render() {
     
     let sections = [
+                    
+        {
+          name: this.props.i18n.text.get("plugin.records.category.summary"),
+          hash: "summary"
+        },
         {
           name: this.props.i18n.text.get("plugin.records.category.records"),
           hash: "records"
@@ -60,15 +65,14 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         {
           name: this.props.i18n.text.get("plugin.records.category.yo"),
           hash: "yo"
-        },
+        }
+/* Waiting for the future
         {
           name: this.props.i18n.text.get("plugin.records.category.statistics"),
           hash: "statistics"
         },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.summary"),
-          hash: "summary"
-        }                    
+*/
+
         ]        
     
     return ( 

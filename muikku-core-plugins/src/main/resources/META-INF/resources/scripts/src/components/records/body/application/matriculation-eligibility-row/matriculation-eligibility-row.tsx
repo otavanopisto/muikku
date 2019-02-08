@@ -7,7 +7,7 @@ import { SubjectEligibilityType } from '~/reducers/main-function/records/subject
 import {updateMatriculationSubjectEligibility, UpdateMatriculationSubjectEligibilityTriggerType} from '~/actions/main-function/records/subject_eligibility';
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify from "~/util/promisify";
-
+import '~/sass/elements/application-sub-panel.scss';
 /**
  * Interface representing MatriculationEligibilityRow component properties
  * 
@@ -54,9 +54,9 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
   
   render() {
     return (
-       <div title={this.getEligibleTooltip()}>
-        <span>{this.getName()}</span>
-        <span style={{float: 'right'}}>{this.state.loading ? this.props.i18n.text.get("plugin.records.hops.matriculationEligibleLoading") : (this.getEligibleText())}</span>
+       <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-egilibility" title={this.getEligibleTooltip()}>
+        <div className="application-sub-panel__summary-item-label">{this.getName()}</div>
+        <div className={`application-sub-panel__summary-item-state application-sub-panel__summary-item-state--${this.props.subjectEligibility.egilibility == "TRUE" ? "eligible" : "not-eligible" }`}>{this.state.loading ? this.props.i18n.text.get("plugin.records.hops.matriculationEligibleLoading") : (this.getEligibleText())}</div>
       </div>
     );
   }
@@ -79,9 +79,9 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
   getEligibleText(): string {
     switch (this.props.subjectEligibility.egilibility) { 
       case "TRUE":
-        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.true");
+        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.true.short");
       case "FALSE":
-        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.false");
+        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.false.short");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.error");
     } 

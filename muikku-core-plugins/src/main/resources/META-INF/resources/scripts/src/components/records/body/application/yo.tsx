@@ -111,10 +111,14 @@ class YO extends React.Component<YOProps, YOState> {
             <div className="application-sub-panel__body application-list">
               <div className="application-sub-panel">
                 <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
+          
+          {/* Mock-data commented 
                   <div className="application-sub-panel__item application-sub-panel__item--summarizer">
                     <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participation.title")}</div>
                     <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">Luatikko sis</div>
                   </div>
+    
+           */}
                   <div className="application-sub-panel__item application-sub-panel__item--summarizer">
                     <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
                     <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
@@ -123,6 +127,7 @@ class YO extends React.Component<YOProps, YOState> {
                   </div>
                 </div>
               </div>
+          {/*  Waiting for planned workspaces
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.plannedWorkspaces.title")}</div>
                 <div className="application-sub-panel__body application-list">
@@ -142,6 +147,7 @@ class YO extends React.Component<YOProps, YOState> {
                   </div>
                 </div>
               </div>
+          */}      
             </div>
           </div>
         </div>
