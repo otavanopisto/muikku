@@ -61,7 +61,9 @@ class Vops extends React.Component<VopsProps, VopsState> {
     if (!data.optedIn){
       return null;
     }
-    return <div className="application-sub-panel__body vops">
+    return <div className="application-sub-panel"> 
+    <div className="application-sub-panel__header application-sub-panel__header--studies-vops">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
+    <div className="application-sub-panel__body vops">
       <div className="vops__data">
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", data.numCourses)}</span>
@@ -151,6 +153,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
         </div>
       </div>
     </div>
+   </div>
   }
 }
             

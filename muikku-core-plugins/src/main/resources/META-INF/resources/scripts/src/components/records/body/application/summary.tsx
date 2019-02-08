@@ -51,7 +51,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>          
       return (
         <div>
-          <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.summary.title")}</div>          
+          <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</div>          
           
           {studentBasicInfo}
 
