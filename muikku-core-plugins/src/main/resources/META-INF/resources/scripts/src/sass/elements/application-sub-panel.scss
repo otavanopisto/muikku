@@ -234,11 +234,11 @@
 
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
-  } 
+  }
 
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
-  } 
+  }
 
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
@@ -293,7 +293,7 @@
 }
 
 .application-sub-panel__summary-item {
-  display:flex;
+  display: flex;
 }
 
 .application-sub-panel__summary-item--subject-egilibility {
@@ -305,17 +305,17 @@
 }
 
 .application-sub-panel__summary-item-label {
-  padding: 5px; 
+  padding: 5px;
 }
 
-.application-sub-panel__summary-item-state{
-  justify-content: center;
+.application-sub-panel__summary-item-state {
   display: flex;
+  justify-content: center;
   padding: 5px;
   width: 40px;
 }
 
-.application-sub-panel__summary-item-state--eligible{
+.application-sub-panel__summary-item-state--eligible {
   background-color: $color-sub-panel-summarizer-true-background;
 }
 
@@ -377,7 +377,7 @@
     margin: 2px 5px 2px 0;
     padding: 4px;
   }
-} 
+}
 
 .application-sub-panel__item-data--summary-start-date span {
   background-color: $color-sub-panel-data-1-background;
