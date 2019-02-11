@@ -16,7 +16,6 @@ export interface YOEligibilityType {
     examDate: String
 }
 
-
 export interface YOType {
   status: YOStatusType,
   value: YODataType,
@@ -56,7 +55,7 @@ export default function yo(state:YOType={
   } else if (action.type === "UPDATE_STUDIES_YO_ELIGIBILITY"){
      return Object.assign({}, state, {
        eligibility: action.payload
-     });       
+     });
    }
   return state;
 }

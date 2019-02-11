@@ -19,6 +19,7 @@ import '~/sass/elements/application-sub-panel.scss';
 import moment from '~/lib/moment';
 import '~/sass/elements/buttons.scss';
 import MatriculationEligibilityRow from './matriculation-eligibility-row/matriculation-eligibility-row';
+import {updateMatriculationSubjectEligibility, UpdateMatriculationSubjectEligibilityTriggerType} from '~/actions/main-function/records/subject_eligibility';
 import promisify from "~/util/promisify";
 
 interface YOProps {
@@ -26,6 +27,7 @@ interface YOProps {
   records: RecordsType,
   hops: HOPSType,
   yo: YOType
+  updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityTriggerType
 }
 
 interface YOState {
@@ -46,7 +48,8 @@ class YO extends React.Component<YOProps, YOState> {
    * @returns subject code or null if not found
    */
   getSubjectCodeForCode = (code: string) => {
-     const result = this.props.yo.subjects.find((matriculationSubject) => {
+    
+    const result = this.props.yo.subjects.find((matriculationSubject) => {
       return matriculationSubject.code === code;
     });
 
@@ -56,7 +59,7 @@ class YO extends React.Component<YOProps, YOState> {
   render() {      
     let i18n = this.props.i18n;
     
-    if (this.props.records.location !== "yo") {
+    if (this.props.records.location !== "yo" || this.props.yo.status != "READY") {
       return null;
     } else {
       const loaded = this.props.hops.status === "READY" && !!this.props.hops.value;
@@ -157,7 +160,7 @@ function mapStateToProps(state: StateType) {
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return {};
+    return bindActionCreators({updateMatriculationSubjectEligibility}, dispatch);
 };
 
 

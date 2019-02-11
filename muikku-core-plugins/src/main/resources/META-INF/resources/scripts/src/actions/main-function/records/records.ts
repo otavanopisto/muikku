@@ -64,6 +64,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       //OK let me try to explain this :<
       
       //We get the current used id this user is supposedly a student
+      
       let userId:number = getState().status.userId;
     
       //we get the users that represent that userId
