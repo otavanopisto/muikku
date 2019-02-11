@@ -44,8 +44,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   
   render() {
     
-    let sections = [
-                    
+    let sections = [                    
         {
           name: this.props.i18n.text.get("plugin.records.category.summary"),
           hash: "summary"
@@ -72,7 +71,6 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
           hash: "statistics"
         },
 */
-
         ]        
     
     return ( 
@@ -81,7 +79,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
             return <NavigationElement isActive={this.props.location === item.hash} hash={item.hash} key={index}
             >{item.name}</NavigationElement> 
           })}
-      </NavigationMenu>    
+      </NavigationMenu>
     )
   }
 }

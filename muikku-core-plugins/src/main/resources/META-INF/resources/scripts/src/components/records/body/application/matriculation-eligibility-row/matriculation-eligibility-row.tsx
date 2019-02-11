@@ -56,7 +56,7 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
     return (
        <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-egilibility" title={this.getEligibleTooltip()}>
         <div className="application-sub-panel__summary-item-label">{this.getName()}</div>
-        <div className={`application-sub-panel__summary-item-state application-sub-panel__summary-item-state--${this.props.subjectEligibility.egilibility == "TRUE" ? "eligible" : "not-eligible" }`}>{this.state.loading ? this.props.i18n.text.get("plugin.records.hops.matriculationEligibleLoading") : (this.getEligibleText())}</div>
+        <div className={`application-sub-panel__summary-item-state application-sub-panel__summary-item-state--${this.props.subjectEligibility.egilibility == "ELIGIBLE" ? "eligible" : "not-eligible" }`}>{this.state.loading ? this.props.i18n.text.get("plugin.records.hops.matriculationEligibleLoading") : (this.getEligibleText())}</div>
       </div>
     );
   }
@@ -76,11 +76,12 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
    * 
    * @returns list text for student matriculation eligibility
    */
+  
   getEligibleText(): string {
     switch (this.props.subjectEligibility.egilibility) { 
-      case "TRUE":
+      case "ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.true.short");
-      case "FALSE":
+      case "NOT_ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.false.short");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.error");
@@ -103,9 +104,9 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
       return "";
     }
     switch (this.props.subjectEligibility.egilibility) {
-      case "TRUE":
+      case "ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.true");
-      case "FALSE":
+      case "NOT_ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.false");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.error");

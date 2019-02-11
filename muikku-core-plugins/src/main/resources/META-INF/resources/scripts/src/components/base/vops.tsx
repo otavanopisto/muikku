@@ -61,9 +61,8 @@ class Vops extends React.Component<VopsProps, VopsState> {
     if (!data.optedIn){
       return null;
     }
-    return <div className="application-sub-panel"> 
-    <div className="application-sub-panel__header application-sub-panel__header--studies-vops">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
-    <div className="application-sub-panel__body vops">
+    return <div className="vops">
+      <div className="vops__title">{this.props.i18n.text.get("plugin.records.studyplan.title")}</div>
       <div className="vops__data">
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", data.numCourses)}</span>
@@ -135,7 +134,6 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 if (item.placeholder){
                   return <div className="vops__row-item" key={"PLACEHOLDER" + index}><div className="vops__item vops__item--placeholder"></div></div>;
                 }
-              
                 let vopsClassNameSubType = "";
                 if (CLASS_TRANSLATIONS.states[item.state]){
                   vopsClassNameSubType += "vops__item--" + CLASS_TRANSLATIONS.states[item.state] + " ";
@@ -143,7 +141,6 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 if (CLASS_TRANSLATIONS.mandatorities[item.mandatority]){
                   vopsClassNameSubType += "vops__item--" + CLASS_TRANSLATIONS.mandatorities[item.mandatority];
                 }
-
                 return <div className="vops__row-item" key={item.courseNumber}>
                   <div className={`vops__item ${vopsClassNameSubType}`}></div>
                 </div>
@@ -153,7 +150,6 @@ class Vops extends React.Component<VopsProps, VopsState> {
         </div>
       </div>
     </div>
-   </div>
   }
 }
             
