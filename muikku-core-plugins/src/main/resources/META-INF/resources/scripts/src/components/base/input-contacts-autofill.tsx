@@ -208,7 +208,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
           node: <span className="autocomplete__selected-item">
             <span className="glyph glyph--selected-recipient icon-user"/>
             {
-              getName(item.value as UserType, this.props.showFullNames)
+              getName(item.value, this.props.showFullNames)
             } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
           </span>,
           value: item

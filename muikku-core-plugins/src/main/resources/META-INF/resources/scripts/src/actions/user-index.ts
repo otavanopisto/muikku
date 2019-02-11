@@ -156,5 +156,5 @@ let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIn
   }
 }
 
-export default {loadUserGroupIndex, loadLoggedUser}
-export {loadUserGroupIndex, loadLoggedUser}
+export default {loadUserIndexBySchoolData, loadUserIndex, loadUserGroupIndex, loadLoggedUser}
+export {loadUserIndexBySchoolData, loadUserIndex, loadUserGroupIndex, loadLoggedUser}

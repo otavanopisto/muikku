@@ -27,6 +27,8 @@ import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from 
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 import WorkspaceUsersBody from '~/components/workspace/workspaceUsers';
 
+import { CKEDITOR_VERSION } from '~/lib/ckeditor';
+
 interface WorkspaceProps {
   store: Store<StateType>,
   websocket: Websocket
@@ -154,7 +156,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
     }
     
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -178,7 +180,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
       
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
@@ -218,7 +220,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
       
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
@@ -281,7 +283,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
       
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
@@ -304,6 +306,10 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
       
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
       this.props.store.dispatch(setCurrentWorkspace({
@@ -312,8 +318,8 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
           if (!workspace.staffMembers && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
             this.props.store.dispatch(loadStaffMembersOfWorkspace(workspace) as Action)
           }
-          if (!workspace.activeStudents && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
-            this.props.store.dispatch(loadStudentsOfWorkspace(workspace, true) as Action)
+          if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
+            this.props.store.dispatch(loadStudentsOfWorkspace(workspace) as Action)
           }
         }
       }) as Action);
