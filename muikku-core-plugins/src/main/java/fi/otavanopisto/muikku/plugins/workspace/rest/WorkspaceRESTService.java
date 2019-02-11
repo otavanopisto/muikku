@@ -893,7 +893,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   /**
    * Returns students of workspace WORKSPACEENTITYID
    * 
-   * Query       : active (boolean) active or inactive workspace students
+   * Query       : active (boolean) active or inactive workspace students (if null, all)
    * Used        : Workspace members view
    * Permissions : LIST_WORKSPACE_MEMBERS
    * Success     : 200 WorkspaceStudentRestModel (list)
@@ -903,7 +903,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceStudents(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("active") @DefaultValue ("true") Boolean active) {
+  public Response listWorkspaceStudents(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("active") Boolean active) {
     
     // Workspace, access, and Elastic checks
 
@@ -927,9 +927,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     Map<Long, Long> workspaceUserEntityIds = new HashMap<Long, Long>();
 
-    // Turn active or inactive students into school data identifiers
+    // Turn students into school data identifiers
 
-    List<WorkspaceUserEntity> workspaceUserEntities = active
+    List<WorkspaceUserEntity> workspaceUserEntities = active == null
+        ? workspaceUserEntityController.listWorkspaceStudents(workspaceEntity)
+        : active
         ? workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity)
         : workspaceUserEntityController.listInactiveWorkspaceStudents(workspaceEntity);
     List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<SchoolDataIdentifier>();
