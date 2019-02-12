@@ -597,7 +597,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details", "Täydennyspyyntö opettajalta Admin User");
         
         waitAndClick(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
-        waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
+        // TODO maybe waitForPresentAndVisible but is-hidden says hidden while style="display: block;" forces it visible?
+        waitForPresent(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
         assertText(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p", "Test supplementation request.");
 
         logout();
