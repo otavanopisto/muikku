@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -934,6 +935,12 @@ public class WorkspaceRESTService extends PluginRESTService {
         : active
         ? workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity)
         : workspaceUserEntityController.listInactiveWorkspaceStudents(workspaceEntity);
+    
+    Set<Long> activeUserIds = workspaceUserEntities.stream()
+        .filter(wue -> Boolean.TRUE.equals(wue.getActive()))
+        .map(wue -> wue.getId())
+        .collect(Collectors.toSet());
+    
     List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<SchoolDataIdentifier>();
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       String identifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
@@ -976,7 +983,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             elasticUser.get("firstName").toString(),
             elasticUser.get("lastName").toString(),
             elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
-            active));
+            activeUserIds.contains(workspaceUserEntityId)));
       }
 
       // Sort by last and first name
