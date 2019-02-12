@@ -49,7 +49,7 @@ function checkHasPermission(which: boolean, defaultValue?: boolean){
   return which;
 }
 
-export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
+export default class c extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
   private blurTimeout:NodeJS.Timer;
   private selectedHeight:number;
   private activeSearchId:number;
