@@ -47,7 +47,7 @@ const extraPlugins = {
 }
 
 interface CommunicatorNewMessageProps {
-  children: React.ReactElement<any>,
+  children?: React.ReactElement<any>,
   replyThreadId?: number,
   replyToAll?: boolean,
   messageId?: number,
@@ -58,7 +58,10 @@ interface CommunicatorNewMessageProps {
   sendMessage: SendMessageTriggerType,
   initialSubject?: string,
   initialMessage?: string,
-  status: StatusType
+  status: StatusType,
+  onOpen?: ()=>any,
+  onClose?: ()=>any,
+  isOpen?: boolean
 }
 
 interface CommunicatorNewMessageState {
@@ -106,6 +109,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       locked: false,
       includesSignature: true
     }, getStateIdentifier(this.props));
+    
+    this.props.onOpen && this.props.onOpen();
   }
   onCKEditorChange(text: string){
     if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll){
@@ -229,7 +234,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     
     return <JumboDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
-      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}
+      onClose={this.props.onClose} isOpen={this.props.isOpen}>
       {this.props.children}
     </JumboDialog>
   }

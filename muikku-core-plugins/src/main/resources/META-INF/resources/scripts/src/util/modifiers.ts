@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { UserType, UserWithSchoolDataType } from '~/reducers/user-index';
+import { UserType, UserWithSchoolDataType, UserStaffType } from '~/reducers/user-index';
 import $ from '~/lib/jquery';
 
 function escapeRegExp(str: string) {
@@ -133,7 +133,7 @@ export function unescapeHTML(str: string){
   return doc.documentElement.textContent;
 }
 
-export function getName(user: UserType | UserWithSchoolDataType, hasFullNamePermission: boolean){
+export function getName(user: any, hasFullNamePermission: boolean){
   if (!user){
     return "";
   }

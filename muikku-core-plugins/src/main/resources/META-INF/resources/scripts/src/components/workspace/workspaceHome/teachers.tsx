@@ -23,7 +23,7 @@ interface WorkspaceTeachersProps {
 interface WorkspaceTeachersState {
 }
 
-function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: WorkspaceType, html?: boolean){
+export function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspace: WorkspaceType, html?: boolean){
   if (!workspace){
     return ""
   }

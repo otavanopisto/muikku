@@ -164,8 +164,7 @@ export interface WorkspaceType {
   contentDescription?: MaterialContentNodeType,
   help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
-  activeStudents?: Array<ShortWorkspaceUserWithActiveStatusType>,
-  archivedStudents?: Array<ShortWorkspaceUserWithActiveStatusType>
+  students?: Array<ShortWorkspaceUserWithActiveStatusType>
 }
 
 export interface WorkspaceUpdateType {
@@ -197,8 +196,7 @@ export interface WorkspaceUpdateType {
   staffMembers?: Array<UserStaffType>,
   contentDescription?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
-  activeStudents?: Array<ShortWorkspaceUserWithActiveStatusType>,
-  archivedStudents?: Array<ShortWorkspaceUserWithActiveStatusType>
+  students?: Array<ShortWorkspaceUserWithActiveStatusType>
 }
 
 export interface WorkspaceMaterialReferenceType {

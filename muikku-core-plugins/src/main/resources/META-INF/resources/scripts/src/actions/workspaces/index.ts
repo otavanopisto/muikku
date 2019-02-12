@@ -343,7 +343,7 @@ export interface LoadStaffMembersOfWorkspaceTriggerType {
 }
 
 export interface LoadStudentsOfWorkspaceTriggerType {
-  (workspace: WorkspaceType, active?: boolean):AnyActionType
+  (workspace: WorkspaceType):AnyActionType
 }
 
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
@@ -421,8 +421,7 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(origin
     delete actualOriginal["assessmentRequests"];
     delete actualOriginal["additionalInfo"];
     delete actualOriginal["staffMembers"];
-    delete actualOriginal["activeStudents"];
-    delete actualOriginal["archivedStudents"];
+    delete actualOriginal["students"];
     
     dispatch({
       type: 'UPDATE_WORKSPACE',
@@ -478,19 +477,14 @@ let loadStaffMembersOfWorkspace:LoadStaffMembersOfWorkspaceTriggerType = functio
   }
 }
 
-let loadStudentsOfWorkspace:LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace, active){
+let loadStudentsOfWorkspace:LoadStudentsOfWorkspaceTriggerType = function loadStudentsOfWorkspace(workspace){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      let students = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id, {
-        active
-      }), 'callback')());
+      let students = <Array<ShortWorkspaceUserWithActiveStatusType>>(await promisify(mApi().workspace.workspaces.students.read(workspace.id), 'callback')());
       
-      let update:WorkspaceUpdateType = {};
-      if (active){
-        update.activeStudents = students;
-      } else {
-        update.archivedStudents = students;
-      }
+      let update:WorkspaceUpdateType = {
+          students
+      };
       
       dispatch({
         type: 'UPDATE_WORKSPACE',
@@ -508,54 +502,27 @@ let loadStudentsOfWorkspace:LoadStudentsOfWorkspaceTriggerType = function loadSt
   }
 }
 
-function removeStudent(arr: Array<ShortWorkspaceUserWithActiveStatusType>, student:ShortWorkspaceUserWithActiveStatusType):Array<ShortWorkspaceUserWithActiveStatusType> {
-  return arr.filter(s=>s.userEntityId !== student.userEntityId);
-}
-
-function addOrReplaceStudent(arr: Array<ShortWorkspaceUserWithActiveStatusType>, student:ShortWorkspaceUserWithActiveStatusType):Array<ShortWorkspaceUserWithActiveStatusType>{
-  let currentIndex = arr.findIndex(s=>s.userEntityId === student.userEntityId);
-  if (currentIndex !== -1){
-    let nArr = [...arr];
-    nArr[currentIndex] = student;
-    return nArr;
-  }
-  return arr.concat([student]).sort((studentA, studentB)=>{ 
-    let lastNameAUpperCase = studentA.lastName.toUpperCase();
-    let lastNameBUpperCase = studentB.lastName.toUpperCase();
-    return (lastNameAUpperCase < lastNameBUpperCase) ? -1 : (lastNameAUpperCase > lastNameBUpperCase) ? 1 : 0;
-  })
-}
-
 let toggleActiveStateOfStudentOfWorkspace:ToggleActiveStateOfStudentOfWorkspaceTriggerType = function toggleActiveStateOfStudentOfWorkspace(workspace, student){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      let newStudent = {...student, active: !student.active}
-      let newActiveStudents = workspace.activeStudents;
-      let newArchivedStudents = workspace.archivedStudents;
-      
-      if (newActiveStudents && student.active){
-        newActiveStudents = removeStudent(newActiveStudents, student);
-      }
-      if (newActiveStudents && newStudent.active){
-        newActiveStudents = addOrReplaceStudent(newActiveStudents, newStudent);
-      }
-      if (newArchivedStudents && !student.active){
-        newArchivedStudents = removeStudent(newArchivedStudents, student);
-      }
-      if (newArchivedStudents && !newStudent.active){
-        newArchivedStudents = addOrReplaceStudent(newArchivedStudents, newStudent);
-      }
-      
-      dispatch({
-        type: 'UPDATE_WORKSPACE',
-        payload: {
-          original: workspace,
-          update: {
-            activeStudents: newActiveStudents,
-            archivedStudents: newArchivedStudents
-          }
+      let newStudent = {...student, active: !student.active};
+      let newStudents = workspace.students && workspace.students.map(student=>{
+        if (student.userEntityId === newStudent.userEntityId){
+          return newStudent;
         }
+        return student;
       });
+      if (newStudents){
+        dispatch({
+          type: 'UPDATE_WORKSPACE',
+          payload: {
+            original: workspace,
+            update: {
+              students: newStudents
+            }
+          }
+        });
+      }
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
@@ -655,4 +622,4 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
-  updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace}
+  updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace}
