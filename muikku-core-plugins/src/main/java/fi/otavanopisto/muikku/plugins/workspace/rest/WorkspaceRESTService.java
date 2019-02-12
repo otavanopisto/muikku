@@ -981,6 +981,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             workspaceUserEntityId,
             userEntityId,
             elasticUser.get("firstName").toString(),
+            elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
             elasticUser.get("lastName").toString(),
             elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
             activeUserIds.contains(workspaceUserEntityId)));
@@ -2566,6 +2567,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceUserEntity.getId(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
         elasticUser.get("firstName").toString(),
+        elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
         elasticUser.get("lastName").toString(),
         elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
         workspaceUserEntity.getActive());

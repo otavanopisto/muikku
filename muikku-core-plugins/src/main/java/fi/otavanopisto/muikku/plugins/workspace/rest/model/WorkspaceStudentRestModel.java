@@ -5,9 +5,10 @@ public class WorkspaceStudentRestModel extends WorkspaceUserRestModel {
   public WorkspaceStudentRestModel() {
   }
 
-  public WorkspaceStudentRestModel(Long workspaceUserEntityId, Long userEntityId, String firstName, String lastName, String studyProgrammeName, Boolean active) {
+  public WorkspaceStudentRestModel(Long workspaceUserEntityId, Long userEntityId, String firstName, String nickname, String lastName, String studyProgrammeName, Boolean active) {
     super(workspaceUserEntityId, userEntityId, firstName, lastName);
     this.studyProgrammeName = studyProgrammeName;
+    this.nickname = nickname;
     this.active = active;
   }
 
@@ -27,6 +28,15 @@ public class WorkspaceStudentRestModel extends WorkspaceUserRestModel {
     this.active = active;
   }
 
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  private String nickname;
   private String studyProgrammeName;
   private Boolean active;
 
