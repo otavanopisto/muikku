@@ -591,14 +591,14 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         getWebDriver().switchTo().defaultContent();
        
         waitAndClick("#workspaceSupplementationSave");
+        waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer");
         waitForPresent(".notification-queue-item-success");
         
         waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
         assertTextIgnoreCase(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details", "Täydennyspyyntö opettajalta Admin User");
         
         waitAndClick(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
-        // TODO maybe waitForPresentAndVisible but is-hidden says hidden while style="display: block;" forces it visible?
-        waitForPresent(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
+        waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
         assertText(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p", "Test supplementation request.");
 
         logout();
