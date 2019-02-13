@@ -1075,12 +1075,16 @@ public class WorkspaceRESTService extends PluginRESTService {
           if (workspaceRoleArcheType != WorkspaceRoleArchetype.TEACHER) {
             continue;
           }
+          
+          UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+          boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
 
           workspaceStaffMembers.add(new WorkspaceUserRestModel(
               workspaceUserEntity.getId(),
               workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
               elasticUser.get("firstName").toString(),
-              elasticUser.get("lastName").toString()));
+              elasticUser.get("lastName").toString(),
+              hasImage));
         }
       }
 
