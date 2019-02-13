@@ -60,6 +60,7 @@ export interface ShortWorkspaceUserWithActiveStatusType {
   workspaceUserEntityId: number,
   userEntityId: number,
   firstName: string,
+  nickName?: string,
   lastName: string,
   studyProgrammeName: string,
   active: boolean
