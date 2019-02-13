@@ -133,6 +133,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -175,6 +176,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserEmailEntityController userEmailEntityController;
+
+  @Inject
+  private UserEntityFileController userEntityFileController;
   
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -977,6 +981,8 @@ public class WorkspaceRESTService extends PluginRESTService {
           logger.warning(String.format("Workspace user entity for user % in workspace %d not found", userEntityId, workspaceEntity.getId()));
           continue;
         }
+        UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+        boolean hasImage = userEntity != null && userEntityFileController.hasProfilePicture(userEntity);
         workspaceStudents.add(new WorkspaceStudentRestModel(
             workspaceUserEntityId,
             userEntityId,
@@ -984,6 +990,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
             elasticUser.get("lastName").toString(),
             elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
+            hasImage,
             activeUserIds.contains(workspaceUserEntityId)));
       }
 
@@ -2563,6 +2570,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Convert and return WorkspaceStudentRestModel
     
+    boolean hasImage = userEntityFileController.hasProfilePicture(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
     WorkspaceStudentRestModel workspaceStudentRestModel = new WorkspaceStudentRestModel(
         workspaceUserEntity.getId(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
@@ -2570,6 +2578,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         elasticUser.get("nickName") == null ? null : elasticUser.get("nickName").toString(),
         elasticUser.get("lastName").toString(),
         elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
+        hasImage,
         workspaceUserEntity.getActive());
     
     return Response.ok(workspaceStudentRestModel).build();

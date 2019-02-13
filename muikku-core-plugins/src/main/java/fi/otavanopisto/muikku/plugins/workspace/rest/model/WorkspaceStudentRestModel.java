@@ -5,10 +5,11 @@ public class WorkspaceStudentRestModel extends WorkspaceUserRestModel {
   public WorkspaceStudentRestModel() {
   }
 
-  public WorkspaceStudentRestModel(Long workspaceUserEntityId, Long userEntityId, String firstName, String nickname, String lastName, String studyProgrammeName, Boolean active) {
+  public WorkspaceStudentRestModel(Long workspaceUserEntityId, Long userEntityId, String firstName, String nickname, String lastName, String studyProgrammeName, Boolean hasImage, Boolean active) {
     super(workspaceUserEntityId, userEntityId, firstName, lastName);
     this.studyProgrammeName = studyProgrammeName;
     this.nickname = nickname;
+    this.hasImage = hasImage;
     this.active = active;
   }
 
@@ -36,8 +37,17 @@ public class WorkspaceStudentRestModel extends WorkspaceUserRestModel {
     this.nickname = nickname;
   }
 
+  public Boolean getHasImage() {
+    return hasImage;
+  }
+
+  public void setHasImage(Boolean hasImage) {
+    this.hasImage = hasImage;
+  }
+
   private String nickname;
   private String studyProgrammeName;
   private Boolean active;
+  private Boolean hasImage;
 
 }
