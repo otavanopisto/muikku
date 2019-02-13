@@ -591,8 +591,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         getWebDriver().switchTo().defaultContent();
        
         waitAndClick("#workspaceSupplementationSave");
-        waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer");
         waitForPresent(".notification-queue-item-success");
+
+        waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer");
         
         waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
         assertTextIgnoreCase(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details", "Täydennyspyyntö opettajalta Admin User");

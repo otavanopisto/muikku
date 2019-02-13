@@ -332,12 +332,12 @@
         
         var successCallback = $.proxy(function(supplementationRequest) {
           CKEDITOR.instances.workspaceSupplementationText.discardDraft();
-          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
           this.element.trigger("workspaceSupplementationRequestSaved", {
             supplementationRequest: supplementationRequest
           });
           $('#workspaceSupplementationEditor').attr('data-mode', '');
           this._setupEventsContainer(); // reload events
+          $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
         }, this);
         
         var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
