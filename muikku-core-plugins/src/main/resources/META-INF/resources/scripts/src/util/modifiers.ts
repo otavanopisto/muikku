@@ -40,7 +40,7 @@ export function filterHighlight(string: string, filter: string){
       return;
     } else if (element === " "){
       accumulator.push([]);
-    } else if (element === filter) {
+    } else if (element.toLocaleLowerCase() === filter.toLocaleLowerCase()) {
       accumulator[accumulator.length - 1].push(React.createElement(
           "b",
           {key: index},

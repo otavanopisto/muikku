@@ -11,7 +11,7 @@ import CommunicatorNewMessage from '~/components/communicator/dialogs/new-messag
 
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/avatar.scss';
-import { getName } from "~/util/modifiers";
+import { getName, filterMatch, filterHighlight } from "~/util/modifiers";
 import { ShortWorkspaceUserWithActiveStatusType, UserIndexType, UserType } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
 import Tabs from "~/components/general/tabs";
@@ -26,7 +26,8 @@ interface WorkspaceUsersProps {
 
 interface WorkspaceUsersState {
   studentCurrentlyBeingSentMessage: ShortWorkspaceUserWithActiveStatusType,
-  activeTab: "ACTIVE" | "INACTIVE"
+  activeTab: "ACTIVE" | "INACTIVE",
+  currentSearch: string
 }
 
 interface StudentProps {
@@ -35,13 +36,14 @@ interface StudentProps {
   workspace: WorkspaceType,
   i18n: i18nType
   status: StatusType,
+  highlight: string,
   onSendMessage?: ()=>any
 }
 
 function Student(props: StudentProps){
   return <div>
     <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
-    <span>{getName(props.student, true)}</span>
+    <span>{filterHighlight(getName(props.student, true), props.highlight)}</span>
     {props.student.active ? <ButtonPill buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/> : null}
     {props.student.active ? <ButtonPill icon="delete"/> : <ButtonPill icon="goback"/>}
   </div>
@@ -53,11 +55,13 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     
     this.state = {
       studentCurrentlyBeingSentMessage: null,
-      activeTab: "ACTIVE"
+      activeTab: "ACTIVE",
+      currentSearch: ""
     }
     
     this.onSendMessageTo = this.onSendMessageTo.bind(this);
     this.removeStudentBeingSentMessage = this.removeStudentBeingSentMessage.bind(this);
+    this.updateSearch = this.updateSearch.bind(this);
   }
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType){
     this.setState({
@@ -72,6 +76,11 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
   onTabChange(newactive: "ACTIVE" | "INACTIVE"){
     this.setState({
       activeTab: newactive
+    });
+  }
+  updateSearch(e: React.ChangeEvent<HTMLInputElement>){
+    this.setState({
+      currentSearch: e.target.value
     });
   }
   render(){
@@ -109,6 +118,9 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
         </div>
         <h2>{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
         
+        <input type="text" className="form-element__input form-element__input--main-function-search"
+          value={this.state.currentSearch} onChange={this.updateSearch}/>
+        
         <Tabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
           {
             id: "ACTIVE",
@@ -117,7 +129,9 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               let activeStudents = this.props.workspace && this.props.workspace.students &&
                 this.props.workspace.students
                 .filter(s=>s.active)
-                .map(s=><Student key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
+                .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
+                .map(s=><Student highlight={this.state.currentSearch}
+                  key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
               
               return <div className="loader-empty">
                 {this.props.workspace && this.props.workspace.students ? (
@@ -133,7 +147,8 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               let inactiveStudents = this.props.workspace && this.props.workspace.students &&
                 this.props.workspace.students
                 .filter(s=>!s.active)
-                .map(s=><Student key={s.workspaceUserEntityId} student={s} {...this.props}/>);
+                .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
+                .map(s=><Student highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
               
               return <div className="loader-empty">
                 {this.props.workspace && this.props.workspace.students ? (
