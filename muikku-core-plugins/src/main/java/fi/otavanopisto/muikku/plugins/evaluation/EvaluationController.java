@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.evaluation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -123,28 +124,49 @@ public class EvaluationController {
     }
   }
   
-  public SupplementationRequest findSupplementationRequestByStudentAndWorkspace(Long studentEntityId, Long workspaceEntityId) {
-    return supplementationRequestDAO.findByStudentAndWorkspace(studentEntityId, workspaceEntityId);
+  public SupplementationRequest findSupplementationRequestById(Long supplementationRequestId) {
+    return supplementationRequestDAO.findById(supplementationRequestId);
+  }
+  
+  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
+    return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+  }
+  
+  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
+    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived); 
+    if (supplementationRequests.isEmpty()) {
+      return null;
+    }
+    else if (supplementationRequests.size() > 1) {
+      supplementationRequests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
+    }
+    return supplementationRequests.get(0);
   }
 
-  public SupplementationRequest findSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
-    return supplementationRequestDAO.findByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
-  }
-
-  public SupplementationRequest findSupplementationRequestByStudentAndWorkspaceMaterial(Long studentEntityId, Long workspaceMaterialId) {
-    return supplementationRequestDAO.findByStudentAndWorkspaceMaterial(studentEntityId, workspaceMaterialId);
-  }
-
-  public SupplementationRequest findSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
-    return supplementationRequestDAO.findByStudentAndWorkspaceMaterialAndArchived(studentEntityId, workspaceMaterialId, archived);
+  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
+    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceMaterialAndArchived(studentEntityId, workspaceMaterialId, archived); 
+    if (supplementationRequests.isEmpty()) {
+      return null;
+    }
+    else if (supplementationRequests.size() > 1) {
+      supplementationRequests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
+    }
+    return supplementationRequests.get(0);
   }
 
   public WorkspaceMaterialEvaluation findWorkspaceMaterialEvaluation(Long id) {
     return workspaceMaterialEvaluationDAO.findById(id);
   }
   
-  public WorkspaceMaterialEvaluation findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(WorkspaceMaterial workspaceMaterial, UserEntity student) {
-    return workspaceMaterialEvaluationDAO.findByWorkspaceMaterialIdAndStudentEntityId(workspaceMaterial.getId(), student.getId());
+  public WorkspaceMaterialEvaluation findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(WorkspaceMaterial workspaceMaterial, UserEntity student) {
+    List<WorkspaceMaterialEvaluation> workspaceMaterialEvaluations = workspaceMaterialEvaluationDAO.listByWorkspaceMaterialIdAndStudentEntityId(workspaceMaterial.getId(), student.getId());
+    if (workspaceMaterialEvaluations.isEmpty()) {
+      return null;
+    }
+    else if (workspaceMaterialEvaluations.size() > 1) {
+      workspaceMaterialEvaluations.sort(Comparator.comparing(WorkspaceMaterialEvaluation::getEvaluated).reversed());
+    }
+    return workspaceMaterialEvaluations.get(0);
   }
   
   public List<WorkspaceMaterialEvaluation> listWorkspaceMaterialEvaluationsByWorkspaceMaterialId(Long workspaceMaterialId){
@@ -220,7 +242,8 @@ public class EvaluationController {
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     
-    // List assessment requests (from Pyramus)  
+    // List assessment requests (from Pyramus)
+    // TODO Could be optimized by only fetching requests that are not yet handled
     
     List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(),
@@ -230,6 +253,9 @@ public class EvaluationController {
     // Mark each assessment request as handled (to Pyramus)
     
     for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
+      if (assessmentRequest.getHandled()) {
+        continue;
+      }
       gradingController.updateWorkspaceAssessmentRequest(
           assessmentRequest.getSchoolDataSource(),
           assessmentRequest.getIdentifier(),

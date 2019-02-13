@@ -86,27 +86,18 @@ public class AssessmentRequestController {
   public WorkspaceAssessmentState getWorkspaceAssessmentState(WorkspaceUserEntity workspaceUserEntity) {
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
     
-    // List all asssessments
+    // List all asssessments, latest first
     List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(
         workspaceEntity.getDataSource().getIdentifier(), 
         workspaceEntity.getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());    
-    
-    // Sort latest assessment first
-    if (!workspaceAssessments.isEmpty()) {
-      workspaceAssessments.sort(new Comparator<WorkspaceAssessment>() {
-        public int compare(WorkspaceAssessment o1, WorkspaceAssessment o2) {
-          return o2.getDate().compareTo(o1.getDate());
-        }
-      });
-    }
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+    workspaceAssessments.sort(Comparator.comparing(WorkspaceAssessment::getDate).reversed());
 
-    // List all assessment requests
+    // List all unhandled assessment requests, latest first
     List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(), 
         workspaceEntity.getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-    
     if (!assessmentRequests.isEmpty()) {
       // Strip assessment requests that have been handled (TODO could be handled in Pyramus)
       for (int i = assessmentRequests.size() - 1; i >= 0; i--) {
@@ -114,19 +105,12 @@ public class AssessmentRequestController {
           assessmentRequests.remove(i);
         }
       }
-      if (!assessmentRequests.isEmpty()) {
-        // Sort latest assessment request first
-        assessmentRequests.sort(new Comparator<WorkspaceAssessmentRequest>() {
-          public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
-            return o2.getDate().compareTo(o1.getDate());
-          }
-        });
-      }
+      assessmentRequests.sort(Comparator.comparing(WorkspaceAssessmentRequest::getDate).reversed());
     }
     
-    // Workspace supplementation request
+    // List latest supplementation request
     UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-    SupplementationRequest supplementationRequest = evaluationController.findSupplementationRequestByStudentAndWorkspaceAndArchived(
+    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
         userEntity.getId(),
         workspaceEntity.getId(),
         Boolean.FALSE);
