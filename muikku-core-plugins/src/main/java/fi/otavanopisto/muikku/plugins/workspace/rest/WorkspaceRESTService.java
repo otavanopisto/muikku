@@ -928,9 +928,9 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Search provider not found").build();
     }
 
-    // Lookup map to convert user entity ids to workspace user entity ids
+    // Lookup map to convert workspace user identifiers to workspace user entity ids
 
-    Map<Long, Long> workspaceUserEntityIds = new HashMap<Long, Long>();
+    Map<String, Long> workspaceUserEntityIds = new HashMap<String, Long>();
 
     // Turn students into school data identifiers
 
@@ -950,7 +950,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       String identifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
       String dataSource = workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier();
       studentIdentifiers.add(new SchoolDataIdentifier(identifier, dataSource));
-      workspaceUserEntityIds.put(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), workspaceUserEntity.getId());
+      workspaceUserEntityIds.put(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getId());
     }
 
     // Retrieve users via Elastic
@@ -976,7 +976,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       for (Map<String, Object> elasticUser : elasticUsers) {
         Long userEntityId = Long.valueOf(elasticUser.get("userEntityId").toString());
-        Long workspaceUserEntityId = workspaceUserEntityIds.get(userEntityId);
+        Long workspaceUserEntityId = workspaceUserEntityIds.get(elasticUser.get("identifier").toString());
         if (workspaceUserEntityId == null) {
           logger.warning(String.format("Workspace user entity for user % in workspace %d not found", userEntityId, workspaceEntity.getId()));
           continue;
