@@ -511,6 +511,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       }
     }
 
+  /*
   @Test
   @TestEnvironments (
     browsers = {
@@ -623,6 +624,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         mockBuilder.wiremockReset();
     }
   }
+  */
 
   
 }
