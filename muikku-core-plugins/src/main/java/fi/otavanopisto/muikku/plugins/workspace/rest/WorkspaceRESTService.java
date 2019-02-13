@@ -950,7 +950,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       String identifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
       String dataSource = workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier();
       studentIdentifiers.add(new SchoolDataIdentifier(identifier, dataSource));
-      workspaceUserEntityIds.put(workspaceUserEntity.getIdentifier(), workspaceUserEntity.getId());
+      workspaceUserEntityIds.put(identifier, workspaceUserEntity.getId());
     }
 
     // Retrieve users via Elastic
@@ -975,10 +975,11 @@ public class WorkspaceRESTService extends PluginRESTService {
       // Convert Elastic results to REST model objects (WorkspaceUserRestModel)
 
       for (Map<String, Object> elasticUser : elasticUsers) {
+        String identifier = elasticUser.get("identifier").toString();
         Long userEntityId = Long.valueOf(elasticUser.get("userEntityId").toString());
-        Long workspaceUserEntityId = workspaceUserEntityIds.get(elasticUser.get("identifier").toString());
+        Long workspaceUserEntityId = workspaceUserEntityIds.get(identifier);
         if (workspaceUserEntityId == null) {
-          logger.warning(String.format("Workspace user entity for user % in workspace %d not found", userEntityId, workspaceEntity.getId()));
+          logger.warning(String.format("Workspace user entity for identifier %s not found", identifier));
           continue;
         }
         UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
