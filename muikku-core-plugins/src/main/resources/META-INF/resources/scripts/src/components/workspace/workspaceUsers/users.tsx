@@ -11,11 +11,11 @@ import CommunicatorNewMessage from '~/components/communicator/dialogs/new-messag
 
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/avatar.scss';
-import { getUserImageUrl, getName } from "~/util/modifiers";
+import { getName } from "~/util/modifiers";
 import { ShortWorkspaceUserWithActiveStatusType, UserIndexType, UserType } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import BodyScrollLoader from "~/components/general/body-scroll-loader";
 import Tabs from "~/components/general/tabs";
+import Avatar from "~/components/general/avatar";
 
 interface WorkspaceUsersProps {
   status: StatusType,
@@ -26,8 +26,7 @@ interface WorkspaceUsersProps {
 
 interface WorkspaceUsersState {
   studentCurrentlyBeingSentMessage: ShortWorkspaceUserWithActiveStatusType,
-  activeTab: "ACTIVE" | "INACTIVE",
-  loadedStudentsAmount: number
+  activeTab: "ACTIVE" | "INACTIVE"
 }
 
 interface StudentProps {
@@ -40,13 +39,8 @@ interface StudentProps {
 }
 
 function Student(props: StudentProps){
-  let userCategory = props.student.userEntityId > 10 ? props.student.userEntityId % 10 + 1 : props.student.userEntityId;
   return <div>
-    <object className="avatar-container"
-     data={getUserImageUrl(props.student.userEntityId)}
-     type="image/jpeg">
-      <div className={`avatar avatar--category-${userCategory}`}>{props.student.firstName[0]}</div>
-    </object>
+    <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
     <span>{getName(props.student, true)}</span>
     {props.student.active ? <ButtonPill buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/> : null}
     {props.student.active ? <ButtonPill icon="delete"/> : <ButtonPill icon="goback"/>}
@@ -59,57 +53,11 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     
     this.state = {
       studentCurrentlyBeingSentMessage: null,
-      activeTab: "ACTIVE",
-      loadedStudentsAmount: 10
+      activeTab: "ACTIVE"
     }
-    
-    this.checkStudentsAreReady = this.checkStudentsAreReady.bind(this);
-    this.checkStudentsStateHasMore = this.checkStudentsStateHasMore.bind(this);
-    this.loadMoreStudents = this.loadMoreStudents.bind(this);
-    this.resetStudentsAmountCounter = this.resetStudentsAmountCounter.bind(this);
-    
-    //once this is in state READY only then a loading more event can be triggered
-    //this.applicationIsReady = this.checkStudentsAreReady;
-    //it will only call the function if this is true
-    //this.hasMore = this.checkStudentsStateHasMore;
-    //this is the function that will be called
-    //this.loadMoreTriggerFunction = this.loadMoreStudents;
     
     this.onSendMessageTo = this.onSendMessageTo.bind(this);
     this.removeStudentBeingSentMessage = this.removeStudentBeingSentMessage.bind(this);
-  }
-  checkStudentsAreReady():boolean{
-    return !!(this.props.workspace && this.props.workspace.students);
-  }
-  checkStudentsStateHasMore():boolean{
-    let students = this.props.workspace && this.props.workspace.students;
-    if (!students || !students.length){
-      return false;
-    }
-    let activeN = 0;
-    let inactiveN = 0;
-    students.forEach(s=>{
-      if (s.active){
-        activeN++;
-      } else {
-        inactiveN++;
-      }
-    })
-    if (this.state.activeTab === "ACTIVE"){
-      return activeN > this.state.loadedStudentsAmount;
-    } else {
-      return inactiveN > this.state.loadedStudentsAmount;
-    }
-  }
-  loadMoreStudents(){
-    this.setState({
-      loadedStudentsAmount: this.state.loadedStudentsAmount+10
-    });
-  }
-  resetStudentsAmountCounter(){
-    this.setState({
-      loadedStudentsAmount: 10
-    });
   }
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType){
     this.setState({
@@ -135,16 +83,6 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
         nickName: this.state.studentCurrentlyBeingSentMessage.nickName,
         studyProgrammeName: this.state.studentCurrentlyBeingSentMessage.studyProgrammeName,
       }
-  
-  let inactiveStudents = this.props.workspace && this.props.workspace.students &&
-  this.props.workspace.students
-  .filter(s=>!s.active)
-  .map(s=><Student key={s.userEntityId} student={s} {...this.props}/>);
-  
-  let activeStudents = this.props.workspace && this.props.workspace.students &&
-  this.props.workspace.students
-  .filter(s=>s.active)
-  .map(s=><Student key={s.userEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
     
     return (<div className="panel panel--workspace-users">
       <div className="panel__header">
@@ -157,11 +95,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
           {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.map((staff)=>{
             let userCategory = staff.userEntityId > 10 ? staff.userEntityId % 10 + 1 : staff.userEntityId;
             return <div key={staff.userEntityId}>
-              <object className="avatar-container"
-               data={getUserImageUrl(staff.userEntityId)}
-               type="image/jpeg">
-                <div className={`avatar avatar--category-${userCategory}`}>{staff.firstName[0]}</div>
-              </object>
+              <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
               <span>{getName(staff, true)}</span>
               <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
                 type: "staff",
@@ -175,7 +109,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
         </div>
         <h2>{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
         
-        <Tabs onTabChange={this.onTabChange} activeTab={this.state.activeTab} tabs={[
+        <Tabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
           {
             id: "ACTIVE",
             name: this.props.i18n.text.get('plugin.workspace.users.students.link.active'),
@@ -183,7 +117,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               let activeStudents = this.props.workspace && this.props.workspace.students &&
                 this.props.workspace.students
                 .filter(s=>s.active)
-                .map(s=><Student key={s.userEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
+                .map(s=><Student key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
               
               return <div className="loader-empty">
                 {this.props.workspace && this.props.workspace.students ? (
@@ -199,7 +133,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               let inactiveStudents = this.props.workspace && this.props.workspace.students &&
                 this.props.workspace.students
                 .filter(s=>!s.active)
-                .map(s=><Student key={s.userEntityId} student={s} {...this.props}/>);
+                .map(s=><Student key={s.workspaceUserEntityId} student={s} {...this.props}/>);
               
               return <div className="loader-empty">
                 {this.props.workspace && this.props.workspace.students ? (
@@ -210,16 +144,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
           }
         ]}/>
       </div>
-<div className="loader-empty">
-{this.props.workspace && this.props.workspace.students ? (
-  inactiveStudents.length ? inactiveStudents : <div>{this.props.i18n.text.get('TODO no inactive students')}</div>
-): null}
-</div>
-<div className="loader-empty">
-{this.props.workspace && this.props.workspace.students ? (
-  activeStudents.length ? activeStudents : <div>{this.props.i18n.text.get('TODO no active students')}</div>
-): null}
-</div>
+
       {currentStudentBeingSentMessage ? <CommunicatorNewMessage isOpen onClose={this.removeStudentBeingSentMessage}
         extraNamespace="workspace-students" initialSelectedItems={[{
           type: "user",

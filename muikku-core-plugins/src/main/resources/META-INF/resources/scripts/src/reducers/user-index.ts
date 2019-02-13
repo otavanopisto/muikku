@@ -63,7 +63,8 @@ export interface ShortWorkspaceUserWithActiveStatusType {
   nickName?: string,
   lastName: string,
   studyProgrammeName: string,
-  active: boolean
+  active: boolean,
+  hasImage: boolean
 }
 
 export type UserGroupListType = Array<UserGroupType>;
