@@ -12,7 +12,7 @@
           <span class="di-reply-title-creator" title='{#localize key="plugin.discussion.titleText.creator"/}'>{creatorFullName}</span>
           <span class="di-reply-title-date" title='{#localize key="plugin.discussion.titleText.date"/}'>{date|formatDate} {date|formatTime}</span>
           {?isReply}
-             <span class="di-reply-to-decor icon-arrow-right"></span>
+             <span class="di-reply-to-decor icon-arrow-right-thin"></span>
              <span class="di-reply-to-title">{replyParentCreatorFullName}</span>
              <span class="di-reply-to-title">{replyParentTime}</span>
           {/isReply}

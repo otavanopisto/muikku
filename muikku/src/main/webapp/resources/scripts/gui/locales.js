@@ -43,13 +43,11 @@
   
   //DEPRECATED
   function getCurrentDate() {
-    console && console.warn && console.warn("getCurrentDate is deprecated");
     return formatDate(new Date());
   }
   
   //DEPRECATED
   function formatDate(d, shortDate) {
-    console && console.warn && console.warn("formatDate is deprecated");
     if (shortDate) {
       return $.datepicker.formatDate(getLocaleText('shortDatePattern'), d);
     } else {
@@ -59,13 +57,11 @@
   
   //DEPRECATED
   function getCurrentTime() {
-    console && console.warn && console.warn("getCurrentTime is deprecated");
     return formatTime(new Date());
   }
   
   //DEPRECATED
   function formatTime(d) {
-    console && console.warn && console.warn("formatTime is deprecated");
     // TODO Could use some elegance, surely...
     var val = getLocaleText('timePattern');
     val = val.replace('hh', ('00' + d.getHours()).slice(-2));
@@ -76,7 +72,6 @@
   
   //DEPRECATED
   function formatDateTime(d) {
-    console && console.warn && console.warn("formatDateTime is deprecated");
     return formatDate(d) + ' ' + formatTime(d);
   }
   

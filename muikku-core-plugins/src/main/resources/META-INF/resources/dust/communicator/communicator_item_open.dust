@@ -8,7 +8,7 @@
                 <div class="cm-message-recipients-cell">
                   <div class="cm-message-recipients-wrapper">              
                     <span>{senderFullName}</span>
-                    <span class="icon-arrow-right cm-message-recipient-arrow"></span>
+                    <span class="icon-arrow-right-thin cm-message-recipient-arrow"></span>
                     {?recipients}
                       {#recipients}
                         {?isStudent}

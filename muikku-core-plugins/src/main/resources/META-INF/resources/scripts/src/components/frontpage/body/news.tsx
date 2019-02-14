@@ -47,13 +47,6 @@ export default class FrontpageNews extends React.Component<FrontpageNewsProps, F
           <div className="card">
             <Carousel>
               <CarouselItem>
-                <img className="card__image" src="/gfx/kuva1.jpg" alt="" title="" />
-                <div className="card__content">
-                  <div className="card__text">{this.props.i18n.text.get( 'plugin.images.description.image1' )}</div>
-                </div>
-              </CarouselItem>
-
-              <CarouselItem>
                 <img className="card__image" src="/gfx/kuva2.jpg" alt=""
                   title="" />
                 <div className="card__content">
@@ -62,17 +55,16 @@ export default class FrontpageNews extends React.Component<FrontpageNewsProps, F
               </CarouselItem>
 
               <CarouselItem>
-                <img className="card__image" src="/gfx/kuva3.jpg" alt="" title="" />
+                <img className="card__image" src="/gfx/kuva1.jpg" alt="" title="" />
                 <div className="card__content">
-                  <div className="card__text">{this.props.i18n.text.get( 'plugin.images.description.image3' )}</div>
+                  <div className="card__text">{this.props.i18n.text.get( 'plugin.images.description.image1' )}</div>
                 </div>
               </CarouselItem>
 
               <CarouselItem>
-                <img className="card__image" src="/gfx/kuva4.jpg" alt=""
-                  title="" />
+                <img className="card__image" src="/gfx/kuva3.jpg" alt="" title="" />
                 <div className="card__content">
-                  <div className="card__text">{this.props.i18n.text.get( 'plugin.images.description.image4' )}</div>
+                  <div className="card__text">{this.props.i18n.text.get( 'plugin.images.description.image3' )}</div>
                 </div>
               </CarouselItem>
 

@@ -52,7 +52,7 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
     return persist(workspaceMaterialEvaluation);
   }
 
-  public WorkspaceMaterialEvaluation findByWorkspaceMaterialIdAndStudentEntityId(Long workspaceMaterialId, Long studentEntityId) {
+  public List<WorkspaceMaterialEvaluation> listByWorkspaceMaterialIdAndStudentEntityId(Long workspaceMaterialId, Long studentEntityId) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -66,7 +66,7 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
       )
     );
 
-    return getSingleResult(entityManager.createQuery(criteria));
+    return entityManager.createQuery(criteria).getResultList();
   }
 
   public List<WorkspaceMaterialEvaluation> listByWorkspaceMaterialId(Long workspaceMaterialId) {
