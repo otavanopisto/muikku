@@ -18,7 +18,7 @@
   display: flex;
   flex-flow: row wrap;
   font-size: 1.075rem;
-  font-weight: 400;
+  font-weight: 300;
   padding: 0 10px;
   text-transform: uppercase;
   width: 100%;
@@ -232,6 +232,10 @@
   flex-shrink: 1;
   padding: 10px;
 
+  &:not(:last-child) {
+    border-bottom: 1px solid $color-default-item-separator-border;
+  }
+
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
   }
@@ -285,6 +289,39 @@
   align-items: center;
   background-color: $color-sub-panel-summarizer-background;
   display: flex;
+  flex-wrap: wrap;
+}
+
+.application-sub-panel__summary-item {
+  display: flex;
+}
+
+.application-sub-panel__summary-item--subject-eligibility {
+  display: flex;
+  flex-basis: 50%;
+  flex-shrink: 0;
+  justify-content: space-evenly;
+  padding: 5px 0;
+}
+
+.application-sub-panel__summary-item-label {
+  padding: 5px;
+}
+
+.application-sub-panel__summary-item-state {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  width: 40px;
+}
+
+.application-sub-panel__summary-item-state--eligible {
+  background-color: $color-sub-panel-summarizer-true-background;
+}
+
+.application-sub-panel__summary-item-state--not-eligible {
+  background-color: $color-sub-panel-summarizer-false-background;
+  color: $color-sub-panel-summarizer-false-font;
 }
 
 .application-sub-panel__item-header--hops {

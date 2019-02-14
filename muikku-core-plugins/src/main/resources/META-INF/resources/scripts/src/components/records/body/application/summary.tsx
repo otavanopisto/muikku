@@ -51,7 +51,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>          
       return (
         <div>
-          <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.summary.title")}</div>          
+          <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</div>          
           
           {studentBasicInfo}
 
@@ -77,6 +77,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
             </div>
           </div>
+      {/* Waits for summary notifications
           <div className="application-sub-panel">
             <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.notifications.title")}</div>
             <div className="application-sub-panel__body application-list">
@@ -115,6 +116,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                </div>
             </div>
           </div>
+       */}
         </div>
         )
       }

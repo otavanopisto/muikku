@@ -62,7 +62,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
       return null;
     }
     return <div className="vops">
-      <div className="vops__title">{this.props.i18n.text.get("plugin.records.studyplan.title")}</div
+      <div className="vops__title">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
       <div className="vops__data">
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", data.numCourses)}</span>
