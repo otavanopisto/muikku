@@ -5,8 +5,6 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import {ButtonPill} from '~/components/general/button';
-import { bindActionCreators } from "redux";
-import { toggleActiveStateOfStudentOfWorkspace, ToggleActiveStateOfStudentOfWorkspaceTriggerType } from "~/actions/workspaces";
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 
 import '~/sass/elements/loaders.scss';
@@ -16,28 +14,29 @@ import { ShortWorkspaceUserWithActiveStatusType, UserIndexType, UserType } from 
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
 import Tabs from "~/components/general/tabs";
 import Avatar from "~/components/general/avatar";
+import DeactivateReactivateUserDialog from './dialogs/deactivate-reactivate-user';
 
 interface WorkspaceUsersProps {
   status: StatusType,
   workspace: WorkspaceType,
-  i18n: i18nType,
-  toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType
+  i18n: i18nType
 }
 
 interface WorkspaceUsersState {
   studentCurrentlyBeingSentMessage: ShortWorkspaceUserWithActiveStatusType,
   activeTab: "ACTIVE" | "INACTIVE",
-  currentSearch: string
+  currentSearch: string,
+  studentCurrentBeingToggledStatus: ShortWorkspaceUserWithActiveStatusType
 }
 
 interface StudentProps {
   student: ShortWorkspaceUserWithActiveStatusType,
-  toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType,
   workspace: WorkspaceType,
   i18n: i18nType
   status: StatusType,
   highlight: string,
-  onSendMessage?: ()=>any
+  onSendMessage?: ()=>any,
+  onSetToggleStatus: ()=>any
 }
 
 function Student(props: StudentProps){
@@ -45,7 +44,7 @@ function Student(props: StudentProps){
     <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
     <span>{filterHighlight(getName(props.student, true), props.highlight)}</span>
     {props.student.active ? <ButtonPill buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/> : null}
-    {props.student.active ? <ButtonPill icon="delete"/> : <ButtonPill icon="goback"/>}
+    {props.student.active ? <ButtonPill icon="delete" onClick={props.onSetToggleStatus}/> : <ButtonPill icon="goback" onClick={props.onSetToggleStatus}/>}
   </div>
 }
 
@@ -56,12 +55,15 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     this.state = {
       studentCurrentlyBeingSentMessage: null,
       activeTab: "ACTIVE",
-      currentSearch: ""
+      currentSearch: "",
+      studentCurrentBeingToggledStatus: null
     }
     
     this.onSendMessageTo = this.onSendMessageTo.bind(this);
     this.removeStudentBeingSentMessage = this.removeStudentBeingSentMessage.bind(this);
     this.updateSearch = this.updateSearch.bind(this);
+    this.removeStudentBeingToggledStatus = this.removeStudentBeingToggledStatus.bind(this);
+    this.setStudentBeingToggledStatus = this.setStudentBeingToggledStatus.bind(this);
   }
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType){
     this.setState({
@@ -81,6 +83,16 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
   updateSearch(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({
       currentSearch: e.target.value
+    });
+  }
+  removeStudentBeingToggledStatus(){
+    this.setState({
+      studentCurrentBeingToggledStatus: null
+    });
+  }
+  setStudentBeingToggledStatus(student: ShortWorkspaceUserWithActiveStatusType){
+    this.setState({
+      studentCurrentBeingToggledStatus: student
     });
   }
   render(){
@@ -131,6 +143,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                 .filter(s=>s.active)
                 .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
                 .map(s=><Student highlight={this.state.currentSearch}
+                  onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
                   key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
               
               return <div className="loader-empty">
@@ -148,7 +161,8 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                 this.props.workspace.students
                 .filter(s=>!s.active)
                 .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
-                .map(s=><Student highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
+                .map(s=><Student onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+                  highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
               
               return <div className="loader-empty">
                 {this.props.workspace && this.props.workspace.students ? (
@@ -166,6 +180,8 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
           value: currentStudentBeingSentMessage
         }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
       initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}/> : null}
+      {this.state.studentCurrentBeingToggledStatus ? <DeactivateReactivateUserDialog isOpen
+          onClose={this.removeStudentBeingToggledStatus} user={this.state.studentCurrentBeingToggledStatus}/> : null}
     </div>);
   }
 }
@@ -179,7 +195,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({toggleActiveStateOfStudentOfWorkspace}, dispatch);
+  return {};
 };
 
 export default connect(

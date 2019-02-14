@@ -507,7 +507,7 @@ let toggleActiveStateOfStudentOfWorkspace:ToggleActiveStateOfStudentOfWorkspaceT
     try {
       let newStudent = {...student, active: !student.active};
       let newStudents = workspace.students && workspace.students.map(student=>{
-        if (student.userEntityId === newStudent.userEntityId){
+        if (student.workspaceUserEntityId === newStudent.workspaceUserEntityId){
           return newStudent;
         }
         return student;
