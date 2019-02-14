@@ -16,14 +16,14 @@ export type EligibleStatusType = "ELIGIBLE" | "NOT_ELIGIBLE";
  */
 
 export interface SubjectEligibilityType {
-  egilibility: EligibleStatusType
+  eligibility: EligibleStatusType
   requiredCount: number;
   acceptedCount: number;
   loading: boolean;
 }
 
 export default function subjectEligibility(state:SubjectEligibilityType={
-  egilibility: <EligibleStatusType>"NOT_ELIGIBLE",  
+  eligibility: <EligibleStatusType>"NOT_ELIGIBLE",  
   requiredCount: 0,
   acceptedCount: 0,
   loading: true
