@@ -9,14 +9,18 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-sub-panel.scss';
 
 import { RecordsType } from '~/reducers/main-function/records/records';
+import { SummaryType } from '~/reducers/main-function/records/summary';
+
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import '~/sass/elements/application-sub-panel.scss';
+
 interface SummaryProps {
   i18n: i18nType,
-  records: RecordsType
+  records: RecordsType,
+  summary: SummaryType
 }
 
 interface SummaryState {
@@ -27,7 +31,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
     super(props);
   }    
   render(){        
-      if (this.props.records.location !== "summary") {
+      if (this.props.records.location !== "summary" || this.props.summary.status !== "READY" ) {
         return null;        
       } else {
         
@@ -60,19 +64,19 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
                 <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.stat.pre")}</div>
-                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">6</div>
+                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">{this.props.summary.summary.coursesDone}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.stat.post")}</div>
               </div>                
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-activity">
                 <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-activity">{this.props.i18n.text.get("plugin.records.summary.card.activity.title")}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.activity.stat.pre")}</div>
-                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-activity">6</div>
+                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-activity">{this.props.summary.summary.activity}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.activity.stat.post")}</div>
               </div>                
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-returned">
                 <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-returned">{this.props.i18n.text.get("plugin.records.summary.card.tasks.title")}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.tasks.stat.pre")}</div>
-                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-returned">6</div>
+                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-returned">{this.props.summary.summary.returnedExercises}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.tasks.stat.post")}</div>
               </div>
             </div>
@@ -126,7 +130,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: state.records
+    records: state.records,
+    summary: state.summary
   }
 };
 

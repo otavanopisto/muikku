@@ -13,6 +13,7 @@ import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records/records';
+import { SummaryType } from './main-function/records/summary';
 import { YOType } from './main-function/records/yo';
 import { SubjectEligibilityType } from './main-function/records/subject_eligibility';
 import { ErrorType } from './base/error';
@@ -30,6 +31,7 @@ export interface StateType {
   announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
+  summary: SummaryType,
   messages?: MessagesType,
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,

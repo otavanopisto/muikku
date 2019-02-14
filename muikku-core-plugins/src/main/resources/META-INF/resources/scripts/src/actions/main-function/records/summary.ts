@@ -16,10 +16,58 @@ export interface UpdateSummaryTriggerType {
 let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      dispatch({
-        type: 'UPDATE_STUDIES_SUMMARY',
-        payload: null
+      
+      dispatch({               
+        type: 'UPDATE_STUDIES_SUMMARY_STATUS',
+        payload: <SummaryStatusType>"LOADING"
       });
+      
+      
+      /* Get user id */
+      
+      let pyramusId = getState().status.userSchoolDataIdentifier;
+      
+      /* We need completed courses from Eligibility */
+
+      let egilibity:any = await promisify( mApi().records.studentMatriculationEligibility
+          .read(pyramusId), 'callback')();
+
+      /* We need past month activity */
+      
+      let activityLogs:any = await promisify(mApi().activitylogs.user
+          .read(pyramusId, {from: new Date(new Date().setMonth(new Date().getMonth()-1)), to: new Date()}), 'callback')();
+
+      /* We need returned exercises */
+
+      let exercisesDone:any = [];
+
+      /* Getting past the object with keys */
+      
+      let activityArrays:any = Object.keys(activityLogs).map(key => activityLogs[key]); 
+
+      /* picking the done exercises from the objects */
+      
+      activityArrays.forEach(function(element:any) {
+        element.find(function(param:any) {
+          param["type"] == "MATERIAL_EXERCISEDONE" ? exercisesDone.push(param["type"]) : null;
+        });
+      });
+      
+      let summaryData = {
+        coursesDone: egilibity.coursesCompleted,
+        activity: activityLogs.general.length,
+        returnedExercises: exercisesDone.length
+      }
+      
+      dispatch({               
+        type: 'UPDATE_STUDIES_SUMMARY',
+        payload: summaryData
+      });
+      
+      dispatch({               
+        type: 'UPDATE_STUDIES_SUMMARY_STATUS',
+        payload: <SummaryStatusType>"READY"
+      });      
     }
     catch(err) {
       //TODO: ERR
