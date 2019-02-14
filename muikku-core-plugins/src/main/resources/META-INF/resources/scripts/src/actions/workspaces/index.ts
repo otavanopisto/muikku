@@ -347,7 +347,12 @@ export interface LoadStudentsOfWorkspaceTriggerType {
 }
 
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
-  (workspace: WorkspaceType, student: ShortWorkspaceUserWithActiveStatusType):AnyActionType
+  (data: {
+    workspace: WorkspaceType,
+    student: ShortWorkspaceUserWithActiveStatusType,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
 }
 
 let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType= function loadWorkspacesFromServer(filters){
@@ -502,32 +507,53 @@ let loadStudentsOfWorkspace:LoadStudentsOfWorkspaceTriggerType = function loadSt
   }
 }
 
-let toggleActiveStateOfStudentOfWorkspace:ToggleActiveStateOfStudentOfWorkspaceTriggerType = function toggleActiveStateOfStudentOfWorkspace(workspace, student){
+let toggleActiveStateOfStudentOfWorkspace:ToggleActiveStateOfStudentOfWorkspaceTriggerType = function toggleActiveStateOfStudentOfWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let oldStudents = data.workspace.students;
     try {
-      let newStudent = {...student, active: !student.active};
-      let newStudents = workspace.students && workspace.students.map(student=>{
+      let newStudent = {...data.student, active: !data.student.active};
+      let newStudents = data.workspace.students && data.workspace.students.map(student=>{
         if (student.workspaceUserEntityId === newStudent.workspaceUserEntityId){
           return newStudent;
         }
         return student;
       });
+      
+      await promisify(mApi().workspace.workspaces.students.update(data.workspace.id, newStudent.workspaceUserEntityId, {
+        workspaceUserEntityId: newStudent.workspaceUserEntityId,
+        active: newStudent.active
+      }), 'callback')();
+      
       if (newStudents){
         dispatch({
           type: 'UPDATE_WORKSPACE',
           payload: {
-            original: workspace,
+            original: data.workspace,
             update: {
               students: newStudents
             }
           }
         });
       }
+      
+      data.success && data.success();
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load students'), 'error'));
+      if (oldStudents){
+        dispatch({
+          type: 'UPDATE_WORKSPACE',
+          payload: {
+            original: data.workspace,
+            update: {
+              students: oldStudents
+            }
+          }
+        });
+      }
+      data.fail && data.fail();
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to toggle student state'), 'error'));
     }
   }
 }

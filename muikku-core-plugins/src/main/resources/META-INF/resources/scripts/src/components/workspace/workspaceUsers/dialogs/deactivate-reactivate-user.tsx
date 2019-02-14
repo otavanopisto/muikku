@@ -33,8 +33,11 @@ class DeactivateReactivateUserDialog extends React.Component<DeactivateReactivat
     this.toggleActiveStatus = this.toggleActiveStatus.bind(this);
   }
   toggleActiveStatus(closeDialog: ()=>any){
-    this.props.toggleActiveStateOfStudentOfWorkspace(this.props.workspace, this.props.user);
-    closeDialog();
+    this.props.toggleActiveStateOfStudentOfWorkspace({
+      workspace: this.props.workspace,
+      student: this.props.user,
+      success: closeDialog
+    });
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
