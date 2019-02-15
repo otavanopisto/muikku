@@ -15,6 +15,7 @@ import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teache
 import Tabs from "~/components/general/tabs";
 import Avatar from "~/components/general/avatar";
 import DeactivateReactivateUserDialog from './dialogs/deactivate-reactivate-user';
+import LazyLoader from "~/components/general/lazy-loader";
 
 interface WorkspaceUsersProps {
   status: StatusType,
@@ -41,7 +42,9 @@ interface StudentProps {
 
 function Student(props: StudentProps){
   return <div>
-    <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
+    <LazyLoader className="avatar-container">
+      <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
+    </LazyLoader>
     <span>{filterHighlight(getName(props.student, true), props.highlight)}</span>
     {props.student.active ? <ButtonPill buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/> : null}
     {props.student.active ? <ButtonPill icon="delete" onClick={props.onSetToggleStatus}/> : <ButtonPill icon="goback" onClick={props.onSetToggleStatus}/>}
