@@ -3,12 +3,12 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-@import url('https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900');
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic');
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
 
-.cke_editable, .rich-text {
+.cke_editable,
+.rich-text {
   color: $color-text-default;
   font-family: "Open Sans", Arial, sans-serif;
   font-size: $text-mobile-font-size;
