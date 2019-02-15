@@ -17,7 +17,7 @@ let updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityT
     try {
       let subjectEligibility:any = await promisify(mApi().records.matriculationEligibility.read({"subjectCode" : subjectCode}), 'callback')();
       let subjectEligibilityData = {
-          egilibility: subjectEligibility.eligible ? <EligibleStatusType>"ELIGIBLE" : <EligibleStatusType>"NOT_ELIGIBLE",
+          eligibility: subjectEligibility.eligible ? <EligibleStatusType>"ELIGIBLE" : <EligibleStatusType>"NOT_ELIGIBLE",
           requiredCount: subjectEligibility.requirePassingGrades,
           acceptedCount: subjectEligibility.acceptedCourseCount + subjectEligibility.acceptedTransferCreditCount,
           loading: false
