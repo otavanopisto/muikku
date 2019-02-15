@@ -29,7 +29,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       
       /* We need completed courses from Eligibility */
 
-      let egilibity:any = await promisify( mApi().records.studentMatriculationEligibility
+      let eligibility:any = await promisify( mApi().records.studentMatriculationEligibility
           .read(pyramusId), 'callback')();
 
       /* We need past month activity */
@@ -54,7 +54,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       });
       
       let summaryData = {
-        coursesDone: egilibity.coursesCompleted,
+        coursesDone: eligibility.coursesCompleted,
         activity: activityLogs.general.length,
         returnedExercises: exercisesDone.length
       }
