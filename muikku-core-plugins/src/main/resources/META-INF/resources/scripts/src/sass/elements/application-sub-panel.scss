@@ -232,10 +232,6 @@
   flex-shrink: 1;
   padding: 10px;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid $color-default-item-separator-border;
-  }
-
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
   }
