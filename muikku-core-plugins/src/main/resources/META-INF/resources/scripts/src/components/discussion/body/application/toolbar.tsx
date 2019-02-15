@@ -64,7 +64,7 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
             {currentArea.name}
           </div>
           <div className="breadcrumb__arrow">
-            <span className="icon-arrow-right"></span>
+            <span className="icon-arrow-right-thin"></span>
           </div>
           <div className="breadcrumb__item">
             {this.props.discussion.current.title}

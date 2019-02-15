@@ -144,7 +144,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
       <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
         <div className="menu__header">
           <div className="menu__logo"></div>
-          <Link className="menu__header__button--close icon-arrow-left"></Link>
+          <Link className="menu__header__button--close icon-arrow-left-thin"></Link>
         </div>
         <div className="menu__body">
           {this.props.navigation ? (this.props.navigation instanceof Array ? 

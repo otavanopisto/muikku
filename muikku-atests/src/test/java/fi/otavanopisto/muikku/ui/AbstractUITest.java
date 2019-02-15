@@ -708,12 +708,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
 
-  protected void waitUntilAnimationIsDone(final String cssLocator) {
+  protected void waitUntilAnimationIsDone(final String selector) {
     WebDriverWait wdw = new WebDriverWait(getWebDriver(), 20);
     ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver driver) {
-        String temp = ((JavascriptExecutor) driver).executeScript("return jQuery('" + cssLocator + "').is(':animated')")
+        String temp = ((JavascriptExecutor) driver).executeScript("return jQuery('" + selector + "').is(':animated')")
             .toString();
         return temp.equalsIgnoreCase("false");
       }
@@ -722,7 +722,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     try {
       wdw.until(expectation);
     } catch (Exception e) {
-      throw new AssertionError("Element animation is not finished in time. Css locator: " + cssLocator);
+      throw new AssertionError("Element animation is not finished in time. Css locator: " + selector);
     }
   }
   
@@ -1414,7 +1414,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     js.executeScript(jsString);
   }
   
-  private void waitForCKReady(final String instanceName) {
+  protected void waitForCKReady(final String instanceName) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
