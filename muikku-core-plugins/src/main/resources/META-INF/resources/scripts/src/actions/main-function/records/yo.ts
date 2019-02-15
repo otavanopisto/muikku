@@ -43,14 +43,14 @@ let updateYO:updateYOTriggerType = function updateYO() {
         payload: subjects
       });
     
-      let egilibity:any = await promisify( mApi().records.studentMatriculationEligibility
+      let eligibility:any = await promisify( mApi().records.studentMatriculationEligibility
               .read((window as any).MUIKKU_LOGGED_USER), 'callback')();      
-      let eligibilityStatus = egilibity.status;
+      let eligibilityStatus = eligibility.status;
       let eligibilityData = {
-              coursesCompleted: egilibity.coursesCompleted,
-              coursesRequired: egilibity.coursesRequired,
-              enrollmentDate: egilibity.enrollmentDate,
-              examDate: egilibity.examDate                        
+              coursesCompleted: eligibility.coursesCompleted,
+              coursesRequired: eligibility.coursesRequired,
+              enrollmentDate: eligibility.enrollmentDate,
+              examDate: eligibility.examDate                        
             };
       
       dispatch({
