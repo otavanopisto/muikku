@@ -17,6 +17,7 @@ import WorkspaceDiscussionBody from '~/components/workspace/workspaceDiscussions
 import WorkspaceAnnouncementsBody from '~/components/workspace/workspaceAnnouncements';
 import WorkspaceAnnouncerBody from '~/components/workspace/workspaceAnnouncer';
 import WorkspaceMaterialsBody from '~/components/workspace/workspaceMaterials';
+import WorkspaceJournalBody from '~/components/workspace/workspaceJournal';
 
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials,
@@ -56,6 +57,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.renderWorkspaceAnnouncer = this.renderWorkspaceAnnouncer.bind(this);
     this.renderWorkspaceMaterials = this.renderWorkspaceMaterials.bind(this);
     this.renderWorkspaceUsers = this.renderWorkspaceUsers.bind(this);
+    this.renderWorkspaceJournal = this.renderWorkspaceJournal.bind(this);
     
     this.loadWorkspaceDiscussionData = this.loadWorkspaceDiscussionData.bind(this);
     this.loadWorkspaceAnnouncementsData = this.loadWorkspaceAnnouncementsData.bind(this);
@@ -327,6 +329,29 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     
     return <WorkspaceUsersBody workspaceUrl={props.match.params["workspaceUrl"]}/>
   }
+  renderWorkspaceJournal(props: RouteComponentProps<any>){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      
+      let state = this.props.store.getState();
+      this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
+      this.props.store.dispatch(setCurrentWorkspace({
+        workspaceId: state.status.currentWorkspaceId,
+        success: (workspace)=>{
+          if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
+            this.props.store.dispatch(loadStudentsOfWorkspace(workspace) as Action)
+          }
+        }
+      }) as Action);
+    }
+    
+    return <WorkspaceJournalBody workspaceUrl={props.match.params["workspaceUrl"]}/>
+  }
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
@@ -338,6 +363,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       <Route path="/workspace/:workspaceUrl/announcer" render={this.renderWorkspaceAnnouncer}/>
       <Route path="/workspace/:workspaceUrl/materials" render={this.renderWorkspaceMaterials}/>
       <Route path="/workspace/:workspaceUrl/users" render={this.renderWorkspaceUsers}/>
+      <Route path="/workspace/:workspaceUrl/journal" render={this.renderWorkspaceJournal}/>
     </div></BrowserRouter>);
   }
 }
