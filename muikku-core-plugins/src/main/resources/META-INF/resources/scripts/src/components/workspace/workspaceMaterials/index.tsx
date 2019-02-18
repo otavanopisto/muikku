@@ -18,7 +18,7 @@ interface WorkspaceMaterialsBodyState {
 export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMaterialsBodyProps, WorkspaceMaterialsBodyState> {
   constructor(props: WorkspaceMaterialsBodyProps){
     super(props);
-    
+
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
   onOpenNavigation(){

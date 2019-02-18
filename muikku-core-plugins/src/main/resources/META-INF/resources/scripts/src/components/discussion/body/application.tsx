@@ -29,7 +29,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
     super(props);
   }
   render(){
-    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.forum.pageTitle')}</h2>
+    let title = this.props.i18n.text.get('plugin.forum.pageTitle')
     let toolbar = <Toolbar/>
     let primaryOption = !this.props.discussion.current ? <NewThread><Link className="button button--primary-function">    
     {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}

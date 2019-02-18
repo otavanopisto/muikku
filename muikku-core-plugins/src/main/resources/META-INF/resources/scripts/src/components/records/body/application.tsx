@@ -22,13 +22,13 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
   constructor(props: StudiesApplicationProps){
     super(props);
   }
-  
-  render(){
-    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.records.pageTitle')}</h2>
-    let primaryOption  = <PrimaryOption />
-    let toolbar = <Toolbar />      
 
-      
+  render(){
+    let title = this.props.i18n.text.get('plugin.records.pageTitle')
+    let primaryOption  = <PrimaryOption />
+    let toolbar = <Toolbar />
+
+
     return (<div>
       <ApplicationPanel modifier="records" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
         <Records/>

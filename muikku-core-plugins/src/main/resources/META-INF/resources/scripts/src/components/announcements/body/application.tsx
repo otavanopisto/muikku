@@ -25,7 +25,7 @@ interface AnnouncementsApplicationState {
 
 class AnnouncementsApplication extends React.Component<AnnouncementsApplicationProps, AnnouncementsApplicationState>{
   render(){
-    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.announcements.pageTitle')}</h2>
+    let title = this.props.i18n.text.get('plugin.announcements.pageTitle')
     return (<div>
       <ReadingPanel modifier="announcement" title={title} asideAfter={this.props.aside} >
         <Announcements/>

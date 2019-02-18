@@ -86,7 +86,7 @@ export default class ReadingPanel extends React.Component<ReadingPanelProps, Rea
 
         <div className="reading-panel__header">
         {this.props.title ? 
-          <div className="reading-panel__header-title">{this.props.title}</div>
+          <h1 className="reading-panel__header-title">{this.props.title}</h1>
         : null}
         {this.props.icon ? 
           <div className="reading-panel__header-actions">{this.props.icon}</div>

@@ -158,8 +158,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       borderBottomSize = 0;
     }
     let remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
-    
-    
+
     this.setState({remainingHeight: remainingUsableWindow});
   }
   onScroll(e: Event){
@@ -168,25 +167,25 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     let isSticky = (diff < this.offsetElementAgainstTop);
     if (isSticky !== this.state.sticky){
       this.setState({sticky: isSticky});
-      
+
       if (isSticky){
         this.calculateSides();
       }
     }
-    
+
     this.setRemainingHeight(isSticky);
   }
   getToolbar(): HTMLDivElement{
     return this.refs["toolbar"] as HTMLDivElement;
   }
   render(){
-    return (        
+    return (
     <div className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
-      <div className="application-panel__container">                
-        
+      <div className="application-panel__container">
+
         <div className="application-panel__header">
         {this.props.title ? 
-          <div className="application-panel__header-title-container">{this.props.title}</div>
+          <h1 className="application-panel__header-title">{this.props.title}</h1>
         : null}
         {this.props.icon ? 
           <div className="application-panel__header-actions">{this.props.icon}</div>

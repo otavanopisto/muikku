@@ -2,6 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
+
 .dropdown {
   @include prefix(transition, moz ms o webkit, opacity 0.15s);
   display: block;
@@ -149,7 +150,7 @@
     }
   }
 
-  &.dropdown--communicator-labels .dropdown__container, 
+  &.dropdown--communicator-labels .dropdown__container,
   &.dropdown--guider-labels .dropdown__container {
     padding: 5px;
     background-color: $color-main-function-dropdown-labels-background;

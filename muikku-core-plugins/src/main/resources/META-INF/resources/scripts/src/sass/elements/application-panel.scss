@@ -53,13 +53,10 @@
   }
 }
 
-.application-panel__header-title-container {
+.application-panel__header-title {
   flex-basis: auto;
   flex-grow: 1;
-  flex-shrink: 1;
-}
-
-.application-panel__header-title {
+  flex-shrink: 1;  
   font-size: 1.5rem;
   font-weight: 300;
   text-transform: uppercase;

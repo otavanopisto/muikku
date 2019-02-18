@@ -125,14 +125,17 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     }, 300);
   }
   render(){
-    return (        
+    return (
     <div className={`content-panel content-panel--${this.props.modifier}`} ref="panel">
-      <div className="content-panel__container">                
-        
-        <div className="content-panel__header">{this.props.title}</div>
-        
+      <div className="content-panel__container">
+
+        <div className="content-panel__header">
+          <h1 className="content-panel__header-title">{this.props.title}</h1>
+        </div>
+
         <div className="content-panel__body" ref="body">
           <div className="content-panel__content">
+            <div className={`content-panel__main-container loader-empty`}>{this.props.children}</div>
             {this.props.navigation && <div ref="menu-overlay"
              className={`content-panel__navigation ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
              onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
@@ -140,7 +143,7 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
                this.props.navigation
               }</div>
             </div>}
-            <div className={`content-panel__main-container loader-empty`}>{this.props.children}</div>
+
             {this.props.navigation && <div className="content-panel__navigation-open" onClick={this.open}/>}
           </div>
         </div>

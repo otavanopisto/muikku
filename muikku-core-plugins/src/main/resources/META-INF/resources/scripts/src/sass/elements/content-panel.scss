@@ -7,12 +7,7 @@
   align-items: center;
   display: flex;
   justify-content: center;
-  padding: $navbar-mobile-height 0 10px;
   width: 100%;
-  
-  @include breakpoint($breakpoint-pad) {
-    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
-  }
 }
 
 .content-panel__container {
@@ -21,6 +16,33 @@
   flex-direction: column;
   max-width: $breakpoint-max-usable-screen;
   width: 100%;
+}
+
+.content-panel__header {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    background-color: $color-default-body;
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    justify-content: center;
+    margin: 10px;
+    max-width: calc($breakpoint-max-usable-screen - 20px);
+    position: relative;
+    width: calc(100% - 20px);
+  }
+}
+
+.content-panel__header-title {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-transform: uppercase;
 }
 
 .content-panel__body {
@@ -32,14 +54,18 @@
   }
 }
 
-.content-panel__header {
-  width: 100%;
+
+.content-panel__content {
+
+  @include breakpoint($breakpoint-desktop) {
+    display: flex;
+    flex-flow: row nowrap;
+  }
 }
 
 .content-panel__navigation {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-  display: flex;
-  justify-content: flex-end;
+  display: block;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -48,46 +74,46 @@
   width: 100%;
   z-index: 10000;
   background-color: rgba(0, 0, 0, 0);
-  
+
   &.visible {
-  	background-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.25);
   }
-  
-  &:not(.displayed){
+
+  &:not(.displayed) {
     display: none;
   }
- 
-  &:not(.visible){
-  	.content-panel__navigation-content {
+
+  &:not(.visible) {
+
+    .content-panel__navigation-content {
       right: -90%;
     }
   }
-  
+
   @include breakpoint($breakpoint-desktop) {
-    &:not(.displayed){
+    bottom: auto;
+    display: flex;
+    flex-basis: calc(35% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
+    height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + 30px));
+    margin: 0 10px 0 0;
+    position: sticky;
+    right: auto;
+    top: calc(#{$navbar-desktop-height} * 1.25 + 20px);
+
+    &:not(.displayed) {
       display: block;
     }
-    &:not(.visible){
+
+    &:not(.visible) {
+
       .content-panel__navigation-content {
         right: 0;
       }
     }
   }
-  
-  .content-panel__navigation-content {
-  	@include prefix(transition, webkit moz o ms, right 0.3s);
-  	overflow-y: auto;
-  	width: 90%;
-  	position: absolute;
-  	top: 0;
-  	right: 0;
-  	bottom: 0;
-  	padding-left: 24px;
-    background-color: $color-application-panel-box-background;
-    box-shadow: 0 2px 3px $color-panel-shadow;
-    border: solid 1px $color-application-panel-box-border;
-  }
- 
+
   &.dragging {
     transition: none;
 
@@ -95,25 +121,22 @@
       transition: none;
     }
   }
- 
-  @include breakpoint($breakpoint-desktop) {
-  	top: $navbar-desktop-height;
-  	width: 400px;
-  	
-  	.content-panel__navigation-content {
-  	  width: 400px;
-      padding-left: 0;
-  	}
-  }
 }
 
-.content-panel__content {
-  padding: $navbar-mobile-height 0 0 0;
-  
+.content-panel__navigation-content {
+  @include prefix(transition, webkit moz o ms, right 0.3s);
+  overflow-y: auto;
+  width: 90%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $color-application-panel-box-background;
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  border: solid 1px $color-application-panel-box-border;
+
   @include breakpoint($breakpoint-desktop) {
-    display: flex;
-    flex-direction: row;
-    padding: 0 400px 0 0;
+    width: 100%;
   }
 }
 
@@ -126,9 +149,10 @@
   padding: 0;
   position: relative;
   margin: 0;
-  
+
   @include breakpoint($breakpoint-desktop) {
-    padding: 12px;
+    flex-basis: calc(65% - 60px);
+    margin: 0 50px 10px 10px;
   }
 }
 
@@ -142,14 +166,14 @@
 }
 
 .content-panel__navigation-open {
-  @include breakpoint($breakpoint-desktop) {
-    display: none;
-  }
-
   position: fixed;
   bottom: 10px;
   right: 10px;
   background-color: red;
   width: 25px;
   height: 25px;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
+  }
 }

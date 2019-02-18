@@ -21,12 +21,12 @@
   text-align: center;
   min-width: #{$indicator-font-size + $indicator-padding*2}px;
   padding: #{$indicator-padding}px;
-  
+
   &.indicator--main-function {
     top: 15px;
     right: 14px;
   }
- 
+
   .menu &.indicator--main-function {
     top: 50%;
     margin-top: -7px;

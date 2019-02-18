@@ -80,6 +80,19 @@
   }
 }
 
+// Wrapper for MATERIALS view
+.screen-container__wrapper--materials {
+  margin: calc(#{$navbar-mobile-height} * 1.35) 0 0;
+
+  @include breakpoint($breakpoint-pad){
+    margin: calc(#{$navbar-desktop-height} * 1.25) auto 0;
+  }
+
+  @include breakpoint($breakpoint-desktop){
+
+  }
+}
+
 .screen-container__section {
   flex-basis: 100%;
   flex-grow: 0;

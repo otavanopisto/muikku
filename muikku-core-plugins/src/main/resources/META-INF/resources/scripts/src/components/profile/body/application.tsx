@@ -16,7 +16,7 @@ interface ProfileApplicationState {
 
 class ProfileApplication extends React.Component<ProfileApplicationProps, ProfileApplicationState> {
   render(){
-    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.profile.profile')}</h2>
+    let title = this.props.i18n.text.get('plugin.profile.profile')
     return (<div>
       <ApplicationPanel modifier="profile" title={title} asideBefore={<ProfilePicture/>} disableStickyScrolling>
         <ProfileInfoAndSettings/>
