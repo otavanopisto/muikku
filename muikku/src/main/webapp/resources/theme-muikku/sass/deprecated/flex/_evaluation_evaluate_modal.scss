@@ -326,7 +326,7 @@
     }
   }
   
-  &[data-type="EVALUATION_PASS"] {
+  &[data-type="EVALUATION_PASS"],&[data-type="EVALUATION_IMPROVED"] {
    
    .eval,
    .eval-modal-workspace-event-arrow {
@@ -434,8 +434,9 @@
   background: $evaluation-failed-color;
 }
 
-// Passed grade
-.eval-modal-workspace-event[data-type="EVALUATION_PASS"] .eval-modal-workspace-event-grade {
+// Passed or improved grade
+.eval-modal-workspace-event[data-type="EVALUATION_PASS"] .eval-modal-workspace-event-grade,
+.eval-modal-workspace-event[data-type="EVALUATION_IMPROVED"] .eval-modal-workspace-event-grade {
   background: $evaluation-passed-color;
 }
 
