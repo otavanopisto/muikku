@@ -41,7 +41,7 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
               <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.nettiperuskoulu.description' )}</div>
             </div>
             <div className="card__footer">
-              <Button href="http://www.nettilukio.fi/esittely_nettipk"
+              <Button href="http://www.nettiperuskoulu.fi/esittely_nettipk"
                 buttonModifiers={["branded", "frontpage-secondary-school-readmore"]}>
                 {this.props.i18n.text.get( 'plugin.studying.readMore.link' )}</Button>
             </div>
@@ -55,7 +55,7 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
               <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.aineopiskelu.description' )}</div>
             </div>
             <div className="card__footer">
-              <Button href="http://www.nettilukio.fi/esittely_nettipk"
+              <Button href="http://aineopiskelu.otavanopisto.fi/esittely_aineopiskelu "
                 buttonModifiers={["branded", "frontpage-open-materials-readmore"]}>
                 {this.props.i18n.text.get( 'plugin.studying.readMore.link' )}</Button>
             </div>

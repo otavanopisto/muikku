@@ -33,8 +33,8 @@ class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNav
         item: (<Link href="#news" className="link link--frontpage link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.news')}</span></Link>)
       },
       {
-        modifier: "otavan-opisto",
-        item: (<Link href="#organization" className="link link--frontpage link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.otavanOpisto')}</span></Link>)
+        modifier: "organization",
+        item: (<Link href="#organization" className="link link--frontpage link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.organization')}</span></Link>)
       },
       {
         modifier: "contact",
@@ -52,7 +52,7 @@ class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNav
     ]} menuItems={[
        (<Link href="#studying" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.studying')}</span></Link>),
        (<Link href="#news" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.news')}</span></Link>),
-       (<Link href="#organization" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.otavanOpisto')}</span></Link>),
+       (<Link href="#organization" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.organization')}</span></Link>),
        (<Link href="#contact" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.contact')}</span></Link>),
        (<Link href="/coursepicker" className="link link--highlight link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.openMaterials')}</span></Link>)
     ]}/>

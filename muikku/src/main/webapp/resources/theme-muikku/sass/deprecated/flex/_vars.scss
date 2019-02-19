@@ -324,9 +324,13 @@ $evaluation-passed-color: #2ed31c;
 $evaluation-failed-color: #d31111;
 $evaluation-incomplete-color: #ea7503;
 $evaluation-requested-color: #009fe3;
+$evaluation-start-evaluation-color: #009fe3;
 $evaluation-archive-color: #4c4c4c;
 $evaluation-delete-color: #d50b36;
 $evaluation-cancel-color: #7391a7;
+$evaluation-events-grade-text-color: #fff;
+$evaluation-events-date-text-color: #2c2c2c;
+$evaluation-events-date-text-background-color: #eee;
 
 $evaluation-passed-boxshadow-color: rgba(60, 221, 3, 0.2);
 $evaluation-failed-boxshadow-color: rgba(211, 17, 17, 0.2);
@@ -393,6 +397,9 @@ $evaluation-modal-assignment-close-textshadow-color: #fff;
 $evaluation-modal-header-background-color: #3786bf;
 $evaluation-modal-header-font-color: #fff;
 
+// Evaluation Modal - Events
+$evaluation-modal-events-content-text-background-color: #f8f8f8;
+
 // Evaluation Modal - Workspace Evaluation Overlay
 
 $evaluation-modal-workspace-evaluation-form-overlay-background-color: #fff;
@@ -412,8 +419,8 @@ $evaluation-modal-button-font-color: #fff;
 
 // Evaluation Modal - Assignment Evaluation 
 
-$evaluation-modal-assignment-evaluation-background-color: #fff;
-$evaluation-modal-assignment-evaluation-header-background-color: #fff;
+$evaluation-modal-editor-background-color: #fff;
+$evaluation-modal-editor-header-background-color: #fff;
 
 // Evaluation Modal Assignment & Journal Listing
 
