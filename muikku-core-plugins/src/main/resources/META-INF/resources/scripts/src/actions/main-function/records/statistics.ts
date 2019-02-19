@@ -22,7 +22,10 @@ let updateStatistics:UpdateStatisticsTriggerType = function updateStatistics() {
       });
     }
     catch(err) {
-      //TODO: ERR
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.statistics.errormessage.statisticsUpdateFailed"), 'error'));
     }
   }
 } 

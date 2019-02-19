@@ -70,7 +70,10 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       });      
     }
     catch(err) {
-      //TODO: ERR
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.summary.errormessage.summaryUpdateFailed"), 'error'));
     }
   }
 } 

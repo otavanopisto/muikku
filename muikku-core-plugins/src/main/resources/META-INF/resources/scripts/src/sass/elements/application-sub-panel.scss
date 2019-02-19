@@ -4,12 +4,12 @@
 @import "../base/breakpoints";
 
 .application-sub-panel {
-  margin: 0 0 20px;
+  margin: 0 10px 20px;
 
   &:last-child {
     border: 0;
     padding: 0;
-    margin: 0;
+    margin: 0 10px 0;
   }
 }
 
@@ -19,7 +19,7 @@
   flex-flow: row wrap;
   font-size: 1.075rem;
   font-weight: 300;
-  padding: 0 10px;
+//  padding: 0 10px;
   text-transform: uppercase;
   width: 100%;
 
@@ -165,7 +165,12 @@
 }
 
 .application-sub-panel__card-item {
-  flex-basis: 300px;
+  margin-bottom: 10px;
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 300px;
+    margin-bottom: 0;
+  }
 }
 
 .application-sub-panel__card-header {
@@ -230,7 +235,7 @@
   flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px;
+  padding: 10px 0;
 
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
@@ -245,7 +250,6 @@
   align-items: normal;
   flex-flow: column wrap;
   flex-basis: 50;
-  padding: 10px;
 
   @include breakpoint($breakpoint-desktop) {
     flex-flow: column nowrap;
@@ -296,8 +300,8 @@
   display: flex;
   flex-basis: 50%;
   flex-shrink: 0;
-  justify-content: space-evenly;
-  padding: 5px 0;
+  justify-content: space-between;
+  padding: 5px;
 }
 
 .application-sub-panel__summary-item-label {
