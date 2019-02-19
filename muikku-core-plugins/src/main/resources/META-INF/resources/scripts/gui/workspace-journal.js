@@ -54,7 +54,7 @@
       $("#journalEntries").empty();
     },
     _loadStudents: function(workspaceId) {
-      mapi().workspace.workspaces.students.read(workspaceId, {
+      mApi().workspace.workspaces.students.read(workspaceId, {
         active: true
       })
       .callback($.proxy(function (err, students) {
