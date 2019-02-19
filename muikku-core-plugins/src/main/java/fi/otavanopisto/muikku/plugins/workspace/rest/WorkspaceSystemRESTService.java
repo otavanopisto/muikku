@@ -165,9 +165,9 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
   @Path("/syncworkspaceusers/{ID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response synchronizeWorkspaceUsers(@PathParam("ID") Long workspaceEntityId, @Context Request request) {
-    // Admins only
-    if (!sessionController.isSuperuser()) {
-      return Response.status(Status.UNAUTHORIZED).build();
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     logger.info(String.format("Synchronizing users of workspace entity %d", workspaceEntityId));
     

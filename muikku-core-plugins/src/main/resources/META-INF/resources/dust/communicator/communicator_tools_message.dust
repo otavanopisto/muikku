@@ -40,10 +40,10 @@
   </div>
   <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-hide flex-right">
      <div class="mf-tool-container navigation cm-go-previous-container">
-      <div title='{#localize key="plugin.communicator.tool.title.navigate.newer"/}' class="mf-tool cm-go-previous icon-arrow-left"></div>
+      <div title='{#localize key="plugin.communicator.tool.title.navigate.newer"/}' class="mf-tool cm-go-previous icon-arrow-left-thin"></div>
     </div>
     <div class="mf-tool-container navigation cm-go-next-container">
-      <div title='{#localize key="plugin.communicator.tool.title.navigate.older"/}' class="mf-tool cm-go-next icon-arrow-right"></div>
+      <div title='{#localize key="plugin.communicator.tool.title.navigate.older"/}' class="mf-tool cm-go-next icon-arrow-right-thin"></div>
     </div>     
   </div>
 </div> 
