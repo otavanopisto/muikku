@@ -23,7 +23,8 @@ import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials,
   setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateLastWorkspace,
-  loadStudentsOfWorkspace} from '~/actions/workspaces';
+  loadStudentsOfWorkspace,
+  loadCurrentWorkspaceJournalsFromServer} from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 import WorkspaceUsersBody from '~/components/workspace/workspaceUsers';
@@ -344,7 +345,14 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace)=>{
           if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
-            this.props.store.dispatch(loadStudentsOfWorkspace(workspace) as Action)
+            this.props.store.dispatch(loadStudentsOfWorkspace(workspace) as Action);
+          } 
+          if (!workspace.journals){
+            if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
+              this.props.store.dispatch(loadCurrentWorkspaceJournalsFromServer() as Action);
+            } else {
+              this.props.store.dispatch(loadCurrentWorkspaceJournalsFromServer(state.status.userId) as Action);
+            }
           }
         }
       }) as Action);

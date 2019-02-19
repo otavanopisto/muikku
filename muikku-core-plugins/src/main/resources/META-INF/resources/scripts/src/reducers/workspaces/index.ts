@@ -80,6 +80,26 @@ export interface WorkspaceFeeInfoType {
   evaluationHasFee: boolean
 }
 
+export interface WorkspaceJournalType {
+  id: number,
+  workspaceEntityId: number,
+  userEntityId: number,
+  firstName: string,
+  lastName: string,
+  content: string,
+  title: string,
+  created: string
+}
+
+export type WorkspaceJournalListType = Array<WorkspaceJournalType>;
+
+export interface WorkspaceJournalsType {
+  journals: WorkspaceJournalListType,
+  hasMore: boolean,
+  userEntityId?: number,
+  state: WorkspacesStateType
+}
+
 export interface WorkspaceAssessmentRequestType {
   id: string,
   userIdentifier: string,
@@ -165,6 +185,9 @@ export interface WorkspaceType {
   help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>
+      
+  //Fancy stuff in here
+  journals?: WorkspaceJournalsType
 }
 
 export interface WorkspaceUpdateType {
@@ -196,7 +219,9 @@ export interface WorkspaceUpdateType {
   staffMembers?: Array<UserStaffType>,
   contentDescription?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
-  students?: Array<ShortWorkspaceUserWithActiveStatusType>
+  students?: Array<ShortWorkspaceUserWithActiveStatusType>,
+      
+  journals?: WorkspaceJournalsType
 }
 
 export interface WorkspaceMaterialReferenceType {
@@ -267,19 +292,6 @@ export interface WorkspacesPatchType {
   currentMaterials?: MaterialContentNodeListType,
   currentMaterialsActiveNodeId?: number
 }
-
-export interface JournalType {
-  id: number,
-  workspaceEntityId: number,
-  userEntityId: number,
-  firstName: string,
-  lastName: string,
-  content: string,
-  title: string,
-  created: string
-}
-
-export type JournalListType = Array<JournalType>;
 
 export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
 

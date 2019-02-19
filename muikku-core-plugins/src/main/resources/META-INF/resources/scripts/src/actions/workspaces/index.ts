@@ -4,9 +4,9 @@ import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
-import { loadWorkspacesHelper } from '~/actions/workspaces/helpers';
+import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
-import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -146,8 +146,9 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let help:MaterialContentNodeType;
       let producers:Array<WorkspaceProducerType>;
       let isCourseMember:boolean;
+      let journals:WorkspaceJournalsType;
       let status = getState().status;
-      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help, isCourseMember] = await Promise.all([
+      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help, isCourseMember, journals] = await Promise.all([
                                                  reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
@@ -179,8 +180,10 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                  reuseExistantValue(true, workspace && workspace.help,
                                                      ()=>promisify(mApi().workspace.workspaces.help.cacheClear().read(data.workspaceId), 'callback')()),
                                                      
-                                                 reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined",
-                                                     ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')())
+                                                 reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
+                                                     ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()),
+                                                     
+                                                 reuseExistantValue(true, workspace && workspace.journals, ()=>null)
                                                      
                                                   ]) as any
       workspace.studentAssessments = assesments;
@@ -192,6 +195,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       workspace.producers = producers;
       workspace.help = help;
       workspace.isCourseMember = isCourseMember;
+      workspace.journals = journals;
 
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',
@@ -303,7 +307,13 @@ let cancelAssessmentAtWorkspace:CancelAssessmentAtWorkspaceTriggerType = functio
 export interface LoadWorkspacesFromServerTriggerType {
   (filters: WorkspacesActiveFiltersType): AnyActionType
 }
+export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
+  (userEntityId?: number): AnyActionType
+}
 export interface LoadMoreWorkspacesFromServerTriggerType {
+  (): AnyActionType
+}
+export interface LoadMoreCurrentWorkspaceJournalsFromServerTriggerType {
   (): AnyActionType
 }
 export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
@@ -361,6 +371,14 @@ let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType= function loadW
 
 let loadMoreWorkspacesFromServer:LoadMoreWorkspacesFromServerTriggerType = function loadMoreWorkspacesFromServer(){
   return loadWorkspacesHelper.bind(this, null, false);
+}
+
+let loadCurrentWorkspaceJournalsFromServer:LoadCurrentWorkspaceJournalsFromServerTriggerType = function loadCurrentWorkspaceJournalsFromServer(userEntityId){
+  return loadCurrentWorkspaceJournalsHelper.bind(this, userEntityId || null, true);
+}
+
+let loadMoreCurrentWorkspaceJournalsFromServer:LoadMoreCurrentWorkspaceJournalsFromServerTriggerType = function loadMoreCurrentWorkspaceJournalsFromServer(){
+  return loadCurrentWorkspaceJournalsHelper.bind(this, null, false);
 }
 
 let loadUserWorkspaceEducationFiltersFromServer:LoadUserWorkspaceEducationFiltersFromServerTriggerType = function loadUserWorkspaceEducationFiltersFromServer(){
@@ -648,4 +666,5 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
-  updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace}
+  updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
+  loadMoreCurrentWorkspaceJournalsFromServer}

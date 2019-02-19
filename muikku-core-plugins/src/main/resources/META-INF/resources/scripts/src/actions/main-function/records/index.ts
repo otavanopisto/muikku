@@ -3,7 +3,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType, UserFileType} from '~/reducers/user-index';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType, JournalListType, MaterialContentNodeType, MaterialAssignmentType, MaterialEvaluationType } from '~/reducers/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType, MaterialContentNodeType, MaterialAssignmentType, MaterialEvaluationType, WorkspaceJournalListType } from '~/reducers/workspaces';
 import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, CurrentRecordType } from '~/reducers/main-function/records';
 import { StateType } from '~/reducers';
 
@@ -270,7 +270,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       })(),
       
       (async ()=>{
-        let journals = <JournalListType>await promisify(mApi().workspace.workspaces.journal.read(workspaceId, {
+        let journals = <WorkspaceJournalListType>await promisify(mApi().workspace.workspaces.journal.read(workspaceId, {
           userEntityId,
           firstResult: 0,
           maxResults: 512
