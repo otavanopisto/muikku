@@ -56,9 +56,11 @@
 .application-panel__header-title {
   flex-basis: auto;
   flex-grow: 1;
-  flex-shrink: 1;  
+  flex-shrink: 1;
   font-size: 1.5rem;
-  font-weight: 300;
+  font-weight: 30;
+  height: $panel-header-title-height;
+  line-height: 1;
   text-transform: uppercase;
 }
 

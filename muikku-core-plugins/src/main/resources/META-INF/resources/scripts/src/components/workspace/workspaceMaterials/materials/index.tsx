@@ -439,13 +439,13 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       title={this.props.workspace.name} ref="content-panel">
       {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
       {this.props.materials.map((chapter)=>{
-        return <section key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
+        return <section className="content-panel__chapter" key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId} style={{
           height: this.state.loadedChapters[chapter.workspaceMaterialId] ?
             this.state.loadedChapters[chapter.workspaceMaterialId].height : chapter.children.length*DEFAULT_EMPTY_HEIGHT,
           overflow: "hidden"
         }}>
-          <h1>{chapter.title}</h1>
-          <div>
+          <h2 className="content-panel__chapter-title">{chapter.title}</h2>
+          <div className="react-required-container">
             {chapter.children.map((node)=>{
               let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
               if (this.state.loadedChapters[chapter.workspaceMaterialId]){
