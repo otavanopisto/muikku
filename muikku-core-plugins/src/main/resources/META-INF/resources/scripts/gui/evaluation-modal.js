@@ -306,6 +306,7 @@
     
     _setupEventsContainer: function() {
       this._loadEvents($.proxy(function() {
+        $('.eval-modal-workspace-event-buttonset:not(:last)').hide();
         $('.button-edit-event').on('click', $.proxy(function(event) {
           var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
           var eventElement = $(event.target).closest('.eval-modal-workspace-event'); 
