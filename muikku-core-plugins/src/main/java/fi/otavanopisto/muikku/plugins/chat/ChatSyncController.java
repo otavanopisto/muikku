@@ -142,7 +142,7 @@ public class ChatSyncController {
         }
         WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(usersWorkspace.getId());
        
-        if (workspaceChatSettings.getStatus() != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
+        if (workspaceChatSettings != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
           if (hasCorrectCurriculums) {
           
             if (chatRoomEntity == null) {
@@ -161,14 +161,14 @@ public class ChatSyncController {
               chatRoomEntity.setLogEnabled(true);
               client.createChatRoom(chatRoomEntity);
             }  
-          } 
-        }
 
-        EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
-        if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-          client.addAdmin(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
-        } else {
-          client.addMember(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+            EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
+            if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
+              client.addAdmin(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+            } else {
+              client.addMember(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+            }
+          } 
         }
       }
     } catch (Exception e) {
