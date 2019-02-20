@@ -34,6 +34,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
    */
   isVisible(hash: string) {
     switch (hash) {
+      case "hops":
       case "yo":
         const yoVisibleValues = ["yes", "maybe"]; 
         return this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1;

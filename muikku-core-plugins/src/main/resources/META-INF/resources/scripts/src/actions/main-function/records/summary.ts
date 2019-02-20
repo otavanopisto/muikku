@@ -26,7 +26,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       /* Get user id */
       
       let pyramusId = getState().status.userSchoolDataIdentifier;
-      
+            
       /* We need completed courses from Eligibility */
 
       let eligibility:any = await promisify( mApi().records.studentMatriculationEligibility
@@ -53,10 +53,15 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
         });
       });
       
+      
+      /* Does have matriculation examination in goals? */
+
+
+      
       let summaryData = {
         coursesDone: eligibility.coursesCompleted,
         activity: activityLogs.general.length,
-        returnedExercises: exercisesDone.length
+        returnedExercises: exercisesDone.length,
       }
       
       dispatch({               

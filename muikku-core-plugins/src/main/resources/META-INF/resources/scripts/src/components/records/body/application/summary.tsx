@@ -10,7 +10,7 @@ import '~/sass/elements/application-sub-panel.scss';
 
 import { RecordsType } from '~/reducers/main-function/records/records';
 import { SummaryType } from '~/reducers/main-function/records/summary';
-
+import { HOPSType } from '~/reducers/main-function/hops';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
@@ -20,7 +20,8 @@ import '~/sass/elements/application-sub-panel.scss';
 interface SummaryProps {
   i18n: i18nType,
   records: RecordsType,
-  summary: SummaryType
+  summary: SummaryType,
+  hops: HOPSType
 }
 
 interface SummaryState {
@@ -52,22 +53,25 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span></div>
             </div>
           </div>
-        </div>          
+        </div>
+              
+         let studyStatus = this.props.hops.value.goalMatriculationExam === "yes" ?
+           <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
+           <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
+           <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.stat.pre")}</div>
+           <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">{this.props.summary.summary.coursesDone}</div>
+           <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.stat.post")}</div>
+         </div>: null;
+        
+              
       return (
         <div>
-          <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</div>          
-          
+          <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.summary.title")}</div>
           {studentBasicInfo}
-
           <div className="application-sub-panel">
           <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.studyEvents")}</div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-summary-cards">
-              <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-                <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
-                <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.stat.pre")}</div>
-                <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">{this.props.summary.summary.coursesDone}</div>
-                <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.stat.post")}</div>
-              </div>                
+              {studyStatus}
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-activity">
                 <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-activity">{this.props.i18n.text.get("plugin.records.summary.card.activity.title")}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.activity.stat.pre")}</div>
@@ -132,7 +136,8 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     records: state.records,
-    summary: state.summary
+    summary: state.summary,
+    hops: state.hops
   }
 };
 
