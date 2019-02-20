@@ -45,9 +45,6 @@
 
       this._gradingScales = null;
       
-      /* TODO Deprecated, remove
-      this.element.on("dialogReady", $.proxy(this._onDialogReady, this));
-      */
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
       this.element.on("workspaceAssessmentSaved", $.proxy(this._onWorkspaceAssessmentSaved, this));
       this.element.on("workspaceSupplementationRequestSaved", $.proxy(this._onWorkspaceSupplementationRequestSaved, this));
@@ -388,7 +385,9 @@
           });
         }, this));
         
-        $('#workspaceGradeNew').text($('.graded').length > 0 ? 'Anna korotus' : 'Anna kurssiarvio');
+        $('#workspaceGradeNew').text($('.graded').length > 0
+            ? getLocaleText('plugin.evaluation.evaluationModal.events.improvedGradeButton')
+            : getLocaleText('plugin.evaluation.evaluationModal.events.gradeButton'));
         
         $('#workspaceSupplementationNew').on('click', $.proxy(function(event) {
           var mode = $('#workspaceSupplementationEditor').attr('data-mode');
@@ -426,12 +425,6 @@
       }, this));
     },
 
-    /* TODO Deprecated, remove
-    _onLiteralEvaluationEditorReady: function() {
-      this.element.trigger("dialogReady");
-    },
-    */
-    
     _loadJournalEntries: function() {
       var userEntityId = $(this._requestCard).attr('data-user-entity-id');
       var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
@@ -549,31 +542,6 @@
         }
       }
     },
-
-    /* TODO Deprecated, remove
-    _onDialogReady: function() {
-      if ($(this._requestCard).attr('data-evaluated') == 'true') {
-        var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-        var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-        var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
-        if ($(this._requestCard).attr('data-graded') == 'true') {
-          this._loadWorkspaceAssessment(workspaceUserEntityId);
-        }
-        else {
-          this._loadWorkspaceSupplementationRequest(workspaceEntityId, userEntityId);
-        }
-      }
-      else {
-        $('#workspaceEvaluationDate').datepicker('setDate', new Date());
-        $('#workspaceAssessor').val(MUIKKU_LOGGED_USER);
-        $('#workspaceGradedButton').prop('checked', true);
-        $('#workspaceGrade').prop('disabled', false);
-        $('#workspaceGrade').prop('selectedIndex', 0);
-      }
-      this._loadMaterials();
-      this._loadJournalEntries();
-    },
-    */
 
     _onMaterialsLoaded: function(event, data) {
       $.each(data.assignments, $.proxy(function(index, assignment) {
@@ -1033,26 +1001,6 @@
       }, this));
     },
     
-    /* TODO Refactor these
-    _deleteEvaluationData: function() {
-      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-      mApi().evaluation.workspace.user.evaluationdata
-        .del(workspaceEntityId, userEntityId)
-        .callback($.proxy(function (err) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            $('.button-delete').hide();
-            this.element.trigger("cardStateChange", {card: $(this._requestCard), evaluated: false, graded: false});
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.deleteSuccessful"));
-            this.close();
-          }
-        }, this));
-    },
-    */
-
     _saveMaterialAssessment: function() {
       if (this._savingMaterialAssessment) {
         return;
