@@ -326,7 +326,8 @@
     }
   }
   
-  &[data-type="EVALUATION_PASS"],&[data-type="EVALUATION_IMPROVED"] {
+  &[data-type="EVALUATION_PASS"],
+  &[data-type="EVALUATION_IMPROVED"] {
    
    .eval,
    .eval-modal-workspace-event-arrow {
