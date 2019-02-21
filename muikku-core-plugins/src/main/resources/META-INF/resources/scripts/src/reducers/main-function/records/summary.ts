@@ -10,6 +10,7 @@ export interface SummaryDataType {
   eligibilityStatus: number,
   activity: number,
   returnedExercises: number,
+  coursesDone: number
 }
 
 export interface SummaryType {

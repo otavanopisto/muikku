@@ -40,6 +40,8 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       /* We need returned exercises */
 
       let exercisesDone:any = [];
+      let coursesDone:any = [];
+      
       
       /* Getting past the object with keys */
       
@@ -49,19 +51,19 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       
       activityArrays.forEach(function(element:any) {
         element.find(function(param:any) {
-          param["type"] == "MATERIAL_EXERCISEDONE" ? exercisesDone.push(param["type"]) : null;
+          param["type"] == "MATERIAL_EXERCISEDONE" ? exercisesDone.push(param["type"]) : param["type"] == "EVALUATION_GOTPASSED" ? coursesDone.push(param["type"]) : null;
+          ;
         });
       });
       
       
       /* Does have matriculation examination in goals? */
-
-
       
       let summaryData = {
         eligibilityStatus: eligibility.coursesCompleted,
         activity: activityLogs.general.length,
         returnedExercises: exercisesDone.length,
+        coursesDone: coursesDone.length
       }
       
       dispatch({               
