@@ -155,6 +155,11 @@
     flex-basis: calc(65% - 60px);
     margin: 0 50px 10px 10px;
   }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: calc(65% - 80px);
+    margin: 0 70px 10px 10px;
+  }
 }
 
 .content-panel__chapter {
@@ -162,20 +167,12 @@
 }
 
 .content-panel__chapter-title {
-  font-size: 1.25rem;
+  font-size: 1.375rem;
   font-weight: 300;
 }
 
 .content-panel__item {
-  background-color: $color-application-panel-box-background;
-  width: 100%;
-  padding: 20px;
-  border: solid 1px $color-application-panel-box-border;
-  margin: 0 0 25px;
 
-  &:last-child {
-    margin: 0;
-  }
 }
 
 .content-panel__navigation-open {

@@ -451,10 +451,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               if (this.state.loadedChapters[chapter.workspaceMaterialId]){
                 let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
                 let material = !this.props.workspace || !this.props.materialReplies  ? null : <ContentPanelItem>
-                  <h3>{node.title}</h3>
                   <WorkspaceMaterial materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
                 </ContentPanelItem>;
-                return <div ref={node.workspaceMaterialId + ""}
+                return <div className="react-required-container" ref={node.workspaceMaterialId + ""}
                   key={node.workspaceMaterialId}>
                   {anchor}
                   {material}

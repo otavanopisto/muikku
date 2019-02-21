@@ -235,7 +235,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       let parentElement = element.parentElement;
       
       //and we replace the object with another parent that will be the root of react
-      let newParentElement = document.createElement('p');
+      let newParentElement = document.createElement('span');
       parentElement.replaceChild(newParentElement, element);
       
       //We take the field registry and register it
@@ -271,7 +271,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       
         //we do the same we did in the dynamics
         let parentElement = element.parentElement;
-        let newParentElement = document.createElement('p');
+        let newParentElement = document.createElement('div');
         parentElement.replaceChild(newParentElement, element);
         
         //And we push it but we add the content key to save time on updates
@@ -468,6 +468,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   render(){
     //This is all there is we just glue the HTML in there
     //and pick out the content from there
-    return <div ref="base" className="page-content __deprecated"/>;
+    return <div ref="base" className="material-page__content rich-text __deprecated"/>;
   }
 }

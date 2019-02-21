@@ -407,13 +407,14 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
     
     //Setting this up
-    return <div className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} rich-text`} ref="root" id={this.props.id}>
+    return <article className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")}`} ref="root" id={this.props.id}>
+      <h2 className="material-page__title">{this.props.material.title}</h2>
       {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
           <div className="">
-            <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
+            <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>
        : null}
-      <div className="" onClick={this.stopPropagation}>
+      <div className="react-required-container" onClick={this.stopPropagation}>
         {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
          <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}
           workspace={this.props.workspace} websocket={this.props.websocket} onConfirmedAndSyncedModification={this.onConfirmedAndSyncedModification}
@@ -423,7 +424,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           checkForRightness={this.state.answersChecked} onRightnessChange={this.onRightnessChange} onAnswerCheckableChange={this.onAnswerCheckableChange}/>
          }
       </div>
-      {this.props.answerable && this.stateConfiguration ? <div className="material-page-answers-buttons">
+      {this.props.answerable && this.stateConfiguration ? <div className="material-page__buttonset">
         {!this.stateConfiguration['button-disabled'] ? <Button buttonModifiers={this.stateConfiguration['button-class']}
           onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.state.answerCheckable ?
             this.stateConfiguration['button-check-text'] : this.stateConfiguration['button-text'])}</Button> : null}
@@ -433,15 +434,17 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
             {this.props.i18n.text.get(this.state.answersVisible ? "plugin.workspace.materialsLoader.hideAnswers" : "plugin.workspace.materialsLoader.showAnswers")}
           </Button> : null}
       </div> : null}
-      {this.state.answersChecked && Object.keys(this.state.rightnessRegistry).length ? <div className="correct-answers-count-container">
-        <span className="correct-answers-count-label">{this.props.i18n.text.get("plugin.workspace.materialsLoader.correctAnswersCountLabel")}</span>
-        <span className="correct-answers-count-data">
+      {this.state.answersChecked && Object.keys(this.state.rightnessRegistry).length ? <div className="material-page__correct-answers">
+        <span className="material-page__correct-answers-label">{this.props.i18n.text.get("plugin.workspace.materialsLoader.correctAnswersCountLabel")}</span>
+        <span className="material-page__correct-answers-data">
           {Object.keys(this.state.rightnessRegistry).filter((key)=>this.state.rightnessRegistry[key]).length} / {Object.keys(this.state.rightnessRegistry).length}
         </span>
       </div> : null}
+      {this.props.material.producers ?
+        <div className="material-page__producers">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}: {this.props.material.producers}</div> : null}
       {this.props.material.license ?
-        <div className="license">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}: {this.props.material.license}</div> : null}
-    </div>
+        <div className="material-page__license">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}: {this.props.material.license}</div> : null}
+    </article>
   }
 }
 

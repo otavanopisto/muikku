@@ -49,7 +49,7 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
     }
     
     return <Navigation>
-      {this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}
+      {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
       {
         this.props.materials.map((node)=>{
           return <NavigationTopic name={node.title} key={node.workspaceMaterialId}>

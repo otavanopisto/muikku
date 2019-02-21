@@ -4,9 +4,19 @@
 @import "../base/breakpoints";
 
 .material-page {
-  margin: 10px;
+  background-color: $color-application-panel-box-background;
+  border: solid 1px $color-application-panel-box-border;
+  margin: 10px 0 0;
+  padding: 10px;
+  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 15px;
+    margin: 20px 0 0;
+    padding: 20px;
   }
+}
+
+.material-page__title {
+  font-size: 1.375rem;
+  font-weight: 300;
 }
