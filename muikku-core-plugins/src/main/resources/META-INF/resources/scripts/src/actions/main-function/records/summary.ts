@@ -40,7 +40,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       /* We need returned exercises */
 
       let exercisesDone:any = [];
-
+      
       /* Getting past the object with keys */
       
       let activityArrays:any = Object.keys(activityLogs).map(key => activityLogs[key]); 
@@ -59,7 +59,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
 
       
       let summaryData = {
-        coursesDone: eligibility.coursesCompleted,
+        eligibilityStatus: eligibility.coursesCompleted,
         activity: activityLogs.general.length,
         returnedExercises: exercisesDone.length,
       }
