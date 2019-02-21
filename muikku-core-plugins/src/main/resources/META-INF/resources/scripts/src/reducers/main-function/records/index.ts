@@ -1,7 +1,7 @@
 import { UserWithSchoolDataType, UserFileType } from "~/reducers/user-index";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
-import { WorkspaceCurriculumFilterListType, JournalListType, MaterialContentNodeListType } from "~/reducers/workspaces";
+import { WorkspaceCurriculumFilterListType, WorkspaceJournalListType, MaterialContentNodeListType } from "~/reducers/workspaces";
 
 export interface TransferCreditType {
   assessorIdentifier: string,
@@ -48,7 +48,7 @@ export interface RecordsGradesType {
 
 export interface CurrentRecordType {
   workspace: WorkspaceType,
-  journals: JournalListType,
+  journals: WorkspaceJournalListType,
   materials: MaterialContentNodeListType
 }
 

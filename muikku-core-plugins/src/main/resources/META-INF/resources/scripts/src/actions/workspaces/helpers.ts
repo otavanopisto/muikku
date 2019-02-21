@@ -5,10 +5,11 @@ import mApi, { MApiError } from '~/lib/mApi';
 
 import {AnyActionType} from '~/actions';
 import { StateType } from '~/reducers';
-import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType } from '~/reducers/workspaces';
+import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType } from '~/reducers/workspaces';
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
+const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 
 export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
@@ -120,6 +121,108 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
     dispatch({
       type: "UPDATE_WORKSPACES_STATE",
       payload: <WorkspacesStateType>"ERROR"
+    });
+  }
+}
+
+export async function loadCurrentWorkspaceJournalsHelper(userEntityId:number | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+  let state: StateType = getState();
+  let currentWorkspace = state.workspaces.currentWorkspace;
+  
+  //Avoid loading again for the first time
+  if (initial && userEntityId === userEntityId && currentWorkspace.journals && currentWorkspace.journals.state === "READY"){
+    return;
+  }
+  
+  let actualUserEntityId = userEntityId || currentWorkspace.journals && currentWorkspace.journals.userEntityId || null;
+  
+  let journalNextstate:WorkspacesStateType;
+  //If it's for the first time
+  if (initial){
+    //We set this state to loading
+    journalNextstate = "LOADING";
+  } else {
+    //Otherwise we are loading more
+    journalNextstate = "LOADING_MORE";
+  }
+  
+  dispatch({
+    type: "UPDATE_WORKSPACE",
+    payload: {
+      original: currentWorkspace,
+      update: {
+        journals: {
+          journals: currentWorkspace.journals ? currentWorkspace.journals.journals : [],
+          hasMore: (currentWorkspace.journals && currentWorkspace.journals.hasMore) || false,
+          userEntityId,
+          state: journalNextstate
+        }
+      }
+    }
+  });
+  
+  let workspaceId = currentWorkspace.id;
+  
+  let params:any = {
+    firstResult: initial ? 0 : (currentWorkspace.journals && currentWorkspace.journals.journals.length || 0),
+    maxResults: MAX_JOURNAL_LOADED_AT_ONCE + 1
+  }
+  
+  if (userEntityId){
+    params.userEntityId = userEntityId;
+  }
+  
+  try {
+    let journals:WorkspaceJournalListType = 
+      <WorkspaceJournalListType>await promisify(mApi().workspace.workspaces.journal.read(workspaceId, params), 'callback')();
+  
+    //update current workspace again in case
+    currentWorkspace = getState().workspaces.currentWorkspace;
+  
+    let hasMore:boolean = journals.length === MAX_LOADED_AT_ONCE + 1;
+  
+    let actualJournals = journals.concat([]);
+    if (hasMore){
+      //we got to get rid of that extra loaded message
+      actualJournals.pop();
+    }
+    
+    dispatch({
+      type: "UPDATE_WORKSPACE",
+      payload: {
+        original: currentWorkspace,
+        update: {
+          journals: {
+            journals: actualJournals,
+            hasMore,
+            userEntityId,
+            state: <WorkspacesStateType>"READY"
+          }
+        }
+      }
+    });
+  } catch (err){
+    if (!(err instanceof MApiError)){
+      throw err;
+    }
+    //update current workspace again in case
+    currentWorkspace = getState().workspaces.currentWorkspace;
+    
+    //Error :(
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRMSG load journal error"), 'error'));
+    dispatch({
+      type: "UPDATE_WORKSPACE",
+      payload: {
+        original: currentWorkspace,
+        update: {
+          journals: {
+            journals: currentWorkspace.journals ? currentWorkspace.journals.journals : [],
+            hasMore: (currentWorkspace.journals && currentWorkspace.journals.hasMore) || false,
+            userEntityId,
+            state: <WorkspacesStateType>"ERROR"
+          }
+        }
+      }
     });
   }
 }

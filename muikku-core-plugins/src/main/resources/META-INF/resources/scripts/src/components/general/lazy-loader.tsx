@@ -24,6 +24,12 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
     this.checkWhetherInView();
     window.addEventListener('scroll', this.onScroll);
   }
+  componentDidUpdate(){
+    this.checkWhetherInView();
+  }
+  componentWillReceiveProps(){
+    this.checkWhetherInView();
+  }
   checkWhetherInView(){
     if (this.state.loaded){
       return;
