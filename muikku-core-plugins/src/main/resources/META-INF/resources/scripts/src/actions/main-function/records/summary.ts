@@ -37,7 +37,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       let activityLogs:any = await promisify(mApi().activitylogs.user
           .read(pyramusId, {from: new Date(new Date().setMonth(new Date().getMonth()-1)), to: new Date()}), 'callback')();
 
-      /* We need returned exercises */
+      /* We need returned exercises and evaluated courses */
 
       let exercisesDone:any = [];
       let coursesDone:any = [];
@@ -47,15 +47,13 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       
       let activityArrays:any = Object.keys(activityLogs).map(key => activityLogs[key]); 
 
-      /* picking the done exercises from the objects */
+      /* picking the done exercises and evaluated courses from the objects */
       
       activityArrays.forEach(function(element:any) {
         element.find(function(param:any) {
           param["type"] == "MATERIAL_EXERCISEDONE" ? exercisesDone.push(param["type"]) : param["type"] == "EVALUATION_GOTPASSED" ? coursesDone.push(param["type"]) : null;
-          ;
         });
       });
-      
       
       /* Does have matriculation examination in goals? */
       
@@ -84,7 +82,6 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
     }
   }
 } 
-
 
 export default {updateSummary};
 export {updateSummary};
