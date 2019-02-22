@@ -1,5 +1,6 @@
 import WorkspaceNavbar from '~/components/base/workspace/navbar';
 import ScreenContainer from '~/components/general/screen-container';
+import Application from './body/application';
 
 import * as React from 'react';
 
@@ -19,7 +20,7 @@ export default class WorkspaceJournalBody extends React.Component<WorkspaceJourn
     return (<div>
       <WorkspaceNavbar activeTrail="journal" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="journal">
-        
+        <Application />
       </ScreenContainer>
     </div>);
   }

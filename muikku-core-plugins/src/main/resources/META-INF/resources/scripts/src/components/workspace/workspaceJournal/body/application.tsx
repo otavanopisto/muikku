@@ -18,11 +18,14 @@ import { WorkspaceType } from '~/reducers/workspaces';
 import { StatusType } from '~/reducers/base/status';
 import { getName } from '~/util/modifiers';
 import Button from '~/components/general/button';
+import { bindActionCreators } from 'redux';
+import { loadCurrentWorkspaceJournalsFromServer, LoadCurrentWorkspaceJournalsFromServerTriggerType } from '~/actions/workspaces';
 
 interface WorkspaceJournalApplicationProps {
   i18n: i18nType,
   workspace: WorkspaceType
-  status: StatusType
+  status: StatusType,
+  loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromServerTriggerType
 }
 
 interface WorkspaceJournalApplicationState {
@@ -36,8 +39,8 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
   }
 
   onWorkspaceJournalFilterChange(e: React.ChangeEvent<HTMLSelectElement>){
-    let newValue = e.target.value;
-    console.log(newValue)
+    let newValue = parseInt(e.target.value) || null;
+    this.props.loadCurrentWorkspaceJournalsFromServer(newValue);
   }
   render(){
     let title = <h2 className="application-panel__header-title">
@@ -50,10 +53,11 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
       primaryOption = <div className="form-element"> 
         {!this.props.status.isStudent ?
           <select className="form-element__select form-element__select--main-action"
-            value={this.props.workspace.journals.userEntityId} onChange={this.onWorkspaceJournalFilterChange}>
+            value={this.props.workspace.journals.userEntityId || ""} onChange={this.onWorkspaceJournalFilterChange}>
+            <option value="">{this.props.i18n.text.get("plugin.workspace.journal.studentFilter.showAll")}</option>
             {this.props.workspace.students
-              .filter((student, index, array)=>array.findIndex(
-                (otherStudent, otherIndex)=>otherStudent.userEntityId === student.userEntityId && index !== otherIndex) !== -1
+              .filter((student, index, array)=>
+                array.findIndex((otherStudent, otherIndex)=>otherStudent.userEntityId === student.userEntityId) === index
               ).map((student)=>{
               return <option key={student.userEntityId} value={student.userEntityId}>{getName(student, true)}</option>
             })}
@@ -83,7 +87,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({loadCurrentWorkspaceJournalsFromServer}, dispatch);
 };
 
 export default connect(
