@@ -278,6 +278,22 @@
         <artifactId>openfire-rest-client</artifactId>
         <version>${muikku.version}</version>
       </dependency>
+<<<<<<< HEAD
+    
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>matriculation-plugin-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+      
+			<!-- Coops -->
+			<dependency>
+				<groupId>fi.foyt.coops</groupId>
+				<artifactId>coops-spec</artifactId>
+				<version>${coops-spec.version}</version>
+			</dependency>
+=======
+>>>>>>> refs/remotes/upstream/devel
 
       <!-- Coops -->
       <dependency>
