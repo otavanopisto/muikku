@@ -42,11 +42,9 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
     if (!this.state.enabled) {
         return null;
     }
-    return (
-        <a href="/jsf/matriculation/index.jsf">
-            {this.props.i18n.text.get("plugin.records.matriculationLink")}
-        </a>
-    );
+    return <div className="application-sub-panel application-sub-panel--matriculation-enrollment">
+      <a className="link link--matriculation-enrollment" href="/jsf/matriculation/index.jsf">{this.props.i18n.text.get("plugin.records.matriculationLink")}</a>
+    </div>
   }
 
 }

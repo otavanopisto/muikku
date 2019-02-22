@@ -17,7 +17,6 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/journal.scss';
 
 import ApplicationList, { ApplicationListItem, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
-import { MatriculationLink } from './matriculation-link';
 
 interface CurrentRecordProps {
   i18n: i18nType,
@@ -67,7 +66,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
         {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
       </div>
       <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
-        {workspaceEvaluation}      
+        {workspaceEvaluation}
         <ApplicationList>
           <div className="application-list__header-container"><h3 className="application-list__header">{this.props.i18n.text.get("plugin.records.assignments.title")}</h3></div>
           {this.props.records.current.materials.map((material)=>{
@@ -88,9 +87,8 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
               </ApplicationListItem>
             })}
           </div>
-        </div> : null}        
+        </div> : null}
       </div>
-      <MatriculationLink i18n={this.props.i18n} />
     </div>
   }
 }

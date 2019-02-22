@@ -319,3 +319,11 @@
 .application-sub-panel__item--course-activity {
   padding: 10px 0;
 }
+
+// This is related to matriculation enrollment and needs to be done different when Studies view gets integrated to devel
+.application-sub-panel--matriculation-enrollment {
+  border: 0;
+  margin: 0;
+}
+
+
