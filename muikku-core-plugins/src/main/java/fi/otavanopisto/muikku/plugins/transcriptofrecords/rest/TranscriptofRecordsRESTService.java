@@ -36,9 +36,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
-import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -52,13 +50,13 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private static final long serialVersionUID = -6752333351301485518L;
 
   @Inject
+  private TranscriptOfRecordsController transcriptOfRecordsController;
+
+  @Inject
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
 
   @Inject
   private SessionController sessionController;
-
-  @Inject
-  private TranscriptOfRecordsController vopsController;
 
   @Inject
   private UserController userController;
@@ -67,18 +65,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private UserEntityController userEntityController;
 
   @Inject
-  private EnvironmentUserController environmentUserController;
-
-  private WorkspaceUserEntityController workspaceUserEntityController;
-
-  @Inject
-  private PluginSettingsController pluginSettingsController;
-  
-  @Inject
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
-
-  @Inject
-  private GradingController gradingController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -95,8 +82,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
 
-    TranscriptOfRecordsFile file = transcriptOfRecordsFileController
-        .findFileById(fileId);
+    TranscriptOfRecordsFile file = transcriptOfRecordsFileController.findFileById(fileId);
 
     if (file == null) {
       return Response.status(Status.NOT_FOUND).entity("File not found").build();
@@ -136,7 +122,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     
     try {
-      VopsLister.Result listerResult = vopsController.listVopsCourses(studentIdentifierString,
+      VopsLister.Result listerResult = transcriptOfRecordsController.listVopsCourses(studentIdentifierString,
             studentIdentifier);
 
       VopsRESTModel result = new VopsRESTModel(
@@ -162,7 +148,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return null;
     }
 
-    TranscriptofRecordsUserProperties userProperties = vopsController.loadUserProperties(user);
+    TranscriptofRecordsUserProperties userProperties = transcriptOfRecordsController.loadUserProperties(user);
     
     return new HopsRESTModel(
         userProperties.asString("goalSecondarySchoolDegree"),
@@ -226,7 +212,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     User user = userController.findUserByIdentifier(userIdentifier);
 
-    if (!vopsController.shouldShowStudies(user)) {
+    if (!transcriptOfRecordsController.shouldShowStudies(user)) {
       return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
     }
 
@@ -310,24 +296,24 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
 
-    vopsController.saveStringProperty(user, "goalSecondarySchoolDegree", model.getGoalSecondarySchoolDegree());
-    vopsController.saveStringProperty(user, "goalMatriculationExam", model.getGoalMatriculationExam());
-    vopsController.saveStringProperty(user, "vocationalYears", model.getVocationalYears());
-    vopsController.saveStringProperty(user, "goalJustMatriculationExam", model.getGoalJustMatriculationExam());
-    vopsController.saveStringProperty(user, "justTransferCredits", model.getJustTransferCredits());
-    vopsController.saveStringProperty(user, "transferCreditYears", model.getTransferCreditYears());
-    vopsController.saveStringProperty(user, "completionYears", model.getCompletionYears());
-    vopsController.saveStringProperty(user, "mathSyllabus", model.getMathSyllabus());
-    vopsController.saveStringProperty(user, "finnish", model.getFinnish());
-    vopsController.saveBoolProperty(user, "swedish", model.isSwedish());
-    vopsController.saveBoolProperty(user, "english", model.isEnglish());
-    vopsController.saveBoolProperty(user, "german", model.isGerman());
-    vopsController.saveBoolProperty(user, "french", model.isFrench());
-    vopsController.saveBoolProperty(user, "italian", model.isItalian());
-    vopsController.saveBoolProperty(user, "spanish", model.isSpanish());
-    vopsController.saveStringProperty(user, "science", model.getScience());
-    vopsController.saveStringProperty(user, "religion", model.getReligion());
-    vopsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
+    transcriptOfRecordsController.saveStringProperty(user, "goalSecondarySchoolDegree", model.getGoalSecondarySchoolDegree());
+    transcriptOfRecordsController.saveStringProperty(user, "goalMatriculationExam", model.getGoalMatriculationExam());
+    transcriptOfRecordsController.saveStringProperty(user, "vocationalYears", model.getVocationalYears());
+    transcriptOfRecordsController.saveStringProperty(user, "goalJustMatriculationExam", model.getGoalJustMatriculationExam());
+    transcriptOfRecordsController.saveStringProperty(user, "justTransferCredits", model.getJustTransferCredits());
+    transcriptOfRecordsController.saveStringProperty(user, "transferCreditYears", model.getTransferCreditYears());
+    transcriptOfRecordsController.saveStringProperty(user, "completionYears", model.getCompletionYears());
+    transcriptOfRecordsController.saveStringProperty(user, "mathSyllabus", model.getMathSyllabus());
+    transcriptOfRecordsController.saveStringProperty(user, "finnish", model.getFinnish());
+    transcriptOfRecordsController.saveBoolProperty(user, "swedish", model.isSwedish());
+    transcriptOfRecordsController.saveBoolProperty(user, "english", model.isEnglish());
+    transcriptOfRecordsController.saveBoolProperty(user, "german", model.isGerman());
+    transcriptOfRecordsController.saveBoolProperty(user, "french", model.isFrench());
+    transcriptOfRecordsController.saveBoolProperty(user, "italian", model.isItalian());
+    transcriptOfRecordsController.saveBoolProperty(user, "spanish", model.isSpanish());
+    transcriptOfRecordsController.saveStringProperty(user, "science", model.getScience());
+    transcriptOfRecordsController.saveStringProperty(user, "religion", model.getReligion());
+    transcriptOfRecordsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
 
     return Response.ok().entity(model).build();
   }
