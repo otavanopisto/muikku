@@ -445,24 +445,18 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           overflow: "hidden"
         }}>
           <h2 className="content-panel__chapter-title">{chapter.title}</h2>
-          <div className="react-required-container">
-            {chapter.children.map((node)=>{
-              let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
-              if (this.state.loadedChapters[chapter.workspaceMaterialId]){
-                let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
-                let material = !this.props.workspace || !this.props.materialReplies  ? null : <ContentPanelItem>
-                  <WorkspaceMaterial materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
-                </ContentPanelItem>;
-                return <div className="react-required-container" ref={node.workspaceMaterialId + ""}
-                  key={node.workspaceMaterialId}>
-                  {anchor}
-                  {material}
-                </div>
-              }
-              return <div key={node.workspaceMaterialId} style={{height: DEFAULT_EMPTY_HEIGHT}}
-                ref={node.workspaceMaterialId + ""}>{anchor}</div>
-             })}
-           </div>
+          {chapter.children.map((node)=>{
+            let anchor = <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>;
+            if (this.state.loadedChapters[chapter.workspaceMaterialId]){
+              let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
+              let material = !this.props.workspace || !this.props.materialReplies  ? null : <ContentPanelItem ref={node.workspaceMaterialId + ""}>
+                <WorkspaceMaterial materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
+              </ContentPanelItem>;
+              return material;
+            }
+            return <div key={node.workspaceMaterialId} style={{height: DEFAULT_EMPTY_HEIGHT}}
+              ref={node.workspaceMaterialId + ""}>{anchor}</div>
+           })}
          </section>
        })
       }

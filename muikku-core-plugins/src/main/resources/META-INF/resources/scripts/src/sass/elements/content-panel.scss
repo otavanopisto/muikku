@@ -44,6 +44,7 @@
   font-weight: 300;
   height: $panel-header-title-height;
   line-height: 1;
+  padding: 0 20px;
   text-transform: uppercase;
 }
 
@@ -167,12 +168,25 @@
 }
 
 .content-panel__chapter-title {
+  background: #fff;
+  border-left: solid 1px $color-application-panel-box-border;
+  border-top: solid 1px $color-application-panel-box-border;
+  border-right: solid 1px $color-application-panel-box-border;
   font-size: 1.375rem;
-  font-weight: 300;
+  font-weight: 400;
+  margin: 0 0 -21px;
+  padding: 10px 20px;
+  position: relative;
+  z-index: 2;
 }
 
 .content-panel__item {
+  border: solid 1px $color-application-panel-box-border;
+  margin: 10px 0 0;
 
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0 0;
+  }
 }
 
 .content-panel__navigation-open {

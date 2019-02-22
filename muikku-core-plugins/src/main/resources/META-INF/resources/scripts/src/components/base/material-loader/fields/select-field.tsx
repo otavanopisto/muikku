@@ -139,12 +139,12 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
         markRightAnswers = true;
         //we make the summary component, note we might have an explanation
         //For some reason it saves to no explanation
-        rightAnswerSummaryComponent = <span className="muikku-field-examples">
-          <span className="muikku-field-examples-title">
+        rightAnswerSummaryComponent = <span className="material-page__field-answer-examples">
+          <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
           </span>
           {rightAnswersFound.map((answer, index)=>
-            <span key={index} className="muikku-field-example">{answer.text}</span>
+            <span key={index} className="material-page__field-answer-example">{answer.text}</span>
           )}
           {this.props.content.explanation ? <span className="explanation-wrapper">
              <Dropdown openByHover modifier="word-definition" content={this.props.content.explanation}>
@@ -153,12 +153,12 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
            </span> : null}
         </span>;
       } else if (this.props.content.explanation) {
-        //Otherwise if there was no right answer say with a state of UNKNOWN, then we show the explanation if avaliable
-        rightAnswerSummaryComponent = <span className="muikku-field-examples">
-          <span className="muikku-field-examples-title">
+        //Otherwise if there were no right answer say with a state of UNKNOWN, then we show the explanation if avaliable
+        rightAnswerSummaryComponent = <span className="material-page__field-answer-examples">
+          <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
           </span>
-          <span className="muikku-field-example">{this.props.content.explanation}</span>
+          <span className="material-page__field-answer-example">{this.props.content.explanation}</span>
         </span>;
       }
     }
@@ -168,37 +168,37 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
-      return <div>
-        <select className={`muikku-select-field muikku-field ${classNameState}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
+      return <span className="material-page__select-wrapper">
+        <select className={classNameState} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
           {this.props.content.options.map(o=>{
             let className = null;
             //if right answers are to be market regarding whether they are correct or not
             if (markRightAnswers && o.correct){
-              className = "muikku-select-field-right-answer"
+              className = "correct-answer"
             } else if (markRightAnswers){
-              className = "muikku-select-field-wrong-answer"
+              className = "incorrect-answer"
             }
             return <option className={className} key={o.name} value={o.name}>{o.text}</option>
           })}
         </select>
         {rightAnswerSummaryComponent}
-      </div>
+      </span>
     }
-    
+
     //this is for the standard
-    return <span className={`muikku-select-field radiobutton-${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} muikku-field ${classNameState}`}>
+    return <span className={`material-page__radiobutton-wrapper material-page__page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${classNameState}`}>
       {this.props.content.options.map(o=>{
         let className = null;
         //if right answers are to be market regarding whether they are correct or not
         if (markRightAnswers && o.correct){
-          className = "muikku-select-field-right-answer"
+          className = "correct-answer"
         } else if (markRightAnswers){
-          className = "muikku-select-field-wrong-answer"
+          className = "incorrect-answer"
         }
         return <span className={className} key={o.name}>
-          <input type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
+          <input className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
           <label>{o.text}</label>
         </span>
       })}

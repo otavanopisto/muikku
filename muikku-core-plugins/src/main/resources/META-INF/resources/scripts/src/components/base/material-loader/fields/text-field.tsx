@@ -181,10 +181,10 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     }
     
     //Standard modifiable version
-    return <div>
-      <input className={`muikku-text-field muikku-field ${classNameState}`} type="text" value={this.state.value}
+    return <span className="material-page__textfield-wrapper">
+      <input className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}
         size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
       {rightAnswerSummaryComponent}
-    </div>
+    </span>
   }
 }

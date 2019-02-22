@@ -127,11 +127,11 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     let answerExampleComponent = null;
     //it's simply set when we get it
     if (this.props.displayRightAnswers && this.props.content.example){
-      answerExampleComponent = <span className="muikku-field-examples">
-        <span className="muikku-field-examples-title">
+      answerExampleComponent = <span className="material-page__field-answer-examples">
+        <span className="material-page__field-answer-title">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
         </span>
-        <span className="muikku-field-example">{this.props.content.example}</span>
+        <span className="material-page__field-answer-example">{this.props.content.example}</span>
       </span>
     }
     
@@ -140,28 +140,28 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     //if readonly
     if  (this.props.readOnly){
       //depending to whether richedit or not we make it be with the value as inner html or just raw text
-      field = !this.props.content.richedit ? <div className="muikku-memo-field muikku-field">{this.state.value}</div> :
-              <div className="muikku-memo-field muikku-field" dangerouslySetInnerHTML={{__html:this.state.value}}/>
+      field = !this.props.content.richedit ? <div className="material-page__memofield">{this.state.value}</div> :
+              <div className="material-page__memofield" dangerouslySetInnerHTML={{__html:this.state.value}}/>
     } else {
       //here we make it be a simple textarea or a rich text editor
       //note how somehow numbers come as string...
-      field = !this.props.content.richedit ? <textarea className="muikku-memo-field muikku-field" cols={parseInt(this.props.content.columns)}
+      field = !this.props.content.richedit ? <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)}
           rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
             <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
              onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
     }
     
     //and here the element itself
-    return <div>
+    return <div className="material-page__memofield-wrapper">
       {field}
-      <div className="count-container">
-        <div className="word-count-container">
-          <div className="word-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}</div>
-          <div className="word-count">{this.state.words}</div>
+      <div className="material-page__count-container">
+        <div className="material-page__word-count-container">
+          <div className="material-page__word-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}</div>
+          <div className="material-page__word-count">{this.state.words}</div>
         </div>
-        <div className="character-count-container">
-          <div className="character-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.characterCount")}</div>
-          <div className="character-count">{this.state.characters}</div>
+        <div className="material-page__character-count-container">
+          <div className="material-page__character-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.characterCount")}</div>
+          <div className="material-page__character-count">{this.state.characters}</div>
         </div>
       </div>
       {answerExampleComponent}

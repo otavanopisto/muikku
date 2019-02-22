@@ -271,7 +271,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       
         //we do the same we did in the dynamics
         let parentElement = element.parentElement;
-        let newParentElement = document.createElement('div');
+        let newParentElement = document.createElement('span');
         parentElement.replaceChild(newParentElement, element);
         
         //And we push it but we add the content key to save time on updates

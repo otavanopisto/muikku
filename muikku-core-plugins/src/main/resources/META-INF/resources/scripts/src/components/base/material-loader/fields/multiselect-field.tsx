@@ -164,12 +164,12 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
         //we gotta mark those that are correct
         markRightAnswers = true
         //and we make the summary component
-        rightAnswerSummaryComponent = <span className="muikku-field-examples">
-          <span className="muikku-field-examples-title">
+        rightAnswerSummaryComponent = <span className="material-page__field-answer-examples">
+          <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
           </span>
           {rightAnswersFound.map((answer, index)=>
-            <span key={index} className="muikku-field-example">{answer.text}</span>
+            <span key={index} className="material-page__field-answer-example">{answer.text}</span>
           )}
           {this.props.content.explanation ? <span className="explanation-wrapper">
              <Dropdown openByHover modifier="word-definition" content={this.props.content.explanation}>
@@ -180,11 +180,11 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
       //otherwise we just show the explanation if we got one
       //this might happen if the state is unknown for example
       } else if (this.props.content.explanation) {
-        rightAnswerSummaryComponent = <span className="muikku-field-examples">
-          <span className="muikku-field-examples-title">
+        rightAnswerSummaryComponent = <span className="material-page__field-answer-examples">
+          <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
           </span>
-          <span className="muikku-field-example">{this.props.content.explanation}</span>
+          <span className="material-page__field-answer-example">{this.props.content.explanation}</span>
         </span>;
       }
     }
@@ -194,16 +194,16 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
         "state-" + (this.state.rightnessState === "UNKNOWN" ? "UNKNOWN" : (this.state.rightnessState.includes("FAIL") ? "FAIL" : "PASS")) : "";
     
     //and we render
-    return <span className={`muikku-checkbox-field checkbox-${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
+    return <span className={`material-page__checkbox-wrapper material-page__page__checkbox-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
       {this.props.content.options.map((o, index)=>{
         //if we are told to mark right answers
         let className = null;
         if (markRightAnswers){
           let rightnessStateClassName = this.state.rightnessState && this.state.rightnessState !== "UNKNOWN" ? "state-" + this.state.rightnessState[index] : "";
           if (o.correct){
-            className = "muikku-select-field-right-answer " + rightnessStateClassName;
+            className = "correct-answer " + rightnessStateClassName;
           } else {
-            className = "muikku-select-field-wrong-answer " + rightnessStateClassName;
+            className = "incorrect-answer " + rightnessStateClassName;
           }
         }
         
@@ -224,8 +224,8 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
         //so there's no state-UNKNOWN per checkbox but the whole thing could be state-UNKNOWN where
         //elementClassNameState is applied
         
-        return <span key={o.name} className={className}>
-          <input type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
+        return <span key={o.name} className={`material-page__checkbox-wrapper ${className}`}>
+          <input className="material-page__checkbox" type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
           <label>{o.text}</label>
         </span>
       })}

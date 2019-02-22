@@ -5,13 +5,10 @@
 
 .material-page {
   background-color: $color-application-panel-box-background;
-  border: solid 1px $color-application-panel-box-border;
-  margin: 10px 0 0;
   padding: 10px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 20px 0 0;
     padding: 20px;
   }
 }

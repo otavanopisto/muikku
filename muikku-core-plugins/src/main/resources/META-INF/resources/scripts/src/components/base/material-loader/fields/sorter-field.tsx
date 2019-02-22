@@ -177,12 +177,12 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     //We only display the right answers if we got them wrong or they are not being checked at all
     if (this.props.displayRightAnswers && !answerIsBeingCheckedAndItIsRight){
       //We create the summary witih the right answers
-      rightAnswerSummaryComponent = <span className="muikku-field-examples">
-        <span className="muikku-field-examples-title">
+      rightAnswerSummaryComponent = <span className="material-page__field-examples">
+        <span className="material-page__field-examples-title">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
         </span>
         {this.props.content.items.map((answer, index)=>
-          <span key={answer.id} className="muikku-field-example">{answer.name}</span>
+          <span key={answer.id} className="material-page__field-example">{answer.name}</span>
         )}
       </span>
     }
@@ -195,8 +195,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
     
     //we use that element and the class to create the field
-    return <Element className={`muikku-field muikku-sorter-field ${elementClassNameState}`}>
-      <Element className="muikku-sorter-items-container">
+    return <Element className={`material-page__sorter-wrapper ${elementClassNameState}`}>
+      <Element className="material-page__sorter-items">
        {this.state.items.map((item, index)=>{
          //We get the text
          let text = item.name;
@@ -210,18 +210,18 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
          let itemClassNameState = this.props.checkForRightness && !answerIsBeingCheckedAndItIsRight &&
            this.state.rightnessState && this.state.rightnessState[index] ? 
              "state-" + this.state.rightnessState[index] : ""
-               
+
          if (this.props.readOnly){
            //readonly component
-           return <Element className={`muikku-sorter-item ${itemClassNameState}`} key={item.id}>{text}</Element>
+           return <Element className={`material-page__sorter-item ${itemClassNameState}`} key={item.id}>{text}</Element>
          }
-         
+
          //The draggable version, note how on interaction we swap
          //the parent component is a class name always make sure to have the right class name not to overflow
          //the interaction data is the item itself so the argument would be that
-         return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as={Element} parentContainerSelector=".muikku-sorter-items-container"
-           className={`muikku-sorter-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
-         "muikku-sorter-item-selected" : ""} ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
+         return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as={Element} parentContainerSelector=".material-page__sorter-items"
+           className={`material-page__sorter-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
+         "material-page__sorter-item--selected" : ""} ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
            onClick={this.selectItem.bind(this, item)} onDrag={this.cancelSelectedItem}>{text}</Draggable>
        })}
