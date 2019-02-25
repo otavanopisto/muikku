@@ -6,7 +6,7 @@ import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Worksp
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
-import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -663,8 +663,54 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
   }
 }
 
+export interface CreateWorkspaceJournalForCurrentWorkspaceTriggerType {
+  (data: {
+    title: string,
+    content: string,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
+}
+
+export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
+  (data: {
+    journal: WorkspaceJournalType,
+    title: string,
+    content: string,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
+}
+
+export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
+  (data: {
+    journal: WorkspaceJournalType,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
+}
+
+let createWorkspaceJournalForCurrentWorkspace:CreateWorkspaceJournalForCurrentWorkspaceTriggerType = function createWorkspaceJournalForCurrentWorkspace(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    
+  }
+}
+  
+let updateWorkspaceJournalInCurrentWorkspace:UpdateWorkspaceJournalInCurrentWorkspaceTriggerType = function updateWorkspaceJournalInCurrentWorkspace(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    
+  }
+}
+
+let deleteWorkspaceJournalInCurrentWorkspace:DeleteWorkspaceJournalInCurrentWorkspaceTriggerType = function deleteWorkspaceJournalInCurrentWorkspace(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
-  loadMoreCurrentWorkspaceJournalsFromServer}
+  loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
+  deleteWorkspaceJournalInCurrentWorkspace}
