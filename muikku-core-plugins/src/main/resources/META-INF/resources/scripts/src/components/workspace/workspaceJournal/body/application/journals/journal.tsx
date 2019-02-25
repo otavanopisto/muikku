@@ -5,7 +5,6 @@ import Link from '~/components/general/link';
 
 import {i18nType} from '~/reducers/base/i18n';
 
-import '~/sass/elements/Journal.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
 
@@ -29,7 +28,7 @@ interface JournalState {
 
 class Journal extends React.Component<JournalProps, JournalState>{
   render(){
-    let student = this.props.workspace.students && this.props.workspace.students.find(s=>s.userEntityId === this.props.workspace.journals.userEntityId);
+    let student = this.props.workspace.students && this.props.workspace.students.find(s=>s.userEntityId === this.props.journal.userEntityId);
     return <ApplicationListItem className="journal">
       <ApplicationListItemHeader className="application-list__item-header--Journal">
         {student ? 
@@ -38,7 +37,7 @@ class Journal extends React.Component<JournalProps, JournalState>{
         <span>{this.props.i18n.time.format(this.props.journal.created, "L LT")}</span>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body--Journal">
-        {!student ? <h2>{this.props.journal.title}</h2> : null}
+        {student ? <h2>{this.props.journal.title}</h2> : null}
         <article className="rich-text" dangerouslySetInnerHTML={{__html: this.props.journal.content}}></article>
       </ApplicationListItemBody>
       {this.props.journal.userEntityId === this.props.status.userId ? <ApplicationListItemFooter className="application-list__item-footer--Journal">
