@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,17 +17,27 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fi.otavanopisto.muikku.controller.PermissionController;
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.EducationTypeMapping;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class TranscriptOfRecordsController {
@@ -33,10 +46,31 @@ public class TranscriptOfRecordsController {
   private UserSchoolDataController userSchoolDataController;
   
   @Inject
-  private GradingController gradingController;
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController;
+  private WorkspaceController workspaceController;
+
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private PermissionController permissionController;
+
+  @Inject
+  private CourseMetaController courseMetaController;
+
+  @Inject
+  private UserController userController;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
+
+  @Inject
+  private GradingController gradingController;
 
   @Inject
   @Any
@@ -217,6 +251,72 @@ public class TranscriptOfRecordsController {
       }
     }
     return null;
+  }
+
+  public VopsLister.Result listVopsCourses(String studentIdentifierString,
+      SchoolDataIdentifier studentIdentifier) throws EducationTypeMappingNotSetException {
+    User student = userController.findUserByIdentifier(studentIdentifier);
+    
+    if (!shouldShowStudies(student)) {
+      return VopsLister.notOptedInResult();
+    }
+    
+    List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
+
+    List<Subject> subjects = courseMetaController.listSubjects();
+    Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = listStudentAssessments(studentIdentifier);
+    
+    String curriculum = pluginSettingsController.getPluginSetting("transcriptofrecords", "curriculum");
+    SchoolDataIdentifier curriculumIdentifier = null;
+    if (curriculum != null) {
+      curriculumIdentifier = SchoolDataIdentifier.fromId(curriculum);
+    }
+    
+    final List<String> subjectList = new ArrayList<String>();
+    String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
+    if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
+      subjectList.addAll(Arrays.asList(commaSeparatedSubjectsOrder.split(",")));
+    }
+    subjects.sort(new Comparator<Subject>() {
+      public int compare(Subject o1, Subject o2) {
+        int i1 = subjectList.indexOf(o1.getCode());
+        int i2 = subjectList.indexOf(o2.getCode());
+        i1 = i1 == -1 ? Integer.MAX_VALUE : i1;
+        i2 = i2 == -1 ? Integer.MAX_VALUE : i2;
+        return i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
+      }
+    });
+
+    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
+    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
+    if (educationTypeMappingString != null) {
+      try {
+        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);
+      } catch (IOException e) {
+        throw new EducationTypeMappingNotSetException();
+      }
+    }
+    
+    VopsLister lister = new VopsLister(
+      subjects,
+      this,
+      student,
+      transferCredits,
+      curriculumIdentifier,
+      workspaceController,
+      workspaceUserEntityController,
+      studentIdentifier,
+      studentAssessments,
+      userGroupEntityController,
+      permissionController,
+      studiesViewCourseChoiceController,
+      studentIdentifierString,
+      gradingController,
+      educationTypeMapping
+    );
+    lister.performListing();
+    VopsLister.Result listerResult = lister.getResult();
+    return listerResult;
   }
   
 }

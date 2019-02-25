@@ -95,6 +95,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       String language = null;
       String municipality = null;
       String school = null;
+      String ssn = null;
       boolean hidden = false;
       
       if (student.getStudyProgrammeId() != null) {
@@ -148,8 +149,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         Person person = pyramusClient.get(
             "/persons/persons/" + student.getPersonId(),
             Person.class);
-        if (person != null)
+        if (person != null) {
           hidden = person.getSecureInfo() != null ? person.getSecureInfo() : false;
+          ssn = person.getSocialSecurityNumber();
+        }
       }
       
       String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
@@ -170,7 +173,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           student.getStudyTimeEnd(),
           evaluationFees,
           hidden,
-          curriculumIdentifier));
+          curriculumIdentifier,
+          ssn));
     }
     
     return users;
