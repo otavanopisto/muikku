@@ -331,7 +331,7 @@ export interface MaterialContentNodeType {
   parentId?: number,
   path?: string,
   viewRestricted?: boolean,
-  producers?: any,  
+  producers?: any,
   
   //Assigned fields
   evaluation?: MaterialEvaluationType,
