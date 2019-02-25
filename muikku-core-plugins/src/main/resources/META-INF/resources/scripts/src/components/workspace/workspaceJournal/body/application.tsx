@@ -20,6 +20,7 @@ import { getName } from '~/util/modifiers';
 import Button from '~/components/general/button';
 import { bindActionCreators } from 'redux';
 import { loadCurrentWorkspaceJournalsFromServer, LoadCurrentWorkspaceJournalsFromServerTriggerType } from '~/actions/workspaces';
+import NewJournal from '~/components/workspace/workspaceJournal/dialogs/new-edit-journal';
 
 interface WorkspaceJournalApplicationProps {
   i18n: i18nType,
@@ -49,13 +50,13 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
     </h2>
     let toolbar = <Toolbar/>
     let primaryOption;
-    if (this.props.workspace && this.props.workspace.students){
+    if (this.props.workspace){
       primaryOption = <div className="form-element"> 
         {!this.props.status.isStudent ?
           <select className="form-element__select form-element__select--main-action"
             value={this.props.workspace.journals.userEntityId || ""} onChange={this.onWorkspaceJournalFilterChange}>
             <option value="">{this.props.i18n.text.get("plugin.workspace.journal.studentFilter.showAll")}</option>
-            {this.props.workspace.students
+            {(this.props.workspace.students || [])
               .filter((student, index, array)=>
                 array.findIndex((otherStudent, otherIndex)=>otherStudent.userEntityId === student.userEntityId) === index
               ).map((student)=>{
@@ -63,9 +64,9 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
             })}
           </select>
         : 
-          <Button buttonModifiers="primary-function">
+          <NewJournal><Button buttonModifiers="primary-function">
             {this.props.i18n.text.get('plugin.workspace.journal.newEntryButton.label')}
-          </Button>
+          </Button></NewJournal>
         }
       </div>
     }

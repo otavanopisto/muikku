@@ -225,13 +225,13 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     }
   }
   onCKEditorChange(text: string){
-    this.setState({text});
+    this.setStateAndStore({text}, (this.props.announcement ? this.props.announcement.id + "-" : "") + (this.props.workspaceId || ""));
   }
   setTargetItems(currentTarget: TargetItemsListType){
-    this.setState({currentTarget});
+    this.setStateAndStore({currentTarget}, (this.props.announcement ? this.props.announcement.id + "-" : "") + (this.props.workspaceId || ""));
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setState({subject: e.target.value});
+    this.setStateAndStore({subject: e.target.value}, (this.props.announcement ? this.props.announcement.id + "-" : "") + (this.props.workspaceId || ""));
   }
   createOrModifyAnnouncement(closeDialog: ()=>any){
     this.setState({locked: true});
@@ -286,7 +286,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
   handleDateChange(stateLocation: string, newDate: any){
     let nState:any = {};
     nState[stateLocation] = newDate;
-    (this.setState as any)(nState);
+    (this.setStateAndClear as any)(nState, (this.props.announcement ? this.props.announcement.id + "-" : "") + (this.props.workspaceId || ""));
   }
   render(){
     let content = (closeDialog: ()=>any) => [
