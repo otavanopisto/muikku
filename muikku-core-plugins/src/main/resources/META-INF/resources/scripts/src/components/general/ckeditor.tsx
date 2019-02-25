@@ -16,7 +16,7 @@ interface CKEditorProps {
   height?: number | string,
   onChange(arg: string):any,
   children?: string,
-  autofocus?: boolean,
+  autofocus?: boolean
 }
 
 interface CKEditorState {
@@ -70,7 +70,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
         entities: false,
         basicEntities: false
       };
-      
+
       if (this.props.extraPlugins){
         for (let [plugin, url] of (Object as any).entries(this.props.extraPlugins)){
           getCKEDITOR().plugins.addExternal(plugin, url);

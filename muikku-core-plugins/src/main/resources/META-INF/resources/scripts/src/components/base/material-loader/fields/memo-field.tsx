@@ -140,8 +140,10 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     //if readonly
     if  (this.props.readOnly){
       //depending to whether richedit or not we make it be with the value as inner html or just raw text
-      field = !this.props.content.richedit ? <div className="material-page__memofield">{this.state.value}</div> :
-              <div className="material-page__memofield" dangerouslySetInnerHTML={{__html:this.state.value}}/>
+      field = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
+          rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
+            <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+             onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
     } else {
       //here we make it be a simple textarea or a rich text editor
       //note how somehow numbers come as string...
@@ -150,7 +152,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
             <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
              onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
     }
-    
+
     //and here the element itself
     return <div className="material-page__memofield-wrapper">
       {field}

@@ -169,7 +169,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
       return <span className="material-page__select-wrapper">
-        <select className={classNameState} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
+        <select className={`material-page__select ${classNameState}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
           {this.props.content.options.map(o=>{

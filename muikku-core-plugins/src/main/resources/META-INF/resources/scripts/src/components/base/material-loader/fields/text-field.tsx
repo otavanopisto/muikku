@@ -157,29 +157,30 @@ export default class TextField extends React.Component<TextFieldProps, TextField
         actuallyCorrectAnswers = this.props.content.rightAnswers;
       }
       //We create the component
-      rightAnswerSummaryComponent = <span className="muikku-field-examples">
-        <span className="muikku-field-examples-title">
+      rightAnswerSummaryComponent = <span className="material-page__field-answer-examples">
+        <span className="material-page__field-answer-title">
           {this.props.i18n.text.get(answersAreExample ? 
               "plugin.workspace.assigment.checkAnswers.detailsSummary.title" :
               "plugin.workspace.assigment.checkAnswers.correctSummary.title")}
         </span>
         {actuallyCorrectAnswers.map((answer, index)=>
-          <span key={index} className="muikku-field-example">{answer.text}</span>
+          <span key={index} className="material-page__field-answer-example">{answer.text}</span>
         )}
       </span>
     }
-    
+
     //The state of the whole field
     let classNameState = this.state.rightnessState && this.props.checkForRightness ? "state-" + this.state.rightnessState : "";
-    
+
     if (this.props.readOnly){
       //Read only version
-      return <div>
-        <div className={`muikku-text-field muikku-field ${classNameState}`}>{this.state.value}</div>
+      return <span className="material-page__textfield-wrapper">
+      <input readOnly className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}
+        size={this.props.content.columns && parseInt(this.props.content.columns)}/>
         {rightAnswerSummaryComponent}
-      </div>
+      </span>
     }
-    
+
     //Standard modifiable version
     return <span className="material-page__textfield-wrapper">
       <input className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}

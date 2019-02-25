@@ -194,7 +194,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
         "state-" + (this.state.rightnessState === "UNKNOWN" ? "UNKNOWN" : (this.state.rightnessState.includes("FAIL") ? "FAIL" : "PASS")) : "";
     
     //and we render
-    return <span className={`material-page__checkbox-wrapper material-page__page__checkbox-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
+    return <span className={`material-page__checkbox-wrapper material-page__checkbox-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
       {this.props.content.options.map((o, index)=>{
         //if we are told to mark right answers
         let className = null;
