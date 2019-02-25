@@ -18,9 +18,9 @@ interface MemoFieldProps {
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
   
-  displayRightAnswers?: boolean,
-  checkForRightness?: boolean,
-  onRightnessChange?: (name: string, value: boolean)=>any
+  displayCorrectAnswers?: boolean,
+  checkAnswers?: boolean,
+  onAnswerChange?: (name: string, value: boolean)=>any
 }
 
 interface MemoFieldState {
@@ -94,7 +94,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
   }
   shouldComponentUpdate(nextProps: MemoFieldProps, nextState: MemoFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
-    || this.props.i18n !== nextProps.i18n || this.props.displayRightAnswers !== nextProps.displayRightAnswers || this.props.checkForRightness !== nextProps.checkForRightness;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
   }
   //very simple this one is for only when raw input from the textarea changes
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>){
@@ -121,12 +121,12 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     });
   }
   render(){
-    //we have a right answer example for when
-    //we are asked for displaying right answer
+    //we have a correct answer example for when
+    //we are asked for displaying correct answer
     //so we need to set it up
     let answerExampleComponent = null;
     //it's simply set when we get it
-    if (this.props.displayRightAnswers && this.props.content.example){
+    if (this.props.displayCorrectAnswers && this.props.content.example){
       answerExampleComponent = <span className="material-page__field-answer-examples">
         <span className="material-page__field-answer-title">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}

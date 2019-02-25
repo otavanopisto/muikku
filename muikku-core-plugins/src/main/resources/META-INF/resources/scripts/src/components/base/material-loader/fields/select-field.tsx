@@ -20,9 +20,9 @@ interface SelectFieldProps {
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
 
   i18n: i18nType,
-  displayRightAnswers?: boolean,
-  checkForRightness?: boolean,
-  onRightnessChange?: (name: string, value: boolean)=>any
+  displayCorrectAnswers?: boolean,
+  checkAnswers?: boolean,
+  onAnswerChange?: (name: string, value: boolean)=>any
 }
 
 interface SelectFieldState {
@@ -35,8 +35,8 @@ interface SelectFieldState {
   synced: boolean,
   syncError: string,
   
-  //The answer might be unknown pass or fail, sometimes there's just no right answer
-  rightnessState: "UNKNOWN" | "PASS" | "FAIL"
+  //The answer might be unknown pass or fail, sometimes there's just no correct answer
+  answerState: "UNKNOWN" | "PASS" | "FAIL"
 }
 
 export default class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
@@ -53,97 +53,97 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
       synced: true,
       syncError: null,
       
-      //We dunno what the rightness state is
-      rightnessState: null
+      //We dunno what the answer state is
+      answerState: null
     }
   }
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
     //When the select changes, we gotta call it up
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
-    //we update the state and check for rightness
-    this.setState({value: e.target.value}, this.checkForRightness);
+    //we update the state and check answer
+    this.setState({value: e.target.value}, this.checkAnswers);
   }
   shouldComponentUpdate(nextProps: SelectFieldProps, nextState: SelectFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) 
-    || this.props.i18n !== nextProps.i18n || this.props.displayRightAnswers !== nextProps.displayRightAnswers || this.props.checkForRightness !== nextProps.checkForRightness;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
   }
-  checkForRightness(){
-    //if we are allowed to check for rightness
-    if (!this.props.checkForRightness){
+  checkAnswers(){
+    //if we are allowed to check answer
+    if (!this.props.checkAnswers){
       return;
     }
     
-    //So just like text-field, there might be no right answer
+    //So just like text-field, there might be no correct answer
     let actuallyCorrectAnswers = this.props.content.options.filter(a=>a.correct);
     if (!actuallyCorrectAnswers.length){
       //And equally we just call the state UNKNOWN
-      if (this.state.rightnessState !== "UNKNOWN"){
+      if (this.state.answerState !== "UNKNOWN"){
         this.setState({
-          rightnessState: "UNKNOWN"
+          answerState: "UNKNOWN"
         });
-        //And call a rightness change for it to be unknown
-        this.props.onRightnessChange(this.props.content.name, null);
+        //And call a answer change for it to be unknown
+        this.props.onAnswerChange(this.props.content.name, null);
       }
       return;
     }
     
     //we do the same and start looping
-    let isRight:boolean;
+    let isCorrect:boolean;
     let answer;
     for (answer of actuallyCorrectAnswers){
       //somehow the value and the name mix up here but it works out
-      isRight = this.state.value === answer.name;
-      //if we found that this check was right
-      if (isRight){
+      isCorrect = this.state.value === answer.name;
+      //if we found that this check was correct
+      if (isCorrect){
         //we break
         break;
       }
     }
     
-    //We update accordingly only if the rightness has changed
-    if (isRight && this.state.rightnessState !== "PASS"){
+    //We update accordingly only if the answer has changed
+    if (isCorrect && this.state.answerState !== "PASS"){
       this.setState({
-        rightnessState: "PASS"
+        answerState: "PASS"
       });
       //and call the function accordingly
-      this.props.onRightnessChange(this.props.content.name, true);
-    } else if (!isRight && this.state.rightnessState !== "FAIL"){
+      this.props.onAnswerChange(this.props.content.name, true);
+    } else if (!isCorrect && this.state.answerState !== "FAIL"){
       this.setState({
-        rightnessState: "FAIL"
+        answerState: "FAIL"
       });
-      this.props.onRightnessChange(this.props.content.name, false);
+      this.props.onAnswerChange(this.props.content.name, false);
     }
   }
   componentDidMount(){
-    this.checkForRightness();
+    this.checkAnswers();
   }
   componentDidUpdate(prevProps: SelectFieldProps, prevState: SelectFieldState){
-    this.checkForRightness();
+    this.checkAnswers();
   }
   render(){
-    //Select field is able to mark what were meant to be the right answers in the field itself
-    let markRightAnswers = false;
-    //It also has a summary component of what the right answers were meant to be
-    let rightAnswerSummaryComponent = null;
+    //Select field is able to mark what were meant to be the correct answers in the field itself
+    let markCorrectAnswers = false;
+    //It also has a summary component of what the correct answers were meant to be
+    let correctAnswerSummaryComponent = null;
     //the classic variable
-    let answerIsCheckedAndItIsRight = this.props.checkForRightness && this.state.rightnessState === "PASS"
+    let answerIsCheckedAndItIsCorrect = this.props.checkAnswers && this.state.answerState === "PASS"
       
-    //So we only care about this logic if we didn't get the answer right and we are asking for show the right thing
+    //So we only care about this logic if we didn't get the answer correct and we are asking for show the correct thing
     //Note that a state of UNKNOWN also goes through here, but not a state of PASS
-    if (this.props.displayRightAnswers && !answerIsCheckedAndItIsRight){
-      //find the right answers from the list
-      let rightAnswersFound = this.props.content.options.filter(a=>a.correct);
-      //if we have some right answers
-      if (rightAnswersFound.length){
+    if (this.props.displayCorrectAnswers && !answerIsCheckedAndItIsCorrect){
+      //find the correct answers from the list
+      let correctAnswersFound = this.props.content.options.filter(a=>a.correct);
+      //if we have some correct answers
+      if (correctAnswersFound.length){
         //We say we will mark those that are correct
-        markRightAnswers = true;
+        markCorrectAnswers = true;
         //we make the summary component, note we might have an explanation
         //For some reason it saves to no explanation
-        rightAnswerSummaryComponent = <span className="material-page__field-answer-examples">
+        correctAnswerSummaryComponent = <span className="material-page__field-answer-examples">
           <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
           </span>
-          {rightAnswersFound.map((answer, index)=>
+          {correctAnswersFound.map((answer, index)=>
             <span key={index} className="material-page__field-answer-example">{answer.text}</span>
           )}
           {this.props.content.explanation ? <span className="explanation-wrapper">
@@ -153,8 +153,8 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
            </span> : null}
         </span>;
       } else if (this.props.content.explanation) {
-        //Otherwise if there were no right answer say with a state of UNKNOWN, then we show the explanation if avaliable
-        rightAnswerSummaryComponent = <span className="material-page__field-answer-examples">
+        //Otherwise if there were no correct answer say with a state of UNKNOWN, then we show the explanation if avaliable
+        correctAnswerSummaryComponent = <span className="material-page__field-answer-examples">
           <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
           </span>
@@ -164,7 +164,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     }
     
     //The classname that represents the state of the whole field
-    let classNameState = this.state.rightnessState && this.props.checkForRightness ? "state-" + this.state.rightnessState : "";
+    let classNameState = this.state.answerState && this.props.checkAnswers ? "state-" + this.state.answerState : "";
     
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
@@ -174,16 +174,16 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
           {this.props.content.options.map(o=>{
             let className = null;
-            //if right answers are to be market regarding whether they are correct or not
-            if (markRightAnswers && o.correct){
+            //if correct answers are to be marked regarding whether they are correct or not
+            if (markCorrectAnswers && o.correct){
               className = "correct-answer"
-            } else if (markRightAnswers){
+            } else if (markCorrectAnswers){
               className = "incorrect-answer"
             }
             return <option className={className} key={o.name} value={o.name}>{o.text}</option>
           })}
         </select>
-        {rightAnswerSummaryComponent}
+        {correctAnswerSummaryComponent}
       </span>
     }
 
@@ -191,10 +191,10 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     return <span className={`material-page__radiobutton-wrapper material-page__page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${classNameState}`}>
       {this.props.content.options.map(o=>{
         let className = null;
-        //if right answers are to be market regarding whether they are correct or not
-        if (markRightAnswers && o.correct){
+        //if correct answers are to be market regarding whether they are correct or not
+        if (markCorrectAnswers && o.correct){
           className = "correct-answer"
-        } else if (markRightAnswers){
+        } else if (markCorrectAnswers){
           className = "incorrect-answer"
         }
         return <span className={className} key={o.name}>
@@ -202,7 +202,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
           <label>{o.text}</label>
         </span>
       })}
-      {rightAnswerSummaryComponent}
+      {correctAnswerSummaryComponent}
     </span>
   }
 }

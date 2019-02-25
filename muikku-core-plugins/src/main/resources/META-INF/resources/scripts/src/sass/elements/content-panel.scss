@@ -67,15 +67,15 @@
 
 .content-panel__navigation {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-  display: block;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  overflow-y: auto;
-  width: 100%;
-  z-index: 10000;
   background-color: rgba(0, 0, 0, 0);
+  bottom: 0;
+  display: block;
+  overflow-y: auto;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 
   &.visible {
     background-color: rgba(0, 0, 0, 0.25);
@@ -103,6 +103,7 @@
     position: sticky;
     right: auto;
     top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height});
+    z-index:auto;
 
     &:not(.displayed) {
       display: block;
@@ -175,9 +176,13 @@
   font-size: 1.375rem;
   font-weight: 400;
   margin: 0 0 -21px;
-  padding: 10px 20px;
+  padding: 10px;
   position: relative;
   z-index: 2;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 20px;
+  }
 }
 
 .content-panel__item {
