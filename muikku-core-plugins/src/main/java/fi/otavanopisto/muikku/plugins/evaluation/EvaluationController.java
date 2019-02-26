@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,8 @@ import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
@@ -75,6 +78,9 @@ public class EvaluationController {
   
   @Inject
   private CommunicatorController communicatorController;
+
+  @Inject
+  private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
   
   public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
     SupplementationRequest supplementationRequest = supplementationRequestDAO.createSupplementationRequest(
@@ -320,7 +326,7 @@ public class EvaluationController {
 
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    communicatorController.createMessage(
+    CommunicatorMessage communicatorMessage = communicatorController.createMessage(
         communicatorController.createMessageId(),
         teacher,
         Arrays.asList(student),
@@ -331,6 +337,7 @@ public class EvaluationController {
         localeController.getText(locale, "plugin.evaluation.workspaceIncomplete.notificationCaption"),
         localeController.getText(locale, "plugin.evaluation.workspaceIncomplete.notificationText", new Object[] {workspaceUrl, workspaceName, verbalAssessment}),
         Collections.<Tag>emptySet());
+    communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
   }
   
 }
