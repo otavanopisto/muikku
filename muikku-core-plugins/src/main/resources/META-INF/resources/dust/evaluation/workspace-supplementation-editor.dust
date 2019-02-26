@@ -6,8 +6,8 @@
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">
-      <div class="eval-modal-evaluate-button button-supplementation-request" id="workspaceSupplementationSave">Tallenna</div>
-      <div class="eval-modal-evaluate-button button-cancel" id="workspaceSupplementationCancel">Peruuta</div>
+      <div class="eval-modal-evaluate-button button-supplementation-request" id="workspaceSupplementationSave">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"/}</div>
+      <div class="eval-modal-evaluate-button button-cancel" id="workspaceSupplementationCancel">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"/}</div>
     </div>
   </div>
 </div>
