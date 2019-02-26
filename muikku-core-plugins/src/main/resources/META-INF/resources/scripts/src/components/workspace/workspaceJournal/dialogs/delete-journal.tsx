@@ -52,7 +52,7 @@ class DeleteJournal extends React.Component<DeleteJournalProps, DeleteJournalSta
   render(){
     let content = (closeDialog: ()=>any) => <div>
       {
-        this.props.i18n.text.get('')
+        this.props.i18n.text.get('plugin.workspace.journal.deleteEntry.dialog.description')
       }
     </div>
        
