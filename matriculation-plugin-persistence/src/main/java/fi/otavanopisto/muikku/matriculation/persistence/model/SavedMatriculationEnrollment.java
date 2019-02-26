@@ -48,6 +48,6 @@ public class SavedMatriculationEnrollment {
   @Column(nullable = false, unique = true)
   private String userIdentifier;
   
-  @Column(columnDefinition = "TEXT")
+  @Lob
   private String savedEnrollmentJson;
 }
