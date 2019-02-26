@@ -16,8 +16,8 @@ public class WorkspaceJournalController {
   @Inject
   private WorkspaceJournalEntryDAO workspaceJournalEntryDAO;
 
-  public void createJournalEntry(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title) {
-    workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), Boolean.FALSE);
+  public WorkspaceJournalEntry createJournalEntry(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title) {
+    return workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), Boolean.FALSE);
   }
 
   public List<WorkspaceJournalEntry> listEntriesForStudents(WorkspaceEntity workspaceEntity, Collection<UserEntity> userEntities, int firstResult, int maxResults) {
@@ -40,9 +40,8 @@ public class WorkspaceJournalController {
     return workspaceJournalEntryDAO.findById(workspaceJournalEntryId);
   }
 
-  public WorkspaceJournalEntry updateJournalEntry(Long workspaceJournalEntryId, String title, String html){
-    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalEntryDAO.findById(workspaceJournalEntryId);
-    return workspaceJournalEntryDAO.updateHtml(workspaceJournalEntryDAO.updateTitle(workspaceJournalEntry, title), html);
+  public WorkspaceJournalEntry updateJournalEntry(WorkspaceJournalEntry workspaceJournalEntry, String title, String html) {
+    return workspaceJournalEntryDAO.updateContent(workspaceJournalEntry, title, html);
   }
   
   public void archiveJournalEntry(WorkspaceJournalEntry workspaceJournalEntry){

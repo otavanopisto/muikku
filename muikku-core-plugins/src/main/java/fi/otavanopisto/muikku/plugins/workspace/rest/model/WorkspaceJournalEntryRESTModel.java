@@ -3,13 +3,13 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 import java.util.Date;
 
 public class WorkspaceJournalEntryRESTModel {
-  
+
   public WorkspaceJournalEntryRESTModel() {
     super();
   }
 
-  public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String firstName, String lastName, 
-      String html, String title, Date created) {
+  public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String firstName,
+      String lastName, String html, String title, Date created) {
     super();
     this.id = id;
     this.workspaceEntityId = workspaceEntityId;
@@ -28,7 +28,7 @@ public class WorkspaceJournalEntryRESTModel {
   public void setWorkspaceEntityId(Long workspaceEntityId) {
     this.workspaceEntityId = workspaceEntityId;
   }
-  
+
   public Long getUserEntityId() {
     return userEntityId;
   }
@@ -40,7 +40,7 @@ public class WorkspaceJournalEntryRESTModel {
   public String getContent() {
     return content;
   }
-  
+
   public void setContent(String html) {
     this.content = html;
   }
@@ -68,6 +68,7 @@ public class WorkspaceJournalEntryRESTModel {
   public void setCreated(Date created) {
     this.created = created;
   }
+
   public String getFirstName() {
     return firstName;
   }
@@ -75,6 +76,7 @@ public class WorkspaceJournalEntryRESTModel {
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
+
   public String getLastName() {
     return lastName;
   }
@@ -82,6 +84,7 @@ public class WorkspaceJournalEntryRESTModel {
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
+
   private Long id;
   private Long workspaceEntityId;
   private Long userEntityId;

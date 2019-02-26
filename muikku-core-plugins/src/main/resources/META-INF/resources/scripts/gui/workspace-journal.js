@@ -155,8 +155,12 @@
       title: element.find('.workspace-journal-title').html()
     },
     function(values) {
-      mApi({async: false}).workspace.journal
-        .update(id, values)
+      $.extend(values, {
+        id: id,
+        workspaceEntityId: workspaceId
+      });
+      mApi({async: false}).workspace.workspaces.journal
+        .update(workspaceId, id, values)
         .callback(function(err, result) {
           if (!err) {
             window.location.reload(true);
