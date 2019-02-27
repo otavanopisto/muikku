@@ -40,9 +40,8 @@ public class WorkspaceJournalController {
     return workspaceJournalEntryDAO.findById(workspaceJournalEntryId);
   }
 
-  public WorkspaceJournalEntry updateJournalEntry(Long workspaceJournalEntryId, String title, String html){
-    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalEntryDAO.findById(workspaceJournalEntryId);
-    return workspaceJournalEntryDAO.updateHtml(workspaceJournalEntryDAO.updateTitle(workspaceJournalEntry, title), html);
+  public WorkspaceJournalEntry updateJournalEntry(WorkspaceJournalEntry workspaceJournalEntry, String title, String html) {
+    return workspaceJournalEntryDAO.updateContent(workspaceJournalEntry, title, html);
   }
   
   public void archiveJournalEntry(WorkspaceJournalEntry workspaceJournalEntry){

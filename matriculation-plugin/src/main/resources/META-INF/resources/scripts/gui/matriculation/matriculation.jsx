@@ -64,7 +64,7 @@ const SubjectSelect = ({i, value, onChange}) => (
   </React.Fragment>
 );
 
-const TermSelect = ({i, value, onChange, includePast=false}) => (
+const TermSelect = ({i, value, onChange, options}) => (
   <React.Fragment>
     {i==0 ? <label>Ajankohta</label> : null}
     <select
@@ -72,21 +72,7 @@ const TermSelect = ({i, value, onChange, includePast=false}) => (
         onChange={onChange}
         className="pure-u-23-24">
       <option value="">Valitse...</option>
-      {includePast ? 
-      <React.Fragment>
-        <option value="SPRING2016">Kevät 2016</option>
-        <option value="AUTUMN2016">Syksy 2016</option>
-        <option value="SPRING2017">Kevät 2017</option>
-        <option value="AUTUMN2017">Syksy 2017</option>
-        <option value="SPRING2018">Kevät 2018</option>
-        <option value="AUTUMN2018">Syksy 2018</option>
-      </React.Fragment>:
-      <React.Fragment>
-        <option value="AUTUMN2019">Syksy 2019</option>
-        <option value="SPRING2020">Kevät 2020</option>
-        <option value="AUTUMN2020">Syksy 2020</option>
-        <option value="SPRING2021">Kevät 2021</option>
-      </React.Fragment>}
+      <React.Fragment>{options}</React.Fragment>
     </select>
   </React.Fragment>
 );
@@ -249,7 +235,7 @@ const Page2 = (props) => (
       </div>
     </fieldset>
     <fieldset>
-      <legend>Ilmoittaudun suorittamaan kokeen seuraavissa aineissa <b>keväällä 2019</b></legend>
+      <legend>Ilmoittaudun suorittamaan kokeen seuraavissa aineissa <b>{ props.currentTerm ? props.currentTerm.adessive : "Virhe" }</b></legend>
       <div className="pure-g">
       {props.enrolledAttendances.map((attendance, i) =>
       <React.Fragment key={i}>
@@ -303,7 +289,7 @@ const Page2 = (props) => (
           <TermSelect
             i={i}
             value={attendance.term} 
-            includePast={true}
+            options={props.pastTermOptions}
             onChange={({target}) => {props.modifyFinishedAttendance(i, "term", target.value);}}
 
           />
@@ -349,6 +335,7 @@ const Page2 = (props) => (
         <div className="pure-u-1-4">
           <TermSelect 
           i={i} 
+          options={props.nextTermOptions}
           onChange={({target}) => {props.modifyPlannedAttendance(i, "term", target.value);}}
           value={attendance.term} 
           />
@@ -752,7 +739,7 @@ class App extends React.Component {
       return true;
     }
     termNumbers.sort();
-    console.log(termNumbers);
+    
     var lastNumber = termNumbers[0];
     var firstNumber = lastNumber;
     for (termNumber of termNumbers) {
@@ -893,6 +880,9 @@ class App extends React.Component {
                   missingMandatoryItems={this.isMissingMandatoryItems()}
                   invalidTerms={this.isInvalidTerms()}
                   invalid={this.isInvalid()}
+                  pastTermOptions={this.getPastTermOptions()}
+                  nextTermOptions={this.getNextTermOptions()}
+                  currentTerm={ this.resolveCurrentTerm() }
                 />
               : null }
           {/* Page 3 contains practical choices for doing the exam (location, extra info etc) */}
@@ -912,6 +902,68 @@ class App extends React.Component {
         </form>
       </React.Fragment>
     );
+  }
+  
+  /**
+   * Resolves term for given date
+   * 
+   * @param {moment} from from date 
+   * @returns {object} term details
+   */
+  resolveTerm (from) {
+    const quarter = from.quarter();
+    return {
+      value: (quarter < 3 ? "SPRING" : "AUTUMN") + from.year(),
+      name: (quarter < 3 ? "Kevät " : "Syksy ") + from.year(),
+      adessive: (quarter < 3 ? "Keväällä " : "Syksyllä ") + from.year()
+    }
+  }
+
+  /**
+   * Resolves current term 
+   * @returns {object} term details
+   */
+  resolveCurrentTerm () {
+    return this.resolveTerm(moment());
+  }
+
+  /**
+   * Resolves given number of term options starting from given date
+   * 
+   * @param {moment} from from date 
+   * @param {number} count count of terms to be resolved 
+   * @returns {array} term options
+   */
+  resolveTermOptions (from, count) {
+    const result = [];
+    
+    for (let i = 0; i < count; i++) {
+      const term = this.resolveTerm(from);
+      result.push(<option value={term.value}>{term.name}</option>);
+      from.add(6, "months");
+    }
+    
+    return result;
+  }
+
+  /**
+   * Resolves past 6 term options
+   * 
+   * @param {number} count count of terms to be resolved 
+   * @returns {array} term options
+   */
+  getPastTermOptions() {
+    return this.resolveTermOptions(moment().subtract(3, "years"), 6);
+  }
+
+  /**
+   * Resolves next 3 term options
+   * 
+   * @param {number} count count of terms to be resolved 
+   * @returns {array} term options
+   */
+  getNextTermOptions() {
+    return this.resolveTermOptions(moment(), 3);
   }
 
 }
