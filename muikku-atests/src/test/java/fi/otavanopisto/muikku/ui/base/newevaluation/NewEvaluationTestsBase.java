@@ -594,8 +594,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick("#workspaceSupplementationSave");
         waitForPresent(".notification-queue-item-success");
 
+//      TODO: This circumvents the problem described below, but it wouldn't hurt to find a better way.
         navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
+        
         // TODO Never goes invisible, waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer"); does not work either
         //waitForNotVisible("#workspaceSupplementationEditorContainer");
         
@@ -604,7 +606,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         
         // TODO Click goes to supplementation request CKEditor which should be hidden at this point
         waitAndClick(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-header .eval-modal-workspace-event-details");
-        //waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
         waitForVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
         assertText(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p", "Test supplementation request.");
 
