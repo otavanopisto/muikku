@@ -169,14 +169,21 @@
 }
 
 .content-panel__chapter-title {
-  font-size: 1.375rem;
+  background: $color-default;
+  border-bottom: dashed 2px $color-default-item-separator-border;
+  border-left: solid 1px $color-application-panel-box-border;
+  border-right: solid 1px $color-application-panel-box-border;
+  border-top: solid 1px $color-application-panel-box-border;
+  font-size: 1.115rem;
   font-weight: 400;
-  margin: 0 0 10px;
+  line-height: 1;
+  margin: 0 0 -1px;
   padding: 10px;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 10px 20px;
+    font-size: 1.375rem;
+    padding: 20px;
   }
 }
 

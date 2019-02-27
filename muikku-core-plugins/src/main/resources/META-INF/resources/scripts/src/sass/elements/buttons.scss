@@ -980,25 +980,43 @@
   left: 50%;
 }
 
+// Buttons used in Material pages
 .button--muikku-check-exercises {
   background: $color-exercise;
   color: $color-default;
+  font-size: $text-mobile-font-size;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .button--muikku-withdraw-assignment {
   background: darken($color-assignment,10%);
   color: $color-default;
+  font-size: $text-mobile-font-size;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .button--muikku-update-assignment {
   background: $color-assignment;
   color: $color-default;
+  font-size: $text-mobile-font-size;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .button--muikku-submit-assignment {
   background: $color-assignment;
   color: $color-default;
+  font-size: $text-mobile-font-size;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
-
-
-

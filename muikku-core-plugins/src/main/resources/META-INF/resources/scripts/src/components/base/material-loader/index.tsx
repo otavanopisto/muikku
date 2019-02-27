@@ -412,13 +412,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       {this.props.material.assignmentType ? <div className={`material-page__label material-page__label--${this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment"}`}>
         {this.props.material.assignmentType === "EXERCISE" ? this.props.i18n.text.get("plugin.workspace.materialsLoader.exerciseLabel") : this.props.i18n.text.get("plugin.workspace.materialsLoader.assignmentLabel")}
       </div> : null }
-
       <h2 className="material-page__title">{this.props.material.title}</h2>
-      {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
-          <div className="material-page__verbal-assessment">
-            <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
-          </div>
-       : null}
       <div className="react-required-container" onClick={this.stopPropagation}>
         {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
          <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}
@@ -445,6 +439,11 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           {Object.keys(this.state.answerRegistry).filter((key)=>this.state.answerRegistry[key]).length} / {Object.keys(this.state.answerRegistry).length}
         </span>
       </div> : null}
+      {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
+        <div className="material-page__verbal-assessment">
+          <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
+        </div>
+     : null}
       {this.props.material.producers ?
         <div className="material-page__producers">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}: {this.props.material.producers}</div> : null}
       {this.props.material.license ?

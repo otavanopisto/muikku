@@ -15,8 +15,15 @@
 }
 
 .material-page__title {
-  font-size: 1.375rem;
+  font-size: 1.125rem;
   font-weight: 300;
+  line-height: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.375rem;
+    margin: 0 0 20px;
+  }
 }
 
 .material-page__label {
@@ -41,8 +48,30 @@
 }
 
 .material-page__buttonset {
-  align: center;
+  align-items: center;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+  margin: 20px 0;
 }
+
+.material-page__correct-answers {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 1rem;
+  font-weight: 300;
+  justify-content: center;
+  margin: 20px 0 0;
+}
+
+.material-page__correct-answers-label {
+  padding: 0 10px 0 0;
+}
+
+.material-page__correct-answers-data {
+  
+}
+
+
+
