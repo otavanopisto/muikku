@@ -511,7 +511,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       }
     }
 
-  /*
+  
   @Test
   @TestEnvironments (
     browsers = {
@@ -598,11 +598,12 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         //waitForNotVisible("#workspaceSupplementationEditorContainer");
         
         waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
-        assertTextIgnoreCase(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details", "Täydennyspyyntö opettajalta Admin User");
+        assertTextIgnoreCase(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details", "Admin User pyysi täydennystä");
         
         // TODO Click goes to supplementation request CKEditor which should be hidden at this point
-        //waitAndClick(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-details");
+        waitAndClick(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-header .eval-modal-workspace-event-details");
         //waitForPresentAndVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
+        waitForVisible(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p");
         assertText(".eval-modal-workspace-event[data-type=\"SUPPLEMENTATION_REQUEST\"] .eval-modal-workspace-event-content p", "Test supplementation request.");
 
         logout();
@@ -624,7 +625,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         mockBuilder.wiremockReset();
     }
   }
-  */
+  
 
   
 }
