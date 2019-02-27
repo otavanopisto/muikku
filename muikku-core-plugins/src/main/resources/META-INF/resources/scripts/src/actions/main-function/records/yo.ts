@@ -69,7 +69,10 @@ let updateYO:updateYOTriggerType = function updateYO() {
       });
     }
     catch(err) {
-      //TODO: ERR
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.yo.errormessage.yoUpdateFailed"), 'error'));
     }
   }
 } 

@@ -11,7 +11,6 @@ import { StateType } from '~/reducers';
 import { HOPSType } from "~/reducers/main-function/hops";
 import mApi from '~/lib/mApi';
 import { YOType, YOEligibilityType, YOEligibilityStatusType } from '~/reducers/main-function/records/yo';
-import MatriculationSubjectType from './matriculation-subjects/matriculation-subject-type';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/course.scss';
@@ -108,49 +107,46 @@ class YO extends React.Component<YOProps, YOState> {
             : null}
           </div>
           <div className="application-sub-panel">
-            <div className="application-sub-panel__body application-list">
-              <div className="application-sub-panel">
-                <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
-          
-          {/* Mock-data commented 
-                  <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-                    <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participation.title")}</div>
-                    <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">Luatikko sis</div>
-                  </div>
-    
-           */}
-                  <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-                    <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
-                    <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
-                      {selectedMatriculationSubjects}
-                    </div>
-                  </div>
+            <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
+      
+      {/* Mock-data commented 
+              <div className="application-sub-panel__item application-sub-panel__item--summarizer">
+                <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participation.title")}</div>
+                <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">Luatikko sis</div>
+              </div>
+
+       */}
+              <div className="application-sub-panel__item application-sub-panel__item--summarizer">
+                <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
+                <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
+                  {selectedMatriculationSubjects}
                 </div>
               </div>
-          {/*  Waiting for planned workspaces
-              <div className="application-sub-panel">
-                <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.plannedWorkspaces.title")}</div>
-                <div className="application-sub-panel__body application-list">
-                  <div className="application-list__item course">
-                    <div className="application-list__item-header application-list__item-header--course">
-                      <span className="application-list__header-icon icon-books"></span>
-                      <span className="application-list__header-primary">Gur- gurzi 4</span>
-                      <span className="application-list__header-secondary">Toissijainen</span>
-                    </div>
-                  </div>
-                  <div className="application-list__item course">
-                    <div className="application-list__item-header  application-list__item-header--course">
-                      <span className="application-list__header-icon icon-books"></span>
-                      <span className="application-list__header-primary">Gur- gurzi 5</span>
-                      <span className="application-list__header-secondary">Toissijainen</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          */}      
             </div>
           </div>
-        </div>
+      {/*  Waiting for planned workspaces
+          <div className="application-sub-panel">
+            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.plannedWorkspaces.title")}</div>
+            <div className="application-sub-panel__body application-list">
+              <div className="application-list__item course">
+                <div className="application-list__item-header application-list__item-header--course">
+                  <span className="application-list__header-icon icon-books"></span>
+                  <span className="application-list__header-primary">Gur- gurzi 4</span>
+                  <span className="application-list__header-secondary">Toissijainen</span>
+                </div>
+              </div>
+              <div className="application-list__item course">
+                <div className="application-list__item-header  application-list__item-header--course">
+                  <span className="application-list__header-icon icon-books"></span>
+                  <span className="application-list__header-primary">Gur- gurzi 5</span>
+                  <span className="application-list__header-secondary">Toissijainen</span>
+                </div>
+              </div>
+            </div>
+          </div>
+      */}      
+            </div>
+ 
       );
     }
   }

@@ -103,10 +103,10 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
     return <div className="activity-badge">
         {workspace.studentActivity.evaluablesTotal ? <div  title={props.i18n.text.get("plugin.records.workspace.activity.assignment.title", workspace.studentActivity.evaluablesDonePercent)} className="activity-badge__item activity-badge__item--assignment">
           <div className={"activity-badge__unit-bar activity-badge__unit-bar--" + workspace.studentActivity.evaluablesDonePercent}></div>
-        </div>  : null}    
+        </div>  : <div className="activity-badge__item activity-badge__item--empty"></div> }    
         {workspace.studentActivity.exercisesTotal ? <div title={props.i18n.text.get("plugin.records.workspace.activity.exercise.title", workspace.studentActivity.exercisesDonePercent)} className="activity-badge__item activity-badge__item--exercise">
           <div className={"activity-badge__unit-bar activity-badge__unit-bar--" + workspace.studentActivity.exercisesDonePercent}></div>
-        </div> : null}
+        </div> : <div className="activity-badge__item activity-badge__item--empty"></div>}
       </div>
 }
 

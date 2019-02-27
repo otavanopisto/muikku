@@ -42,14 +42,14 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date">
                 <span>{this.props.records.studyStartDate ? 
-                    this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>          
+                    this.props.i18n.time.format(this.props.records.studyStartDate) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span>          
               </div>
             </div>
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.records.studyEndDate ? "plugin.records.studyEndDateLabel" :
               "plugin.records.studyTimeEndLabel")}</div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>{this.props.records.studyEndDate || this.props.records.studyTimeEnd ? 
-                  this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : "-"}</span></div>
+                  this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span></div>
             </div>
           </div>
         </div>          
@@ -60,6 +60,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           {studentBasicInfo}
 
           <div className="application-sub-panel">
+          <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.studyEvents")}</div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-summary-cards">
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
                 <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>

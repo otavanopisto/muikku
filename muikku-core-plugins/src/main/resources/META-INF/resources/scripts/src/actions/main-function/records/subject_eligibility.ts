@@ -31,7 +31,7 @@ let updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityT
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.yo.errormessage.yoUpdateFailed"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.yo.errormessage.eligibilityUpdateFailed"), 'error'));
     }
   }
 } 
