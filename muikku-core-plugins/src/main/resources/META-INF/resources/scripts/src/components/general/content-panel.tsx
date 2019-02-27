@@ -8,7 +8,7 @@ interface ContentPanelProps {
   modifier: string,
   title?: React.ReactElement<any> | string,
   navigation?: React.ReactElement<any>,
-  onOpen?: ()=>any
+  onOpenNavigation?: ()=>any
 }
 
 interface ContentPanelState {
@@ -34,9 +34,9 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
-    this.open = this.open.bind(this);
-    this.close = this.close.bind(this);
-    this.closeByOverlay = this.closeByOverlay.bind(this);
+    this.openNavigation = this.openNavigation.bind(this);
+    this.closeNavigation = this.closeNavigation.bind(this);
+    this.closeNavigationByOverlay = this.closeNavigationByOverlay.bind(this);
 
     this.state = {
       displayed: false,
@@ -94,27 +94,27 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     setTimeout(()=>{
       this.setState({drag: null});
       if (menuHasSlidedEnoughForClosing || youJustClickedTheOverlay || youJustClickedALink){
-        this.close();
+        this.closeNavigation();
       }
     }, 10);
     e.preventDefault();
   }
-  open(){
+  openNavigation(){
     this.setState({displayed: true, open: true});
     setTimeout(()=>{
       this.setState({visible: true});
-      this.props.onOpen && this.props.onOpen();
+      this.props.onOpenNavigation && this.props.onOpenNavigation();
     }, 10);
     $(document.body).css({'overflow': 'hidden'});
   }
-  closeByOverlay(e: React.MouseEvent<any>){
+  closeNavigationByOverlay(e: React.MouseEvent<any>){
     let isOverlay = e.target === e.currentTarget;
     let isLink = checkLinkClicked(e.target as HTMLElement);
     if (!this.state.dragging && (isOverlay || isLink)){
-      this.close();
+      this.closeNavigation();
     }
   }
-  close(){
+  closeNavigation(){
     if (!this.state.visible){
       return;
     }
@@ -138,13 +138,13 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
             <div className={`content-panel__main-container loader-empty`}>{this.props.children}</div>
             {this.props.navigation && <nav ref="menu-overlay"
              className={`content-panel__navigation ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
-             onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
+             onClick={this.closeNavigationByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
               <div className="content-panel__navigation-content" style={{right: this.state.drag !== null ? -this.state.drag : null}}>{
                this.props.navigation
               }</div>
             </nav>}
 
-            {this.props.navigation && <div className="content-panel__navigation-open" onClick={this.open}/>}
+            {this.props.navigation && <div className="content-panel__navigation-open" onClick={this.openNavigation}/>}
           </div>
         </div>
       </div>
@@ -155,6 +155,9 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
 export class ContentPanelItem extends React.Component<{
 }, {}> {
   render(){
-    return <div className="content-panel__item">{this.props.children}</div>;
+    return <div ref="component" className="content-panel__item">{this.props.children}</div>;
+  }
+  getComponent(): HTMLElement{
+    return this.refs["component"] as HTMLElement;
   }
 }
