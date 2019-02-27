@@ -26,9 +26,9 @@ interface ConnectFieldProps {
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
   i18n: i18nType,
       
-  displayRightAnswers?: boolean,
-  checkForRightness?: boolean,
-  onRightnessChange?: (name: string, value: boolean)=>any
+  displayCorrectAnswers?: boolean,
+  checkAnswers?: boolean,
+  onAnswerChange?: (name: string, value: boolean)=>any
 }
 
 interface ConnectFieldState {
@@ -48,7 +48,7 @@ interface ConnectFieldState {
   
   //we check whether each pair passed or failed
   //there is no unknown state here
-  rightnessState: Array<"PASS" | "FAIL">
+  answerState: Array<"PASS" | "FAIL">
 }
 
 export default class ConnectField extends React.Component<ConnectFieldProps, ConnectFieldState> {
@@ -97,7 +97,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       modified: false,
       synced: true,
       syncError: null,
-      rightnessState: null
+      answerState: null
     }
     
     this.swapField = this.swapField.bind(this);
@@ -108,11 +108,11 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
   }
   shouldComponentUpdate(nextProps: ConnectFieldProps, nextState: ConnectFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
-    || this.props.i18n !== nextProps.i18n || this.props.displayRightAnswers !== nextProps.displayRightAnswers || this.props.checkForRightness !== nextProps.checkForRightness;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
   }
   triggerChange(){
     //whenever we get a change, check for rightness
-    this.checkForRightness();
+    this.checkAnswers();
     
     //if there is no onchange function then return
     //there is no bussiness with the next code
@@ -130,14 +130,14 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     //and trigger the change
     this.props.onChange(this, this.props.content.name, JSON.stringify(newValue));
   }
-  checkForRightness(){
+  checkAnswers(){
     //if we are not allowed to check for rightness then return
-    if (!this.props.checkForRightness){
+    if (!this.props.checkAnswers){
       return;
     }
     
     //so now we got to assess each change
-    let newRightnessState:Array<"PASS" | "FAIL"> = this.state.fields.map((field, index)=>{
+    let newanswerState:Array<"PASS" | "FAIL"> = this.state.fields.map((field, index)=>{
       //ge thte counterpart from the same index
       let counterpart = this.state.counterparts[index];
       //check whether the connection matches
@@ -147,35 +147,35 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     });
     
     //if the new state does not equal the current set the state
-    if (!equals(newRightnessState, this.state.rightnessState)){
+    if (!equals(newanswerState, this.state.answerState)){
       this.setState({
-        rightnessState: newRightnessState
+        answerState: newanswerState
       });
     }
     
     //check whether it is right
-    let isRight = newRightnessState.includes("FAIL");
-    //if we don't have a rightness state
-    if (!this.state.rightnessState){
+    let isCorrect = newanswerState.includes("FAIL");
+    //if we don't have a answer state
+    if (!this.state.answerState){
       //then send it thru
-      this.props.onRightnessChange(this.props.content.name, isRight);
+      this.props.onAnswerChange(this.props.content.name, isCorrect);
       return;
     }
     
     //otherwise lets check which one was the previous
-    let wasRight = !this.state.rightnessState.includes("FAIL");
+    let wasCorrect = !this.state.answerState.includes("FAIL");
     //and update in a way where it matters if it changed
-    if (isRight && !wasRight){
-      this.props.onRightnessChange(this.props.content.name, true);
-    } else if (!isRight && wasRight){
-      this.props.onRightnessChange(this.props.content.name, false);
+    if (isCorrect && !wasCorrect){
+      this.props.onAnswerChange(this.props.content.name, true);
+    } else if (!isCorrect && wasCorrect){
+      this.props.onAnswerChange(this.props.content.name, false);
     }
   }
   componentDidMount(){
-    this.checkForRightness();
+    this.checkAnswers();
   }
   componentDidUpdate(prevProps: ConnectFieldProps, prevState: ConnectFieldState){
-    this.checkForRightness();
+    this.checkAnswers();
   }
   //swapping the fields
   swapField(fielda: FieldType, fieldb: FieldType){
@@ -312,15 +312,15 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
   }
   render(){
     //the element calass name matching the state on whether it passes or fails
-    let elementClassNameState = this.props.checkForRightness && this.state.rightnessState ?
-        "state-" + (this.state.rightnessState.includes("FAIL") ? "FAIL" : "PASS") : "";
+    let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
+        "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";
     return <div className={`muikku-connect-field muikku-field ${elementClassNameState}`}>
       <div className="muikku-connect-field-terms">
         {this.state.fields.map((field, index)=>{
           //the item class name only necessary if it was a fail and we are checking for rightness
-          let itemClassNameState = this.props.checkForRightness && this.state.rightnessState &&
-            this.state.rightnessState.includes("FAIL") && this.state.rightnessState[index] ? 
-              "state-" + this.state.rightnessState[index] : ""
+          let itemClassNameState = this.props.checkAnswers && this.state.answerState &&
+            this.state.answerState.includes("FAIL") && this.state.answerState[index] ? 
+              "state-" + this.state.answerState[index] : ""
           //so now we get the fields here
           //the fields cannot be dragged and they remain in order
           //they are simple things
@@ -336,10 +336,10 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       <div className="muikku-connect-field-counterparts">
        {this.state.counterparts.map((field, index)=>{
          //the item rightness
-         let itemRightness = this.props.checkForRightness && this.state.rightnessState && this.state.rightnessState[index];
+         let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
          //the classname state if necessary
-         let itemClassNameState = itemRightness && this.state.rightnessState.includes("FAIL") ? 
-             "state-" + this.state.rightnessState[index] : "";
+         let itemClassNameState = itemAnswer && this.state.answerState.includes("FAIL") ? 
+             "state-" + this.state.answerState[index] : "";
          //the basic class name
          let className = `muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
            "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""} ${itemClassNameState}`;
@@ -355,12 +355,12 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
              key={field.name} style={style}>{field.text}</div>
          }
          
-         //if we are asked for right answers
-         let itemRightAnswerComponent = null;
+         //if we are asked for correct answers
+         let itemCorrectAnswerComponent = null;
          //we need to do this
-         if (this.props.displayRightAnswers && !(this.props.checkForRightness && itemRightness === "PASS")){
+         if (this.props.displayCorrectAnswers && !(this.props.checkAnswers && itemAnswer === "PASS")){
            //this is just a component giving an overview, of which number was meant to be the right answer
-           itemRightAnswerComponent = <span className="muikku-connect-field-number">
+           itemCorrectAnswerComponent = <span className="muikku-connect-field-number">
              {this.state.fields.findIndex(f=>f.name === (this.props.content.connections.find(c=>c.counterpart === field.name) || {field: null}).field) + 1}
            </span>
          }
@@ -379,7 +379,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
            onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
            onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".muikku-field"
            onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
-           className={className} key={field.name} style={style}>{itemRightAnswerComponent}{field.text}</Draggable>
+           className={className} key={field.name} style={style}>{itemCorrectAnswerComponent}{field.text}</Draggable>
        })}
       </div>
     </div>

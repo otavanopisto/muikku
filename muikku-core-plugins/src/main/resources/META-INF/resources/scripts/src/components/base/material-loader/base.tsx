@@ -63,9 +63,9 @@ interface BaseProps {
       
   onConfirmedAndSyncedModification?: ()=>any,
   onModification?: ()=>any,
-  displayRightAnswers: boolean,
-  checkForRightness: boolean,
-  onRightnessChange: (name:string, status:boolean)=>any,
+  displayCorrectAnswers: boolean,
+  checkAnswers: boolean,
+  onAnswerChange: (name:string, status:boolean)=>any,
   onAnswerCheckableChange: (status: boolean)=>any
 }
 
@@ -409,9 +409,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     //We add the onChange function that will make us try to sync with the server
     parameters["onChange"] = this.onValueChange.bind(this);
     
-    parameters["displayRightAnswers"] = props.displayRightAnswers;
-    parameters["checkForRightness"] = props.checkForRightness;
-    parameters["onRightnessChange"] = props.onRightnessChange;
+    parameters["displayCorrectAnswers"] = props.displayCorrectAnswers;
+    parameters["checkAnswers"] = props.checkAnswers;
+    parameters["onAnswerChange"] = props.onAnswerChange;
     
     //and we return that thing
     return <ActualElement {...parameters}/>
@@ -468,6 +468,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   render(){
     //This is all there is we just glue the HTML in there
     //and pick out the content from there
-    return <div ref="base" className="material-page__content rich-text __deprecated"/>;
+    return <div ref="base" className="material-page__content rich-text"/>;
   }
 }

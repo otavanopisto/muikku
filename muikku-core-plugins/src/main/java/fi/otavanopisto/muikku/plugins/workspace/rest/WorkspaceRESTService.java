@@ -2789,12 +2789,13 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    workspaceJournalController.createJournalEntry(
+    WorkspaceJournalEntry result = workspaceJournalController.createJournalEntry(
         workspaceController.findWorkspaceEntityById(workspaceEntityId),
         sessionController.getLoggedUserEntity(),
         restModel.getContent(),
         restModel.getTitle());
-    return Response.noContent().build();
+    
+    return Response.ok(result).build();
   }
 
   @PUT

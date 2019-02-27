@@ -692,19 +692,118 @@ export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
 
 let createWorkspaceJournalForCurrentWorkspace:CreateWorkspaceJournalForCurrentWorkspaceTriggerType = function createWorkspaceJournalForCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+      let newJournal:WorkspaceJournalType = <WorkspaceJournalType>(await promisify(mApi().workspace.workspaces
+          .journal.create(state.workspaces.currentWorkspace.id, {
+            content: data.content,
+            title: data.title
+          }), 'callback')());
     
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            journals: {
+              journals: [newJournal].concat(currentWorkspace.journals.journals),
+              hasMore: currentWorkspace.journals.hasMore,
+              userEntityId: currentWorkspace.journals.userEntityId,
+              state: currentWorkspace.journals.state
+            }
+          }
+        }
+      });
+      
+      data.success && data.success();
+    
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      data.fail && data.fail();
+    }
   }
 }
   
 let updateWorkspaceJournalInCurrentWorkspace:UpdateWorkspaceJournalInCurrentWorkspaceTriggerType = function updateWorkspaceJournalInCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let newJournal:WorkspaceJournalType = <WorkspaceJournalType>(await promisify(mApi().workspace.journal
+          .update(data.journal.id, {
+            content: data.content,
+            title: data.title
+          }), 'callback')());
     
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            journals: {
+              journals: currentWorkspace.journals.journals.map(j=>{
+                if (j.id === data.journal.id){
+                  return {...j, content: data.content, title: data.title};
+                }
+                return j;
+              }),
+              hasMore: currentWorkspace.journals.hasMore,
+              userEntityId: currentWorkspace.journals.userEntityId,
+              state: currentWorkspace.journals.state
+            }
+          }
+        }
+      });
+      
+      data.success && data.success();
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      data.fail && data.fail();
+    }
   }
 }
 
 let deleteWorkspaceJournalInCurrentWorkspace:DeleteWorkspaceJournalInCurrentWorkspaceTriggerType = function deleteWorkspaceJournalInCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+      await promisify(mApi().workspace.workspaces
+          .journal.del(state.workspaces.currentWorkspace.id, data.journal.id), 'callback')();
     
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            journals: {
+              journals: currentWorkspace.journals.journals.filter(j=>j.id !== data.journal.id),
+              hasMore: currentWorkspace.journals.hasMore,
+              userEntityId: currentWorkspace.journals.userEntityId,
+              state: currentWorkspace.journals.state
+            }
+          }
+        }
+      });
+      
+      data.success && data.success();
+    
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to create workspace'), 'error'));
+      data.fail && data.fail();
+    }
   }
 }
 

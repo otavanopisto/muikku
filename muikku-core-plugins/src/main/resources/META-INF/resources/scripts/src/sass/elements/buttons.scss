@@ -979,3 +979,26 @@
 .button--profile-image-delete {
   left: 50%;
 }
+
+.button--muikku-check-exercises {
+  background: $color-exercise;
+  color: $color-default;
+}
+
+.button--muikku-withdraw-assignment {
+  background: darken($color-assignment,10%);
+  color: $color-default;
+}
+
+.button--muikku-update-assignment {
+  background: $color-assignment;
+  color: $color-default;
+}
+
+.button--muikku-submit-assignment {
+  background: $color-assignment;
+  color: $color-default;
+}
+
+
+

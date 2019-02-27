@@ -152,8 +152,9 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
   }
 }
 
-export class ContentPanelItem extends React.Component<{}, {}> {
+export class ContentPanelItem extends React.Component<{
+}, {}> {
   render(){
-    return (<div className="content-panel__item">{this.props.children}</div>);
+    return <div className="content-panel__item">{this.props.children}</div>;
   }
 }

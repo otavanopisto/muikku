@@ -153,7 +153,7 @@ interface MaterialLoaderState {
   answerCheckable: boolean,
   
   //A registry for the right and wrong answers as told by the material
-  rightnessRegistry: {[name: string]: any}
+  answerRegistry: {[name: string]: any}
 }
 
 //A cheap cache for material replies and composite replies used by the hack
@@ -169,7 +169,7 @@ let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 //you can add styles here but don't mess up with the low level rendering
 class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
   private stateConfiguration:any;
-  private rightnessRegistrySync: {[name: string]: any};
+  private answerRegistrySync: {[name: string]: any};
   
   constructor(props: MaterialLoaderProps){
     super(props);
@@ -189,18 +189,18 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       answerCheckable: true,
       
       //The rightness registry start empty
-      rightnessRegistry: {}
+      answerRegistry: {}
     };
     
     //A sync version of the righness registry, it can change so fast
     //setStates might stack
-    this.rightnessRegistrySync = {};
+    this.answerRegistrySync = {};
     
     this.onConfirmedAndSyncedModification = this.onConfirmedAndSyncedModification.bind(this);
     this.onModification = this.onModification.bind(this);
     this.onPushAnswer = this.onPushAnswer.bind(this);
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
-    this.onRightnessChange = this.onRightnessChange.bind(this);
+    this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
     
     //if it is answerable
@@ -255,7 +255,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       if (this.stateConfiguration){
         //if the thing has the flag to checks-answers but they are not going to be
         if (this.stateConfiguration['checks-answers'] && !nextState.answersChecked){
-          //Depending on whether correctAnswers are ALWAYS (and the default is always if not set)
+          //Depending on whether rightAnswers are ALWAYS (and the default is always if not set)
           if ((nextProps.material.correctAnswers || "ALWAYS") === "ALWAYS"){
             //We set the answers visible and checked
             this.setState({
@@ -359,30 +359,30 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       answersVisible: !this.state.answersVisible
     });
   }
-  //This function gets called every time a field rightness state changes
-  //because of the way it works it will only be called if checkForRightness boolean attribute
+  //This function gets called every time a field answer state changes
+  //because of the way it works it will only be called if checkAnswers boolean attribute
   //is set to true and it will fire immediately all the on rightness change events, as everything
   //starts with unknown rightness, only things that can be righted call this, the name represents the field
   //and the value the rightness that came as a result
   //Some items do not trigger this function, which means your rightness count might differ from the
   //amount of fields, because fields self register
-  onRightnessChange(name: string, value?: boolean){
+  onAnswerChange(name: string, value?: boolean){
     
     //The reason we need a sync registry is that the rightness can change so fast
     //that it can overwritte itself in async opperations like setState and this.state
     
     //A value of null represents no rightness, some fields can have unknown rightness
     if (value === null){
-      delete this.rightnessRegistrySync[name];
+      delete this.answerRegistrySync[name];
     } else {
-      this.rightnessRegistrySync[name] = value;
+      this.answerRegistrySync[name] = value;
     }
-    let newObj:any = {...this.rightnessRegistrySync};
+    let newObj:any = {...this.answerRegistrySync};
     this.setState({
-      rightnessRegistry: newObj
+      answerRegistry: newObj
     })
     
-    //NOTE if you would rather have 3 rightness states here in order
+    //NOTE if you would rather have 3 answer states here in order
     //to make all fields show in the correct answer count you might modify and change how
     //the function operates within the fields freely
   }
@@ -405,12 +405,17 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   render(){
     //The modifieers in use
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
-    
+
     //Setting this up
-    return <article className={`material-page ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")}`} ref="root" id={this.props.id}>
+    let materialType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
+    return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")}`} ref="root" id={this.props.id}>
+      {this.props.material.assignmentType ? <div className={`material-page__label material-page__label--${this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment"}`}>
+        {this.props.material.assignmentType === "EXERCISE" ? this.props.i18n.text.get("plugin.workspace.materialsLoader.exerciseLabel") : this.props.i18n.text.get("plugin.workspace.materialsLoader.assignmentLabel")}
+      </div> : null }
+
       <h2 className="material-page__title">{this.props.material.title}</h2>
       {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
-          <div className="">
+          <div className="material-page__verbal-assessment">
             <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>
        : null}
@@ -420,8 +425,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           workspace={this.props.workspace} websocket={this.props.websocket} onConfirmedAndSyncedModification={this.onConfirmedAndSyncedModification}
           onModification={this.onModification}
           readOnly={this.props.readOnly || (this.props.answerable && this.stateConfiguration && this.stateConfiguration['fields-read-only'])}
-          compositeReplies={this.props.compositeReplies || this.state.compositeReplies} displayRightAnswers={this.state.answersVisible}
-          checkForRightness={this.state.answersChecked} onRightnessChange={this.onRightnessChange} onAnswerCheckableChange={this.onAnswerCheckableChange}/>
+          compositeReplies={this.props.compositeReplies || this.state.compositeReplies} displayCorrectAnswers={this.state.answersVisible}
+          checkAnswers={this.state.answersChecked} onAnswerChange={this.onAnswerChange} onAnswerCheckableChange={this.onAnswerCheckableChange}/>
          }
       </div>
       {this.props.answerable && this.stateConfiguration ? <div className="material-page__buttonset">
@@ -434,10 +439,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
             {this.props.i18n.text.get(this.state.answersVisible ? "plugin.workspace.materialsLoader.hideAnswers" : "plugin.workspace.materialsLoader.showAnswers")}
           </Button> : null}
       </div> : null}
-      {this.state.answersChecked && Object.keys(this.state.rightnessRegistry).length ? <div className="material-page__correct-answers">
+      {this.state.answersChecked && Object.keys(this.state.answerRegistry).length ? <div className="material-page__correct-answers">
         <span className="material-page__correct-answers-label">{this.props.i18n.text.get("plugin.workspace.materialsLoader.correctAnswersCountLabel")}</span>
         <span className="material-page__correct-answers-data">
-          {Object.keys(this.state.rightnessRegistry).filter((key)=>this.state.rightnessRegistry[key]).length} / {Object.keys(this.state.rightnessRegistry).length}
+          {Object.keys(this.state.answerRegistry).filter((key)=>this.state.answerRegistry[key]).length} / {Object.keys(this.state.answerRegistry).length}
         </span>
       </div> : null}
       {this.props.material.producers ?
