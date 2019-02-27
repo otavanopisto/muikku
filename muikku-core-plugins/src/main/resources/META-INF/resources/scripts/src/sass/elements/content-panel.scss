@@ -128,15 +128,15 @@
 
 .content-panel__navigation-content {
   @include prefix(transition, webkit moz o ms, right 0.3s);
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  background-color: $color-application-panel-box-background;
+  border: solid 1px $color-application-panel-box-border;
+  bottom: 0;
   overflow-y: auto;
-  width: 90%;
   position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
-  background-color: $color-application-panel-box-background;
-  box-shadow: 0 2px 3px $color-panel-shadow;
-  border: solid 1px $color-application-panel-box-border;
+  width: 90%;
 
   @include breakpoint($breakpoint-desktop) {
     width: 100%;
@@ -144,14 +144,13 @@
 }
 
 .content-panel__main-container {
-  overflow-x: hidden;
-  width: 100%;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  margin: 0;
   padding: 0;
   position: relative;
-  margin: 0;
+  width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(65% - 60px);
@@ -174,7 +173,7 @@
   border-left: solid 1px $color-application-panel-box-border;
   border-right: solid 1px $color-application-panel-box-border;
   border-top: solid 1px $color-application-panel-box-border;
-  font-size: 1.115rem;
+  font-size: 1.25rem;
   font-weight: 400;
   line-height: 1;
   margin: 0 0 -1px;
@@ -182,7 +181,7 @@
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.375rem;
+    font-size: 1.625rem;
     padding: 20px;
   }
 }
