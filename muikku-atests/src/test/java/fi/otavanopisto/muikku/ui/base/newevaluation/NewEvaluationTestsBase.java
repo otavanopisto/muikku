@@ -593,7 +593,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
        
         waitAndClick("#workspaceSupplementationSave");
         waitForPresent(".notification-queue-item-success");
-        
+
+        navigate(String.format("/evaluation2"), false);
+        waitAndClick(".evaluate-button");
         // TODO Never goes invisible, waitUntilAnimationIsDone("#workspaceSupplementationEditorContainer"); does not work either
         //waitForNotVisible("#workspaceSupplementationEditorContainer");
         
