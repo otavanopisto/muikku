@@ -23,10 +23,8 @@ interface DescriptionPanelState {
 
 class DescriptionPanel extends React.Component<DescriptionPanelProps, DescriptionPanelState> {
   render(){
-    if (!this.props.workspace || !this.props.workspace.contentDescription.html){
-      return null;
-    }
-    return (<div className="panel panel--workspace-description">
+
+    return <div className="panel panel--workspace-description">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</div>
@@ -35,7 +33,7 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
         {this.props.workspace && <MaterialLoader modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
           readOnly/>}
       </div>
-    </div>);
+    </div>;
   }
 }
 
