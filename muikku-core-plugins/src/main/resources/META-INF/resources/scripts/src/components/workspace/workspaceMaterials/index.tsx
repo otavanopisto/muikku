@@ -29,7 +29,8 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
     return (<div>
       <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="materials"> 
-        <Materials onOpenNavigation={this.onOpenNavigation} navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
+        <Materials onOpenNavigation={this.onOpenNavigation}
+          navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
       </ScreenContainer>
     </div>);
   }
