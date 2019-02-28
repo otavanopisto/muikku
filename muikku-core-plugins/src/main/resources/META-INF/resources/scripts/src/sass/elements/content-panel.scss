@@ -44,8 +44,12 @@
   font-weight: 300;
   height: $panel-header-title-height;
   line-height: 1;
-  padding: 0 20px;
+  padding: 0 10px;
   text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-desktop) {
+    padding: 0 20px;
+  }
 }
 
 .content-panel__body {
