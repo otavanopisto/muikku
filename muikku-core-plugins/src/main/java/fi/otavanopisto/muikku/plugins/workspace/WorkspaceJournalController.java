@@ -8,13 +8,18 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceJournalCommentDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceJournalEntryDAO;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 
 public class WorkspaceJournalController {
 
   @Inject
   private WorkspaceJournalEntryDAO workspaceJournalEntryDAO;
+
+  @Inject
+  private WorkspaceJournalCommentDAO workspaceJournalCommentDAO;
 
   public WorkspaceJournalEntry createJournalEntry(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title) {
     return workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), Boolean.FALSE);
@@ -46,5 +51,13 @@ public class WorkspaceJournalController {
   
   public void archiveJournalEntry(WorkspaceJournalEntry workspaceJournalEntry){
     workspaceJournalEntryDAO.updateArchived(workspaceJournalEntry, Boolean.TRUE);
+  }
+  
+  public List<WorkspaceJournalComment> listCommentsByJournalEntry(WorkspaceJournalEntry journalEntry) {
+    return workspaceJournalCommentDAO.listByJournalEntryAndArchived(journalEntry, Boolean.FALSE);
+  }
+  
+  public int getCommentCount(WorkspaceJournalEntry journalEntry) {
+    return workspaceJournalCommentDAO.listByJournalEntryAndArchived(journalEntry, Boolean.FALSE).size();
   }
 }
