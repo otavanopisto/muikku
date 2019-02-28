@@ -59,7 +59,7 @@
 
 .content-panel__content {
 
-  @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-pad) {
     display: flex;
     flex-flow: row nowrap;
   }
@@ -150,14 +150,15 @@
   margin: 0;
   padding: 0;
   position: relative;
-  width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
-    flex-basis: calc(65% - 60px);
-    margin: 0 50px 10px 10px;
+    flex-basis: calc(65% - 30px);
+    margin: 0 20px 10px 10px;
+    max-width: 700px;
+    min-width: 655px;
   }
 
-  @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: calc(65% - 80px);
     margin: 0 70px 10px 10px;
   }
@@ -181,7 +182,7 @@
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.625rem;
+    font-size: 1.5rem;
     padding: 20px;
   }
 }
@@ -205,7 +206,7 @@
 
 .content-panel__navigation-open {
   position: fixed;
-  bottom: 10px;
+  top: 100px;
   right: 10px;
   background-color: red;
   width: 25px;
