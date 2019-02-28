@@ -2482,7 +2482,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceJournalComment> comments = orderCommentTree(workspaceJournalController.listCommentsByJournalEntry(journalEntry));
     List<WorkspaceJournalCommentRESTModel> result = new ArrayList<>();
     for (WorkspaceJournalComment comment : comments) {
-      result.add(toRestModel(comment));
+      result.add(toRestModel(workspaceEntity, comment));
     }
     return Response.ok(result).build();
   }
@@ -2781,7 +2781,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         .build();
   }
   
-  private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceJournalComment workspaceJournalComment) {
+  private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceEntity workspaceEntity, WorkspaceJournalComment workspaceJournalComment) {
     UserEntity author = userEntityController.findUserEntityById(workspaceJournalComment.getCreator());
     User user = author == null ? null : userController.findUserByUserEntityDefaults(author);
     WorkspaceJournalCommentRESTModel result = new WorkspaceJournalCommentRESTModel();
@@ -2795,6 +2795,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceJournalComment.getParent() != null) {
       result.setParentCommentId(workspaceJournalComment.getParent().getId());
     }
+    result.setEditable(workspaceJournalComment.getCreator().equals(sessionController.getLoggedUserEntity().getId()) ||
+        sessionController.hasWorkspacePermission(MuikkuPermissions.EDIT_WORKSPACE_JOURNAL_COMMENT, workspaceEntity));
     return result;
   }
   

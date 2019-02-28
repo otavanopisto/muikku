@@ -68,6 +68,14 @@ public class WorkspaceJournalCommentRESTModel {
     this.authorId = authorId;
   }
 
+  public Boolean getEditable() {
+    return editable;
+  }
+
+  public void setEditable(Boolean editable) {
+    this.editable = editable;
+  }
+
   private Long id;
   private Long journalEntryId;
   private Long parentCommentId;
@@ -76,5 +84,6 @@ public class WorkspaceJournalCommentRESTModel {
   private String lastName;
   private String comment;
   private Date created;
+  private Boolean editable;
 
 }

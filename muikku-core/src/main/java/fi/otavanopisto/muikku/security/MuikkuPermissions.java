@@ -202,6 +202,11 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT, WorkspaceRoleArchetype.TEACHER })
   public static final String ACCESS_WORKSPACE_JOURNAL = "ACCESS_WORKSPACE_JOURNAL";
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
+  public static final String EDIT_WORKSPACE_JOURNAL_COMMENT = "EDIT_WORKSPACE_JOURNAL_COMMENT";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
