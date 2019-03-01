@@ -2959,7 +2959,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setContent(workspaceJournalEntry.getHtml());
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
-    result.setComments(workspaceJournalController.getCommentCount(workspaceJournalEntry));
+    result.setCommentCount(workspaceJournalController.getCommentCount(workspaceJournalEntry));
     
     return result;
   }

@@ -77,7 +77,7 @@ public class WorkspaceJournalController {
     return workspaceJournalCommentDAO.listByJournalEntryAndArchived(journalEntry, Boolean.FALSE);
   }
   
-  public int getCommentCount(WorkspaceJournalEntry journalEntry) {
-    return workspaceJournalCommentDAO.listByJournalEntryAndArchived(journalEntry, Boolean.FALSE).size();
+  public Long getCommentCount(WorkspaceJournalEntry journalEntry) {
+    return workspaceJournalCommentDAO.countByJournalEntryAndArchived(journalEntry, Boolean.FALSE);
   }
 }

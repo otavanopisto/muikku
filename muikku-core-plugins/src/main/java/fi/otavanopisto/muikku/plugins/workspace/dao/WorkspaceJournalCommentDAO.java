@@ -48,6 +48,21 @@ public class WorkspaceJournalCommentDAO extends CorePluginsDAO<WorkspaceJournalC
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public Long countByJournalEntryAndArchived(WorkspaceJournalEntry journalEntry, Boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceJournalComment> root = criteria.from(WorkspaceJournalComment.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceJournalComment_.journalEntry), journalEntry),
+        criteriaBuilder.equal(root.get(WorkspaceJournalComment_.archived), Boolean.FALSE)
+      )
+    );
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
   public List<WorkspaceJournalComment> listByParent(WorkspaceJournalComment journalComment) {
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
