@@ -45,8 +45,7 @@
   height: $panel-header-title-height;
   line-height: 1;
   padding: 0 10px;
-  text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-desktop) {
     padding: 0 20px;
   }
@@ -186,7 +185,7 @@
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.5rem;
+    font-size: 1.375rem;
     padding: 20px;
   }
 }

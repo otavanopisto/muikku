@@ -6,10 +6,6 @@
 import * as React from 'react';
 import Base from './base';
 
-//TODO add the scss files that are necessary to render this material page correctly...
-//this file is temporary use it to dump the content from the deprecated scss files that are necessary
-import "~/sass/elements/__ugly-material-loader-deprecated-file-mashup.scss";
-
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
 import { WorkspaceType, MaterialContentNodeType, MaterialCompositeRepliesType } from '~/reducers/workspaces';

@@ -8,7 +8,6 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import {StateType} from '~/reducers';
 
-import '~/sass/elements/toc.scss';
 import '~/sass/elements/label.scss';
 
 import '~/sass/elements/item-list.scss';
@@ -25,8 +24,7 @@ interface AnnouncementsAsideState {
 
 class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, AnnouncementsAsideState> {
   render(){
-    return (<section className="toc">
-        <div className="toc__container">
+    return (<div className="react-required-container">
           {this.props.announcements.announcements.length !== 0 ?
             <div className="item-list item-list--panel-announcements">
               {this.props.announcements.announcements.map((announcement: AnnouncementType)=>{
@@ -52,14 +50,13 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
                   </span>
                 </Link>
               })}
-            </div>  
+            </div>
           :
             <div>
              {this.props.i18n.text.get("plugin.announcer.empty.title")}
             </div>
           }
-      </div>
-    </section>);
+    </div>);
   }
 }
 
