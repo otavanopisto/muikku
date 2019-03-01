@@ -223,10 +223,7 @@ const Page2 = (props) => (
           Ole hyvä ja täytä suoritettujen pakollisten kurssien lukumäärä.
           </div>: null}
         {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses !== "" && props.numMandatoryCourses < 20 ?
-          <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
-           Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Jos haluat
-           silti ilmoittautua ylioppilaskokeeseen, ota yhteyttä ohjaajaan.
-          </div>: null}
+          <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.</div>: null}
         <div className="pure-u-1-2">
           <label style={{paddingTop: "0.7rem"}} >Aloitan tutkinnon suorittamisen uudelleen&nbsp;
             <input value={props.restartExam} type="checkbox" />
