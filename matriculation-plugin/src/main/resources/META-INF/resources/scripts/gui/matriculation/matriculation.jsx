@@ -223,10 +223,7 @@ const Page2 = (props) => (
           Ole hyvä ja täytä suoritettujen pakollisten kurssien lukumäärä.
           </div>: null}
         {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses !== "" && props.numMandatoryCourses < 20 ?
-          <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
-           Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Jos haluat
-           silti ilmoittautua ylioppilaskokeeseen, ota yhteyttä ohjaajaan.
-          </div>: null}
+          <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.</div>: null}
         <div className="pure-u-1-2">
           <label style={{paddingTop: "0.7rem"}} >Aloitan tutkinnon suorittamisen uudelleen&nbsp;
             <input value={props.restartExam} type="checkbox" />
@@ -915,7 +912,7 @@ class App extends React.Component {
     return {
       value: (quarter < 3 ? "SPRING" : "AUTUMN") + from.year(),
       name: (quarter < 3 ? "Kevät " : "Syksy ") + from.year(),
-      adessive: (quarter < 3 ? "Keväällä " : "Syksyllä ") + from.year()
+      adessive: (quarter < 3 ? "keväällä " : "syksyllä ") + from.year()
     }
   }
 
@@ -924,7 +921,7 @@ class App extends React.Component {
    * @returns {object} term details
    */
   resolveCurrentTerm () {
-    return this.resolveTerm(moment());
+    return this.resolveTerm(moment().add(6, "months"));
   }
 
   /**
@@ -953,7 +950,7 @@ class App extends React.Component {
    * @returns {array} term options
    */
   getPastTermOptions() {
-    return this.resolveTermOptions(moment().subtract(3, "years"), 6);
+    return this.resolveTermOptions(moment().subtract(2.5, "years"), 6);
   }
 
   /**
@@ -963,7 +960,7 @@ class App extends React.Component {
    * @returns {array} term options
    */
   getNextTermOptions() {
-    return this.resolveTermOptions(moment(), 3);
+    return this.resolveTermOptions(moment().add(1, "years"), 3);
   }
 
 }
