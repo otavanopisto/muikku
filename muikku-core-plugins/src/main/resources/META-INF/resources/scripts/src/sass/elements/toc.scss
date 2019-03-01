@@ -4,17 +4,68 @@
 @import "../base/breakpoints";
 
 .toc {
-  background-color: $color-panel-background;
-  border: solid 1px $color-toc-box-border;
-  border-radius: $panel-border-radius;
-  box-shadow: 0 2px 3px $color-panel-shadow;
-  display: block;
-  overflow: visible;
-  padding: 1px;
-  position: relative;
-  width: 100%;
+  @include text;
 }
 
-.toc__container {
-  width: 100%;
+.toc__section-title {
+  display: block;
 }
+
+.toc__item {
+  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+  align-items: flex-start;
+  background-color: $color-item-list-item-background;
+  color: $color-text-default;
+  cursor: pointer;
+  display: flex;
+  padding: 10px;
+  position: relative;
+}
+
+.toc__item--submitted {
+  
+}
+
+.toc__item--answered {
+  
+}
+
+.toc__item--withdrawn {
+  
+}
+
+.toc__item--passed {
+  
+}
+
+.toc__item--incomplete {
+  
+}
+
+.toc__item--failed {
+  
+}
+
+.toc__text-body {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: $text-mobile-font-size;
+  margin-left: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.toc__icon {
+  color: $color-item-list-icon-font-color;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $item-list-icon-font-size;
+  padding: 3px 0 0;
+}
+
+
