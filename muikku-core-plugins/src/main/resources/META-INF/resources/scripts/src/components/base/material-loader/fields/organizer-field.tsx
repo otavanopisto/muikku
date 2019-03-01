@@ -3,6 +3,7 @@ import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
+import FieldBase from "./base";
 
 interface FieldType {
   name: string,
@@ -73,7 +74,7 @@ interface OrganizerFieldState {
   answerStateMissingTerms: OrganizerFieldanswerStateMissingTermsType
 }
 
-export default class OrganizerField extends React.Component<OrganizerFieldProps, OrganizerFieldState> {
+export default class OrganizerField extends FieldBase<OrganizerFieldProps, OrganizerFieldState> {
   constructor(props: OrganizerFieldProps){
     super(props);
     
@@ -198,9 +199,11 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     }
   }
   componentDidMount(){
+    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: OrganizerFieldProps, prevState: OrganizerFieldState){
+    super.componentDidUpdate(prevProps, prevState);
     this.checkAnswers();
   }
   onDropDraggableItem(termId: string, categoryId: string){
@@ -279,6 +282,31 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     return false;
   }
   render(){
+    //TODO lankkinen please ensure that when it's not loaded they take the same
+    //space
+    if (!this.loaded){
+      return <div ref="base" className="muikku-organizer-field muikku-field">
+        <div className="muikku-terms-container">
+          <div className="muikku-terms-title">{this.props.content.termTitle}</div>
+          <div className="muikku-terms-data">
+            {this.state.order.map((id)=>{
+              return <div className="muikku-term" key={id}>{this.state.terms[id]}</div>
+            })}
+          </div>
+        </div>
+        <div className="muikku-categories-container flex-row">
+          {this.props.content.categories.map((category)=>{
+          
+            return <div className="muikku-category-container"
+              key={category.id}>
+              <div className="muikku-category-title">{category.name}</div>
+              <div className="muikku-category"/>
+            </div>
+          })}
+        </div>
+      </div>
+    }
+    
     //The overall state if we got one and we check for rightness
     let elementClassNameState = this.props.checkAnswers && this.state.answerStateOverall ?
         "state-" + this.state.answerStateOverall : "";

@@ -80,18 +80,10 @@ const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_R
 
 //The handlers that do more to html static items
 //That are somehow brokeeeen
-const statics:{[componentKey:string]: {
-  handler: Function
-}} = {
-  'figure[class="image"]': {
-     handler: Image
-   },
-   'mark[data-muikku-word-definition]': {
-     handler: WordDefinition
-   },
-   'iframe[data-url]': {
-     handler: IFrame
-   }
+const statics:{[componentKey:string]: any} = {
+  'figure[class="image"]': Image,
+  'mark[data-muikku-word-definition]': WordDefinition,
+  'iframe[data-url]': IFrame
 };
 
 //Fixes the html inconsitencies because
@@ -261,13 +253,14 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     Object.keys(statics).forEach((componentKey)=>{
       $(this.elements).find(componentKey).addBack(componentKey).toArray().forEach((element: HTMLElement)=>{
         //we get all the elements but we pass them to a handler
-        let rElement:React.ReactElement<any> = statics[componentKey].handler({
+        let ElementClass = statics[componentKey];
+        let rElement:React.ReactElement<any> = <ElementClass {...{
           element,
           dataset: extractDataSet(element),
           i18n: props.i18n,
           //This is the path something odd for images
           path: "/workspace/" + props.workspace.urlName + "/materials/" + props.material.path
-        });
+        }}/>;
       
         //we do the same we did in the dynamics
         let parentElement = element.parentElement;
@@ -308,12 +301,13 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     
     //The same with the dynamics
     this.staticRegistry.forEach((statice)=>{
-      let rElement:React.ReactElement<any> = statics[statice.componentKey].handler({
+      let ElementClass = statics[statice.componentKey];
+      let rElement:React.ReactElement<any> = <ElementClass {...{
         element: statice.element,
         dataset: extractDataSet(statice.element),
         i18n: nextProps.i18n,
         path: "/workspace/" + nextProps.workspace.urlName + "/materials/" + nextProps.material.path
-      });
+      }}/>;
       
       statice.subtree = unstable_renderSubtreeIntoContainer(
         this,

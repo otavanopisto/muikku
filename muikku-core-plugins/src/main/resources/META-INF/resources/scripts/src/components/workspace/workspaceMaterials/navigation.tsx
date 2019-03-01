@@ -40,7 +40,6 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
   refresh(props:NavigationProps = this.props){
     let element = (this.refs[props.activeNodeId] as NavigationElement).getElement();
     if (!isScrolledIntoView(element)){
-      console.log("not scrolled into", element);
       element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
   }

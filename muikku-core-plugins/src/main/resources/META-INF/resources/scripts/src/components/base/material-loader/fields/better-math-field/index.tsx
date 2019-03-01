@@ -41,6 +41,8 @@ const MQ_DEFAULT_CSS = "//cdn.muikkuverkko.fi/libs/digabi-math-editor/3.4.1/math
 export default class MathField extends React.Component<MathFieldProps, MathFieldState> {
   //private cancelRemovalOfFocus: boolean;
   private value: string;
+  private loadedAce: boolean;
+  private loadedMq: boolean;
   constructor(props: MathFieldProps){
     super(props);
     
@@ -56,8 +58,14 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     this.openMathExpanded = this.openMathExpanded.bind(this);
     this.closeMathExpanded = this.closeMathExpanded.bind(this);
     this.createNewLatex = this.createNewLatex.bind(this);
+    this.checkLoadingOfAceAndMQ = this.checkLoadingOfAceAndMQ.bind(this);
     
-    if (!props.dontLoadACE){
+    this.checkLoadingOfAceAndMQ(props);
+  }
+  checkLoadingOfAceAndMQ(props: MathFieldProps){
+    if (!this.loadedAce && !props.dontLoadACE){
+      this.loadedAce = true;
+      
       let script = document.createElement('script');
       script.src = ACE_DEFAULT_SRC;
       script.async = true;
@@ -71,6 +79,8 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     }
     
     if (!props.dontLoadMQ){
+      this.loadedMq = true;
+      
       let script = document.createElement('script');
       script.src = MQ_DEFAULT_SRC;
       script.async = true;
@@ -82,6 +92,9 @@ export default class MathField extends React.Component<MathFieldProps, MathField
       css.href = MQ_DEFAULT_CSS;
       document.head.appendChild(css);
     }
+  }
+  componentWillReceiveProps(nextProps: MathFieldProps){
+    this.checkLoadingOfAceAndMQ(nextProps)
   }
   onFocusField(){
     //This is triggered when the field itself gains focus
@@ -125,8 +138,11 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     //this will trigger the onLatexModeOpen from the Field so the toolbar will react after all
     (this.refs.input as Field).createNewLatex();
   }
+  getBase():HTMLElement {
+    return this.refs["base"] as HTMLElement;
+  }
   render(){
-    return <div>
+    return <div ref="base">
      <Toolbar isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused} onToolbarAction={this.cancelBlur}
       className={this.props.toolbarClassName} i18n={this.props.i18n} onCommand={this.onCommand}
       onRequestToOpenMathMode={this.createNewLatex} isMathExpanded={this.state.expandMath}/>

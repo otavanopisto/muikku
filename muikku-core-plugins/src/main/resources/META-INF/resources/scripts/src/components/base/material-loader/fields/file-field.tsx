@@ -6,6 +6,7 @@ import { StatusType } from "~/reducers/base/status";
 import {ButtonPill} from "~/components/general/button";
 let ProgressBarLine = require('react-progressbar.js').Line;
 import equals = require("deep-equal");
+import FieldBase from "./base";
 
 interface FileFieldProps {
   type: string,
@@ -42,7 +43,7 @@ interface FileFieldState {
   syncError: string
 }
 
-export default class FileField extends React.Component<FileFieldProps, FileFieldState> {
+export default class FileField extends FieldBase<FileFieldProps, FileFieldState> {
   constructor(props: FileFieldProps){
     super(props);
     
@@ -196,6 +197,20 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     })
   }
   render(){
+    //TODOLANKKINEN please keep this simple version of the file in sync with the actual rendering
+    //notice how we are returning a instead of link (it's lighter), but you need to keep the classes
+    if (!this.loaded){
+      return <div className="muikku-file-input-field-file-uploader-container">
+        {!this.state.values.length ? 
+          <span className="muikku-file-input-field-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</span> : null}
+        <div className="muikku-file-input-field-file-files-container">{
+          this.state.values.map((value, index)=>
+            <a key={value.fileId}>
+              {value.name} <ButtonPill buttonModifiers="remove-file-answer" icon="close"/>
+            </a>)
+        }</div>
+      </div>
+    }
     //rendering things here
     //this is the data that it has already created
     let dataInContainer = null;
@@ -210,7 +225,47 @@ export default class FileField extends React.Component<FileFieldProps, FileField
             {value.name} <ButtonPill buttonModifiers="remove-file-answer" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
           </Link>;
         } else if (value.failed){
-          //if the value failed we add a message, you can get the value name there so use it to say which file
+          let dataInContainer = null;
+          
+          //if we have values
+          if (this.state.values.length){
+            //we gotta map them
+            dataInContainer = this.state.values.map((value, index)=>{
+              if (!value.uploading){
+                //if the value is not uploading, we set it as static
+                return <Link key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name}>
+                  {value.name} <ButtonPill buttonModifiers="remove-file-answer" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
+                </Link>;
+              } else if (value.failed){
+                //if the value failed we add a message, you can get the value name there so use it to say which file
+                return <Link key={index}>
+                  {this.props.i18n.text.get("TODO file failed to upload", value.name)}
+                </Link>;
+              } else {
+                //this is the progress
+                return <Link key={index}>
+                  <ProgressBarLine containerClassName="clip flex-row flex-align-items-center" options={{
+                    strokeWidth: 1,
+                    duration: 1000,
+                    color: "#ff9900",
+                    trailColor: "#f5f5f5",
+                    trailWidth: 1,
+                    svgStyle: {width: "100%", height: "4px"},
+                    text: {
+                      className: "time-text-or-something",
+                      style: {
+                         right: "100%"
+                      }
+                    }
+                  }}
+                  strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
+                  trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
+                  text={(value.progress * 100) + "%"}
+                   progress={value.progress}/>
+                </Link>;
+              }
+            });
+          }  //if the value failed we add a message, you can get the value name there so use it to say which file
           return <Link key={index}>
             {this.props.i18n.text.get("TODO file failed to upload", value.name)}
           </Link>;

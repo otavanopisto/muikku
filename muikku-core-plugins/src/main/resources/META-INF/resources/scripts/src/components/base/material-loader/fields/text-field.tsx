@@ -1,6 +1,7 @@
 import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
+import FieldBase from "./base";
 
 interface TextFieldProps {
   type: string,
@@ -40,7 +41,7 @@ interface TextFieldState {
   answerState: "UNKNOWN" | "PASS" | "FAIL"
 }
 
-export default class TextField extends React.Component<TextFieldProps, TextFieldState> {
+export default class TextField extends FieldBase<TextFieldProps, TextFieldState> {
   constructor(props: TextFieldProps){
     super(props);
     
@@ -133,12 +134,23 @@ export default class TextField extends React.Component<TextFieldProps, TextField
   }
   //We check for rightness on mount and update
   componentDidMount(){
+    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: TextFieldProps, prevState: TextFieldState){
     this.checkAnswers();
   }
   render(){
+    if (!this.loaded){
+      //TODOLANKKINEN
+      //please remove the height 100px when you set the right style for the
+      //material-page__textfield classname, it uses the same as the input
+      return <span ref="base" className="material-page__textfield-wrapper">
+        <input readOnly className="material-page__textfield" style={{height: "100px"}}
+          size={this.props.content.columns && parseInt(this.props.content.columns)}/>
+      </span>
+    }
+    
     //This is the component that provides the summary of the correct answers
     let correctAnswersummaryComponent = null;
     //a boolean representing whether the answer is correct and we are actually checking for it
@@ -172,10 +184,11 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     //The state of the whole field
     let classNameState = this.state.answerState && this.props.checkAnswers ? "state-" + this.state.answerState : "";
 
+    ///TODOLANKKINEN hereagain the height 100px that needs to be removed
     if (this.props.readOnly){
       //Read only version
       return <span className="material-page__textfield-wrapper">
-      <input readOnly className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}
+      <input style={{height: "100px"}} readOnly className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}
         size={this.props.content.columns && parseInt(this.props.content.columns)}/>
         {correctAnswersummaryComponent}
       </span>
@@ -183,7 +196,7 @@ export default class TextField extends React.Component<TextFieldProps, TextField
 
     //Standard modifiable version
     return <span className="material-page__textfield-wrapper">
-      <input className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}
+      <input style={{height: "100px"}} className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}
         size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
       {correctAnswersummaryComponent}
     </span>

@@ -1,8 +1,9 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { HTMLtoReactComponent } from "~/util/modifiers";
+import FieldBase from '../fields/base';
 
-interface ImageProps {
+interface IframeProps {
   element: HTMLElement,
   path: string,
   dataset: {
@@ -12,12 +13,21 @@ interface ImageProps {
   i18n: i18nType
 }
 
-export default function image(props: ImageProps){
-  return HTMLtoReactComponent(props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-    if (Tag === "iframe" && props.dataset.url){
-      elementProps.src = props.dataset.url;
-    }
-    
-    return <Tag {...elementProps}>{children}</Tag>
-  });
+export default class Iframe extends FieldBase<IframeProps, {}>{
+  constructor(props: IframeProps){
+    super(props);
+  }
+  render (){
+    return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
+      if (Tag === "iframe" && !this.loaded){
+        return <div style={{height: elementProps.height}}/>
+      }
+      
+      if (Tag === "iframe" && this.props.dataset.url){
+        elementProps.src = this.props.dataset.url;
+      }
+      
+      return <Tag {...elementProps}>{children}</Tag>
+    });
+  }
 }

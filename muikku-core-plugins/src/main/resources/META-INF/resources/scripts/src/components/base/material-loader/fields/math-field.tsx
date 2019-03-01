@@ -3,6 +3,7 @@ import MathField from './better-math-field';
 import { i18nType } from "~/reducers/base/i18n";
 import '~/sass/elements/fields/math-field.scss';
 import equals = require("deep-equal");
+import FieldBase from "./base";
 
 interface MathFieldProps {
   type: string,
@@ -27,7 +28,7 @@ interface MathFieldState {
   syncError: string
 }
 
-export default class TextField extends React.Component<MathFieldProps, MathFieldState> {
+export default class TextField extends FieldBase<MathFieldProps, MathFieldState> {
   constructor(props: MathFieldProps){
     super(props);
     
@@ -53,7 +54,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
   }
   render(){
     //NOTE you cannot change the formula class name unless you want to break backwards compatibility
-    return <MathField className="muikku-math-exercise-field-editor"
+    return <MathField ref="base" className="muikku-math-exercise-field-editor"
       value={this.state.value} onChange={this.setValue}
       formulaClassName="muikku-math-exercise-formula"
       editorClassName="muikku-math-exercise-editor"
@@ -64,6 +65,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
         logic: this.props.i18n.text.get("plugin.workspace.mathField.logic"),
         moreMath: this.props.i18n.text.get("plugin.workspace.mathField.moreMath"),
         mathOperations: this.props.i18n.text.get("plugin.workspace.mathField.mathOperations"),
-      }} readOnly={this.props.readOnly} dontLoadACE={this.props.readOnly} dontLoadMQ={this.props.readOnly}/>
+      }} readOnly={this.props.readOnly || !this.loaded} dontLoadACE={this.props.readOnly || !this.loaded}
+      dontLoadMQ={this.props.readOnly || !this.loaded}/>
   }
 }

@@ -2,6 +2,7 @@ import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
+import FieldBase from "./base";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -39,7 +40,7 @@ interface MultiSelectFieldState {
   answerState: "UNKNOWN" | Array<"PASS" | "FAIL">
 }
 
-export default class MultiSelectField extends React.Component<MultiSelectFieldProps, MultiSelectFieldState> {
+export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, MultiSelectFieldState> {
   constructor(props: MultiSelectFieldProps){
     super(props);
     
@@ -116,9 +117,11 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     }
   }
   componentDidMount(){
+    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: MultiSelectFieldProps, prevState: MultiSelectFieldState){
+    super.componentDidUpdate(prevProps, prevState);
     this.checkAnswers();
   }
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
@@ -147,6 +150,19 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     }, this.checkAnswers);
   }
   render(){
+    //TODOLANKKINEN also ensure this one is consistant
+    if (!this.loaded){
+      return <span ref="base"
+        className={`material-page__checkbox-wrapper material-page__checkbox-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field`}>
+        {this.props.content.options.map((o, index)=>{
+        
+          return <span key={o.name} className="material-page__checkbox-wrapper">
+            <input className="material-page__checkbox" type="checkbox" disabled/>
+            <label>{o.text}</label>
+          </span>
+        })}
+      </span>
+    }
     //whether we mark the correct answers
     let markcorrectAnswers = false;
     //the summary component if necessary

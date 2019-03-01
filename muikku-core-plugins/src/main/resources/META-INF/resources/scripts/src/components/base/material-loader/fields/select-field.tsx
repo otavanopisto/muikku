@@ -2,6 +2,7 @@ import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
+import FieldBase from "./base";
 
 interface SelectFieldProps {
   type: string,
@@ -39,7 +40,7 @@ interface SelectFieldState {
   answerState: "UNKNOWN" | "PASS" | "FAIL"
 }
 
-export default class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
+export default class SelectField extends FieldBase<SelectFieldProps, SelectFieldState> {
   constructor(props: SelectFieldProps){
     super(props);
     
@@ -115,12 +116,34 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     }
   }
   componentDidMount(){
+    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: SelectFieldProps, prevState: SelectFieldState){
+    super.componentDidUpdate(prevProps, prevState);
     this.checkAnswers();
   }
   render(){
+    //TODOLANKKINEN ensure that all this is right according to how you are rendering the resulting output
+    if (!this.loaded){
+      if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
+        return <span className="material-page__select-wrapper">
+          <select className="material-page__select" size={this.props.content.listType === "list" ? this.props.content.options.length : null}
+            disabled/>
+        </span>
+      }
+      
+      return <span ref="base"
+        className={`material-page__radiobutton-wrapper material-page__page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"}`}>
+        {this.props.content.options.map(o=>{
+          return <span key={o.name}>
+            <input className="material-page__radiobutton" type="radio" disabled/>
+            <label>{o.text}</label>
+          </span>
+        })}
+      </span>
+    }
+    
     //Select field is able to mark what were meant to be the correct answers in the field itself
     let markcorrectAnswers = false;
     //It also has a summary component of what the correct answers were meant to be
@@ -195,7 +218,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
         if (markcorrectAnswers && o.correct){
           className = "correct-answer"
         } else if (markcorrectAnswers){
-          className = "incorrect-answer"
+          className = "incorrect-answer"  
         }
         return <span className={className} key={o.name}>
           <input className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>

@@ -6,6 +6,7 @@ let ProgressBarLine = require('react-progressbar.js').Line;
 import moment from '~/lib/moment';
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
+import FieldBase from "./base";
 
 //so we use the media recorder
 //the media recorder is polyfilled
@@ -62,7 +63,7 @@ interface AudioFieldState {
 //this is the maximum recording time in seconds
 const MAX_RECORDING_TIME_IN_SECONDS = 60*5;
 
-export default class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
+export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldState> {
   private interval: NodeJS.Timer;
   private recorder:any;
   private stream:MediaStream;
@@ -302,6 +303,23 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     this.props.onChange(this, this.props.content.name, result);
   }
   render(){
+    if (!this.loaded){
+      return <div className="audio-record muikku-field">
+        <div className="clips">
+          {this.state.values.map((value, index)=>{
+            //TODOLANKKINEN please ensure that clips have a fixed height and that remain consistant
+            //with the loaded version that has the audio inside, this one has nothing inside the clip
+            //no audio with clip inside, just the box that contains it, give it a height
+            return <div className="clip flex-row flex-align-items-center" key={index}/>
+          })}
+        </div>
+        {!this.props.readOnly && this.state.supportsMediaAPI() ?
+          //TODOLANKKINEN please ensure that the controls also keep a fixed height in both version
+          //This version lacks the buttons and the text inside
+          <div className="controls flex-row flex-align-items-center"/> : null}
+      </div>
+    }
+    
     //so this is the field
     return <div className="audio-record muikku-field">
       <div className="clips">

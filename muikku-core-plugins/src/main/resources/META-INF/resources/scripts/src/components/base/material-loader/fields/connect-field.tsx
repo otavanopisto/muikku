@@ -3,6 +3,7 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
+import FieldBase from "./base";
 
 interface FieldType {
   name: string,
@@ -51,7 +52,7 @@ interface ConnectFieldState {
   answerState: Array<"PASS" | "FAIL">
 }
 
-export default class ConnectField extends React.Component<ConnectFieldProps, ConnectFieldState> {
+export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFieldState> {
   constructor(props: ConnectFieldProps){
     super(props);
     
@@ -311,6 +312,18 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     });
   }
   render(){
+    if (!this.loaded){
+      //TODOLANKKINEN, this one is tricky too, notice how it doesn't stay true
+      //to the original representation of the connect field, that's because every
+      //container inside it should be equal to the space that each row would take in
+      //the connect field, you might reuse a class, like muikku-connect-field-term which should work
+      //or otherwise use something new
+      return <div className="muikku-connect-field muikku-field">
+        {this.state.fields.map((field, index)=>{
+          return <div key={index} className="muikku-connect-field-term-or-name-it-something-else"/>
+        })}
+      </div>
+    }
     //the element calass name matching the state on whether it passes or fails
     let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
         "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";

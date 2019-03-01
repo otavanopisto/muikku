@@ -3,6 +3,7 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
+import FieldBase from "./base";
 
 interface SorterFieldItemType {
   id: string,
@@ -44,7 +45,7 @@ interface SorterFieldState {
   answerState: Array<"PASS" | "FAIL">
 }
 
-export default class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
+export default class SorterField extends FieldBase<SorterFieldProps, SorterFieldState> {
   constructor(props: SorterFieldProps){
     super(props);
     
@@ -147,9 +148,11 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     }
   }
   componentDidMount(){
+    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: SorterFieldProps, prevState: SorterFieldState){
+    super.componentDidUpdate(prevProps, prevState);
     this.checkAnswers();
   }
   selectItem(item: SorterFieldItemType){
@@ -171,6 +174,27 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     });
   }
   render(){
+    //This element we are gunna use depends on the orientation, we use divs of spans
+    let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
+    
+    if (!this.loaded){
+      //TODOLANKKINEN be aware that the filler here has a correlation with the component
+      //that is rendered, so they are both to be kept the same
+      let filler = this.state.items.map((i, index)=>{
+        let text = i.name;
+        if (index === 0 && this.props.content.capitalize){
+          text = text.charAt(0).toUpperCase() + text.slice(1);
+        }
+        return <Element className="material-page__sorter-item" key={i.id}>{text}</Element>
+      })
+      return <Element ref="base" className="material-page__sorter-wrapper">
+        <Element className="material-page__sorter-items">
+          {filler}
+        </Element>
+      </Element>
+    }
+    
+    
     //The summary for the correct answers
     let correctAnswersummaryComponent = null;
     let answerIsBeingCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerState && !this.state.answerState.includes("FAIL");
@@ -190,9 +214,6 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     //Lets get the class name to match the state of the entire field if necessary
     let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
         "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";
-    
-    //This element we are gunna use depends on the orientation, we use divs of spans
-    let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
     
     //we use that element and the class to create the field
     return <Element className={`material-page__sorter-wrapper ${elementClassNameState}`}>
