@@ -44,8 +44,11 @@
   font-weight: 300;
   height: $panel-header-title-height;
   line-height: 1;
-  padding: 0 20px;
-  text-transform: uppercase;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-desktop) {
+    padding: 0 20px;
+  }
 }
 
 .content-panel__body {
@@ -59,7 +62,7 @@
 
 .content-panel__content {
 
-  @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-pad) {
     display: flex;
     flex-flow: row nowrap;
   }
@@ -128,15 +131,15 @@
 
 .content-panel__navigation-content {
   @include prefix(transition, webkit moz o ms, right 0.3s);
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  background-color: $color-application-panel-box-background;
+  border: solid 1px $color-application-panel-box-border;
+  bottom: 0;
   overflow-y: auto;
-  width: 90%;
   position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
-  background-color: $color-application-panel-box-background;
-  box-shadow: 0 2px 3px $color-panel-shadow;
-  border: solid 1px $color-application-panel-box-border;
+  width: 90%;
 
   @include breakpoint($breakpoint-desktop) {
     width: 100%;
@@ -144,21 +147,21 @@
 }
 
 .content-panel__main-container {
-  overflow-x: hidden;
-  width: 100%;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  margin: 0;
   padding: 0;
   position: relative;
-  margin: 0;
 
   @include breakpoint($breakpoint-desktop) {
-    flex-basis: calc(65% - 60px);
-    margin: 0 50px 10px 10px;
+    flex-basis: calc(65% - 30px);
+    margin: 0 20px 10px 10px;
+    max-width: 700px;
+    min-width: 655px;
   }
 
-  @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: calc(65% - 80px);
     margin: 0 70px 10px 10px;
   }
@@ -169,14 +172,21 @@
 }
 
 .content-panel__chapter-title {
-  font-size: 1.375rem;
+  background: $color-default;
+  border-bottom: dashed 2px $color-default-item-separator-border;
+  border-left: solid 1px $color-application-panel-box-border;
+  border-right: solid 1px $color-application-panel-box-border;
+  border-top: solid 1px $color-application-panel-box-border;
+  font-size: 1.25rem;
   font-weight: 400;
-  margin: 0 0 10px;
+  line-height: 1;
+  margin: 0 0 -1px;
   padding: 10px;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 10px 20px;
+    font-size: 1.375rem;
+    padding: 20px;
   }
 }
 
@@ -199,7 +209,7 @@
 
 .content-panel__navigation-open {
   position: fixed;
-  bottom: 10px;
+  top: 100px;
   right: 10px;
   background-color: red;
   width: 25px;

@@ -915,7 +915,7 @@ class App extends React.Component {
     return {
       value: (quarter < 3 ? "SPRING" : "AUTUMN") + from.year(),
       name: (quarter < 3 ? "Kevät " : "Syksy ") + from.year(),
-      adessive: (quarter < 3 ? "Keväällä " : "Syksyllä ") + from.year()
+      adessive: (quarter < 3 ? "keväällä " : "syksyllä ") + from.year()
     }
   }
 
@@ -924,7 +924,7 @@ class App extends React.Component {
    * @returns {object} term details
    */
   resolveCurrentTerm () {
-    return this.resolveTerm(moment());
+    return this.resolveTerm(moment().add(6, "months"));
   }
 
   /**
@@ -953,7 +953,7 @@ class App extends React.Component {
    * @returns {array} term options
    */
   getPastTermOptions() {
-    return this.resolveTermOptions(moment().subtract(3, "years"), 6);
+    return this.resolveTermOptions(moment().subtract(2.5, "years"), 6);
   }
 
   /**
@@ -963,7 +963,7 @@ class App extends React.Component {
    * @returns {array} term options
    */
   getNextTermOptions() {
-    return this.resolveTermOptions(moment(), 3);
+    return this.resolveTermOptions(moment().add(1, "years"), 3);
   }
 
 }
