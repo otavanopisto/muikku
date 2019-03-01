@@ -53,6 +53,26 @@ public class WorkspaceJournalController {
     workspaceJournalEntryDAO.updateArchived(workspaceJournalEntry, Boolean.TRUE);
   }
   
+  public WorkspaceJournalComment createComment(WorkspaceJournalEntry journalEntry, WorkspaceJournalComment parent, String comment, Long authorId) {
+    return workspaceJournalCommentDAO.create(journalEntry, parent, comment,  authorId);
+  }
+
+  public WorkspaceJournalComment updateComment(WorkspaceJournalComment journalComment, String comment) {
+    return workspaceJournalCommentDAO.updateComment(journalComment, comment);
+  }
+  
+  public void archiveComment(WorkspaceJournalComment journalComment) {
+    List<WorkspaceJournalComment> children = workspaceJournalCommentDAO.listByParent(journalComment);
+    for (WorkspaceJournalComment child : children) {
+      archiveComment(child);
+    }
+    workspaceJournalCommentDAO.archive(journalComment);
+  }
+
+  public WorkspaceJournalComment findCommentById(Long journalCommentId) {
+    return workspaceJournalCommentDAO.findById(journalCommentId);
+  }
+  
   public List<WorkspaceJournalComment> listCommentsByJournalEntry(WorkspaceJournalEntry journalEntry) {
     return workspaceJournalCommentDAO.listByJournalEntryAndArchived(journalEntry, Boolean.FALSE);
   }

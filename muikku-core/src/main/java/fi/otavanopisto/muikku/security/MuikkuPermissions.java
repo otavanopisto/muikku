@@ -206,7 +206,17 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
+  public static final String CREATE_WORKSPACE_JOURNAL_COMMENT = "CREATE_WORKSPACE_JOURNAL_COMMENT";
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String EDIT_WORKSPACE_JOURNAL_COMMENT = "EDIT_WORKSPACE_JOURNAL_COMMENT";
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
+  public static final String REMOVE_WORKSPACE_JOURNAL_COMMENT = "REMOVE_WORKSPACE_JOURNAL_COMMENT";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })

@@ -11,6 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -70,6 +71,11 @@ public class WorkspaceJournalComment {
 
   public void setJournalEntry(WorkspaceJournalEntry journalEntry) {
     this.journalEntry = journalEntry;
+  }
+  
+  @Transient
+  public int getDepth() {
+    return parent == null ? 0 : parent.getDepth() + 1;
   }
   
   @Id

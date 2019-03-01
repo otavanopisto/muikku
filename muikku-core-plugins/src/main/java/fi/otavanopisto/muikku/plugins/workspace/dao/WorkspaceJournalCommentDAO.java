@@ -8,7 +8,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment_;
@@ -18,21 +17,11 @@ public class WorkspaceJournalCommentDAO extends CorePluginsDAO<WorkspaceJournalC
 
   private static final long serialVersionUID = 6109091554861451825L;
 
-  public WorkspaceJournalComment create(WorkspaceJournalEntry journalEntry, UserEntity author, String comment) {
+  public WorkspaceJournalComment create(WorkspaceJournalEntry journalEntry, WorkspaceJournalComment parent, String comment, Long authorId) {
     WorkspaceJournalComment journalComment = new WorkspaceJournalComment();
     journalComment.setComment(comment);
     journalComment.setCreated(new Date());
-    journalComment.setCreator(author.getId());
-    journalComment.setJournalEntry(journalEntry);
-    journalComment.setArchived(Boolean.FALSE);
-    return persist(journalComment);
-  }
-
-  public WorkspaceJournalComment create(WorkspaceJournalEntry journalEntry, WorkspaceJournalComment parent, UserEntity author, String comment) {
-    WorkspaceJournalComment journalComment = new WorkspaceJournalComment();
-    journalComment.setComment(comment);
-    journalComment.setCreated(new Date());
-    journalComment.setCreator(author.getId());
+    journalComment.setCreator(authorId);
     journalComment.setJournalEntry(journalEntry);
     journalComment.setParent(parent);
     journalComment.setArchived(Boolean.FALSE);
@@ -57,6 +46,23 @@ public class WorkspaceJournalCommentDAO extends CorePluginsDAO<WorkspaceJournalC
       )
     );
     return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceJournalComment> listByParent(WorkspaceJournalComment journalComment) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceJournalComment> criteria = criteriaBuilder.createQuery(WorkspaceJournalComment.class);
+    Root<WorkspaceJournalComment> root = criteria.from(WorkspaceJournalComment.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceJournalComment_.parent), journalComment)
+    );
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public WorkspaceJournalComment archive(WorkspaceJournalComment journalComment) {
+    journalComment.setArchived(Boolean.TRUE);
+    return persist(journalComment);
   }
 
 }

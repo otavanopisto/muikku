@@ -76,14 +76,32 @@ public class WorkspaceJournalCommentRESTModel {
     this.editable = editable;
   }
 
+  public Integer getDepth() {
+    return depth;
+  }
+
+  public void setDepth(Integer depth) {
+    this.depth = depth;
+  }
+
+  public Boolean getArchivable() {
+    return archivable;
+  }
+
+  public void setArchivable(Boolean archivable) {
+    this.archivable = archivable;
+  }
+
   private Long id;
   private Long journalEntryId;
   private Long parentCommentId;
+  private Integer depth;
   private Long authorId;
   private String firstName;
   private String lastName;
   private String comment;
   private Date created;
   private Boolean editable;
+  private Boolean archivable;
 
 }
