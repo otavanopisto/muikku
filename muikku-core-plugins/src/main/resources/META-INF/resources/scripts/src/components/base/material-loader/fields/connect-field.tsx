@@ -324,6 +324,7 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
         })}
       </div>
     }
+    
     //the element calass name matching the state on whether it passes or fails
     let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
         "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";
