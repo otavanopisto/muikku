@@ -2482,8 +2482,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Access check
     
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_JOURNAL_COMMENTS, workspaceEntity)) {
+      if (!journalEntry.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) { // allow students to view comments of their own journal
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     // Comment listing
