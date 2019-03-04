@@ -1,3 +1,12 @@
+const WARNING_STYLE = {margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"};
+const ACADEMIC_SUBJECTS = ['UE', 'ET', 'YO', 'KE', 'GE', 'TT', 'PS', 'FI', 'HI', 'FY', 'BI'];
+const ADVANCED_SUBJECTS = ['MAA', 'RUA', 'ENA', 'RAA', 'ESA', 'SAA', 'VEA'];
+const FINNISH_SUBJECTS = ['AI', 'S2'];
+const REQUIRED_FINNISH_ATTENDANCES = 1;
+const REQUIRED_MANDATORY_ATTENDANCE_MORE_THAN = 3;
+const REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN = 2;
+const REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN = 0;
+
 const Page1 = (props) => (
   <div>
     <h1>Ylioppilaskirjoituksiin ilmoittautuminen</h1>
@@ -11,7 +20,7 @@ const Page1 = (props) => (
     <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavanopisto.fi).</p>
     <p><b>Ilmoittautuminen on sitova.</b></p>
     {props.enrollmentSent ?
-      <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
+      <div style={ WARNING_STYLE } className="pure-u-22-24">
         Olet jo ilmoittautunut ylioppilaskokeeseen. Jos haluat muokata ilmoittautumistasi,
         ota yhteyttä Riikka Turpeiseen.
       </div>: null}
@@ -219,11 +228,11 @@ const Page2 = (props) => (
           </React.Fragment> : null }
         </div>
         {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses === "" ?
-          <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
+          <div style={ WARNING_STYLE } className="pure-u-22-24">
           Ole hyvä ja täytä suoritettujen pakollisten kurssien lukumäärä.
           </div>: null}
         {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses !== "" && props.numMandatoryCourses < 20 ?
-          <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.</div>: null}
+          <div style={ WARNING_STYLE } className="pure-u-22-24">Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.</div>: null}
         <div className="pure-u-1-2">
           <label style={{paddingTop: "0.7rem"}} >Aloitan tutkinnon suorittamisen uudelleen&nbsp;
             <input value={props.restartExam} type="checkbox" />
@@ -274,7 +283,7 @@ const Page2 = (props) => (
       </button>
     </fieldset>
     {props.conflictingAttendances ?
-      <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} >
+      <div style={ WARNING_STYLE } >
       Olet ilmoittautumassa kokeisiin, joita ei voi valita samanaikaisesti. Kysy tarvittaessa lisää ohjaajalta.
       </div>: null}
     <fieldset>
@@ -364,17 +373,28 @@ const Page2 = (props) => (
       </button>
     </fieldset>
     {props.incompleteAttendances ?
-      <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
+      <div style={ WARNING_STYLE } className="pure-u-22-24">
       Ole hyvä ja täytä kaikki rivit
       </div>: null}
-    {props.missingMandatoryItems ?
-      <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
-      Sinulla tulee valita vähintään äidinkieli/suomi toisena kielenä, yksi reaaliaine sekä yksi pitkä aine
-      </div>: null}
     {props.invalidTerms ?
-      <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid red", backgroundColor: "pink"}} className="pure-u-22-24">
+      <div style={ WARNING_STYLE } className="pure-u-22-24">
       Ylioppilaskokeet tulee suorittaa enintään kolmena peräkkäisenä suorituskertana
       </div>: null}
+
+    {
+      props.amountOfFinnishAttendances == REQUIRED_FINNISH_ATTENDANCES && props.amountOfMandatoryAttendances > REQUIRED_MANDATORY_ATTENDANCE_MORE_THAN && props.amountOfAcademicSubjectAttendances < REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN && props.amountOfMandatoryAdvancedSubjectAttendances > REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN
+        ? null
+        : <div style={ WARNING_STYLE } className="pure-u-22-24">
+          <p>Ylioppilastutkintoon tulee sisältyä</p> 
+          <ul>
+            <li>äidinkieli / suomi toisena kielenä { props.amountOfFinnishAttendances == REQUIRED_FINNISH_ATTENDANCES ? "" : "(ei valittuna)" }</li>
+            <li>vähintään neljä pakollista koetta { props.amountOfMandatoryAttendances > REQUIRED_MANDATORY_ATTENDANCE_MORE_THAN ? "" : `(valittuna ${props.amountOfMandatoryAttendances})` }</li>
+            <li>vähintään yksi A-tason koe { props.amountOfMandatoryAdvancedSubjectAttendances > 0 ? "" : `(valittuna ${props.amountOfMandatoryAdvancedSubjectAttendances})` }</li>
+            <li>vain yksi pakollinen reaaliaine. { props.amountOfAcademicSubjectAttendances < 2 ? "" : `(valittuna ${props.amountOfAcademicSubjectAttendances})` }</li>
+          </ul>
+        </div>
+    }
+
     <a href="javascript:void(0)" onClick={() => {props.setPage(1);}} className="pure-button" >
       Edellinen sivu
     </a>
@@ -595,6 +615,71 @@ class App extends React.Component {
     this.setState({plannedAttendances});
   }
 
+  /**
+   * Returns list of all user's selected attendances, including enrolled, planned and finished lists
+   * 
+   * @returns list of all user's selected attendances
+   */
+  getAttendances() {
+    return [].concat(this.state.enrolledAttendances,this.state.plannedAttendances, this.state.finishedAttendances);
+  }
+
+  /**
+   * Returns count of attendances in finnish courses 
+   * 
+   * @returns count of attendances in finnish courses
+   */
+  getAmountOfFinnishAttendances() {
+    return this.getAttendances().filter((attendance) => {
+      return FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1;
+    }).length;
+  }
+  
+  /**
+   * Returns count of attendances in mandatory courses 
+   * 
+   * @returns count of attendances in mandatory courses
+   */
+  getAmountOfMandatoryAttendances() {
+    return this.getAttendances().filter((attendance) => {
+      return attendance.mandatory === "true";
+    }).length;
+  }
+
+  /**
+   * Returns count of attendances in academic subjects 
+   * 
+   * @returns count of attendances in academic subjects
+   */
+  getAmountOfAcademicSubjectAttendances() {
+    return this.getAttendances().filter((attendance) => {
+      return attendance.mandatory === "true" && ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1;
+    }).length;
+  }
+
+  /**
+   * Returns whether user has valid amount of attendances in mandatory advanced subjects 
+   * 
+   * @returns whether user has valid amount of attendances in mandatory advanced subjects
+   */
+  getAmountOfMandatoryAdvancedSubjectAttendances() {
+    return this.getAttendances().filter((attendance) => {
+      return attendance.mandatory === "true" && ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
+    }).length;
+  }
+
+  /**
+   * Returns whether attendance details are valid
+   * 
+   * @returns whether attendance details are valid 
+   */
+  isValidAttendances() {
+    return this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES && 
+      this.getAmountOfMandatoryAttendances() > REQUIRED_MANDATORY_ATTENDANCE_MORE_THAN &&
+      this.getAmountOfAcademicSubjectAttendances() < REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN &&
+      this.getAmountOfMandatoryAdvancedSubjectAttendances() > REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN; 
+  }
+
   isConflictingAttendances() {
     // Can't enroll to two subjects that are in the same group
     const conflictingGroups = [
@@ -658,47 +743,6 @@ class App extends React.Component {
     }
   }
 
-  isMissingMandatoryItems() {
-    const subjects = [];
-    for (let attendance of this.state.enrolledAttendances) {
-      subjects.push(attendance.subject);
-    }
-    for (let attendance of this.state.finishedAttendances) {
-      subjects.push(attendance.subject);
-    }
-    for (let attendance of this.state.plannedAttendances) {
-      subjects.push(attendance.subject);
-    }
-    if (subjects.indexOf('AI') == -1
-          && subjects.indexOf('S2') == -1) {
-        return true;
-    }
-    if (subjects.indexOf('MAA') == -1
-          && subjects.indexOf('RUA') == -1
-          && subjects.indexOf('ENA') == -1
-          && subjects.indexOf('RAA') == -1
-          && subjects.indexOf('ESA') == -1
-          && subjects.indexOf('SAA') == -1
-          && subjects.indexOf('VEA') == -1
-          && subjects.indexOf('RUA') == -1) {
-        return true;
-    }
-    if (subjects.indexOf('UE') == -1
-          && subjects.indexOf('ET') == -1
-          && subjects.indexOf('YO') == -1
-          && subjects.indexOf('KE') == -1
-          && subjects.indexOf('GE') == -1
-          && subjects.indexOf('TT') == -1
-          && subjects.indexOf('PS') == -1
-          && subjects.indexOf('FI') == -1
-          && subjects.indexOf('HI') == -1
-          && subjects.indexOf('FY') == -1
-          && subjects.indexOf('BI') == -1) {
-        return true;
-    }
-    return false;
-  }
-
   currentTerm() {
     let now = new Date();
     let year, term;
@@ -750,12 +794,12 @@ class App extends React.Component {
     }
     return false;
   }
-
+  
   isInvalid() {
     return this.isConflictingAttendances()
       || this.isIncompleteAttendances()
-      || this.isMissingMandatoryItems()
-      || this.isInvalidTerms();
+      || this.isInvalidTerms()
+      || !this.isValidAttendances();
   }
 
   submit() {
@@ -872,9 +916,12 @@ class App extends React.Component {
                   modifyEnrolledAttendance={(i, param, value) => {this.modifyEnrolledAttendance(i, param, value);}}
                   modifyPlannedAttendance={(i, param, value) => {this.modifyPlannedAttendance(i, param, value);}}
                   modifyFinishedAttendance={(i, param, value) => {this.modifyFinishedAttendance(i, param, value);}}
+                  amountOfFinnishAttendances={ this.getAmountOfFinnishAttendances() }
+                  amountOfMandatoryAttendances={ this.getAmountOfMandatoryAttendances() }
+                  amountOfAcademicSubjectAttendances={ this.getAmountOfAcademicSubjectAttendances() }
+                  amountOfMandatoryAdvancedSubjectAttendances = { this.getAmountOfMandatoryAdvancedSubjectAttendances() }
                   conflictingAttendances={this.isConflictingAttendances()}
                   incompleteAttendances={this.isIncompleteAttendances()}
-                  missingMandatoryItems={this.isMissingMandatoryItems()}
                   invalidTerms={this.isInvalidTerms()}
                   invalid={this.isInvalid()}
                   pastTermOptions={this.getPastTermOptions()}
