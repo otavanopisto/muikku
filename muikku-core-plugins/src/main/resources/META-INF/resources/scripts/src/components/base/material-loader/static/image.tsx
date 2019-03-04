@@ -44,7 +44,7 @@ export default class Image extends FieldBase<ImageProps, ImageState>{
     this.setState({
       aspectRatio,
       width: (this.refs["img"] as HTMLElement).offsetWidth,
-      height: (this.refs["img"] as HTMLElement).offsetWidth*aspectRatio
+      height: (this.refs["img"] as HTMLElement).offsetWidth/aspectRatio
     });
   }
   render(){
