@@ -313,88 +313,87 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
   }
   render(){
     if (!this.loaded){
-      //TODOLANKKINEN, this one is tricky too, notice how it doesn't stay true
-      //to the original representation of the connect field, that's because every
-      //container inside it should be equal to the space that each row would take in
-      //the connect field, you might reuse a class, like muikku-connect-field-term which should work
-      //or otherwise use something new
-      return <div className="muikku-connect-field muikku-field">
-        {this.state.fields.map((field, index)=>{
-          return <div key={index} className="muikku-connect-field-term-or-name-it-something-else"/>
-        })}
+      return <div className="material-page__connectfield-wrapper">
+        <div className="material-page__connectfield">
+          {this.state.fields.map((field, index)=>{
+            return <div key={index} className="material-page__connectfield-term"/>
+          })}
+        </div>
       </div>
     }
     
     //the element calass name matching the state on whether it passes or fails
     let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
         "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";
-    return <div className={`muikku-connect-field muikku-field ${elementClassNameState}`}>
-      <div className="muikku-connect-field-terms">
-        {this.state.fields.map((field, index)=>{
-          //the item class name only necessary if it was a fail and we are checking for rightness
-          let itemClassNameState = this.props.checkAnswers && this.state.answerState &&
-            this.state.answerState.includes("FAIL") && this.state.answerState[index] ? 
-              "state-" + this.state.answerState[index] : ""
-          //so now we get the fields here
-          //the fields cannot be dragged and they remain in order
-          //they are simple things
-          return <div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
-            <span className="muikku-connect-field-number">{index + 1}</span>
-            <div className={`muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
-              "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}
-              ${itemClassNameState}`}>{field.text}</div>
-          </div>
+    return <div className="material-page__connectfield-wrapper">
+      <div className={`material-page__connectfield ${elementClassNameState}`}>
+        <div className="material-page__connectfield-terms-container">
+          {this.state.fields.map((field, index)=>{
+            //the item class name only necessary if it was a fail and we are checking for rightness
+            let itemClassNameState = this.props.checkAnswers && this.state.answerState &&
+              this.state.answerState.includes("FAIL") && this.state.answerState[index] ? 
+                "state-" + this.state.answerState[index] : ""
+            //so now we get the fields here
+            //the fields cannot be dragged and they remain in order
+            //they are simple things
+            return <div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
+              <span className="material-page__connectfield-term-number">{index + 1}</span>
+              <div className={`material-page__connectfield-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
+                "material-page__connectfield-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-term-edited" : ""}
+                ${itemClassNameState}`}>{field.text}</div>
+            </div>
+           })}
+        </div>
+        <div className="material-page__connectfield-gap"></div>
+        <div className="material-page__connectfield-counterparts-container">
+         {this.state.counterparts.map((field, index)=>{
+           //the item rightness
+           let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
+           //the classname state if necessary
+           let itemClassNameState = itemAnswer && this.state.answerState.includes("FAIL") ? 
+               "state-" + this.state.answerState[index] : "";
+           //the basic class name
+           let className = `material-page__connectfield-counterpart ${this.state.selectedField && this.state.selectedField.name === field.name ?
+             "material-page__connectfield-counterpart-selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-counterpart-edited" : ""} ${itemClassNameState}`;
+           
+           //TODO delet this
+           let style:React.CSSProperties = {
+               justifyContent: "flex-start"  //TODO lankkinen Add this in classes sadly I had to use the original connect field term class because of missing functionality
+           };
+           
+           //if readonly we just add the classname in there
+           if (this.props.readOnly){
+             return <div className={className}
+               key={field.name} style={style}>{field.text}</div>
+           }
+           
+           //if we are asked for correct answers
+           let itemCorrectAnswerComponent = null;
+           //we need to do this
+           if (this.props.displayCorrectAnswers && !(this.props.checkAnswers && itemAnswer === "PASS")){
+             //this is just a component giving an overview, of which number was meant to be the right answer
+             itemCorrectAnswerComponent = <span className="material-page__connectfield-term-number">
+               {this.state.fields.findIndex(f=>f.name === (this.props.content.connections.find(c=>c.counterpart === field.name) || {field: null}).field) + 1}
+             </span>
+           }
+           
+           //ok so the counterpart is draggable
+           //the interaction data is the field, index, and whether is counterpart
+           //note how the inline function onDropInto handles this data
+           //so it can be swapped
+           //the interaction group there only for the counterparts
+           //on drag we cancel if the field had been picked before with the click event
+           //or any other field that had been selected before, and we pick this one
+           //on click we just handle it the same way as the standard click
+           //the parent container selector is the field on its own
+           return <Draggable interactionData={{field, index, isCounterpart: true}} 
+             interactionGroup={this.props.content.name + "-counterparts-container"}
+             onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
+             onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".material-page__connectfield"
+             onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
+             className={className} key={field.name} style={style}>{itemCorrectAnswerComponent}{field.text}</Draggable>
          })}
-      </div>
-      <div className="muikku-connect-field-gap"></div>
-      <div className="muikku-connect-field-counterparts">
-       {this.state.counterparts.map((field, index)=>{
-         //the item rightness
-         let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
-         //the classname state if necessary
-         let itemClassNameState = itemAnswer && this.state.answerState.includes("FAIL") ? 
-             "state-" + this.state.answerState[index] : "";
-         //the basic class name
-         let className = `muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
-           "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""} ${itemClassNameState}`;
-         
-         //TODO delet this
-         let style:React.CSSProperties = {
-             justifyContent: "flex-start"  //TODO lankkinen Add this in classes sadly I had to use the original connect field term class because of missing functionality
-         };
-         
-         //if readonly we just add the classname in there
-         if (this.props.readOnly){
-           return <div className={className}
-             key={field.name} style={style}>{field.text}</div>
-         }
-         
-         //if we are asked for correct answers
-         let itemCorrectAnswerComponent = null;
-         //we need to do this
-         if (this.props.displayCorrectAnswers && !(this.props.checkAnswers && itemAnswer === "PASS")){
-           //this is just a component giving an overview, of which number was meant to be the right answer
-           itemCorrectAnswerComponent = <span className="muikku-connect-field-number">
-             {this.state.fields.findIndex(f=>f.name === (this.props.content.connections.find(c=>c.counterpart === field.name) || {field: null}).field) + 1}
-           </span>
-         }
-         
-         //ok so the counterpart is draggable
-         //the interaction data is the field, index, and whether is counterpart
-         //note how the inline function onDropInto handles this data
-         //so it can be swapped
-         //the interaction group there only for the counterparts
-         //on drag we cancel if the field had been picked before with the click event
-         //or any other field that had been selected before, and we pick this one
-         //on click we just handle it the same way as the standard click
-         //the parent container selector is the field on its own
-         return <Draggable interactionData={{field, index, isCounterpart: true}} 
-           interactionGroup={this.props.content.name + "-counterparts"}
-           onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
-           onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".muikku-field"
-           onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
-           className={className} key={field.name} style={style}>{itemCorrectAnswerComponent}{field.text}</Draggable>
-       })}
+        </div>
       </div>
     </div>
   }

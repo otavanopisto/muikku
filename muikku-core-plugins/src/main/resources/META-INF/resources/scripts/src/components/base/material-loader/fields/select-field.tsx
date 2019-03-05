@@ -127,18 +127,18 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     //TODOLANKKINEN ensure that all this is right according to how you are rendering the resulting output
     if (!this.loaded){
       if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
-        return <span className="material-page__select-wrapper">
-          <select className="material-page__select" size={this.props.content.listType === "list" ? this.props.content.options.length : null}
+        return <span className="material-page__selectfield-wrapper">
+          <select className="material-page__selectfield" size={this.props.content.listType === "list" ? this.props.content.options.length : null}
             disabled/>
         </span>
       }
       
       return <span ref="base"
-        className={`material-page__radiobutton-wrapper material-page__page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"}`}>
+        className={`material-page__radiobutton-wrapper material-page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"}`}>
         {this.props.content.options.map(o=>{
-          return <span key={o.name}>
+          return <span className="material-page__radiobutton-item-container" key={o.name}>
             <input className="material-page__radiobutton" type="radio" disabled/>
-            <label>{o.text}</label>
+            <label className="material-page__checkable-label">{o.text}</label>
           </span>
         })}
       </span>
@@ -169,9 +169,10 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
           {correctAnswersFound.map((answer, index)=>
             <span key={index} className="material-page__field-answer-example">{answer.text}</span>
           )}
-          {this.props.content.explanation ? <span className="explanation-wrapper">
-             <Dropdown openByHover modifier="word-definition" content={this.props.content.explanation}>
-               <span className="explanation-button icon-explanation"/>
+          //TODO ClassNames needs to be set
+          {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
+             <Dropdown openByHover modifier="material-page__word-definition" content={this.props.content.explanation}>
+               <span className="material-page__field-explanation-button icon-explanation"/>
              </Dropdown>
            </span> : null}
         </span>;
@@ -191,19 +192,19 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
-      return <span className="material-page__select-wrapper">
-        <select className={`material-page__select ${classNameState}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
+      return <span className="material-page__selectfield-wrapper">
+        <select className={`material-page__selectfield ${classNameState}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
           {this.props.content.options.map(o=>{
-            let className = null;
+            let className = "";
             //if correct answers are to be market regarding whether they are correct or not
             if (markcorrectAnswers && o.correct){
               className = "correct-answer"
             } else if (markcorrectAnswers){
               className = "incorrect-answer"
             }
-            return <option className={className} key={o.name} value={o.name}>{o.text}</option>
+            return <option className={`material-page__selectfield-item-container ${className}`} key={o.name} value={o.name}>{o.text}</option>
           })}
         </select>
         {correctAnswersummaryComponent}
@@ -211,18 +212,18 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     }
 
     //this is for the standard
-    return <span className={`material-page__radiobutton-wrapper material-page__page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${classNameState}`}>
+    return <span className={`material-page__radiobutton-wrapper material-page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${classNameState}`}>
       {this.props.content.options.map(o=>{
-        let className = null;
+        let className = "";
         //if correct answers are to be market regarding whether they are correct or not
         if (markcorrectAnswers && o.correct){
           className = "correct-answer"
         } else if (markcorrectAnswers){
-          className = "incorrect-answer"  
+          className = "incorrect-answer"
         }
-        return <span className={className} key={o.name}>
+        return <span className={`material-page__radiobutton-item-container ${className}`} key={o.name}>
           <input className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
-          <label>{o.text}</label>
+          <label className="material-page__checkable-label">{o.text}</label>
         </span>
       })}
       {correctAnswersummaryComponent}

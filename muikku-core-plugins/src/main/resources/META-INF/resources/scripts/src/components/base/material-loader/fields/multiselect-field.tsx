@@ -150,15 +150,13 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
     }, this.checkAnswers);
   }
   render(){
-    //TODOLANKKINEN also ensure this one is consistant
     if (!this.loaded){
       return <span ref="base"
         className={`material-page__checkbox-wrapper material-page__checkbox-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field`}>
         {this.props.content.options.map((o, index)=>{
-        
-          return <span key={o.name} className="material-page__checkbox-wrapper">
+          return <span key={o.name} className="material-page__checkbox-item-container">
             <input className="material-page__checkbox" type="checkbox" disabled/>
-            <label>{o.text}</label>
+            <label className="material-page__checkable-label">{o.text}</label>
           </span>
         })}
       </span>
@@ -187,9 +185,9 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
           {correctAnswersFound.map((answer, index)=>
             <span key={index} className="material-page__field-answer-example">{answer.text}</span>
           )}
-          {this.props.content.explanation ? <span className="explanation-wrapper">
-             <Dropdown openByHover modifier="word-definition" content={this.props.content.explanation}>
-               <span className="explanation-button icon-explanation"/>
+          {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
+             <Dropdown openByHover modifier="material-page__word-definition" content={this.props.content.explanation}>
+               <span className="material-page__field-explanation-button icon-explanation"/>
              </Dropdown>
            </span> : null}
         </span>;
@@ -213,7 +211,7 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
     return <span className={`material-page__checkbox-wrapper material-page__checkbox-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
       {this.props.content.options.map((o, index)=>{
         //if we are told to mark correct answers
-        let className = null;
+        let className = "";
         if (markcorrectAnswers){
           let answerStateClassName = this.state.answerState && this.state.answerState !== "UNKNOWN" ? "state-" + this.state.answerState[index] : "";
           if (o.correct){
@@ -240,9 +238,9 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
         //so there's no state-UNKNOWN per checkbox but the whole thing could be state-UNKNOWN where
         //elementClassNameState is applied
         
-        return <span key={o.name} className={`material-page__checkbox-wrapper ${className}`}>
+        return <span key={o.name} className={`material-page__checkbox-item-container ${className}`}>
           <input className="material-page__checkbox" type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
-          <label>{o.text}</label>
+          <label className="material-page__checkable-label">{o.text}</label>
         </span>
       })}
       {correctAnswersummaryComponent}

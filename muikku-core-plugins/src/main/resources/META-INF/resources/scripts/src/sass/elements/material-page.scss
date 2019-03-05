@@ -60,6 +60,7 @@
   margin: 20px 0 0;
 }
 
+// CORRECT ANSWERS
 .material-page__correct-answers {
   align-items: center;
   display: flex;
@@ -82,6 +83,398 @@
 .material-page__correct-answers-data {
   
 }
+
+// WORD AND CHARACTER COUNTER
+.material-page__counter-wrapper {
+  
+}
+
+.material-page__word-count-container {
+  
+}
+
+.material-page__word-count-title {
+  
+}
+
+.material-page__word-count {
+  
+}
+
+.material-page__character-count-container {
+  
+}
+
+.material-page__character-count-title {
+
+}
+
+.material-page__character-count {
+  
+}
+
+// FIELD'S EXAMPLES
+.material-page__field-answer-examples {
+  
+}
+
+.material-page__field-answer-title {
+  
+}
+
+.material-page__field-answer-example {
+  
+}
+
+// FIELD'S EXPLANATION
+.material-page__field-explanation-wrapper {
+  
+}
+
+.material-page__field-explanation-button {
+  
+}
+
+.material-page__word-definition {
+  
+}
+
+// TASK FIELDS
+
+// Generic
+.material-page__checkable-label {
+  @include taskfield-text;
+  display: inline;
+  padding: 0 6px;
+}
+
+// Text field
+.material-page__textfield-wrapper {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0 2px;
+}
+
+.material-page__textfield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+}
+
+// Memo field
+.material-page__memofield-wrapper {
+
+  .cke { // This needs to be here so we can override the ckeditor's visuals partly
+    @include taskfield-defaults;
+  }
+}
+
+.material-page__memofield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+  width: 100%;
+}
+
+
+// Select field - list and drop down
+.material-page__selectfield-wrapper {
+  
+}
+
+.material-page__selectfield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+}
+
+.material-page__selectfield-item-container  {
+  @include taskfield-text;
+  padding: 2px 4px;
+}
+
+// Radio button
+.material-page__radiobutton-wrapper {
+  align-items: center;
+  display: inline-flex;
+}
+
+.material-page__radiobutton-wrapper--vertical {
+  align-items: flex-start;
+  flex-flow: column nowrap;
+}
+
+.material-page__radiobutton-wrapper--horizontal {
+  flex-flow: row nowrap;
+}
+
+.material-page__radiobutton-item-container {
+  margin: 0 2px;
+  padding: 2px;
+}
+
+.material-page__radiobutton {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  align-items: center;
+  appearance: none;
+  border: solid 2px $taskfield-border-color;
+  border-radius: 100%;
+  display: inline-flex;
+  height: 1rem;
+  justify-content: center;
+  width: 1rem;
+
+  &:checked {
+    background-color: $taskfield-border-color;
+    border: solid 2px $taskfield-border-color;
+  }
+
+  &:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: muikku;
+    font-size: .875rem;
+  }
+}
+
+// Checkbox
+.material-page__checkbox-wrapper {
+  align-items: center;
+  display: inline-flex;
+}
+
+.material-page__checkbox-wrapper--vertical {
+  align-items: flex-start;
+  flex-flow: column nowrap;
+}
+
+.material-page__checkbox-wrapper--horizontal {
+  flex-flow: row nowrap;
+}
+
+.material-page__checkbox-item-container {
+  margin: 0 2px;
+  padding: 2px; 
+}
+
+.material-page__checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  align-items: center;
+  appearance: none;
+  border: solid 2px $taskfield-border-color;
+  border-radius: 2px;
+  display: inline-flex;
+  height: 1rem;
+  justify-content: center;
+  width: 1rem;
+
+  &:checked {
+    background-color: $taskfield-border-color;
+    border: solid 2px $taskfield-border-color;
+  }
+
+  &:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: muikku;
+    font-size: .875rem;
+  }
+}
+
+
+// File field
+.material-page__filefield-wrapper {
+  
+}
+
+.material-page__filefield-description {
+  
+}
+
+.material-page__filefield-files-container {
+  
+}
+
+.material-page__filefield-clip {
+  
+}
+
+.material-page__filefield-remove-file-button {
+  
+}
+
+// Audio field
+.material-page__audiofield-wrapper {
+  
+}
+
+.material-page__audiofield {
+  
+}
+
+.material-page__audiofield-clips-container {
+  
+}
+
+.material-page__audiofield-clip {
+  
+}
+
+.material-page__audiofield-remove-clip-button {
+  
+}
+
+.material-page__audiofield-controls {
+  
+}
+
+.material-page__audiofield-start-record-button {
+  
+}
+
+.material-page__audiofield-start-record-label {
+  
+}
+
+.material-page__audiofield-stop-record-button {
+  
+}
+
+.material-page__audiofield-stop-record-label {
+  
+}
+
+.material-page__audiofield-description {
+  
+}
+
+
+// Sorter field
+.material-page__sorterfield-wrapper {
+  
+}
+
+.material-page__sorterfield {
+  
+}
+
+.material-page__sorterfield-item {
+  
+}
+
+.aterial-page__sorterfield-item--selected {
+  
+}
+
+// Organizer field
+.material-page__organizerfield-wrapper {
+  
+}
+
+.material-page__organizerfield {
+  
+}
+
+.material-page__organizerfield-terms { // Wrapper for terms
+  
+}
+
+.material-page__organizerfield-terms-title { // Title of draggable terms
+  
+}
+
+.material-page__organizerfield-terms-container { // Container for draggable terms
+  
+}
+
+.material-page__organizerfield-term { // Single draggable term
+  
+}
+
+.material-page__organizerfield-categories { // Wrapper for multiple categories
+  
+}
+
+.material-page__organizerfield-category { // Wrapper for single category
+  
+}
+
+.material-page__organizerfield-category-title { // Title of single category
+  
+}
+
+.material-page__organizerfield-category-terms-container { // Container of single category where terms can be dragged
+  
+}
+
+// Connect field
+.material-page__connectfield-wrapper {
+  
+}
+
+.material-page__connectfield {
+  
+}
+
+.material-page__connectfield-terms-container {
+  
+}
+
+.material-page__connectfield-term-number {
+  
+}
+
+.material-page__connectfield-term {
+  
+}
+
+.material-page__connectfield-term-selected {
+  
+}
+
+.material-page__connectfield-term-edited {
+  
+}
+
+.material-page__connectfield-gap {
+  
+}
+
+.material-page__connectfield-counterparts-container {
+  
+}
+
+.material-page__connectfield-counterpart {
+  
+}
+
+.material-page__connectfield-counterpart-selected {
+  
+}
+
+.material-page__connectfield-counterpart-edited {
+  
+}
+
+
+// Math field
+.material-page__mathfield {
+  
+}
+
+.material-page__mathfield-formula {
+  
+}
+
+.material-page__mathfield-editor {
+  
+}
+
+.material-page__mathfield-toolbar {
+  
+}
+
+
 
 
 

@@ -54,11 +54,11 @@ export default class TextField extends FieldBase<MathFieldProps, MathFieldState>
   }
   render(){
     //NOTE you cannot change the formula class name unless you want to break backwards compatibility
-    return <MathField ref="base" className="muikku-math-exercise-field-editor"
+    return <MathField ref="base" className="material-page__mathfield"
       value={this.state.value} onChange={this.setValue}
-      formulaClassName="muikku-math-exercise-formula"
-      editorClassName="muikku-math-exercise-editor"
-      toolbarClassName="muikku-math-exercise-toolbar" i18n={{
+      formulaClassName="material-page__mathfield-formula"
+      editorClassName="material-page__mathfield-editor"
+      toolbarClassName="material-page__mathfield-toolbar" i18n={{
         basicsAndSymbols: this.props.i18n.text.get("plugin.workspace.mathField.basicsAndSymbols"),
         algebra: this.props.i18n.text.get("plugin.workspace.mathField.algebra"),
         geometryAndVectors: this.props.i18n.text.get("plugin.workspace.mathField.geometryAndVectors"),

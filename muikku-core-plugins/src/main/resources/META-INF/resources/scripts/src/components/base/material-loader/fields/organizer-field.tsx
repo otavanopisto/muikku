@@ -285,24 +285,25 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
     //TODO lankkinen please ensure that when it's not loaded they take the same
     //space
     if (!this.loaded){
-      return <div ref="base" className="muikku-organizer-field muikku-field">
-        <div className="muikku-terms-container">
-          <div className="muikku-terms-title">{this.props.content.termTitle}</div>
-          <div className="muikku-terms-data">
-            {this.state.order.map((id)=>{
-              return <div className="muikku-term" key={id}>{this.state.terms[id]}</div>
+      return <div className="material-page__organizerfield-wrapper">
+        <div ref="base" className="material-page__organizerfield">
+          <div className="material-page__organizerfield-terms">
+            <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
+            <div className="material-page__organizerfield-terms-container">
+              {this.state.order.map((id)=>{
+                return <div className="material-page__organizerfield-term" key={id}>{this.state.terms[id]}</div>
+              })}
+            </div>
+          </div>
+          <div className="material-page__organizerfield-categories">
+            {this.props.content.categories.map((category)=>{
+              return <div className="material-page__organizerfield-category"
+                key={category.id}>
+                <div className="material-page__organizerfield-category-title">{category.name}</div>
+                <div className="material-page__organizerfield-category-terms-container"/>
+              </div>
             })}
           </div>
-        </div>
-        <div className="muikku-categories-container flex-row">
-          {this.props.content.categories.map((category)=>{
-          
-            return <div className="muikku-category-container"
-              key={category.id}>
-              <div className="muikku-category-title">{category.name}</div>
-              <div className="muikku-category"/>
-            </div>
-          })}
         </div>
       </div>
     }
@@ -315,65 +316,67 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
     let answerIsCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerStateOverall === "PASS"
         
     //we add that class name in our component
-    return <div className={`muikku-organizer-field muikku-field ${elementClassNameState}`}>
-      <div className="muikku-terms-container">
-        <div className="muikku-terms-title">{this.props.content.termTitle}</div>
-        <div className="muikku-terms-data">
-          {this.state.order.map((id)=>{
-            //add the term in use class if in the uselist
-            let className = `muikku-term ${this.state.useList.indexOf(id) !== -1 ? "term-in-use" : ""} ${this.state.selectedItemId === id ? "term-selected" : ""}`;
-            if (this.props.readOnly){
-              //if readOnly we just return a non draggable thingy
-              return <div className={className} key={id}>{this.state.terms[id]}</div>
+    return <div className="material-page__organizerfield-wrapper">
+      <div className={`material-page__organizerfield ${elementClassNameState}`}>
+        <div className="material-page__organizerfield-terms">
+          <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
+          <div className="material-page__organizerfield-terms-container">
+            {this.state.order.map((id)=>{
+              //add the term in use class if in the uselist
+              let className = `material-page__organizerfield-term ${this.state.useList.indexOf(id) !== -1 ? "term-in-use" : ""} ${this.state.selectedItemId === id ? "term-selected" : ""}`;
+              if (this.props.readOnly){
+                //if readOnly we just return a non draggable thingy
+                return <div className={className} key={id}>{this.state.terms[id]}</div>
+              }
+              //Otherwise we run a draggable, where the field itself is the parent container
+              //the interaction group is only for this field, and it will clone the draggable instead of removing the entire thing
+              //on move, it has no interaction data so draggables won't interact with each other, and when it's dropped it
+              //calls the on drop into function using its own termId binding and the argument will be the data of the droppables
+              return <Draggable parentContainerSelector=".material-page__organizerfield"
+                className={className} interactionGroup={this.props.content.name}
+                clone key={id} onDropInto={this.onDropDraggableItem.bind(this, id)}
+                onDrag={this.cancelSelectedItemId} onClick={this.selectItemId.bind(this, id)}>{this.state.terms[id]}</Draggable>
+            })}
+          </div>
+        </div>
+        <div className="material-page__organizerfield-categories">
+          {this.props.content.categories.map((category)=>{
+            //we make a category class name for if the answer state is there, only worth it if the whole thing is not right
+            //if the whole thing is right then every category is right
+            let categoryClassNameState = this.props.checkAnswers && !answerIsCheckedAndItisCorrect &&
+              this.state.answerState && this.state.answerState[category.id] ?
+                "state-" + this.state.answerState[category.id]["*"] : "";
+            
+            //Showing the missing terms is only reasonable when display correct answers is there
+            //we first check whether the category is right
+            let wecheckAnswersAndCategoryisCorrect = this.props.checkAnswers &&
+              this.state.answerState && this.state.answerState[category.id] && this.state.answerState[category.id]["*"] === "PASS";
+            let itemCorrectAnswerMissingTerms:any = null;
+            //if we are asked to display and the answers are not right then we add the missing items
+            if (this.props.displayCorrectAnswers && !wecheckAnswersAndCategoryisCorrect){
+              itemCorrectAnswerMissingTerms = this.state.answerStateMissingTerms && 
+                this.state.answerStateMissingTerms[category.id] && this.state.answerStateMissingTerms[category.id].map((missingTermId)=>{
+                return <div key={missingTermId} style={{opacity: 0.5}} className="material-page__organizerfield-term term-in-use">{this.state.terms[missingTermId]}</div>;
+              });
             }
-            //Otherwise we run a draggable, where the field itself is the parent container
-            //the interaction group is only for this field, and it will clone the draggable instead of removing the entire thing
-            //on move, it has no interaction data so draggables won't interact with each other, and when it's dropped it
-            //calls the on drop into function using its own termId binding and the argument will be the data of the droppables
-            return <Draggable parentContainerSelector=".muikku-organizer-field"
-              className={className} interactionGroup={this.props.content.name}
-              clone key={id} onDropInto={this.onDropDraggableItem.bind(this, id)}
-              onDrag={this.cancelSelectedItemId} onClick={this.selectItemId.bind(this, id)}>{this.state.terms[id]}</Draggable>
+            
+            return <Droppable interactionGroup={this.props.content.name} onClick={this.selectBox.bind(this, category)}
+              className={`material-page__organizerfield-category ${categoryClassNameState}`}
+              key={category.id} interactionData={category.id}>
+              <div className="material-page__organizerfield-category-title">{category.name}</div>
+              <div className="material-page__organizerfield-category-terms-container">{this.state.boxes[category.id].map((termId)=>{
+                //showhing whether terms are right or not is only worth it is whole answers are not right and the category itself is not right
+                //otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
+                let termClassNameState = this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
+                  this.state.answerState && this.state.answerState[category.id] && this.state.answerState[category.id]["*"] === "FAIL" ?
+                    "state-" + this.state.answerState[category.id][termId] : "";
+                return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term term-in-use ${termClassNameState}`}>{this.state.terms[termId]}
+                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="icon-delete"></span> : null}
+                </div>
+              })}{itemCorrectAnswerMissingTerms}</div>
+            </Droppable>
           })}
         </div>
-      </div>
-      <div className="muikku-categories-container flex-row">
-        {this.props.content.categories.map((category)=>{
-          //we make a category class name for if the answer state is there, only worth it if the whole thing is not right
-          //if the whole thing is right then every category is right
-          let categoryClassNameState = this.props.checkAnswers && !answerIsCheckedAndItisCorrect &&
-            this.state.answerState && this.state.answerState[category.id] ?
-              "state-" + this.state.answerState[category.id]["*"] : "";
-          
-          //Showing the missing terms is only reasonable when display correct answers is there
-          //we first check whether the category is right
-          let wecheckAnswersAndCategoryisCorrect = this.props.checkAnswers &&
-            this.state.answerState && this.state.answerState[category.id] && this.state.answerState[category.id]["*"] === "PASS";
-          let itemCorrectAnswerMissingTerms:any = null;
-          //if we are asked to display and the answers are not right then we add the missing items
-          if (this.props.displayCorrectAnswers && !wecheckAnswersAndCategoryisCorrect){
-            itemCorrectAnswerMissingTerms = this.state.answerStateMissingTerms && 
-              this.state.answerStateMissingTerms[category.id] && this.state.answerStateMissingTerms[category.id].map((missingTermId)=>{
-              return <div key={missingTermId} style={{opacity: 0.5}} className="muikku-term term-in-use">{this.state.terms[missingTermId]}</div>;
-            });
-          }
-          
-          return <Droppable interactionGroup={this.props.content.name} onClick={this.selectBox.bind(this, category)}
-            className={`muikku-category-container ${categoryClassNameState}`}
-            key={category.id} interactionData={category.id}>
-            <div className="muikku-category-title">{category.name}</div>
-            <div className="muikku-category">{this.state.boxes[category.id].map((termId)=>{
-              //showhing whether terms are right or not is only worth it is whole answers are not right and the category itself is not right
-              //otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
-              let termClassNameState = this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
-                this.state.answerState && this.state.answerState[category.id] && this.state.answerState[category.id]["*"] === "FAIL" ?
-                  "state-" + this.state.answerState[category.id][termId] : "";
-              return <div onClick={this.preventPropagation} key={termId} className={`muikku-term term-in-use ${termClassNameState}`}>{this.state.terms[termId]}
-                {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="icon-delete"></span> : null}
-              </div>
-            })}{itemCorrectAnswerMissingTerms}</div>
-          </Droppable>
-        })}
       </div>
     </div>
   }
