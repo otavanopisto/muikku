@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -62,6 +63,9 @@ public class ChatSyncController {
   
   @Inject
   private ChatController chatController;
+
+  @Inject
+  private Event<WorkspaceChatSettingsEnabledEvent> workspaceChatSettingsEnabledEvent;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -142,7 +146,7 @@ public class ChatSyncController {
         }
         WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(usersWorkspace.getId());
        
-        if (workspaceChatSettings.getStatus() != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
+        if (workspaceChatSettings != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
           if (hasCorrectCurriculums) {
           
             if (chatRoomEntity == null) {
@@ -161,14 +165,14 @@ public class ChatSyncController {
               chatRoomEntity.setLogEnabled(true);
               client.createChatRoom(chatRoomEntity);
             }  
-          } 
-        }
 
-        EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
-        if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-          client.addAdmin(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
-        } else {
-          client.addMember(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+            EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
+            if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
+              client.addAdmin(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+            } else {
+              client.addMember(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+            }
+          } 
         }
       }
     } catch (Exception e) {
@@ -243,8 +247,9 @@ public class ChatSyncController {
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
     
-    
     client.deleteChatRoom(workspaceEntity.getIdentifier());
+    
+
   }
   
  public void syncWorkspace(WorkspaceEntity workspaceEntity) {
@@ -287,6 +292,42 @@ public class ChatSyncController {
     chatRoomEntity.setPersistent(true);
     chatRoomEntity.setLogEnabled(true);
     client.createChatRoom(chatRoomEntity);
+    
+    workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
   }
-}   
+ 
+ public void syncWorkspaceUser(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
+    if (openfireToken == null) {
+      logger.log(Level.INFO, "No openfire token set, skipping room sync");
+      return;
+      }
+    String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
+    if (openfireUrl == null) {
+      logger.log(Level.INFO, "No openfire url set, skipping room sync");
+      return;
+    }
+    String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
+    if (openfirePort == null) {
+      logger.log(Level.INFO, "No openfire port set, skipping room sync");
+      return;
+    }
+    if (!StringUtils.isNumeric(openfirePort)) {
+      logger.log(Level.WARNING, "Invalid openfire port, skipping room sync");
+      return;
+    }
+    AuthenticationToken token = new AuthenticationToken(openfireToken);
+    RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+
+    EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
+    if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
+      client.addAdmin(workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
+    } else {
+      client.addMember(workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
+   }
+   
+ }
+}
 

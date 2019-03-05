@@ -21,11 +21,11 @@
     <div class="eval-modal-workspace-name">{courseName}</div>
   </header>
   <div class="eval-modal-events-content">
-    <div class="eval-modal-events-title">Työtilan arviointihistoria</div>
+    <div class="eval-modal-events-title">{#localize key="plugin.evaluation.evaluationModal.events.title"/}</div>
     <div id="workspaceEventsContainer"></div>
     <div class="eval-modal-evaluate-buttonset">
-      <div class="eval-modal-evaluate-button button-start-evaluation" id="workspaceGradeNew">Anna kurssiarvio</div>
-      <div class="eval-modal-evaluate-button button-supplementation-request" id="workspaceSupplementationNew">Pyydä täydennystä</div>
+      <div class="eval-modal-evaluate-button button-start-evaluation" id="workspaceGradeNew">{#localize key="plugin.evaluation.evaluationModal.events.gradeButton"/}</div>
+      <div class="eval-modal-evaluate-button button-supplementation-request" id="workspaceSupplementationNew">{#localize key="plugin.evaluation.evaluationModal.events.supplementationButton"/}</div>
     </div>
   </div>
 </section>
@@ -34,7 +34,7 @@
 
 <section class="eval-modal-workspace-grade-evaluate-container" id="workspaceGradeEditorContainer" style="display:none;">
   <header class="eval-modal-editor-header flex-row flex-align-items-center">
-    <div class="eval-modal-grade-title">Kurssin kokonaisarviointi</div>
+    <div class="eval-modal-grade-title">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.title"/}</div>
     <div class="eval-modal-grade-close icon-arrow-right-thin"></div>
   </header>
   <div class="eval-modal-evaluate-workspace-content">
@@ -46,7 +46,7 @@
 
 <section class="eval-modal-workspace-supplementation-evaluate-container" id="workspaceSupplementationEditorContainer" style="display:none;">
   <header class="eval-modal-editor-header flex-row flex-align-items-center">
-    <div class="eval-modal-supplementation-title">Kurssin täydennyspyyntö</div>
+    <div class="eval-modal-supplementation-title">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.supplementationTitle"/}</div>
     <div class="eval-modal-supplementation-close icon-arrow-right-thin"></div>
   </header>
   <div class="eval-modal-evaluate-workspace-content">

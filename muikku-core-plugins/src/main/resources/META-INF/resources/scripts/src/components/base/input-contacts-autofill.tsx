@@ -135,7 +135,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     }
     let getWorkspacesLoader = () => { 
       return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
-        searchString: textInput,
+        search: textInput,
         myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
       }), 'callback');
     }

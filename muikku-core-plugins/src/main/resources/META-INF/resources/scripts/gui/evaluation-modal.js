@@ -45,9 +45,6 @@
 
       this._gradingScales = null;
       
-      /* TODO Deprecated, remove
-      this.element.on("dialogReady", $.proxy(this._onDialogReady, this));
-      */
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
       this.element.on("workspaceAssessmentSaved", $.proxy(this._onWorkspaceAssessmentSaved, this));
       this.element.on("workspaceSupplementationRequestSaved", $.proxy(this._onWorkspaceSupplementationRequestSaved, this));
@@ -110,115 +107,6 @@
               this._setupWorkspaceGradeEditor();
               this._setupWorkspaceSupplementationEditor();
               this._setupAssignmentEditor();
-              
-              /* TODO: Deprecated, remove
-
-              this._evaluationModal
-                .find('.eval-modal-evaluate-workspace-content')
-                .css({
-                  'overflow-y': 'hidden'
-                })
-                .append($('<div>')
-                  .addClass('workspace-evaluation-form-overlay'))
-                .append($('<div>')
-                  .addClass('workspace-evaluation-form-activate-button')
-                  .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayButtonLabel"))
-                );
-
-              // Workspace assessment editor
-
-              var workspaceLiteralEditor = this._evaluationModal.find("#workspaceEvaluateFormLiteralEvaluation")[0]; 
-              CKEDITOR.replace(workspaceLiteralEditor, $.extend({}, this.options.ckeditor, {
-                manualDraftStart: true,
-                draftKey: ['workspace-evaluation-draft', workspaceEntityId, $(requestCard).attr('data-user-entity-id')].join('-'),
-                on: {
-                  instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
-                }
-              }));
-              var workspaceDateEditor = $(this._evaluationModal).find('#workspaceEvaluationDate'); 
-              $(workspaceDateEditor)
-                .css({'z-index': 999, 'position': 'relative'})
-                .attr('type', 'text')
-                .datepicker();
-
-              // Enabled workspace grade if assessment is marked graded
-
-              $('#workspaceGradedButton').click($.proxy(function(event) {
-                $('#workspaceGrade').prop('disabled', false);
-                $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
-              }, this));
-
-              // Disable workspace grade if assessment is marked incomplete
-
-              $('#workspaceIncompleteButton').click($.proxy(function(event) {
-                $('#workspaceGrade').prop('disabled', true);
-                $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
-              }, this));
-
-              // Delete workspace assessment (or supplementation request)
-
-              if ($(this._requestCard).attr('data-evaluated')) {
-                $('#workspaceDeleteButton').show();
-              }
-              $('#workspaceDeleteButton').click($.proxy(function(event) {
-                this._confirmAssessmentDeletion($.proxy(function () {
-                  this._deleteEvaluationData();
-                }, this));
-              }, this));
- 
-              // Prevent accidental evaluation if evaluated before
-              if ($(this._requestCard).attr('data-graded') == 'true') {
-                $('#evaluationEvaluateContainer')
-                  .find('.eval-modal-evaluate-buttonset')
-                  .append($('<div>')
-                      .addClass('workspace-re-evaluation-form-overlay')
-                      .append($('<div>')
-                          .addClass('workspace-re-evaluation-form-activate-description')
-                          .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationDescription"))
-                      )
-                      .append($('<div>')
-                          .addClass('workspace-re-evaluation-form-activate-button')
-                          .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayReEvaluationButtonLabel"))
-                    ));
-                $('.workspace-re-evaluation-form-activate-button').click(function(event) {
-                  $('.workspace-re-evaluation-form-overlay').remove();
-                });
-              }
-
-              // Save workspace assessment (or supplementation request) 
-
-              $('#workspaceSaveButton').click($.proxy(function(event) {
-                CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.discardDraft();
-                var gradingValue = $('input[name=workspaceGrading]:checked').val();
-                if (gradingValue == 'GRADED') {
-                  this._saveWorkspaceAssessment();
-                }
-                else {
-                  this._saveWorkspaceSupplementationRequest();
-                }
-              }, this));
-
-              // Cancel workspace assessment
-
-              $('#workspaceCancelButton').click($.proxy(function(event) {
-                this.close();
-              }, this));
-
-              // Activate workspace assessment
-
-              $('.workspace-evaluation-form-activate-button').click($.proxy(function(event) {
-                $('.workspace-evaluation-form-activate-button, .workspace-evaluation-form-overlay').animate({
-                  opacity: 0
-                }, {
-                  duration: 300,
-                  complete: function (){
-                    this.remove();
-                    $('.eval-modal-evaluate-workspace-content').removeAttr('style');
-                    CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.startDrafting();
-                  }
-                });
-              }, this));
-              */
 
               // Discard modal button (top right)  
 
@@ -415,11 +303,12 @@
     
     _setupEventsContainer: function() {
       this._loadEvents($.proxy(function() {
+        $('.eval-modal-workspace-event-buttonset:not(:last)').hide();
         $('.button-edit-event').on('click', $.proxy(function(event) {
           var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
           var eventElement = $(event.target).closest('.eval-modal-workspace-event'); 
           var eventType = $(eventElement).attr('data-type');
-          if (eventType == 'EVALUATION_PASS' || eventType == 'EVALUATION_FAIL') {
+          if (eventType == 'EVALUATION_PASS' || eventType == 'EVALUATION_FAIL' || eventType == 'EVALUATION_IMPROVED') {
             var mode = $('#workspaceGradeEditor').attr('data-mode');
             if (mode != 'edit' || $('#workspaceGradeIdentifier').val() != $(eventElement).attr('data-identifier')) {
               $('#workspaceGradeEditor').attr('data-mode', 'edit');
@@ -451,7 +340,7 @@
           var eventType = $(eventElement).attr('data-type');
           this._confirmAssessmentDeletion($.proxy(function () {
             var identifier = $(eventElement).attr('data-identifier');
-            if (eventType == 'EVALUATION_PASS' || eventType == 'EVALUATION_FAIL') {
+            if (eventType == 'EVALUATION_PASS' || eventType == 'EVALUATION_FAIL' || eventType == 'EVALUATION_IMPROVED') {
               mApi().evaluation.workspaceuser.workspaceassessment
                 .del(workspaceUserEntityId, identifier)
                 .callback($.proxy(function (err, result) {
@@ -496,6 +385,10 @@
           });
         }, this));
         
+        $('#workspaceGradeNew').text($('.graded').length > 0
+            ? getLocaleText('plugin.evaluation.evaluationModal.events.improvedGradeButton')
+            : getLocaleText('plugin.evaluation.evaluationModal.events.gradeButton'));
+        
         $('#workspaceSupplementationNew').on('click', $.proxy(function(event) {
           var mode = $('#workspaceSupplementationEditor').attr('data-mode');
           if (mode != 'new') {
@@ -532,12 +425,6 @@
       }, this));
     },
 
-    /* TODO Deprecated, remove
-    _onLiteralEvaluationEditorReady: function() {
-      this.element.trigger("dialogReady");
-    },
-    */
-    
     _loadJournalEntries: function() {
       var userEntityId = $(this._requestCard).attr('data-user-entity-id');
       var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
@@ -655,31 +542,6 @@
         }
       }
     },
-
-    /* TODO Deprecated, remove
-    _onDialogReady: function() {
-      if ($(this._requestCard).attr('data-evaluated') == 'true') {
-        var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-        var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-        var workspaceUserEntityId = $(this._requestCard).attr('data-workspace-user-entity-id');
-        if ($(this._requestCard).attr('data-graded') == 'true') {
-          this._loadWorkspaceAssessment(workspaceUserEntityId);
-        }
-        else {
-          this._loadWorkspaceSupplementationRequest(workspaceEntityId, userEntityId);
-        }
-      }
-      else {
-        $('#workspaceEvaluationDate').datepicker('setDate', new Date());
-        $('#workspaceAssessor').val(MUIKKU_LOGGED_USER);
-        $('#workspaceGradedButton').prop('checked', true);
-        $('#workspaceGrade').prop('disabled', false);
-        $('#workspaceGrade').prop('selectedIndex', 0);
-      }
-      this._loadMaterials();
-      this._loadJournalEntries();
-    },
-    */
 
     _onMaterialsLoaded: function(event, data) {
       $.each(data.assignments, $.proxy(function(index, assignment) {
@@ -1139,26 +1001,6 @@
       }, this));
     },
     
-    /* TODO Refactor these
-    _deleteEvaluationData: function() {
-      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-      mApi().evaluation.workspace.user.evaluationdata
-        .del(workspaceEntityId, userEntityId)
-        .callback($.proxy(function (err) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            $('.button-delete').hide();
-            this.element.trigger("cardStateChange", {card: $(this._requestCard), evaluated: false, graded: false});
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.deleteSuccessful"));
-            this.close();
-          }
-        }, this));
-    },
-    */
-
     _saveMaterialAssessment: function() {
       if (this._savingMaterialAssessment) {
         return;

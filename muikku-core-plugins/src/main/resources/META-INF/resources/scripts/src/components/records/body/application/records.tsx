@@ -21,6 +21,7 @@ import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
+import { MatriculationLink } from './matriculation-link';
 
 let ProgressBarLine = require('react-progressbar.js').Line;
 
@@ -51,7 +52,7 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
       <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))} className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending"></span>
     </div>
   }
-  
+
   return null;
 }
 
@@ -198,12 +199,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : "-"}</span>
         </div>
       </div>
-    </div>  
+    </div>
     
     let studentRecords = <div className="application-sub-panel">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
-          let records = data.records;      
+          let records = data.records;
 
           return <div className="react-required-container" key={data.user.id}>
           <div className="application-sub-panel__header">{user.studyProgrammeName}</div>
@@ -237,7 +238,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     {record.transferCredits.map((credit)=>{
                       return <ApplicationListItem className="course course--credits" key={credit.identifier}>
                         <ApplicationListItemHeader modifiers="course">
-                          <span className="application-list__header-icon icon-books"></span>  
+                          <span className="application-list__header-icon icon-books"></span>
                           <span className="application-list__header-primary">{credit.courseName}</span>
                           {getTransferCreditValue(this.props, credit)}
                         </ApplicationListItemHeader>
@@ -248,16 +249,18 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           </div>
           </div>
         })}
-      </div>  
+      </div>
 
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
     
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
+
+    <MatriculationLink i18n={this.props.i18n} />
     
-    <div className="application-sub-panel">
+    <div className="application-sub-panel application-sub-panel--basic">
       {studentBasicInfo}
     </div>
-    {studentRecords}    
+    {studentRecords}
     
     <div className="application-sub-panel">
       <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>

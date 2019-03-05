@@ -1,11 +1,5 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.ejb.Stateful;
@@ -23,15 +17,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-
-import fi.otavanopisto.muikku.controller.PermissionController;
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.EducationTypeMappingNotSetException;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
@@ -40,21 +30,13 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsLister;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCourseChoice;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
-import fi.otavanopisto.muikku.schooldata.CourseMetaController;
-import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Subject;
-import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
-import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -68,25 +50,13 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private static final long serialVersionUID = -6752333351301485518L;
 
   @Inject
+  private TranscriptOfRecordsController transcriptOfRecordsController;
+
+  @Inject
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
 
   @Inject
   private SessionController sessionController;
-
-  @Inject
-  private WorkspaceController workspaceController;
-
-  @Inject
-  private UserGroupEntityController userGroupEntityController;
-
-  @Inject
-  private PermissionController permissionController;
-
-  @Inject
-  private CourseMetaController courseMetaController;
-
-  @Inject
-  private TranscriptOfRecordsController vopsController;
 
   @Inject
   private UserController userController;
@@ -95,16 +65,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private UserEntityController userEntityController;
 
   @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController;
-
-  @Inject
-  private PluginSettingsController pluginSettingsController;
-  
-  @Inject
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
-
-  @Inject
-  private GradingController gradingController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -121,8 +82,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
 
-    TranscriptOfRecordsFile file = transcriptOfRecordsFileController
-        .findFileById(fileId);
+    TranscriptOfRecordsFile file = transcriptOfRecordsFileController.findFileById(fileId);
 
     if (file == null) {
       return Response.status(Status.NOT_FOUND).entity("File not found").build();
@@ -146,16 +106,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response getVops(@PathParam("IDENTIFIER") String studentIdentifierString) {
 
-    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
-    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
-    if (educationTypeMappingString != null) {
-      try {
-        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);
-      } catch (IOException e) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Education type mapping not set").build();
-      }
-    }
-
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
@@ -170,71 +120,26 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         && !Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
-
-    User student = userController.findUserByIdentifier(studentIdentifier);
     
-    if (!vopsController.shouldShowStudies(student)) {
-      VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
+    try {
+      VopsLister.Result listerResult = transcriptOfRecordsController.listVopsCourses(studentIdentifierString,
+            studentIdentifier);
+
+      VopsRESTModel result = new VopsRESTModel(
+          listerResult.getRows(),
+          listerResult.getNumCourses(),
+          listerResult.getNumMandatoryCourses(),
+          listerResult.isOptedIn()
+      );
+
       return Response.ok(result).build();
+    } catch (EducationTypeMappingNotSetException ex) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+                     .entity("Education type mapping not set")
+                     .build();
     }
-    
-    List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
-
-    List<Subject> subjects = courseMetaController.listSubjects();
-    Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = vopsController.listStudentAssessments(studentIdentifier);
-    
-    
-    String curriculum = pluginSettingsController.getPluginSetting("transcriptofrecords", "curriculum");
-    SchoolDataIdentifier curriculumIdentifier = null;
-    if (curriculum != null) {
-      curriculumIdentifier = SchoolDataIdentifier.fromId(curriculum);
-    }
-    
-    final List<String> subjectList = new ArrayList<String>();
-    String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
-    if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
-      subjectList.addAll(Arrays.asList(commaSeparatedSubjectsOrder.split(",")));
-    }
-    subjects.sort(new Comparator<Subject>() {
-      public int compare(Subject o1, Subject o2) {
-        int i1 = subjectList.indexOf(o1.getCode());
-        int i2 = subjectList.indexOf(o2.getCode());
-        i1 = i1 == -1 ? Integer.MAX_VALUE : i1;
-        i2 = i2 == -1 ? Integer.MAX_VALUE : i2;
-        return i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
-      }
-    });
-    
-    VopsLister lister = new VopsLister(
-      subjects,
-      vopsController,
-      student,
-      transferCredits,
-      curriculumIdentifier,
-      workspaceController,
-      workspaceUserEntityController,
-      studentIdentifier,
-      studentAssessments,
-      userGroupEntityController,
-      permissionController,
-      studiesViewCourseChoiceController,
-      studentIdentifierString,
-      gradingController,
-      educationTypeMapping
-    );
-    
-    lister.performListing();
-
-    VopsRESTModel result = new VopsRESTModel(
-        lister.getRows(),
-        lister.getNumCourses(),
-        lister.getNumMandatoryCourses(),
-        lister.isOptedIn()
-    );
-
-    return Response.ok(result).build();
   }
-  
+
   private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
     User user = userController.findUserByIdentifier(userIdentifier);
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
@@ -243,7 +148,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return null;
     }
 
-    TranscriptofRecordsUserProperties userProperties = vopsController.loadUserProperties(user);
+    TranscriptofRecordsUserProperties userProperties = transcriptOfRecordsController.loadUserProperties(user);
     
     return new HopsRESTModel(
         userProperties.asString("goalSecondarySchoolDegree"),
@@ -307,7 +212,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     User user = userController.findUserByIdentifier(userIdentifier);
 
-    if (!vopsController.shouldShowStudies(user)) {
+    if (!transcriptOfRecordsController.shouldShowStudies(user)) {
       return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
     }
 
@@ -391,24 +296,24 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
 
-    vopsController.saveStringProperty(user, "goalSecondarySchoolDegree", model.getGoalSecondarySchoolDegree());
-    vopsController.saveStringProperty(user, "goalMatriculationExam", model.getGoalMatriculationExam());
-    vopsController.saveStringProperty(user, "vocationalYears", model.getVocationalYears());
-    vopsController.saveStringProperty(user, "goalJustMatriculationExam", model.getGoalJustMatriculationExam());
-    vopsController.saveStringProperty(user, "justTransferCredits", model.getJustTransferCredits());
-    vopsController.saveStringProperty(user, "transferCreditYears", model.getTransferCreditYears());
-    vopsController.saveStringProperty(user, "completionYears", model.getCompletionYears());
-    vopsController.saveStringProperty(user, "mathSyllabus", model.getMathSyllabus());
-    vopsController.saveStringProperty(user, "finnish", model.getFinnish());
-    vopsController.saveBoolProperty(user, "swedish", model.isSwedish());
-    vopsController.saveBoolProperty(user, "english", model.isEnglish());
-    vopsController.saveBoolProperty(user, "german", model.isGerman());
-    vopsController.saveBoolProperty(user, "french", model.isFrench());
-    vopsController.saveBoolProperty(user, "italian", model.isItalian());
-    vopsController.saveBoolProperty(user, "spanish", model.isSpanish());
-    vopsController.saveStringProperty(user, "science", model.getScience());
-    vopsController.saveStringProperty(user, "religion", model.getReligion());
-    vopsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
+    transcriptOfRecordsController.saveStringProperty(user, "goalSecondarySchoolDegree", model.getGoalSecondarySchoolDegree());
+    transcriptOfRecordsController.saveStringProperty(user, "goalMatriculationExam", model.getGoalMatriculationExam());
+    transcriptOfRecordsController.saveStringProperty(user, "vocationalYears", model.getVocationalYears());
+    transcriptOfRecordsController.saveStringProperty(user, "goalJustMatriculationExam", model.getGoalJustMatriculationExam());
+    transcriptOfRecordsController.saveStringProperty(user, "justTransferCredits", model.getJustTransferCredits());
+    transcriptOfRecordsController.saveStringProperty(user, "transferCreditYears", model.getTransferCreditYears());
+    transcriptOfRecordsController.saveStringProperty(user, "completionYears", model.getCompletionYears());
+    transcriptOfRecordsController.saveStringProperty(user, "mathSyllabus", model.getMathSyllabus());
+    transcriptOfRecordsController.saveStringProperty(user, "finnish", model.getFinnish());
+    transcriptOfRecordsController.saveBoolProperty(user, "swedish", model.isSwedish());
+    transcriptOfRecordsController.saveBoolProperty(user, "english", model.isEnglish());
+    transcriptOfRecordsController.saveBoolProperty(user, "german", model.isGerman());
+    transcriptOfRecordsController.saveBoolProperty(user, "french", model.isFrench());
+    transcriptOfRecordsController.saveBoolProperty(user, "italian", model.isItalian());
+    transcriptOfRecordsController.saveBoolProperty(user, "spanish", model.isSpanish());
+    transcriptOfRecordsController.saveStringProperty(user, "science", model.getScience());
+    transcriptOfRecordsController.saveStringProperty(user, "religion", model.getReligion());
+    transcriptOfRecordsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
 
     return Response.ok().entity(model).build();
   }

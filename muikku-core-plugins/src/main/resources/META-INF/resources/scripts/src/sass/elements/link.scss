@@ -309,7 +309,7 @@
 
   &.semi-selected {
      background-color: lighten($color-main-function-label-link-selected-background, 20%);
-     
+
     .link__text {
        color: $color-text-link-selected;
       font-weight: 600;
@@ -327,3 +327,12 @@
     margin-left: 20px;
   }
 }
+
+// This has to be think differently as the element is not <Link> component currently
+.link--matriculation-enrollment {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 5px 0;
+}
+
+

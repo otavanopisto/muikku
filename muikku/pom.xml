@@ -254,6 +254,17 @@
     </profile>
 
     <profile>
+      <id>matriculation-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.otavanopisto.muikku</groupId>
+          <artifactId>matriculation-plugin</artifactId>
+          <version>1.1.113-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
       <id>jndi-mail-plugin</id>
       <dependencies>
         <dependency>
