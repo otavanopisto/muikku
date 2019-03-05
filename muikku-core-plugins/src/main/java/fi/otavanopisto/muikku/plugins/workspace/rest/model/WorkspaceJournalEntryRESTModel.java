@@ -9,7 +9,7 @@ public class WorkspaceJournalEntryRESTModel {
   }
 
   public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String firstName,
-      String lastName, String html, String title, Date created) {
+      String lastName, String html, String title, Date created, Long commentCount) {
     super();
     this.id = id;
     this.workspaceEntityId = workspaceEntityId;
@@ -19,6 +19,7 @@ public class WorkspaceJournalEntryRESTModel {
     this.content = html;
     this.title = title;
     this.created = created;
+    this.commentCount = commentCount;
   }
 
   public Long getWorkspaceEntityId() {
@@ -85,6 +86,14 @@ public class WorkspaceJournalEntryRESTModel {
     this.lastName = lastName;
   }
 
+  public Long getCommentCount() {
+    return commentCount;
+  }
+
+  public void setCommentCount(Long commentCount) {
+    this.commentCount = commentCount;
+  }
+
   private Long id;
   private Long workspaceEntityId;
   private Long userEntityId;
@@ -93,4 +102,5 @@ public class WorkspaceJournalEntryRESTModel {
   private String content;
   private String title;
   private Date created;
+  private Long commentCount;
 }
