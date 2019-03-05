@@ -9,7 +9,7 @@
         this._loadStudents(this.options.workspaceId);
 
       $(document).on('change', '#studentSelectField', $.proxy(this._onStudentSelectFieldChange, this));
-      this.element.on('click', '.wj-page-link-load-more:not(.disabled)', $.proxy(this._onLoadMoreClick, this));
+      this.element.on('click', '.wj-page-link-load-more', $.proxy(this._onLoadMoreClick, this));
     },
     
     loadPage: function(workspaceId, userEntityId, page) {
@@ -40,10 +40,12 @@
               $("#journalEntries").append(text);
             });
             
-            if (journalEntries && (journalEntries.length < this.options.pageSize))
-              $('.wj-page-link-load-more').addClass('disabled');
-            else
-              $('.wj-page-link-load-more').removeClass('disabled');
+            if (journalEntries && journalEntries.length < this.options.pageSize) {
+              $('.wj-page-link-load-more').hide();
+            }
+            else {
+              $('.wj-page-link-load-more').show();
+            }
           }
         }, this));
     },
@@ -54,7 +56,7 @@
       $("#journalEntries").empty();
     },
     _loadStudents: function(workspaceId) {
-      mapi().workspace.workspaces.students.read(workspaceId, {
+      mApi().workspace.workspaces.students.read(workspaceId, {
         active: true
       })
       .callback($.proxy(function (err, students) {
