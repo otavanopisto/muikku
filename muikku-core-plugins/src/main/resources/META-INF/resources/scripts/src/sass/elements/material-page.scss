@@ -165,7 +165,9 @@
 .material-page__memofield-wrapper {
 
   .cke { // This needs to be here so we can override the ckeditor's visuals partly
-    @include taskfield-defaults;
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
   }
 }
 
@@ -174,7 +176,6 @@
   @include taskfield-defaults;
   width: 100%;
 }
-
 
 // Select field - list and drop down
 .material-page__selectfield-wrapper {
