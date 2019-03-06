@@ -96,8 +96,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,change,uploadwidget,uploadimage,divarea'
     };
     
-    let configObj = {...extraConfig, ...(this.props.configuration || {}), 
-        contentsCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"};
+    let configObj = {...extraConfig, ...(this.props.configuration || {})};
     
     let allPlugins = configObj.extraPlugins.split(",");
     for (let plugin of allPlugins){
