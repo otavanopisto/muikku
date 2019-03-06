@@ -35,6 +35,19 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.mathexercise": MathField
 }
 
+const parentObjects: {[key: string]: any} = {
+  "application/vnd.muikku.field.text": "span",
+  "application/vnd.muikku.field.select": "span",
+  "application/vnd.muikku.field.multiselect": "span",
+  "application/vnd.muikku.field.memo": "div",
+  "application/vnd.muikku.field.file": "div",
+  "application/vnd.muikku.field.connect": "div",
+  "application/vnd.muikku.field.organizer": "div",
+  "application/vnd.muikku.field.audio": "div",
+  "application/vnd.muikku.field.sorter": "div",
+  "application/vnd.muikku.field.mathexercise": "div"
+}
+
 //Wheteher the object can check or not for an answer
 const answerCheckables: {[key: string]: (params:any)=>boolean} = {
   "application/vnd.muikku.field.text": (params: any)=>{
@@ -227,7 +240,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       let parentElement = element.parentElement;
       
       //and we replace the object with another parent that will be the root of react
-      let newParentElement = document.createElement('span');
+      let newParentElement = document.createElement(parentObjects[element.getAttribute("type")]);
       parentElement.replaceChild(newParentElement, element);
       
       //We take the field registry and register it
@@ -264,7 +277,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       
         //we do the same we did in the dynamics
         let parentElement = element.parentElement;
-        let newParentElement = document.createElement('span');
+        let newParentElement = document.createElement(parentObjects[element.getAttribute("type")]);
         parentElement.replaceChild(newParentElement, element);
         
         //And we push it but we add the content key to save time on updates
