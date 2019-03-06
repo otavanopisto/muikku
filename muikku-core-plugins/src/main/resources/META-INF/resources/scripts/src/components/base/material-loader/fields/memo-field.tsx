@@ -174,7 +174,7 @@ export default class MemoField extends FieldBase<MemoFieldProps, MemoFieldState>
     //and here the element itself
     return <div className="material-page__memofield-wrapper">
       {field}
-      <div className="material-page__count-container">
+      <div className="material-page__counter-wrapper">
         <div className="material-page__word-count-container">
           <div className="material-page__word-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}</div>
           <div className="material-page__word-count">{this.state.words}</div>

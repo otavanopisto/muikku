@@ -200,13 +200,13 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
     //TODOLANKKINEN please keep this simple version of the file in sync with the actual rendering
     //notice how we are returning a instead of link (it's lighter), but you need to keep the classes
     if (!this.loaded){
-      return <div className="muikku-file-input-field-file-uploader-container">
+      return <div className="material-page__filefield-wrapper">
         {!this.state.values.length ? 
-          <span className="muikku-file-input-field-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</span> : null}
-        <div className="muikku-file-input-field-file-files-container">{
+          <span className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</span> : null}
+        <div className="material-page__filefield-files-container">{
           this.state.values.map((value, index)=>
             <a key={value.fileId}>
-              {value.name} <ButtonPill buttonModifiers="remove-file-answer" icon="close"/>
+              {value.name} <ButtonPill buttonModifiers="material-page__filefield-remove-file-button" icon="close"/>
             </a>)
         }</div>
       </div>
@@ -222,7 +222,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
         if (!value.uploading){
           //if the value is not uploading, we set it as static
           return <Link key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name}>
-            {value.name} <ButtonPill buttonModifiers="remove-file-answer" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
+            {value.name} <ButtonPill buttonModifiers="material-page__filefield-remove-file-button" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
           </Link>;
         } else if (value.failed){
           let dataInContainer = null;
@@ -234,7 +234,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
               if (!value.uploading){
                 //if the value is not uploading, we set it as static
                 return <Link key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name}>
-                  {value.name} <ButtonPill buttonModifiers="remove-file-answer" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
+                  {value.name} <ButtonPill buttonModifiers="material-page__filefield-remove-file-button" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
                 </Link>;
               } else if (value.failed){
                 //if the value failed we add a message, you can get the value name there so use it to say which file
@@ -244,7 +244,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
               } else {
                 //this is the progress
                 return <Link key={index}>
-                  <ProgressBarLine containerClassName="clip flex-row flex-align-items-center" options={{
+                  <ProgressBarLine containerClassName="material-page__filefield-clip" options={{
                     strokeWidth: 1,
                     duration: 1000,
                     color: "#ff9900",
@@ -272,7 +272,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
         } else {
           //this is the progress
           return <Link key={index}>
-            <ProgressBarLine containerClassName="clip flex-row flex-align-items-center" options={{
+            <ProgressBarLine containerClassName="material-page__filefield-clip" options={{
               strokeWidth: 1,
               duration: 1000,
               color: "#ff9900",
@@ -295,11 +295,11 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
       });
     }
     //and this is the container
-    return <div className="muikku-file-input-field-file-uploader-container">
+    return <div className="material-page__filefield-wrapper">
       {this.props.readOnly ? null : <input type="file" onChange={this.onFileChanged} multiple/>}
       {!this.state.values.length ? 
-        <span className="muikku-file-input-field-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</span> : null}
-      <div className="muikku-file-input-field-file-files-container">{dataInContainer}</div>
+        <span className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</span> : null}
+      <div className="material-page__filefield-files-container">{dataInContainer}</div>
     </div>
   }
 }

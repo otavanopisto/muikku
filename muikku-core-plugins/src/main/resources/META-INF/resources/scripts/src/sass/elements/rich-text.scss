@@ -15,7 +15,7 @@
   font-weight: 400;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1rem; // 16px
+    font-size: $text-desktop-richtext-font-size;
     font-weight: 300;
     line-height: 1.65rem;
   }
@@ -58,7 +58,7 @@
     font-size: 0.825rem;
   }
   
-  b, 
+  b,
   strong {
     font-weight: 600;
   }
@@ -74,7 +74,6 @@
   
   img {
     border: 0;
-    height: auto;
     max-width: 100%;
   }
   

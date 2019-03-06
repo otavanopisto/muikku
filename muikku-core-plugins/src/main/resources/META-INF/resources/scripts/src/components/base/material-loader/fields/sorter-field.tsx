@@ -185,10 +185,10 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
         if (index === 0 && this.props.content.capitalize){
           text = text.charAt(0).toUpperCase() + text.slice(1);
         }
-        return <Element className="material-page__sorter-item" key={i.id}>{text}</Element>
+        return <Element className="material-page__sorterfield-item" key={i.id}>{text}</Element>
       })
-      return <Element ref="base" className="material-page__sorter-wrapper">
-        <Element className="material-page__sorter-items">
+      return <Element ref="base" className="material-page__sorterfield-wrapper">
+        <Element className="material-page__sorterfield">
           {filler}
         </Element>
       </Element>
@@ -201,12 +201,12 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     //We only display the correct answers if we got them wrong or they are not being checked at all
     if (this.props.displayCorrectAnswers && !answerIsBeingCheckedAndItisCorrect){
       //We create the summary witih the correct answers
-      correctAnswersummaryComponent = <span className="material-page__field-examples">
-        <span className="material-page__field-examples-title">
+      correctAnswersummaryComponent = <span className="material-page__field-answer-examples">
+        <span className="material-page__field-answer-title">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
         </span>
         {this.props.content.items.map((answer, index)=>
-          <span key={answer.id} className="material-page__field-example">{answer.name}</span>
+          <span key={answer.id} className="material-page__field-answer-example">{answer.name}</span>
         )}
       </span>
     }
@@ -216,8 +216,8 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
         "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";
     
     //we use that element and the class to create the field
-    return <Element className={`material-page__sorter-wrapper ${elementClassNameState}`}>
-      <Element className="material-page__sorter-items">
+    return <Element className={`material-page__sorterfield-wrapper ${elementClassNameState}`}>
+      <Element className="material-page__sorterfield">
        {this.state.items.map((item, index)=>{
          //We get the text
          let text = item.name;
@@ -234,15 +234,15 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
 
          if (this.props.readOnly){
            //readonly component
-           return <Element className={`material-page__sorter-item ${itemClassNameState}`} key={item.id}>{text}</Element>
+           return <Element className={`material-page__sorterfield-item ${itemClassNameState}`} key={item.id}>{text}</Element>
          }
 
          //The draggable version, note how on interaction we swap
          //the parent component is a class name always make sure to have the right class name not to overflow
          //the interaction data is the item itself so the argument would be that
-         return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as={Element} parentContainerSelector=".material-page__sorter-items"
-           className={`material-page__sorter-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
-         "material-page__sorter-item--selected" : ""} ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
+         return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as={Element} parentContainerSelector=".material-page__sorterfield"
+           className={`material-page__sorterfield-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
+         "material-page__sorterfield-item--selected" : ""} ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
            onClick={this.selectItem.bind(this, item)} onDrag={this.cancelSelectedItem}>{text}</Draggable>
        })}

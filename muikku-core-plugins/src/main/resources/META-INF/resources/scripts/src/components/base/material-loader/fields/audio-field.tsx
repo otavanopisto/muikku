@@ -304,85 +304,86 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
   }
   render(){
     if (!this.loaded){
-      return <div className="audio-record muikku-field">
-        <div className="clips">
-          {this.state.values.map((value, index)=>{
-            //TODOLANKKINEN please ensure that clips have a fixed height and that remain consistant
-            //with the loaded version that has the audio inside, this one has nothing inside the clip
-            //no audio with clip inside, just the box that contains it, give it a height
-            return <div className="clip flex-row flex-align-items-center" key={index}/>
-          })}
+      return <div className="material-page__audiofield-wrapper">
+        <div className="material-page__audiofield">
+          <div className="material-page__audiofield-clips">
+            {this.state.values.map((value, index)=>{
+              return <div className="material-page__audiofield-clip" key={index}/>
+            })}
+          </div>
+          {!this.props.readOnly && this.state.supportsMediaAPI() ?
+            //TODOLANKKINEN please ensure that the controls also keep a fixed height in both version
+            //This version lacks the buttons and the text inside
+            <div className="material-page__audiofield-controls"/> : null}
         </div>
-        {!this.props.readOnly && this.state.supportsMediaAPI() ?
-          //TODOLANKKINEN please ensure that the controls also keep a fixed height in both version
-          //This version lacks the buttons and the text inside
-          <div className="controls flex-row flex-align-items-center"/> : null}
       </div>
     }
     
     //so this is the field
-    return <div className="audio-record muikku-field">
-      <div className="clips">
-        {this.state.values.map((value, index)=>{
-          //this is the clips
-          return <div className="clip flex-row flex-align-items-center" key={index}>
-            <audio controls src={value.url}/>
-            {value.uploading ? <ProgressBarLine containerClassName="clip flex-row flex-align-items-center" options={{
-              strokeWidth: 1,
-              duration: 1000,
-              color: "#ff9900",
-              trailColor: "#f5f5f5",
-              trailWidth: 1,
-              svgStyle: {width: "100%", height: "4px"},
-              text: {
-                className: "time-text-or-something",
+    return <div className="material-page__audiofield-wrapper">
+      <div className="amaterial-page__audiofield">
+        <div className="material-page__audiofield-clips-container">
+          {this.state.values.map((value, index)=>{
+            //this is the clips
+            return <div className="material-page__audiofield-clip" key={index}>
+              <audio controls src={value.url}/>
+              {value.uploading ? <ProgressBarLine containerClassName="material-page__audiofield-clip" options={{
+                strokeWidth: 1,
+                duration: 1000,
+                color: "#ff9900",
+                trailColor: "#f5f5f5",
+                trailWidth: 1,
+                svgStyle: {width: "100%", height: "4px"},
+                text: {
+                  className: "time-text-or-something",
+                  style: {
+                     right: "100%"
+                  }
+                }
+              }}
+              strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
+              trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
+              text={(value.progress * 100) + "%"}
+               progress={value.progress}/> : null}
+              {value.failed ? this.props.i18n.text.get("TODO audio failed to upload") : null}
+              {!this.props.readOnly ? <Link className="material-page__audiofield-remove-clip-button icon-remove-clip"
+                  title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
+               onClick={this.removeClipAt.bind(this, index)}/> : null}
+            </div>
+          })}
+          {this.state.recording ? <ProgressBarLine containerClassName="material-page__audiofield-clip" options={{
+            strokeWidth: 1,
+            duration: 1000,
+            color: "#ff9900",
+            trailColor: "#f5f5f5",
+            trailWidth: 1,
+            svgStyle: {width: "100%", height: "4px"},
+            text: {
+              className: "time-text-or-something",
                 style: {
-                   right: "100%"
+                  right: "100%"
                 }
               }
             }}
             strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
             trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
-            text={(value.progress * 100) + "%"}
-             progress={value.progress}/> : null}
-            {value.failed ? this.props.i18n.text.get("TODO audio failed to upload") : null}
-            {!this.props.readOnly ? <Link className="remove-clip icon-remove-clip"
-                title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
-             onClick={this.removeClipAt.bind(this, index)}/> : null}
-          </div>
-        })}
-        {this.state.recording ? <ProgressBarLine containerClassName="clip flex-row flex-align-items-center" options={{
-          strokeWidth: 1,
-          duration: 1000,
-          color: "#ff9900",
-          trailColor: "#f5f5f5",
-          trailWidth: 1,
-          svgStyle: {width: "100%", height: "4px"},
-          text: {
-            className: "time-text-or-something",
-              style: {
-                right: "100%"
-              }
-            }
-          }}
-          strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
-          trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
-          text={this.props.i18n.text.get("plugin.workspace.audioField.statusRecording", moment("2015-01-01").startOf('day')
-            .seconds(this.state.time)
-            .format('mm:ss'), moment("2015-01-01").startOf('day')
-            .seconds(MAX_RECORDING_TIME_IN_SECONDS)
-            .format('mm:ss'))}
-           progress={this.state.time/MAX_RECORDING_TIME_IN_SECONDS}/> : null}
+            text={this.props.i18n.text.get("plugin.workspace.audioField.statusRecording", moment("2015-01-01").startOf('day')
+              .seconds(this.state.time)
+              .format('mm:ss'), moment("2015-01-01").startOf('day')
+              .seconds(MAX_RECORDING_TIME_IN_SECONDS)
+              .format('mm:ss'))}
+             progress={this.state.time/MAX_RECORDING_TIME_IN_SECONDS}/> : null}
+        </div>
+        {!this.props.readOnly && this.state.supportsMediaAPI() ? <div className="material-page__audiofield-controls">
+          {!this.state.recording ? <Link className="material-page__audiofield-start-record-button icon-record" onClick={this.start}>
+            <span className="material-page__audiofield-start-record-label">{this.props.i18n.text.get("plugin.workspace.audioField.startLink")}</span>
+          </Link> : <Link className="material-page__audiofield-stop-record-button icon-stop" onClick={this.stop}>
+            <span className="material-page__audiofield-stop-record-label">{this.props.i18n.text.get("plugin.workspace.audioField.stopLink")}</span>
+          </Link>}
+          <label className="material-page__audiofield-description">{this.props.i18n.text.get("plugin.workspace.audioField.rtcHint")}</label>
+        </div> : null}
+        {!this.props.readOnly && !this.state.supportsMediaAPI() ? <input type="file" accept="audio/*" onChange={this.onFileChanged} multiple/> : null}
       </div>
-      {!this.props.readOnly && this.state.supportsMediaAPI() ? <div className="controls flex-row flex-align-items-center">
-        {!this.state.recording ? <Link className="start-record icon-record" onClick={this.start}>
-          <span className="start-record-label">{this.props.i18n.text.get("plugin.workspace.audioField.startLink")}</span>
-        </Link> : <Link className="stop-record icon-stop" onClick={this.stop}>
-          <span className="stop-record-label">{this.props.i18n.text.get("plugin.workspace.audioField.stopLink")}</span>
-        </Link>}
-        <label className="hint-text">{this.props.i18n.text.get("plugin.workspace.audioField.rtcHint")}</label>
-      </div> : null}
-      {!this.props.readOnly && !this.state.supportsMediaAPI() ? <input type="file" accept="audio/*" onChange={this.onFileChanged} multiple/> : null}
     </div>
   }
 }
