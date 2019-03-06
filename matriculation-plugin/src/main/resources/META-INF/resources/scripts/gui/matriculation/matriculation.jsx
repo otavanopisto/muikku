@@ -3,7 +3,7 @@ const ACADEMIC_SUBJECTS = ['UE', 'ET', 'YO', 'KE', 'GE', 'TT', 'PS', 'FI', 'HI',
 const ADVANCED_SUBJECTS = ['MAA', 'RUA', 'ENA', 'RAA', 'ESA', 'SAA', 'VEA'];
 const FINNISH_SUBJECTS = ['AI', 'S2'];
 const REQUIRED_FINNISH_ATTENDANCES = 1;
-const REQUIRED_MANDATORY_ATTENDANCE_MORE_THAN = 3;
+const REQUIRED_MANDATORY_ATTENDANCES = 4;
 const REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN = 2;
 const REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN = 0;
 
@@ -382,13 +382,13 @@ const Page2 = (props) => (
       </div>: null}
 
     {
-      props.amountOfFinnishAttendances == REQUIRED_FINNISH_ATTENDANCES && props.amountOfMandatoryAttendances > REQUIRED_MANDATORY_ATTENDANCE_MORE_THAN && props.amountOfAcademicSubjectAttendances < REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN && props.amountOfMandatoryAdvancedSubjectAttendances > REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN
+      props.amountOfFinnishAttendances == REQUIRED_FINNISH_ATTENDANCES && props.amountOfMandatoryAttendances == REQUIRED_MANDATORY_ATTENDANCES && props.amountOfAcademicSubjectAttendances < REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN && props.amountOfMandatoryAdvancedSubjectAttendances > REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN
         ? null
         : <div style={ WARNING_STYLE } className="pure-u-22-24">
           <p>Ylioppilastutkintoon tulee sisältyä</p> 
           <ul>
             <li>äidinkieli / suomi toisena kielenä { props.amountOfFinnishAttendances == REQUIRED_FINNISH_ATTENDANCES ? "" : "(ei valittuna)" }</li>
-            <li>vähintään neljä pakollista koetta { props.amountOfMandatoryAttendances > REQUIRED_MANDATORY_ATTENDANCE_MORE_THAN ? "" : `(valittuna ${props.amountOfMandatoryAttendances})` }</li>
+            <li>neljä pakollista koetta { props.amountOfMandatoryAttendances == REQUIRED_MANDATORY_ATTENDANCES ? "" : `(valittuna ${props.amountOfMandatoryAttendances})` }</li>
             <li>vähintään yksi A-tason koe { props.amountOfMandatoryAdvancedSubjectAttendances > 0 ? "" : `(valittuna ${props.amountOfMandatoryAdvancedSubjectAttendances})` }</li>
             <li>vain yksi pakollinen reaaliaine. { props.amountOfAcademicSubjectAttendances < 2 ? "" : `(valittuna ${props.amountOfAcademicSubjectAttendances})` }</li>
           </ul>
@@ -675,7 +675,7 @@ class App extends React.Component {
    */
   isValidAttendances() {
     return this.getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES && 
-      this.getAmountOfMandatoryAttendances() > REQUIRED_MANDATORY_ATTENDANCE_MORE_THAN &&
+      this.getAmountOfMandatoryAttendances() == REQUIRED_MANDATORY_ATTENDANCES &&
       this.getAmountOfAcademicSubjectAttendances() < REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN &&
       this.getAmountOfMandatoryAdvancedSubjectAttendances() > REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN; 
   }
