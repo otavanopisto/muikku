@@ -23,9 +23,3 @@ $breakpoint-max-usable-screen: 80rem;
     @content;
   }
 }
-
-@mixin breakpoint-device($breakpoint){
-  @media screen and (min-device-width: $breakpoint) {
-    @content;
-  }
-}

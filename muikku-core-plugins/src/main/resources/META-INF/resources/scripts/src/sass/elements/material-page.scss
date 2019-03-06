@@ -153,12 +153,14 @@
   align-items: center;
   display: inline-flex;
   justify-content: center;
+  margin: 2px 0;
   padding: 0 2px;
 }
 
 .material-page__textfield {
   @include taskfield-text;
   @include taskfield-defaults;
+  padding: 2px 4px;
 }
 
 // Memo field
@@ -168,23 +170,28 @@
     background: $color-default;
     border: 2px solid $taskfield-border-color;
     border-radius: 2px;
+    margin: 2px 0;
   }
 }
 
 .material-page__memofield {
   @include taskfield-text;
   @include taskfield-defaults;
+  margin: 2px 0;
+  padding: 4px 8px;
   width: 100%;
 }
 
 // Select field - list and drop down
 .material-page__selectfield-wrapper {
-  
+  display: inline-flex;
+  margin: 2px 0;
 }
 
 .material-page__selectfield {
   @include taskfield-text;
   @include taskfield-defaults;
+  padding: 2px 4px;
 }
 
 .material-page__selectfield-item-container  {
@@ -196,6 +203,7 @@
 .material-page__radiobutton-wrapper {
   align-items: center;
   display: inline-flex;
+  margin: 2px 0;
 }
 
 .material-page__radiobutton-wrapper--vertical {
@@ -241,6 +249,7 @@
 .material-page__checkbox-wrapper {
   align-items: center;
   display: inline-flex;
+  margin: 2px 0;
 }
 
 .material-page__checkbox-wrapper--vertical {
@@ -285,7 +294,7 @@
 
 // File field
 .material-page__filefield-wrapper {
-  
+  margin: 2px 0;
 }
 
 .material-page__filefield-description {
@@ -306,7 +315,7 @@
 
 // Audio field
 .material-page__audiofield-wrapper {
-  
+  margin: 2px 0;
 }
 
 .material-page__audiofield {
@@ -352,7 +361,7 @@
 
 // Sorter field
 .material-page__sorterfield-wrapper {
-  
+  margin: 2px 0;
 }
 
 .material-page__sorterfield {
@@ -369,7 +378,7 @@
 
 // Organizer field
 .material-page__organizerfield-wrapper {
-  
+  margin: 2px 0;
 }
 
 .material-page__organizerfield {
@@ -410,7 +419,7 @@
 
 // Connect field
 .material-page__connectfield-wrapper {
-  
+  margin: 2px 0;
 }
 
 .material-page__connectfield {
@@ -459,6 +468,10 @@
 
 
 // Math field
+.material-page__mathfield-wrapper {
+  margin: 2px 0;  
+}
+
 .material-page__mathfield {
   
 }
