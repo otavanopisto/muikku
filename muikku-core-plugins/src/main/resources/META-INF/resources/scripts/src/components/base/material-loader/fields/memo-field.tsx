@@ -49,14 +49,9 @@ const ckEditorConfig = {
     { name: 'styles', items: [ 'Format' ] },
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
-  ]
-}
-const extraPlugins = {
-  'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
-  'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/',
-  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'autogrow' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/4.5.8/plugin.js',
-  'muikku-mathjax': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/'
+  ],
+  extraPlugins: "widget,lineutils,change,autogrow,muikku-mathjax,divarea",
+  resize_enabled: true
 }
 
 //Counts the amount of characters, stolen from the old code, no idea how it exactly works
@@ -160,14 +155,14 @@ export default class MemoField extends FieldBase<MemoFieldProps, MemoFieldState>
       //depending to whether richedit or not we make it be with the value as inner html or just raw text
       field = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
           rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
-            <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+            <CKEditor width="100%" configuration={ckEditorConfig}
              onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
     } else {
       //here we make it be a simple textarea or a rich text editor
       //note how somehow numbers come as string...
       field = !this.props.content.richedit ? <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)}
           rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
-            <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+            <CKEditor width="100%" configuration={ckEditorConfig}
              onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
     }
 
