@@ -1,17 +1,29 @@
 import equals = require("deep-equal");
 import * as React from 'react';
-import getCKEDITOR from '~/lib/ckeditor';
+import getCKEDITOR, { CKEDITOR_VERSION } from '~/lib/ckeditor';
 import $ from '~/lib/jquery';
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
 //as well as the external jquery dependency (jquery is available in npm)
 
+const PLUGINS = {
+  'widget': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/${CKEDITOR_VERSION}/`,
+  'lineutils': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/${CKEDITOR_VERSION}/`,
+  'filetools' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/${CKEDITOR_VERSION}/`,
+  'notification' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/${CKEDITOR_VERSION}/`,
+  'notificationaggregator' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/${CKEDITOR_VERSION}/`,
+  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
+  'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
+  'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`,
+  'autogrow' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/4.5.8/plugin.js',
+  'muikku-mathjax': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/',
+  'divarea': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/4.11.3/plugin.js'
+}
+let pluginsLoaded:any = {};
+
 interface CKEditorProps {
-  configuration: any,
-  extraPlugins: {
-    [plugin: string] : string
-  },
+  configuration?: any,
   width?: number | string,
   height?: number | string,
   onChange(arg: string):any,
@@ -61,49 +73,66 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       }, 10);
       return;
     }
+    
     let extraConfig: any = {
-        height: 0,
-        startupFocus: this.props.autofocus,
-        allowedContent: true,
-        entities_latin: false,
-        entities_greek: false,
-        entities: false,
-        basicEntities: false
-      };
-
-      if (this.props.extraPlugins){
-        for (let [plugin, url] of (Object as any).entries(this.props.extraPlugins)){
-          getCKEDITOR().plugins.addExternal(plugin, url);
-        }
-        extraConfig.extraPlugins = Object.keys(this.props.extraPlugins).join(',');
+      height: 0,
+      startupFocus: this.props.autofocus,
+      allowedContent: true,
+      entities_latin: false,
+      entities_greek: false,
+      entities: false,
+      basicEntities: false,
+      toolbar: [
+        { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+        { name: 'links', items: [ 'Link' ] },
+        { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
+        { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+        { name: 'styles', items: [ 'Format' ] },
+        { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+        { name: 'tools', items: [ 'Maximize' ] }
+      ],
+      resize_enabled: false,
+      uploadUrl: '/communicatorAttachmentUploadServlet',
+      extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,change,uploadwidget,uploadimage,divarea'
+    };
+    
+    let configObj = {...extraConfig, ...(this.props.configuration || {}), 
+        contentsCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"};
+    
+    let allPlugins = configObj.extraPlugins.split(",");
+    for (let plugin of allPlugins){
+      if (!pluginsLoaded[plugin]){
+        getCKEDITOR().plugins.addExternal(plugin, (PLUGINS as any)[plugin]);
+        pluginsLoaded[plugin] = true;
       }
-      getCKEDITOR().replace(this.name, Object.assign(extraConfig, {...this.props.configuration, 
-        contentsCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"}));
-      getCKEDITOR().instances[this.name].on('change', ()=>{
-        if (this.cancelChangeTrigger){
-          return;
-        }
+    }
+    
+    getCKEDITOR().replace(this.name, configObj);
+    getCKEDITOR().instances[this.name].on('change', ()=>{
+      if (this.cancelChangeTrigger){
+        return;
+      }
+       
+      let data = getCKEDITOR().instances[this.name].getData();
+      if (data !== this.currentData){
+        this.currentData = data;
+        this.props.onChange(data);
+      }
+    });
+    getCKEDITOR().instances[this.name].on('key', ()=>{
+      this.cancelChangeTrigger = false;
+    })
+    getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
+      let instance = getCKEDITOR().instances[this.name];
+      this.enableCancelChangeTrigger();
+      instance.setData(this.props.children);
+      if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
+        this.resize(this.props.width, this.props.height);
+      }
         
-        let data = getCKEDITOR().instances[this.name].getData();
-        if (data !== this.currentData){
-          this.currentData = data;
-          this.props.onChange(data);
-        }
-      });
-      getCKEDITOR().instances[this.name].on('key', ()=>{
-        this.cancelChangeTrigger = false;
-      })
-      getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
-        let instance = getCKEDITOR().instances[this.name];
-        this.enableCancelChangeTrigger();
-        instance.setData(this.props.children);
-        if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
-          this.resize(this.props.width, this.props.height);
-        }
-        
-        //TODO somehow, the freaking autofocus doesn't focus in the last row but in the first
-        //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
-      });
+      //TODO somehow, the freaking autofocus doesn't focus in the last row but in the first
+      //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
+    });
   }
   updateCKEditor(data: string){
     if (!getCKEDITOR()){

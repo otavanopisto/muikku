@@ -19,32 +19,7 @@ import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
 import { StatusType } from '~/reducers/base/status';
-import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 import equals = require("deep-equal");
-
-const ckEditorConfig = {
-  uploadUrl: '/communicatorAttachmentUploadServlet',
-  toolbar: [
-    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-    { name: 'links', items: [ 'Link' ] },
-    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
-    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-    { name: 'styles', items: [ 'Format' ] },
-    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-    { name: 'tools', items: [ 'Maximize' ] }
-  ],
-  resize_enabled: false
-}
-const extraPlugins = {
-  'widget': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/${CKEDITOR_VERSION}/`,
-  'lineutils': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/${CKEDITOR_VERSION}/`,
-  'filetools' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/${CKEDITOR_VERSION}/`,
-  'notification' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/${CKEDITOR_VERSION}/`,
-  'notificationaggregator' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/${CKEDITOR_VERSION}/`,
-  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
-  'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`
-}
 
 type TargetItemsListType = Array<WorkspaceRecepientType | UserGroupRecepientType>;
 
@@ -323,8 +298,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       <div className="env-dialog__row" key="4">    
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>          
-          <CKEditor width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+          <CKEditor width="100%" height="210" onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div>       
       </div>
       )

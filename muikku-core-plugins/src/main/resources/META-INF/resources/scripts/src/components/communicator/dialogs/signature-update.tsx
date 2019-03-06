@@ -20,18 +20,8 @@ const KEYCODES = {
 }
 
 const CKEDITOR_CONFIG = {
-  toolbar: [
-    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-    { name: 'links', items: [ 'Link' ] },
-    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
-    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-    { name: 'styles', items: [ 'Format' ] },
-    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-    { name: 'tools', items: [ 'Maximize' ] }
-  ]
+  extraPlugins: "divarea"
 }
-
-const CKEDITOR_PLUGINS = {};
 
 interface CommunicatorSignatureUpdateDialogProps {
   children?: React.ReactElement<any>,
@@ -90,7 +80,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
       )    
     }
     let content = (closeDialog: ()=>any)=>{
-      return <CKEditor width="100%" height="210" configuration={CKEDITOR_CONFIG} extraPlugins={CKEDITOR_PLUGINS}
+      return <CKEditor width="100%" height="210" configuration={CKEDITOR_CONFIG}
       onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
     }
     return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature" 
