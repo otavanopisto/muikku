@@ -4,7 +4,7 @@ import ScreenContainer from '~/components/general/screen-container';
 import * as React from 'react';
 
 import Materials from './materials';
-import NavigationComponent from './navigation';
+import TableOfContentsComponent from './content';
 
 interface WorkspaceMaterialsBodyProps {
   workspaceUrl: string,
@@ -22,10 +22,10 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
   onOpenNavigation(){
-    (this.refs.navigation as any).getWrappedInstance().refresh();
+    (this.refs.content as any).getWrappedInstance().refresh();
   }
   render(){
-    let navigationComponent = <NavigationComponent ref="navigation"/>;
+    let navigationComponent = <TableOfContentsComponent ref="content"/>;
     return (<div>
       <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="materials"> 

@@ -1,35 +1,35 @@
 import Link from "~/components/general/link";
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
-import "~/sass/elements/item-list.scss";
+import "~/sass/elements/toc.scss";
 
-interface NavigationProps {
+interface TocProps {
   
 }
 
-interface NavigationState {
+interface TocState {
   
 }
 
-export default class Navigation extends React.Component<NavigationProps, NavigationState> {
+export default class Toc extends React.Component<TocProps, TocState> {
   render(){
-    return <div className="toc toc--workspace-material-navigation">
+    return <div className="toc">
       {this.props.children}
     </div>
   }
 }
 
-interface NavigationTopicProps {
+interface TocTopicProps {
   name?: string,
   icon?: string,
   className?: string
 }
 
-interface NavigationTopicState {
+interface TocTopicState {
   
 }
 
-export class NavigationTopic extends React.Component<NavigationTopicProps, NavigationTopicState> {
+export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
   render(){
     return <div className={this.props.className}>
       {this.props.name ? <span className="toc__section-title">
@@ -40,7 +40,7 @@ export class NavigationTopic extends React.Component<NavigationTopicProps, Navig
   }
 }
 
-interface NavigationElementProps {
+interface TocElementProps {
   isActive: boolean,
   className?: string,
   modifier?: string,
@@ -48,26 +48,19 @@ interface NavigationElementProps {
   href?: string,
   onClick?: ()=>any,
   children: string,
-  icon?: string,
-  iconTitle?: string,
-  iconColor?: string,
   iconAfter?: string,
   iconAfterTitle?: string,
   iconAfterColor?: string,
-  isEditable?: boolean,
-  editableWrapper?: any,
-  editableWrapperArgs?: any,
-  editableAction?: ()=>any,
   onScrollToSection?: ()=>any,
   scrollPadding?: number,
   disableScroll?: boolean
 }
 
-interface NavigationElementState {
+interface TocElementState {
   
 }
 
-export class NavigationElement extends React.Component<NavigationElementProps, NavigationElementState> {
+export class TocElement extends React.Component<TocElementProps, TocElementState> {
   render(){
     return <Link className={`toc__item ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${this.props.modifier ? "toc__item--" + this.props.modifier : ""}`}
       onScrollToSection={this.props.onScrollToSection}

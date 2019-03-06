@@ -8,9 +8,9 @@ import ProgressData from '../progressData';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import { ButtonPill } from '~/components/general/button';
-import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
+import Toc, { TocTopic, TocElement } from '~/components/general/toc';
 
-interface NavigationProps {
+interface ContentProps {
   i18n: i18nType,
   materials: MaterialContentNodeListType,
   materialReplies: MaterialCompositeRepliesListType,
@@ -18,7 +18,7 @@ interface NavigationProps {
   workspace: WorkspaceType
 }
 
-interface NavigationState {
+interface ContentState {
   
 }
 
@@ -27,18 +27,18 @@ function isScrolledIntoView(el: HTMLElement) {
   let elemTop = rect.top;
   let elemBottom = rect.bottom;
 
-  let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= (document.querySelector(".content-panel__navigation") as HTMLElement).offsetTop + 50;
+  let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= (document.querySelector(".content-panel__Content") as HTMLElement).offsetTop + 50;
   return isVisible;
 }
 
-class NavigationComponent extends React.Component<NavigationProps, NavigationState> {
-  componentDidUpdate(prevProps: NavigationProps){
+class ContentComponent extends React.Component<ContentProps, ContentState> {
+  componentDidUpdate(prevProps: ContentProps){
     if (prevProps.activeNodeId !== this.props.activeNodeId){
       this.refresh();
     }
   }
-  refresh(props:NavigationProps = this.props){
-    let element = (this.refs[props.activeNodeId] as NavigationElement).getElement();
+  refresh(props:ContentProps = this.props){
+    let element = (this.refs[props.activeNodeId] as TocElement).getElement();
     if (!isScrolledIntoView(element)){
       element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
@@ -48,11 +48,11 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
       return null;
     }
 
-    return <Navigation>
+    return <Toc>
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
       {
         this.props.materials.map((node)=>{
-          return <NavigationTopic name={node.title} key={node.workspaceMaterialId}>
+          return <TocTopic name={node.title} key={node.workspaceMaterialId}>
             {node.children.map((subnode)=>{
               let isAssignment = subnode.assignmentType === "EVALUATED";
               let isExercise = subnode.assignmentType === "EXERCISE";
@@ -103,14 +103,14 @@ class NavigationComponent extends React.Component<NavigationProps, NavigationSta
                 }
               }
 
-              return <NavigationElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} iconColor={null} icon={null} key={subnode.workspaceMaterialId}
+              return <TocElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId}
                 isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
-                hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</NavigationElement>
+                hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>
             })}
-          </NavigationTopic>
+          </TocTopic>
         })
       }
-    </Navigation>
+    </Toc>
   }
 }
 
@@ -133,4 +133,4 @@ export default connect(
   mapDispatchToProps,
   null,
   { withRef: true }
-)(NavigationComponent);
+)(ContentComponent);
