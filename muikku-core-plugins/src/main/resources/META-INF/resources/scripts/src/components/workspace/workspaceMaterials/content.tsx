@@ -27,7 +27,7 @@ function isScrolledIntoView(el: HTMLElement) {
   let elemTop = rect.top;
   let elemBottom = rect.bottom;
 
-  let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= (document.querySelector(".content-panel__Content") as HTMLElement).offsetTop + 50;
+  let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= (document.querySelector(".content-panel__navigation") as HTMLElement).offsetTop + 50;
   return isVisible;
 }
 
