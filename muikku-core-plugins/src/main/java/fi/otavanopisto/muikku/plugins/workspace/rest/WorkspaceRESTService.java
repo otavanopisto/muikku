@@ -85,6 +85,7 @@ import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalComment;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
@@ -99,6 +100,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeRep
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
@@ -2463,6 +2465,174 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @GET
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}/comments")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listJournalEntryComments(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("JOURNALENTRYID") Long journalEntryId) {
+    
+    // Path validation
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceJournalEntry journalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (journalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Access check
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_JOURNAL_COMMENTS, workspaceEntity)) {
+      if (!journalEntry.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) { // allow students to view comments of their own journal
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Comment listing
+    
+    List<WorkspaceJournalComment> comments = orderCommentTree(workspaceJournalController.listCommentsByJournalEntry(journalEntry));
+    List<WorkspaceJournalCommentRESTModel> result = new ArrayList<>();
+    for (WorkspaceJournalComment comment : comments) {
+      result.add(toRestModel(workspaceEntity, comment));
+    }
+    return Response.ok(result).build();
+  }
+
+  @POST
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}/comments")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createJournalEntryComment(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("JOURNALENTRYID") Long journalEntryId, WorkspaceJournalCommentRESTModel payload) {
+    
+    // Path validation
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceJournalEntry journalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (journalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Payload validation
+    
+    if (!journalEntryId.equals(payload.getJournalEntryId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Journal entry id mismatch").build();
+    }
+    WorkspaceJournalComment parentComment = payload.getParentCommentId() == null ? null : workspaceJournalController.findCommentById(payload.getParentCommentId());
+    if (parentComment != null && !journalEntryId.equals(parentComment.getJournalEntry().getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Parent journal entry id mismatch").build();
+    }
+    if (StringUtils.isBlank(payload.getComment())) {
+      return Response.status(Status.BAD_REQUEST).entity("No comment").build();
+    }
+    
+    // Access check
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.CREATE_WORKSPACE_JOURNAL_COMMENT, workspaceEntity)) {
+      if (!journalEntry.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) { // allow students to comment their own journal entries
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Comment creation
+    
+    WorkspaceJournalComment comment = workspaceJournalController.createComment(journalEntry, parentComment, payload.getComment(), sessionController.getLoggedUserEntity().getId()); 
+    return Response.ok(toRestModel(workspaceEntity, comment)).build();
+  }
+
+  @PUT
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}/comments/{JOURNALCOMMENTID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createJournalEntryComment(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("JOURNALENTRYID") Long journalEntryId,
+      @PathParam("JOURNALCOMMENTID") Long journalCommentId, WorkspaceJournalCommentRESTModel payload) {
+    
+    // Path validation
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceJournalEntry journalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (journalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceJournalComment journalComment = workspaceJournalController.findCommentById(journalCommentId);
+    if (journalComment == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Payload validation
+    
+    if (!journalEntryId.equals(payload.getJournalEntryId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Journal entry id mismatch").build();
+    }
+    if (!journalCommentId.equals(payload.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Journal comment id mismatch").build();
+    }
+    if (StringUtils.isBlank(payload.getComment())) {
+      return Response.status(Status.BAD_REQUEST).entity("No comment").build();
+    }
+    
+    // Access check
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.EDIT_WORKSPACE_JOURNAL_COMMENT, workspaceEntity)) {
+      if (!journalComment.getCreator().equals(sessionController.getLoggedUserEntity().getId())) { // allow students to edit their own comments
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Comment update
+    
+    WorkspaceJournalComment comment = workspaceJournalController.updateComment(journalComment, payload.getComment()); 
+    return Response.ok(toRestModel(workspaceEntity, comment)).build();
+  }
+
+  @DELETE
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}/comments/{JOURNALCOMMENTID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createJournalEntryComment(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("JOURNALENTRYID") Long journalEntryId,
+      @PathParam("JOURNALCOMMENTID") Long journalCommentId) {
+    
+    // Path validation
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceJournalEntry journalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
+    if (journalEntry == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceJournalComment journalComment = workspaceJournalController.findCommentById(journalCommentId);
+    if (journalComment == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Payload validation
+    
+    if (!journalEntryId.equals(journalComment.getJournalEntry().getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Journal entry id mismatch").build();
+    }
+    if (!journalCommentId.equals(journalComment.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Journal comment id mismatch").build();
+    }
+    
+    // Access check
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.REMOVE_WORKSPACE_JOURNAL_COMMENT, workspaceEntity)) {
+      if (!journalComment.getCreator().equals(sessionController.getLoggedUserEntity().getId())) { // allow students to remove their own comments
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Comment archiving
+    
+    workspaceJournalController.archiveComment(journalComment); 
+    return Response.noContent().build();
+  }
+
+  @GET
   @Path("/workspaces/{WORKSPACEID}/journal")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listJournalEntries(
@@ -2531,22 +2701,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     for (WorkspaceJournalEntry entry : entries) {
-      UserEntity entryUserEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
-      if (entryUserEntity != null) {
-        User user = userController.findUserByUserEntityDefaults(entryUserEntity);
-        if (user != null) {
-          result.add(new WorkspaceJournalEntryRESTModel(
-              entry.getId(),
-              entry.getWorkspaceEntityId(),
-              entry.getUserEntityId(),
-              user.getFirstName(),
-              user.getLastName(),
-              entry.getHtml(),
-              entry.getTitle(),
-              entry.getCreated()
-          ));
-        }
-      }
+      result.add(toRestModel(entry));
     }
 
     return Response.ok(result).build();
@@ -2554,63 +2709,67 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @POST
   @Path("/workspaces/{WORKSPACEID}/journal")
-  @RESTPermitUnimplemented
-  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceEntityId,
-                                  WorkspaceJournalEntryRESTModel restModel) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-    
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceEntityId, WorkspaceJournalEntryRESTModel restModel) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-
-    workspaceJournalController.createJournalEntry(
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.createJournalEntry(
         workspaceController.findWorkspaceEntityById(workspaceEntityId),
         sessionController.getLoggedUserEntity(),
         restModel.getContent(),
         restModel.getTitle());
-    return Response.noContent().build();
+    return Response.ok(toRestModel(workspaceJournalEntry)).build();
   }
 
   @PUT
-  @Path("/journal/{JOURNALENTRYID}")
-  @RESTPermitUnimplemented
-  public Response updateJournalEntry(@PathParam("JOURNALENTRYID") Long journalEntryId,
-                                     WorkspaceJournalEntryRESTModel restModel) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
+  @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateJournalEntry(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("JOURNALENTRYID") Long journalEntryId, WorkspaceJournalEntryRESTModel restModel) {
+    if (!workspaceEntityId.equals(restModel.getWorkspaceEntityId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Journal entry workspace mismatch").build();
     }
-    
+    if (!journalEntryId.equals(restModel.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Journal entry id mismatch").build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
     if (workspaceJournalEntry == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
-    workspaceJournalController.updateJournalEntry(
-        journalEntryId,
-        restModel.getTitle(),
-        restModel.getContent());
-
-    return Response.noContent().build();
+    workspaceJournalEntry = workspaceJournalController.updateJournalEntry(workspaceJournalEntry, restModel.getTitle(), restModel.getContent());
+    return Response.ok(toRestModel(workspaceJournalEntry)).build();
   }
 
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/journal/{JOURNALENTRYID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateJournalEntry(@PathParam("WORKSPACEID") Integer workspaceId, @PathParam("JOURNALENTRYID") Long journalEntryId) {
+  public Response updateJournalEntry(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("JOURNALENTRYID") Long journalEntryId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
     WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalController.findJournalEntry(journalEntryId);
     if (workspaceJournalEntry == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     if (!workspaceJournalEntry.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
     workspaceJournalController.archiveJournalEntry(workspaceJournalEntry);
-    
     return Response.noContent().build();
   }
 
@@ -2766,4 +2925,62 @@ public class WorkspaceRESTService extends PluginRESTService {
         .noContent()
         .build();
   }
+  
+  private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceEntity workspaceEntity, WorkspaceJournalComment workspaceJournalComment) {
+    UserEntity author = userEntityController.findUserEntityById(workspaceJournalComment.getCreator());
+    User user = author == null ? null : userController.findUserByUserEntityDefaults(author);
+    WorkspaceJournalCommentRESTModel result = new WorkspaceJournalCommentRESTModel();
+    result.setId(workspaceJournalComment.getId());
+    result.setJournalEntryId(workspaceJournalComment.getJournalEntry().getId());
+    result.setAuthorId(workspaceJournalComment.getCreator());
+    result.setComment(workspaceJournalComment.getComment());
+    result.setCreated(workspaceJournalComment.getCreated());
+    result.setFirstName(user == null ? null : user.getFirstName());
+    result.setLastName(user == null ? null : user.getLastName());
+    if (workspaceJournalComment.getParent() != null) {
+      result.setParentCommentId(workspaceJournalComment.getParent().getId());
+    }
+    result.setDepth(workspaceJournalComment.getDepth());
+    result.setEditable(workspaceJournalComment.getCreator().equals(sessionController.getLoggedUserEntity().getId()) ||
+        sessionController.hasWorkspacePermission(MuikkuPermissions.EDIT_WORKSPACE_JOURNAL_COMMENT, workspaceEntity));
+    result.setArchivable(workspaceJournalComment.getCreator().equals(sessionController.getLoggedUserEntity().getId()) ||
+        sessionController.hasWorkspacePermission(MuikkuPermissions.REMOVE_WORKSPACE_JOURNAL_COMMENT, workspaceEntity));
+    return result;
+  }
+  
+  private WorkspaceJournalEntryRESTModel toRestModel(WorkspaceJournalEntry workspaceJournalEntry) {
+    UserEntity entryUserEntity = userEntityController.findUserEntityById(workspaceJournalEntry.getUserEntityId());
+    User user = entryUserEntity == null ? null : userController.findUserByUserEntityDefaults(entryUserEntity);
+    
+    WorkspaceJournalEntryRESTModel result = new WorkspaceJournalEntryRESTModel();
+    result.setId(workspaceJournalEntry.getId());
+    result.setWorkspaceEntityId(workspaceJournalEntry.getWorkspaceEntityId());
+    result.setUserEntityId(workspaceJournalEntry.getUserEntityId());
+    result.setFirstName(user == null ? null : user.getFirstName());
+    result.setLastName(user == null ? null : user.getLastName());
+    result.setContent(workspaceJournalEntry.getHtml());
+    result.setTitle(workspaceJournalEntry.getTitle());
+    result.setCreated(workspaceJournalEntry.getCreated());
+    result.setCommentCount(workspaceJournalController.getCommentCount(workspaceJournalEntry));
+    
+    return result;
+  }
+  
+  private List<WorkspaceJournalComment> orderCommentTree(List<WorkspaceJournalComment> comments) {
+    return commentTreeAdd(comments, null, new ArrayList<>(comments.size()));
+  }
+
+  private List<WorkspaceJournalComment> commentTreeAdd(List<WorkspaceJournalComment> comments, WorkspaceJournalComment parent, List<WorkspaceJournalComment> resultList) {
+    comments.stream()
+      .filter(c -> c.getParent() == parent)
+      .sorted((c1, c2) -> c1.getCreated().compareTo(c2.getCreated()))
+      .forEach(c -> {
+        resultList.add(c);
+        commentTreeAdd(comments, c, resultList);
+      });
+    return resultList;
+}  
+  
+  
+
 }

@@ -4,7 +4,7 @@
 
 	<groupId>fi.otavanopisto.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.1.110-SNAPSHOT</version>
+	<version>1.1.114-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -79,6 +79,8 @@
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
+    <module>matriculation-plugin</module>
+    <module>matriculation-plugin-persistence</module>
 	</modules>
 
 	<properties>
@@ -96,7 +98,7 @@
 			<dependency>
 				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.1.110-SNAPSHOT</version>
+				<version>1.1.114-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -217,13 +219,6 @@
 			<id>otavanopisto-releases</id>
 			<name>Otavan Opisto Releases</name>
 			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-		</repository>
-
-		<repository>
-			<id>saucelabs-repository</id>
-			<url>http://repository-saucelabs.forge.cloudbees.com/release</url>
-			<releases />
-			<snapshots />
 		</repository>
 
 	</repositories>

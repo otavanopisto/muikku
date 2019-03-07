@@ -26,20 +26,20 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
           <p className="footer__subitem">
             <span className="glyph icon-phone"></span>
             <b>{this.props.i18n.text.get( 'plugin.footer.phoneNumber.label' )}</b>
-            <span>015 194 3552</span>
+            <span>044 794 3552</span>
           </p>
           <p className="footer__subitem">
             <span className="glyph icon-envelope"></span>
             <b>{this.props.i18n.text.get( 'plugin.footer.emailAddress.label' )}</b>
-            <span>info@otavanopisto.fi</span>
+            <span>info@otavia.fi</span>
           </p>
           <p className="footer__subitem footer__subitem--privacy-policy">
             <a href="http://otavanopisto.fi/resources/public/tietosuojaselosteet/opiskelijarekisteri_tietosuojaseloste.pdf" target="top" className="link link--privacy-policy">{this.props.i18n.text.get('plugin.footer.ooPrivacyPolicy.label')}</a>
           </p>
         </div>
         <div className="footer__item footer__item--logos">
-          <img src="/gfx/alku_uudelle.jpg" alt="" title="" className="logo" />
-          <img src="/gfx/footer_logo.jpg" alt="" title="" className="logo" />
+          <img src="/gfx/otavia-logo-white.png" alt="Otavia logo" title="Otavia logo" className="logo--organization-footer" />
+          <img src="/gfx/footer_logo.jpg" alt="Muikkuverkko logo" title="Muikkuverkko logo" className="logo" />
         </div>
       </div>
       <div className="footer__container--plagscan"> 

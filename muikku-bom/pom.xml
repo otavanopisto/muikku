@@ -4,7 +4,7 @@
 
   <groupId>fi.otavanopisto.muikku</groupId>
   <artifactId>bom</artifactId>
-  <version>1.1.110-SNAPSHOT</version>
+  <version>1.1.114-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku BOM</name>
 
@@ -43,7 +43,7 @@
 
     <!-- Muikku -->
 
-    <muikku.version>1.1.110-SNAPSHOT</muikku.version>
+    <muikku.version>1.1.114-SNAPSHOT</muikku.version>
 
     <!-- Coops -->
     <coops-spec.version>1.0.0</coops-spec.version>
@@ -276,6 +276,12 @@
       <dependency>
         <groupId>fi.otavanopisto.muikku</groupId>
         <artifactId>openfire-rest-client</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>matriculation-plugin-persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
 

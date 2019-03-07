@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
+// import { MatriculationLink } from './matriculation-link';
 
 import {i18nType} from '~/reducers/base/i18n';
 
@@ -33,7 +34,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
       return null;
     }
     
-    return <VopsGraph/>
+    return <VopsGraph />;
   }
 }
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { colorIntToHex, getUserImageUrl } from '~/util/modifiers';
+import { colorIntToHex, getUserImageUrl, getName } from '~/util/modifiers';
 import equals = require( "deep-equal" );
 import { i18nType } from '~/reducers/base/i18n';
 
@@ -20,10 +20,12 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import { StateType } from '~/reducers';
 import OverflowDetector from '~/components/general/overflow-detector';
 import { DiscussionThreads, DiscussionThread, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from './threads/threads';
+import { StatusType } from '~/reducers/base/status';
 
 interface DiscussionThreadsProps {
   discussion: DiscussionType,
-  i18n: i18nType
+  i18n: i18nType,
+  status: StatusType
 }
 
 interface DiscussionThreadsState {
@@ -64,6 +66,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
           let user: DiscussionUserType = thread.creator;
 
           let userCategory = thread.creator.id > 10 ? thread.creator.id % 10 + 1 : thread.creator.id;
+          let threadCategory = thread.forumAreaId > 10 ? thread.forumAreaId % 10 + 1 : thread.forumAreaId;
           let avatar;
           if ( !user ) {
             //This is what it shows when the user is not ready
@@ -86,7 +89,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
                 {thread.sticky ?
                   <div className="discussion__icon icon-pin"></div> : null
                 }
-                <div className={`discussion-category discussion-category--category-${thread.forumAreaId}`}>
+                <div className={`discussion-category discussion-category--category-${threadCategory}`}>
                   <span>{thread.title}</span>
                 </div>
               </DiscussionThreadHeader>                                   
@@ -98,7 +101,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
               }
               <DiscussionThreadFooter>
                 <div className="application-list__item-footer-content-main">
-                  <span>{user && user.firstName + ' ' + user.lastName}, {this.props.i18n.time.format( thread.created )}</span>
+                  <span>{user && getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}, {this.props.i18n.time.format( thread.created )}</span>
                 </div>
                 <div className="application-list__item-footer-content-aside">
                   <div className="application-list__item-counter-container">
@@ -122,7 +125,8 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
 function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n,
-    discussion: state.discussion
+    discussion: state.discussion,
+    status: state.status
   }
 };
 

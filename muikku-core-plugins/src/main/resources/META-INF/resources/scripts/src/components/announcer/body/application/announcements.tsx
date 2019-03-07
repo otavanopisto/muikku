@@ -24,10 +24,12 @@ import { AddToAnnouncementsSelectedTriggerType, RemoveFromAnnouncementsSelectedT
   removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/main-function/announcements';
 import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemFooter, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
+import { UserIndexType } from '~/reducers/main-function/user-index';
 
 interface AnnouncementsProps {
   i18n: i18nType,
   announcements: AnnouncementsType,
+  userIndex: UserIndexType,
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType
 }
@@ -68,19 +70,27 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                         {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
                       </span>
                     </div> 
-                  </ApplicationListItemHeader>                  
+                  </ApplicationListItemHeader>
                   <ApplicationListItemBody>
                     <article className="application-list-document-short">
                       <header className="application-list-document-short-header">{announcement.caption}</header>
                       {/*<p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>*/}
                     </article>
                   </ApplicationListItemBody>
-                  {announcement.workspaces && announcement.workspaces.length ? 
-                    <div className="labels item-list__announcement-workspaces">
-                    {announcement.workspaces.map((workspace)=>{ 
-                      return <span className="label" key={workspace.id}>
+                  {announcement.userGroupEntityIds.length ? <div className="labels item-list__announcement-workspaces">
+                    {announcement.workspaces.length && announcement.workspaces.map((workspace)=>
+                      <span className="label" key={workspace.id}>
                         <span className="label__icon label__icon--announcement-workspace icon-books"></span>
                         <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                      </span>
+                    )}
+                    {announcement.userGroupEntityIds.map((userGroupId)=>{
+                      if (!this.props.userIndex.groups[userGroupId]){
+                        return null;
+                      }
+                      return <span className="label" key={userGroupId}>
+                        <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
+                        <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
                       </span>
                     })}
                     </div> : null}
@@ -105,7 +115,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: state.announcements,
+    userIndex: state.userIndex
   }
 };
 

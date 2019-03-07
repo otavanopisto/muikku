@@ -19,10 +19,10 @@
     </a>
                 
     <a class="communicator button button-pill communicator-button-pill-next-page communicator-toolbar-interact-toggle-next-page">
-      <span class="icon icon-arrow-right"></span>
+      <span class="icon icon-arrow-right-thin"></span>
     </a>
     <a class="communicator button button-pill communicator-button-pill-prev-page communicator-toolbar-interact-toggle-prev-page">
-      <span class="icon icon-arrow-left"></span>
+      <span class="icon icon-arrow-left-thin"></span>
     </a>
   </div>
 {:else}

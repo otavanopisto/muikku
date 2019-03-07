@@ -71,43 +71,43 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private static final long serialVersionUID = -6752333351301485518L;
 
   @Inject
+  private TranscriptOfRecordsController transcriptOfRecordsController;
+
+  @Inject
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
 
   @Inject
   private SessionController sessionController;
-
+  
   @Inject
   private WorkspaceController workspaceController;
-
+  
   @Inject
-  private UserGroupEntityController userGroupEntityController;
-
+  private UserGroupEntityController userGroupEntityController;  
+  
   @Inject
-  private PermissionController permissionController;
-
+  private PermissionController permissionController;  
+  
   @Inject
-  private CourseMetaController courseMetaController;
-
+  private CourseMetaController courseMetaController;  
+  
   @Inject
   private UserController userController;
 
   @Inject
   private UserEntityController userEntityController;
-
+  
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
-
+  
   @Inject
   private PluginSettingsController pluginSettingsController;
-  
+
   @Inject
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
 
   @Inject
   private GradingController gradingController;
-
-  @Inject
-  private TranscriptOfRecordsController transcriptOfRecordsController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -124,8 +124,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
 
-    TranscriptOfRecordsFile file = transcriptOfRecordsFileController
-        .findFileById(fileId);
+    TranscriptOfRecordsFile file = transcriptOfRecordsFileController.findFileById(fileId);
 
     if (file == null) {
       return Response.status(Status.NOT_FOUND).entity("File not found").build();
@@ -229,15 +228,15 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     lister.performListing();
 
     VopsRESTModel result = new VopsRESTModel(
-        lister.getRows(),
-        lister.getNumCourses(),
-        lister.getNumMandatoryCourses(),
-        lister.isOptedIn()
+        lister.getResult().getRows(),
+        lister.getResult().getNumCourses(),
+        lister.getResult().getNumMandatoryCourses(),
+        lister.getResult().isOptedIn()
     );
 
     return Response.ok(result).build();
   }
-  
+
   private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
     User user = userController.findUserByIdentifier(userIdentifier);
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
@@ -414,7 +413,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     transcriptOfRecordsController.saveStringProperty(user, "religion", model.getReligion());
     transcriptOfRecordsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
     transcriptOfRecordsController.saveStudentMatriculationSubjects(user, model.getStudentMatriculationSubjects());
-    
     return Response.ok().entity(model).build();
   }
   

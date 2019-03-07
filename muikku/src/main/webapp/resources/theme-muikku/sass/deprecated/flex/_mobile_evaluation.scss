@@ -92,12 +92,12 @@
 @media screen and (max-width: 1023px) {
 
   .eval-modal-student-container,
-  .eval-modal-workspace-evaluate-container {
+  .eval-modal-student-events-container {
     position: static;
   }
   
   .eval-modal-materials-content, 
-  .eval-modal-evaluate-workspace-content {
+  .eval-modal-events-content {
     bottom: auto;
     left: auto;
     position: relative;
