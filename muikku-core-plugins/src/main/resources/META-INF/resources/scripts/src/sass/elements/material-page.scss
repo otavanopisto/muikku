@@ -86,31 +86,40 @@
 
 // WORD AND CHARACTER COUNTER
 .material-page__counter-wrapper {
-  
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 85%;
+  justify-content: flex-end;
 }
 
-.material-page__word-count-container {
-  
-}
-
-.material-page__word-count-title {
-  
-}
-
-.material-page__word-count {
-  
-}
-
+.material-page__word-count-container,
 .material-page__character-count-container {
-  
+  align-items: center;
+  background: lighten($taskfield-border-color,30%);
+  border-bottom-left-radius: 2px;
+  display: flex;
+  flex-flow: row nowrap;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 2px 6px;
 }
 
+.material-page__word-count-title,
 .material-page__character-count-title {
-
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 4px;
 }
 
+.material-page__word-count,
 .material-page__character-count {
-  
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
 }
 
 // FIELD'S EXAMPLES
@@ -145,74 +154,57 @@
 .material-page__checkable-label {
   @include taskfield-text;
   display: inline;
-  padding: 0 6px;
+  padding: 0 0 0 6px;
 }
 
 // Text field
 .material-page__textfield-wrapper {
-  align-items: center;
-  display: inline-flex;
-  justify-content: center;
-  margin: 2px 0;
-  padding: 0 2px;
+  display: inline-block;
+  margin: 4px;
 }
 
 .material-page__textfield {
   @include taskfield-text;
   @include taskfield-defaults;
-  padding: 2px 4px;
-}
-
-// Memo field
-.material-page__memofield-wrapper {
-
-  .cke { // This needs to be here so we can override the ckeditor's visuals partly
-    background: $color-default;
-    border: 2px solid $taskfield-border-color;
-    border-radius: 2px;
-    margin: 2px 0;
-  }
-}
-
-.material-page__memofield {
-  @include taskfield-text;
-  @include taskfield-defaults;
-  margin: 2px 0;
-  padding: 4px 8px;
-  width: 100%;
+  line-height: 1;
+  padding: 4px 6px;
 }
 
 // Select field - list and drop down
 .material-page__selectfield-wrapper {
-  display: inline-flex;
-  margin: 2px 0;
+  display: inline-block;
+  margin: 4px;
 }
 
 .material-page__selectfield {
   @include taskfield-text;
   @include taskfield-defaults;
-  padding: 2px 4px;
+  line-height: 1;
+  padding: 3px;
 }
 
 .material-page__selectfield-item-container  {
   @include taskfield-text;
-  padding: 2px 4px;
+  padding: 2px 4px; // This affects only select element that has size attribute set (element is list)
 }
 
 // Radio button
 .material-page__radiobutton-wrapper {
   align-items: center;
+  background: lighten($taskfield-border-color,30%);
   display: inline-flex;
-  margin: 2px 0;
+  margin: 4px;
+  padding: 4px;
 }
 
 .material-page__radiobutton-wrapper--vertical {
   align-items: flex-start;
   flex-flow: column nowrap;
+  vertical-align: middle;
 }
 
 .material-page__radiobutton-wrapper--horizontal {
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
 }
 
 .material-page__radiobutton-item-container {
@@ -248,17 +240,20 @@
 // Checkbox
 .material-page__checkbox-wrapper {
   align-items: center;
+  background: lighten($taskfield-border-color,30%);
   display: inline-flex;
-  margin: 2px 0;
+  margin: 4px;
+  padding: 4px;
 }
 
 .material-page__checkbox-wrapper--vertical {
   align-items: flex-start;
   flex-flow: column nowrap;
+  vertical-align: middle;
 }
 
 .material-page__checkbox-wrapper--horizontal {
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
 }
 
 .material-page__checkbox-item-container {
@@ -291,6 +286,29 @@
   }
 }
 
+// Memo field
+.material-page__memofield-wrapper {
+
+  .cke { // This needs to be here so we can override the ckeditor's visuals partly
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    margin: 4px 0 0;
+  }
+}
+
+.material-page__memofield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+  line-height: 1.25rem;
+  margin: 4px 0 0;
+  padding: 4px 8px;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
+  }
+}
 
 // File field
 .material-page__filefield-wrapper {

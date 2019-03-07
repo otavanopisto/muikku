@@ -28,7 +28,6 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-richtext-font-size;
     font-weight: 300;
-    line-height: 1.65rem;
   }
 }
 
@@ -36,6 +35,7 @@
   background: $color-default;
   border: 2px solid $taskfield-border-color;
   border-radius: 2px;
+  vertical-align: middle;
 }
 
 @mixin word-break {
