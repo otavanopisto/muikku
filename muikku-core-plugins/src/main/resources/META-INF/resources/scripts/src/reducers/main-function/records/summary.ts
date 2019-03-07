@@ -7,9 +7,10 @@ export type SummaryStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
 
 export interface SummaryDataType {
-  coursesDone: number,
+  eligibilityStatus: number,
   activity: number,
-  returnedExercises: number
+  returnedExercises: number,
+  coursesDone: number
 }
 
 export interface SummaryType {
