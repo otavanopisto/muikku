@@ -34,6 +34,8 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
    */
   isVisible(hash: string) {
     switch (hash) {
+      case "vops":
+      case "hops":
       case "yo":
         const yoVisibleValues = ["yes", "maybe"]; 
         return this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1;
@@ -44,32 +46,34 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   
   render() {
     
-    let sections = [
-                    {
-                      name: this.props.i18n.text.get("plugin.records.category.records"),
-                      hash: "records"
-                    },
-                    {
-                      name: this.props.i18n.text.get("plugin.records.category.hops"),
-                      hash: "hops"
-                    },
-                    {
-                      name: this.props.i18n.text.get("plugin.records.category.vops"),
-                      hash: "vops"
-                    },
-                    {
-                      name: this.props.i18n.text.get("plugin.records.category.yo"),
-                      hash: "yo"
-                    },
-                    {
-                      name: this.props.i18n.text.get("plugin.records.category.statistics"),
-                      hash: "statistics"
-                    },
-                    {
-                      name: this.props.i18n.text.get("plugin.records.category.summary"),
-                      hash: "summary"
-                    }                    
-                    ]        
+    let sections = [                    
+        {
+          name: this.props.i18n.text.get("plugin.records.category.summary"),
+          hash: "summary"
+        },
+        {
+          name: this.props.i18n.text.get("plugin.records.category.records"),
+          hash: "records"
+        },
+        {
+          name: this.props.i18n.text.get("plugin.records.category.hops"),
+          hash: "hops"
+        },
+        {
+          name: this.props.i18n.text.get("plugin.records.category.vops"),
+          hash: "vops"
+        },
+        {
+          name: this.props.i18n.text.get("plugin.records.category.yo"),
+          hash: "yo"
+        }
+/* Waiting for the future
+        {
+          name: this.props.i18n.text.get("plugin.records.category.statistics"),
+          hash: "statistics"
+        },
+*/
+        ]        
     
     return ( 
       <NavigationMenu>
@@ -77,7 +81,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
             return <NavigationElement isActive={this.props.location === item.hash} hash={item.hash} key={index}
             >{item.name}</NavigationElement> 
           })}
-      </NavigationMenu>    
+      </NavigationMenu>
     )
   }
 }

@@ -61,10 +61,16 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
         <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessmentState.text}} 
         className={`rich-text application-sub-panel__text application-sub-panel__text--course-evaluation state-${assesmentStateClassName}`}/> : null;
     
-    return <div className="application-sub-panel">
+    return <div className="react-container"> 
+    <div className="application-panel__content-header" key={this.props.records.current.workspace.id}>
+      {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
+    </div>
+    <div className="application-sub-panel">
+      {/* 
       <div className="application-sub-panel__header application-sub-panel__header--studies-detailed-info" key={this.props.records.current.workspace.id}>
         {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
       </div>
+     */} 
       <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
         {workspaceEvaluation}
         <ApplicationList>
@@ -90,6 +96,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
         </div> : null}
       </div>
     </div>
+  </div>
   }
 }
 

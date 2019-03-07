@@ -165,6 +165,18 @@
   }
 }
 
+.application-panel__content-header {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-left: 0;
+  }
+}
+
 // Helper containers
 .application-panel__helper-container {
   display: none;
@@ -198,6 +210,8 @@
     padding: 12px;
   }
 }
+
+
 
 .application-panel__main-container--actions {
   background: $color-default;

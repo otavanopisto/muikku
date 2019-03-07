@@ -37,7 +37,7 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
         <Hops/>
         <Summary/>
         <Statistics/>
-        <YO/>       
+        <YO/>
         </ApplicationPanel>
     </div>);
   }
