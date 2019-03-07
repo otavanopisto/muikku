@@ -77,7 +77,7 @@ public class MatriculationRESTService {
   public Response fetchCurrentExam() {
     MatriculationExam exam = matriculationController.getMatriculationExam();
     
-    if (sessionController.isLoggedIn()) {
+    if (sessionController.isLoggedIn() && exam != null) {
       User user = userController.findUserByIdentifier(sessionController.getLoggedUser());
       if (user != null) {
         UserProperty property = userSchoolDataController.getUserProperty(user, "matriculation.examEnrollmentExpiryDate");
