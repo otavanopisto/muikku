@@ -18,6 +18,7 @@ import WorkspaceAnnouncementsBody from '~/components/workspace/workspaceAnnounce
 import WorkspaceAnnouncerBody from '~/components/workspace/workspaceAnnouncer';
 import WorkspaceMaterialsBody from '~/components/workspace/workspaceMaterials';
 import WorkspaceJournalBody from '~/components/workspace/workspaceJournal';
+import WorkspaceManagementBody from '~/components/workspace/workspaceManagement';
 
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials,
@@ -59,6 +60,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.renderWorkspaceMaterials = this.renderWorkspaceMaterials.bind(this);
     this.renderWorkspaceUsers = this.renderWorkspaceUsers.bind(this);
     this.renderWorkspaceJournal = this.renderWorkspaceJournal.bind(this);
+    this.renderWorkspaceManagement = this.renderWorkspaceManagement.bind(this);
     
     this.loadWorkspaceDiscussionData = this.loadWorkspaceDiscussionData.bind(this);
     this.loadWorkspaceAnnouncementsData = this.loadWorkspaceAnnouncementsData.bind(this);
@@ -360,6 +362,23 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     
     return <WorkspaceJournalBody workspaceUrl={props.match.params["workspaceUrl"]}/>
   }
+  renderWorkspaceManagement(props: RouteComponentProps<any>){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      let state = this.props.store.getState();
+      this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
+      this.props.store.dispatch(setCurrentWorkspace({
+        workspaceId: state.status.currentWorkspaceId,
+        success: (workspace)=>{
+          
+        }
+      }) as Action);
+    }
+    
+    return <WorkspaceManagementBody workspaceUrl={props.match.params["workspaceUrl"]}/>
+  }
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
@@ -372,6 +391,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       <Route path="/workspace/:workspaceUrl/materials" render={this.renderWorkspaceMaterials}/>
       <Route path="/workspace/:workspaceUrl/users" render={this.renderWorkspaceUsers}/>
       <Route path="/workspace/:workspaceUrl/journal" render={this.renderWorkspaceJournal}/>
+      <Route path="/workspace/:workspaceUrl/workspace-management" render={this.renderWorkspaceManagement}/>
     </div></BrowserRouter>);
   }
 }
