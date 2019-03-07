@@ -3,9 +3,8 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
-import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceStudentActivityType } from 'reducers/main-function/workspaces';
-import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType,
-  CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records/records';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType } from 'reducers/main-function/workspaces';
+import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records/records';
 import { StateType } from '~/reducers';
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
@@ -109,8 +108,8 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
         
         //Now we need to get into one by one workspace per that specific user
         await Promise.all(workspaceSet.map(async (workspace)=>{
-          workspace.studentAssessmentState = <WorkspaceStudentAssessmentStateType>await promisify(mApi().workspace.workspaces
-              .students.assessmentstate.read(workspace.id, user.id), 'callback')();
+          workspace.studentAssessments = <WorkspaceStudentAssessmentsType>await promisify(mApi().workspace.workspaces
+              .students.assessments.read(workspace.id, user.id), 'callback')();
           workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
             .read(workspace.id), 'callback')();
         }));
@@ -268,8 +267,8 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       
         if (!wasFoundInMemory){
           workspace = <WorkspaceType>await promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')();
-          workspace.studentAssessmentState = <WorkspaceStudentAssessmentStateType>await promisify(mApi().workspace.workspaces
-              .students.assessmentstate.read(workspace.id, userId), 'callback')();
+          workspace.studentAssessments = <WorkspaceStudentAssessmentsType>await promisify(mApi().workspace.workspaces
+              .students.assessments.read(workspace.id, userId), 'callback')();
           workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
             .read(workspace.id), 'callback')();
         }

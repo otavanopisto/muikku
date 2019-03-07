@@ -27,8 +27,6 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
   
   render(){
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.records.pageTitle')}</h2>
-    let primaryOption  = <PrimaryOption />
-    let toolbar = <Toolbar />
     return (<div>
       <ApplicationPanel modifier="records" title={title} asideBefore={this.props.aside}>
         <Records/>

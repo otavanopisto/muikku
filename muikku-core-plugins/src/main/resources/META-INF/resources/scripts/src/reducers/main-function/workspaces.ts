@@ -36,30 +36,23 @@ export interface WorkspaceForumStatisticsType {
   latestMessage: string //represents a date
 }
 
-//export interface WorkspaceStudentAssessmentType {
-//  assessorEntityId: number,
-//  evaluated: string,
-//  gradeIdentifier: string,
-//  gradeSchoolDataSource: string,
-//  gradingScaleIdentifier: string,
-//  gradingScaleSchoolDataSource: string,
-//  identifier: string,
-//  passed: boolean,
-//  verbalAssessment: string,
-//  workspaceStudentId: string
-//}
-//
-//export interface WorkspaceStudentAssessmentsType {
-//  assessmentState: WorkspaceAssessementState,
-//  assessmentStateDate: string,
-//  assessments: Array<WorkspaceStudentAssessmentType>
-//}
+export interface WorkspaceStudentAssessmentType {
+  assessorEntityId: number,
+  evaluated: string,
+  gradeIdentifier: string,
+  gradeSchoolDataSource: string,
+  gradingScaleIdentifier: string,
+  gradingScaleSchoolDataSource: string,
+  identifier: string,
+  passed: boolean,
+  verbalAssessment: string,
+  workspaceStudentId: string
+}
 
-export interface WorkspaceStudentAssessmentStateType {
-  date: string,
-  state: WorkspaceAssessementState,
-  grade?: string,
-  text?: string
+export interface WorkspaceStudentAssessmentsType {
+  assessmentState: WorkspaceAssessementState,
+  assessmentStateDate: string,
+  assessments: Array<WorkspaceStudentAssessmentType>
 }
 
 export interface ActivityLogType {
@@ -87,7 +80,7 @@ export interface WorkspaceType {
   //These are optional addons, and are usually not available
   studentActivity?: WorkspaceStudentActivityType,
   forumStatistics?: WorkspaceForumStatisticsType,
-  studentAssessmentState?: WorkspaceStudentAssessmentStateType,
+  studentAssessments?: WorkspaceStudentAssessmentsType,
       activityLogs?: ActivityLogType[]
 }
 
