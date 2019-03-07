@@ -82,8 +82,6 @@ public class MatriculationRESTService {
       if (user != null) {
         UserProperty property = userSchoolDataController.getUserProperty(user, "matriculation.examEnrollmentExpiryDate");
         if (property != null) {
-          System.out.println(property.getValue());
-          
           try {
             long matriculationExamEnrollmentExpiryDate = Long.parseLong(property.getValue());
             
