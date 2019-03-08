@@ -37,7 +37,6 @@ class Vops extends React.Component<VopsProps, VopsState> {
     return <div>
       <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
     
-    return <VopsGraph />;
     {/* 
       <div className="application-sub-panel">
         <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
