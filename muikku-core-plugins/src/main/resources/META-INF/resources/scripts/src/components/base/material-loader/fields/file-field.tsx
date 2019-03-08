@@ -197,17 +197,18 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
     })
   }
   render(){
-    //TODOLANKKINEN please keep this simple version of the file in sync with the actual rendering
-    //notice how we are returning a instead of link (it's lighter), but you need to keep the classes
     if (!this.loaded){
       return <div className="material-page__filefield-wrapper">
-        {!this.state.values.length ? 
-          <span className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</span> : null}
+        <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div>
         <div className="material-page__filefield-files-container">{
           this.state.values.map((value, index)=>
-            <a key={value.fileId}>
-              {value.name} <ButtonPill buttonModifiers="material-page__filefield-remove-file-button" icon="close"/>
-            </a>)
+            <div className="material-page__filefield-file-container">
+              <a className="material-page__filefield-file" key={value.fileId}>
+                {value.name}
+              </a>
+              <ButtonPill buttonModifiers="filefield-open-file-button" icon="download"/>
+              <ButtonPill buttonModifiers="filefield-remove-file-button" icon="close"/>
+            </div>)
         }</div>
       </div>
     }
@@ -221,85 +222,52 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
       dataInContainer = this.state.values.map((value, index)=>{
         if (!value.uploading){
           //if the value is not uploading, we set it as static
-          return <Link key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name}>
-            {value.name} <ButtonPill buttonModifiers="material-page__filefield-remove-file-button" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
-          </Link>;
+          return <div className="material-page__filefield-file-container" key={index}>
+            <div className="material-page__filefield-file">
+              {value.name}
+            </div>
+            <ButtonPill buttonModifiers="filefield-open-file-button" icon="download" key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name}/>
+            <ButtonPill buttonModifiers="filefield-remove-file-button" icon="delete" onClick={this.removeFileAt.bind(this, index)}/>
+          </div>;
         } else if (value.failed){
-          let dataInContainer = null;
-          
-          //if we have values
-          if (this.state.values.length){
-            //we gotta map them
-            dataInContainer = this.state.values.map((value, index)=>{
-              if (!value.uploading){
-                //if the value is not uploading, we set it as static
-                return <Link key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name}>
-                  {value.name} <ButtonPill buttonModifiers="material-page__filefield-remove-file-button" icon="close" onClick={this.removeFileAt.bind(this, index)}/>
-                </Link>;
-              } else if (value.failed){
-                //if the value failed we add a message, you can get the value name there so use it to say which file
-                return <Link key={index}>
-                  {this.props.i18n.text.get("TODO file failed to upload", value.name)}
-                </Link>;
-              } else {
-                //this is the progress
-                return <Link key={index}>
-                  <ProgressBarLine containerClassName="material-page__filefield-clip" options={{
-                    strokeWidth: 1,
-                    duration: 1000,
-                    color: "#ff9900",
-                    trailColor: "#f5f5f5",
-                    trailWidth: 1,
-                    svgStyle: {width: "100%", height: "4px"},
-                    text: {
-                      className: "time-text-or-something",
-                      style: {
-                         right: "100%"
-                      }
-                    }
-                  }}
-                  strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
-                  trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
-                  text={(value.progress * 100) + "%"}
-                   progress={value.progress}/>
-                </Link>;
-              }
-            });
-          }  //if the value failed we add a message, you can get the value name there so use it to say which file
-          return <Link key={index}>
-            {this.props.i18n.text.get("TODO file failed to upload", value.name)}
-          </Link>;
+          //if the value failed we add a message, you can get the value name there so use it to say which file
+          return <div className="material-page__filefield-file-container" key={index}>
+            <div className="material-page__filefield-file material-page__filefield-file--FAILED-TO-UPLOAD">
+              {this.props.i18n.text.get("TODO file failed to upload", value.name)}
+            </div>
+          </div>;
         } else {
           //this is the progress
-          return <Link key={index}>
-            <ProgressBarLine containerClassName="material-page__filefield-clip" options={{
-              strokeWidth: 1,
-              duration: 1000,
-              color: "#ff9900",
-              trailColor: "#f5f5f5",
-              trailWidth: 1,
-              svgStyle: {width: "100%", height: "4px"},
-              text: {
-                className: "time-text-or-something",
-                style: {
-                   right: "100%"
+          return <div className="material-page__filefield-file-container" key={index}>
+            <div className="material-page__filefield-file">
+              <ProgressBarLine containerClassName="material-page__filefield-file-uploading" options={{
+                strokeWidth: 1,
+                duration: 1000,
+                color: "#72d200",
+                trailColor: "#f5f5f5",
+                trailWidth: 1,
+                svgStyle: {width: "100%", height: "4px"},
+                text: {
+                  className: "time-text-or-something",
+                  style: {
+                     right: "100%"
+                  }
                 }
-              }
-            }}
-            strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
-            trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
-            text={(value.progress * 100) + "%"}
-             progress={value.progress}/>
-          </Link>;
+              }}
+              strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
+              trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
+              text={Math.round((value.progress * 100)) + "%"}
+               progress={value.progress}/>
+            </div>
+          </div>;
         }
       });
     }
     //and this is the container
     return <div className="material-page__filefield-wrapper">
       {this.props.readOnly ? null : <input type="file" onChange={this.onFileChanged} multiple/>}
-      {!this.state.values.length ? 
-        <span className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</span> : null}
-      <div className="material-page__filefield-files-container">{dataInContainer}</div>
+      <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div>
+      {this.state.values.length > 0 ? <div className="material-page__filefield-files-container">{dataInContainer}</div>: null}
     </div>
   }
 }
