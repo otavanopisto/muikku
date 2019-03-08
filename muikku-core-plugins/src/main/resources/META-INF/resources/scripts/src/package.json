@@ -9,7 +9,9 @@
   },
   "author": "",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack-cli": "^3.1.2"
+  },
   "dependencies": {
     "@amcharts/amcharts3-react": "^3.0.0",
     "@types/deep-equal": "^1.0.1",

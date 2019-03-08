@@ -9,7 +9,7 @@
       leftChannel: false,
       disableLogs: false,
       maxClipLength: 60000 * 5,  
-      uploadUrl: CONTEXTPATH + '/tempFileUploadServlet'
+      uploadUrl: CONTEXTPATH + '/tempFileUploadServlet' // TODO should immediately save to final location
     },
     
     _create : function() {
@@ -66,7 +66,8 @@
             name: $(clip).attr('data-name')
           };
         });
-      } else {
+      }
+      else {
         this.element.find('.clips').empty();
         if (this.readonly() && clips.length == 0) {
           this.element.find('.no-clips').show();
@@ -114,12 +115,10 @@
               var clip = clips[index];
               
               this._addClip(preparedClip, {
-                flac: {
-                  clipId: clip.id,
-                  blob: data,
-                  type: clip.contentType,
-                  name: clip.name
-                }
+                clipId: clip.id,
+                blob: data,
+                type: clip.contentType,
+                name: clip.name
               });
                 
             }, this));
@@ -258,6 +257,7 @@
         break;
         case 'UPLOADED':
           $(clip).find('.remove-clip').show();
+          $(clip).find('.download-clip').show();
           $(clip).find('audio').show();
         break;
       }
@@ -304,11 +304,21 @@
         .appendTo(clip);
       
       $('<a>')
+      .hide()
+      .attr({
+        'href': '/rest/workspace/audioanswer/' + clipId
+      })
+      .addClass('download-clip icon-download')
+      .attr('download', clipId)
+      .attr('title', getLocaleText('plugin.workspace.audioField.downloadLink'))
+      .appendTo(clip);
+      
+      $('<a>')
         .hide()
         .attr({
           'href': 'javascript:void(null)'
         })
-        .addClass('remove-clip icon-remove-clip')
+        .addClass('remove-clip icon-close-small')
         .attr('title', getLocaleText('plugin.workspace.audioField.removeLink'))
         .appendTo(clip);
 
@@ -316,6 +326,54 @@
     },
     
     _addClip: function (clip, data) {
+      if (data.clipId) {
+        // Existing clips are just added as audio sources
+        $(clip).attr({
+          'data-id': data.clipId,
+          'data-name': data.name,
+          'data-type': data.type
+        });
+        var audio = $(clip).find('audio');
+        $('<source>').attr({
+          'src': '/rest/workspace/audioanswer/' + data.clipId,
+          'type': data.type
+        }).appendTo(audio);
+        this._setClipStatus(clip, 'UPLOADED');
+      }
+      else {
+        // Newly added clips will instantly be uploaded into the server
+        this._encodeAudioBlob(data.blob, data.name, 'audio/flac', // prefer flac
+          $.proxy(function (err, results) {
+            if (!err && results && results.blob) { // use flac only if encoding succeeded
+              data = results
+            }
+            this._uploadClip(clip, data, $.proxy(function (err, meta) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              }
+              else {
+                $(clip).attr({
+                  'data-id': meta.fileId,
+                  'data-name': data.name,
+                  'data-type': data.type
+                });
+                this.element.trigger("change");
+                setTimeout(function() { // TODO awkward temp file to audio clip delay
+                  var audio = $(clip).find('audio');
+                  $('<source>').attr({
+                    'src': '/rest/workspace/audioanswer/' + meta.fileId,
+                    'type': data.type
+                  }).appendTo(audio);
+                }, 1000);
+              }
+            }, this));
+          }, this),
+          $.proxy(function (progress) {
+            this._setClipStatus(clip, 'PROCESSING', progress, 100);
+          }, this)
+        );
+      }
+      /*
       if (!data.wav && !data.flac) {
         $('.notification-queue').notificationQueue('notification', 'error', 'Could not add clip, no data found');
         return;
@@ -343,7 +401,8 @@
         if (err) {
           $(clip).remove();
           $('.notification-queue').notificationQueue('notification', 'error', err);
-        } else {
+        }
+        else {
           if (results.flac) {
             data.flac = results.flac;
           } 
@@ -384,7 +443,8 @@
                 
                 this._setClipStatus(clip, 'UPLOADED');
                 
-              } else {
+              }
+              else {
                 // Newly added clips will instantly be uploaded into the server
                 this._uploadClip(clip, data.flac, $.proxy(function (err, meta) {
                   if (err) {
@@ -416,6 +476,7 @@
           }, this));
         }
       }, this));
+      */
     },
     
     _uploadClip: function (clip, flacClip, callback) {
@@ -623,33 +684,12 @@
       if (this.readonly()) {
         return;
       }
-      
-      var file = this.element.find(".controls input[type='file']")[0]
-        .files[0];
-      
-      var type = this._normalizeMimeType(file.type);
-      var name = file.name;
-      
-      if (type == 'audio/wav') {
-        this._addClip(this._prepareClip(), {
-          wav: {
-            name: name,
-            type: type,
-            blob: file
-          }
-        });
-      } else if (type == 'audio/flac') {
-        this._addClip(this._prepareClip(), {
-          flac: {
-            name: name,
-            type: type,
-            blob: file
-          }
-        });
-      } else {
-        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.audioField.unsupportedFileType', type, 'audio/wav, audio/flac'));
-      }
-
+      var file = this.element.find(".controls input[type='file']")[0].files[0];
+      this._addClip(this._prepareClip(), {
+        name: file.name,
+        type: file.type,
+        blob: file
+      });
       this._recreateFileField();
     },
     
@@ -750,29 +790,13 @@
     _onAudioCaptureEnd: function (name, blob, type) {
       this.element.find('.start-record').show();
       this.element.find('.stop-record').hide();
-      
       this._recordStartTime = null;
       clearInterval(this._recordIntervalId);
-      
-      if (type == 'audio/wav') {
-        this._addClip(this._recordClip, {
-          wav: {
-            name: name,
-            type: type,
-            blob: blob
-          }
-        });
-      } else if (type == 'audio/flac') {
-        this._addClip(this._recordClip, {
-          flac: {
-            name: name,
-            type: type,
-            blob: blob
-          }
-        });
-      } else {
-        $('.notification-queue').notificationQueue('notification', 'error', 'Unsupported file type ' + type);
-      }
+      this._addClip(this._recordClip, {
+        name: name,
+        type: type,
+        blob: blob
+      });
     }
   });
   

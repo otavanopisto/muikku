@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -152,7 +153,12 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
 
           // Skip if workspace doesn't have a supplementation request
           
-          SupplementationRequest supplementationRequest = supplementationRequestDAO.findByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+          SupplementationRequest supplementationRequest = null;
+          List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntity.getId(), workspaceEntity.getId(), Boolean.FALSE);
+          if (!supplementationRequests.isEmpty()) {
+            supplementationRequests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
+            supplementationRequest = supplementationRequests.get(0);
+          }
           if (supplementationRequest == null) {
             continue;
           }

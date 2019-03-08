@@ -43,7 +43,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     super(props);
   }
   
-  //TODO doesn't anyone notice that nor assesment requested, nor no passed courses etc... is available in this view
+  //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   render(){
     if (this.props.guider.currentStudent === null){
       return null;
@@ -65,7 +65,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
         </object>
         <div className="application-sub-panel__header-main-container">
-          <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic)}</div>
+          <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic, true)}</div>
           <div className="application-sub-panel__header-main application-sub-panel__header-main--guider-profile-student-email">{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</div>
         </div>
         <div className="application-sub-panel__header-aside-container">
@@ -128,6 +128,16 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           <span>{this.props.guider.currentStudent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
         </div>
       </div>
+      {this.props.guider.currentStudent.usergroups && <div className="application-sub-panel__item">
+        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studentgroups")}</div>
+        <div className="application-sub-panel__item-data">
+        {this.props.guider.currentStudent.usergroups.length ? this.props.guider.currentStudent.usergroups.map((usergroup)=>{
+          return <span key={usergroup.id} >
+            {usergroup.name}
+          </span>
+        }) : <span>{this.props.i18n.text.get("plugin.guider.user.details.label.nostudentgroups")}</span>}
+        </div>
+      </div>}
       {this.props.guider.currentStudent.lastLogin && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">

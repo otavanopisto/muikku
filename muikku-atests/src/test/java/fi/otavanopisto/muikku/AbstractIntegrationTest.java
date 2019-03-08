@@ -120,7 +120,7 @@ public abstract class AbstractIntegrationTest {
     }
   }
 
-  public long getUserIdByEmail(String email) throws SQLException, ClassNotFoundException{
+  protected long getUserIdByEmail(String email) throws SQLException, ClassNotFoundException{
     Connection connection = getConnection();
     try {
       Statement statement = connection.createStatement();
@@ -143,7 +143,7 @@ public abstract class AbstractIntegrationTest {
     }
   }
   
-  public String getWorkspaceUserEntityIdByPyramusId(String pyramusId) throws SQLException, ClassNotFoundException{
+  protected String getWorkspaceUserEntityIdByPyramusId(String pyramusId) throws SQLException, ClassNotFoundException{
     Connection connection = getConnection();
     try {
       Statement statement = connection.createStatement();
@@ -159,6 +159,21 @@ public abstract class AbstractIntegrationTest {
         user_id = results.getString("result");
       }
       return user_id;
+    } finally {
+      connection.close();
+    }
+  }
+  
+  protected void updateWorkspaceAccess(WorkspaceAccess access, String urlName) throws SQLException, ClassNotFoundException{
+    Connection connection = getConnection();
+    try {
+      Statement statement = connection.createStatement();
+      statement.execute(
+          String.format(
+              "UPDATE workspaceentity "
+                  + "SET access = '%s'"
+                  + "WHERE urlName = '%s'",
+                  access, urlName));
     } finally {
       connection.close();
     }

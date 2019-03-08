@@ -163,7 +163,7 @@ public class ToRTestsBase extends AbstractUITest {
         sendKeys(".cke_contents_ltr", "Test evaluation.");
         getWebDriver().switchTo().defaultContent();
         
-        selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
+        selectOption("#workspaceGradeGrade", "PYRAMUS-1@PYRAMUS-1");
   
         waitAndClick("#assignmentSaveButton");
         waitForPresent(".notification-queue-item-success");
@@ -180,6 +180,9 @@ public class ToRTestsBase extends AbstractUITest {
         waitAndClick(".application-list__header-primary");
         waitForPresent(".application-list__indicator-badge--task");
         assertText(".application-list__indicator-badge--task", "E");
+        waitAndClick(".application-list__item-header--studies-assignment");
+        waitForVisible(".application-sub-panel__text--task-evaluation p");
+        assertTextIgnoreCase(".application-sub-panel__text--task-evaluation p", "Test evaluation.");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

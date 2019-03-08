@@ -426,6 +426,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			    localUser.getFirstName(), 
 			    localUser.getLastName(),
 			    null,
+			    null,
 			    localUser.getFirstName() + ' ' + localUser.getLastName() + " (Local)",
 			    null,
 			    null,

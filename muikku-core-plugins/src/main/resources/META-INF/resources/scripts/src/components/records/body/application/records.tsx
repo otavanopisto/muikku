@@ -16,11 +16,12 @@ import '~/sass/elements/file-uploader.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
+import { MatriculationLink } from './matriculation-link';
 
 let ProgressBarLine = require('react-progressbar.js').Line;
 
@@ -37,9 +38,9 @@ let storedCurriculumIndex:any = {};
 function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: WorkspaceType){
   let assesmentState:WorkspaceAssessementState;
   let assesmentDate:string;
-  if (workspace.studentAssessments && workspace.studentAssessments.assessmentState){
-    assesmentState = workspace.studentAssessments.assessmentState;
-    assesmentDate = workspace.studentAssessments.assessmentStateDate;
+  if (workspace.studentAssessmentState && workspace.studentAssessmentState.state){
+    assesmentState = workspace.studentAssessmentState.state;
+    assesmentDate = workspace.studentAssessmentState.date;
   } else if (workspace.studentActivity && workspace.studentActivity.assessmentState){
     assesmentState = workspace.studentActivity.assessmentState.state;
     assesmentDate = workspace.studentActivity.assessmentState.date;
@@ -48,10 +49,11 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
     return <div className="application-list__header-secondary">
       <span>{props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}</span>
-      <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))} className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending"></span>
+      <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}
+        className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending"></span>
     </div>
   }
-  
+
   return null;
 }
 
@@ -70,31 +72,24 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
 }
 
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
-  if (workspace.studentAssessments.assessments.length){
-    let assessment = workspace.studentAssessments.assessments[0];
-    if (!assessment){
-      return null;
-    }
-    let gradeId = [
-      assessment.gradingScaleSchoolDataSource,
-      assessment.gradingScaleIdentifier,
-      assessment.gradeSchoolDataSource,
-      assessment.gradeIdentifier].join('-');
-    let grade = props.records.grades[gradeId];
+  if (workspace.studentAssessmentState && workspace.studentAssessmentState.grade){
     return <span className="application-list__header-secondary">
-      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))}</span>
-      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated)) +
-        getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge--course ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
-        {shortenGrade(grade.grade)}
+      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
+      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) +
+        getShortenGradeExtension(workspace.studentAssessmentState.grade)}
+        className={`application-list__indicator-badge application-list__indicator-badge--course ${
+          workspace.studentAssessmentState.state === "pass" || workspace.studentAssessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
+        {shortenGrade(workspace.studentAssessmentState.grade)}
       </span>
     </span>
-  } else if (workspace.studentAssessments.assessmentState &&
-    (workspace.studentAssessments.assessmentState === "incomplete" || workspace.studentAssessments.assessmentState === "fail")){
-    let status = props.i18n.text.get(workspace.studentAssessments.assessmentState === "incomplete" ?
+  } else if (workspace.studentAssessmentState &&
+    (workspace.studentAssessmentState.state === "incomplete" || workspace.studentAssessmentState.state === "fail")){
+    let status = props.i18n.text.get(workspace.studentAssessmentState.state === "incomplete" ?
     		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
     return <span className="application-list__header-secondary">
-      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate))}</span>
-      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
+      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
+        className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
       {status[0].toLocaleUpperCase()}
     </span>
   </span>
@@ -198,12 +193,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : "-"}</span>
         </div>
       </div>
-    </div>  
+    </div>
     
     let studentRecords = <div className="application-sub-panel">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
-          let records = data.records;      
+          let records = data.records;
 
           return <div className="react-required-container" key={data.user.id}>
           <div className="application-sub-panel__header">{user.studyProgrammeName}</div>
@@ -215,11 +210,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     //Do we want an special way to display all these different states? passed is very straightforward but failed and
                     //incomplete might be difficult to understand
                     let extraClassNameState = "";
-                    if (workspace.studentAssessments.assessmentState === "pass"){
+                    if (workspace.studentAssessmentState.state === "pass"){
                       extraClassNameState = "state-PASSED"
-                    } else if (workspace.studentAssessments.assessmentState === "fail"){
+                    } else if (workspace.studentAssessmentState.state === "fail"){
                       extraClassNameState = "state-FAILED"
-                    } else if (workspace.studentAssessments.assessmentState === "incomplete"){
+                    } else if (workspace.studentAssessmentState.state === "incomplete"){
                       extraClassNameState = "state-INCOMPLETE"
                     }
                     return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
@@ -237,7 +232,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     {record.transferCredits.map((credit)=>{
                       return <ApplicationListItem className="course course--credits" key={credit.identifier}>
                         <ApplicationListItemHeader modifiers="course">
-                          <span className="application-list__header-icon icon-books"></span>  
+                          <span className="application-list__header-icon icon-books"></span>
                           <span className="application-list__header-primary">{credit.courseName}</span>
                           {getTransferCreditValue(this.props, credit)}
                         </ApplicationListItemHeader>
@@ -248,16 +243,18 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           </div>
           </div>
         })}
-      </div>  
+      </div>
 
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
     
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
+
+    <MatriculationLink i18n={this.props.i18n} />
     
-    <div className="application-sub-panel">
+    <div className="application-sub-panel application-sub-panel--basic">
       {studentBasicInfo}
     </div>
-    {studentRecords}    
+    {studentRecords}
     
     <div className="application-sub-panel">
       <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>

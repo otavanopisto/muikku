@@ -378,4 +378,5 @@ public class CourseTestsBase extends AbstractUITest {
       deleteWorkspace(workspace.getId());  
     }
   }
+
 }

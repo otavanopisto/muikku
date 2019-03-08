@@ -154,7 +154,7 @@ export interface RemoveLabelFromCurrentMessageThreadTriggerType {
 }
 
 export interface ToggleMessageThreadReadStatusTriggerType {
-  ( thread: MessageThreadType, dontLockToolbar?: boolean, callback?: ()=>any): AnyActionType
+  (thread: MessageThreadType | number, markAsStatus?: boolean, dontLockToolbar?: boolean, callback?: ()=>any): AnyActionType
 }
 
 export interface ToggleMessageThreadsReadStatusTriggerType {
@@ -232,51 +232,8 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
 
       let state = getState();
       let status: StatusType = state.status;
-
-      //This as in the main thread list will check wheter the message was sent and we are in the inbox or unreadlocation, that will work if
-      //and only if one of the receivers is us, otherwise it's always active for when a message is sent
-      const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
-      const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && result.recipients
-        .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
-      const weAreInSentLocation = state.messages.location === "sent";
-      const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
-      if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients || weJustSentThatMessageAndWeAreInCurrent) {
-        let item = state.messages.navigation.find((item)=>{
-          return item.location === state.messages.location;
-        });
-        if (!item) {
-          return;
-        }
-        let params = {
-          firstResult: 0,
-          maxResults: 1,
-        }
-
-        try {
-          let threads: MessageThreadListType = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback' )();
-          if (threads[0]) {
-            dispatch({
-              type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
-              payload: threads[0]
-            });
-
-            if ( state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId ) {
-              dispatch({
-                type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-                payload: result
-              });
-              if (state.messages.location !== "sent" && threads[0].unreadMessagesInThread) {
-                dispatch(toggleMessageThreadReadStatus(threads[0], true));
-              }
-            }
-
-          }
-        } catch ( err ) { if (!(err instanceof MApiError)){
-          throw err;
-        }}
-      }
       
-      //Also we need to update the specific message in the thread view if it's there
+      //First lets check and update the thread count in case the thread is there somewhere for that specific message
       let thread:MessageThreadType = state.messages.threads.find((thread)=>thread.communicatorMessageId === result.communicatorMessageId);
       if (thread){
         let newCount = thread.messageCountInThread + 1;
@@ -288,6 +245,58 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
               messageCountInThread: newCount
             }
           }
+        });
+      }
+
+      //This as in the main thread list will check wheter the message was sent and we are in the inbox or unreadlocation, that will work if
+      //and only if one of the receivers is us, otherwise it's always active for when a message is sent
+      const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
+      const weAreOneOfTheRecepients = result.recipients
+        .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
+      const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && weAreOneOfTheRecepients;
+      const weAreInSentLocation = state.messages.location === "sent";
+      const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
+      
+      //if we are in sent location or are one of the recipients then the message should become the first one
+      if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients) {
+        let item = state.messages.navigation.find((item)=>{
+          return item.location === state.messages.location;
+        });
+        if (!item) {
+          return;
+        }
+        let params = {
+          firstResult: 0,
+          maxResults: 1,
+        }
+        
+        //we basically conduct a search for the first result which should be our thread
+
+        try {
+          let threads: MessageThreadListType = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback' )();
+          if (threads[0]) {
+            if (threads[0].communicatorMessageId !== result.communicatorMessageId){
+              console.warn("Mismatch between result of new thread and thread itself", threads[0].communicatorMessageId, result.communicatorMessageId);
+              return;
+            }
+            dispatch({
+              type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
+              payload: threads[0]
+            });
+            
+            if (weJustSentThatMessageAndWeAreInCurrent && weAreOneOfTheRecepients && threads[0].unreadMessagesInThread) {
+              dispatch(toggleMessageThreadReadStatus(threads[0], true, true));
+            }
+          }
+        } catch ( err ) { if (!(err instanceof MApiError)){
+          throw err;
+        }}
+      }
+      
+      if (weJustSentThatMessageAndWeAreInCurrent){
+        dispatch({
+          type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
+          payload: result
         });
       }
       
@@ -346,7 +355,7 @@ let removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTrig
   return setLabelStatusCurrentMessage.bind( this, label, false );
 }
 
-let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = function toggleMessageThreadReadStatus(thread, dontLockToolbar=false, callback) {
+let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = function toggleMessageThreadReadStatus(threadOrId, markAsStatus, dontLockToolbar=false, callback) {
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
     if (!dontLockToolbar){
       dispatch({
@@ -370,21 +379,33 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
       return;
     }
 
-    dispatch( {
-      type: "UPDATE_ONE_MESSAGE_THREAD",
-      payload: {
-        thread,
-        update: {
-          unreadMessagesInThread: !thread.unreadMessagesInThread
+    let actualThread:MessageThreadType = null;
+    let communicatorMessageId:number = null;
+    if (typeof threadOrId === "number"){
+      actualThread = state.messages.threads.find(t=>t.communicatorMessageId===threadOrId);
+      communicatorMessageId = threadOrId;
+    } else {
+      actualThread = threadOrId;
+      communicatorMessageId = actualThread.communicatorMessageId;
+    }
+     
+    if (actualThread){
+      dispatch( {
+        type: "UPDATE_ONE_MESSAGE_THREAD",
+        payload: {
+          thread: actualThread,
+          update: {
+            unreadMessagesInThread: typeof markAsStatus === "boolean" ? !markAsStatus: !actualThread.unreadMessagesInThread
+          }
         }
-      }
-    });
-
+      });
+    }
+   
     try {
-      if ( thread.unreadMessagesInThread ) {
-        await promisify( mApi().communicator[getApiId( item )].markasread.create( thread.communicatorMessageId ), 'callback' )();
-      } else {
-        await promisify( mApi().communicator[getApiId( item )].markasunread.create( thread.communicatorMessageId ), 'callback' )();
+      if ((actualThread && actualThread.unreadMessagesInThread) || markAsStatus === true ) {
+        await promisify( mApi().communicator[getApiId( item )].markasread.create(communicatorMessageId), 'callback' )();
+      } else if ((actualThread && !actualThread.unreadMessagesInThread) || markAsStatus === false ) {
+        await promisify( mApi().communicator[getApiId( item )].markasunread.create(communicatorMessageId), 'callback' )();
       }
       dispatch(updateUnreadMessageThreadsCount());
     } catch ( err ) {
@@ -392,15 +413,17 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.changeStatusFailed"),'error'));
-      dispatch({
-        type: "UPDATE_ONE_MESSAGE_THREAD",
-        payload: {
-          thread,
-          update: {
-            unreadMessagesInThread: thread.unreadMessagesInThread
+      if (actualThread){
+        dispatch({
+          type: "UPDATE_ONE_MESSAGE_THREAD",
+          payload: {
+            thread: actualThread,
+            update: {
+              unreadMessagesInThread: actualThread.unreadMessagesInThread
+            }
           }
-        }
-      });
+        });
+      }
     }
 
     mApi().communicator[getApiId( item )].cacheClear();
@@ -437,7 +460,7 @@ let toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType = 
       if (thread.unreadMessagesInThread === !threads[0].unreadMessagesInThread){
         cb();
       } else {
-        dispatch(toggleMessageThreadReadStatus(thread, true, cb))
+        dispatch(toggleMessageThreadReadStatus(thread, null, true, cb))
       }
     });
   }
@@ -579,20 +602,8 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
       dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.threadLoadFailed"),'error'));
     }
 
-    let existantMessage:MessageThreadType = state.messages.threads.find((message)=>{
-      return message.communicatorMessageId === currentThread.messages[0].communicatorMessageId;
-    });
-
-    if ( existantMessage && existantMessage.unreadMessagesInThread ) {
-      dispatch( toggleMessageThreadReadStatus(existantMessage, true) );
-    } else if ( !existantMessage && item.location !== "sent") {
-      try {
-        await promisify( mApi().communicator[getApiId( item )].markasread.create( currentThread.messages[0].communicatorMessageId ), 'callback' )();
-      } catch ( err ) {
-        if (!(err instanceof MApiError)){
-          throw err;
-        }
-      }
+    if (item.location !== "sent") {
+      dispatch(toggleMessageThreadReadStatus(currentThread.messages[0].communicatorMessageId, true, true));
     }
   }
 }
@@ -631,7 +642,7 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
               payload: result
             });
             if (threads[0].unreadMessagesInThread){
-              dispatch(toggleMessageThreadReadStatus(threads[0], true));
+              dispatch(toggleMessageThreadReadStatus(threads[0], true, true));
             }
           }
         }
