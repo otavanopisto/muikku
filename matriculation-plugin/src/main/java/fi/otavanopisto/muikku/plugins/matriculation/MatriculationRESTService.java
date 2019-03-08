@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.matriculation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,10 +26,12 @@ import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamE
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -42,7 +45,13 @@ import fi.otavanopisto.security.rest.RESTPermit;
 public class MatriculationRESTService {
 
   @Inject
+  private Logger logger;
+  
+  @Inject
   private MatriculationSchoolDataController matriculationController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
   
   @Inject
   private UserController userController;
@@ -67,6 +76,38 @@ public class MatriculationRESTService {
   @Path("/currentExam")
   public Response fetchCurrentExam() {
     MatriculationExam exam = matriculationController.getMatriculationExam();
+    
+    if (sessionController.isLoggedIn() && exam != null) {
+      User user = userController.findUserByIdentifier(sessionController.getLoggedUser());
+      if (user != null) {
+        UserProperty property = userSchoolDataController.getUserProperty(user, "matriculation.examEnrollmentExpiryDate");
+        if (property != null) {
+          try {
+            long matriculationExamEnrollmentExpiryDate = Long.parseLong(property.getValue());
+            
+            final long startDate = exam.getStarts();
+            final long endDate = Math.max(exam.getEnds(), matriculationExamEnrollmentExpiryDate);
+            
+            exam = new MatriculationExam() {
+              @Override
+              public long getStarts() {
+                return startDate;
+              }
+              
+              @Override
+              public long getEnds() {
+                return endDate;
+              }
+            };
+            
+            return Response.ok(exam).build();
+          } catch (NumberFormatException nfe) {
+            logger.warning(String.format("User Property was expected to include a date in long format but parsing it failed (%s)", sessionController.getLoggedUserIdentifier()));
+          }
+        }
+      }
+    }
+    
     return Response.ok(exam).build();
   }
   
