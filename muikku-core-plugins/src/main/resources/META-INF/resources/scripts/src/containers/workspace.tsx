@@ -25,7 +25,9 @@ import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMat
   setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateLastWorkspace,
   loadStudentsOfWorkspace,
-  loadCurrentWorkspaceJournalsFromServer} from '~/actions/workspaces';
+  loadCurrentWorkspaceJournalsFromServer,
+  loadWorkspaceDetailsInCurrentWorkspace,
+  loadWorkspaceTypes} from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 import WorkspaceUsersBody from '~/components/workspace/workspaceUsers';
@@ -369,10 +371,11 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
+      this.props.store.dispatch(loadWorkspaceTypes() as Action);
       this.props.store.dispatch(setCurrentWorkspace({
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace)=>{
-          
+          this.props.store.dispatch(loadWorkspaceDetailsInCurrentWorkspace() as Action);
         }
       }) as Action);
     }

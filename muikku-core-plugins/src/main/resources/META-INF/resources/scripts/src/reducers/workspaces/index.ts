@@ -145,6 +145,13 @@ export interface WorkspaceProducerType {
   name: string
 }
 
+export interface WorkspaceDetailsType {
+  beginDate: string,
+  endDate: string,
+  externalViewUrl: string,
+  typeId: string
+}
+
 export interface WorkspaceType {
   archived: boolean,
   description: string,
@@ -184,7 +191,8 @@ export interface WorkspaceType {
   contentDescription?: MaterialContentNodeType,
   help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
-  students?: Array<ShortWorkspaceUserWithActiveStatusType>
+  students?: Array<ShortWorkspaceUserWithActiveStatusType>,
+  details?: WorkspaceDetailsType,
       
   //Fancy stuff in here
   journals?: WorkspaceJournalsType
@@ -220,6 +228,7 @@ export interface WorkspaceUpdateType {
   contentDescription?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
+  details?: WorkspaceDetailsType,
       
   journals?: WorkspaceJournalsType
 }
@@ -264,6 +273,11 @@ export interface WorkspacesActiveFiltersType {
   baseFilter: WorkspaceBaseFilterType
 }
 
+export interface WorkspaceTypeType {
+  identifier: string,
+  name: string
+}
+
 export interface WorkspacesType {
   availableWorkspaces: WorkspaceListType,
   userWorkspaces: WorkspaceListType,
@@ -276,7 +290,9 @@ export interface WorkspacesType {
   toolbarLock: boolean,
   currentMaterials: MaterialContentNodeListType,
   currentMaterialsActiveNodeId: number,
-  currentMaterialsReplies: MaterialCompositeRepliesListType
+  currentMaterialsReplies: MaterialCompositeRepliesListType,
+  
+  types?: Array<WorkspaceTypeType>
 }
 
 export interface WorkspacesPatchType {
@@ -290,7 +306,9 @@ export interface WorkspacesPatchType {
   hasMore?: boolean,
   toolbarLock?: boolean,
   currentMaterials?: MaterialContentNodeListType,
-  currentMaterialsActiveNodeId?: number
+  currentMaterialsActiveNodeId?: number,
+      
+  types?: Array<WorkspaceTypeType>
 }
 
 export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
@@ -439,7 +457,8 @@ export default function workspaces(state: WorkspacesType={
   },
   hasMore: false,
   toolbarLock: false,
-  currentMaterialsActiveNodeId: null
+  currentMaterialsActiveNodeId: null,
+  types: null
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
     return <WorkspacesType>Object.assign({}, state, {
