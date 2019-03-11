@@ -563,13 +563,18 @@
 
 .material-page__sorterfield--vertical {
   align-items: flex-start;
+  border-left: 1px solid lighten($taskfield-border-color,10%);
   flex-flow: column nowrap;
+  padding: 0 0 0 5px;
 }
 
 .material-page__sorterfield--horizontal {
   align-items: center;
+  border-bottom: 1px solid lighten($taskfield-border-color,10%);
+  display: inline-flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+  padding: 0 0 5px;
 }
 
 .material-page__sorterfield-item {
