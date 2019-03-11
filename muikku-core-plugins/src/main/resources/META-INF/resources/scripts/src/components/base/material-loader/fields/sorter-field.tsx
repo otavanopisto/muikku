@@ -176,6 +176,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
   render(){
     //This element we are gunna use depends on the orientation, we use divs of spans
     let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
+    let ElementClass = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
     
     if (!this.loaded){
       //TODOLANKKINEN be aware that the filler here has a correlation with the component
@@ -185,10 +186,10 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
         if (index === 0 && this.props.content.capitalize){
           text = text.charAt(0).toUpperCase() + text.slice(1);
         }
-        return <Element className="material-page__sorterfield-item" key={i.id}>{text}</Element>
+        return <Element className="material-page__sorterfield-item" key={i.id}><span className="icon-move"></span>{text}</Element>
       })
       return <Element ref="base" className="material-page__sorterfield-wrapper">
-        <Element className="material-page__sorterfield">
+        <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass}`}>
           {filler}
         </Element>
       </Element>
@@ -217,7 +218,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     
     //we use that element and the class to create the field
     return <Element className={`material-page__sorterfield-wrapper ${elementClassNameState}`}>
-      <Element className="material-page__sorterfield">
+      <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass}`}>
        {this.state.items.map((item, index)=>{
          //We get the text
          let text = item.name;
@@ -234,7 +235,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
 
          if (this.props.readOnly){
            //readonly component
-           return <Element className={`material-page__sorterfield-item ${itemClassNameState}`} key={item.id}>{text}</Element>
+           return <Element className={`material-page__sorterfield-item ${itemClassNameState}`} key={item.id}><span className="icon-move"></span>{text}</Element>
          }
 
          //The draggable version, note how on interaction we swap

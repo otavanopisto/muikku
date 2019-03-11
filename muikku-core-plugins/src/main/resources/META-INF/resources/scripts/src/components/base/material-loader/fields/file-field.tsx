@@ -228,7 +228,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
             <div className="material-page__filefield-file">
               {value.name}
             </div>
-            <Link className="material-page__filefield-download-file-button icon-download" key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name} title={this.props.i18n.text.get('plugin.workspace.fileField.removeLink')}/>
+            <Link className="material-page__filefield-download-file-button icon-download" key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name} title={this.props.i18n.text.get('plugin.workspace.fileField.downloadLink')}/>
             <Link className="material-page__filefield-remove-file-button icon-delete" onClick={this.removeFileAt.bind(this, index)} title={this.props.i18n.text.get('plugin.workspace.fileField.removeLink')}/>
           </div>;
         } else if (value.failed){

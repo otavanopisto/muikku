@@ -558,15 +558,32 @@
 }
 
 .material-page__sorterfield {
-  
+  display: flex;
+}
+
+.material-page__sorterfield--vertical {
+  align-items: flex-start;
+  flex-flow: column nowrap;
+}
+
+.material-page__sorterfield--horizontal {
+  align-items: center;
+  flex-flow: row wrap;
+  justify-content: flex-start;
 }
 
 .material-page__sorterfield-item {
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  cursor: grab;
+  margin: 4px;
+  padding: 0 6px;
+  user-select: none;
 }
 
-.aterial-page__sorterfield-item--selected {
-  
+.material-page__sorterfield-item--selected {
+  background: $taskfield-border-color;
+  color: $color-default;
 }
 
 // Organizer field
