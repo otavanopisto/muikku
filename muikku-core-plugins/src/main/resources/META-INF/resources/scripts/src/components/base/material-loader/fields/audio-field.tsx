@@ -414,7 +414,8 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
           </Link> : <Link className="material-page__audiofield-stop-record-button icon-stop" onClick={this.stop}>
             <span className="material-page__audiofield-stop-record-label">{this.props.i18n.text.get("plugin.workspace.audioField.stopLink")}</span>
           </Link>}
-          <label className="material-page__audiofield-description">{this.props.i18n.text.get("plugin.workspace.audioField.rtcHint")}</label>
+          {!this.state.recording ? <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">{this.props.i18n.text.get("plugin.workspace.audioField.startRecordingHint")}</span>
+          : <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">{this.props.i18n.text.get("plugin.workspace.audioField.stopRecordingHint")}</span> }
         </div> : null}
         {this.state.values.length > 0 || this.state.recording ? <div className="material-page__audiofield-files-container">
           {dataInContainer}

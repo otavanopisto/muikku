@@ -497,30 +497,59 @@
 }
 
 .material-page__audiofield-controls {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
   padding: 15px 10px;
-  text-align: center;
-}
 
-.material-page__audiofield-start-record-button {
+  .material-page__audiofield-start-record-button,
+  .material-page__audiofield-stop-record-button {
+    align-items: center;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row nowrap;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 10px;
+    padding: 4px 6px;
+    text-decoration: none;
+  }
   
-}
-
-.material-page__audiofield-start-record-label {
+  // We set the record/stop buttons colors here
+  .material-page__audiofield-start-record-button {
+    border: 1px solid $color-recording;
+    color: $color-recording;
+  }
   
-}
-
-.material-page__audiofield-stop-record-button {
+  .material-page__audiofield-stop-record-button {
+    border: 1px solid $color-default-contrast;
+    color: $color-default-contrast;
+  }
   
-}
+  .material-page__audiofield-start-record-label,
+  .material-page__audiofield-stop-record-label {
+    @include text;
+    padding: 0 0 0 4px;
+  }
 
-.material-page__audiofield-stop-record-label {
-  
-}
+  // We set the resord/stop labels colors here
+  .material-page__audiofield-start-record-label {
+    color: $color-recording;
+  }
 
-.material-page__audiofield-description {
-  
-}
+  .material-page__audiofield-stop-record-label {
+    color: $color-default-contrast;
+  }
 
+  .material-page__audiofield-description {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+  }
+}
 
 // Sorter field
 .material-page__sorterfield-wrapper {
