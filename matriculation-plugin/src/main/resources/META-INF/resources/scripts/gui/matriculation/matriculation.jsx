@@ -376,10 +376,6 @@ const Page2 = (props) => (
       <div style={ WARNING_STYLE } className="pure-u-22-24">
       Ole hyvä ja täytä kaikki rivit
       </div>: null}
-    {props.invalidTerms ?
-      <div style={ WARNING_STYLE } className="pure-u-22-24">
-      Ylioppilaskokeet tulee suorittaa enintään kolmena peräkkäisenä suorituskertana
-      </div>: null}
 
     {
       props.amountOfFinnishAttendances == REQUIRED_FINNISH_ATTENDANCES && props.amountOfMandatoryAttendances == REQUIRED_MANDATORY_ATTENDANCES && props.amountOfAcademicSubjectAttendances < REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN && props.amountOfMandatoryAdvancedSubjectAttendances > REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN
@@ -755,50 +751,10 @@ class App extends React.Component {
     }
     return `${year}${term}`;
   }
-
-  isInvalidTerms() {
-    function termOf(termYear) {
-      return termYear.substring(0,6);
-    }
-    function yearOf(termYear) {
-      return Number(termYear.substring(6));
-    }
-    function termNumber(term) {
-      return yearOf(term) * 2 + (termOf(term) == "SPRING" ? 0 : 1);
-    }
-    let termNumbers = [];
-    for (let attendance of this.state.enrolledAttendances) {
-      termNumbers.push(this.currentTerm());
-    }
-    for (let attendance of this.state.finishedAttendances) {
-      termNumbers.push(termNumber(attendance.term));
-    }
-    for (let attendance of this.state.plannedAttendances) {
-      termNumbers.push(termNumber(attendance.term));
-    }
-    if (termNumbers.length == 0) {
-      return true;
-    }
-    termNumbers.sort();
-    
-    var lastNumber = termNumbers[0];
-    var firstNumber = lastNumber;
-    for (termNumber of termNumbers) {
-      if (termNumber - lastNumber > 1) {
-        return true;
-      }
-      lastNumber = termNumber;
-    }
-    if (lastNumber - firstNumber > 6) {
-      return true;
-    }
-    return false;
-  }
   
   isInvalid() {
     return this.isConflictingAttendances()
       || this.isIncompleteAttendances()
-      || this.isInvalidTerms()
       || !this.isValidAttendances();
   }
 
@@ -922,7 +878,6 @@ class App extends React.Component {
                   amountOfMandatoryAdvancedSubjectAttendances = { this.getAmountOfMandatoryAdvancedSubjectAttendances() }
                   conflictingAttendances={this.isConflictingAttendances()}
                   incompleteAttendances={this.isIncompleteAttendances()}
-                  invalidTerms={this.isInvalidTerms()}
                   invalid={this.isInvalid()}
                   pastTermOptions={this.getPastTermOptions()}
                   nextTermOptions={this.getNextTermOptions()}
