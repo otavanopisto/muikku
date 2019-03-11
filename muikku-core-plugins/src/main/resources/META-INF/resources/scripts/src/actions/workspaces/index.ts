@@ -6,7 +6,7 @@ import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Worksp
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
-import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -690,6 +690,36 @@ export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
   }):AnyActionType
 }
 
+export interface LoadWorkspaceDetailsInCurrentWorkspaceTriggerType {
+  ():AnyActionType
+}
+
+export interface LoadWorkspaceTypesTriggerType {
+  ():AnyActionType
+}
+
+export interface DeleteCurrentWorkspaceImageTriggerType {
+  ():AnyActionType
+}
+
+export interface CopyCurrentWorkspaceTriggerType {
+  (data: {
+    description: string,
+    name: string,
+    nameExtension?: string,
+    beginDate: string,
+    endDate: string,
+    copyDiscussionAreas: boolean,
+    copyMaterials: "NO" | "CLONE" | "LINK",
+    copyBackgroundPicture: boolean,
+    success: (
+      step: "initial-copy" | "change-date" | "copy-areas" | "copy-materials" | "copy-background-picture" | "done",
+      workspace: WorkspaceType
+    )=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
 let createWorkspaceJournalForCurrentWorkspace:CreateWorkspaceJournalForCurrentWorkspaceTriggerType = function createWorkspaceJournalForCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
@@ -807,9 +837,148 @@ let deleteWorkspaceJournalInCurrentWorkspace:DeleteWorkspaceJournalInCurrentWork
   }
 }
 
+let loadWorkspaceDetailsInCurrentWorkspace:LoadWorkspaceDetailsInCurrentWorkspaceTriggerType = function loadWorkspaceDetailsInCurrentWorkspace(){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+      let details:WorkspaceDetailsType = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+          .details.read(state.workspaces.currentWorkspace.id), 'callback')());
+    
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            details 
+          }
+        }
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to fetch workspace details'), 'error'));
+    }
+  }
+}
+
+let loadWorkspaceTypes:LoadWorkspaceTypesTriggerType = function loadWorkspaceTypes(){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let workspaceTypes:Array<WorkspaceTypeType> = <Array<WorkspaceTypeType>>(await promisify(mApi().workspace.workspaceTypes
+          .read(), 'callback')());
+      
+      dispatch({
+        type: "UPDATE_WORKSPACES_ALL_PROPS",
+        payload: {
+          types: workspaceTypes
+        }
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to fetch workspace types'), 'error'));
+    }
+  }
+}
+
+let deleteCurrentWorkspaceImage:DeleteCurrentWorkspaceImageTriggerType = function deleteCurrentWorkspaceImage(){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+      await Promise.all([
+        promisify(mApi().workspace.workspaces.workspacefile
+          .del(state.workspaces.currentWorkspace.id, 'workspace-frontpage-image-cropped'), 'callback')(),
+        promisify(mApi().workspace.workspaces
+          .del(state.workspaces.currentWorkspace.id, 'workspace-frontpage-image-original'), 'callback')(),
+      ]);
+    
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            hasCustomImage: false 
+          }
+        }
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete workspace image'), 'error'));
+    }
+  }
+}
+
+let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentWorkspace(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      let cloneWorkspace:WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
+          .create({
+            sourceWorkspaceEntityId: currentWorkspace.id
+          }), 'callback')());
+    
+      data.success && data.success("initial-copy", cloneWorkspace);
+    
+      cloneWorkspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+          .details.read(cloneWorkspace.id), 'callback')());
+      
+      cloneWorkspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+          .details.update(cloneWorkspace.id, {
+            ...cloneWorkspace.details,
+            beginDate: data.beginDate,
+            endDate: data.endDate
+          }), 'callback')());
+      
+      data.success && data.success("change-date", cloneWorkspace);
+      
+      if (data.copyDiscussionAreas){
+        await promisify(mApi().workspace.workspaces
+            .forumAreas.create(cloneWorkspace.id, {}, {sourceWorkspaceEntityId: currentWorkspace.id}), 'callback')();
+        data.success && data.success("copy-areas", cloneWorkspace);
+      }
+      
+      if (data.copyMaterials !== "NO"){
+        await promisify(mApi().workspace.workspaces.materials
+          .create(cloneWorkspace.id, {}, { 
+            sourceWorkspaceEntityId: currentWorkspace.id, 
+            targetWorkspaceEntityId: cloneWorkspace.id, 
+            copyOnlyChildren: true,
+            cloneMaterials: (data.copyMaterials as any) === "COPY"
+          }), 'callback')()
+          data.success && data.success("copy-materials", cloneWorkspace);
+      }
+      
+      if (data.copyBackgroundPicture){
+        await promisify(
+          mApi().workspace.workspaces.workspacefilecopy
+          .create(currentWorkspace.id, cloneWorkspace.id), 'callback')();
+        data.success && data.success("copy-background-picture", cloneWorkspace);
+      }
+      
+      data.success && data.success("done", cloneWorkspace);
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to clone workspace'), 'error'));
+      
+      data.fail && data.fail();
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
-  deleteWorkspaceJournalInCurrentWorkspace}
+  deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace}

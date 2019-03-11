@@ -16,7 +16,7 @@ export default class WorkspaceUsersBody extends React.Component<WorkspaceUsersBo
   render(){
     return (<div>
       <WorkspaceNavbar activeTrail="users" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="workspace">
+      <ScreenContainer viewModifiers="workspace-users">
         <Users/>
       </ScreenContainer>
     </div>);
