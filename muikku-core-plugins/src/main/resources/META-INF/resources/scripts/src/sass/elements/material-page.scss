@@ -312,6 +312,10 @@
 
 // File field
 .material-page__filefield-wrapper {
+  
+}
+
+.material-page__filefield {
   @include taskfield-text;
   @include taskfield-defaults;
   margin: 4px 0 0;
@@ -348,51 +352,153 @@
   margin: 5px;
   padding: 0 5px;
   transition: all 0.3s ease-in-out;
+
+  // These links needs to be nested here as rich-text css rules overrides them if not
+  .material-page__filefield-remove-file-button {
+    background: transparent;
+    color: $color-fatal;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+  }
   
-  &:hover {
-    background: lighten($color-default-item-separator-border,2%);
+  .material-page__filefield-download-file-button {
+    background: transparent;
+    color: $color-info;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
   }
 }
 
 .material-page__filefield-file {
-  color: $color-text-default;
-  font-family: $text-font-family;
-  font-size: $text-mobile-font-size;
-  font-weight: 400;
+  @include text;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  font-size: 0.875rem;
-  
+
   &.material-page__filefield-file--FAILED-TO-UPLOAD {
     color: $color-fatal;
     font-style: italic;
   }
 }
 
+.material-page__filefield-file-upload-progressbar {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+}
+
+.material-page__filefield-file-upload-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
+}
+
 // Audio field
 .material-page__audiofield-wrapper {
-  margin: 2px 0;
+
 }
 
 .material-page__audiofield {
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  margin: 4px 0 0;
+  position: relative;
+  width: 100%;
 }
 
-.material-page__audiofield-clips-container {
-  
+.material-page__audiofield-files-container {
+  border-top: 3px dotted lighten($taskfield-border-color,20%);
 }
 
-.material-page__audiofield-clip {
-  
+.material-page__audiofield-file-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 10px 5px;
+  padding: 0 5px;
+  transition: all 0.3s ease-in-out;
+
+  // These links needs to be nested here as rich-text css rules overrides them if not
+  .material-page__audiofield-remove-file-button {
+    background: transparent;
+    color: $color-fatal;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+  }
+
+  .material-page__audiofield-download-file-button {
+    background: transparent;
+    color: $color-info;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+  }
 }
 
-.material-page__audiofield-remove-clip-button {
-  
+.material-page__audiofield-file {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: 1.75rem;
+}
+
+.material-page__audiofield-file--recording,
+.material-page__audiofield-file--uploading {
+  height: auto;
+}
+
+.material-page__audiofield-file-record-progressbar {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  height: auto;
+}
+
+.material-page__audiofield-file-upload-progressbar {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  height: auto;
+}
+
+.material-page__audiofield-file-record-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
+}
+
+.material-page__audiofield-file-upload-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
 }
 
 .material-page__audiofield-controls {
-  
+  padding: 15px 10px;
+  text-align: center;
 }
 
 .material-page__audiofield-start-record-button {

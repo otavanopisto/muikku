@@ -12,7 +12,8 @@ interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes
   as?: string,
   href?: string,
   to?: string,
-  openInNewTab?: string
+  openInNewTab?: string,
+  title?: string
 }
 
 interface ButtonState {

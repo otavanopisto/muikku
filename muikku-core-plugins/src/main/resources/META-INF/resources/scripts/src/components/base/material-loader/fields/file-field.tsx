@@ -199,17 +199,19 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
   render(){
     if (!this.loaded){
       return <div className="material-page__filefield-wrapper">
-        <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div>
-        <div className="material-page__filefield-files-container">{
-          this.state.values.map((value, index)=>
-            <div className="material-page__filefield-file-container">
-              <a className="material-page__filefield-file" key={value.fileId}>
-                {value.name}
-              </a>
-              <ButtonPill buttonModifiers="filefield-open-file-button" icon="download"/>
-              <ButtonPill buttonModifiers="filefield-remove-file-button" icon="close"/>
-            </div>)
-        }</div>
+        <div className="material-page__filefield">
+          <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div>
+          <div className="material-page__filefield-files-container">{
+            this.state.values.map((value, index)=>
+              <div className="material-page__filefield-file-container">
+                <a className="material-page__filefield-file" key={value.fileId}>
+                  {value.name}
+                </a>
+                <Link className="material-page__filefield-download-file-button icon-download"/>
+                <Link className="material-page__filefield-remove-file-button icon-delete"/>
+              </div>)
+          }</div>
+        </div>
       </div>
     }
     //rendering things here
@@ -226,8 +228,8 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
             <div className="material-page__filefield-file">
               {value.name}
             </div>
-            <ButtonPill buttonModifiers="filefield-open-file-button" icon="download" key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name}/>
-            <ButtonPill buttonModifiers="filefield-remove-file-button" icon="delete" onClick={this.removeFileAt.bind(this, index)}/>
+            <Link className="material-page__filefield-download-file-button icon-download" key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name} title={this.props.i18n.text.get('plugin.workspace.fileField.removeLink')}/>
+            <Link className="material-page__filefield-remove-file-button icon-delete" onClick={this.removeFileAt.bind(this, index)} title={this.props.i18n.text.get('plugin.workspace.fileField.removeLink')}/>
           </div>;
         } else if (value.failed){
           //if the value failed we add a message, you can get the value name there so use it to say which file
@@ -240,7 +242,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
           //this is the progress
           return <div className="material-page__filefield-file-container" key={index}>
             <div className="material-page__filefield-file">
-              <ProgressBarLine containerClassName="material-page__filefield-file-uploading" options={{
+              <ProgressBarLine containerClassName="material-page__filefield-file-upload-progressbar" options={{
                 strokeWidth: 1,
                 duration: 1000,
                 color: "#72d200",
@@ -248,15 +250,15 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
                 trailWidth: 1,
                 svgStyle: {width: "100%", height: "4px"},
                 text: {
-                  className: "time-text-or-something",
+                  className: "material-page__filefield-file-upload-percentage",
                   style: {
                      right: "100%"
                   }
                 }
               }}
-              strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
+              strokeWidth={1} easing="easeInOut" duration={1000} color="#72d200" trailColor="#f5f5f5"
               trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
-              text={Math.round((value.progress * 100)) + "%"}
+              text={this.props.i18n.text.get("plugin.workspace.fileField.statusUploading", (Math.round(value.progress * 100)))}
                progress={value.progress}/>
             </div>
           </div>;
@@ -265,9 +267,11 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
     }
     //and this is the container
     return <div className="material-page__filefield-wrapper">
-      {this.props.readOnly ? null : <input type="file" onChange={this.onFileChanged} multiple/>}
-      <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div>
-      {this.state.values.length > 0 ? <div className="material-page__filefield-files-container">{dataInContainer}</div>: null}
+      <div className="material-page__filefield">
+        {this.props.readOnly ? null : <input type="file" onChange={this.onFileChanged} multiple/>}
+        <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div>
+        {this.state.values.length > 0 ? <div className="material-page__filefield-files-container">{dataInContainer}</div>: null}
+      </div>
     </div>
   }
 }

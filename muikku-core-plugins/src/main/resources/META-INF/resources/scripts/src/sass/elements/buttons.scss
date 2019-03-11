@@ -1014,30 +1014,3 @@
 .button--muikku-update-assignment {
   background: $color-assignment;
 }
-
-// We need to add this selector here as rich-text rules overrides this in materials view otherwise
-.material-page__filefield-file-container {
-
-  .button-pill--filefield-remove-file-button {
-    background: transparent;
-    color: $color-fatal;
-    font-size: 1.0625rem;
-    height: auto;
-    margin: 0 0 0 10px;
-    padding: 5px;
-    text-decoration: none;
-    width: auto;
-  }
-
-  .button-pill--filefield-open-file-button {
-    background: transparent;
-    color: $color-info;
-    font-size: 1.0625rem;
-    height: auto;
-    margin: 0 0 0 10px;
-    padding: 5px;
-    text-decoration: none;
-    width: auto;
-  }
-}
-
