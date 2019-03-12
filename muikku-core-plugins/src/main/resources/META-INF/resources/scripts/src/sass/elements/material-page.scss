@@ -618,16 +618,15 @@
 
 // Organizer field
 .material-page__organizerfield-wrapper {
-  
   margin: 4px 0;
 }
 
 .material-page__organizerfield {
-  
+  // Not empty
 }
 
 .material-page__organizerfield-terms { // Wrapper for terms
-  
+  // Not empty
 }
 
 .material-page__organizerfield-terms-title { // Title of draggable terms
@@ -636,7 +635,7 @@
 }
 
 .material-page__organizerfield-terms-container { // Container for draggable terms
-  
+  // Not empty
 }
 
 .material-page__organizerfield-term { // Single draggable term
@@ -731,51 +730,150 @@
 
 // Connect field
 .material-page__connectfield-wrapper {
-  margin: 2px 0;
+  margin: 4px 0;
 }
 
 .material-page__connectfield {
-  
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 5px 0 0;
+
+  @include breakpoint(pad) {
+    flex-flow: row wrap;
+  }
 }
 
 .material-page__connectfield-terms-container {
-  
-}
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin: 4px;
 
-.material-page__connectfield-term-number {
-  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 8px);
+  }
 }
 
 .material-page__connectfield-term {
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2.5rem;
+  margin: 8px 4px;
+  position: relative;
+  user-select: none;
 }
 
-.material-page__connectfield-term-selected {
-  
+.material-page__connectfield-term-number {
+  @include text;
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $taskfield-border-color;
+  border-radius: 100%;
+  display: inline-flex;
+  height: 1.5rem;
+  justify-content: center;
+  margin: 0 0 0 -0.75rem;
+  width: 1.5rem;
 }
 
-.material-page__connectfield-term-edited {
-  
+.material-page__connectfield-term-label {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  margin: 0 8px 0 6px;
 }
 
-.material-page__connectfield-gap {
-  
+.material-page__connectfield-term--edited {
+  background: lighten($taskfield-border-color,25%);
+}
+
+// Selected needs to be defined after edited unless we want to create more complex scss inception 
+// as edited and selected modifiers can be present at the same time and we need to show visually if 
+// edited item is selected
+.material-page__connectfield-term--selected {
+  background: $taskfield-border-color;
+  color: $color-default;
+  font-weight: 400;
+
+  .material-page__connectfield-term-icon {
+    color: $color-default;
+  }
 }
 
 .material-page__connectfield-counterparts-container {
-  
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin: 4px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 8px);
+  }
 }
 
 .material-page__connectfield-counterpart {
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  align-items: center;
+  cursor: grab;
+  display: flex;
+  height: 2.5rem;
+  flex-flow: row nowrap;
+  margin: 8px 4px;
+  position: relative;
+  user-select: none;
 }
 
-.material-page__connectfield-counterpart-selected {
-  
+.material-page__connectfield-counterpart-number {
+  @include text;
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $taskfield-border-color;
+  border-radius: 100%;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  margin: 0 -0.75rem 0 0;
+  width: 1.5rem;
 }
 
-.material-page__connectfield-counterpart-edited {
-  
+.material-page__connectfield-counterpart-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+.material-page__connectfield-counterpart-label {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  margin: 0 8px 0 0;
+}
+
+.material-page__connectfield-counterpart--edited {
+  background: lighten($taskfield-border-color,25%);
+}
+
+// Selected needs to be defined after edited unless we want to create more complex scss inception 
+// as edited and selected modifiers can be present at the same time and we need to show visually if 
+// edited item is selected
+.material-page__connectfield-counterpart--selected { 
+  background: $taskfield-border-color;
+  color: $color-default;
+  font-weight: 400;
+
+  .material-page__connectfield-counterpart-icon {
+    color: $color-default;
+  }
 }
 
 

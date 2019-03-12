@@ -337,14 +337,15 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
             //the fields cannot be dragged and they remain in order
             //they are simple things
             return <div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
-              <span className="material-page__connectfield-term-number">{index + 1}</span>
               <div className={`material-page__connectfield-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
-                "material-page__connectfield-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-term-edited" : ""}
-                ${itemClassNameState}`}>{field.text}</div>
+                "material-page__connectfield-term--selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-term--edited" : ""}
+                ${itemClassNameState}`}>
+                <span className="material-page__connectfield-term-number">{index + 1}</span>
+                <span className="material-page__connectfield-term-label">{field.text}</span>
+              </div>
             </div>
            })}
         </div>
-        <div className="material-page__connectfield-gap"></div>
         <div className="material-page__connectfield-counterparts-container">
          {this.state.counterparts.map((field, index)=>{
            //the item rightness
@@ -354,29 +355,26 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
                "state-" + this.state.answerState[index] : "";
            //the basic class name
            let className = `material-page__connectfield-counterpart ${this.state.selectedField && this.state.selectedField.name === field.name ?
-             "material-page__connectfield-counterpart-selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-counterpart-edited" : ""} ${itemClassNameState}`;
-           
-           //TODO delet this
-           let style:React.CSSProperties = {
-               justifyContent: "flex-start"  //TODO lankkinen Add this in classes sadly I had to use the original connect field term class because of missing functionality
-           };
-           
+             "material-page__connectfield-counterpart--selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-counterpart--edited" : ""} ${itemClassNameState}`;
+
            //if readonly we just add the classname in there
            if (this.props.readOnly){
-             return <div className={className}
-               key={field.name} style={style}>{field.text}</div>
+             return <div className={className} key={field.name}>
+               <span className="material-page__connectfield-counterpart-icon icon-move"></span>
+               <span className="material-page__connectfield-counterpart-label">{field.text}</span>
+             </div>
            }
-           
+
            //if we are asked for correct answers
            let itemCorrectAnswerComponent = null;
            //we need to do this
            if (this.props.displayCorrectAnswers && !(this.props.checkAnswers && itemAnswer === "PASS")){
              //this is just a component giving an overview, of which number was meant to be the right answer
-             itemCorrectAnswerComponent = <span className="material-page__connectfield-term-number">
+             itemCorrectAnswerComponent = <span className="material-page__connectfield-counterpart-number">
                {this.state.fields.findIndex(f=>f.name === (this.props.content.connections.find(c=>c.counterpart === field.name) || {field: null}).field) + 1}
              </span>
            }
-           
+
            //ok so the counterpart is draggable
            //the interaction data is the field, index, and whether is counterpart
            //note how the inline function onDropInto handles this data
@@ -391,7 +389,11 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
              onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
              onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".material-page__connectfield"
              onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
-             className={className} key={field.name} style={style}>{itemCorrectAnswerComponent}{field.text}</Draggable>
+             className={className} key={field.name}>
+               <span className="material-page__connectfield-counterpart-icon icon-move"></span>
+               <span className="material-page__connectfield-counterpart-label">{field.text}</span>
+               {itemCorrectAnswerComponent}
+             </Draggable>
          })}
         </div>
       </div>
