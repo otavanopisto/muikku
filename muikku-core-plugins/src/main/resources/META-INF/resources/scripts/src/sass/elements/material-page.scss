@@ -730,14 +730,14 @@
 
 // Connect field
 .material-page__connectfield-wrapper {
-  margin: 4px 0;
+  // Not empty
 }
 
 .material-page__connectfield {
   align-items: flex-start;
   display: flex;
   flex-flow: row wrap;
-  margin: 5px 0 0;
+
 
   @include breakpoint(pad) {
     flex-flow: row wrap;
