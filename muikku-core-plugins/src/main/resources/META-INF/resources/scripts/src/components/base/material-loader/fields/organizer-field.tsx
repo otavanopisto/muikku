@@ -359,7 +359,7 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
             if (this.props.displayCorrectAnswers && !wecheckAnswersAndCategoryisCorrect){
               itemCorrectAnswerMissingTerms = this.state.answerStateMissingTerms && 
                 this.state.answerStateMissingTerms[category.id] && this.state.answerStateMissingTerms[category.id].map((missingTermId)=>{
-                return <div key={missingTermId} style={{opacity: 0.5}} className="material-page__organizerfield-term material-page__organizerfield-term--in-use">{this.state.terms[missingTermId]}</div>;
+                return <div key={missingTermId} className="material-page__organizerfield-term material-page__organizerfield-term--missing">{this.state.terms[missingTermId]}</div>;
               });
             }
             

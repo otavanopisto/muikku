@@ -682,6 +682,12 @@
   }
 }
 
+.material-page__organizerfield-term--missing {
+  cursor: default;
+  opacity: 0.6;
+  padding: 0 8px;
+}
+
 .material-page__organizerfield-term-icon {
   color: $taskfield-border-color;
   flex-basis: auto;
