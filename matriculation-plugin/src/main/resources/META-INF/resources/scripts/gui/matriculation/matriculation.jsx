@@ -386,7 +386,7 @@ const Page2 = (props) => (
             <li>äidinkieli / suomi toisena kielenä { props.amountOfFinnishAttendances == REQUIRED_FINNISH_ATTENDANCES ? "" : "(ei valittuna)" }</li>
             <li>neljä pakollista koetta { props.amountOfMandatoryAttendances == REQUIRED_MANDATORY_ATTENDANCES ? "" : `(valittuna ${props.amountOfMandatoryAttendances})` }</li>
             <li>vähintään yksi A-tason koe { props.amountOfMandatoryAdvancedSubjectAttendances > 0 ? "" : `(valittuna ${props.amountOfMandatoryAdvancedSubjectAttendances})` }</li>
-            <li>vain yksi pakollinen reaaliaine. { props.amountOfAcademicSubjectAttendances < 2 ? "" : `(valittuna ${props.amountOfAcademicSubjectAttendances})` }</li>
+            <li>vain yksi pakollinen reaaliaine, jos kirjoitat yhden tai useamman reaaliaineen. { props.amountOfAcademicSubjectAttendances < 2 ? "" : `(valittuna ${props.amountOfAcademicSubjectAttendances})` }</li>
           </ul>
         </div>
     }
