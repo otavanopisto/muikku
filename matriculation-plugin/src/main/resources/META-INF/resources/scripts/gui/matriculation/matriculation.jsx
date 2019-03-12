@@ -413,22 +413,22 @@ const Page3 = (props) => (
         <div className="pure-u-1-2">
           <label>Suorituspaikka</label>
           <select onChange={(ev) => {props.setLocation(ev.target.value);}}
-                  value={props.location == 'Otavan Opisto'
-                         ? 'Otavan Opisto'
+                  value={props.location == 'Mikkeli'
+                         ? 'Mikkeli'
                          : ''}
                   className="pure-u-23-24">
-            <option>Otavan Opisto</option>
+            <option>Mikkeli</option>
             <option value="">Muu</option>
           </select>
         </div>
         <div className="pure-u-1-2">
-          {props.location !== "Otavan Opisto" ?
+          {props.location !== "Mikkeli" ?
           <React.Fragment>
             <label>&nbsp;</label>
             <input type="text" placeholder="Kirjoita tähän oppilaitoksen nimi" value={props.location} onChange={(ev) => {props.setLocation(ev.target.value);}}className="pure-u-1" />
           </React.Fragment>: null}
         </div>
-        {props.location !== "Otavan Opisto" ?
+        {props.location !== "Mikkeli" ?
           <div style={{margin: "1rem", padding: "0.5rem", border: "1px solid burlywood", backgroundColor: "beige"}} className="pure-u-1-1">
             Jos haluat suorittaa kokeen muualla, siitä on sovittava ensin kyseisen
             oppilaitoksen kanssa.
@@ -500,7 +500,7 @@ class App extends React.Component {
       guider: "",
       enrollAs: "UPPERSECONDARY",
       numMandatoryCourses: "",
-      location: "Otavan Opisto",
+      location: "Mikkeli",
       message: "",
       studentIdentifier: "",
       initialized: false,
