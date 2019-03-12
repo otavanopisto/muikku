@@ -186,7 +186,10 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
         if (index === 0 && this.props.content.capitalize){
           text = text.charAt(0).toUpperCase() + text.slice(1);
         }
-        return <Element className="material-page__sorterfield-item" key={i.id}><span className="icon-move"></span>{text}</Element>
+        return <Element className="material-page__sorterfield-item" key={i.id}>
+          <span className="material-page__sorterfield-item-icon icon-move"></span>
+          <span className="material-page__sorterfield-item-label">{text}</span>
+        </Element>
       })
       return <Element ref="base" className="material-page__sorterfield-wrapper">
         <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass}`}>
@@ -235,7 +238,10 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
 
          if (this.props.readOnly){
            //readonly component
-           return <Element className={`material-page__sorterfield-item ${itemClassNameState}`} key={item.id}><span className="icon-move"></span>{text}</Element>
+           return <Element className={`material-page__sorterfield-item ${itemClassNameState}`} key={item.id}>
+             <span className="material-page__sorterfield-item-icon icon-move"></span>
+             <span className="material-page__sorterfield-item-label">{text}</span>
+           </Element>
          }
 
          //The draggable version, note how on interaction we swap
@@ -245,7 +251,10 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
            className={`material-page__sorterfield-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
          "material-page__sorterfield-item--selected" : ""} ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
-           onClick={this.selectItem.bind(this, item)} onDrag={this.cancelSelectedItem}>{text}</Draggable>
+           onClick={this.selectItem.bind(this, item)} onDrag={this.cancelSelectedItem}>
+           <span className="material-page__sorterfield-item-icon icon-move"></span>
+           <span className="material-page__sorterfield-item-label">{text}</span>
+         </Draggable>
        })}
       </Element>
       {correctAnswersummaryComponent}

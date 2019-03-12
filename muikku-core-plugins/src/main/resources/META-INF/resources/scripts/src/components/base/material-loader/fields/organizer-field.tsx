@@ -323,7 +323,7 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
           <div className="material-page__organizerfield-terms-container">
             {this.state.order.map((id)=>{
               //add the term in use class if in the uselist
-              let className = `material-page__organizerfield-term ${this.state.useList.indexOf(id) !== -1 ? "term-in-use" : ""} ${this.state.selectedItemId === id ? "term-selected" : ""}`;
+              let className = `material-page__organizerfield-term ${this.state.useList.indexOf(id) !== -1 ? "material-page__organizerfield-term--in-use" : ""} ${this.state.selectedItemId === id ? "material-page__organizerfield-term--selected" : ""}`;
               if (this.props.readOnly){
                 //if readOnly we just return a non draggable thingy
                 return <div className={className} key={id}>{this.state.terms[id]}</div>
@@ -335,7 +335,10 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
               return <Draggable parentContainerSelector=".material-page__organizerfield"
                 className={className} interactionGroup={this.props.content.name}
                 clone key={id} onDropInto={this.onDropDraggableItem.bind(this, id)}
-                onDrag={this.cancelSelectedItemId} onClick={this.selectItemId.bind(this, id)}>{this.state.terms[id]}</Draggable>
+                onDrag={this.cancelSelectedItemId} onClick={this.selectItemId.bind(this, id)}>
+                  <span className="material-page__organizerfield-term-icon icon-move"></span>
+                  <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
+              </Draggable>
             })}
           </div>
         </div>
@@ -356,7 +359,7 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
             if (this.props.displayCorrectAnswers && !wecheckAnswersAndCategoryisCorrect){
               itemCorrectAnswerMissingTerms = this.state.answerStateMissingTerms && 
                 this.state.answerStateMissingTerms[category.id] && this.state.answerStateMissingTerms[category.id].map((missingTermId)=>{
-                return <div key={missingTermId} style={{opacity: 0.5}} className="material-page__organizerfield-term term-in-use">{this.state.terms[missingTermId]}</div>;
+                return <div key={missingTermId} style={{opacity: 0.5}} className="material-page__organizerfield-term material-page__organizerfield-term--in-use">{this.state.terms[missingTermId]}</div>;
               });
             }
             
@@ -370,8 +373,9 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
                 let termClassNameState = this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
                   this.state.answerState && this.state.answerState[category.id] && this.state.answerState[category.id]["*"] === "FAIL" ?
                     "state-" + this.state.answerState[category.id][termId] : "";
-                return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term term-in-use ${termClassNameState}`}>{this.state.terms[termId]}
-                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="icon-delete"></span> : null}
+                return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${termClassNameState}`}>
+                  <span className="material-page__organizerfield-term-label">{this.state.terms[termId]}</span>
+                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-close"></span> : null}
                 </div>
               })}{itemCorrectAnswerMissingTerms}</div>
             </Droppable>

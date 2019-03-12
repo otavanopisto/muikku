@@ -554,7 +554,8 @@
 
 // Sorter field
 .material-page__sorterfield-wrapper {
-  margin: 2px 0;
+  display: block;
+  margin: 4px 0;
 }
 
 .material-page__sorterfield {
@@ -580,20 +581,45 @@
 .material-page__sorterfield-item {
   @include taskfield-text;
   @include taskfield-defaults;
+  align-items: center;
   cursor: grab;
+  display: flex;
+  flex-flow: row nowrap;
   margin: 4px;
-  padding: 0 6px;
   user-select: none;
 }
 
 .material-page__sorterfield-item--selected {
   background: $taskfield-border-color;
   color: $color-default;
+  font-weight: 400;
+
+  .material-page__sorterfield-item-icon {
+    background: transparent;
+    color: $color-default;
+  }
+}
+
+.material-page__sorterfield-item-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+.material-page__sorterfield-item-label {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  margin: 0 8px 0 0;
 }
 
 // Organizer field
 .material-page__organizerfield-wrapper {
-  margin: 2px 0;
+  
+  margin: 4px 0;
 }
 
 .material-page__organizerfield {
@@ -605,7 +631,8 @@
 }
 
 .material-page__organizerfield-terms-title { // Title of draggable terms
-  
+  font-weight: 400;
+  padding: 0 4px;
 }
 
 .material-page__organizerfield-terms-container { // Container for draggable terms
@@ -613,23 +640,93 @@
 }
 
 .material-page__organizerfield-term { // Single draggable term
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  align-items: center;
+  cursor: grab;
+  display: inline-flex;
+  flex-flow: row nowrap;
+  margin: 4px;
+  user-select: none;
+}
+
+.material-page__organizerfield-term--selected { // Single draggable term in SELEDTED state
+  background: $taskfield-border-color;
+  color: $color-default;
+  font-weight: 400;
+
+  .material-page__organizerfield-term-icon {
+    color: $color-default;
+  }
+}
+
+.material-page__organizerfield-term--in-use { // Single draggable term in IN USE state
+  background: lighten($taskfield-border-color,25%);
+}
+
+.material-page__organizerfield-term--no-dragging { // Single term in NO DRAGGING state a.k.a term is placed in target container
+  background: lighten($taskfield-border-color,25%);
+  cursor: default;
+
+  .material-page__organizerfield-term-icon {
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 8px;
+  }
+
+  .material-page__organizerfield-term-label {
+    margin: 0 0 0 8px;
+  }
+}
+
+.material-page__organizerfield-term-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+.material-page__organizerfield-term-label {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  margin: 0 8px 0 0;
 }
 
 .material-page__organizerfield-categories { // Wrapper for multiple categories
-  
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 5px 0 0;
+
+  @include breakpoint(pad) {
+    flex-flow: row wrap;
+  }
 }
 
 .material-page__organizerfield-category { // Wrapper for single category
-  
+  @include taskfield-defaults;
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin: 4px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 8px);
+  }
 }
 
 .material-page__organizerfield-category-title { // Title of single category
-  
+  border-bottom: 3px dotted lighten($taskfield-border-color,20%);
+  font-weight: 400;
+  padding: 4px 6px;
 }
 
 .material-page__organizerfield-category-terms-container { // Container of single category where terms can be dragged
-  
+  min-height: 100px;
+  padding: 5px;
 }
 
 // Connect field
