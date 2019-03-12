@@ -45,11 +45,15 @@
 }
 
 .material-page__label--exercise {
-  background: $color-exercise;
+  background: $color-default;
+  border: 1px solid $color-exercise;
+  color: $color-exercise;
 }
 
 .material-page__label--assignment {
-  background: $color-assignment;
+  background: $color-default;
+  border: 1px solid $color-assignment;
+  color: $color-assignment;
 }
 
 .material-page__buttonset {
