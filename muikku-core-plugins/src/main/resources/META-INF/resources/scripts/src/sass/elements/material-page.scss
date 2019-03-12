@@ -45,11 +45,15 @@
 }
 
 .material-page__label--exercise {
-  background: $color-exercise;
+  background: $color-default;
+  border: 1px solid $color-exercise;
+  color: $color-exercise;
 }
 
 .material-page__label--assignment {
-  background: $color-assignment;
+  background: $color-default;
+  border: 1px solid $color-assignment;
+  color: $color-assignment;
 }
 
 .material-page__buttonset {
@@ -86,31 +90,40 @@
 
 // WORD AND CHARACTER COUNTER
 .material-page__counter-wrapper {
-  
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 85%;
+  justify-content: flex-end;
 }
 
-.material-page__word-count-container {
-  
-}
-
-.material-page__word-count-title {
-  
-}
-
-.material-page__word-count {
-  
-}
-
+.material-page__word-count-container,
 .material-page__character-count-container {
-  
+  align-items: center;
+  background: lighten($taskfield-border-color,30%);
+  border-bottom-left-radius: 2px;
+  display: flex;
+  flex-flow: row nowrap;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 2px 6px;
 }
 
+.material-page__word-count-title,
 .material-page__character-count-title {
-
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 4px;
 }
 
+.material-page__word-count,
 .material-page__character-count {
-  
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
 }
 
 // FIELD'S EXAMPLES
@@ -145,65 +158,57 @@
 .material-page__checkable-label {
   @include taskfield-text;
   display: inline;
-  padding: 0 6px;
+  padding: 0 0 0 6px;
 }
 
 // Text field
 .material-page__textfield-wrapper {
-  align-items: center;
-  display: inline-flex;
-  justify-content: center;
-  padding: 0 2px;
+  display: inline-block;
+  margin: 4px;
 }
 
 .material-page__textfield {
   @include taskfield-text;
   @include taskfield-defaults;
+  line-height: 1;
+  padding: 4px 6px;
 }
-
-// Memo field
-.material-page__memofield-wrapper {
-
-  .cke { // This needs to be here so we can override the ckeditor's visuals partly
-    @include taskfield-defaults;
-  }
-}
-
-.material-page__memofield {
-  @include taskfield-text;
-  @include taskfield-defaults;
-  width: 100%;
-}
-
 
 // Select field - list and drop down
 .material-page__selectfield-wrapper {
-  
+  display: inline-block;
+  margin: 4px;
 }
 
 .material-page__selectfield {
   @include taskfield-text;
   @include taskfield-defaults;
+  line-height: 1;
+  padding: 3px;
 }
 
 .material-page__selectfield-item-container  {
   @include taskfield-text;
-  padding: 2px 4px;
+  padding: 2px 4px; // This affects only select element that has size attribute set (element is list)
 }
 
 // Radio button
 .material-page__radiobutton-wrapper {
   align-items: center;
+  background: lighten($taskfield-border-color,30%);
   display: inline-flex;
+  margin: 4px;
+  padding: 4px;
 }
 
 .material-page__radiobutton-wrapper--vertical {
   align-items: flex-start;
   flex-flow: column nowrap;
+  vertical-align: middle;
 }
 
 .material-page__radiobutton-wrapper--horizontal {
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
 }
 
 .material-page__radiobutton-item-container {
@@ -239,16 +244,20 @@
 // Checkbox
 .material-page__checkbox-wrapper {
   align-items: center;
+  background: lighten($taskfield-border-color,30%);
   display: inline-flex;
+  margin: 4px;
+  padding: 4px;
 }
 
 .material-page__checkbox-wrapper--vertical {
   align-items: flex-start;
   flex-flow: column nowrap;
+  vertical-align: middle;
 }
 
 .material-page__checkbox-wrapper--horizontal {
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
 }
 
 .material-page__checkbox-item-container {
@@ -281,183 +290,602 @@
   }
 }
 
+// Memo field
+.material-page__memofield-wrapper {
+
+  .cke { // This needs to be here so we can override the ckeditor's visuals partly
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    margin: 4px 0 0;
+  }
+}
+
+.material-page__memofield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+  line-height: 1.25rem;
+  margin: 4px 0 0;
+  padding: 4px 8px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
+  }
+}
 
 // File field
 .material-page__filefield-wrapper {
   
 }
 
+.material-page__filefield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+  margin: 4px 0 0;
+  position: relative;
+  width: 100%;
+
+  > input[type="file"] {
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
 .material-page__filefield-description {
-  
+  padding: 15px 10px;
+  text-align: center;
 }
 
 .material-page__filefield-files-container {
-  
+  border-top: 3px dotted lighten($taskfield-border-color,20%);
+  position: relative;
 }
 
-.material-page__filefield-clip {
+.material-page__filefield-file-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 5px;
+  padding: 0 5px;
+  transition: all 0.3s ease-in-out;
+
+  // These links needs to be nested here as rich-text css rules overrides them if not
+  .material-page__filefield-remove-file-button {
+    background: transparent;
+    color: $color-fatal;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+  }
   
+  .material-page__filefield-download-file-button {
+    background: transparent;
+    color: $color-info;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+  }
 }
 
-.material-page__filefield-remove-file-button {
-  
+.material-page__filefield-file {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  &.material-page__filefield-file--FAILED-TO-UPLOAD {
+    color: $color-fatal;
+    font-style: italic;
+  }
+}
+
+.material-page__filefield-file-upload-progressbar {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+}
+
+.material-page__filefield-file-upload-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
 }
 
 // Audio field
 .material-page__audiofield-wrapper {
-  
+
 }
 
 .material-page__audiofield {
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  margin: 4px 0 0;
+  position: relative;
+  width: 100%;
 }
 
-.material-page__audiofield-clips-container {
-  
+.material-page__audiofield-files-container {
+  border-top: 3px dotted lighten($taskfield-border-color,20%);
 }
 
-.material-page__audiofield-clip {
-  
+.material-page__audiofield-file-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 10px 5px;
+  padding: 0 5px;
+  transition: all 0.3s ease-in-out;
+
+  // These links needs to be nested here as rich-text css rules overrides them if not
+  .material-page__audiofield-remove-file-button {
+    background: transparent;
+    color: $color-fatal;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+  }
+
+  .material-page__audiofield-download-file-button {
+    background: transparent;
+    color: $color-info;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+  }
 }
 
-.material-page__audiofield-remove-clip-button {
-  
+.material-page__audiofield-file {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: 1.75rem;
+}
+
+.material-page__audiofield-file--recording,
+.material-page__audiofield-file--uploading {
+  height: auto;
+}
+
+.material-page__audiofield-file-record-progressbar {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  height: auto;
+}
+
+.material-page__audiofield-file-upload-progressbar {
+  @include text;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  height: auto;
+}
+
+.material-page__audiofield-file-record-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
+}
+
+.material-page__audiofield-file-upload-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
 }
 
 .material-page__audiofield-controls {
-  
-}
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding: 15px 10px;
 
-.material-page__audiofield-start-record-button {
+  .material-page__audiofield-start-record-button,
+  .material-page__audiofield-stop-record-button {
+    align-items: center;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row nowrap;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 10px;
+    padding: 4px 6px;
+    text-decoration: none;
+  }
   
-}
-
-.material-page__audiofield-start-record-label {
+  // We set the record/stop buttons colors here
+  .material-page__audiofield-start-record-button {
+    border: 1px solid $color-recording;
+    color: $color-recording;
+  }
   
-}
-
-.material-page__audiofield-stop-record-button {
+  .material-page__audiofield-stop-record-button {
+    border: 1px solid $color-default-contrast;
+    color: $color-default-contrast;
+  }
   
-}
+  .material-page__audiofield-start-record-label,
+  .material-page__audiofield-stop-record-label {
+    @include text;
+    padding: 0 0 0 4px;
+  }
 
-.material-page__audiofield-stop-record-label {
-  
-}
+  // We set the resord/stop labels colors here
+  .material-page__audiofield-start-record-label {
+    color: $color-recording;
+  }
 
-.material-page__audiofield-description {
-  
-}
+  .material-page__audiofield-stop-record-label {
+    color: $color-default-contrast;
+  }
 
+  .material-page__audiofield-description {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 5px 0;
+  }
+}
 
 // Sorter field
 .material-page__sorterfield-wrapper {
-  
+  display: block;
+  margin: 4px 0;
 }
 
 .material-page__sorterfield {
-  
+  display: flex;
+}
+
+.material-page__sorterfield--vertical {
+  align-items: flex-start;
+  border-left: 1px solid lighten($taskfield-border-color,10%);
+  flex-flow: column nowrap;
+  padding: 0 0 0 5px;
+}
+
+.material-page__sorterfield--horizontal {
+  align-items: center;
+  border-bottom: 1px solid lighten($taskfield-border-color,10%);
+  display: inline-flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  padding: 0 0 5px;
 }
 
 .material-page__sorterfield-item {
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  align-items: center;
+  cursor: grab;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 4px;
+  user-select: none;
 }
 
-.aterial-page__sorterfield-item--selected {
-  
+.material-page__sorterfield-item--selected {
+  background: $taskfield-border-color;
+  color: $color-default;
+  font-weight: 400;
+
+  .material-page__sorterfield-item-icon {
+    background: transparent;
+    color: $color-default;
+  }
+}
+
+.material-page__sorterfield-item-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+.material-page__sorterfield-item-label {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  margin: 0 8px 0 0;
 }
 
 // Organizer field
 .material-page__organizerfield-wrapper {
-  
+  margin: 4px 0;
 }
 
 .material-page__organizerfield {
-  
+  // Not empty
 }
 
 .material-page__organizerfield-terms { // Wrapper for terms
-  
+  // Not empty
 }
 
 .material-page__organizerfield-terms-title { // Title of draggable terms
-  
+  font-weight: 400;
+  padding: 0 4px;
 }
 
 .material-page__organizerfield-terms-container { // Container for draggable terms
-  
+  // Not empty
 }
 
 .material-page__organizerfield-term { // Single draggable term
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  align-items: center;
+  cursor: grab;
+  display: inline-flex;
+  flex-flow: row nowrap;
+  margin: 4px;
+  user-select: none;
+}
+
+.material-page__organizerfield-term--selected { // Single draggable term in SELEDTED state
+  background: $taskfield-border-color;
+  color: $color-default;
+  font-weight: 400;
+
+  .material-page__organizerfield-term-icon {
+    color: $color-default;
+  }
+}
+
+.material-page__organizerfield-term--in-use { // Single draggable term in IN USE state
+  background: lighten($taskfield-border-color,25%);
+}
+
+.material-page__organizerfield-term--no-dragging { // Single term in NO DRAGGING state a.k.a term is placed in target container
+  background: lighten($taskfield-border-color,25%);
+  cursor: default;
+
+  .material-page__organizerfield-term-icon {
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 8px;
+  }
+
+  .material-page__organizerfield-term-label {
+    margin: 0 0 0 8px;
+  }
+}
+
+.material-page__organizerfield-term-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+.material-page__organizerfield-term-label {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  margin: 0 8px 0 0;
 }
 
 .material-page__organizerfield-categories { // Wrapper for multiple categories
-  
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 5px 0 0;
+
+  @include breakpoint(pad) {
+    flex-flow: row wrap;
+  }
 }
 
 .material-page__organizerfield-category { // Wrapper for single category
-  
+  @include taskfield-defaults;
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin: 4px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 8px);
+  }
 }
 
 .material-page__organizerfield-category-title { // Title of single category
-  
+  border-bottom: 3px dotted lighten($taskfield-border-color,20%);
+  font-weight: 400;
+  padding: 4px 6px;
 }
 
 .material-page__organizerfield-category-terms-container { // Container of single category where terms can be dragged
-  
+  min-height: 100px;
+  padding: 5px;
 }
 
 // Connect field
 .material-page__connectfield-wrapper {
-  
+  // Not empty
 }
 
 .material-page__connectfield {
-  
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+
+
+  @include breakpoint(pad) {
+    flex-flow: row wrap;
+  }
 }
 
 .material-page__connectfield-terms-container {
-  
-}
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin: 4px;
 
-.material-page__connectfield-term-number {
-  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 8px);
+  }
 }
 
 .material-page__connectfield-term {
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2.5rem;
+  margin: 8px 4px;
+  position: relative;
+  user-select: none;
 }
 
-.material-page__connectfield-term-selected {
-  
+.material-page__connectfield-term-number {
+  @include text;
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $taskfield-border-color;
+  border-radius: 100%;
+  display: inline-flex;
+  height: 1.5rem;
+  justify-content: center;
+  margin: 0 0 0 -0.75rem;
+  width: 1.5rem;
 }
 
-.material-page__connectfield-term-edited {
-  
+.material-page__connectfield-term-label {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  margin: 0 8px 0 6px;
 }
 
-.material-page__connectfield-gap {
-  
+.material-page__connectfield-term--edited {
+  background: lighten($taskfield-border-color,25%);
+}
+
+// Selected needs to be defined after edited unless we want to create more complex scss inception 
+// as edited and selected modifiers can be present at the same time and we need to show visually if 
+// edited item is selected
+.material-page__connectfield-term--selected {
+  background: $taskfield-border-color;
+  color: $color-default;
+  font-weight: 400;
+
+  .material-page__connectfield-term-icon {
+    color: $color-default;
+  }
 }
 
 .material-page__connectfield-counterparts-container {
-  
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+  margin: 4px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 8px);
+  }
 }
 
 .material-page__connectfield-counterpart {
-  
+  @include taskfield-text;
+  @include taskfield-defaults;
+  align-items: center;
+  cursor: grab;
+  display: flex;
+  height: 2.5rem;
+  flex-flow: row nowrap;
+  margin: 8px 4px;
+  position: relative;
+  user-select: none;
 }
 
-.material-page__connectfield-counterpart-selected {
-  
+.material-page__connectfield-counterpart-number {
+  @include text;
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $taskfield-border-color;
+  border-radius: 100%;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  margin: 0 -0.75rem 0 0;
+  width: 1.5rem;
 }
 
-.material-page__connectfield-counterpart-edited {
-  
+.material-page__connectfield-counterpart-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+.material-page__connectfield-counterpart-label {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  margin: 0 8px 0 0;
+}
+
+.material-page__connectfield-counterpart--edited {
+  background: lighten($taskfield-border-color,25%);
+}
+
+// Selected needs to be defined after edited unless we want to create more complex scss inception 
+// as edited and selected modifiers can be present at the same time and we need to show visually if 
+// edited item is selected
+.material-page__connectfield-counterpart--selected { 
+  background: $taskfield-border-color;
+  color: $color-default;
+  font-weight: 400;
+
+  .material-page__connectfield-counterpart-icon {
+    color: $color-default;
+  }
 }
 
 
 // Math field
+.material-page__mathfield-wrapper {
+  margin: 2px 0;  
+}
+
 .material-page__mathfield {
   
 }

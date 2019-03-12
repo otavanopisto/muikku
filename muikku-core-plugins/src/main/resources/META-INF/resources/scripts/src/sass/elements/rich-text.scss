@@ -7,17 +7,18 @@
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
 
-.cke_editable,
-.rich-text {
+.rich-text,
+.cke_editable {
   color: $color-text-default;
   font-family: "Open Sans", Arial, sans-serif;
   font-size: $text-mobile-font-size;
   font-weight: 400;
+  line-height: 1.25rem;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-richtext-font-size;
     font-weight: 300;
-    line-height: 1.65rem;
+    line-height: 1.75rem;
   }
 
   p {
