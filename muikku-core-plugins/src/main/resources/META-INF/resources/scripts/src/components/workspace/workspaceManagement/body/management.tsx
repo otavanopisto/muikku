@@ -12,6 +12,7 @@ import CKEditor from "~/components/general/ckeditor";
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
 import { LicenseSelector } from "~/components/general/license-selector";
+import UploadImageDialog from '../dialogs/upload-image';
 
 interface ManagementPanelProps {
   status: StatusType,
@@ -31,7 +32,18 @@ interface ManagementPanelState {
   workspaceProducers: Array<WorkspaceProducerType>,
   workspaceDescription: string,
   workspaceLicense: string,
-  currentWorkspaceProducerInputValue: string
+  workspaceHasCustomImage: boolean,
+  
+  currentWorkspaceProducerInputValue: string,
+  newWorkspaceImageSrc?: string,
+  newWorkspaceImageFile?: File,
+  newWorkspaceImageB64?: string,
+  newWorkspaceImageCombo?: {
+    file?: File,
+    originalB64?: string,
+    croppedB64: string
+  },
+  isImageDialogOpen: boolean,
 }
 
 class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPanelState> {
@@ -49,7 +61,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceProducers: props.workspace && props.workspace.producers ? props.workspace.producers : null,
       workspaceDescription: props.workspace ? props.workspace.description || "" : "",
       workspaceLicense: props.workspace ? props.workspace.materialDefaultLicense : "",
-      currentWorkspaceProducerInputValue: ""
+      workspaceHasCustomImage: props.workspace ? props.workspace.hasCustomImage : false,
+      currentWorkspaceProducerInputValue: "",
+      isImageDialogOpen: false
     }
     
     this.updateWorkspaceName = this.updateWorkspaceName.bind(this);
@@ -61,6 +75,10 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.updateCurrentWorkspaceProducerInputValue = this.updateCurrentWorkspaceProducerInputValue.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
+    this.removeCustomImage = this.removeCustomImage.bind(this);
+    this.readNewImage = this.readNewImage.bind(this);
+    this.acceptNewImage = this.acceptNewImage.bind(this);
+    this.editCurrentImage = this.editCurrentImage.bind(this);
   }
   componentWillReceiveProps(nextProps: ManagementPanelProps){
     this.setState({
@@ -74,6 +92,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceProducers: nextProps.workspace && nextProps.workspace.producers ? nextProps.workspace.producers : null,
       workspaceLicense: nextProps.workspace ? nextProps.workspace.materialDefaultLicense : "",
       workspaceDescription: nextProps.workspace ? nextProps.workspace.description || "" : "",
+      workspaceHasCustomImage: nextProps.workspace ? nextProps.workspace.hasCustomImage : false,
     });
   }
   updateWorkspaceName(e: React.ChangeEvent<HTMLInputElement>){
@@ -141,7 +160,65 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: newLicense
     });
   }
+  removeCustomImage(){
+    this.setState({
+      newWorkspaceImageCombo: null,
+      workspaceHasCustomImage: false
+    });
+  }
+  readNewImage(e: React.ChangeEvent<HTMLInputElement>){
+    let file = e.target.files[0];
+    let reader = new FileReader();
+    
+    e.target.value = "";
+    
+    reader.addEventListener("load", ()=>{
+      this.setState({
+        newWorkspaceImageB64: reader.result,
+        newWorkspaceImageFile: file,
+        isImageDialogOpen: true,
+        newWorkspaceImageSrc: null
+      })
+    }, false);
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
+  editCurrentImage(){
+    if (this.state.newWorkspaceImageCombo){
+      this.setState({
+        newWorkspaceImageSrc: null,
+        isImageDialogOpen: true,
+        newWorkspaceImageB64: this.state.newWorkspaceImageCombo.originalB64,
+        newWorkspaceImageFile: this.state.newWorkspaceImageCombo.file
+      });
+    } else if (this.props.workspace.hasCustomImage){
+      this.setState({
+        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
+        isImageDialogOpen: true,
+        newWorkspaceImageB64: null,
+        newWorkspaceImageFile: null
+      });
+    }
+  }
+  acceptNewImage(croppedB64: string, originalB64?: string, file?: File){
+    this.setState({
+      workspaceHasCustomImage: true,
+      newWorkspaceImageCombo: {
+        file,
+        originalB64,
+        croppedB64
+      }
+    });
+  }
   render(){
+    let actualBackgroundSRC = this.state.workspaceHasCustomImage ? 
+      `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped` :
+      "/gfx/workspace-default-header.jpg";
+    if (this.state.newWorkspaceImageCombo){
+      actualBackgroundSRC = this.state.newWorkspaceImageCombo.croppedB64;
+    }
     return (<div className="panel panel--workspace-Management">
       <div className="panel__header">
         <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
@@ -157,7 +234,15 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         <section>
           <h2>{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
           <div>
-            <img src="/gfx/workspace-default-header.jpg"/>
+            <img src={actualBackgroundSRC} onClick={this.editCurrentImage}/>
+            <ButtonPill buttonAs="a" icon="edit">
+              <input name="file" type="file" accept="image/*" onChange={this.readNewImage}/>
+            </ButtonPill>
+            {this.state.workspaceHasCustomImage ? <ButtonPill icon="delete" onClick={this.removeCustomImage}/> : null}
+            <UploadImageDialog isOpen={this.state.isImageDialogOpen}
+             b64={this.state.newWorkspaceImageB64} file={this.state.newWorkspaceImageFile}
+             onClose={()=>this.setState({isImageDialogOpen: false})} src={this.state.newWorkspaceImageSrc}
+             onImageChange={this.acceptNewImage}/>
           </div>
         </section>
         <section>
@@ -212,7 +297,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           </div>
           <div>
             <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</div>
-            <select className="form-element" value={this.state.workspaceType} onChange={this.updateWorkspaceType}>
+            <select className="form-element" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
               {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
                 <option key={type.identifier} value={type.identifier}>{type.name}</option>
               )}
