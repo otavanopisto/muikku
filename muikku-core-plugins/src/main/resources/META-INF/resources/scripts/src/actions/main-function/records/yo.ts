@@ -3,7 +3,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
-import { YODataType, YOStatusType, YOMatriculationSubjectType, YOEligibilityStatusType, YOEligibilityType } from '~/reducers/main-function/records/yo';
+import { YOEnrollmentType, YOStatusType, YOMatriculationSubjectType, YOEligibilityStatusType, YOEligibilityType } from '~/reducers/main-function/records/yo';
 import { SubjectEligibilityType } from '~/reducers/main-function/records/subject_eligibility';
 
 import { updateMatriculationSubjectEligibility } from '~/actions/main-function/records/subject_eligibility';
@@ -20,11 +20,11 @@ import { StateType } from '~/reducers';
 //  if (data && data.starts <= now && data.ends >= now) {
 //    this.setState({enabled: true});
 //  }
+
 //});
 //}
 
-
-export interface UPDATE_STUDIES_YO extends SpecificActionType<"UPDATE_STUDIES_YO", YODataType> {}
+export interface UPDATE_STUDIES_YO extends SpecificActionType<"UPDATE_STUDIES_YO", YOEnrollmentType> {}
 export interface UPDATE_STUDIES_YO_ELIGIBILITY_STATUS extends SpecificActionType<"UPDATE_STUDIES_YO_ELIGIBILITY_STATUS", YOEligibilityStatusType> {}
 export interface UPDATE_STUDIES_YO_ELIGIBILITY extends SpecificActionType<"UPDATE_STUDIES_YO_ELIGIBILITY", YOEligibilityType> {}
 export interface UPDATE_STUDIES_YO_SUBJECTS extends SpecificActionType<"UPDATE_STUDIES_YO_SUBJECTS", YOMatriculationSubjectType> {}
@@ -45,11 +45,18 @@ let updateYO:updateYOTriggerType = function updateYO() {
     
     let now: Number = new Date().getTime();
     
-    let examAvailable = examAvailableDate && examAvailableDate.starts <= now && examAvailableDate.ends >= now ? {examAvailable : true} : {examAvailable : false};
+    let examAvailable = examAvailableDate && examAvailableDate.starts <= now && examAvailableDate.ends >= now ? true : false;
+
+    let matriculationExamData = {
+       available :  examAvailable,
+       starts : new Date(examAvailableDate.starts).toLocaleDateString("fi-FI"),
+       ends : new Date(examAvailableDate.ends).toLocaleDateString("fi-FI")
+    };
     
+
       dispatch({
         type: 'UPDATE_STUDIES_YO',
-        payload: examAvailable
+        payload: matriculationExamData
       });
       
       dispatch({
