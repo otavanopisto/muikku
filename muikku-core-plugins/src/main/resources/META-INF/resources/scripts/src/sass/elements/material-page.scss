@@ -64,6 +64,65 @@
   margin: 20px 0 0;
 }
 
+// IMAGE as FIGURE
+.image {
+  line-height: 1;
+  margin: 5px;
+  position: relative;
+  
+  figcaption {
+    background: lighten($color-workspace,45%);
+    color: $color-text-default;
+    font-family: $text-font-family;
+    font-size: $text-mobile-font-size;
+    padding: 10px;
+  }
+  
+  .image__details {
+    position: absolute;
+    left: auto;
+    right: 0;
+    top: 0;
+
+    &::before {
+      background: $color-info;
+      border-radius: 100%;
+      color: $color-default;
+      cursor: help;
+      font-size: 1.625rem;
+      float: right;
+      line-height: 1;
+      margin: 5px 5px;
+      padding: 1px;
+    }
+  }
+
+  .image__details:hover {
+    left: 0;
+
+    .image__details-container {
+      display: block;
+    }
+  }
+
+  .image__details-container {
+    background: $color-default;
+    color: $color-text-default;
+    display: none;
+    font-family: $text-font-family;
+    font-size: $text-mobile-font-size;
+    font-weight: 400;
+    margin: 2.25rem 0 0;
+    opacity: 0.9;
+    padding: 15px 10px;
+  }
+  
+  .image__details-label {
+    padding: 0 5px 0 0;
+  }
+  
+}
+
 // CORRECT ANSWERS
 .material-page__correct-answers {
   align-items: center;
