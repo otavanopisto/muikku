@@ -74,7 +74,7 @@ class YO extends React.Component<YOProps, YOState> {
         <div className="application-sub-panel application-sub-panel--yo-status-container">
           <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.abiStatus.title")}</div>
   
-          {this.props.yo.eligibility != null ? this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
+          {this.props.yo.eligibility != null ? this.props.yo.eligibilityStatus == "ELIGIBLE" ?
               <div>
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
                   <div className="application-sub-panel__notification-item">
@@ -89,7 +89,7 @@ class YO extends React.Component<YOProps, YOState> {
                   </div>
                 </div>              
               </div> :                 
-              this.props.yo.eligibilityStatus == "ELIGIBLE" ?
+              this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete">
