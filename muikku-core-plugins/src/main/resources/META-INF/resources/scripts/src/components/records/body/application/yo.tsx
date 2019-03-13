@@ -17,7 +17,6 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import moment from '~/lib/moment';
 import '~/sass/elements/buttons.scss';
-import { MatriculationLink } from './matriculation-link';
 import MatriculationEligibilityRow from './matriculation-eligibility-row/matriculation-eligibility-row';
 import {updateMatriculationSubjectEligibility, UpdateMatriculationSubjectEligibilityTriggerType} from '~/actions/main-function/records/subject_eligibility';
 import promisify from "~/util/promisify";
