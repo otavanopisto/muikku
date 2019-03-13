@@ -81,9 +81,9 @@ class YO extends React.Component<YOProps, YOState> {
                     <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
                     <div className="application-sub-panel__notification-footer">
                       {this.props.yo.value.examAvailable == true ? 
-                        <Button href="/matriculation-enrollment" title="test" className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp")}</Button>
+                        <Button href="/matriculation-enrollment" title="test" className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active")}</Button>
                       : 
-                        <Button className="button button--yo-signup" title="test" disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp")}</Button>  
+                        <Button className="button button--yo-signup" title="test" disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp.disabled")}</Button>  
                       }
                     </div>
                   </div>
