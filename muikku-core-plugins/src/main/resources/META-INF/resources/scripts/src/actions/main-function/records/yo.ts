@@ -10,20 +10,6 @@ import { updateMatriculationSubjectEligibility } from '~/actions/main-function/r
 
 import { StateType } from '~/reducers';
 
-
-//.callback((err: any, data: CurrentExam) => {
-//  if (err) {
-//    console.log(err);
-//    return;
-//  }
-//  const now : Number = new Date().getTime();
-//  if (data && data.starts <= now && data.ends >= now) {
-//    this.setState({enabled: true});
-//  }
-
-//});
-//}
-
 export interface UPDATE_STUDIES_YO extends SpecificActionType<"UPDATE_STUDIES_YO", YOEnrollmentType> {}
 export interface UPDATE_STUDIES_YO_ELIGIBILITY_STATUS extends SpecificActionType<"UPDATE_STUDIES_YO_ELIGIBILITY_STATUS", YOEligibilityStatusType> {}
 export interface UPDATE_STUDIES_YO_ELIGIBILITY extends SpecificActionType<"UPDATE_STUDIES_YO_ELIGIBILITY", YOEligibilityType> {}
