@@ -800,8 +800,7 @@ class App extends React.Component {
             term: attendance.term ? attendance.term.substring(0,6) : null,
             status: attendance.status,
             grade: attendance.grade
-          })),
-          state: null
+          }))
         }
       )
     }).then(function (response) {
