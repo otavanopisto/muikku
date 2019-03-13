@@ -4,9 +4,12 @@ export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 
 export interface YODataType{
-  studyStartDate: string,
-  studyTimeEnd: string,
-  studyEndDate: string,
+ examAvailable: boolean
+}
+
+export interface YOExamAvailableType {
+  starts: Number;
+  ends: Number;
 }
 
 export interface YOEligibilityType {

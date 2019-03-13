@@ -5,7 +5,7 @@ import * as queryString from 'query-string';
 import { i18nType } from '~/reducers/base/i18n';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
-import Link from '~/components/general/link';
+import Button from '~/components/general/button';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 import { HOPSType } from "~/reducers/main-function/hops";
@@ -17,6 +17,7 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import moment from '~/lib/moment';
 import '~/sass/elements/buttons.scss';
+import { MatriculationLink } from './matriculation-link';
 import MatriculationEligibilityRow from './matriculation-eligibility-row/matriculation-eligibility-row';
 import {updateMatriculationSubjectEligibility, UpdateMatriculationSubjectEligibilityTriggerType} from '~/actions/main-function/records/subject_eligibility';
 import promisify from "~/util/promisify";
@@ -73,18 +74,22 @@ class YO extends React.Component<YOProps, YOState> {
         <div className="application-sub-panel application-sub-panel--yo-status-container">
           <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.abiStatus.title")}</div>
   
-          {this.props.yo.eligibility != null ? this.props.yo.eligibilityStatus == "ELIGIBLE" ?
+          {this.props.yo.eligibility != null ? this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
               <div>
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
                     <div className="application-sub-panel__notification-footer">
-                      <Link href="/jsf/matriculation/index.jsf" className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp")}</Link>
+                      {this.props.yo.value.examAvailable == true ? 
+                        <Button href="/matriculation-enrollment" title="test" className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp")}</Button>
+                      : 
+                        <Button className="button button--yo-signup" title="test" disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp")}</Button>  
+                      }
                     </div>
                   </div>
                 </div>              
               </div> :                 
-              this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
+              this.props.yo.eligibilityStatus == "ELIGIBLE" ?
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete">

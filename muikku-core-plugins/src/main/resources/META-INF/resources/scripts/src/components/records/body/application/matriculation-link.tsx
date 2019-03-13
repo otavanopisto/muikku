@@ -24,17 +24,18 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
   }
 
   public componentDidMount() {
+    mApi().matriculation.currentExam.read({}).callback((err: any, data: CurrentExam) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      const now : Number = new Date().getTime();
+      if (data && data.starts <= now && data.ends >= now) {
+        this.setState({enabled: true});
+      }
+    });
+
     if ("matriculation" in mApi()) {
-      mApi().matriculation.currentExam.read({}).callback((err: any, data: CurrentExam) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        const now : Number = new Date().getTime();
-        if (data && data.starts <= now && data.ends >= now) {
-          this.setState({enabled: true});
-        }
-      });
     }
   }
 
@@ -43,7 +44,7 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
         return null;
     }
     return <div className="application-sub-panel application-sub-panel--matriculation-enrollment">
-      <a className="link link--matriculation-enrollment" href="/matriculation-enrollment">{this.props.i18n.text.get("plugin.records.matriculationLink")}</a>
+      <a className="button button--yo-signup" href="/matriculation-enrollment">{this.props.i18n.text.get("plugin.records.yo.button.signUp")}</a>
     </div>
   }
 
