@@ -152,6 +152,8 @@ export interface WorkspaceDetailsType {
   typeId: string
 }
 
+export type WorkspaceAccessType = "MEMBERS_ONLY" | "LOGGED_IN" | "ANYONE";
+
 export interface WorkspaceType {
   archived: boolean,
   description: string,
@@ -167,7 +169,7 @@ export interface WorkspaceType {
 
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
-  access?: string,
+  access?: WorkspaceAccessType,
   curriculumIdentifiers?: Array<string>,
   subjectIdentifier?: string | number,
 
@@ -210,7 +212,7 @@ export interface WorkspaceUpdateType {
   numVisits?: number,
   published?: boolean,
   urlName?: string,
-  access?: string,
+  access?: WorkspaceAccessType,
   curriculumIdentifiers?: Array<string>,
   subjectIdentifier?: string | number,
 

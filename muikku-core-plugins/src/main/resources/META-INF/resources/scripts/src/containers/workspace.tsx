@@ -370,7 +370,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.websocket.restoreEventListeners();
       
       let state = this.props.store.getState();
-      this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
+      this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.management.pageTitle')));
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
       this.props.store.dispatch(setCurrentWorkspace({
         workspaceId: state.status.currentWorkspaceId,
