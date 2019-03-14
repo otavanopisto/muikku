@@ -41,7 +41,7 @@
   }
 }
 
-.ordered-container--frontpage-otavan-opisto-info {
+.ordered-container--frontpage-organization-info {
   justify-content: center;
 
   @include breakpoint($breakpoint-pad) {
@@ -167,7 +167,7 @@
 }
 
 .ordered-container__subcontainer-content {
-  color: $color-frontpage-text-otavan-opisto-description;
+  color: $color-frontpage-text-organization-description;
   font-family: $text-branded-font-family;  
   font-size: $text-mobile-font-size;
   font-weight: 400;
@@ -182,7 +182,7 @@
   }
 }
 
-.ordered-container__item-subcontainer--otavan-opisto-social-media {
+.ordered-container__item-subcontainer--organization-social-media {
   margin-top: 1.5rem;
 
   @include breakpoint($breakpoint-pad) {
@@ -190,7 +190,7 @@
   }
 }
 
-.ordered-container__item-subcontainer--otavan-opisto-description {
+.ordered-container__item-subcontainer--organization-description {
   margin-top: 1.5rem;
 
   @include breakpoint($breakpoint-desktop) {
@@ -198,7 +198,7 @@
   }
 }
 
-.ordered-container__subcontainer-content--otavan-opisto-description {
+.ordered-container__subcontainer-content--organization-description {
   font-size: 1rem;
 
   @include breakpoint($breakpoint-desktop) {
@@ -207,7 +207,7 @@
 }
 
 .ordered-container__subcontainer-header--social-media {
-  color: $color-frontpage-text-otavan-opisto-info-title;
+  color: $color-frontpage-text-organization-info-title;
   font-family: $text-branded-font-family;  
   font-size: $text-mobile-font-size;
   font-weight: 600;
@@ -308,7 +308,7 @@
   }
 }
 
-.ordered-container__item--otavan-opisto-logo {
+.ordered-container__item--organization-logo {
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 0;
@@ -329,7 +329,7 @@
   }
 }
 
-.ordered-container__item--otavan-opisto-social-media {
+.ordered-container__item--organization-social-media {
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 0;
@@ -351,7 +351,7 @@
   }
 }
 
-.ordered-container__item--otavan-opisto-description {
+.ordered-container__item--organization-description {
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 0;

@@ -10,7 +10,6 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/workspace-activity.scss';
 import '~/sass/elements/file-uploader.scss';
-
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
@@ -19,6 +18,7 @@ import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
+import { MatriculationLink } from './matriculation-link';
 
 let ProgressBarLine = require('react-progressbar.js').Line;
 
@@ -103,10 +103,10 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
     return <div className="activity-badge">
         {workspace.studentActivity.evaluablesTotal ? <div  title={props.i18n.text.get("plugin.records.workspace.activity.assignment.title", workspace.studentActivity.evaluablesDonePercent)} className="activity-badge__item activity-badge__item--assignment">
           <div className={"activity-badge__unit-bar activity-badge__unit-bar--" + workspace.studentActivity.evaluablesDonePercent}></div>
-        </div>  : null}    
+        </div>  : <div className="activity-badge__item activity-badge__item--empty"></div> }    
         {workspace.studentActivity.exercisesTotal ? <div title={props.i18n.text.get("plugin.records.workspace.activity.exercise.title", workspace.studentActivity.exercisesDonePercent)} className="activity-badge__item activity-badge__item--exercise">
           <div className={"activity-badge__unit-bar activity-badge__unit-bar--" + workspace.studentActivity.exercisesDonePercent}></div>
-        </div> : null}
+        </div> : <div className="activity-badge__item activity-badge__item--empty"></div>}
       </div>
 }
 
@@ -230,10 +230,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           </div>
         })}
       </div>  
-
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
     
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
+    <MatriculationLink i18n={this.props.i18n} />
     <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.records.title")}</div>
     {studentRecords}
     <div className="application-sub-panel">
@@ -255,18 +255,15 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     </BodyScrollKeeper>
   }
 }
-
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     records: state.records
   }
 };
-
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps

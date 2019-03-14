@@ -54,9 +54,9 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
   
   render() {
     return (
-       <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-egilibility" title={this.getEligibleTooltip()}>
+       <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-eligibility" title={this.getEligibleTooltip()}>
         <div className="application-sub-panel__summary-item-label">{this.getName()}</div>
-        <div className={`application-sub-panel__summary-item-state application-sub-panel__summary-item-state--${this.props.subjectEligibility.egilibility == "ELIGIBLE" ? "eligible" : "not-eligible" }`}>{this.state.loading ? this.props.i18n.text.get("plugin.records.hops.matriculationEligibleLoading") : (this.getEligibleText())}</div>
+        <div className={`application-sub-panel__summary-item-state application-sub-panel__summary-item-state--${this.props.subjectEligibility.eligibility == "ELIGIBLE" ? "eligible" : "not-eligible" }`}>{this.state.loading ? this.props.i18n.text.get("plugin.records.hops.matriculationEligibleLoading") : (this.getEligibleText())}</div>
       </div>
     );
   }
@@ -78,7 +78,7 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
    */
   
   getEligibleText(): string {
-    switch (this.props.subjectEligibility.egilibility) { 
+    switch (this.props.subjectEligibility.eligibility) { 
       case "ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.true.short");
       case "NOT_ELIGIBLE":
@@ -103,7 +103,7 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
     if (this.state.loading) {
       return "";
     }
-    switch (this.props.subjectEligibility.egilibility) {
+    switch (this.props.subjectEligibility.eligibility) {
       case "ELIGIBLE":
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.true");
       case "NOT_ELIGIBLE":

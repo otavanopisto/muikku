@@ -379,6 +379,9 @@ public class UserSchoolDataController {
   }
 
   public LocalDate getLatestStudentEnrollmentDate(SchoolDataIdentifier studentIdentifier) {
+    logger.severe("getLatestStudentEnrollmentDate unimplemented");
+    return null;
+    /*
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
@@ -390,6 +393,7 @@ public class UserSchoolDataController {
     } else {
       return null;
     }
+    */
   }
 
 }

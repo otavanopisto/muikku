@@ -169,7 +169,12 @@
   font-size: 1.5rem;
   font-weight: 300;
   margin-bottom: 20px;
+  margin-left: 10px;
   text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-left: 0;
+  }
 }
 
 // Helper containers

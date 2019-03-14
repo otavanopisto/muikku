@@ -5,7 +5,7 @@ import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
-
+import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import HopsGraph from '~/components/base/hops_editable';

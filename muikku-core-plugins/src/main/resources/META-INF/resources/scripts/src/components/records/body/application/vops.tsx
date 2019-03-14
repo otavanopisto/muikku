@@ -1,10 +1,12 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
+// import { MatriculationLink } from './matriculation-link';
 
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
+import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/application-list.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
@@ -34,6 +36,8 @@ class Vops extends React.Component<VopsProps, VopsState> {
     }
     return <div>
       <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
+    
+    {/* 
       <div className="application-sub-panel">
         <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
           <div className="application-sub-panel__item application-sub-panel__item--summarizer">
@@ -65,9 +69,10 @@ class Vops extends React.Component<VopsProps, VopsState> {
           </div>
         </div>
       </div>
-*/}
+
+    */}  
       <VopsGraph/>
-  {/*
+    {/*
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.plannedWorkspaces.title")}</div>
         <div className="application-sub-panel__body application-list">
@@ -88,7 +93,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
         </div>
       </div>       
   */}
-    </div>   
+    </div>
   }
 }
 

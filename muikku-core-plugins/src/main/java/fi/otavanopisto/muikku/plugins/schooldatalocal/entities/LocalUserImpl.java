@@ -7,10 +7,10 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 
 public class LocalUserImpl  extends AbstractUser implements User {
 
-  public LocalUserImpl(String identifier, String firstName, String lastName, String nickName, String displayName,
+  public LocalUserImpl(String identifier, String firstName, String lastName, String ssn, String nickName, String displayName,
       String studyProgrammeName, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, String curriculumIdentifier) {
-    super(identifier, firstName, lastName, nickName, displayName, studyProgrammeName, nationality, language, municipality, school,
+    super(identifier, firstName, lastName, ssn, nickName, displayName, studyProgrammeName, nationality, language, municipality, school,
         studyStartDate, studyEndDate, studyTimeEnd, false, false, curriculumIdentifier);
   }
 

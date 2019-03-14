@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -55,24 +56,7 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     return persist(supplementationRequest);
   }
   
-  public SupplementationRequest findByStudentAndWorkspace(Long studentEntityId, Long workspaceEntityId) {
-    EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
-    Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
-        criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceEntityId), workspaceEntityId)
-      )
-    );
-
-    return getSingleResult(entityManager.createQuery(criteria));
-  }
-
-  public SupplementationRequest findByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
+  public List<SupplementationRequest> listByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -87,27 +71,10 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
       )
     );
     
-    return getSingleResult(entityManager.createQuery(criteria));
+    return entityManager.createQuery(criteria).getResultList();
   }
   
-  public SupplementationRequest findByStudentAndWorkspaceMaterial(Long studentEntityId, Long workspaceMaterialId) {
-    EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<SupplementationRequest> criteria = criteriaBuilder.createQuery(SupplementationRequest.class);
-    Root<SupplementationRequest> root = criteria.from(SupplementationRequest.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(SupplementationRequest_.studentEntityId), studentEntityId),
-        criteriaBuilder.equal(root.get(SupplementationRequest_.workspaceMaterialId), workspaceMaterialId)
-      )
-    );
-
-    return getSingleResult(entityManager.createQuery(criteria));
-  }
-
-  public SupplementationRequest findByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
+  public List<SupplementationRequest> listByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -122,7 +89,7 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
       )
     );
     
-    return getSingleResult(entityManager.createQuery(criteria));
+    return entityManager.createQuery(criteria).getResultList();
   }
 
   public void archive(SupplementationRequest supplementationRequest) {

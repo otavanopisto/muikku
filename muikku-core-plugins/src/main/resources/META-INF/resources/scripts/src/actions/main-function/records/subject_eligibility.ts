@@ -17,7 +17,7 @@ let updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityT
     try {
       let subjectEligibility:any = await promisify(mApi().records.matriculationEligibility.read({"subjectCode" : subjectCode}), 'callback')();
       let subjectEligibilityData = {
-          egilibility: subjectEligibility.eligible ? <EligibleStatusType>"ELIGIBLE" : <EligibleStatusType>"NOT_ELIGIBLE",
+          eligibility: subjectEligibility.eligible ? <EligibleStatusType>"ELIGIBLE" : <EligibleStatusType>"NOT_ELIGIBLE",
           requiredCount: subjectEligibility.requirePassingGrades,
           acceptedCount: subjectEligibility.acceptedCourseCount + subjectEligibility.acceptedTransferCreditCount,
           loading: false
@@ -31,7 +31,7 @@ let updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityT
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.yo.errormessage.yoUpdateFailed"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.yo.errormessage.eligibilityUpdateFailed"), 'error'));
     }
   }
 } 

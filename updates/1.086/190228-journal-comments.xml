@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  
+  <sql>create table WorkspaceJournalComment (id bigint not null auto_increment, archived bit not null, comment longtext, created datetime not null, creator_id bigint, journalEntry_id bigint, parent_id bigint, primary key (id));</sql>
+  <sql>alter table WorkspaceJournalComment add constraint FKm6ktws820ud1n282ehyxba6to foreign key (journalEntry_id) references WorkspaceJournalEntry (id);</sql>
+  <sql>alter table WorkspaceJournalComment add constraint FKmbnp28mdlm6gf6jk3i4q9odsv foreign key (parent_id) references WorkspaceJournalComment (id);</sql>
+
+</update>

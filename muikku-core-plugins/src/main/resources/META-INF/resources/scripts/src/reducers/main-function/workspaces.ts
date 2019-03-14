@@ -36,7 +36,7 @@ export interface WorkspaceForumStatisticsType {
   latestMessage: string //represents a date
 }
 
-export interface WorkspaceStudentAssessmentType {
+export interface WorkspaceStudentAssessmentType {
   assessorEntityId: number,
   evaluated: string,
   gradeIdentifier: string,

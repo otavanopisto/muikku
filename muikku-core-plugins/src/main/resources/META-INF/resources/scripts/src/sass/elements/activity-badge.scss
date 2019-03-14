@@ -37,10 +37,20 @@ $progress-units: 100;
   }
 }
 
+.activity-badge__item--empty {
+  border: 1px solid $color-default-item-separator-border;
+
+  .activity-badge__unit-bar {
+    background-color: $color-assignment;
+  }
+}
+
 .activity-badge__unit-bar {
   background-color: $color-default-contrast;
   width: 100%;
 }
+
+
 
 @for $i from 1 through $progress-units {
 
