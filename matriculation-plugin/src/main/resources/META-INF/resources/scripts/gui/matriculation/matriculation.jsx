@@ -684,12 +684,18 @@ class App extends React.Component {
   }
 
   /**
-   * Returns count of attendances in finnish courses 
+   * Returns count of attendances in finnish courses.
+   * 
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
    * 
    * @returns count of attendances in finnish courses
    */
   getAmountOfFinnishAttendances() {
     return this.getAttendances().filter((attendance) => {
+      if (attendance.grade == "IMPROBATUR") {
+        return false;
+      }
+
       return FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
@@ -697,10 +703,16 @@ class App extends React.Component {
   /**
    * Returns count of attendances in mandatory courses 
    * 
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
+   * 
    * @returns count of attendances in mandatory courses
    */
   getAmountOfMandatoryAttendances() {
     return this.getAttendances().filter((attendance) => {
+      if (attendance.grade == "IMPROBATUR") {
+        return false;
+      }
+
       return attendance.mandatory === "true";
     }).length;
   }
@@ -708,10 +720,16 @@ class App extends React.Component {
   /**
    * Returns count of attendances in academic subjects 
    * 
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
+   * 
    * @returns count of attendances in academic subjects
    */
   getAmountOfAcademicSubjectAttendances() {
     return this.getAttendances().filter((attendance) => {
+      if (attendance.grade == "IMPROBATUR") {
+        return false;
+      }
+
       return attendance.mandatory === "true" && ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
@@ -719,10 +737,16 @@ class App extends React.Component {
   /**
    * Returns whether user has valid amount of attendances in mandatory advanced subjects 
    * 
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
+   * 
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
   getAmountOfMandatoryAdvancedSubjectAttendances() {
     return this.getAttendances().filter((attendance) => {
+      if (attendance.grade == "IMPROBATUR") {
+        return false;
+      }
+
       return attendance.mandatory === "true" && ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
