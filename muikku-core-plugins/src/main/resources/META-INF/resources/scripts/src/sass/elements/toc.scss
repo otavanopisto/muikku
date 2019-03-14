@@ -66,6 +66,17 @@
 
 .toc__item--answered {
   
+  .toc__icon {
+    align-items: center;
+    background: $color-info;
+    border: 1px solid $color-default;
+    border-radius: 100%;
+    color: $color-default;
+    display: inline-flex;
+    height: 1.25rem;
+    justify-content: center;
+    width: 1.25rem;
+  }
 }
 
 .toc__item--withdrawn {
@@ -101,8 +112,7 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  font-size: $item-list-icon-font-size;
-  padding: 3px 0 0;
+  font-size: 0.8125rem;
 }
 
 
