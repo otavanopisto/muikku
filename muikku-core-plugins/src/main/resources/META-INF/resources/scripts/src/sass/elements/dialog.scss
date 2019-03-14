@@ -49,6 +49,10 @@
   }
 }
 
+.dialog--upload-header-image .dialog__window {
+  max-width: none;
+}
+
 .dialog__container {
   align-items: flex-start;
   display: flex;

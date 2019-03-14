@@ -153,6 +153,12 @@ const LICENSES: Array<LicenseType> = [
   {
     id: "text",
     i18n: "TODO i18n text",
+    validate: (value: string)=>typeof value === "string"
+  },
+  {
+    id: "none",
+    i18n: "TODO i18n no license",
+    value: ()=>null,
     validate: ()=>true
   }
 ]
@@ -192,7 +198,7 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
     let newLicense = LICENSES.find(v=>v.id === e.target.value);
     
     let newPropertyValues = newLicense.propertiesDefault ? newLicense.propertiesDefault : {};
-    this.props.onChange(newLicense.value(newPropertyValues));
+    this.props.onChange(newLicense.value ? newLicense.value(newPropertyValues) : "");
   }
   setAPropertyAndTriggerChange(properties: any, propertyId: string, e: React.ChangeEvent<HTMLInputElement>){
     let currentLicense = LICENSES.find(v=>v.validate(this.props.value));
@@ -228,7 +234,7 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
            <h4>{this.props.i18n.text.get(property.i18n)}</h4>
            <div>
              {property.values.map((v, index)=><span key={index}>
-               <input type="radio" name={property.id} value={v.value || ""}
+               <input type="radio" className="form-element" name={property.id} value={v.value || ""}
                 checked={currentPropertyValues[property.id] === v.value}
                 onChange={this.setAPropertyAndTriggerChange.bind(this, currentPropertyValues, property.id)}/>
                {this.props.i18n.text.get(v.i18n)}
