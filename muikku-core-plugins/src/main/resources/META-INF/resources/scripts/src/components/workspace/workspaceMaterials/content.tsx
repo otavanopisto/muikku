@@ -48,68 +48,66 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       return null;
     }
 
-    return <Toc>
+    return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
-      {
-        this.props.materials.map((node)=>{
-          return <TocTopic name={node.title} key={node.workspaceMaterialId}>
-            {node.children.map((subnode)=>{
-              let isAssignment = subnode.assignmentType === "EVALUATED";
-              let isExercise = subnode.assignmentType === "EXERCISE";
-              let isNormalPage = subnode.assignmentType === null;
+      {this.props.materials.map((node)=>{
+        return <TocTopic name={node.title} key={node.workspaceMaterialId} className="toc__section-container">
+          {node.children.map((subnode)=>{
+            let isAssignment = subnode.assignmentType === "EVALUATED";
+            let isExercise = subnode.assignmentType === "EXERCISE";
+            let isNormalPage = subnode.assignmentType === null;
 
-              //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
-              let modifier = isAssignment ? "assignment" : (isExercise ? "exercise" : null);
-              let icon:string = null;
-              let iconTitle:string = null;
-              let className:string = null;
+            //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
+            let modifier = isAssignment ? "assignment" : (isExercise ? "exercise" : null);
+            let icon:string = null;
+            let iconTitle:string = null;
+            let className:string = null;
 
-              let compositeReplies = this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === subnode.workspaceMaterialId);
-              if (compositeReplies){
-                switch (compositeReplies.state){
-                  case "ANSWERED":
-                    icon = "checkmark"
-                    className = "toc__item--answered"
-                    iconTitle = this.props.i18n.text.get("plugin.workspace.materials.exerciseDoneTooltip");
-                    break;
-                  case "SUBMITTED":
-                    icon = "checkmark"
-                    className = "toc__item--submitted"
-                    iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentDoneTooltip");
-                    break;
-                  case "WITHDRAWN":
-                    icon = "checkmark"
-                    className = "toc__item--withdrawn"
-                    iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentWithdrawnTooltip");
-                    break;
-                  case "INCOMPLETE":
-                    icon = "thumb-down-alt"
-                    className = "toc__item--incomplete"
-                    iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentIncompleteTooltip");
-                    break;
-                  case "FAILED":
-                    icon = "thumb-down-alt"
-                    className = "toc__item--failed"
-                    iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentFailedTooltip");
-                    break;
-                  case "PASSED":
-                    icon = "thumb-up-alt"
-                    className = "toc__item--passed"
-                    iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentPassedTooltip");
-                    break;
-                  case "UNANSWERED":
-                  default:
-                    break;
-                }
+            let compositeReplies = this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === subnode.workspaceMaterialId);
+            if (compositeReplies){
+              switch (compositeReplies.state){
+                case "ANSWERED":
+                  icon = "checkmark"
+                  className = "toc__item--answered"
+                  iconTitle = this.props.i18n.text.get("plugin.workspace.materials.exerciseDoneTooltip");
+                  break;
+                case "SUBMITTED":
+                  icon = "checkmark"
+                  className = "toc__item--submitted"
+                  iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentDoneTooltip");
+                  break;
+                case "WITHDRAWN":
+                  icon = "checkmark"
+                  className = "toc__item--withdrawn"
+                  iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentWithdrawnTooltip");
+                  break;
+                case "INCOMPLETE":
+                  icon = "thumb-down-alt"
+                  className = "toc__item--incomplete"
+                  iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentIncompleteTooltip");
+                  break;
+                case "FAILED":
+                  icon = "thumb-down-alt"
+                  className = "toc__item--failed"
+                  iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentFailedTooltip");
+                  break;
+                case "PASSED":
+                  icon = "thumb-up-alt"
+                  className = "toc__item--passed"
+                  iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentPassedTooltip");
+                  break;
+                case "UNANSWERED":
+                default:
+                  break;
               }
+            }
 
-              return <TocElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId}
-                isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
-                hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>
-            })}
-          </TocTopic>
-        })
-      }
+            return <TocElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId}
+              isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
+              hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>
+          })}
+        </TocTopic>
+      })}
     </Toc>
   }
 }
