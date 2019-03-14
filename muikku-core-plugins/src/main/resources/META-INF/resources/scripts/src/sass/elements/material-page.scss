@@ -69,7 +69,7 @@
   line-height: 1;
   margin: 5px;
   position: relative;
-  
+
   figcaption {
     background: lighten($color-workspace,45%);
     color: $color-text-default;
@@ -77,7 +77,7 @@
     font-size: $text-mobile-font-size;
     padding: 10px;
   }
-  
+
   .image__details {
     position: absolute;
     left: auto;
@@ -222,27 +222,29 @@
 
 // Text field
 .material-page__textfield-wrapper {
-  display: inline-block;
+  display: inline-flex;
   margin: 4px;
 }
 
 .material-page__textfield {
   @include taskfield-text;
   @include taskfield-defaults;
-  line-height: 1;
   padding: 4px 6px;
 }
 
 // Select field - list and drop down
 .material-page__selectfield-wrapper {
-  display: inline-block;
+  display: inline-flex;
   margin: 4px;
+}
+
+.material-page__selectfield-wrapper--list {
+  vertical-align: middle;
 }
 
 .material-page__selectfield {
   @include taskfield-text;
   @include taskfield-defaults;
-  line-height: 1;
   padding: 3px;
 }
 
@@ -357,6 +359,8 @@
     border: 2px solid $taskfield-border-color;
     border-radius: 2px;
     margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
   }
 }
 
@@ -365,6 +369,8 @@
   @include taskfield-defaults;
   line-height: 1.25rem;
   margin: 4px 0 0;
+  max-width: 100%;
+  min-width: 100%;
   padding: 4px 8px;
   width: 100%;
 
