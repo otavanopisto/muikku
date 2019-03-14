@@ -230,7 +230,8 @@ const Page2 = (props) => (
           <React.Fragment>
             <label>Pakollisia kursseja suoritettuna</label>
             <input className="pure-u-1"
-                   type="text"
+                   type="number"
+                   min="0"
                    onChange={({target}) => {props.setNumMandatoryCourses(target.value);}}
                    value={props.numMandatoryCourses} />
           </React.Fragment> : null }
@@ -844,12 +845,12 @@ class App extends React.Component {
           city: this.state.locality,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
-          numMandatoryCourses: Number(this.state.numMandatoryCourses),
+          numMandatoryCourses: this.state.numMandatoryCourses ? Number(this.state.numMandatoryCourses) : null,
           location: this.state.location,
           message: message,
           studentIdentifier: this.state.studentIdentifier,
           canPublishName: this.state.canPublishName === 'true',
-          state: this.state.numMandatoryCourses < 20 ? "REQUIRES_ATTENTION" : "PENDING",
+          state: "PENDING",
           attendances: ([
             ...this.state.enrolledAttendances,
             ...this.state.plannedAttendances,
