@@ -6,7 +6,7 @@ import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Worksp
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
-import { MaterialContentNodeType, WorkspaceProducerType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -694,6 +694,14 @@ export interface LoadWorkspaceDetailsInCurrentWorkspaceTriggerType {
   ():AnyActionType
 }
 
+export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
+  (newDetails: WorkspaceDetailsType):AnyActionType
+}
+
+export interface UpdateWorkspaceProducersForCurrentWorkspaceTriggerType {
+  (newProducers: Array<WorkspaceProducerType>):AnyActionType
+}
+
 export interface LoadWorkspaceTypesTriggerType {
   ():AnyActionType
 }
@@ -864,6 +872,77 @@ let loadWorkspaceDetailsInCurrentWorkspace:LoadWorkspaceDetailsInCurrentWorkspac
   }
 }
 
+let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType = function updateWorkspaceDetailsForCurrentWorkspace(newDetails){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+      await promisify(mApi().workspace.workspaces
+          .details.update(state.workspaces.currentWorkspace.id, newDetails), 'callback')();
+    
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            details: newDetails 
+          }
+        }
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
+    }
+  }
+}
+
+let updateWorkspaceProducersForCurrentWorkspace:UpdateWorkspaceProducersForCurrentWorkspaceTriggerType = function updateWorkspaceProducersForCurrentWorkspace(newProducers){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+    
+      let workspaceProducersToAdd = newProducers.filter((p)=>{
+        return state.workspaces.currentWorkspace.producers.find(p2=>p2.id === p.id);
+      });
+    
+      let workspaceProducersToDelete = state.workspaces.currentWorkspace.producers.filter((p)=>{
+        return !newProducers.find(p2=>p2.id === p.id);
+      });
+      
+      await Promise.all(workspaceProducersToAdd.map(p=>
+        promisify(mApi().workspace.workspaces
+            .materialProducers.create(state.workspaces.currentWorkspace.id, p), 'callback')())
+        .concat(workspaceProducersToDelete.map(p=>promisify(mApi().workspace.workspaces
+            .materialProducers.del(state.workspaces.currentWorkspace.id, p.id), 'callback')())));
+      
+      // For some reason the results of the request don't give the new workspace producers
+      // it's a mess but whatever
+      let newActualWorkspaceProducers:Array<WorkspaceProducerType> = <Array<WorkspaceProducerType>>(await promisify(mApi().workspace.workspaces.materialProducers
+          .cacheClear().read(state.workspaces.currentWorkspace.id), 'callback')())
+    
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            producers: newActualWorkspaceProducers 
+          }
+        }
+      });
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
+    }
+  }
+}
+
 let loadWorkspaceTypes:LoadWorkspaceTypesTriggerType = function loadWorkspaceTypes(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
@@ -981,4 +1060,5 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
-  deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace}
+  deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
+  updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace}

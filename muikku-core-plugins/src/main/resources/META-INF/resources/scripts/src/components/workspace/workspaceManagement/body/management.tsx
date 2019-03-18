@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProducerType } from "~/reducers/workspaces";
+import { WorkspaceType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProducerType, WorkspaceUpdateType, WorkspaceDetailsType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button, { ButtonPill } from "~/components/general/button";
@@ -79,6 +79,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.readNewImage = this.readNewImage.bind(this);
     this.acceptNewImage = this.acceptNewImage.bind(this);
     this.editCurrentImage = this.editCurrentImage.bind(this);
+    this.checkIfEnterKeyIsPressedAndAddProducer = this.checkIfEnterKeyIsPressedAndAddProducer.bind(this);
+    this.save = this.save.bind(this);
   }
   componentWillReceiveProps(nextProps: ManagementPanelProps){
     this.setState({
@@ -134,6 +136,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.setState({
       currentWorkspaceProducerInputValue: e.target.value
     });
+  }
+  checkIfEnterKeyIsPressedAndAddProducer(e: React.KeyboardEvent<HTMLInputElement>){
+    if (e.keyCode == 13) {
+      this.addProducer(this.state.currentWorkspaceProducerInputValue);
+    }
   }
   addProducer(name: string){
     this.setState({
@@ -211,6 +218,28 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         croppedB64
       }
     });
+  }
+  save(){
+    let workspaceUpdate:WorkspaceUpdateType = {
+      name: this.state.workspaceName,
+      published: this.state.workspacePublished,
+      access: this.state.workspaceAccess,
+      nameExtension: this.state.workspaceExtension,
+      materialDefaultLicense: this.state.workspaceLicense,
+      description: this.state.workspaceDescription,
+      hasCustomImage: this.state.workspaceHasCustomImage
+    }
+  
+    let workspaceDetails:WorkspaceDetailsType = {
+      externalViewUrl: this.props.workspace.details.externalViewUrl,
+      typeId: this.state.workspaceType,
+      beginDate: this.state.workspaceStartDate,
+      endDate: this.state.workspaceEndDate
+    }
+  
+    let workspaceMaterialProducers = this.state.workspaceProducers;
+  
+    let workspaceImage = this.state.newWorkspaceImageCombo;
   }
   render(){
     let actualBackgroundSRC = this.state.workspaceHasCustomImage ? 
@@ -323,7 +352,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         <section>
           <h2>{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
           <input type="text" className="form-element form-element__input"
-            value={this.state.currentWorkspaceProducerInputValue} onChange={this.updateCurrentWorkspaceProducerInputValue}/>
+            value={this.state.currentWorkspaceProducerInputValue} onChange={this.updateCurrentWorkspaceProducerInputValue}
+            onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}/>
+          <Button onClick={this.addProducer.bind(this, this.state.currentWorkspaceProducerInputValue)}>
+            {this.props.i18n.text.get("TODO Add workspace producer")}
+          </Button>
           <div>
             {this.state.workspaceProducers && this.state.workspaceProducers.map((producer, index) => {
               return <span className="" key={index}>
@@ -338,6 +371,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           <CKEditor width="100%" height="210"
             onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
         </section>
+      </div>
+      <div className="panel__footer">
+        <Button onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
       </div>
     </div>);
   }
