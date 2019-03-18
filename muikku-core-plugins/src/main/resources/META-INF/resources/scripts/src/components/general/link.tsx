@@ -35,6 +35,7 @@ interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<H
   disabled?: boolean,
   as?: string,
   href?: string,
+  title? : string,
   to?: string,
   className?: string,
   openInNewTab?: string
@@ -149,7 +150,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["disabled"];
     delete elementProps["openInNewTab"];
     
-    return <Element {...elementProps}
+    return <Element {...elementProps} title={this.props.title}
       className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchMove={this.onTouchMove}/>
   }
