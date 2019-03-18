@@ -8,6 +8,15 @@
   #{$property}: $values;
 }
 
+@mixin no-scrollbars {
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { 
+    width: 0 !important;
+  }
+}
+
 @mixin text {
   color: $color-text-default;
   font-family: $text-font-family;

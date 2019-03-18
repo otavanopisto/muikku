@@ -131,6 +131,7 @@
 
 .content-panel__navigation-content {
   @include prefix(transition, webkit moz o ms, right 0.3s);
+  @include no-scrollbars;
   box-shadow: 0 2px 3px $color-panel-shadow;
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
@@ -168,7 +169,11 @@
 }
 
 .content-panel__chapter {
-
+  margin: 20px 0 0 0;
+  
+  &:first-child {
+    margin: 0;
+  }
 }
 
 .content-panel__chapter-title {
