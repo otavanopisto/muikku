@@ -34,7 +34,7 @@
         url : CONTEXTPATH + "/rest/users/searchUsers",
         dataType : "json",
         data : {
-          searchString : searchTerm
+          q : searchTerm
         },
         headers: {
           "Accept-Language": getLocale()
@@ -52,7 +52,7 @@
       
 //      RESTful.doGet(CONTEXTPATH + "/rest/users/searchUsers", {
 //        parameters: {
-//          'searchString': searchTerm
+//          'q': searchTerm
 //        }
 //      }).success(function (data, textStatus, jqXHR) {
 //        users = data;

@@ -10,10 +10,10 @@ import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
 export interface InputContactsAutofillLoaders {
-  studentsLoader?: (searchString: string) => any,
-  staffLoader?: (searchString: string) => any,
-  userGroupsLoader?: (searchString: string) => any,
-  workspacesLoader?: (searchString: string) => any  
+  studentsLoader?: (q: string) => any,
+  staffLoader?: (q: string) => any,
+  userGroupsLoader?: (q: string) => any,
+  workspacesLoader?: (q: string) => any  
 }
 
 export interface InputContactsAutofillProps {
@@ -124,24 +124,24 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       
     let getStudentsLoader = () =>  {
       return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
-        searchString: textInput,
+        q: textInput,
         onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
       }), 'callback');
     }
     let getUserGroupsLoader = () => { 
       return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
-        searchString: textInput
+        q: textInput
       }), 'callback');
     }
     let getWorkspacesLoader = () => { 
       return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
-        search: textInput,
+        q: textInput,
         myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
       }), 'callback');
     }
     let getStaffLoader = () => { 
       return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
-         searchString: textInput
+         q: textInput
       }), 'callback');
     }
       

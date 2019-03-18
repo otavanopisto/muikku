@@ -316,7 +316,7 @@
 
       return $.proxy(function (callback) {
         mApi().usergroup.groups
-          .read({ 'searchString' : term })
+          .read({ 'q' : term })
           .callback(function(err, results) {
             if (err) {
               callback(err);
@@ -346,7 +346,7 @@
         // + I dunno...
         mApi().coursepicker.workspaces
           .read({
-            search: term,
+            q: term,
             myWorkspaces: true,
           })
           .callback($.proxy(function (err, results) {
