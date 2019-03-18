@@ -111,6 +111,15 @@ export interface SetCurrentWorkspaceTriggerType {
   }):AnyActionType
 }
 
+export interface UpdateCurrentWorkspaceImagesB64TriggerType {
+  (data?: {
+    originalB64: string,
+    croppedB64: string,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
+}
+
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
   if (!conditional){
     return null;
@@ -445,6 +454,12 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(origin
     delete actualOriginal["additionalInfo"];
     delete actualOriginal["staffMembers"];
     delete actualOriginal["students"];
+    delete actualOriginal["details"];
+    delete actualOriginal["producers"];
+    delete actualOriginal["help"];
+    delete actualOriginal["contentDescription"];
+    delete actualOriginal["isCourseMember"];
+    delete actualOriginal["journals"];
     
     dispatch({
       type: 'UPDATE_WORKSPACE',
@@ -1055,10 +1070,30 @@ let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentW
   }
 }
 
+let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType = function updateCurrentWorkspaceImagesB64(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      //TODO write code for the upload of images
+    
+      data.success && data.success();
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace images'), 'error'));
+      
+      data.fail && data.fail();
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
-  updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace}
+  updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64}
