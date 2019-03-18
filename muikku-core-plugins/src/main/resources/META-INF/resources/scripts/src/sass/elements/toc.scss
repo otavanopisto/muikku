@@ -7,19 +7,57 @@
   @include text;
 }
 
+.toc__title {
+  @include text;
+  font-size: calc(#{$text-mobile-font-size} * 1.35);
+  font-weight: 400;
+  line-height: 1;
+  margin: 12px 10px 16px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: calc(#{$text-mobile-font-size} * 1.5);
+    font-weight: 300;
+  }
+}
+
 .toc__section-title {
-  display: block;
+  @include text;
+  display: flex;
+  margin: 12px 10px;
+  text-transform: uppercase;
 }
 
 .toc__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   align-items: flex-start;
-  background-color: $color-item-list-item-background;
+  background-color: $color-toc-item-link-background;
+  border-left: 3px solid $color-default;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
   color: $color-text-default;
   cursor: pointer;
   display: flex;
-  padding: 10px;
+  margin: 6px 8px;
+  padding: 4px 8px;
   position: relative;
+
+  &:hover {
+    background: lighten($color-list-selected-background, 30%);
+  }
+
+  &.active {
+    background: $color-toc-item-link-selected-background;
+    color: $color-default;
+  }
+}
+
+.toc__item--exercise {
+  border-color: $color-exercise;
+}
+
+.toc__item--assignment {
+  border-color: $color-assignment;
 }
 
 .toc__item--submitted {
@@ -28,6 +66,17 @@
 
 .toc__item--answered {
   
+  .toc__icon {
+    align-items: center;
+    background: $color-info;
+    border: 1px solid $color-default;
+    border-radius: 100%;
+    color: $color-default;
+    display: inline-flex;
+    height: 1.25rem;
+    justify-content: center;
+    width: 1.25rem;
+  }
 }
 
 .toc__item--withdrawn {
@@ -51,7 +100,6 @@
   flex-grow: 1;
   flex-shrink: 1;
   font-size: $text-mobile-font-size;
-  margin-left: 5px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -64,8 +112,7 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  font-size: $item-list-icon-font-size;
-  padding: 3px 0 0;
+  font-size: 0.8125rem;
 }
 
 

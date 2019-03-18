@@ -64,6 +64,65 @@
   margin: 20px 0 0;
 }
 
+// IMAGE as FIGURE
+.image {
+  line-height: 1;
+  margin: 5px;
+  position: relative;
+
+  figcaption {
+    background: lighten($color-workspace,45%);
+    color: $color-text-default;
+    font-family: $text-font-family;
+    font-size: $text-mobile-font-size;
+    padding: 10px;
+  }
+
+  .image__details {
+    position: absolute;
+    left: auto;
+    right: 0;
+    top: 0;
+
+    &::before {
+      background: $color-info;
+      border-radius: 100%;
+      color: $color-default;
+      cursor: help;
+      font-size: 1.625rem;
+      float: right;
+      line-height: 1;
+      margin: 5px 5px;
+      padding: 1px;
+    }
+  }
+
+  .image__details:hover {
+    left: 0;
+
+    .image__details-container {
+      display: block;
+    }
+  }
+
+  .image__details-container {
+    background: $color-default;
+    color: $color-text-default;
+    display: none;
+    font-family: $text-font-family;
+    font-size: $text-mobile-font-size;
+    font-weight: 400;
+    margin: 2.25rem 0 0;
+    opacity: 0.9;
+    padding: 15px 10px;
+  }
+  
+  .image__details-label {
+    padding: 0 5px 0 0;
+  }
+  
+}
+
 // CORRECT ANSWERS
 .material-page__correct-answers {
   align-items: center;
@@ -163,27 +222,29 @@
 
 // Text field
 .material-page__textfield-wrapper {
-  display: inline-block;
+  display: inline-flex;
   margin: 4px;
 }
 
 .material-page__textfield {
   @include taskfield-text;
   @include taskfield-defaults;
-  line-height: 1;
   padding: 4px 6px;
 }
 
 // Select field - list and drop down
 .material-page__selectfield-wrapper {
-  display: inline-block;
+  display: inline-flex;
   margin: 4px;
+}
+
+.material-page__selectfield-wrapper--list {
+  vertical-align: middle;
 }
 
 .material-page__selectfield {
   @include taskfield-text;
   @include taskfield-defaults;
-  line-height: 1;
   padding: 3px;
 }
 
@@ -298,6 +359,8 @@
     border: 2px solid $taskfield-border-color;
     border-radius: 2px;
     margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
   }
 }
 
@@ -306,6 +369,8 @@
   @include taskfield-defaults;
   line-height: 1.25rem;
   margin: 4px 0 0;
+  max-width: 100%;
+  min-width: 100%;
   padding: 4px 8px;
   width: 100%;
 
@@ -680,6 +745,12 @@
   .material-page__organizerfield-term-label {
     margin: 0 0 0 8px;
   }
+}
+
+.material-page__organizerfield-term--missing {
+  cursor: default;
+  opacity: 0.6;
+  padding: 0 8px;
 }
 
 .material-page__organizerfield-term-icon {

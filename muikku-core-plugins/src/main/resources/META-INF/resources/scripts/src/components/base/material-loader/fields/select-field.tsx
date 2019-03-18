@@ -192,7 +192,8 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
-      return <span className="material-page__selectfield-wrapper">
+      let selectFieldType = this.props.content.listType === "list" ? "list" : "dropdown";
+      return <span className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType}`}>
         <select className={`material-page__selectfield ${classNameState}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}

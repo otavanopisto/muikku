@@ -51,10 +51,10 @@ export default class Image extends FieldBase<ImageProps, ImageState>{
     console.log(this.props.dataset, this.props.element);
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
       if (Tag === "figure" && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.licence)){
-        children.push(<div className="image-details icon-copyright" key="details">
-          <div className="image-details-container">
-            <span className="image-details-label">{this.props.i18n.text.get("plugin.workspace.materials.detailsSourceLabel")} </span>
-            {this.props.dataset.source ?  <a href={this.props.dataset.sourceUrl} target="_blank">{this.props.dataset.source}</a> : null}
+        children.push(<div className="image__details icon-copyright" key="details">
+          <div className="image__details-container">
+            <span className="image__details-label">{this.props.i18n.text.get("plugin.workspace.materials.detailsSourceLabel")} </span>
+            {this.props.dataset.source ? <a href={this.props.dataset.sourceUrl} target="_blank">{this.props.dataset.source}</a> : null}
             {this.props.dataset.source ? <span>&nbsp;/&nbsp;</span> : null}
             {this.props.dataset.author ? <a href={this.props.dataset.authorUrl} target="_blank">{this.props.dataset.author}</a> : null}
             {this.props.dataset.author ? <span>,&nbsp;</span> : null}
