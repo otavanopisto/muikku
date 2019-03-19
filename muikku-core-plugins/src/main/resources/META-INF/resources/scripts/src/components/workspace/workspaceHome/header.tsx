@@ -30,7 +30,10 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
     this.toggleWorkspacePublished = this.toggleWorkspacePublished.bind(this);
   }
   toggleWorkspacePublished(){
-    this.props.updateWorkspace(this.props.workspace, {published: !this.props.workspace.published})
+    this.props.updateWorkspace({
+      workspace: this.props.workspace,
+      update: {published: !this.props.workspace.published}
+    })
   }
   render(){
     return <header className="hero hero--workspace">

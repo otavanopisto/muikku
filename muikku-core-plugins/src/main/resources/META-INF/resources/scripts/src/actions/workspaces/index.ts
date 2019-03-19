@@ -354,7 +354,12 @@ export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
 }
 
 export interface UpdateWorkspaceTriggerType {
-  (workspace: WorkspaceType, update: WorkspaceUpdateType):AnyActionType
+  (data: {
+    workspace: WorkspaceType,
+    update: WorkspaceUpdateType,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
 }
 
 export interface LoadStaffMembersOfWorkspaceTriggerType {
@@ -442,9 +447,9 @@ let signupIntoWorkspace:SignupIntoWorkspaceTriggerType = function signupIntoWork
   }
 }
 
-let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(original, update){
+let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let actualOriginal:WorkspaceType = {...original};
+    let actualOriginal:WorkspaceType = {...data.workspace};
     delete actualOriginal["studentActivity"];
     delete actualOriginal["forumStatistics"];
     delete actualOriginal["studentAssessments"];
@@ -464,19 +469,21 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(origin
     dispatch({
       type: 'UPDATE_WORKSPACE',
       payload: {
-        original,
-        update
+        original: data.workspace,
+        update: data.update
       }
     });
     
     try {
-      await promisify(mApi().workspace.workspaces.update(original.id,
-        Object.assign(actualOriginal, update)), 'callback')();
+      await promisify(mApi().workspace.workspaces.update(data.workspace.id,
+        Object.assign(actualOriginal, data.update)), 'callback')();
+      
+      data.success && data.success()
     } catch (err){
       dispatch({
         type: 'UPDATE_WORKSPACE',
         payload: {
-          original,
+          original: data.workspace,
           update: actualOriginal
         }
       });
@@ -485,6 +492,8 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(origin
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace'), 'error'));
+      
+      data.fail && data.fail();
     }
   }
 }
@@ -710,11 +719,19 @@ export interface LoadWorkspaceDetailsInCurrentWorkspaceTriggerType {
 }
 
 export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
-  (newDetails: WorkspaceDetailsType):AnyActionType
+  (data: {
+    newDetails: WorkspaceDetailsType,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
 }
 
 export interface UpdateWorkspaceProducersForCurrentWorkspaceTriggerType {
-  (newProducers: Array<WorkspaceProducerType>):AnyActionType
+  (data: {
+    newProducers: Array<WorkspaceProducerType>,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
 }
 
 export interface LoadWorkspaceTypesTriggerType {
@@ -887,12 +904,12 @@ let loadWorkspaceDetailsInCurrentWorkspace:LoadWorkspaceDetailsInCurrentWorkspac
   }
 }
 
-let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType = function updateWorkspaceDetailsForCurrentWorkspace(newDetails){
+let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType = function updateWorkspaceDetailsForCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let state:StateType = getState();
       await promisify(mApi().workspace.workspaces
-          .details.update(state.workspaces.currentWorkspace.id, newDetails), 'callback')();
+          .details.update(state.workspaces.currentWorkspace.id, data.newDetails), 'callback')();
     
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       
@@ -901,30 +918,34 @@ let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWo
         payload: {
           original: currentWorkspace,
           update: {
-            details: newDetails 
+            details: data.newDetails 
           }
         }
       });
+      
+      data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
+      
+      data.fail && data.fail();
     }
   }
 }
 
-let updateWorkspaceProducersForCurrentWorkspace:UpdateWorkspaceProducersForCurrentWorkspaceTriggerType = function updateWorkspaceProducersForCurrentWorkspace(newProducers){
+let updateWorkspaceProducersForCurrentWorkspace:UpdateWorkspaceProducersForCurrentWorkspaceTriggerType = function updateWorkspaceProducersForCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let state:StateType = getState();
     
-      let workspaceProducersToAdd = newProducers.filter((p)=>{
+      let workspaceProducersToAdd = data.newProducers.filter((p)=>{
         return state.workspaces.currentWorkspace.producers.find(p2=>p2.id === p.id);
       });
     
       let workspaceProducersToDelete = state.workspaces.currentWorkspace.producers.filter((p)=>{
-        return !newProducers.find(p2=>p2.id === p.id);
+        return !data.newProducers.find(p2=>p2.id === p.id);
       });
       
       await Promise.all(workspaceProducersToAdd.map(p=>
@@ -949,11 +970,15 @@ let updateWorkspaceProducersForCurrentWorkspace:UpdateWorkspaceProducersForCurre
           }
         }
       });
+      
+      data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
+      
+      data.fail && data.fail();
     }
   }
 }
@@ -1076,6 +1101,9 @@ let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType =
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       
+      let mimeTypeRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
+      let mimeTypeOriginal = data.originalB64.match(mimeTypeRegex)[1];
+      let mimeTypeCropped = data.croppedB64.match(mimeTypeRegex)[1];
       //TODO write code for the upload of images
     
       data.success && data.success();
