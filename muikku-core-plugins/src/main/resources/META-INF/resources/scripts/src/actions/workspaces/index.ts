@@ -357,8 +357,8 @@ export interface UpdateWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType,
     update: WorkspaceUpdateType,
-    success: ()=>any,
-    fail: ()=>any
+    success?: ()=>any,
+    fail?: ()=>any
   }):AnyActionType
 }
 
