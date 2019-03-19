@@ -10,10 +10,10 @@ import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
 export interface InputContactsAutofillLoaders {
-  studentsLoader?: (q: string) => any,
-  staffLoader?: (q: string) => any,
-  userGroupsLoader?: (q: string) => any,
-  workspacesLoader?: (q: string) => any  
+  studentsLoader?: (searchString: string) => any,
+  staffLoader?: (searchString: string) => any,
+  userGroupsLoader?: (searchString: string) => any,
+  workspacesLoader?: (searchString: string) => any  
 }
 
 export interface InputContactsAutofillProps {
