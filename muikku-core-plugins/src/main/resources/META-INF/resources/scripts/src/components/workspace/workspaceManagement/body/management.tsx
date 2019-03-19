@@ -8,6 +8,7 @@ import Button, { ButtonPill } from "~/components/general/button";
 import moment from "~/lib/moment";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
+import equals = require("deep-equal");
 
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
@@ -15,8 +16,10 @@ import { LicenseSelector } from "~/components/general/license-selector";
 import UploadImageDialog from '../dialogs/upload-image';
 import { updateWorkspace, UpdateWorkspaceTriggerType,
   updateWorkspaceProducersForCurrentWorkspace, UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
-  updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType} from "~/actions/workspaces";
+  updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType,
+  updateWorkspaceDetailsForCurrentWorkspace, UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType} from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
+import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
 interface ManagementPanelProps {
   status: StatusType,
@@ -26,7 +29,9 @@ interface ManagementPanelProps {
   
   updateWorkspace: UpdateWorkspaceTriggerType,
   updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
-  updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType
+  updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType,
+  updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
+  displayNotification: DisplayNotificationTriggerType
 }
 
 interface ManagementPanelState {
@@ -232,6 +237,22 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     });
   }
   save(){
+    this.setState({
+      locked: true
+    });
+    
+    let totals = 0;
+    let done = 0;
+    let onDone = ()=>{
+      done++;
+      
+      if (done === totals){
+        this.setState({
+          locked: false
+        });
+      }
+    }
+    
     let workspaceUpdate:WorkspaceUpdateType = {
       name: this.state.workspaceName,
       published: this.state.workspacePublished,
@@ -242,33 +263,85 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       hasCustomImage: this.state.workspaceHasCustomImage
     }
   
+    let currentWorkspaceAsUpdate:WorkspaceUpdateType = {
+      name: this.props.workspace.name,
+      published: this.props.workspace.published,
+      access: this.props.workspace.access,
+      nameExtension: this.props.workspace.nameExtension,
+      materialDefaultLicense: this.props.workspace.materialDefaultLicense,
+      description: this.props.workspace.description,
+      hasCustomImage: this.props.workspace.hasCustomImage
+    }
+    
+    if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)){
+      totals++;
+      
+      this.props.updateWorkspace({
+        workspace: this.props.workspace,
+        update: workspaceUpdate,
+        success: ()=>{
+          this.props.displayNotification(this.props.i18n.text.get("TODO succesfully updated workspace basic data"), "success");
+          onDone();
+        },
+        fail: onDone
+      });
+    }
+    
+    let workspaceMaterialProducers = this.state.workspaceProducers;
+    
+    if (!equals(workspaceMaterialProducers, this.props.workspace.producers)){
+      totals++;
+      this.props.updateWorkspaceProducersForCurrentWorkspace({
+        newProducers: workspaceMaterialProducers,
+        success: ()=>{
+          this.props.displayNotification(this.props.i18n.text.get("TODO succesfully updated workspace producers"), "success");
+          onDone();
+        },
+        fail: onDone
+      });
+    }
+  
     let workspaceDetails:WorkspaceDetailsType = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.state.workspaceType,
-      beginDate: this.state.workspaceStartDate,
-      endDate: this.state.workspaceEndDate
+      beginDate: this.state.workspaceStartDate ? this.state.workspaceStartDate.toISOString() : null,
+      endDate: this.state.workspaceEndDate ? this.state.workspaceEndDate.toISOString() : null
     }
-  
-    let workspaceMaterialProducers = this.state.workspaceProducers;
+    
+    let currentWorkspaceAsDetails: WorkspaceDetailsType = {
+      externalViewUrl: this.props.workspace.details.externalViewUrl,
+      typeId: this.props.workspace.details.typeId,
+      beginDate: this.props.workspace.details.beginDate,
+      endDate: this.props.workspace.details.endDate
+    }
+      
+    if (!equals(workspaceDetails, currentWorkspaceAsDetails)){
+      totals++;
+      this.props.updateWorkspaceDetailsForCurrentWorkspace({
+        newDetails: workspaceDetails,
+        success: ()=>{
+          this.props.displayNotification(this.props.i18n.text.get("TODO succesfully updated workspace details"), "success");
+          onDone();
+        },
+        fail: onDone
+      });
+    }
   
     let workspaceImage = this.state.workspaceHasCustomImage ? this.state.newWorkspaceImageCombo : null;
-    //TODO check how many are needed to update, compare with equals, and show the display notification
-    let totalN = 0;
-    let successN = 0;
-    let onSuccess = ()=>{
-      totalN++;
-      successN++;
+    if (workspaceImage) {
+      totals++;
+      this.props.updateCurrentWorkspaceImagesB64({
+        originalB64: this.state.newWorkspaceImageCombo.originalB64,
+        croppedB64: this.state.newWorkspaceImageCombo.croppedB64,
+        success: ()=>{
+          this.props.displayNotification(this.props.i18n.text.get("TODO succesfully update banner image"), "success");
+          onDone();
+        },
+        fail: onDone
+      })
     }
     
-    let onFail = ()=>{
-      totalN++;
-    }
-    
-    this.props.updateWorkspace(this.props.workspace, workspaceUpdate);
-    this.props.updateWorkspaceProducersForCurrentWorkspace(workspaceMaterialProducers);
-    this.props.updateCurrentWorkspaceImagesB64({
-      
-    })
+    onDone();
   }
   render(){
     let actualBackgroundSRC = this.state.workspaceHasCustomImage ? 
@@ -419,7 +492,8 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64}, dispatch);
+  return bindActionCreators({updateWorkspace, updateWorkspaceProducersForCurrentWorkspace,
+    updateCurrentWorkspaceImagesB64, updateWorkspaceDetailsForCurrentWorkspace, displayNotification}, dispatch);
 };
 
 export default connect(
