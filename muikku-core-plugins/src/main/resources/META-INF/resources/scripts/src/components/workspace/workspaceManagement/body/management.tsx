@@ -13,12 +13,20 @@ import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
 import { LicenseSelector } from "~/components/general/license-selector";
 import UploadImageDialog from '../dialogs/upload-image';
+import { updateWorkspace, UpdateWorkspaceTriggerType,
+  updateWorkspaceProducersForCurrentWorkspace, UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
+  updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType} from "~/actions/workspaces";
+import { bindActionCreators } from "redux";
 
 interface ManagementPanelProps {
   status: StatusType,
   workspace: WorkspaceType,
   i18n: i18nType,
-  workspaceTypes: Array<WorkspaceTypeType>
+  workspaceTypes: Array<WorkspaceTypeType>,
+  
+  updateWorkspace: UpdateWorkspaceTriggerType,
+  updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
+  updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType
 }
 
 interface ManagementPanelState {
@@ -44,6 +52,8 @@ interface ManagementPanelState {
     croppedB64: string
   },
   isImageDialogOpen: boolean,
+  
+  locked: boolean
 }
 
 class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPanelState> {
@@ -63,7 +73,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: props.workspace ? props.workspace.materialDefaultLicense : "",
       workspaceHasCustomImage: props.workspace ? props.workspace.hasCustomImage : false,
       currentWorkspaceProducerInputValue: "",
-      isImageDialogOpen: false
+      isImageDialogOpen: false,
+      locked: false
     }
     
     this.updateWorkspaceName = this.updateWorkspaceName.bind(this);
@@ -74,6 +85,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.updateEndDate = this.updateEndDate.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.updateCurrentWorkspaceProducerInputValue = this.updateCurrentWorkspaceProducerInputValue.bind(this);
+    this.updateWorkspaceExtension = this.updateWorkspaceExtension.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
     this.removeCustomImage = this.removeCustomImage.bind(this);
     this.readNewImage = this.readNewImage.bind(this);
@@ -239,7 +251,24 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
   
     let workspaceMaterialProducers = this.state.workspaceProducers;
   
-    let workspaceImage = this.state.newWorkspaceImageCombo;
+    let workspaceImage = this.state.workspaceHasCustomImage ? this.state.newWorkspaceImageCombo : null;
+    //TODO check how many are needed to update, compare with equals, and show the display notification
+    let totalN = 0;
+    let successN = 0;
+    let onSuccess = ()=>{
+      totalN++;
+      successN++;
+    }
+    
+    let onFail = ()=>{
+      totalN++;
+    }
+    
+    this.props.updateWorkspace(this.props.workspace, workspaceUpdate);
+    this.props.updateWorkspaceProducersForCurrentWorkspace(workspaceMaterialProducers);
+    this.props.updateCurrentWorkspaceImagesB64({
+      
+    })
   }
   render(){
     let actualBackgroundSRC = this.state.workspaceHasCustomImage ? 
@@ -373,7 +402,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         </section>
       </div>
       <div className="panel__footer">
-        <Button onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
+        <Button disabled={this.state.locked} 
+            onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
       </div>
     </div>);
   }
@@ -389,7 +419,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({updateWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64}, dispatch);
 };
 
 export default connect(
