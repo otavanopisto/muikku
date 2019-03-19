@@ -1,0 +1,53 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+
+.summary {
+  align-items: normal;
+  flex-flow: column wrap;
+  flex-basis: 50;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: column nowrap;
+  }
+}
+
+.summary__item-container {
+
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.summary__item-highlight {
+  color: $color-sub-panel-summary-highlight-font;
+  font-size: 2.5rem;
+}
+
+.summary__item-highlight--total {
+  color: $color-sub-panel-summary-highlight-total-font;
+}
+
+.summary__item-highlight--done {
+  color: $color-sub-panel-card-1-font;
+}
+
+.summary__item-highlight--undone {
+  color: $color-sub-panel-card-2-font;
+}
+
+.summary__item-definition {
+  margin-left: 5px;
+}
+
+.summary__body {
+  align-items: center;
+  background-color: $color-sub-panel-summarizer-background;
+  display: flex;
+  flex-wrap: wrap;
+   padding: 10px;
+}
+
+

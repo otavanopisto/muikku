@@ -23,10 +23,15 @@ let updateVops:UpdateVopsTriggerType = function updateVops() {
         payload: <VOPSStatusType>"LOADING"
       });
       let userId = getState().status.userSchoolDataIdentifier;
+      let vopsData = await promisify(mApi().records.vops.read(userId), 'callback')();
       dispatch({
         type: 'UPDATE_VOPS',
-        payload: <VOPSDataType>(await promisify(mApi().records.vops.read(userId), 'callback')())
+        payload: <VOPSDataType>(vopsData)
       });
+      
+      let mandatoryDone = null;
+      let mandatoryUnDone = null;
+      
       dispatch({
         type: 'UPDATE_VOPS_STATUS',
         payload: <VOPSStatusType>"READY"

@@ -3,7 +3,6 @@ import {connect, Dispatch} from 'react-redux';
 // import { MatriculationLink } from './matriculation-link';
 
 import {i18nType} from '~/reducers/base/i18n';
-
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-panel.scss';
@@ -12,6 +11,7 @@ import '~/sass/elements/application-list.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import { VOPSType } from '~/reducers/main-function/vops';
 import VopsGraph from '~/components/base/vops';
+import BasicSummary from '~/components/general/summary';
 import {StateType} from '~/reducers';
 
 interface VopsProps {
@@ -23,8 +23,12 @@ interface VopsProps {
 interface VopsState {
 }
 
+
 class Vops extends React.Component<VopsProps, VopsState> {
+
   render(){
+
+    
     if (this.props.records.location !== "vops"){
       return null;
     } else if (this.props.vops.status === "ERROR"){
@@ -34,43 +38,58 @@ class Vops extends React.Component<VopsProps, VopsState> {
     } else if (this.props.vops.status !== "READY"){
       return null;
     }
+    
+    let nackg1 = [
+                 {
+                   body: this.props.vops.value.numMandatoryCourses,
+                   post: this.props.i18n.text.get("plugin.records.vops.subject.courses.mandatory"),
+                   className: "total"
+                 },
+                 {
+                   body: "23",
+                   post: this.props.i18n.text.get("plugin.records.vops.subject.courses.done"),
+                   className: "done"
+                 },
+                 {
+                   body: "23",
+                   post: this.props.i18n.text.get("plugin.records.vops.subject.courses.planned"),
+                   className: "undone"
+                 }
+               ]
+
+    let nackg2 = [
+                 {
+                   body: this.props.vops.value.numMandatoryCourses,
+                   post: this.props.i18n.text.get("plugin.records.vops.subject.courses.mandatory")
+                 },
+                 {
+                   body: "23",
+                   post: this.props.i18n.text.get("plugin.records.vops.subject.courses.done")
+                 },
+                 {
+                   body: "23",
+                   post: this.props.i18n.text.get("plugin.records.vops.subject.courses.planned")
+                 }
+               ]    
+    
+    
     return <div>
       <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
-    
-    {/* 
-      <div className="application-sub-panel">
-        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
-          <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.vops.mandatory.title")}</div>
-            <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--total">{this.props.vops.value.numMandatoryCourses}</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.mandatory")}</span>
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--done">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.done")}</span>
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--undone">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.planned")}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-{/*              
-      <div className="application-sub-panel">
-        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
-          <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.vops.optional.title")}</div>
-            <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--total">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.optional")}</span>
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--done">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.done")}</span>
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--undone">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.planned")}</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
-    */}  
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
+          <div className="application-sub-panel__item application-sub-panel__item--summarizer">
+            <BasicSummary title={this.props.i18n.text.get("plugin.records.vops.mandatory.title")} summaryItems={nackg1}/>
+          </div>
+        </div>
+      </div>
+      <div className="application-sub-panel">
+        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
+          <div className="application-sub-panel__item application-sub-panel__item--summarizer">
+            <BasicSummary title={this.props.i18n.text.get("plugin.records.vops.optional.title")} summaryItems={nackg2}/>
+          </div>
+        </div>
+      </div>
       <VopsGraph/>
     {/*
       <div className="application-sub-panel">

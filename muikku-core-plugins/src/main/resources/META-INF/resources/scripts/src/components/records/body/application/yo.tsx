@@ -25,7 +25,7 @@ interface YOProps {
   i18n: i18nType,
   records: RecordsType,
   hops: HOPSType,
-  yo: YOType
+  yo: YOType,
   updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityTriggerType
 }
 
