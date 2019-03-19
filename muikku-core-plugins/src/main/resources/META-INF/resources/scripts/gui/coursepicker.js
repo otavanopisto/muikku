@@ -161,7 +161,7 @@
     
       var params = {
         orderBy: ['alphabet'],
-        search: this._search,
+        q: this._search,
         myWorkspaces: this._categoryId == 'te' ||  this._categoryId == 'my',
         includeUnpublished: this._categoryId == 'te',
         educationTypes: this._educationTypes,

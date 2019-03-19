@@ -51,7 +51,6 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
-  let search = actualFilters.query;
   
   let params = {
     firstResult,
@@ -63,7 +62,7 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
   }
   
   if (actualFilters.query){
-    (params as any).searchString = actualFilters.query;
+    (params as any).q = actualFilters.query;
   }
   
   try {
