@@ -35,7 +35,6 @@ export default class BasicSummary extends React.Component<BasicSummaryProps, Bas
                 <span className="summary__item-definition">{summaryItem.post}</span>
               </span>
             )}
-  
           </div>
         </div>
     )
