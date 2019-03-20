@@ -262,12 +262,16 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
       }
     }
     
-    // The remaining Muikku students in muikkuWorkspaceStudents were not in Pyramus so archive them from Muikku
+    // The remaining Muikku students in muikkuWorkspaceStudents were not active in Pyramus so deactivate them in Muikku
     if (!muikkuWorkspaceStudents.isEmpty()) {
+      int deactivated = 0;
       for (WorkspaceUserEntity muikkuWorkspaceStudent : muikkuWorkspaceStudents) {
-        workspaceUserEntityController.archiveWorkspaceUserEntity(muikkuWorkspaceStudent);
+        if (muikkuWorkspaceStudent.getActive()) {
+          deactivated++;
+          workspaceUserEntityController.updateActive(muikkuWorkspaceStudent, Boolean.FALSE);
+        }
       }
-      logger.info(String.format("Archived %d Muikku workspace students that were not present in Pyramus", muikkuWorkspaceStudents.size()));
+      logger.info(String.format("Deactivated %d Muikku workspace students that were not active in Pyramus", deactivated));
     }
 
     // Student count in Muikku after synchronizing, which should be the same as in Pyramus before synchronization
