@@ -42,6 +42,10 @@
   margin-left: 5px;
 }
 
+.summary__header {
+ @include content-header;
+}
+
 .summary__body {
   align-items: center;
   background-color: $color-sub-panel-summarizer-background;

@@ -18,18 +18,7 @@
 }
 
 .application-sub-panel__header {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  font-size: 1.075rem;
-  font-weight: 300;
-  text-transform: uppercase;
-  width: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 0 10px;
-    padding: 0;
-  }
+  @include content-header;
 }
 
 .application-sub-panel__header--guider-header {

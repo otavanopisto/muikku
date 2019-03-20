@@ -45,7 +45,6 @@ class Hops extends React.Component<HopsProps, HopsState> {
     } else if (this.props.hops.status !== "READY"){
       return null;
     }
-    
     return <HopsGraph onHopsChange={this.setHopsToWithDelay}/>
   }
 }

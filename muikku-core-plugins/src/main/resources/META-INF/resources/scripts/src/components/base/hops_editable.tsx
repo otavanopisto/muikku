@@ -67,9 +67,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
     if (!data || !data.optedIn){
       return null;
     }
-    return <div className="application-sub-panel text">
+    return <div>
+    <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.hops.title")}</div>
+    <div className="application-sub-panel">
     
-    <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.hops.title")}</div>  
+  
     <div className="application-sub-panel__body">
 
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
@@ -276,6 +278,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       </div>
     </div>
     </div>
+  </div>
   }
 }
 

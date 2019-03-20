@@ -39,7 +39,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
       return null;
     }
     
-    let nackg1 = [
+    let mandatoryData = [
                  {
                    body: this.props.vops.value.numMandatoryCourses,
                    post: this.props.i18n.text.get("plugin.records.vops.subject.courses.mandatory"),
@@ -57,7 +57,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                  }
                ]
 
-    let nackg2 = [
+    let optionalData = [
                  {
                    body: this.props.vops.value.numMandatoryCourses,
                    post: this.props.i18n.text.get("plugin.records.vops.subject.courses.mandatory")
@@ -74,19 +74,18 @@ class Vops extends React.Component<VopsProps, VopsState> {
     
     
     return <div>
-      <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
-
+      <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
       <div className="application-sub-panel">
         <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
           <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-            <BasicSummary title={this.props.i18n.text.get("plugin.records.vops.mandatory.title")} summaryItems={nackg1}/>
+            <BasicSummary title={this.props.i18n.text.get("plugin.records.vops.mandatory.title")} summaryItems={mandatoryData}/>
           </div>
         </div>
       </div>
       <div className="application-sub-panel">
         <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
           <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-            <BasicSummary title={this.props.i18n.text.get("plugin.records.vops.optional.title")} summaryItems={nackg2}/>
+            <BasicSummary title={this.props.i18n.text.get("plugin.records.vops.optional.title")} summaryItems={optionalData}/>
           </div>
         </div>
       </div>
