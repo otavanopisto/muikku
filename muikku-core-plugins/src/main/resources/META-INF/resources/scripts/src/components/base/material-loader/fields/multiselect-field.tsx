@@ -151,14 +151,15 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
   }
   render(){
     if (!this.loaded){
-      return <span ref="base"
-        className={`material-page__checkbox-wrapper material-page__checkbox-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field`}>
-        {this.props.content.options.map((o, index)=>{
-          return <span key={o.name} className="material-page__checkbox-item-container">
-            <input className="material-page__checkbox" type="checkbox" disabled/>
-            <label className="material-page__checkable-label">{o.text}</label>
-          </span>
-        })}
+      return <span ref="base" className="material-page__checkbox-wrapper">
+        <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field`}>
+          {this.props.content.options.map((o, index)=>{
+            return <span key={o.name} className="material-page__checkbox-item-container">
+              <input className="material-page__checkbox" type="checkbox" disabled/>
+              <label className="material-page__checkable-label">{o.text}</label>
+            </span>
+          })}
+        </span>
       </span>
     }
     //whether we mark the correct answers
@@ -186,7 +187,7 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
             <span key={index} className="material-page__field-answer-example">{answer.text}</span>
           )}
           {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
-             <Dropdown openByHover modifier="material-page__word-definition" content={this.props.content.explanation}>
+             <Dropdown  modifier="material-page-field-explanation" content={this.props.content.explanation}>
                <span className="material-page__field-explanation-button icon-explanation"/>
              </Dropdown>
            </span> : null}
@@ -208,7 +209,8 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
         "state-" + (this.state.answerState === "UNKNOWN" ? "UNKNOWN" : (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS")) : "";
     
     //and we render
-    return <span className={`material-page__checkbox-wrapper material-page__checkbox-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
+    return <span className="material-page__checkbox-wrapper">
+    <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
       {this.props.content.options.map((o, index)=>{
         //if we are told to mark correct answers
         let className = "";
@@ -243,6 +245,7 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
           <label className="material-page__checkable-label">{o.text}</label>
         </span>
       })}
+      </span>
       {correctAnswersummaryComponent}
     </span>
   }

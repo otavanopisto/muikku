@@ -133,12 +133,13 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
         </span>
       }
       
-      return <span ref="base"
-        className={`material-page__radiobutton-wrapper material-page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"}`}>
+      return <span className="material-page__radiobutton-wrapper" ref="base">
         {this.props.content.options.map(o=>{
-          return <span className="material-page__radiobutton-item-container" key={o.name}>
-            <input className="material-page__radiobutton" type="radio" disabled/>
-            <label className="material-page__checkable-label">{o.text}</label>
+          return <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"}`} key={o.name}>
+            <span className="material-page__radiobutton-item-container">
+              <input className="material-page__radiobutton" type="radio" disabled/>
+              <label className="material-page__checkable-label">{o.text}</label>
+            </span>
           </span>
         })}
       </span>
@@ -169,9 +170,8 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
           {correctAnswersFound.map((answer, index)=>
             <span key={index} className="material-page__field-answer-example">{answer.text}</span>
           )}
-          //TODO ClassNames needs to be set
           {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
-             <Dropdown openByHover modifier="material-page__word-definition" content={this.props.content.explanation}>
+             <Dropdown modifier="material-page-field-explanation" content={this.props.content.explanation}>
                <span className="material-page__field-explanation-button icon-explanation"/>
              </Dropdown>
            </span> : null}
@@ -213,20 +213,22 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     }
 
     //this is for the standard
-    return <span className={`material-page__radiobutton-wrapper material-page__radiobutton-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${classNameState}`}>
-      {this.props.content.options.map(o=>{
-        let className = "";
-        //if correct answers are to be market regarding whether they are correct or not
-        if (markcorrectAnswers && o.correct){
-          className = "correct-answer"
-        } else if (markcorrectAnswers){
-          className = "incorrect-answer"
-        }
-        return <span className={`material-page__radiobutton-item-container ${className}`} key={o.name}>
-          <input className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
-          <label className="material-page__checkable-label">{o.text}</label>
-        </span>
-      })}
+    return <span className="material-page__radiobutton-wrapper">
+      <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${classNameState}`}>
+        {this.props.content.options.map(o=>{
+          let className = "";
+          //if correct answers are to be market regarding whether they are correct or not
+          if (markcorrectAnswers && o.correct){
+            className = "correct-answer"
+          } else if (markcorrectAnswers){
+            className = "incorrect-answer"
+          }
+          return <span className={`material-page__radiobutton-item-container ${className}`} key={o.name}>
+            <input className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
+            <label className="material-page__checkable-label">{o.text}</label>
+          </span>
+        })}
+      </span>
       {correctAnswersummaryComponent}
     </span>
   }
