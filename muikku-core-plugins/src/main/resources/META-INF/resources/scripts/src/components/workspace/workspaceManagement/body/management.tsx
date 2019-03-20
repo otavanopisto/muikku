@@ -359,7 +359,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         <section>
           <input type="text" className="form-element form-element__input"
             value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
-          <Button buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Button>
+          <Button href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
+            openInNewTab="_blank"
+            buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Button>
           <Button buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Button>
         </section>
         <section>
