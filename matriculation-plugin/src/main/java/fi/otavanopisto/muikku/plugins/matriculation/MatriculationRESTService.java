@@ -1,8 +1,10 @@
 package fi.otavanopisto.muikku.plugins.matriculation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -70,6 +72,9 @@ public class MatriculationRESTService {
   
   @Inject
   private SentMatriculationEnrollmentDAO sentMatriculationEnrollmentDAO;
+
+  @Inject
+  private MatriculationNotificationController matriculationNotificationController;
   
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_GET_EXAM)
@@ -271,6 +276,13 @@ public class MatriculationRESTService {
     schoolDataEntity.setAttendances(attendances);
     matriculationController.submitMatriculationExamEnrollment(schoolDataEntity);
     sentMatriculationEnrollmentDAO.create(userIdentifier);
+    
+    try {
+      matriculationNotificationController.sendEnrollmentNotification(enrollment);
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, "Failed to send matriculation enrollment notification email", e);
+    }
+    
     return Response.ok().build();
   }
 

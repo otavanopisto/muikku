@@ -230,7 +230,8 @@ const Page2 = (props) => (
           <React.Fragment>
             <label>Pakollisia kursseja suoritettuna</label>
             <input className="pure-u-1"
-                   type="text"
+                   type="number"
+                   min="0"
                    onChange={({target}) => {props.setNumMandatoryCourses(target.value);}}
                    value={props.numMandatoryCourses} />
           </React.Fragment> : null }
@@ -683,12 +684,18 @@ class App extends React.Component {
   }
 
   /**
-   * Returns count of attendances in finnish courses 
+   * Returns count of attendances in finnish courses.
+   * 
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
    * 
    * @returns count of attendances in finnish courses
    */
   getAmountOfFinnishAttendances() {
     return this.getAttendances().filter((attendance) => {
+      if (attendance.grade == "IMPROBATUR") {
+        return false;
+      }
+
       return FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
@@ -696,10 +703,16 @@ class App extends React.Component {
   /**
    * Returns count of attendances in mandatory courses 
    * 
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
+   * 
    * @returns count of attendances in mandatory courses
    */
   getAmountOfMandatoryAttendances() {
     return this.getAttendances().filter((attendance) => {
+      if (attendance.grade == "IMPROBATUR") {
+        return false;
+      }
+
       return attendance.mandatory === "true";
     }).length;
   }
@@ -707,10 +720,16 @@ class App extends React.Component {
   /**
    * Returns count of attendances in academic subjects 
    * 
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
+   * 
    * @returns count of attendances in academic subjects
    */
   getAmountOfAcademicSubjectAttendances() {
     return this.getAttendances().filter((attendance) => {
+      if (attendance.grade == "IMPROBATUR") {
+        return false;
+      }
+
       return attendance.mandatory === "true" && ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
@@ -718,10 +737,16 @@ class App extends React.Component {
   /**
    * Returns whether user has valid amount of attendances in mandatory advanced subjects 
    * 
+   * Attendances with grade IMPROBATUR are ignored while counting attendances
+   * 
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
   getAmountOfMandatoryAdvancedSubjectAttendances() {
     return this.getAttendances().filter((attendance) => {
+      if (attendance.grade == "IMPROBATUR") {
+        return false;
+      }
+
       return attendance.mandatory === "true" && ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
@@ -844,12 +869,12 @@ class App extends React.Component {
           city: this.state.locality,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
-          numMandatoryCourses: Number(this.state.numMandatoryCourses),
+          numMandatoryCourses: this.state.numMandatoryCourses ? Number(this.state.numMandatoryCourses) : null,
           location: this.state.location,
           message: message,
           studentIdentifier: this.state.studentIdentifier,
           canPublishName: this.state.canPublishName === 'true',
-          state: this.state.numMandatoryCourses < 20 ? "REQUIRES_ATTENTION" : "PENDING",
+          state: "PENDING",
           attendances: ([
             ...this.state.enrolledAttendances,
             ...this.state.plannedAttendances,
