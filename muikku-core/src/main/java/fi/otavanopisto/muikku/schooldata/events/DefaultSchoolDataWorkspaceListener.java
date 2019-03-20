@@ -149,10 +149,16 @@ public class DefaultSchoolDataWorkspaceListener {
         SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
         WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
+
+          // #4535: Because event is update, workspaceUserEntity should not be archived at this point
+          if (workspaceUserEntity.getArchived()) {
+            workspaceUserEntity = workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+          }
+          
           String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
           if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
             
-            // WorkspaceUserEntity found, but it points to a new study program
+            // WorkspaceUserEntity found, but it points to a different study program
             
             UserSchoolDataIdentifier newUserIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
                 event.getUserDataSource(), event.getUserIdentifier());
@@ -163,26 +169,22 @@ public class DefaultSchoolDataWorkspaceListener {
               WorkspaceUserEntity existingUser = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(
                   workspaceEntity, newUserIdentifier);
               if (existingUser != null) {
-                if (!existingUser.getArchived().equals(workspaceUserEntity.getArchived())) {
-                  if (existingUser.getArchived()) {
-                    workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingUser);
-                  }
-                  else {
-                    workspaceUserEntityController.archiveWorkspaceUserEntity(existingUser);
-                  }
+                if (existingUser.getArchived()) {
+                  existingUser = workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingUser);
                 }
-                workspaceUserEntityController.updateIdentifier(existingUser, workspaceUserEntity.getIdentifier());
+                existingUser = workspaceUserEntityController.updateIdentifier(existingUser, workspaceUserEntity.getIdentifier());
                 // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
                 if (event.getIsActive() && !existingUser.getActive()) {
-                  workspaceUserEntityController.updateActive(existingUser, event.getIsActive());
+                  existingUser = workspaceUserEntityController.updateActive(existingUser, event.getIsActive());
                 }
                 workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
+                workspaceUserEntity = existingUser;
               }
               else {
-                workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
+                workspaceUserEntity = workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
                 // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
                 if (event.getIsActive() && !workspaceUserEntity.getActive()) {
-                  workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+                  workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
                 }
               }
             }
@@ -190,14 +192,14 @@ public class DefaultSchoolDataWorkspaceListener {
           else {
             WorkspaceRoleEntity workspaceRoleEntity = workspaceController.findWorkspaceRoleEntityByDataSourceAndIdentifier(event.getRoleDataSource(), event.getRoleIdentifier());
             if (workspaceRoleEntity != null && !workspaceRoleEntity.getId().equals(workspaceUserEntity.getWorkspaceUserRole().getId())) {
-              workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);
+              workspaceUserEntity = workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);
             }
           }
 
           // If a student has ended their studies but they are still active in the workspace, change them inactive (but not vice versa)
           
           if (!event.getIsActive() && workspaceUserEntity.getActive()) {
-            workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+            workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
           }
         
         }
