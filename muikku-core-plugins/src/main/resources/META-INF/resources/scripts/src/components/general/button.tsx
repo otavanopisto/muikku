@@ -7,6 +7,7 @@ interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes
   buttonAs?: any,
   buttonModifiers?: string | Array<string>,
   className?: string,
+  title? : string,
   disabled?: boolean,
   disablePropagation?: boolean,
   as?: string,

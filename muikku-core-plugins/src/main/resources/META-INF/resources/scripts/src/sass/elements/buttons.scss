@@ -29,6 +29,12 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $button-desktop-font-size;
   }
+
+  &.disabled,
+  &.disabled:hover {
+    background-color: $color-button-disabled-background;
+    cursor: default;
+  }
 }
 
 .button-image {

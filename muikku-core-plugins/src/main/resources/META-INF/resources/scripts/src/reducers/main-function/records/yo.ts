@@ -3,10 +3,10 @@ import { ActionType } from "actions";
 export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 
-export interface YODataType{
-  studyStartDate: string,
-  studyTimeEnd: string,
-  studyEndDate: string,
+export interface YOEnrollmentType{
+ available: boolean
+ starts: string
+ ends: string
 }
 
 export interface YOEligibilityType {
@@ -18,7 +18,7 @@ export interface YOEligibilityType {
 
 export interface YOType {
   status: YOStatusType,
-  value: YODataType,
+  enrollment: YOEnrollmentType,
   subjects: Array<YOMatriculationSubjectType>,
   eligibility: YOEligibilityType,
   eligibilityStatus: YOEligibilityStatusType
@@ -31,7 +31,7 @@ export interface YOMatriculationSubjectType {
 
 export default function yo(state:YOType={
   status: "WAIT",
-  value: null,
+  enrollment: null,
   subjects: null,
   eligibility: null,
   eligibilityStatus: null
@@ -42,7 +42,7 @@ export default function yo(state:YOType={
     });
   } else if (action.type === "UPDATE_STUDIES_YO"){
     return Object.assign({}, state, {
-      value: action.payload
+      enrollment: action.payload
     });
   } else if (action.type === "UPDATE_STUDIES_YO_SUBJECTS"){
      return Object.assign({}, state, {

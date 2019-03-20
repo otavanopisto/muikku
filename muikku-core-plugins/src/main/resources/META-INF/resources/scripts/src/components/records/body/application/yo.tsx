@@ -5,7 +5,7 @@ import * as queryString from 'query-string';
 import { i18nType } from '~/reducers/base/i18n';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
-import Link from '~/components/general/link';
+import Button from '~/components/general/button';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 import { HOPSType } from "~/reducers/main-function/hops";
@@ -79,7 +79,11 @@ class YO extends React.Component<YOProps, YOState> {
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
                     <div className="application-sub-panel__notification-footer">
-                      <Link href="/jsf/matriculation/index.jsf" className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp")}</Link>
+                      {this.props.yo.enrollment != null ? this.props.yo.enrollment.available == true ? 
+                        <Button href="/matriculation-enrollment" title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", this.props.yo.enrollment.ends)} className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active")}</Button>
+                      : 
+                        <Button className="button button--yo-signup" title={this.props.i18n.text.get("plugin.records.yo.button.signUp.inactive.title", new Date().toLocaleDateString("fi-Fi"))}disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp.inactive", this.props.yo.enrollment.starts)}</Button>  
+                      : null}
                     </div>
                   </div>
                 </div>              

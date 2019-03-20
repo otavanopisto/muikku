@@ -18,7 +18,6 @@ import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
-import { MatriculationLink } from './matriculation-link';
 
 let ProgressBarLine = require('react-progressbar.js').Line;
 
@@ -233,7 +232,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
     
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
-    <MatriculationLink i18n={this.props.i18n} />
     <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.records.title")}</div>
     {studentRecords}
     <div className="application-sub-panel">
