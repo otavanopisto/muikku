@@ -149,12 +149,6 @@ public class DefaultSchoolDataWorkspaceListener {
         SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
         WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
-
-          // #4535: Because event is update, workspaceUserEntity should not be archived at this point
-          if (workspaceUserEntity.getArchived()) {
-            workspaceUserEntity = workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
-          }
-          
           String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
           if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
             
