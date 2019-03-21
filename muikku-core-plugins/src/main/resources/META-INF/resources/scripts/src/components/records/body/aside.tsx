@@ -59,10 +59,12 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
           name: this.props.i18n.text.get("plugin.records.category.hops"),
           hash: "hops"
         },
+        /* Waiting for the future        
         {
           name: this.props.i18n.text.get("plugin.records.category.vops"),
           hash: "vops"
         },
+        */
         {
           name: this.props.i18n.text.get("plugin.records.category.yo"),
           hash: "yo"
