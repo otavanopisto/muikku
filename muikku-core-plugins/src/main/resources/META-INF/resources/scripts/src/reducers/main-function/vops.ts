@@ -21,6 +21,10 @@ export interface VOPSRowType {
 export interface VOPSDataType {
   numMandatoryCourses: number,
   numMandatoryCoursesDone: number,
+  numMandatoryCoursesPlanned: number,
+  numOptionalCourses: number,
+  numOptionalCoursesDone: number,
+  numOptionalCoursesPlanned: number,
   numCourses: number,
   optedIn: boolean,
   rows: Array<VOPSRowType>

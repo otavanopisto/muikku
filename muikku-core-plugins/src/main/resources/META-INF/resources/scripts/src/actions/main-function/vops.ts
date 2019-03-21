@@ -29,9 +29,6 @@ let updateVops:UpdateVopsTriggerType = function updateVops() {
         payload: <VOPSDataType>(vopsData)
       });
       
-      let mandatoryDone = null;
-      let mandatoryUnDone = null;
-      
       dispatch({
         type: 'UPDATE_VOPS_STATUS',
         payload: <VOPSStatusType>"READY"

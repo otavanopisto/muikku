@@ -46,12 +46,12 @@ class Vops extends React.Component<VopsProps, VopsState> {
                    className: "total"
                  },
                  {
-                   body: "23",
+                   body: this.props.vops.value.numMandatoryCoursesDone,
                    post: this.props.i18n.text.get("plugin.records.vops.subject.courses.done"),
                    className: "done"
                  },
                  {
-                   body: "23",
+                   body: this.props.vops.value.numMandatoryCoursesPlanned,
                    post: this.props.i18n.text.get("plugin.records.vops.subject.courses.planned"),
                    className: "undone"
                  }
@@ -59,15 +59,15 @@ class Vops extends React.Component<VopsProps, VopsState> {
 
     let optionalData = [
                  {
-                   body: this.props.vops.value.numMandatoryCourses,
+                   body: this.props.vops.value.numOptionalCourses,
                    post: this.props.i18n.text.get("plugin.records.vops.subject.courses.mandatory")
                  },
                  {
-                   body: "23",
+                   body: this.props.vops.value.numOptionalCoursesDone,
                    post: this.props.i18n.text.get("plugin.records.vops.subject.courses.done")
                  },
                  {
-                   body: "23",
+                   body: this.props.vops.value.numOptionalCoursesPlanned,
                    post: this.props.i18n.text.get("plugin.records.vops.subject.courses.planned")
                  }
                ]    
