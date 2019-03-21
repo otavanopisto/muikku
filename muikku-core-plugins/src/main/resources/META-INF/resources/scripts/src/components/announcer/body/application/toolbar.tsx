@@ -125,8 +125,8 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
                 <ButtonPill buttonModifiers="restore" icon="put-back" onClick={this.restoreCurrentAnnouncement}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
-            <ButtonPill buttonModifiers="prev-page" disabled={!prev} onClick={this.go.bind( this, prev )} icon="arrow-left" />
-            <ButtonPill buttonModifiers="next-page" disabled={!next} onClick={this.go.bind( this, next )} icon="arrow-right" />
+            <ButtonPill buttonModifiers="prev-page" disabled={!prev} onClick={this.go.bind( this, prev )} icon="arrow-left-thin" />
+            <ButtonPill buttonModifiers="next-page" disabled={!next} onClick={this.go.bind( this, next )} icon="arrow-right-thin" />
           </ApplicationPanelToolbarActionsAside>
         </ApplicationPanelToolbar>
       )
