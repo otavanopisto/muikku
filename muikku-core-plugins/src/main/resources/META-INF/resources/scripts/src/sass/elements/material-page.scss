@@ -197,6 +197,11 @@
   vertical-align: middle;
 }
 
+.material-page__field-answer-examples--sorterfield {
+  display: flex;
+  margin: 5px 0;
+}
+
 .material-page__field-answer-examples-title {
   font-style: italic;
   font-weight: 400;
@@ -470,7 +475,7 @@
     text-decoration: none;
     width: auto;
   }
-  
+
   .material-page__filefield-download-file-button {
     background: transparent;
     color: $color-info;
