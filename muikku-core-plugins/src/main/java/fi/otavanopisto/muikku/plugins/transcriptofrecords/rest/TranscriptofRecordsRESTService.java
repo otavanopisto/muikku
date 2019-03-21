@@ -176,7 +176,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     User student = userController.findUserByIdentifier(studentIdentifier);
     
     if (!transcriptOfRecordsController.shouldShowStudies(student)) {
-      VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
+      VopsRESTModel result = new VopsRESTModel(null, 0, 0, 0, 0, 0, 0, 0, false);
       return Response.ok(result).build();
     }
     
@@ -230,7 +230,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     VopsRESTModel result = new VopsRESTModel(
         lister.getResult().getRows(),
         lister.getResult().getNumCourses(),
+        lister.getResult().getNumOptionalCourses(),
+        lister.getResult().getNumOptionalCoursesDone(),
+        lister.getResult().getNumOptionalCoursesPlanned(),        
         lister.getResult().getNumMandatoryCourses(),
+        lister.getResult().getNumMandatoryCoursesDone(),
+        lister.getResult().getNumMandatoryCoursesPlanned(),
         lister.getResult().isOptedIn()
     );
 

@@ -63,19 +63,34 @@ public class VopsLister {
   private Logger logger = Logger.getLogger(VopsLister.class.getName());
   private List<VopsRow> rows = new ArrayList<VopsRow>();
   private int numCourses = 0;
+  private int numOptionalCourses = 0;
+  private int numOptionalCoursesDone = 0;
+  private int numOptionalCoursesPlanned = 0;
   private int numMandatoryCourses = 0;
+  private int numMandatoryCoursesDone = 0;
+  private int numMandatoryCoursesPlanned = 0;
   private boolean optedIn = true;
   
   public static class Result {
     private Result(
       List<VopsRow> rows,
       int numCourses,
+      int numOptionalCourses,
+      int numOptionalCoursesDone,
+      int numOptionalCoursesPlanned,
       int numMandatoryCourses,
+      int numMandatoryCoursesDone,
+      int numMandatoryCoursesPlanned,
       boolean optedIn
     ) {
       this.rows = rows;
       this.numCourses = numCourses;
+      this.numOptionalCourses = numOptionalCourses;
+      this.numOptionalCoursesDone = numOptionalCoursesDone;
+      this.numOptionalCoursesPlanned = numOptionalCoursesPlanned;
       this.numMandatoryCourses = numMandatoryCourses;
+      this.numMandatoryCoursesDone = numMandatoryCoursesDone;
+      this.numMandatoryCoursesPlanned = numMandatoryCoursesPlanned;
       this.optedIn = optedIn;
     }
     
@@ -86,23 +101,42 @@ public class VopsLister {
     public int getNumCourses() {
       return numCourses;
     }
-
-    public int getNumMandatoryCourses() {
+    
+    public int getNumOptionalCourses() {
+        return numOptionalCourses;
+      }
+      public int getNumOptionalCoursesDone() {
+          return numOptionalCoursesDone;
+      }
+      public int getNumOptionalCoursesPlanned() {
+          return numOptionalCoursesPlanned;
+      }
+      public int getNumMandatoryCourses() {
       return numMandatoryCourses;
     }
-
+    public int getNumMandatoryCoursesDone() {
+        return numMandatoryCoursesDone;
+    }
+    public int getNumMandatoryCoursesPlanned() {
+        return numMandatoryCoursesPlanned;
+    }
     public boolean isOptedIn() {
       return optedIn;
     }
 
     private List<VopsRow> rows;
     private int numCourses;
+    private int numOptionalCourses;
+    private int numOptionalCoursesDone;
+    private int numOptionalCoursesPlanned;
     private int numMandatoryCourses;
+    private int numMandatoryCoursesDone;
+    private int numMandatoryCoursesPlanned;
     private boolean optedIn;
   }
   
   static public Result notOptedInResult() {
-    return new Result(Collections.emptyList(), 0, 0, false);
+    return new Result(Collections.emptyList(), 0, 0, 0, 0, 0, 0, 0, false);
   }
   
   public VopsLister(List<Subject> subjects, TranscriptOfRecordsController vopsController, User student,
@@ -176,7 +210,9 @@ public class VopsLister {
       String name = "";
       String description = "";
       boolean canSignUp = false;
-
+      
+      Mandatority mandatority = educationTypeMapping.getMandatority(educationSubtypeIdentifier);
+      
       for (VopsWorkspace workspace : workspaces) {
         WorkspaceEntity workspaceEntity =
             workspaceController.findWorkspaceEntityById(workspace.getWorkspaceIdentifier());
@@ -189,6 +225,15 @@ public class VopsLister {
         List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(studentIdentifier);
         
         Permission permission = permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP);
+        
+        if (mandatority == Mandatority.MANDATORY) {
+            numMandatoryCourses++;
+          }
+        
+        if (mandatority == Mandatority.NATIONAL_LEVEL_OPTIONAL) {
+            numOptionalCourses++;
+          }
+        
         for (UserGroupEntity userGroupEntity : userGroupEntities) {
           if (permissionController.hasWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission)) {
             canSignUp = true;
@@ -226,7 +271,7 @@ public class VopsLister {
         }
       }
       
-      Mandatority mandatority = educationTypeMapping.getMandatority(educationSubtypeIdentifier);
+
       CourseCompletionState state = CourseCompletionState.NOT_ENROLLED;
       String grade = null;
       if (workspaceUserExists) {
@@ -243,9 +288,11 @@ public class VopsLister {
           state = CourseCompletionState.ASSESSED;
           numCourses++;
           if (mandatority == Mandatority.MANDATORY) {
-            numMandatoryCourses++;
+            numMandatoryCoursesDone++;
           }
-
+          if (mandatority == Mandatority.NATIONAL_LEVEL_OPTIONAL) {
+              numOptionalCoursesDone++;
+            }          
           SchoolDataIdentifier gradingScaleIdentifier = workspaceAssessment.getGradingScaleIdentifier();
           if (gradingScaleIdentifier == null) {
             break;
@@ -331,8 +378,11 @@ public class VopsLister {
         }
         numCourses++;
         if (mandatority == Mandatority.MANDATORY) {
-          numMandatoryCourses++;
+          numMandatoryCoursesDone++;
         }
+        if (mandatority == Mandatority.NATIONAL_LEVEL_OPTIONAL) {
+            numOptionalCoursesDone++;
+         }        
         return new VopsRESTModel.VopsItem(
             courseNumber,
             CourseCompletionState.ASSESSED,
@@ -411,7 +461,12 @@ public class VopsLister {
     return new Result(
       rows,
       numCourses,
+      numOptionalCourses,
+      numOptionalCoursesDone,
+      numOptionalCoursesPlanned,
       numMandatoryCourses,
+      numMandatoryCoursesDone,
+      numMandatoryCoursesPlanned,
       optedIn);
   }
   

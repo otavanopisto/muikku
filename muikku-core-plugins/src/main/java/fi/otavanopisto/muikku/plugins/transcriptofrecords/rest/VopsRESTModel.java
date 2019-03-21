@@ -114,11 +114,16 @@ public class VopsRESTModel {
     String subjectIdentifier;
   }
   
-  public VopsRESTModel(List<VopsRow> rows, int numCourses, int numMandatoryCourses, boolean optedIn) {
+  public VopsRESTModel(List<VopsRow> rows, int numCourses, int numMandatoryCourses, int numMandatoryCoursesDone, int numMandatoryCoursesPlanned, int numOptionalCourses, int numOptionalCoursesDone, int numOptionalCoursesPlanned,  boolean optedIn) {
     super();
     this.rows = rows;
     this.numCourses = numCourses;
     this.numMandatoryCourses = numMandatoryCourses;
+    this.numMandatoryCoursesDone = numMandatoryCoursesDone;
+    this.numMandatoryCoursesPlanned = numMandatoryCoursesPlanned;
+    this.numOptionalCourses = numOptionalCourses;
+    this.numOptionalCoursesDone = numOptionalCoursesDone;
+    this.numOptionalCoursesPlanned = numOptionalCoursesPlanned;
     this.optedIn = optedIn;
   }
   
@@ -130,9 +135,31 @@ public class VopsRESTModel {
     return numCourses;
   }
   
+  public int getNumOptionalCourses() {
+    return numOptionalCourses;
+  }
+
+  public int getNumOptionalCoursesDone() {
+	return numOptionalCoursesDone;
+  }
+
+  public int getNumOptionalCoursesPlanned() {
+	return numOptionalCoursesPlanned;
+  }
+
+  
   public int getNumMandatoryCourses() {
     return numMandatoryCourses;
   }
+
+  public int getNumMandatoryCoursesDone() {
+	    return numMandatoryCoursesDone;
+  }
+
+  public int getNumMandatoryCoursesPlanned() {
+	    return numMandatoryCoursesPlanned;
+}
+
   
   public boolean isOptedIn() {
     return optedIn;
@@ -140,6 +167,11 @@ public class VopsRESTModel {
   
   List<VopsRow> rows;
   int numMandatoryCourses;
+  int numMandatoryCoursesDone;
+  int numMandatoryCoursesPlanned;
+  int numOptionalCourses;
+  int numOptionalCoursesDone;
+  int numOptionalCoursesPlanned;
   int numCourses;
   boolean optedIn;
 }
