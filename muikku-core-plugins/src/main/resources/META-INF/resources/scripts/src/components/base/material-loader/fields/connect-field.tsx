@@ -325,21 +325,26 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
     //the element calass name matching the state on whether it passes or fails
     let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
         "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";
+    let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
     return <div className="material-page__connectfield-wrapper">
-      <div className={`material-page__connectfield ${elementClassNameState}`}>
+      <div className={`material-page__connectfield ${fieldStateAfterCheck}`}>
         <div className="material-page__connectfield-terms-container">
           {this.state.fields.map((field, index)=>{
+            //the item answer
+            let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
             //the item class name only necessary if it was a fail and we are checking for rightness
             let itemClassNameState = this.props.checkAnswers && this.state.answerState &&
               this.state.answerState.includes("FAIL") && this.state.answerState[index] ? 
                 "state-" + this.state.answerState[index] : ""
+            let itemStateAfterCheck = itemAnswer ? this.state.answerState[index].includes("FAIL") ? 
+                "incorrect-answer" : "correct-answer" : "";
             //so now we get the fields here
             //the fields cannot be dragged and they remain in order
             //they are simple things
             return <div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
               <div className={`material-page__connectfield-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
                 "material-page__connectfield-term--selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-term--edited" : ""}
-                ${itemClassNameState}`}>
+                ${itemStateAfterCheck}`}>
                 <span className="material-page__connectfield-term-number">{index + 1}</span>
                 <span className="material-page__connectfield-term-label">{field.text}</span>
               </div>
@@ -348,14 +353,15 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
         </div>
         <div className="material-page__connectfield-counterparts-container">
          {this.state.counterparts.map((field, index)=>{
-           //the item rightness
+           //the item answer
            let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
            //the classname state if necessary
-           let itemClassNameState = itemAnswer && this.state.answerState.includes("FAIL") ? 
-               "state-" + this.state.answerState[index] : "";
+           let itemStateAfterCheck = itemAnswer ? this.state.answerState[index].includes("FAIL") ? 
+             "incorrect-answer" : "correct-answer" : "";
+
            //the basic class name
            let className = `material-page__connectfield-counterpart ${this.state.selectedField && this.state.selectedField.name === field.name ?
-             "material-page__connectfield-counterpart--selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-counterpart--edited" : ""} ${itemClassNameState}`;
+             "material-page__connectfield-counterpart--selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-counterpart--edited" : ""} ${itemStateAfterCheck}`;
 
            //if readonly we just add the classname in there
            if (this.props.readOnly){

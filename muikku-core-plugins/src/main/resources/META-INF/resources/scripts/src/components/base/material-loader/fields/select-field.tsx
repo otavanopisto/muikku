@@ -187,14 +187,13 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     }
     
     //The classname that represents the state of the whole field
-    let classNameState = this.state.answerState && this.props.checkAnswers ? "state-" + this.state.answerState : "";
     let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.checkAnswers ? this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer" : null;
     
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
       let selectFieldType = this.props.content.listType === "list" ? "list" : "dropdown";
       return <span className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType}`}>
-        <select className={`material-page__selectfield ${classNameState} ${fieldStateAfterCheck}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
+        <select className={`material-page__selectfield ${fieldStateAfterCheck}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
           {this.props.content.options.map(o=>{
@@ -214,7 +213,7 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
 
     //this is for the standard
     return <span className="material-page__radiobutton-wrapper">
-      <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${classNameState} ${fieldStateAfterCheck}`}>
+      <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map(o=>{
           let itemStateAfterCheck = "";
           //if correct answers are to be marked regarding whether they are correct or not

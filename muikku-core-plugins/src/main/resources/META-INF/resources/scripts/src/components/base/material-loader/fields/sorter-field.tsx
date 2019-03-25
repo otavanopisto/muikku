@@ -216,12 +216,11 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     }
     
     //Lets get the class name to match the state of the entire field if necessary
-    let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
-        "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";
-    
+    let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
+
     //we use that element and the class to create the field
-    return <Element className={`material-page__sorterfield-wrapper ${elementClassNameState}`}>
-      <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass}`}>
+    return <Element className="material-page__sorterfield-wrapper">
+      <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass} ${fieldStateAfterCheck}`}>
        {this.state.items.map((item, index)=>{
          //We get the text
          let text = item.name;
@@ -232,13 +231,13 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
          //Now we might be able if we are asked to to show the rightness of the very specific item
          //this only happens if the answer is wrong total because otherwise is right and it's unecessary
          //we set them up so that they show each if they are right or wrong
-         let itemClassNameState = this.props.checkAnswers && !answerIsBeingCheckedAndItisCorrect &&
-           this.state.answerState && this.state.answerState[index] ? 
-             "state-" + this.state.answerState[index] : ""
+
+         let itemStateAfterCheck = this.props.checkAnswers && !answerIsBeingCheckedAndItisCorrect &&
+           this.state.answerState && this.state.answerState[index] ? this.state.answerState[index].includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
 
          if (this.props.readOnly){
            //readonly component
-           return <Element className={`material-page__sorterfield-item ${itemClassNameState}`} key={item.id}>
+           return <Element className={`material-page__sorterfield-item ${itemStateAfterCheck}`} key={item.id}>
              <span className="material-page__sorterfield-item-icon icon-move"></span>
              <span className="material-page__sorterfield-item-label">{text}</span>
            </Element>
@@ -249,7 +248,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
          //the interaction data is the item itself so the argument would be that
          return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as={Element} parentContainerSelector=".material-page__sorterfield"
            className={`material-page__sorterfield-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
-         "material-page__sorterfield-item--selected" : ""} ${itemClassNameState}`} key={item.id} interactionGroup={this.props.content.name}
+         "material-page__sorterfield-item--selected" : ""} ${itemStateAfterCheck}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
            onClick={this.selectItem.bind(this, item)} onDrag={this.cancelSelectedItem}>
            <span className="material-page__sorterfield-item-icon icon-move"></span>
