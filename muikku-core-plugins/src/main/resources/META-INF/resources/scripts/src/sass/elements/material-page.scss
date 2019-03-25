@@ -123,7 +123,7 @@
   
 }
 
-// CORRECT ANSWERS
+// CORRECT ANSWERS COUNTER
 .material-page__correct-answers {
   align-items: center;
   display: flex;
@@ -253,6 +253,14 @@
   @include taskfield-text;
   @include taskfield-defaults;
   padding: 4px 6px;
+  
+  &.correct-answer {
+    border-color: $color-correct-answer;
+  }
+  
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+  }
 }
 
 // Select field - list and drop down
@@ -270,6 +278,14 @@
   @include taskfield-text;
   @include taskfield-defaults;
   padding: 3px;
+  
+  &.correct-answer {
+    border-color: $color-correct-answer;
+  }
+  
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+  }
 }
 
 .material-page__selectfield-item-container  {
@@ -288,6 +304,7 @@
 .material-page__radiobutton-items-wrapper {
   align-items: center;
   background: lighten($taskfield-border-color,30%);
+  border-radius: 2px;
   display: inline-flex;
   padding: 4px;
 }
@@ -332,6 +349,22 @@
     font-family: muikku;
     font-size: .875rem;
   }
+
+  &.correct-answer {
+    border-color: $color-correct-answer;
+
+    &:checked {
+      background-color: $color-correct-answer;
+    }
+  }
+
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+
+    &:checked {
+      background-color: $color-incorrect-answer;
+    }
+  }
 }
 
 // Checkbox
@@ -345,6 +378,7 @@
 .material-page__checkbox-items-wrapper {
   align-items: center;
   background: lighten($taskfield-border-color,30%);
+  border-radius: 2px;
   display: inline-flex;
   padding: 4px;
 }

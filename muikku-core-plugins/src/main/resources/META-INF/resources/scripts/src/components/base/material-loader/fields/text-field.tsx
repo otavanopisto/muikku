@@ -142,9 +142,6 @@ export default class TextField extends FieldBase<TextFieldProps, TextFieldState>
   }
   render(){
     if (!this.loaded){
-      //TODOLANKKINEN
-      //please remove the height 100px when you set the right style for the
-      //material-page__textfield classname, it uses the same as the input
       return <span ref="base" className="material-page__textfield-wrapper">
         <input readOnly className="material-page__textfield"
           size={this.props.content.columns && parseInt(this.props.content.columns)}/>
@@ -183,12 +180,12 @@ export default class TextField extends FieldBase<TextFieldProps, TextFieldState>
 
     //The state of the whole field
     let classNameState = this.state.answerState && this.props.checkAnswers ? "state-" + this.state.answerState : "";
+    let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.checkAnswers ? this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer" : null;
 
-    ///TODOLANKKINEN hereagain the height 100px that needs to be removed
     if (this.props.readOnly){
       //Read only version
       return <span className="material-page__textfield-wrapper">
-      <input readOnly className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}
+      <input readOnly className={`material-page__textfield ${classNameState} ${fieldStateAfterCheck}`} type="text" value={this.state.value}
         size={this.props.content.columns && parseInt(this.props.content.columns)}/>
         {correctAnswersummaryComponent}
       </span>
@@ -196,7 +193,7 @@ export default class TextField extends FieldBase<TextFieldProps, TextFieldState>
 
     //Standard modifiable version
     return <span className="material-page__textfield-wrapper">
-      <input className={`material-page__textfield ${classNameState}`} type="text" value={this.state.value}
+      <input className={`material-page__textfield ${classNameState} ${fieldStateAfterCheck}`} type="text" value={this.state.value}
         size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
       {correctAnswersummaryComponent}
     </span>

@@ -204,10 +204,10 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
       }
     }
     
-    //the classname we add to the element itself depending to the state, and only available if we check for rightness
+    //the classname we add to the element itself depending to the state, and only available if we check answers
     let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
         "state-" + (this.state.answerState === "UNKNOWN" ? "UNKNOWN" : (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS")) : "";
-    
+
     //and we render
     return <span className="material-page__checkbox-wrapper">
     <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
