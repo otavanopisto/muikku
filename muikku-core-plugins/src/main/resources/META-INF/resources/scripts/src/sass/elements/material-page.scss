@@ -832,7 +832,7 @@
 
   &.correct-answer {
 
-    .material-page__organizerfield-category { // If the whole taskfield is correct we then mark taskfield's category and items as correct 
+    .material-page__organizerfield-category { // If the whole taskfield is correct we then mark taskfield's category and items as correct . This class inception is needed so we don't add styles to terms that are only available
       border-color: $color-correct-answer;
 
       .material-page__organizerfield-term {
@@ -1009,7 +1009,7 @@
   position: relative;
   user-select: none;
 
-  &.correct-answer {
+  &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
     background: $color-default;
     border-color: $color-correct-answer;
 
@@ -1099,7 +1099,7 @@
   position: relative;
   user-select: none;
 
-  &.correct-answer {
+  &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
     background: $color-default;
     border-color: $color-correct-answer;
 
