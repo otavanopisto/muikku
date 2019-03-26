@@ -864,7 +864,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       // Convert Elastic results to REST model objects (WorkspaceUserRestModel)
 
       WorkspaceUserEntity workspaceUserEntity = null;
-      SchoolDataIdentifier workspaceUserIdentifier = null; 
+      SchoolDataIdentifier studentIdentifier = null; 
       for (Map<String, Object> elasticUser : elasticUsers) {
         if (elasticUser.get("identifier") != null && elasticUser.get("schoolDataSource") != null) {
           String identifier = elasticUser.get("identifier").toString();
@@ -872,8 +872,8 @@ public class WorkspaceRESTService extends PluginRESTService {
             logger.warning(String.format("Identifier %s in Elastic search index has no userEntityId", identifier));
             continue;
           }
-          workspaceUserIdentifier = new SchoolDataIdentifier(String.valueOf(elasticUser.get("identifier")), String.valueOf(elasticUser.get("schoolDataSource")));
-          workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, workspaceUserIdentifier);
+          studentIdentifier = new SchoolDataIdentifier(String.valueOf(elasticUser.get("identifier")), String.valueOf(elasticUser.get("schoolDataSource")));
+          workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
           if (workspaceUserEntity == null) {
             logger.severe(String.format("No workspace user for identifier %s in workspace entity %d", identifier, workspaceEntity.getId()));
             continue;
