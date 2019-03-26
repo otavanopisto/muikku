@@ -225,10 +225,11 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
           .then((files:Array<UserFileType>)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "files", value: files}})
           }),
-        promisify(mApi().records.vops.read(id), 'callback')()
-          .then((vops:VOPSDataType)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
-          }),
+// Removed until it works correctly
+//        promisify(mApi().records.vops.read(id), 'callback')()
+//          .then((vops:VOPSDataType)=>{
+//            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
+//          }),
         promisify(mApi().records.hops.read(id), 'callback')()
           .then((hops:HOPSDataType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "hops", value: hops}})

@@ -162,9 +162,11 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
-    let studentVops = (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
-        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
-  
+   let studentVops = null;
+// Removed until it works
+// (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
+//        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
+      
     let studentWorkspaces = <Workspaces/>;
     
     let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">

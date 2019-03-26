@@ -57,7 +57,8 @@ export interface GuiderStudentUserProfileType {
   addresses: Array<StudentUserAddressType>,
   files: Array<UserFileType>,
   usergroups: UserGroupListType,
-  vops: VOPSDataType,
+// Disabled until it really works  
+//  vops: VOPSDataType,
   hops: HOPSDataType,
   lastLogin: LastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,
