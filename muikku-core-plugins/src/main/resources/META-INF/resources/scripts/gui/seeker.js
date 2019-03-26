@@ -49,7 +49,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
             url : CONTEXTPATH + "/rest/seeker/search",
             dataType : "json",
             data : {
-              searchString : request.term
+              q : request.term
             },
             headers: {
               "Accept-Language": getLocale()

@@ -45,7 +45,8 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.home.home',
       href: "/",
       icon: "home",
-      to: true,
+      //Go to frontpage if not logged in
+      to: this.props.status.loggedIn,
       condition: true
     }, {
       modifier: "coursepicker",

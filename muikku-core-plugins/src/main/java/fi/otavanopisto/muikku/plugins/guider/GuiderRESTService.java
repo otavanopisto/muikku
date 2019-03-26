@@ -206,7 +206,7 @@ public class GuiderRESTService extends PluginRESTService {
   @Path("/students")
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStudents(
-      @QueryParam("searchString") String searchString,
+      @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
       @QueryParam("userGroupIds") List<Long> userGroupIds,

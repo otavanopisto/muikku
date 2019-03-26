@@ -350,7 +350,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("userId") Long userEntityId,
         @QueryParam("userIdentifier") String userId,
         @QueryParam("includeInactiveWorkspaces") @DefaultValue ("false") Boolean includeInactiveWorkspaces,
-        @QueryParam("search") String searchString,
+        @QueryParam("q") String searchString,
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,

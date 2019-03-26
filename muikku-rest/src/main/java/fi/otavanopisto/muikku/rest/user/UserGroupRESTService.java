@@ -70,7 +70,7 @@ public class UserGroupRESTService extends AbstractRESTService {
   @RESTPermitUnimplemented
   public Response searchUserGroups(
       @QueryParam("userIdentifier") String userIdentifier,
-      @QueryParam("searchString") String searchString,
+      @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
 
