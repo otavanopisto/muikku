@@ -1,5 +1,6 @@
 import WorkspaceNavbar from '~/components/base/workspace/navbar';
 import ScreenContainer from '~/components/general/screen-container';
+import PermissionsByUsergroups from './byUsergroups';
 
 import * as React from 'react';
 
@@ -18,7 +19,8 @@ export default class WorkspacePermissionsBody extends React.Component<WorkspaceP
   render(){
     return (<div>
       <WorkspaceNavbar activeTrail="permissions" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="permissions">
+      <ScreenContainer viewModifiers="workspace">
+        <PermissionsByUsergroups/>
       </ScreenContainer>
     </div>);
   }
