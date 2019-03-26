@@ -38,6 +38,7 @@
   color: $color-text-default;
   cursor: pointer;
   display: flex;
+  font-weight: 300;
   margin: 6px 8px;
   padding: 4px 8px;
   position: relative;
@@ -49,6 +50,7 @@
   &.active {
     background: $color-toc-item-link-selected-background;
     color: $color-default;
+    font-weight: 400;
   }
 }
 
@@ -61,38 +63,45 @@
 }
 
 .toc__item--submitted {
-  
+
+  .toc__icon {
+    background: $color-submitted;
+  }
 }
 
 .toc__item--answered {
-  
+
   .toc__icon {
-    align-items: center;
-    background: $color-info;
-    border: 1px solid $color-default;
-    border-radius: 100%;
-    color: $color-default;
-    display: inline-flex;
-    height: 1.25rem;
-    justify-content: center;
-    width: 1.25rem;
+    background: $color-submitted;
   }
 }
 
 .toc__item--withdrawn {
-  
+
+  .toc__icon {
+    background: $color-withdrawn;
+  }
 }
 
 .toc__item--passed {
-  
+
+  .toc__icon {
+    background: $color-passed;
+  }
 }
 
 .toc__item--incomplete {
-  
+
+  .toc__icon {
+    background: $color-incomplete;
+  }
 }
 
 .toc__item--failed {
-  
+
+  .toc__icon {
+    background: $color-failed;
+  }
 }
 
 .toc__text-body {
@@ -107,12 +116,18 @@
 }
 
 .toc__icon {
-  color: $color-item-list-icon-font-color;
-  display: flex;
+  align-items: center;
+  border: 1px solid $color-default;
+  border-radius: 100%;
+  color: $color-default;
+  display: inline-flex;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   font-size: 0.8125rem;
+  height: 1.25rem;
+  justify-content: center;
+  width: 1.25rem;
 }
 
 

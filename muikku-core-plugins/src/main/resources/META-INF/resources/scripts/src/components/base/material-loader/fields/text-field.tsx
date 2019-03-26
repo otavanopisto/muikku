@@ -170,7 +170,7 @@ export default class TextField extends FieldBase<TextFieldProps, TextFieldState>
       }
       //We create the component
       correctAnswersummaryComponent = <span className="material-page__field-answer-examples">
-        <span className="material-page__field-answer-title">
+        <span className="material-page__field-answer-examples-title">
           {this.props.i18n.text.get(answersAreExample ? 
               "plugin.workspace.assigment.checkAnswers.detailsSummary.title" :
               "plugin.workspace.assigment.checkAnswers.correctSummary.title")}

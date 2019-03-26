@@ -187,28 +187,50 @@
 
 // FIELD'S EXAMPLES
 .material-page__field-answer-examples {
-  
+  @include text;
+  align-items: center;
+  background: $color-example;
+  border-radius: 2px;
+  display: inline-flex;
+  margin: 0 4px;
+  padding: 0 4px;
+  vertical-align: middle;
 }
 
-.material-page__field-answer-title {
-  
+.material-page__field-answer-examples--sorterfield {
+  display: flex;
+  margin: 5px 0;
+}
+
+.material-page__field-answer-examples-title {
+  font-style: italic;
+  font-weight: 400;
+  padding: 0 4px;
 }
 
 .material-page__field-answer-example {
-  
+  border-radius: 2px;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.15rem;
+  margin: 0 4px;
+  padding: 2px 4px;
 }
 
 // FIELD'S EXPLANATION
 .material-page__field-explanation-wrapper {
-  
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
 }
 
 .material-page__field-explanation-button {
-  
-}
-
-.material-page__word-definition {
-  
+  align-items: center;
+  color: $color-info;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  padding: 2px;
 }
 
 // TASK FIELDS
@@ -222,6 +244,7 @@
 
 // Text field
 .material-page__textfield-wrapper {
+  align-items: center;
   display: inline-flex;
   margin: 4px;
 }
@@ -234,6 +257,7 @@
 
 // Select field - list and drop down
 .material-page__selectfield-wrapper {
+  align-items: center;
   display: inline-flex;
   margin: 4px;
 }
@@ -254,25 +278,33 @@
 }
 
 // Radio button
-.material-page__radiobutton-wrapper {
+.material-page__radiobutton-wrapper { // This wraps task field itself and correct answers component inside of the same parent
+  align-items: center;
+  display: inline-flex;
+  margin: 4px;
+  vertical-align: middle;
+}
+
+.material-page__radiobutton-items-wrapper {
   align-items: center;
   background: lighten($taskfield-border-color,30%);
   display: inline-flex;
-  margin: 4px;
   padding: 4px;
 }
 
-.material-page__radiobutton-wrapper--vertical {
+.material-page__radiobutton-items-wrapper--vertical {
   align-items: flex-start;
   flex-flow: column nowrap;
   vertical-align: middle;
 }
 
-.material-page__radiobutton-wrapper--horizontal {
+.material-page__radiobutton-items-wrapper--horizontal {
   flex-flow: row wrap;
 }
 
 .material-page__radiobutton-item-container {
+  align-items: center;
+  display: inline-flex;
   margin: 0 2px;
   padding: 2px;
 }
@@ -303,25 +335,33 @@
 }
 
 // Checkbox
-.material-page__checkbox-wrapper {
+.material-page__checkbox-wrapper { // This wraps task field itself and correct answers component inside of the same parent
+  align-items: center;
+  display: inline-flex;
+  margin: 4px;
+  vertical-align: middle;
+}
+
+.material-page__checkbox-items-wrapper {
   align-items: center;
   background: lighten($taskfield-border-color,30%);
   display: inline-flex;
-  margin: 4px;
   padding: 4px;
 }
 
-.material-page__checkbox-wrapper--vertical {
+.material-page__checkbox-items-wrapper--vertical {
   align-items: flex-start;
   flex-flow: column nowrap;
   vertical-align: middle;
 }
 
-.material-page__checkbox-wrapper--horizontal {
+.material-page__checkbox-items-wrapper--horizontal {
   flex-flow: row wrap;
 }
 
 .material-page__checkbox-item-container {
+  align-items: center;
+  display: inline-flex;
   margin: 0 2px;
   padding: 2px; 
 }
@@ -358,6 +398,7 @@
     background: $color-default;
     border: 2px solid $taskfield-border-color;
     border-radius: 2px;
+    box-sizing: border-box;
     margin: 4px 0 0;
     max-width: 100%;
     min-width: 100%;
@@ -434,7 +475,7 @@
     text-decoration: none;
     width: auto;
   }
-  
+
   .material-page__filefield-download-file-button {
     background: transparent;
     color: $color-info;

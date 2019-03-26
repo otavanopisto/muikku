@@ -205,8 +205,8 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     //We only display the correct answers if we got them wrong or they are not being checked at all
     if (this.props.displayCorrectAnswers && !answerIsBeingCheckedAndItisCorrect){
       //We create the summary witih the correct answers
-      correctAnswersummaryComponent = <span className="material-page__field-answer-examples">
-        <span className="material-page__field-answer-title">
+      correctAnswersummaryComponent = <span className="material-page__field-answer-examples material-page__field-answer-examples--sorterfield">
+        <span className="material-page__field-answer-examples-title">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
         </span>
         {this.props.content.items.map((answer, index)=>
