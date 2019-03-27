@@ -197,8 +197,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
         </Element>
       </Element>
     }
-    
-    
+
     //The summary for the correct answers
     let correctAnswersummaryComponent = null;
     let answerIsBeingCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerState && !this.state.answerState.includes("FAIL");
@@ -214,7 +213,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
         )}
       </span>
     }
-    
+
     //Lets get the class name to match the state of the entire field if necessary
     let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
 

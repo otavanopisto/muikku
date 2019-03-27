@@ -197,14 +197,7 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
           {this.props.content.options.map(o=>{
-            let itemStateAfterCheck = "";
-            //if correct answers are to be market regarding whether they are correct or not
-            if (markcorrectAnswers && o.correct){
-              itemStateAfterCheck = "correct-answer"
-            } else if (markcorrectAnswers){
-              itemStateAfterCheck = "incorrect-answer"
-            }
-            return <option className={`material-page__selectfield-item-container ${itemStateAfterCheck}`} key={o.name} value={o.name}>{o.text}</option>
+            return <option className="material-page__selectfield-item-container" key={o.name} value={o.name}>{o.text}</option>
           })}
         </select>
         {correctAnswersummaryComponent}
@@ -216,14 +209,8 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
       <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map(o=>{
           let itemStateAfterCheck = "";
-          //if correct answers are to be marked regarding whether they are correct or not
-          if (markcorrectAnswers && o.correct){
-            itemStateAfterCheck = "correct-answer"
-          } else if (markcorrectAnswers){
-            itemStateAfterCheck = "incorrect-answer"
-          }
           return <span className="material-page__radiobutton-item-container" key={o.name}>
-            <input className={`material-page__radiobutton ${itemStateAfterCheck}`} type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
+            <input className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
             <label className="material-page__checkable-label">{o.text}</label>
           </span>
         })}

@@ -317,14 +317,25 @@
   border-radius: 2px;
   display: inline-flex;
   padding: 4px;
-  
+
   &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
-  
+
     .material-page__radiobutton {
       border-color: $color-correct-answer;
-  
+
       &:checked {
         background-color: $color-correct-answer;
+      }
+    }
+  }
+
+  &.incorrect-answer { // If the whole taskfield is correct we then mark taskfield items as correct
+
+    .material-page__radiobutton {
+      border-color: $color-incorrect-answer;
+
+      &:checked {
+        background-color: $color-incorrect-answer;
       }
     }
   }
@@ -369,22 +380,6 @@
     content: "\e639";
     font-family: muikku;
     font-size: .875rem;
-  }
-
-  &.correct-answer {
-    border-color: $color-correct-answer;
-
-    &:checked {
-      background-color: $color-correct-answer;
-    }
-  }
-
-  &.incorrect-answer {
-    border-color: $color-incorrect-answer;
-
-    &:checked {
-      background-color: $color-incorrect-answer;
-    }
   }
 }
 
