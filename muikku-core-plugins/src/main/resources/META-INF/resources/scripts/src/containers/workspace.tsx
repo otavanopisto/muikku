@@ -29,7 +29,8 @@ import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMat
   loadStudentsOfWorkspace,
   loadCurrentWorkspaceJournalsFromServer,
   loadWorkspaceDetailsInCurrentWorkspace,
-  loadWorkspaceTypes} from '~/actions/workspaces';
+  loadWorkspaceTypes,
+  loadCurrentWorkspaceUserGroupPermissions } from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
@@ -397,6 +398,9 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.permissions.pageTitle')));
       this.props.store.dispatch(setCurrentWorkspace({
         workspaceId: state.status.currentWorkspaceId,
+        success: (workspace)=>{
+          this.props.store.dispatch(loadCurrentWorkspaceUserGroupPermissions() as Action);
+        }
       }) as Action);
     }
     

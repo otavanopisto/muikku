@@ -161,6 +161,13 @@ export interface WorkspaceStudentAssessmentStateType {
   text?: string
 }
 
+export interface WorkspacePermissionsType {
+  workspaceEntityId: number,
+  userGroupEntityId: number,
+  userGroupName: string,
+  permissions: string[],
+}
+
 export interface WorkspaceType {
   archived: boolean,
   description: string,
@@ -203,6 +210,7 @@ export interface WorkspaceType {
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
+  permissions?: WorkspacePermissionsType[],
       
   //Fancy stuff in here
   journals?: WorkspaceJournalsType
@@ -242,6 +250,7 @@ export interface WorkspaceUpdateType {
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
+  permissions?: WorkspacePermissionsType[],
       
   journals?: WorkspaceJournalsType
 }

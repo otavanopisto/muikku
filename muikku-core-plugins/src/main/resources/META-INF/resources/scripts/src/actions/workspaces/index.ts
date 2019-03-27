@@ -6,7 +6,7 @@ import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Worksp
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
-import { MaterialContentNodeType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType, WorkspacePermissionsType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -118,6 +118,10 @@ export interface UpdateCurrentWorkspaceImagesB64TriggerType {
     success?: ()=>any,
     fail?: ()=>any
   }):AnyActionType
+}
+
+export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
+  ():AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -453,6 +457,7 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
     delete actualOriginal["studentActivity"];
     delete actualOriginal["forumStatistics"];
     delete actualOriginal["studentAssessments"];
+    delete actualOriginal["studentAssessmentState"];
     delete actualOriginal["activityStatistics"];
     delete actualOriginal["feeInfo"];
     delete actualOriginal["assessmentRequests"];
@@ -465,6 +470,8 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
     delete actualOriginal["contentDescription"];
     delete actualOriginal["isCourseMember"];
     delete actualOriginal["journals"];
+    delete actualOriginal["activityLogs"];
+    delete actualOriginal["permissions"];
     
     dispatch({
       type: 'UPDATE_WORKSPACE',
@@ -1126,10 +1133,41 @@ let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType =
   }
 }
 
+let loadCurrentWorkspaceUserGroupPermissions:LoadCurrentWorkspaceUserGroupPermissionsTriggerType = function loadCurrentWorkspaceUserGroupPermissions() {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let state:StateType = getState();
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+    
+      let permissions:WorkspacePermissionsType[] = <WorkspacePermissionsType[]>(await promisify(mApi().permission.workspaceSettings.userGroups
+          .read(state.workspaces.currentWorkspace.id), 'callback')());
+                   
+      let currentWorkspaceAsOfNow:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspaceAsOfNow,
+          update: {
+            permissions
+          }
+        }
+      }); 
+      
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load current workspace user group permissions'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
-  updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64}
+  updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
+  loadCurrentWorkspaceUserGroupPermissions}
