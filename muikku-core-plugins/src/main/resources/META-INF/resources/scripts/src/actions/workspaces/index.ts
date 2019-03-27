@@ -124,6 +124,10 @@ export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
   ():AnyActionType
 }
 
+export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
+  (permissions: WorkspacePermissionsType, toggleValue: string):AnyActionType
+}
+
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
   if (!conditional){
     return null;
@@ -1140,7 +1144,7 @@ let loadCurrentWorkspaceUserGroupPermissions:LoadCurrentWorkspaceUserGroupPermis
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
     
       let permissions:WorkspacePermissionsType[] = <WorkspacePermissionsType[]>(await promisify(mApi().permission.workspaceSettings.userGroups
-          .read(state.workspaces.currentWorkspace.id), 'callback')());
+          .read(currentWorkspace.id), 'callback')());
                    
       let currentWorkspaceAsOfNow:WorkspaceType = getState().workspaces.currentWorkspace;
       
@@ -1163,6 +1167,63 @@ let loadCurrentWorkspaceUserGroupPermissions:LoadCurrentWorkspaceUserGroupPermis
   }
 }
 
+let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPermissionTriggerType = function updateCurrentWorkspaceUserGroupPermission(permissions, toggleValue) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let currentPermissions;
+    try {
+      let state:StateType = getState();
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      currentPermissions = currentWorkspace.permissions;
+      
+      let newSpecificGroupPermission = {...permissions};
+      newSpecificGroupPermission.permissions = [...newSpecificGroupPermission.permissions];
+      let indexFound = newSpecificGroupPermission.permissions.indexOf(toggleValue);
+      if (indexFound !== -1) {
+        newSpecificGroupPermission.permissions.splice(indexFound, 1);
+      } else {
+        newSpecificGroupPermission.permissions.push(toggleValue);
+      }
+      
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            permissions: currentPermissions.map((permissionValue) => {
+              if (permissionValue.userGroupEntityId === permissions.userGroupEntityId) {
+                return newSpecificGroupPermission;
+              }
+              
+              return permissionValue;
+            })
+          }
+        }
+      });
+      
+      await promisify(mApi().permission.workspaceSettings.userGroups
+          .update(currentWorkspace.id, permissions.userGroupEntityId, newSpecificGroupPermission), 'callback')()
+      
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      
+      let state:StateType = getState();
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      dispatch({
+        type: "UPDATE_WORKSPACE",
+        payload: {
+          original: currentWorkspace,
+          update: {
+            permissions: currentPermissions
+          }
+        }
+      }); 
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update permission value'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
@@ -1170,4 +1231,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
-  loadCurrentWorkspaceUserGroupPermissions}
+  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission}
