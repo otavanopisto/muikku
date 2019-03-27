@@ -123,7 +123,7 @@
   
 }
 
-// CORRECT ANSWERS
+// CORRECT ANSWERS COUNTER
 .material-page__correct-answers {
   align-items: center;
   display: flex;
@@ -197,6 +197,10 @@
   vertical-align: middle;
 }
 
+.material-page__field-answer-examples--memofield {
+  padding: 4px;
+}
+
 .material-page__field-answer-examples--sorterfield {
   display: flex;
   margin: 5px 0;
@@ -206,6 +210,12 @@
   font-style: italic;
   font-weight: 400;
   padding: 0 4px;
+}
+
+.material-page__field-answer-examples-title--memofield {
+  align-self: flex-start;
+  line-height: 1.15rem;
+  padding: 2px;
 }
 
 .material-page__field-answer-example {
@@ -253,6 +263,14 @@
   @include taskfield-text;
   @include taskfield-defaults;
   padding: 4px 6px;
+  
+  &.correct-answer {
+    border-color: $color-correct-answer;
+  }
+  
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+  }
 }
 
 // Select field - list and drop down
@@ -270,6 +288,14 @@
   @include taskfield-text;
   @include taskfield-defaults;
   padding: 3px;
+  
+  &.correct-answer {
+    border-color: $color-correct-answer;
+  }
+  
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+  }
 }
 
 .material-page__selectfield-item-container  {
@@ -288,8 +314,31 @@
 .material-page__radiobutton-items-wrapper {
   align-items: center;
   background: lighten($taskfield-border-color,30%);
+  border-radius: 2px;
   display: inline-flex;
   padding: 4px;
+
+  &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
+
+    .material-page__radiobutton {
+      border-color: $color-correct-answer;
+
+      &:checked {
+        background-color: $color-correct-answer;
+      }
+    }
+  }
+
+  &.incorrect-answer { // If the whole taskfield is correct we then mark taskfield items as correct
+
+    .material-page__radiobutton {
+      border-color: $color-incorrect-answer;
+
+      &:checked {
+        background-color: $color-incorrect-answer;
+      }
+    }
+  }
 }
 
 .material-page__radiobutton-items-wrapper--vertical {
@@ -345,8 +394,20 @@
 .material-page__checkbox-items-wrapper {
   align-items: center;
   background: lighten($taskfield-border-color,30%);
+  border-radius: 2px;
   display: inline-flex;
   padding: 4px;
+
+  &.correct-answer { // // If the whole taskfield is correct we then mark taskfield items as correct
+
+    .material-page__checkbox {
+      border-color: $color-correct-answer;
+
+      &:checked {
+        background-color: $color-correct-answer;
+      }
+    }
+  }
 }
 
 .material-page__checkbox-items-wrapper--vertical {
@@ -388,6 +449,22 @@
     content: "\e639";
     font-family: muikku;
     font-size: .875rem;
+  }
+
+  &.correct-answer {
+    border-color: $color-correct-answer;
+
+    &:checked {
+      background-color: $color-correct-answer;
+    }
+  }
+
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+
+    &:checked {
+      background-color: $color-incorrect-answer;
+    }
   }
 }
 
@@ -670,6 +747,13 @@
 
 .material-page__sorterfield {
   display: flex;
+
+  &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
+
+    .material-page__sorterfield-item {
+      border-color: $color-correct-answer;
+    }
+  }
 }
 
 .material-page__sorterfield--vertical {
@@ -697,6 +781,14 @@
   flex-flow: row nowrap;
   margin: 4px;
   user-select: none;
+
+  &.correct-answer {
+    border-color: $color-correct-answer;
+  }
+
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+  }
 }
 
 .material-page__sorterfield-item--selected {
@@ -732,7 +824,18 @@
 }
 
 .material-page__organizerfield {
-  // Not empty
+
+  &.correct-answer {
+
+    .material-page__organizerfield-category { // If the whole taskfield is correct we then mark taskfield's category and items as correct . This class inception is needed so we don't add styles to terms that are only available
+      border-color: $color-correct-answer;
+
+      .material-page__organizerfield-term {
+        background: $color-default;
+        border-color: $color-correct-answer;
+      }
+    }
+  }
 }
 
 .material-page__organizerfield-terms { // Wrapper for terms
@@ -757,6 +860,16 @@
   flex-flow: row nowrap;
   margin: 4px;
   user-select: none;
+  
+  &.correct-answer {
+    background: $color-default;
+    border-color: $color-correct-answer;
+  }
+
+  &.incorrect-answer {
+    background: $color-default;
+    border-color: $color-incorrect-answer;
+  }
 }
 
 .material-page__organizerfield-term--selected { // Single draggable term in SELEDTED state
@@ -831,6 +944,14 @@
   @include breakpoint($breakpoint-pad) {
     flex-basis: calc(50% - 8px);
   }
+
+  &.correct-answer {
+    border-color: $color-correct-answer;
+  }
+
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+  }
 }
 
 .material-page__organizerfield-category-title { // Title of single category
@@ -882,6 +1003,34 @@
   margin: 8px 4px;
   position: relative;
   user-select: none;
+
+  &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
+    background: $color-default;
+    border-color: $color-correct-answer;
+
+    &.material-page__connectfield-term--selected {
+      background: $taskfield-border-color;
+      border-color: $taskfield-border-color;
+    }
+
+    .material-page__connectfield-term-number {
+      border-color: $color-correct-answer;
+    }
+  }
+
+  &.incorrect-answer {
+    background: $color-default;
+    border-color: $color-incorrect-answer;
+
+    &.material-page__connectfield-term--selected {
+      background: $taskfield-border-color;
+      border-color: $taskfield-border-color;
+    }
+
+    .material-page__connectfield-term-number {
+      border-color: $color-incorrect-answer;
+    }
+  }
 }
 
 .material-page__connectfield-term-number {
@@ -944,6 +1093,34 @@
   margin: 8px 4px;
   position: relative;
   user-select: none;
+
+  &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
+    background: $color-default;
+    border-color: $color-correct-answer;
+
+    &.material-page__connectfield-counterpart--selected {
+      background: $taskfield-border-color;
+      border-color: $taskfield-border-color;
+    }
+
+    .material-page__connectfield-counterpart-number {
+      border-color: $color-correct-answer;
+    }
+  }
+
+  &.incorrect-answer {
+    background: $color-default;
+    border-color: $color-incorrect-answer;
+
+    &.material-page__connectfield-counterpart--selected {
+      background: $taskfield-border-color;
+      border-color: $taskfield-border-color;
+    }
+
+    .material-page__connectfield-counterpart-number {
+      border-color: $color-incorrect-answer;
+    }
+  }
 }
 
 .material-page__connectfield-counterpart-number {

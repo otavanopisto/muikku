@@ -203,45 +203,27 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
         </span>;
       }
     }
-    
-    //the classname we add to the element itself depending to the state, and only available if we check for rightness
-    let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
-        "state-" + (this.state.answerState === "UNKNOWN" ? "UNKNOWN" : (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS")) : "";
-    
+
+    //the classname we add to the element itself depending to the state, and only available if we check answers
+    let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? 
+        this.state.answerState !== "UNKNOWN" ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : null : null;
+
     //and we render
     return <span className="material-page__checkbox-wrapper">
-    <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${elementClassNameState}`}>
+    <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${fieldStateAfterCheck}`}>
       {this.props.content.options.map((o, index)=>{
         //if we are told to mark correct answers
-        let className = "";
+        let itemStateAfterCheck = "";
         if (markcorrectAnswers){
-          let answerStateClassName = this.state.answerState && this.state.answerState !== "UNKNOWN" ? "state-" + this.state.answerState[index] : "";
           if (o.correct){
-            className = "correct-answer " + answerStateClassName;
+            itemStateAfterCheck = "correct-answer";
           } else {
-            className = "incorrect-answer " + answerStateClassName;
+            itemStateAfterCheck = "incorrect-answer";
           }
         }
-        
-        //please make sure to give nice styles to this because this mixes both the state
-        //and whether the answer was right or not per field
-        //eg question is, what are cats?... felines, animals, cervines, equines
-        //felines is set to true by the user
-        //animals is set to false by the user
-        //cervines is set to true by the user
-        //equines is set to false by the user
-        //felines would be right-answer and state-PASS because the user chose true
-        //animals would be right-answer and state-FAIL because the user chose false
-        //cervines would be wrong-answer and state-PASS because the user chose true
-        //equines would be wrong-answer and state-PASS because the user chose false
-        //you might just ignore the state, I think showing which answers would be correct and not
-        //would be enough, you could as well ignore the right/wrong class names
-        //none of this happens if there's no right answer markcorrectAnswers variable would be false
-        //so there's no state-UNKNOWN per checkbox but the whole thing could be state-UNKNOWN where
-        //elementClassNameState is applied
-        
-        return <span key={o.name} className={`material-page__checkbox-item-container ${className}`}>
-          <input className="material-page__checkbox" type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
+
+        return <span key={o.name} className="material-page__checkbox-item-container">
+          <input className={`material-page__checkbox  ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
           <label className="material-page__checkable-label">{o.text}</label>
         </span>
       })}

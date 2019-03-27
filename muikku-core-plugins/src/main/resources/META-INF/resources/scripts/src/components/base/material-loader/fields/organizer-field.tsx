@@ -308,16 +308,15 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
       </div>
     }
     
-    //The overall state if we got one and we check for rightness
-    let elementClassNameState = this.props.checkAnswers && this.state.answerStateOverall ?
-        "state-" + this.state.answerStateOverall : "";
+    //The overall state if we got one and we check answers
+    let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerStateOverall ? this.state.answerStateOverall === "FAIL" ? "incorrect-answer" : "correct-answer" : "";
     
     //the classic variable
     let answerIsCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerStateOverall === "PASS"
         
     //we add that class name in our component
     return <div className="material-page__organizerfield-wrapper">
-      <div className={`material-page__organizerfield ${elementClassNameState}`}>
+      <div className={`material-page__organizerfield ${fieldStateAfterCheck}`}>
         <div className="material-page__organizerfield-terms">
           <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
           <div className="material-page__organizerfield-terms-container">
@@ -346,9 +345,9 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
           {this.props.content.categories.map((category)=>{
             //we make a category class name for if the answer state is there, only worth it if the whole thing is not right
             //if the whole thing is right then every category is right
-            let categoryClassNameState = this.props.checkAnswers && !answerIsCheckedAndItisCorrect &&
-              this.state.answerState && this.state.answerState[category.id] ?
-                "state-" + this.state.answerState[category.id]["*"] : "";
+            let fieldCategoryStateAfterCheck = this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
+              this.state.answerState && this.state.answerState[category.id] ? this.state.answerState[category.id]["*"] === "FAIL" ? 
+                "incorrect-answer" : "correct-answer" : "";
             
             //Showing the missing terms is only reasonable when display correct answers is there
             //we first check whether the category is right
@@ -364,16 +363,17 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
             }
             
             return <Droppable interactionGroup={this.props.content.name} onClick={this.selectBox.bind(this, category)}
-              className={`material-page__organizerfield-category ${categoryClassNameState}`}
+              className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
               key={category.id} interactionData={category.id}>
               <div className="material-page__organizerfield-category-title">{category.name}</div>
               <div className="material-page__organizerfield-category-terms-container">{this.state.boxes[category.id].map((termId)=>{
-                //showhing whether terms are right or not is only worth it is whole answers are not right and the category itself is not right
+                //showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
                 //otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
-                let termClassNameState = this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
-                  this.state.answerState && this.state.answerState[category.id] && this.state.answerState[category.id]["*"] === "FAIL" ?
-                    "state-" + this.state.answerState[category.id][termId] : "";
-                return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${termClassNameState}`}>
+                let itemStateAfterCheck = this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
+                  this.state.answerState && this.state.answerState[category.id] ? this.state.answerState[category.id][termId] === "FAIL" ? 
+                    "incorrect-answer" : "correct-answer" : "";
+
+                return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}>
                   <span className="material-page__organizerfield-term-label">{this.state.terms[termId]}</span>
                   {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-close"></span> : null}
                 </div>

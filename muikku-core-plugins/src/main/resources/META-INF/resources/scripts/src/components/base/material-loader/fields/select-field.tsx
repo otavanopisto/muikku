@@ -61,7 +61,7 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
     //When the select changes, we gotta call it up
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
-    //we update the state and check for rightness
+    //we update the state and check answers
     this.setState({value: e.target.value}, this.checkAnswers);
   }
   shouldComponentUpdate(nextProps: SelectFieldProps, nextState: SelectFieldState){
@@ -69,7 +69,7 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
   }
   checkAnswers(){
-    //if we are allowed to check for rightness
+    //if we are allowed to check answers
     if (!this.props.checkAnswers){
       return;
     }
@@ -82,7 +82,7 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
         this.setState({
           answerState: "UNKNOWN"
         });
-        //And call a rightness change for it to be unknown
+        //And call a answer change for it to be unknown
         this.props.onAnswerChange(this.props.content.name, null);
       }
       return;
@@ -101,7 +101,7 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
       }
     }
     
-    //We update accordingly only if the rightness has changed
+    //We update accordingly only if the answer has changed
     if (isCorrect && this.state.answerState !== "PASS"){
       this.setState({
         answerState: "PASS"
@@ -124,7 +124,6 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     this.checkAnswers();
   }
   render(){
-    //TODOLANKKINEN ensure that all this is right according to how you are rendering the resulting output
     if (!this.loaded){
       if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
         return <span className="material-page__selectfield-wrapper">
@@ -188,24 +187,17 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     }
     
     //The classname that represents the state of the whole field
-    let classNameState = this.state.answerState && this.props.checkAnswers ? "state-" + this.state.answerState : "";
+    let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.checkAnswers ? this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer" : null;
     
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
       let selectFieldType = this.props.content.listType === "list" ? "list" : "dropdown";
       return <span className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType}`}>
-        <select className={`material-page__selectfield ${classNameState}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
+        <select className={`material-page__selectfield ${fieldStateAfterCheck}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
           {this.props.content.options.map(o=>{
-            let className = "";
-            //if correct answers are to be market regarding whether they are correct or not
-            if (markcorrectAnswers && o.correct){
-              className = "correct-answer"
-            } else if (markcorrectAnswers){
-              className = "incorrect-answer"
-            }
-            return <option className={`material-page__selectfield-item-container ${className}`} key={o.name} value={o.name}>{o.text}</option>
+            return <option className="material-page__selectfield-item-container" key={o.name} value={o.name}>{o.text}</option>
           })}
         </select>
         {correctAnswersummaryComponent}
@@ -214,16 +206,10 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
 
     //this is for the standard
     return <span className="material-page__radiobutton-wrapper">
-      <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${classNameState}`}>
+      <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map(o=>{
-          let className = "";
-          //if correct answers are to be market regarding whether they are correct or not
-          if (markcorrectAnswers && o.correct){
-            className = "correct-answer"
-          } else if (markcorrectAnswers){
-            className = "incorrect-answer"
-          }
-          return <span className={`material-page__radiobutton-item-container ${className}`} key={o.name}>
+          let itemStateAfterCheck = "";
+          return <span className="material-page__radiobutton-item-container" key={o.name}>
             <input className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
             <label className="material-page__checkable-label">{o.text}</label>
           </span>
