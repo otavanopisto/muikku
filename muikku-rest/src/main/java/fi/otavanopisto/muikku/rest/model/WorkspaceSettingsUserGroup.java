@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.rest.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceSettingsUserGroup {
@@ -52,5 +53,5 @@ public class WorkspaceSettingsUserGroup {
   private Long workspaceEntityId;
   private Long userGroupEntityId;
   private String userGroupName;
-  private List<String> permissions;
+  private List<String> permissions = new ArrayList<>();
 }
