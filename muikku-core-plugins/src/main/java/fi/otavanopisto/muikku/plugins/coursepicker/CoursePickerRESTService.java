@@ -170,7 +170,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Path("/workspaces/")
   @RESTPermitUnimplemented
   public Response listWorkspaces(
-        @QueryParam("search") String searchString,
+        @QueryParam("q") String searchString,
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,

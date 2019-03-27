@@ -241,7 +241,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
           .then((notifications:GuiderNotificationStudentsDataType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "notifications", value: notifications}})
           }),
-        promisify(mApi().workspace.workspaces.read({userIdentifier: id}), 'callback')()
+        promisify(mApi().workspace.workspaces.read({userIdentifier: id, includeInactiveWorkspaces: true}), 'callback')()
           .then(async (workspaces:WorkspaceListType)=>{
             if (workspaces && workspaces.length){
               await Promise.all([
@@ -407,6 +407,7 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
         type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
         payload: <GuiderWorkspaceListType>(await promisify(mApi().workspace.workspaces.read({
           userIdentifier: currentUser,
+          includeInactiveWorkspaces: true,
           maxResults: 500,
           orderBy: "alphabet"
         }), 'callback')()) || []

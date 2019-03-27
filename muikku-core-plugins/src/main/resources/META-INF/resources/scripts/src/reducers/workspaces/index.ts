@@ -154,6 +154,13 @@ export interface WorkspaceDetailsType {
 
 export type WorkspaceAccessType = "MEMBERS_ONLY" | "LOGGED_IN" | "ANYONE";
 
+export interface WorkspaceStudentAssessmentStateType {
+  date: string,
+  state: WorkspaceAssessementStateType,
+  grade?: string,
+  text?: string
+}
+
 export interface WorkspaceType {
   archived: boolean,
   description: string,
@@ -184,6 +191,7 @@ export interface WorkspaceType {
   studentActivity?: WorkspaceStudentActivityType,
   forumStatistics?: WorkspaceForumStatisticsType,
   studentAssessments?: WorkspaceStudentAssessmentsType,
+  studentAssessmentState?: WorkspaceStudentAssessmentStateType,
   activityStatistics?: WorkspaceActivityStatisticsType,
   feeInfo?: WorkspaceFeeInfoType,
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
@@ -222,6 +230,7 @@ export interface WorkspaceUpdateType {
   studentActivity?: WorkspaceStudentActivityType,
   forumStatistics?: WorkspaceForumStatisticsType,
   studentAssessments?: WorkspaceStudentAssessmentsType,
+  studentAssessmentState?: WorkspaceStudentAssessmentStateType,
   activityStatistics?: WorkspaceActivityStatisticsType,
   feeInfo?: WorkspaceFeeInfoType,
   assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
@@ -229,6 +238,7 @@ export interface WorkspaceUpdateType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
+  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,

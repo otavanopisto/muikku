@@ -742,6 +742,8 @@ export interface DeleteCurrentWorkspaceImageTriggerType {
   ():AnyActionType
 }
 
+export type CopyCurrentWorkspaceStepType = "initial-copy" | "change-date" | "copy-areas" | "copy-materials" | "copy-background-picture" | "done";
+
 export interface CopyCurrentWorkspaceTriggerType {
   (data: {
     description: string,
@@ -753,7 +755,7 @@ export interface CopyCurrentWorkspaceTriggerType {
     copyMaterials: "NO" | "CLONE" | "LINK",
     copyBackgroundPicture: boolean,
     success: (
-      step: "initial-copy" | "change-date" | "copy-areas" | "copy-materials" | "copy-background-picture" | "done",
+      step: CopyCurrentWorkspaceStepType,
       workspace: WorkspaceType
     )=>any,
     fail: ()=>any
@@ -1041,7 +1043,13 @@ let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentW
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       let cloneWorkspace:WorkspaceType = <WorkspaceType>(await promisify(mApi().workspace.workspaces
-          .create({
+          .create(
+          {
+            name: data.name,
+            nameExtension: data.nameExtension,
+            description: data.description
+          },
+          {
             sourceWorkspaceEntityId: currentWorkspace.id
           }), 'callback')());
     

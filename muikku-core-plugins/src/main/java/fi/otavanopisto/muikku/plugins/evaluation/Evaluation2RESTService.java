@@ -1101,9 +1101,9 @@ public class Evaluation2RESTService {
   }
   
   @PUT
-  @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/evaluationrequestarchive")
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/evaluationrequestarchive")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response archiveWorkspaceAssessmentRequest(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId) {
+  public Response archiveWorkspaceAssessmentRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -1112,12 +1112,15 @@ public class Evaluation2RESTService {
     }
     
     // Entities and identifiers
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
     
-    List<WorkspaceAssessmentRequest> requests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), userIdentifier.getIdentifier()); 
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    
+    List<WorkspaceAssessmentRequest> requests = gradingController.listWorkspaceAssessmentRequests(
+        workspaceEntity.getDataSource().getIdentifier(),
+        workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+
     if (CollectionUtils.isNotEmpty(requests)) {
       for (WorkspaceAssessmentRequest request : requests) {
         gradingController.updateWorkspaceAssessmentRequest(
@@ -1125,8 +1128,8 @@ public class Evaluation2RESTService {
         request.getIdentifier(),
         request.getWorkspaceUserIdentifier(),
         request.getWorkspaceUserSchoolDataSource(),
-        workspaceIdentifier.getIdentifier(),
-        userIdentifier.getIdentifier(),
+        workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
         request.getRequestText(),
         request.getDate(),
         Boolean.TRUE, // archived

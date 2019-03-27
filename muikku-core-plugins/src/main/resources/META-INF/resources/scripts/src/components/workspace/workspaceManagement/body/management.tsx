@@ -9,6 +9,7 @@ import moment from "~/lib/moment";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 import equals = require("deep-equal");
+import CopyWizardDialog from "../dialogs/copy-wizard";
 
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
@@ -362,7 +363,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           <Button href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
             openInNewTab="_blank"
             buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Button>
-          <Button buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Button>
+          <CopyWizardDialog>
+            <Button buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Button>
+          </CopyWizardDialog>
         </section>
         <section>
           <h2>{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>

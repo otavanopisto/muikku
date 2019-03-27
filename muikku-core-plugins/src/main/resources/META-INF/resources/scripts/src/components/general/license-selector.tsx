@@ -89,6 +89,9 @@ const CCPROPSDEF:CCPropsType = {
 }
 
 const CCVALIDATE = function(version: string, value: string){
+  if (value === null) {
+    return false;
+  }
   return (value.startsWith(CC_URL_PREFIX_SSL) || value.startsWith(CC_URL_PREFIX_NOSSL)) && 
     value.endsWith(version);
 }
@@ -175,7 +178,7 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
   constructor(props: LicenseSelectorProps){
     super(props);
     
-    let currentLicense = LICENSES.find(v=>v.validate(props.value || ""));
+    let currentLicense = LICENSES.find(v=>v.validate(props.value));
     this.state = {
       text: props.value || "",
       valid: true
@@ -187,7 +190,7 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
   }
   componentWillReceiveProps(nextProps: LicenseSelectorProps){
     if (nextProps.value !== this.state.text){
-      let nextLicense = LICENSES.find(v=>v.validate(nextProps.value || ""));
+      let nextLicense = LICENSES.find(v=>v.validate(nextProps.value));
       this.setState({
         text: nextProps.value || "",
         valid: true
