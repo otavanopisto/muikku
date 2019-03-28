@@ -192,7 +192,9 @@
   background: $color-example;
   border-radius: 2px;
   display: inline-flex;
-  margin: 0 4px;
+  flex-flow: row wrap;
+  margin: 4px;
+  max-width: 100%;
   padding: 4px;
   vertical-align: middle;
 }
@@ -307,6 +309,7 @@
 .material-page__radiobutton-wrapper { // This wraps task field itself and correct answers component inside of the same parent
   align-items: center;
   display: inline-flex;
+  flex-flow: row wrap;
   margin: 4px;
   vertical-align: middle;
 }
@@ -387,6 +390,7 @@
 .material-page__checkbox-wrapper { // This wraps task field itself and correct answers component inside of the same parent
   align-items: center;
   display: inline-flex;
+  flex-flow: row wrap;
   margin: 4px;
   vertical-align: middle;
 }
@@ -920,8 +924,13 @@
 
 .material-page__organizerfield-term--missing {
   cursor: default;
+  line-height: 1; // This prevents text misalignment in mobile views
   opacity: 0.6;
-  padding: 0 8px;
+  padding: 4px 6px;
+  
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.25rem;
+  }
 }
 
 .material-page__organizerfield-term-icon {
@@ -1084,11 +1093,16 @@
 }
 
 .material-page__connectfield-term-label {
+  display: block;
   flex-basis: auto;
-  flex-grow: 0;
+  flex-grow: 1;
   flex-shrink: 0;
   line-height: 1; // This prevents text misalignment in mobile views
+  overflow: hidden;
   padding: 6px;
+  text-overflow: ellipsis;
+  width: 100px;
+  white-space: nowrap;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
@@ -1196,11 +1210,16 @@
 }
 
 .material-page__connectfield-counterpart-label {
+  display: block;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 0;
   line-height: 1; // This prevents text misalignment in mobile views
+  overflow: hidden;
   padding: 6px 6px 6px 0;
+  text-overflow: ellipsis;
+  width: 100px;
+  white-space: nowrap;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
