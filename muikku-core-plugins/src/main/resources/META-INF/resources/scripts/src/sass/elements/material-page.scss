@@ -193,7 +193,7 @@
   border-radius: 2px;
   display: inline-flex;
   margin: 0 4px;
-  padding: 0 4px;
+  padding: 4px;
   vertical-align: middle;
 }
 
@@ -203,19 +203,19 @@
 
 .material-page__field-answer-examples--sorterfield {
   display: flex;
+  flex-flow: row wrap;
   margin: 5px 0;
 }
 
 .material-page__field-answer-examples-title {
   font-style: italic;
   font-weight: 400;
-  padding: 0 4px;
+  line-height: 1.15rem;
+  padding: 2px 4px;
 }
 
 .material-page__field-answer-examples-title--memofield {
   align-self: flex-start;
-  line-height: 1.15rem;
-  padding: 2px;
 }
 
 .material-page__field-answer-example {
