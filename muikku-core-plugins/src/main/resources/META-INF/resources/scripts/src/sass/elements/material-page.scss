@@ -258,6 +258,7 @@
 .material-page__textfield-wrapper {
   align-items: center;
   display: inline-flex;
+  flex-flow: row wrap;
   margin: 4px;
 }
 
@@ -909,8 +910,10 @@
   cursor: default;
 
   .material-page__organizerfield-term-icon {
+    @include rotate-icon-on-hover;
     cursor: pointer;
     padding: 6px;
+    
   }
 
   .material-page__organizerfield-term-label {
