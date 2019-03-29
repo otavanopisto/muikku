@@ -152,7 +152,7 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
   render(){
     if (!this.loaded){
       return <span ref="base" className="material-page__checkbox-wrapper">
-        <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field`}>
+        <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"}`}>
           {this.props.content.options.map((o, index)=>{
             return <span key={o.name} className="material-page__checkbox-item-container">
               <input className="material-page__checkbox" type="checkbox" disabled/>
@@ -210,7 +210,7 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
 
     //and we render
     return <span className="material-page__checkbox-wrapper">
-    <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field ${fieldStateAfterCheck}`}>
+    <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
       {this.props.content.options.map((o, index)=>{
         //if we are told to mark correct answers
         let itemStateAfterCheck = "";

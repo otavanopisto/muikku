@@ -116,11 +116,77 @@
     opacity: 0.9;
     padding: 15px 10px;
   }
-  
+
   .image__details-label {
     padding: 0 5px 0 0;
   }
-  
+}
+
+// DISABLED & READONLY TASKFIELDS
+.material-page__sorterfield[disabled] .material-page__sorterfield-item,
+.material-page__organizerfield[disabled] .material-page__organizerfield-category,
+.material-page__organizerfield[disabled] .material-page__organizerfield-category-title,
+.material-page__organizerfield[disabled] .material-page__organizerfield-term,
+.material-page__connectfield[disabled] .material-page__connectfield-term,
+.material-page__connectfield[disabled] .material-page__connectfield-term-number,
+.material-page__connectfield[disabled] .material-page__connectfield-counterpart,
+.material-page__connectfield[disabled] .material-page__connectfield-counterpart-number,
+.material-page__textfield[readonly],
+.material-page__selectfield[disabled],
+.material-page__memofield[readonly],
+.material-page__memofield-wrapper .cke[data-readonly] {
+  border-color: $color-disabled-taskfield-border !important;
+  cursor: text;
+}
+
+.material-page__filefield[disabled],
+.material-page__audiofield[disabled] {
+  border-color: $color-disabled-taskfield-border !important;
+  cursor: text;
+
+  input[type="file"] {
+    cursor: default;
+  }
+
+  .material-page__audiofield-controls,
+  .material-page__filefield-description {
+    display: none;
+  }
+
+  .material-page__audiofield-files-container,
+  .material-page__filefield-files-container {
+    border: none;
+  }
+
+  .material-page__filefield-remove-file-button,
+  .material-page__audiofield-remove-file-button {
+    display: none;
+  }
+}
+
+.material-page__checkbox[disabled],
+.material-page__radiobutton[disabled] {
+  border-color: darken($color-disabled-taskfield-border,10%) !important;
+  cursor: default;
+
+  &[checked] {
+    background-color: darken($color-disabled-taskfield-border,10%) !important;
+    border-color: darken($color-disabled-taskfield-border,10%) !important;
+  }
+}
+
+.material-page__organizerfield[disabled] .material-page__organizerfield-term--in-use,
+.material-page__organizerfield[disabled] .material-page__organizerfield-term--no-dragging {
+  background: $color-disabled-taskfield-background !important;
+}
+
+.material-page__organizerfield[disabled] .material-page__organizerfield-term-icon,
+.material-page__sorterfield[disabled] .material-page__sorterfield-item-icon,
+.material-page__connectfield[disabled] .material-page__connectfield-counterpart-icon {
+  color: $color-disabled-taskfield-icon !important;
+  cursor: default;
+  transform: none;
+  transition: none;
 }
 
 // CORRECT ANSWERS COUNTER
@@ -200,7 +266,9 @@
 }
 
 .material-page__field-answer-examples--memofield {
-  padding: 4px;
+  align-items: flex-start;
+  flex-flow: column nowrap;
+  width: calc(100% - 8px); // 2 * padding and margin
 }
 
 .material-page__field-answer-examples--sorterfield {
@@ -225,7 +293,7 @@
   font-style: italic;
   font-weight: 300;
   line-height: 1.15rem;
-  margin: 0 4px;
+  margin: 0 4px 0 0;
   padding: 2px 4px;
 }
 
@@ -259,12 +327,12 @@
   align-items: center;
   display: inline-flex;
   flex-flow: row wrap;
-  margin: 4px;
 }
 
 .material-page__textfield {
   @include taskfield-text;
   @include taskfield-defaults;
+  margin: 4px;
   padding: 4px 6px;
   
   &.correct-answer {
@@ -280,7 +348,7 @@
 .material-page__selectfield-wrapper {
   align-items: center;
   display: inline-flex;
-  margin: 4px;
+  flex-flow: row wrap;
 }
 
 .material-page__selectfield-wrapper--list {
@@ -290,6 +358,7 @@
 .material-page__selectfield {
   @include taskfield-text;
   @include taskfield-defaults;
+  margin: 4px;
   padding: 3px;
   
   &.correct-answer {
