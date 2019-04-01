@@ -1,0 +1,16 @@
+@import "../base/mixins";
+	
+.material-editor {
+  @include prefix(transition, webkit ms o moz, left 0.3s);
+  left: -100%;
+  width: 50%;
+  background-color: white;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  
+  &.material-editor--visible {
+  	left: 0;
+  }
+}

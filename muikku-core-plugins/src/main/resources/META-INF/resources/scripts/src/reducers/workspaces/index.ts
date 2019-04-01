@@ -300,6 +300,17 @@ export interface WorkspaceTypeType {
   name: string
 }
 
+//page = true && currentNodeValue = null && parentNodeValue = null   (new page)
+//page = false && currentNodeValue = null && parentNodeValue = x     (new material)
+//page = true && currentNodeValue = x && parentNodeValue = null      (edit page)
+//page = false && currentNodeValue = x && parentNodeValue = x        (edit material)
+export interface WorkspaceMaterialEditorType {
+  currentNodeValue?: MaterialContentNodeType,
+  parentNodeValue?: MaterialContentNodeType,
+  page: boolean,
+  opened: boolean,
+}
+
 export interface WorkspacesType {
   availableWorkspaces: WorkspaceListType,
   userWorkspaces: WorkspaceListType,
@@ -313,25 +324,12 @@ export interface WorkspacesType {
   currentMaterials: MaterialContentNodeListType,
   currentMaterialsActiveNodeId: number,
   currentMaterialsReplies: MaterialCompositeRepliesListType,
+  materialEditor: WorkspaceMaterialEditorType,
   
   types?: Array<WorkspaceTypeType>
 }
 
-export interface WorkspacesPatchType {
-  availableWorkspaces?: WorkspaceListType,
-  userWorkspaces?: WorkspaceListType,
-  lastWorkspace?: WorkspaceMaterialReferenceType,
-  currentWorkspace?: WorkspaceType,
-  avaliableFilters?: WorkspacesAvaliableFiltersType,
-  state?: WorkspacesStateType,
-  activeFilters?: WorkspacesActiveFiltersType,
-  hasMore?: boolean,
-  toolbarLock?: boolean,
-  currentMaterials?: MaterialContentNodeListType,
-  currentMaterialsActiveNodeId?: number,
-      
-  types?: Array<WorkspaceTypeType>
-}
+export type WorkspacesPatchType = Partial<WorkspacesType>;
 
 export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
 
@@ -480,7 +478,11 @@ export default function workspaces(state: WorkspacesType={
   hasMore: false,
   toolbarLock: false,
   currentMaterialsActiveNodeId: null,
-  types: null
+  types: null,
+  materialEditor: {
+    page: false,
+    opened: false,
+  }
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
     return <WorkspacesType>Object.assign({}, state, {
