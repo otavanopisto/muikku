@@ -4,6 +4,7 @@ import ScreenContainer from '~/components/general/screen-container';
 import * as React from 'react';
 
 import Materials from './materials';
+import MaterialEditor from '~/components/base/material-editor';
 import TableOfContentsComponent from './content';
 
 interface WorkspaceMaterialsBodyProps {
@@ -28,7 +29,8 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
     let navigationComponent = <TableOfContentsComponent ref="content"/>;
     return (<div>
       <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="materials"> 
+      <ScreenContainer viewModifiers="materials">
+        <MaterialEditor/>
         <Materials onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
       </ScreenContainer>

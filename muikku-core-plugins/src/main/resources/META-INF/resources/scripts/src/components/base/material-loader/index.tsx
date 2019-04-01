@@ -17,9 +17,10 @@ import { StatusType } from '~/reducers/base/status';
 import { StateType } from '~/reducers';
 import { Dispatch, connect } from 'react-redux';
 import { WebsocketStateType } from '~/reducers/util/websocket';
-import Button from '~/components/general/button';
+import Button, { ButtonPill } from '~/components/general/button';
 import { bindActionCreators } from 'redux';
-import { UpdateAssignmentStateTriggerType, updateAssignmentState } from '~/actions/workspaces';
+import { UpdateAssignmentStateTriggerType, updateAssignmentState,
+  setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType } from '~/actions/workspaces';
 import equals = require("deep-equal");
 
 //These represent the states assignments and exercises can be in
@@ -112,6 +113,8 @@ const STATES = [{
 
 interface MaterialLoaderProps {
   material: MaterialContentNodeType,
+  page?: MaterialContentNodeType,
+  
   workspace: WorkspaceType,
   i18n: i18nType,
   status: StatusType,
@@ -122,7 +125,10 @@ interface MaterialLoaderProps {
   //Whether or not the thing can be answered
   //and then it will use the state configuration
   answerable?: boolean,
-      
+  
+  //Edition mode, should only be available to admins
+  editable?: boolean,
+  
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
 
@@ -134,7 +140,8 @@ interface MaterialLoaderProps {
       
   readOnly?: boolean,
   
-  updateAssignmentState: UpdateAssignmentStateTriggerType
+  updateAssignmentState: UpdateAssignmentStateTriggerType,
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
 }
 
 interface MaterialLoaderState {
@@ -198,6 +205,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
+    this.startupEditor = this.startupEditor.bind(this);
     
     //if it is answerable
     if (props.answerable && props.material){
@@ -230,6 +238,14 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   }
   stopPropagation(e: React.MouseEvent<HTMLDivElement>){
     e.stopPropagation();
+  }
+  startupEditor(){
+    this.props.setWorkspaceMaterialEditorState({
+      currentNodeValue: this.props.material,
+      parentNodeValue: this.props.page,
+      page: false,
+      opened: true,
+    });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
     //if the component will update we need to do some changes if it's gonna be answerable
@@ -410,6 +426,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         {this.props.material.assignmentType ? <div className={`material-page__label material-page__label--${this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment"}`}>
           {this.props.material.assignmentType === "EXERCISE" ? this.props.i18n.text.get("plugin.workspace.materialsLoader.exerciseLabel") : this.props.i18n.text.get("plugin.workspace.materialsLoader.assignmentLabel")}
         </div> : null }
+        {this.props.editable ? <ButtonPill icon="edit" onClick={this.startupEditor}/> : null}
       </h2>
       
       <div className="react-required-container" onClick={this.stopPropagation}>
@@ -460,7 +477,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateAssignmentState}, dispatch);
+  return bindActionCreators({updateAssignmentState, setWorkspaceMaterialEditorState}, dispatch);
 };
 
 export default connect(

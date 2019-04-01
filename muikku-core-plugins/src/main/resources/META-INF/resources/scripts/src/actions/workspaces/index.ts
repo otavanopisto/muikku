@@ -6,7 +6,7 @@ import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Worksp
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
-import { MaterialContentNodeType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType, WorkspacePermissionsType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType, WorkspacePermissionsType, WorkspaceMaterialEditorType } from '~/reducers/workspaces';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -126,6 +126,10 @@ export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
 
 export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
   (permissions: WorkspacePermissionsType, toggleValue: string):AnyActionType
+}
+
+export interface SetWorkspaceMaterialEditorStateTriggerType {
+  (newState: WorkspaceMaterialEditorType):AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -1224,6 +1228,15 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
   }
 }
 
+let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType = function setWorkspaceMaterialEditorState(newState){
+  return {
+    type: "UPDATE_WORKSPACES_ALL_PROPS",
+    payload: {
+      materialEditor: newState
+    }
+  };
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
@@ -1231,4 +1244,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
-  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission}
+  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState}

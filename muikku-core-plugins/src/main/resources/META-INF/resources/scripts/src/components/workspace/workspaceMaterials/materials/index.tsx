@@ -134,9 +134,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           {chapter.children.map((node)=>{
             let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
             let material = !this.props.workspace || !this.props.materialReplies  ? null :
-              <ContentPanelItem ref={node.workspaceMaterialId + ""}>
+              <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
                 <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
-                <WorkspaceMaterial materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
+                <WorkspaceMaterial page={chapter} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
               </ContentPanelItem>;
             return material;
            })}

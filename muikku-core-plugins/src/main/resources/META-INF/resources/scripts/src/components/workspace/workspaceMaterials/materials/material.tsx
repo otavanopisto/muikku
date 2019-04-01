@@ -13,6 +13,7 @@ interface WorkspaceMaterialProps {
   i18n: i18nType,
   status: StatusType,
   materialContentNode: MaterialContentNodeType,
+  page: MaterialContentNodeType,
   compositeReplies: MaterialCompositeRepliesType,
   workspace: WorkspaceType,
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType
@@ -33,7 +34,8 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
     this.props.setCurrentWorkspace({workspaceId: this.props.workspace.id, refreshActivity: true});
   }
   render(){
-    return <MaterialLoader material={this.props.materialContentNode} workspace={this.props.workspace}
+    return <MaterialLoader page={this.props.page} editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+      material={this.props.materialContentNode} workspace={this.props.workspace}
       compositeReplies={this.props.compositeReplies} answerable onAssignmentStateModified={this.updateWorkspaceActivity}/>
   }
 }
