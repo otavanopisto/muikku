@@ -307,6 +307,7 @@ export interface WorkspaceTypeType {
 export interface WorkspaceMaterialEditorType {
   currentNodeValue?: MaterialContentNodeType,
   parentNodeValue?: MaterialContentNodeType,
+  workspace: WorkspaceType,
   page: boolean,
   opened: boolean,
 }
@@ -480,6 +481,7 @@ export default function workspaces(state: WorkspacesType={
   currentMaterialsActiveNodeId: null,
   types: null,
   materialEditor: {
+    workspace: null,
     page: false,
     opened: false,
   }

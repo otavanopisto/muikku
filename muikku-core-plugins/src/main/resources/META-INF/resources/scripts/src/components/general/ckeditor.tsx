@@ -13,12 +13,30 @@ const PLUGINS = {
   'filetools' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/${CKEDITOR_VERSION}/`,
   'notification' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/${CKEDITOR_VERSION}/`,
   'notificationaggregator' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/${CKEDITOR_VERSION}/`,
-  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
   'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
   'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`,
   'autogrow' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/${CKEDITOR_VERSION}/`,
   'muikku-mathjax': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/',
-  'divarea': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/${CKEDITOR_VERSION}/`
+  'divarea': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/${CKEDITOR_VERSION}/`,
+  
+  'image2' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/4.5.8/plugin.js',
+  'oembed' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/',
+  'audio': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.0/',
+  'muikku-fields': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-fields/',
+  'muikku-selection': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-selection/',
+  'muikku-textfield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
+  'muikku-memofield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
+  'muikku-filefield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
+  'muikku-audiofield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-audiofield/',
+  'muikku-connectfield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
+  'muikku-organizerfield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-organizerfield/',
+  'muikku-sorterfield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-sorterfield/',
+  'muikku-mathexercisefield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-mathexercisefield/',
+  'muikku-image-details': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-image-details/',
+  'muikku-word-definition': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-word-definition/',
+  'muikku-audio-defaults': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-audio-defaults/',
+  'muikku-image-target': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-image-target/',
+  'muikku-embedded': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/',
 }
 let pluginsLoaded:any = {};
 
@@ -93,7 +111,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       ],
       resize_enabled: false,
       uploadUrl: '/communicatorAttachmentUploadServlet',
-      extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,change,uploadwidget,uploadimage,divarea'
+      extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea'
     };
     
     let configObj = {...extraConfig, ...(this.props.configuration || {})};
