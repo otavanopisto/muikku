@@ -52,3 +52,12 @@
   word-break: break-all;
   word-wrap: break-word;
 }
+
+@mixin rotate-icon-on-hover {
+  transition: transform .3s ease-in-out;
+
+  &:hover {
+    transform: rotate(180deg);
+  }
+}
+
