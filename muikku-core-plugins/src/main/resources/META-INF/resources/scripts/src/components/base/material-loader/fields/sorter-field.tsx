@@ -177,7 +177,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     //This element we are gunna use depends on the orientation, we use divs of spans
     let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
     let ElementClass = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
-    
+
     if (!this.loaded){
       //TODOLANKKINEN be aware that the filler here has a correlation with the component
       //that is rendered, so they are both to be kept the same
@@ -216,10 +216,13 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
 
     //Lets get the class name to match the state of the entire field if necessary
     let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
+    
+    //if elements is disabled
+    let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     //we use that element and the class to create the field
     return <Element className="material-page__sorterfield-wrapper">
-      <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass} ${fieldStateAfterCheck}`}>
+      <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass} ${fieldStateAfterCheck} ${ElementDisabledState}`}>
        {this.state.items.map((item, index)=>{
          //We get the text
          let text = item.name;

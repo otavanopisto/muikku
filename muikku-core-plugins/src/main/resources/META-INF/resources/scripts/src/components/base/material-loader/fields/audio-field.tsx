@@ -339,7 +339,9 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
 
             {!this.props.readOnly ? <Link className="material-page__audiofield-remove-file-button icon-delete"
                 title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
-             onClick={this.removeClipAt.bind(this, index)}/> : null}
+                onClick={this.removeClipAt.bind(this, index)}/> : 
+              <Link className="material-page__audiofield-remove-file-button icon-delete"
+                title={this.props.i18n.text.get('plugin.workspace.audioField.removeLinkDisabled')}/>}
           </div>;
         } else if (value.failed) {
           //if the value failed we add a message, you can get the value name there so use it to say which file
@@ -403,10 +405,13 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
            progress={this.state.time/MAX_RECORDING_TIME_IN_SECONDS}/>
         </div>
       </div>: null }
+    
+    //if elements is disabled
+    let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     //and this is the container
     return <div className="material-page__audiofield-wrapper">
-      <div className="material-page__audiofield">
+      <div className={`material-page__audiofield ${ElementDisabledState}`}>
         {!this.props.readOnly && !this.state.supportsMediaAPI() ? <input type="file" accept="audio/*" onChange={this.onFileChanged} multiple/> : null}
         {!this.props.readOnly && this.state.supportsMediaAPI() ? <div className="material-page__audiofield-controls">
           {!this.state.recording ? <Link className="material-page__audiofield-start-record-button icon-record" onClick={this.start}>

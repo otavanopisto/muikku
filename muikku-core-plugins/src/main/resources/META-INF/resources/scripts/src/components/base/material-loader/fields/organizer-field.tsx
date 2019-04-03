@@ -282,8 +282,6 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
     return false;
   }
   render(){
-    //TODO lankkinen please ensure that when it's not loaded they take the same
-    //space
     if (!this.loaded){
       return <div className="material-page__organizerfield-wrapper">
         <div ref="base" className="material-page__organizerfield">
@@ -313,10 +311,13 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
     
     //the classic variable
     let answerIsCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerStateOverall === "PASS"
+      
+    //if elements is disabled
+    let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
         
     //we add that class name in our component
     return <div className="material-page__organizerfield-wrapper">
-      <div className={`material-page__organizerfield ${fieldStateAfterCheck}`}>
+      <div className={`material-page__organizerfield ${fieldStateAfterCheck} ${ElementDisabledState}`}>
         <div className="material-page__organizerfield-terms">
           <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
           <div className="material-page__organizerfield-terms-container">
@@ -325,7 +326,10 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
               let className = `material-page__organizerfield-term ${this.state.useList.indexOf(id) !== -1 ? "material-page__organizerfield-term--in-use" : ""} ${this.state.selectedItemId === id ? "material-page__organizerfield-term--selected" : ""}`;
               if (this.props.readOnly){
                 //if readOnly we just return a non draggable thingy
-                return <div className={className} key={id}>{this.state.terms[id]}</div>
+                return <div className={className} key={id}>
+                  <span className="material-page__organizerfield-term-icon icon-move"></span>
+                  <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
+                </div>
               }
               //Otherwise we run a draggable, where the field itself is the parent container
               //the interaction group is only for this field, and it will clone the draggable instead of removing the entire thing
@@ -375,7 +379,8 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
 
                 return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}>
                   <span className="material-page__organizerfield-term-label">{this.state.terms[termId]}</span>
-                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-close"></span> : null}
+                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-close"></span> 
+                    : <span className="material-page__organizerfield-term-icon icon-close"></span>}
                 </div>
               })}{itemCorrectAnswerMissingTerms}</div>
             </Droppable>

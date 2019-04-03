@@ -206,7 +206,7 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
 
     //the classname we add to the element itself depending to the state, and only available if we check answers
     let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? 
-        this.state.answerState !== "UNKNOWN" ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : null : null;
+        this.state.answerState !== "UNKNOWN" ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "" : null;
 
     //and we render
     return <span className="material-page__checkbox-wrapper">

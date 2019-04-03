@@ -122,71 +122,76 @@
   }
 }
 
-// DISABLED & READONLY TASKFIELDS
-.material-page__sorterfield[disabled] .material-page__sorterfield-item,
-.material-page__organizerfield[disabled] .material-page__organizerfield-category,
-.material-page__organizerfield[disabled] .material-page__organizerfield-category-title,
-.material-page__organizerfield[disabled] .material-page__organizerfield-term,
-.material-page__connectfield[disabled] .material-page__connectfield-term,
-.material-page__connectfield[disabled] .material-page__connectfield-term-number,
-.material-page__connectfield[disabled] .material-page__connectfield-counterpart,
-.material-page__connectfield[disabled] .material-page__connectfield-counterpart-number,
+// DISABLED & READONLY FORM FIELDS
 .material-page__textfield[readonly],
 .material-page__selectfield[disabled],
-.material-page__memofield[readonly],
-.material-page__memofield-wrapper .cke[data-readonly] {
+.material-page__memofield[readonly] {
   border-color: $color-disabled-taskfield-border !important;
-  cursor: text;
-}
-
-.material-page__filefield[disabled],
-.material-page__audiofield[disabled] {
-  border-color: $color-disabled-taskfield-border !important;
-  cursor: text;
-
-  input[type="file"] {
-    cursor: default;
-  }
-
-  .material-page__audiofield-controls,
-  .material-page__filefield-description {
-    display: none;
-  }
-
-  .material-page__audiofield-files-container,
-  .material-page__filefield-files-container {
-    border: none;
-  }
-
-  .material-page__filefield-remove-file-button,
-  .material-page__audiofield-remove-file-button {
-    display: none;
-  }
+  cursor: text !important;
 }
 
 .material-page__checkbox[disabled],
 .material-page__radiobutton[disabled] {
   border-color: darken($color-disabled-taskfield-border,10%) !important;
-  cursor: default;
+  cursor: default !important;
 
-  &[checked] {
-    background-color: darken($color-disabled-taskfield-border,10%) !important;
-    border-color: darken($color-disabled-taskfield-border,10%) !important;
+  &[checked],
+  &:checked {
+    background-color: darken($color-disabled-taskfield-border,20%) !important;
+    border-color: darken($color-disabled-taskfield-border,20%) !important;
   }
 }
 
-.material-page__organizerfield[disabled] .material-page__organizerfield-term--in-use,
-.material-page__organizerfield[disabled] .material-page__organizerfield-term--no-dragging {
-  background: $color-disabled-taskfield-background !important;
+// DISABLED CUSTOM TASK FIELDS
+.material-page__taskfield-disabled {
+
+  .material-page__sorterfield-item,
+  .material-page__organizerfield-category,
+  .material-page__organizerfield-category-title,
+  .material-page__organizerfield-term,
+  .material-page__connectfield-term,
+  .material-page__connectfield-term-number,
+  .material-page__connectfield-counterpart,
+  .material-page__connectfield-counterpart-number {
+    border-color: $color-disabled-taskfield-border !important;
+    cursor: text !important;
+  }
+  
+  &.material-page__sorterfield {
+    border-color: $color-disabled-taskfield-border !important;
+  }
+
+  .material-page__organizerfield-term--in-use,
+  .material-page__organizerfield-term--no-dragging {
+    background: $color-disabled-taskfield-background !important;
+  }
+
+  .material-page__organizerfield-term-icon,
+  .material-page__sorterfield-item-icon,
+  .material-page__connectfield-counterpart-icon {
+    color: $color-disabled-taskfield-icon !important;
+    cursor: default !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
-.material-page__organizerfield[disabled] .material-page__organizerfield-term-icon,
-.material-page__sorterfield[disabled] .material-page__sorterfield-item-icon,
-.material-page__connectfield[disabled] .material-page__connectfield-counterpart-icon {
-  color: $color-disabled-taskfield-icon !important;
-  cursor: default;
-  transform: none;
-  transition: none;
+// DISABLED AUDIO AND FILE FIELDS
+.material-page__filefield.material-page__taskfield-disabled,
+.material-page__audiofield.material-page__taskfield-disabled {
+  border-color: $color-disabled-taskfield-border !important;
+  cursor: text !important;
+
+  .material-page__audiofield-files-container,
+  .material-page__filefield-files-container {
+    border: none !important;
+  }
+  
+  .material-page__filefield-remove-file-button,
+  .material-page__audiofield-remove-file-button {
+    color: darken($color-disabled-taskfield-icon, 20%) !important;
+    cursor: default !important;
+  }
 }
 
 // CORRECT ANSWERS COUNTER

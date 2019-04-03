@@ -187,7 +187,7 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     }
     
     //The classname that represents the state of the whole field
-    let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.checkAnswers ? this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer" : null;
+    let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.checkAnswers ? this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer" : "";
     
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){

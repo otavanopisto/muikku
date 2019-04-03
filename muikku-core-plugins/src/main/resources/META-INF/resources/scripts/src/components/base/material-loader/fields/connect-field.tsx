@@ -322,12 +322,17 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
       </div>
     }
     
-    //the element calass name matching the state on whether it passes or fails
+    //the element class name matching the state on whether it passes or fails
     let elementClassNameState = this.props.checkAnswers && this.state.answerState ?
         "state-" + (this.state.answerState.includes("FAIL") ? "FAIL" : "PASS") : "";
+        
     let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
+    
+    //if elements is disabled
+    let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
+    
     return <div className="material-page__connectfield-wrapper">
-      <div className={`material-page__connectfield ${fieldStateAfterCheck}`}>
+      <div className={`material-page__connectfield ${fieldStateAfterCheck} ${ElementDisabledState}`}>
         <div className="material-page__connectfield-terms-container">
           {this.state.fields.map((field, index)=>{
             //the item answer
