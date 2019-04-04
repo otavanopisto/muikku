@@ -1,7 +1,7 @@
 import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
-import Dropdown from "~/components/general/dropdown";
+import Dropdown from "~/components/general/dropdown"; 
 import FieldBase from "./base";
 
 interface TextFieldProps {
@@ -27,6 +27,8 @@ interface TextFieldProps {
   checkAnswers?: boolean,
   onAnswerChange?: (name: string, value: boolean)=>any
 }
+
+const uuidv4 = require('uuid/v4');
 
 interface TextFieldState {
   value: string,
