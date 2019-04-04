@@ -417,8 +417,6 @@ function mapStateToProps(state: StateType){
   }
 };
 
-// Ze Dump
-
 
 export default connect(
   mapStateToProps
