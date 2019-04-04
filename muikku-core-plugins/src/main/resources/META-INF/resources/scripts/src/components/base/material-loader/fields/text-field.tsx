@@ -1,6 +1,7 @@
 import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
+import Dropdown from "~/components/general/dropdown";
 import FieldBase from "./base";
 
 interface TextFieldProps {
@@ -192,8 +193,11 @@ export default class TextField extends FieldBase<TextFieldProps, TextFieldState>
 
     //Standard modifiable version
     return <span className="material-page__textfield-wrapper">
-      <input className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
-        size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
+      {this.props.content.hint ? <Dropdown modifier="material-page-field-hint" content={this.props.content.hint}>
+          <input className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+          size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
+        </Dropdown> : <input className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+          size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>}
       {correctAnswersummaryComponent}
     </span>
   }

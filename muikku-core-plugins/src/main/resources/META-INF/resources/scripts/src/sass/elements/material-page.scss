@@ -122,6 +122,7 @@
   }
 }
 
+// !IMPORTANT IS BEING USED TO PREVENT HUGE SCSS INCEPTIONS
 // DISABLED & READONLY FORM FIELDS
 .material-page__textfield[readonly],
 .material-page__selectfield[disabled],
@@ -156,7 +157,7 @@
     border-color: $color-disabled-taskfield-border !important;
     cursor: text !important;
   }
-  
+
   &.material-page__sorterfield {
     border-color: $color-disabled-taskfield-border !important;
   }
@@ -186,7 +187,7 @@
   .material-page__filefield-files-container {
     border: none !important;
   }
-  
+
   .material-page__filefield-remove-file-button,
   .material-page__audiofield-remove-file-button {
     color: darken($color-disabled-taskfield-icon, 20%) !important;
@@ -318,6 +319,27 @@
   padding: 2px;
 }
 
+// FIELD'S HINT TEXT
+.material-page__field-hint {
+  background-color: $color-default;
+  border: 1px solid $taskfield-border-color;
+  border-radius: 2px;
+  color: $color-default-contrast;
+  display: block;
+  max-width: 300px;
+  opacity: 0;
+  padding: 3px 6px;
+  position: absolute;
+  text-align: left;
+  visibility: hidden;
+  z-index: -1;
+
+  @include breakpoint($breakpoint-pad) {
+    font-weight: 300;
+    padding: 5px 10px;
+  }
+}
+
 // TASK FIELDS
 
 // Generic
@@ -332,6 +354,16 @@
   align-items: center;
   display: inline-flex;
   flex-flow: row wrap;
+  position: realtive;
+
+  &:hover {
+
+    .material-page__field-hint {
+      opacity: 0;
+      visibility: hidden;
+      z-index:2;
+    }
+  }
 }
 
 .material-page__textfield {
