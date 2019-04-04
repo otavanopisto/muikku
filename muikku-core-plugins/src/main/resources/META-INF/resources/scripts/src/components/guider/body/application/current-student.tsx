@@ -20,6 +20,7 @@ import FileDeleteDialog from '../../dialogs/file-delete';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
+// import MainChart from '~/components/graph/main-chart'
 import MainChart from './current-student/main-chart';
 import {AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
   addFileToCurrentStudent} from '~/actions/main-function/guider';

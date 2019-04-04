@@ -81,7 +81,7 @@ export interface WorkspaceType {
   studentActivity?: WorkspaceStudentActivityType,
   forumStatistics?: WorkspaceForumStatisticsType,
   studentAssessments?: WorkspaceStudentAssessmentsType,
-      activityLogs?: ActivityLogType[]
+  activityLogs?: ActivityLogType[]
 }
 
 export interface ShortWorkspaceType {
