@@ -69,14 +69,8 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       
       
       
-//        if (workspaces && workspaces.length){
-//          await Promise.all([
-//                             Promise.all(workspaces.map(async (workspace, index)=>{
-//                               let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
-//                                   .read(workspace.id, pyramusId), 'callback')();
-//                                 workspaces[index].studentActivity = activity;
-//                               })
-//                             ),
+
+// No rights for these
 //                             Promise.all(workspaces.map(async (workspace, index)=>{
 //                               let statistics:WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
 //                                   .read(workspace.id, {userIdentifier: pyramusId}), 'callback')();
@@ -89,12 +83,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
 //                                 workspaces[index].activityLogs = activityLogs;
 //                               })
 //                             )
-//                           ]);
-//        }
-//      })
-      
-      
-      
+
       let graphData = {
         activity : activityLogs.general,
         workspaces:  workspaces
