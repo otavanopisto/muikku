@@ -62,14 +62,12 @@ public class ClientPool {
   }
   
   private Client buildClient() {
-    // TODO: trust all only on development environment
-
     ClientBuilder clientBuilder = ClientBuilder.newBuilder();
     
+    // Trust all only on development environment
     if ("development".equals(System.getProperties().getProperty("system.environment"))) {
       clientBuilder = trustSelfSignedCerts(clientBuilder);
     }
-
     ClientBuilder builder = clientBuilder
         .register(new JacksonConfigurator())
         .register(new BrowserCacheFeature());
