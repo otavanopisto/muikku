@@ -185,11 +185,11 @@
   }
 }
 
-.dropdown--material-page-field-explanation {
+.dropdown--material-page-field-explanation,
+.dropdown--material-page-field-hint {
+  max-width: 300px;
 
   .dropdown__container {
-    background-color: $color-default;
-    border: 1px solid $taskfield-border-color;
     border-radius: 2px;
     color: $color-default-contrast;
     min-width: 0;
@@ -201,9 +201,28 @@
       padding: 5px 10px;
     }
   }
+}
+
+.dropdown--material-page-field-explanation {
+
+  .dropdown__container {
+    background: $color-taskfield-explanation-background;
+    border: 1px solid $color-taskfield-explanation-border;
+  }
 
   .dropdown__arrow {
-    border-bottom-color: $taskfield-border-color;
+    border-bottom-color: $color-taskfield-explanation-border;
   }
 }
 
+.dropdown--material-page-field-hint {
+
+  .dropdown__container {
+    background: $color-taskfield-hint-background;
+    border: 1px solid $color-taskfield-hint-border;
+  }
+
+  .dropdown__arrow {
+    border-bottom-color: $color-taskfield-hint-border;
+  }
+}

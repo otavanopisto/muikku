@@ -200,7 +200,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
     if (!this.loaded){
       return <div className="material-page__filefield-wrapper">
         <div className="material-page__filefield">
-          <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div>
+      {!this.props.readOnly ? <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div> : null}
           <div className="material-page__filefield-files-container">{
             this.state.values.map((value, index)=>
               <div className="material-page__filefield-file-container">
@@ -229,7 +229,11 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
               {value.name}
             </div>
             <Link className="material-page__filefield-download-file-button icon-download" key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name} title={this.props.i18n.text.get('plugin.workspace.fileField.downloadLink')}/>
-            <Link className="material-page__filefield-remove-file-button icon-delete" onClick={this.removeFileAt.bind(this, index)} title={this.props.i18n.text.get('plugin.workspace.fileField.removeLink')}/>
+          {!this.props.readOnly ? <Link className="material-page__filefield-remove-file-button icon-delete" 
+              title={this.props.i18n.text.get('plugin.workspace.fileField.removeLink')} 
+              onClick={this.removeFileAt.bind(this, index)}/> : 
+            <Link className="material-page__filefield-remove-file-button icon-delete" 
+              title={this.props.i18n.text.get('plugin.workspace.fileField.removeLinkDisabled')}/>}
           </div>;
         } else if (value.failed){
           //if the value failed we add a message, you can get the value name there so use it to say which file
@@ -265,11 +269,15 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
         }
       });
     }
+    
+    //if elements is disabled
+    let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
+    
     //and this is the container
     return <div className="material-page__filefield-wrapper">
-      <div className="material-page__filefield">
+      <div className={`material-page__filefield ${ElementDisabledState}`}>
         {this.props.readOnly ? null : <input type="file" onChange={this.onFileChanged} multiple/>}
-        <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div>
+        {!this.props.readOnly ? <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div> : null}
         {this.state.values.length > 0 ? <div className="material-page__filefield-files-container">{dataInContainer}</div>: null}
       </div>
     </div>

@@ -2,6 +2,7 @@ import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
+import uuid from "uuid/v4";
 import FieldBase from "./base";
 
 interface MultiSelectFieldProps {
@@ -206,7 +207,7 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
 
     //the classname we add to the element itself depending to the state, and only available if we check answers
     let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? 
-        this.state.answerState !== "UNKNOWN" ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : null : null;
+        this.state.answerState !== "UNKNOWN" ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "" : null;
 
     //and we render
     return <span className="material-page__checkbox-wrapper">
@@ -221,10 +222,12 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
             itemStateAfterCheck = "incorrect-answer";
           }
         }
-
+        //lets generate unique id for labels and checkboxes
+        const uuidv4 = require('uuid/v4');
+        let uniqueElementID = "cb-" + uuidv4();
         return <span key={o.name} className="material-page__checkbox-item-container">
-          <input className={`material-page__checkbox  ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
-          <label className="material-page__checkable-label">{o.text}</label>
+          <input id={uniqueElementID} className={`material-page__checkbox ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
+          <label htmlFor={uniqueElementID} className="material-page__checkable-label">{o.text}</label>
         </span>
       })}
       </span>
