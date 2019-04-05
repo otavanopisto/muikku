@@ -10,6 +10,9 @@ import { StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
 
 import WorkspaceMaterial from './material';
+import { ButtonPill } from "~/components/general/button";
+import { bindActionCreators } from "redux";
+import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType } from "~/actions/workspaces";
 
 interface WorkspaceMaterialsProps {
   i18n: i18nType,
@@ -20,7 +23,9 @@ interface WorkspaceMaterialsProps {
   activeNodeId: number,
   status: StatusType,
   onActiveNodeIdChange: (activeNodeId: number)=>any,
-  onOpenNavigation: ()=>any
+  onOpenNavigation: ()=>any,
+  
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType
 }
 
 interface WorkspaceMaterialsState {
@@ -50,6 +55,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
+    this.startupEditor = this.startupEditor.bind(this);
     
     this.getFlattenedMaterials(props);
   }
@@ -70,6 +76,15 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     if (this.props.materials !== nextProps.materials){
       this.getFlattenedMaterials(nextProps);
     }
+  }
+  startupEditor(chapter: MaterialContentNodeType) {
+    this.props.setWorkspaceMaterialEditorState({
+      currentNodeValue: chapter,
+      parentNodeValue: null,
+      workspace: this.props.workspace,
+      section: true,
+      opened: true,
+    });
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
     this.flattenedMaterial = [];
@@ -125,12 +140,17 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
     
+    const titlesAreEditable = this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE;
+    
     return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation}
       title={this.props.workspace.name} ref="content-panel">
       {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
       {this.props.materials.map((chapter)=>{
         return <section className="content-panel__chapter" key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId}>
-          <h2 className="content-panel__chapter-title">{chapter.title}</h2>
+          <h2 className="content-panel__chapter-title">
+            {chapter.title}
+            {titlesAreEditable ? <ButtonPill icon="edit" onClick={this.startupEditor.bind(this, chapter)}/> : null}
+          </h2>
           {chapter.children.map((node)=>{
             let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
             let material = !this.props.workspace || !this.props.materialReplies  ? null :
@@ -159,7 +179,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({setWorkspaceMaterialEditorState}, dispatch);
 };
 
 export default connect(

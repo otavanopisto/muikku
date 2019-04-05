@@ -3,7 +3,7 @@ import Portal from '~/components/general/portal';
 
 import '~/sass/elements/material-editor.scss';
 import { bindActionCreators } from 'redux';
-import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType } from '~/actions/workspaces';
+import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType, updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from '~/actions/workspaces';
 import { connect, Dispatch } from 'react-redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
@@ -19,10 +19,10 @@ interface MaterialEditorProps {
   status: StatusType,
   editorState: WorkspaceMaterialEditorType,
   locale: LocaleListType,
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType
 }
 
 interface MaterialEditorState {
-  visible: boolean
 }
 
 const CKEditorConfig = (
@@ -67,51 +67,88 @@ const CKEditorConfig = (
   //extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,image2,oembed,audio,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target'
 });
 
+// First we need to modify the material content nodes endpoint to be able to recieve hidden
+// nodes, we need those to be able to modify here
 class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditorState> {
   private oldOverflow:string;
 
   constructor(props: MaterialEditorProps){
     super(props);
-    
-    this.state = {
-      visible: false
-    }
 
-    this.beforeClose = this.beforeClose.bind(this);
-    this.onOpen = this.onOpen.bind(this);
+    this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
+    this.delete = this.delete.bind(this);
+    this.updateContent = this.updateContent.bind(this);
+    this.updateTitle = this.updateTitle.bind(this);
+    this.close = this.close.bind(this);
   }
   
-  beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
-    this.setState({
-      visible: false
+  toggleHiddenStatus() {
+    // TODO same we need an endpoint for this
+    
+    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentNodeValue, {
+      hidden: !this.props.editorState.currentNodeValue.hidden,
     });
-    this.props.setWorkspaceMaterialEditorState({...this.props.editorState, opened: false});
-    setTimeout(removeFromDOM, 300);
   }
   
-  onOpen() {
-    setTimeout(()=>{
-      this.setState({
-        visible: true
-      });
-    }, 10);
+  delete() {
+    // TODO not sure what to do here
+  }
+  
+  updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
+    // TODO, the current endpoint currently doesn't work
+    // we need an unified endpoint that would take any
+    // content node the other one is controlled by the
+    // collaboration plugin
+    // all this function does is to update the title but
+    // does not do anything to the server
+    
+    // there's a functional endpoint right now for normal
+    // chapters but we need an unified one
+    
+    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentNodeValue, {
+      title: e.target.value,
+    });
+  }
+  
+  updateContent(content: string) {
+    // TODO content update plugin is all
+    // going through the collaboration plugin
+    // this cannot be achieved until that is modified
+    // got to wait
+    
+    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentNodeValue, {
+      html: content,
+    });
+  }
+  
+  close() {
+    this.props.setWorkspaceMaterialEditorState({
+      ...this.props.editorState,
+      opened: false
+    });
   }
 
   render(){
-    return (<Portal isOpen={this.props.editorState.opened}
-        onOpen={this.onOpen} beforeClose={this.beforeClose} closeOnEsc>
-        {(closePortal: ()=>any)=>{
+    if (!this.props.editorState || !this.props.editorState.currentNodeValue) {
+      return <div
+        className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}
+      />
+    }
           return <div
-            className={`material-editor ${this.state.visible ? "material-editor--visible" : ""}`}
+            className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}
           >
             <div>
               <div>{this.props.i18n.text.get("TODO edit material")}</div>
-              <ButtonPill onClick={closePortal} icon="close"/>
+              <ButtonPill onClick={this.close} icon="close"/>
             </div>
             <div>
-              <input type="text" value={this.props.editorState.currentNodeValue.title} readOnly></input>
+              <ButtonPill onClick={this.delete} icon="delete"/>
+              <ButtonPill onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
             </div>
-            {this.props.editorState.currentNodeValue.html ? <div>
+            <div>
+              <input type="text" onChange={this.updateTitle} value={this.props.editorState.currentNodeValue.title}></input>
+            </div>
+            {!this.props.editorState.section ? <div>
               <CKEditor
                 configuration={CKEditorConfig(
                   this.props.locale.current,
@@ -119,14 +156,12 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
                   this.props.editorState.workspace,
                   this.props.editorState.currentNodeValue
                 )}
-                onChange={()=>null}
+                onChange={this.updateContent}
               >
                 {this.props.editorState.currentNodeValue.html}
               </CKEditor>
             </div> : null}
           </div>
-        }}
-    </Portal>);
   }
 }
   
@@ -140,7 +175,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({setWorkspaceMaterialEditorState}, dispatch);
+  return bindActionCreators({setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode}, dispatch);
 };
 
 export default connect(

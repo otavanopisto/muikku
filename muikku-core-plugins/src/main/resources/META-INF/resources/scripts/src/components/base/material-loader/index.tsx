@@ -244,7 +244,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       currentNodeValue: this.props.material,
       parentNodeValue: this.props.page,
       workspace: this.props.workspace,
-      page: false,
+      section: false,
       opened: true,
     });
   }

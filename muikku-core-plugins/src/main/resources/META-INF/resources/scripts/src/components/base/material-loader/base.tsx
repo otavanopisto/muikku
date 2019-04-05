@@ -216,6 +216,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     this.staticRegistry.forEach((statice)=>{
       unmountComponentAtNode(statice.node);
     });
+    
+    (this.refs["base"] as HTMLElement).innerHTML = "";
   }
   
   setupEverything(props: BaseProps = this.props){

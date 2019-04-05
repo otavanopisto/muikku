@@ -44,6 +44,10 @@ export interface UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REP
     workspaceMaterialId: number,
     workspaceMaterialReplyId: number
 }>{};
+export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
+  material: MaterialContentNodeType,
+  update: Partial<MaterialContentNodeType>,
+}>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -130,6 +134,10 @@ export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
 
 export interface SetWorkspaceMaterialEditorStateTriggerType {
   (newState: WorkspaceMaterialEditorType):AnyActionType
+}
+
+export interface UpdateWorkspaceMaterialContentNodeTriggerType {
+  (material: MaterialContentNodeType, update: Partial<MaterialContentNodeType>):AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -1237,6 +1245,35 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
   };
 }
 
+let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(material, update) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      dispatch({
+        type: "UPDATE_MATERIAL_CONTENT_NODE",
+        payload: {
+          material,
+          update
+        }
+      });
+      
+      // TODO write the code for the actual update
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      
+      dispatch({
+        type: "UPDATE_MATERIAL_CONTENT_NODE",
+        payload: {
+          material,
+          update: material
+        }
+      });
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
@@ -1244,4 +1281,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
-  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState}
+  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode}
