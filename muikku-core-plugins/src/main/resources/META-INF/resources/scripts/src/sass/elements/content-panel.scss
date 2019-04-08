@@ -132,8 +132,8 @@
 }
 
 .content-panel__navigation-content {
-  @include prefix(transition, webkit moz o ms, right 0.3s);
   @include no-scrollbars;
+  @include prefix(transition, webkit moz o ms, right 0.3s);
   box-shadow: 0 2px 3px $color-panel-shadow;
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
@@ -144,6 +144,10 @@
   top: 0;
   right: 0;
   width: 90%;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 70%;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     box-shadow: none;
@@ -158,6 +162,10 @@
   margin: 0;
   padding: 0;
   position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(65% - 30px);

@@ -1,16 +1,30 @@
+@import "../base/colors";
 @import "../base/mixins";
-	
+@import "../base/vars";
+@import "../base/breakpoints";
+
 .material-editor {
+  @include no-scrollbars;
   @include prefix(transition, webkit ms o moz, left 0.3s);
-  left: -100%;
-  width: 50%;
-  background-color: white;
+  background: $color-default;
+  box-shadow: 0 10px 30px $color-material-edit-panel-shadow;
   height: 100%;
+  left: -100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px;
   position: fixed;
   top: 0;
+  width: 100%;
   z-index: 1000;
-  
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 700px;
+    min-width: 655px;
+    padding: 20px;
+  }
+
   &.material-editor--visible {
-  	left: 0;
+    left: 0;
   }
 }
