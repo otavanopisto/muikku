@@ -11,9 +11,9 @@ import '~/sass/elements/chart.scss';
 let AmCharts: any = null;
 
 interface CurrentStudentStatisticsProps {
-  activityLogs: Array<ActivityLogType>,
+  activityLogs?: Array<ActivityLogType>,
   i18n: i18nType,
-  workspaces: WorkspaceListType
+  workspaces?: WorkspaceListType
 }
 
 interface CurrentStudentStatisticsState {
@@ -168,7 +168,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
     let chartDataMap = new Map<string, MainChartData>();
     chartDataMap.set(new Date().toISOString().slice(0, 10), {SESSION_LOGGEDIN: 0, WORKSPACE_VISIT: 0, MATERIAL_EXERCISEDONE: 0, MATERIAL_ASSIGNMENTDONE: 0, FORUM_NEWMESSAGE: 0});
-      this.props.activityLogs.map((log)=>{
+    this.props.activityLogs.map((log)=>{
         let date = log.timestamp.slice(0, 10);
         let entry = chartDataMap.get(date) || {};
         switch(log.type){
@@ -401,23 +401,22 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
     let showGraphs: string[] = [Graph.SESSION_LOGGEDIN, Graph.MATERIAL_ASSIGNMENTDONE, Graph.MATERIAL_EXERCISEDONE, Graph.WORKSPACE_VISIT, Graph.FORUM_NEWMESSAGE];
     return <div className="application-sub-panel__body">
-      <div className="chart-legend">
-        <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler}/>
-        <WorkspaceFilter workspaces={workspaces} filteredWorkspaces={this.state.filteredWorkspaces} workspaceHandler={this.workspaceFilterHandler}
-        completedWorkspaces={completedWorkspaces} filteredCompletedWorkspaces={this.state.filteredCompletedWorkspaces} completedWorkspaceHandler={this.completedWorkspaceFilterHandler}/>
-      </div>
-      <AmCharts.React className="chart chart--main-chart" options={config}/>
+    <div className="chart-legend">
+    <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler}/>
+    <WorkspaceFilter workspaces={workspaces} filteredWorkspaces={this.state.filteredWorkspaces} workspaceHandler={this.workspaceFilterHandler}
+    completedWorkspaces={completedWorkspaces} filteredCompletedWorkspaces={this.state.filteredCompletedWorkspaces} completedWorkspaceHandler={this.completedWorkspaceFilterHandler}/>
+     </div>    
+      <AmCharts.React className="chart chart--main-chart" options={config}/>  
     </div>
   }
 }
 
 function mapStateToProps(state: StateType){
   return {
-    activityLogs: state.guider.currentStudent.activityLogs,
     i18n: state.i18n,
-    workspaces: state.guider.currentStudent.workspaces
   }
 };
+
 
 export default connect(
   mapStateToProps

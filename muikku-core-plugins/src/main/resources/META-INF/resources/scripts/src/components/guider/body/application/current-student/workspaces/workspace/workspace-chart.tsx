@@ -4,8 +4,8 @@ import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {StateType} from '~/reducers';
 import {WorkspaceType} from '~/reducers/main-function/workspaces';
-import GraphFilter from '../../filters/graph-filter';
-import '~/sass/elements/chart.scss';
+import GraphFilter from '~/components/general/graph/filters/graph-filter';
+import '~/sass/elements/chart.scss';  
 
 let AmCharts: any = null;
 
