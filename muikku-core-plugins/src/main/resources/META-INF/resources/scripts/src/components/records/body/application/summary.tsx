@@ -15,7 +15,7 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
-import MainChart from '~/components/graph/main-chart';
+import MainChart from '~/components/general/graph/main-chart';
 import '~/sass/elements/application-sub-panel.scss';
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 
@@ -97,12 +97,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="application-sub-panel">
             <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
-            {/*
-               {this.props.guider.currentStudent.activityLogs && this.props.guider.currentStudent.workspaces && <MainChart/>}
-             */}
-            
-            {this.props.summary.summary.graphData.activity && this.props.summary.summary.graphData.workspaces ? <MainChart workspaces={this.props.summary.summary.graphData.workspaces} activityLogs={this.props.summary.summary.graphData.activity}/> : null}
-            
+              {this.props.summary.summary.graphData.activity && this.props.summary.summary.graphData.workspaces ? <MainChart workspaces={this.props.summary.summary.graphData.workspaces} activityLogs={this.props.summary.summary.graphData.activity}/> : null}            
            </div>
         {/* Waits for summary notifications
             <div className="application-sub-panel">

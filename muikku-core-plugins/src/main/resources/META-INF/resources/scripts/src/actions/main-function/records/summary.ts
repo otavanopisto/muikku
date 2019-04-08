@@ -66,9 +66,6 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
               workspaces[index].activityLogs = courseActivity
             }));
           }
-      
-      
-      
 
 // No rights for these
 //                             Promise.all(workspaces.map(async (workspace, index)=>{
