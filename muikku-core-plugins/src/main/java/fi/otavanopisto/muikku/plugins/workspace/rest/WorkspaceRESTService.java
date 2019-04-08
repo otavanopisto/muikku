@@ -830,10 +830,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Search provider not found").build();
     }
 
-    // Lookup map to convert user entity ids to workspace user entity ids
-
-    Map<Long, Long> workspaceUserEntityIds = new HashMap<Long, Long>();
-
     // Turn active or inactive students into school data identifiers
 
     List<WorkspaceUserEntity> workspaceUserEntities = active
@@ -844,7 +840,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       String identifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
       String dataSource = workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier();
       studentIdentifiers.add(new SchoolDataIdentifier(identifier, dataSource));
-      workspaceUserEntityIds.put(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), workspaceUserEntity.getId());
     }
 
     // Retrieve users via Elastic
@@ -869,19 +864,26 @@ public class WorkspaceRESTService extends PluginRESTService {
       // Convert Elastic results to REST model objects (WorkspaceUserRestModel)
 
       for (Map<String, Object> elasticUser : elasticUsers) {
-        Long userEntityId = Long.valueOf(elasticUser.get("userEntityId").toString());
-        Long workspaceUserEntityId = workspaceUserEntityIds.get(userEntityId);
-        if (workspaceUserEntityId == null) {
-          logger.warning(String.format("Workspace user entity for user % in workspace %d not found", userEntityId, workspaceEntity.getId()));
-          continue;
+        if (elasticUser.get("identifier") != null && elasticUser.get("schoolDataSource") != null) {
+          String identifier = elasticUser.get("identifier").toString();
+          if (elasticUser.get("userEntityId") == null) {
+            logger.warning(String.format("Identifier %s in Elastic search index has no userEntityId", identifier));
+            continue;
+          }
+          SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(String.valueOf(elasticUser.get("identifier")), String.valueOf(elasticUser.get("schoolDataSource")));
+          WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
+          if (workspaceUserEntity == null) {
+            logger.severe(String.format("No workspace user for identifier %s in workspace entity %d", identifier, workspaceEntity.getId()));
+            continue;
+          }
+          workspaceStudents.add(new WorkspaceStudentRestModel(
+              workspaceUserEntity.getId(),
+              workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(),
+              String.valueOf(elasticUser.get("firstName")),
+              String.valueOf(elasticUser.get("lastName")),
+              elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
+              active));
         }
-        workspaceStudents.add(new WorkspaceStudentRestModel(
-            workspaceUserEntityId,
-            userEntityId,
-            elasticUser.get("firstName").toString(),
-            elasticUser.get("lastName").toString(),
-            elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
-            active));
       }
 
       // Sort by last and first name
