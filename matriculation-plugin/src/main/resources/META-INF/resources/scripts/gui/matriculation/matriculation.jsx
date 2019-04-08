@@ -50,7 +50,7 @@ const Page1 = (props) => (
       <li>kevään kirjoitusten osalta 20.11.</li>
       <li>syksyn kirjoitusten osalta 20.5.</li>
     </ul>
-    <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavanopisto.fi).</p>
+    <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavia.fi).</p>
     <p><b>Ilmoittautuminen on sitova.</b></p>
     {props.enrollmentSent ?
       <div style={ WARNING_STYLE } className="pure-u-22-24">
@@ -223,6 +223,7 @@ const Page2 = (props) => (
                   value={props.enrollAs} className="pure-u-23-24">
             <option value="UPPERSECONDARY">Lukion opiskelijana</option>
             <option value="VOCATIONAL">Ammatillisten opintojen perusteella</option>
+            <option value="UNKNOWN">Muu tausta</option>
           </select>
         </div>
         <div className="pure-u-1-2">
@@ -242,6 +243,15 @@ const Page2 = (props) => (
           </div>: null}
         {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses !== "" && props.numMandatoryCourses < 20 ?
           <div style={ WARNING_STYLE } className="pure-u-22-24">Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.</div>: null}
+        <div className="pure-u-1-1">
+          <label>Tutkintotyyppi</label>
+          <select onChange={({target}) => {props.setDegreeType(target.value);}}
+                  value={props.degreeType} className="pure-u-23-24">
+            <option value="MATRICULATIONEXAMINATION">Yo-tutkinto</option>
+            <option value="MATRICULATIONEXAMINATIONSUPPLEMENT">Tutkinnon korottaja tai täydentäjä</option>
+            <option value="SEPARATEEXAM">Erillinen koe (ilman yo-tutkintoa)</option>
+          </select>
+        </div>
         <div className="pure-u-1-2">
           <label style={{paddingTop: "0.7rem"}} >Aloitan tutkinnon suorittamisen uudelleen&nbsp;
             <input value={props.restartExam} type="checkbox" />
@@ -511,6 +521,7 @@ class App extends React.Component {
       nationalStudentNumber: "",
       guider: "",
       enrollAs: "UPPERSECONDARY",
+      degreeType: "MATRICULATIONEXAMINATION",
       numMandatoryCourses: "",
       location: "Mikkeli",
       message: "",
@@ -869,6 +880,7 @@ class App extends React.Component {
           city: this.state.locality,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
+          degreeType: this.state.degreeType,
           numMandatoryCourses: this.state.numMandatoryCourses ? Number(this.state.numMandatoryCourses) : null,
           location: this.state.location,
           message: message,
@@ -909,6 +921,7 @@ class App extends React.Component {
           changedContactInfo: this.state.changedContactInfo,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
+          degreeType: this.state.degreeType,
           numMandatoryCourses: this.state.numMandatoryCourses,
           enrolledAttendances: this.state.enrolledAttendances,
           plannedAttendances: this.state.plannedAttendances,
@@ -947,6 +960,7 @@ class App extends React.Component {
                   setChangedContactInfo={(value) => { this.setState({changedContactInfo: value});}}
                   setGuider={(value) => { this.setState({guider : value}); }}
                   setEnrollAs={(value) => { this.setState({enrollAs : value}); }}
+                  setDegreeType={(value) => { this.setState({degreeType : value}); }}
                   setNumMandatoryCourses={(value) => { this.setState({numMandatoryCourses : value}); }}
                   setPage={(page) => {this.setState({page});}}
                   newEnrolledAttendance={() => {this.newEnrolledAttendance();}}
