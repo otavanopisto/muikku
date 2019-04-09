@@ -916,6 +916,8 @@ class App extends React.Component {
   
   isInvalid() {
     return this.isConflictingAttendances()
+      || this.hasConflictingRepeats()
+      || this.hasMandatoryConflicts()
       || this.isIncompleteAttendances()
       || !this.isValidAttendances();
   }
@@ -1040,9 +1042,9 @@ class App extends React.Component {
                   amountOfMandatoryAttendances={ this.getAmountOfMandatoryAttendances() }
                   amountOfAcademicSubjectAttendances={ this.getAmountOfAcademicSubjectAttendances() }
                   amountOfMandatoryAdvancedSubjectAttendances = { this.getAmountOfMandatoryAdvancedSubjectAttendances() }
-                  isConflictingMandatory={(attendance) => { return this.isConflictingMandatory(attendance);}}
+                  isConflictingMandatory={this.isConflictingMandatory.bind(this)}
                   conflictingAttendances={this.isConflictingAttendances()}
-                  isConflictingRepeat={(attendance) => { return this.isConflictingRepeat(attendance);}}
+                  isConflictingRepeat={this.isConflictingRepeat.bind(this)}
                   conflictingRepeats={this.hasConflictingRepeats()}
                   incompleteAttendances={this.isIncompleteAttendances()}
                   mandatoryConflicts={this.hasMandatoryConflicts()}
