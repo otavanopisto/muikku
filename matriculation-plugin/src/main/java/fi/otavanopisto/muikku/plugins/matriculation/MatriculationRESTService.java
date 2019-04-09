@@ -277,6 +277,7 @@ public class MatriculationRESTService {
     schoolDataEntity.setNationalStudentNumber(enrollment.getNationalStudentNumber());
     schoolDataEntity.setGuider(enrollment.getGuider());
     schoolDataEntity.setEnrollAs(enrollment.getEnrollAs());
+    schoolDataEntity.setDegreeType(enrollment.getDegreeType());
     schoolDataEntity.setRestartExam(enrollment.isRestartExam());
     schoolDataEntity.setNumMandatoryCourses(enrollment.getNumMandatoryCourses());
     schoolDataEntity.setLocation(enrollment.getLocation());
