@@ -121,6 +121,12 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     });
   }
   
+  toggleHidden() {
+    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentNodeValue, {
+      hidden: !this.props.editorState.currentNodeValue.hidden
+    });
+  }
+  
   close() {
     this.props.setWorkspaceMaterialEditorState({
       ...this.props.editorState,

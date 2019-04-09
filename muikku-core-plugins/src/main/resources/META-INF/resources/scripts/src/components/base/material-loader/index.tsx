@@ -421,7 +421,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
 
     //Setting this up
     let materialType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
-    return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")}`} ref="root" id={this.props.id}>
+    let isHidden = this.props.material.hidden || this.props.page.hidden;
+    return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
       <h2 className="material-page__title">
         {this.props.material.title}
         {this.props.material.assignmentType ? <div className={`material-page__label material-page__label--${this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment"}`}>

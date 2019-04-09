@@ -8,6 +8,10 @@
   padding: 10px;
   position: relative;
   width: 100%;
+  
+  &.material-page--hidden {
+  	opacity: 0.5;
+  } 
 
   @include breakpoint($breakpoint-pad) {
     padding: 20px;

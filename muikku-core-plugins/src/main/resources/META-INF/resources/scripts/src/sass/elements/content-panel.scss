@@ -192,6 +192,10 @@
   margin: 0 0 -1px;
   padding: 10px;
   position: relative;
+  
+  &.content-panel__chapter-title--hidden {
+  	opacity: 0.5;
+  }
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.375rem;
