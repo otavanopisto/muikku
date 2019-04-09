@@ -74,12 +74,12 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
 //                                 workspaces[index].forumStatistics = statistics;
 //                               })
 //                             ),
-//                             Promise.all(workspaces.map(async (workspace, index)=>{
-//                               let activityLogs:ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
-//                                   .read(pyramusId, {workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')();
-//                                 workspaces[index].activityLogs = activityLogs;
-//                               })
-//                             )
+//                            Promise.all(workspaces.map(async (workspace, index)=>{
+//                              let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
+//                                  .read(workspace.id, id), 'callback')();
+//                                workspaces[index].studentActivity = activity;
+//                              })
+//                            ),
 
       let graphData = {
         activity : activityLogs.general,
