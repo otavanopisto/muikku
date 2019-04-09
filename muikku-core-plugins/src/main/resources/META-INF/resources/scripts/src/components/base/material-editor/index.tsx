@@ -12,6 +12,7 @@ import { ButtonPill } from '~/components/general/button';
 import CKEditor from '~/components/general/ckeditor';
 import { StatusType } from '~/reducers/base/status';
 import { LocaleListType } from '~/reducers/base/locales';
+import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
@@ -121,12 +122,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     });
   }
   
-  toggleHidden() {
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentNodeValue, {
-      hidden: !this.props.editorState.currentNodeValue.hidden
-    });
-  }
-  
   close() {
     this.props.setWorkspaceMaterialEditorState({
       ...this.props.editorState,
@@ -148,7 +143,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               <ButtonPill onClick={this.close} icon="close"/>
             </div>
             <div>
-              <ButtonPill onClick={this.delete} icon="delete"/>
+              <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentNodeValue}>
+                <ButtonPill onClick={this.delete} icon="delete"/>
+              </DeleteWorkspaceMaterialDialog>
               <ButtonPill onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
             </div>
             <div>

@@ -594,6 +594,42 @@ export default function workspaces(state: WorkspacesType={
       newEditor.parentNodeValue = {...newEditor.parentNodeValue, ...action.payload.update};
     }
     return {...state, currentMaterials: state.currentMaterials.map(mapMaterial), materialEditor: newEditor}
+  } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
+    let found = false;
+    let filterMaterial = (m: MaterialContentNodeType) => {
+      if (found) {
+        return true;
+      }
+      
+      if (m.workspaceMaterialId === action.payload.workspaceMaterialId) {
+        found = true;
+        return false;
+      }
+      
+      return true;
+    }
+    let mapMaterial = (m: MaterialContentNodeType) => {
+      if (found) {
+        return m;
+      }
+      
+      const newM:MaterialContentNodeType = {...m, children: m.children ? m.children.filter(filterMaterial) : m.children};
+      return newM;
+    }
+    
+    let newEditor = state.materialEditor;
+    if (newEditor && (
+        newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
+        newEditor.parentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId)) {
+      newEditor = {
+        currentNodeValue: null,
+        parentNodeValue: null,
+        workspace: null,
+        section: false,
+        opened: false,
+      };
+    }
+    return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
   }
   return state;
 }
