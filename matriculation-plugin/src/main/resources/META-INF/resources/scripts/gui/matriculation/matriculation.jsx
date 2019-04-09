@@ -550,6 +550,9 @@ class App extends React.Component {
             + date.getFullYear(),
       lastSave: date.getTime()
     };
+    
+    this.isConflictingMandatory = this.isConflictingMandatory.bind(this);
+    this.isConflictingRepeat = this.isConflictingRepeat.bind(this);
   }
 
   componentDidMount() {
@@ -1042,9 +1045,9 @@ class App extends React.Component {
                   amountOfMandatoryAttendances={ this.getAmountOfMandatoryAttendances() }
                   amountOfAcademicSubjectAttendances={ this.getAmountOfAcademicSubjectAttendances() }
                   amountOfMandatoryAdvancedSubjectAttendances = { this.getAmountOfMandatoryAdvancedSubjectAttendances() }
-                  isConflictingMandatory={this.isConflictingMandatory.bind(this)}
+                  isConflictingMandatory={this.isConflictingMandatory}
                   conflictingAttendances={this.isConflictingAttendances()}
-                  isConflictingRepeat={this.isConflictingRepeat.bind(this)}
+                  isConflictingRepeat={this.isConflictingRepeat}
                   conflictingRepeats={this.hasConflictingRepeats()}
                   incompleteAttendances={this.isIncompleteAttendances()}
                   mandatoryConflicts={this.hasMandatoryConflicts()}
