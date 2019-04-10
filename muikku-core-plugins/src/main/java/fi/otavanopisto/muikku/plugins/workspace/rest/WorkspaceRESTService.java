@@ -1551,7 +1551,10 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GZIP
   @Path("/workspaces/{WORKSPACEENTITYID}/materialContentNodes/")
   @RESTPermitUnimplemented
-  public Response listWorkspaceMaterialsAsContentNodes(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+  public Response listWorkspaceMaterialsAsContentNodes(
+    @PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
+    @QueryParam("includeHidden") Boolean includeHidden
+  ) {
     // TODO: SecuritY???
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -1561,7 +1564,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     List<ContentNode> workspaceMaterials;
 	try {
-		workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false);
+		workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
 	} catch (WorkspaceMaterialException e) {
 		return Response.noContent().build();
 	}

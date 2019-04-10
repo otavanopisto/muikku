@@ -5,11 +5,13 @@
 
 // ADMIN PANEL
 .material-page__admin-panel {
+  background: $color-default-body;
   border-bottom: 1px solid $color-default-separator-border;
   line-height: 1;
-  margin: -20px -20px 15px -20px;
+  margin: -21px -21px 15px -21px;
   padding: 10px;
   position: relative;
+  text-align: center;
 }
 
 .material-page {
@@ -17,6 +19,10 @@
   padding: 10px;
   position: relative;
   width: 100%;
+  
+  &.material-page--hidden {
+  	opacity: 0.5;
+  } 
 
   @include breakpoint($breakpoint-pad) {
     padding: 20px;

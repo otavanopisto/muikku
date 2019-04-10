@@ -300,15 +300,15 @@ export interface WorkspaceTypeType {
   name: string
 }
 
-//page = true && currentNodeValue = null && parentNodeValue = null   (new page)
-//page = false && currentNodeValue = null && parentNodeValue = x     (new material)
-//page = true && currentNodeValue = x && parentNodeValue = null      (edit page)
-//page = false && currentNodeValue = x && parentNodeValue = x        (edit material)
+//section = true && currentNodeValue = null && parentNodeValue = null   (new section)
+//section = false && currentNodeValue = null && parentNodeValue = x     (new material)
+//section = true && currentNodeValue = x && parentNodeValue = null      (edit section)
+//section = false && currentNodeValue = x && parentNodeValue = x        (edit material)
 export interface WorkspaceMaterialEditorType {
   currentNodeValue?: MaterialContentNodeType,
   parentNodeValue?: MaterialContentNodeType,
   workspace: WorkspaceType,
-  page: boolean,
+  section: boolean,
   opened: boolean,
 }
 
@@ -482,7 +482,7 @@ export default function workspaces(state: WorkspacesType={
   types: null,
   materialEditor: {
     workspace: null,
-    page: false,
+    section: false,
     opened: false,
   }
 }, action: ActionType): WorkspacesType {
@@ -569,6 +569,67 @@ export default function workspaces(state: WorkspacesType={
       newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([<MaterialCompositeRepliesType>action.payload]);
     }
     return {...state, currentMaterialsReplies: newCurrentMaterialsReplies}
+  } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
+    let found = false;
+    let mapMaterial = (m: MaterialContentNodeType) => {
+      if (found) {
+        return m;
+      }
+      
+      if (m.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+        found = true;
+        return {...m, ...action.payload.update};
+      }
+      
+      const newM:MaterialContentNodeType = {...m, children: m.children ? m.children.map(mapMaterial) : m.children};
+      return newM;
+    }
+    
+    let newEditor = state.materialEditor;
+    if (newEditor && newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      newEditor = {...newEditor};
+      newEditor.currentNodeValue = {...newEditor.currentNodeValue, ...action.payload.update};
+    } else if (newEditor && newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      newEditor = {...newEditor};
+      newEditor.parentNodeValue = {...newEditor.parentNodeValue, ...action.payload.update};
+    }
+    return {...state, currentMaterials: state.currentMaterials.map(mapMaterial), materialEditor: newEditor}
+  } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
+    let found = false;
+    let filterMaterial = (m: MaterialContentNodeType) => {
+      if (found) {
+        return true;
+      }
+      
+      if (m.workspaceMaterialId === action.payload.workspaceMaterialId) {
+        found = true;
+        return false;
+      }
+      
+      return true;
+    }
+    let mapMaterial = (m: MaterialContentNodeType) => {
+      if (found) {
+        return m;
+      }
+      
+      const newM:MaterialContentNodeType = {...m, children: m.children ? m.children.filter(filterMaterial) : m.children};
+      return newM;
+    }
+    
+    let newEditor = state.materialEditor;
+    if (newEditor && (
+        newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
+        newEditor.parentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId)) {
+      newEditor = {
+        currentNodeValue: null,
+        parentNodeValue: null,
+        workspace: null,
+        section: false,
+        opened: false,
+      };
+    }
+    return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
   }
   return state;
 }

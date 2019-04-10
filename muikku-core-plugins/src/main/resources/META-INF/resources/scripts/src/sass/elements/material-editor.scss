@@ -26,6 +26,17 @@
   &.material-editor--visible {
     left: 0;
   }
+
+  // CKE override styling
+  .cke_top {
+    background: $color-default;
+    border-bottom: 1px solid $color-material-page-admin-panel-main-color;
+  }
+  
+  .cke_bottom {
+    background: $color-default;
+    border-top: 1px solid $color-material-page-admin-panel-main-color;
+  }
 }
 
 .material-editor__header {
@@ -40,20 +51,31 @@
   background: $color-material-page-edit-header-background;
   display: flex;
   flex-flow: row wrap;
-  padding: 10px 40px 10px 10px;
+  padding: 5px 40px 0 10px;
 }
 
 .material-editor__tabs-item {
   @include text;
-  border-radius: 3px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   color: $color-default;
+  cursor: pointer;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   line-height: 1;
-  margin: 0 5px;
-  padding: 4px 8px;
+  margin: 0 1px;
+  padding: 10px 16px;
   text-decoration: underline;
+
+  &:hover {
+    background: lighten($color-material-page-admin-panel-main-color,10%);
+  }
+
+  &.active {
+    background: $color-default-body;
+    color: $color-material-page-admin-panel-main-color;
+  }
 }
 
 .material-editor__content-wrapper {
@@ -71,7 +93,7 @@
   font-size: 1.25rem;
   font-weight: 300;
   line-height: 1;
-  padding: 10px;
+  padding: 15px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
