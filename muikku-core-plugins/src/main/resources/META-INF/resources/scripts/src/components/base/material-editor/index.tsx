@@ -30,7 +30,8 @@ const CKEditorConfig = (
     locale: string,
     contextPath: string,
     workspace: WorkspaceType,
-    materialNode: MaterialContentNodeType
+    materialNode: MaterialContentNodeType,
+    disablePlugins: boolean,
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/${materialNode.path}`,
   autoGrowOnStartup : false,
@@ -40,7 +41,6 @@ const CKEditorConfig = (
   entities: false,
   entities_latin: false,
   entities_greek: false,
-  skin : 'moono',
   height : 500,
   language: locale,
   stylesSet : 'workspace-material-styles:' + contextPath + '/scripts/ckplugins/styles/workspace-material-styles.js',
@@ -63,9 +63,8 @@ const CKEditorConfig = (
     { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },          
     { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
   ],
-  extraPlugins: "oembed,audio,divarea,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,autogrow,uploadimage",
-  //extraPlugins: 'oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,autogrow,uploadimage'
-  //extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,image2,oembed,audio,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target'
+  extraPlugins: disablePlugins ? 'oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,autogrow,widget,lineutils,filetools,uploadwidget,uploadimage,divarea' :
+    "oembed,audio,divarea,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,autogrow,uploadimage",
 });
 
 // First we need to modify the material content nodes endpoint to be able to recieve hidden
@@ -147,10 +146,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         <div className="material-editor__buttonset">
           <ButtonPill buttonModifiers={["material-editor-publish-page","material-editor", "disabled"]} icon="publish"/>
           <ButtonPill buttonModifiers={["material-editor-revert-page","material-editor", "disabled"]} icon="revert"/>
-          <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
-          <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentNodeValue}>
+          {this.props.editorState.canHide ? 
+              <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/> : null}
+          {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentNodeValue}>
             <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete" onClick={this.delete}/>
-          </DeleteWorkspaceMaterialDialog>
+          </DeleteWorkspaceMaterialDialog> : null}
         </div>
 
         <div className="material-editor__content-wrapper">
@@ -162,7 +162,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.workspace,
-                this.props.editorState.currentNodeValue
+                this.props.editorState.currentNodeValue,
+                this.props.editorState.disablePlugins,
               )} onChange={this.updateContent}>
               {this.props.editorState.currentNodeValue.html}
             </CKEditor>

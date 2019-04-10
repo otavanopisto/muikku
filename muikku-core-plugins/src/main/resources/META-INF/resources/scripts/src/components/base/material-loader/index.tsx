@@ -129,6 +129,9 @@ interface MaterialLoaderProps {
   
   //Edition mode, should only be available to admins
   editable?: boolean,
+  canDelete?: boolean,
+  canHide?: boolean,
+  disablePlugins?: boolean,
   
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
@@ -247,6 +250,9 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       workspace: this.props.workspace,
       section: false,
       opened: true,
+      canDelete: typeof this.props.canDelete === "undefined" ? true : this.props.canDelete,
+      canHide: typeof this.props.canHide === "undefined" ? true : this.props.canHide,
+      disablePlugins: !!this.props.disablePlugins,
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
@@ -422,7 +428,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
 
     //Setting this up
     let materialType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
-    let isHidden = this.props.material.hidden || this.props.page.hidden;
+    let isHidden = this.props.material.hidden || (this.props.page && this.props.page.hidden);
     return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
       {this.props.editable ? <div className="material-page__admin-panel">
         <ButtonPill buttonModifiers="material-management" icon="edit" onClick={this.startupEditor}/>
