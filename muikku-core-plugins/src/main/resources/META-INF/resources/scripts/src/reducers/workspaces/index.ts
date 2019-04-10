@@ -310,6 +310,9 @@ export interface WorkspaceMaterialEditorType {
   workspace: WorkspaceType,
   section: boolean,
   opened: boolean,
+  canDelete: boolean,
+  canHide: boolean,
+  disablePlugins: boolean,
 }
 
 export interface WorkspacesType {
@@ -484,6 +487,9 @@ export default function workspaces(state: WorkspacesType={
     workspace: null,
     section: false,
     opened: false,
+    canDelete: true,
+    canHide: true,
+    disablePlugins: false,
   }
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
@@ -571,6 +577,17 @@ export default function workspaces(state: WorkspacesType={
     return {...state, currentMaterialsReplies: newCurrentMaterialsReplies}
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
+    let newCurrentWorkspace = state.currentWorkspace;
+    if (newCurrentWorkspace.help.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      found = true;
+      newCurrentWorkspace = {...newCurrentWorkspace};
+      newCurrentWorkspace.help = {...newCurrentWorkspace.help, ...action.payload.update};
+    }
+    if (!found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      found = true;
+      newCurrentWorkspace = {...newCurrentWorkspace};
+      newCurrentWorkspace.contentDescription = {...newCurrentWorkspace.contentDescription, ...action.payload.update};
+    }
     let mapMaterial = (m: MaterialContentNodeType) => {
       if (found) {
         return m;
@@ -593,7 +610,12 @@ export default function workspaces(state: WorkspacesType={
       newEditor = {...newEditor};
       newEditor.parentNodeValue = {...newEditor.parentNodeValue, ...action.payload.update};
     }
-    return {...state, currentMaterials: state.currentMaterials.map(mapMaterial), materialEditor: newEditor}
+    return {
+      ...state,
+      currentWorkspace: newCurrentWorkspace,
+      currentMaterials: state.currentMaterials ? state.currentMaterials.map(mapMaterial) : state.currentMaterials,
+      materialEditor: newEditor
+    }
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let filterMaterial = (m: MaterialContentNodeType) => {
@@ -627,6 +649,9 @@ export default function workspaces(state: WorkspacesType={
         workspace: null,
         section: false,
         opened: false,
+        canDelete: true,
+        canHide: true,
+        disablePlugins: false,
       };
     }
     return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}

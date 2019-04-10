@@ -11,6 +11,8 @@ import WorkspaceAnnouncements from './announcements';
 import WorkspaceLicense from './license';
 import WorkspaceProducers from './producers';
 
+import MaterialEditor from '~/components/base/material-editor';
+
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/footer.scss';
 
@@ -27,6 +29,7 @@ export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBody
     return (<div>
       <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="workspace">
+        <MaterialEditor/>
         <WorkspaceHomeHeader/>
         <div className="panel-group panel-group--workspace-main">
           <WorkspaceDescription/>

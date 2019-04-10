@@ -27,7 +27,9 @@ class HelpPanel extends React.Component<HelpPanelProps, HelpPanelState> {
         <div className="panel__header-title">{this.props.workspace && this.props.workspace.name}</div>
       </div>
       <div className="panel__body">
-        {this.props.workspace && <MaterialLoader modifiers="workspace-help" material={this.props.workspace.help} workspace={this.props.workspace}
+        {this.props.workspace && <MaterialLoader editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+          modifiers="workspace-help" material={this.props.workspace.help} workspace={this.props.workspace}
+          canDelete={false} canHide={false} disablePlugins
           readOnly/>}
       </div>
     </div>);
