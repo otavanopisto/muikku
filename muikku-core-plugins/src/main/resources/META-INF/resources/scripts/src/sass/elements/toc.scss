@@ -40,8 +40,12 @@
   display: flex;
   font-weight: 300;
   margin: 6px 8px;
-  padding: 4px 8px;
+  padding: 4px;
   position: relative;
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    padding: 4px 8px;
+  }
 
   &:hover {
     background: lighten($color-list-selected-background, 30%);
@@ -110,6 +114,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   font-size: $text-mobile-font-size;
+  padding: 0 2px 0 0;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;

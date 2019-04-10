@@ -101,29 +101,31 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     return (<Portal isOpen={this.props.editorState.opened}
         onOpen={this.onOpen} beforeClose={this.beforeClose} closeOnEsc>
         {(closePortal: ()=>any)=>{
-          return <div
-            className={`material-editor ${this.state.visible ? "material-editor--visible" : ""}`}
-          >
-            <div>
-              <div>{this.props.i18n.text.get("TODO edit material")}</div>
-              <ButtonPill onClick={closePortal} icon="close"/>
+          return <div  className={`material-editor ${this.state.visible ? "material-editor--visible" : ""}`}>
+            <div className="material-editor__header">
+              <ButtonPill buttonModifiers="material-page-close-editor" onClick={closePortal} icon="close"/>
+              <div className="material-editor__tabs-container">
+                <div className="material-editor__tabs-item">Sisältö</div>
+                <div className="material-editor__tabs-item">Lisenssi</div>
+                <div className="material-editor__tabs-item">Tuottajat</div>
+                <div className="material-editor__tabs-item">Liitetiedostot</div>
+              </div>
             </div>
-            <div>
-              <input type="text" value={this.props.editorState.currentNodeValue.title} readOnly></input>
+            <div className="material-editor__content-wrapper">
+              <div className="material-editor__title-container">
+                <input className="material-editor__title" type="text" value={this.props.editorState.currentNodeValue.title} readOnly></input>
+              </div>
+              {this.props.editorState.currentNodeValue.html ? <div className="material-editor__editor-container">
+                <CKEditor  configuration={CKEditorConfig(
+                    this.props.locale.current,
+                    this.props.status.contextPath,
+                    this.props.editorState.workspace,
+                    this.props.editorState.currentNodeValue
+                  )}  onChange={()=> null}>
+                  {this.props.editorState.currentNodeValue.html}
+                </CKEditor>
+              </div> : null}
             </div>
-            {this.props.editorState.currentNodeValue.html ? <div>
-              <CKEditor
-                configuration={CKEditorConfig(
-                  this.props.locale.current,
-                  this.props.status.contextPath,
-                  this.props.editorState.workspace,
-                  this.props.editorState.currentNodeValue
-                )}
-                onChange={()=>null}
-              >
-                {this.props.editorState.currentNodeValue.html}
-              </CKEditor>
-            </div> : null}
           </div>
         }}
     </Portal>);

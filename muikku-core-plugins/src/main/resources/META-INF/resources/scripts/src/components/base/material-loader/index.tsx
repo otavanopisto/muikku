@@ -416,20 +416,29 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     }
   }
   render(){
-    //The modifieers in use
+    //The modifiers in use
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
 
     //Setting this up
     let materialType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")}`} ref="root" id={this.props.id}>
-      <h2 className="material-page__title">
+      {this.props.editable ? <div className="material-page__admin-panel">
+        <ButtonPill buttonModifiers="material-page-management" icon="edit" onClick={this.startupEditor}>
+        </ButtonPill>
+        <ButtonPill buttonModifiers="material-page-management" icon="delete">
+        </ButtonPill>
+        <ButtonPill buttonModifiers="material-page-management" icon="content_copy">
+        </ButtonPill>
+        <ButtonPill buttonModifiers="material-page-management" icon="hide">
+        </ButtonPill>
+        <ButtonPill buttonModifiers="material-page-management" icon="show">
+        </ButtonPill>
+        <ButtonPill buttonModifiers="material-page-management" icon="closed-material">
+        </ButtonPill>
+      </div> : null}
+      <h2 className={`material-page__title material-page__title--${materialType}`}>
         {this.props.material.title}
-        {this.props.material.assignmentType ? <div className={`material-page__label material-page__label--${this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment"}`}>
-          {this.props.material.assignmentType === "EXERCISE" ? this.props.i18n.text.get("plugin.workspace.materialsLoader.exerciseLabel") : this.props.i18n.text.get("plugin.workspace.materialsLoader.assignmentLabel")}
-        </div> : null }
-        {this.props.editable ? <ButtonPill icon="edit" onClick={this.startupEditor}/> : null}
       </h2>
-      
       <div className="react-required-container" onClick={this.stopPropagation}>
         {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
          <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}

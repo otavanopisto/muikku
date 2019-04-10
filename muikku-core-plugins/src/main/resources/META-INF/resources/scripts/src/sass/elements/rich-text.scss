@@ -15,6 +15,11 @@
   font-weight: 400;
   line-height: 1.25rem;
 
+  // This will adjust the editor's context area so it will resembel material page more closely
+  &.cke_wysiwyg_div {
+    padding: 5px 20px;
+  }
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-richtext-font-size;
     font-weight: 300;
