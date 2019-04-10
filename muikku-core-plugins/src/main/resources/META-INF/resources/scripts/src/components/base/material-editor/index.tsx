@@ -8,7 +8,7 @@ import { connect, Dispatch } from 'react-redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { WorkspaceMaterialEditorType, WorkspaceType, MaterialContentNodeType } from "~/reducers/workspaces";
-import { ButtonPill } from '~/components/general/button';
+import Button, { ButtonPill } from '~/components/general/button';
 import CKEditor from '~/components/general/ckeditor';
 import { StatusType } from '~/reducers/base/status';
 import { LocaleListType } from '~/reducers/base/locales';
@@ -33,8 +33,8 @@ const CKEditorConfig = (
     materialNode: MaterialContentNodeType
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/${materialNode.path}`,
-  autoGrowOnStartup : true,
-  autoGrow_minHeight: 400,
+  autoGrowOnStartup : false,
+  //autoGrow_minHeight: 400,
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
   entities: false,
@@ -144,6 +144,15 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           </div>
         </div>
 
+        <div className="material-editor__buttonset">
+          <ButtonPill buttonModifiers={["material-editor-publish-page","material-editor", "disabled"]} icon="publish"/>
+          <ButtonPill buttonModifiers={["material-editor-revert-page","material-editor", "disabled"]} icon="revert"/>
+          <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
+          <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentNodeValue}>
+            <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete" onClick={this.delete}/>
+          </DeleteWorkspaceMaterialDialog>
+        </div>
+
         <div className="material-editor__content-wrapper">
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentNodeValue.title}></input>
@@ -158,13 +167,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               {this.props.editorState.currentNodeValue.html}
             </CKEditor>
           </div> : null}
-        </div>
-
-        <div className="materia-editor__buttonset">
-          <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentNodeValue}>
-            <ButtonPill onClick={this.delete} icon="delete"/>
-          </DeleteWorkspaceMaterialDialog>
-          <ButtonPill onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
         </div>
      </div>
   }

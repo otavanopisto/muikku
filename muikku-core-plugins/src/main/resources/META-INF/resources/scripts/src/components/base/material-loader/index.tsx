@@ -22,6 +22,7 @@ import { bindActionCreators } from 'redux';
 import { UpdateAssignmentStateTriggerType, updateAssignmentState,
   setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType } from '~/actions/workspaces';
 import equals = require("deep-equal");
+import Dropdown from "~/components/general/dropdown"; 
 
 //These represent the states assignments and exercises can be in
 const STATES = [{
@@ -424,18 +425,11 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let isHidden = this.props.material.hidden || this.props.page.hidden;
     return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
       {this.props.editable ? <div className="material-page__admin-panel">
-        <ButtonPill buttonModifiers="material-page-management" icon="edit" onClick={this.startupEditor}>
-        </ButtonPill>
-        <ButtonPill buttonModifiers="material-page-management" icon="delete">
-        </ButtonPill>
-        <ButtonPill buttonModifiers="material-page-management" icon="content_copy">
-        </ButtonPill>
-        <ButtonPill buttonModifiers="material-page-management" icon="hide">
-        </ButtonPill>
-        <ButtonPill buttonModifiers="material-page-management" icon="show">
-        </ButtonPill>
-        <ButtonPill buttonModifiers="material-page-management" icon="closed-material">
-        </ButtonPill>
+        <ButtonPill buttonModifiers="material-management" icon="edit" onClick={this.startupEditor}/>
+        <ButtonPill buttonModifiers="material-management" icon="content_copy"/>
+        <ButtonPill buttonModifiers="material-management" icon="hide"/>
+        <ButtonPill buttonModifiers="material-management" icon="show"/>
+        <ButtonPill buttonModifiers="material-management" icon="closed-material"/>
       </div> : null}
       <h2  className={`material-page__title material-page__title--${materialType}`}>{this.props.material.title} </h2>
       <div className="react-required-container" onClick={this.stopPropagation}>

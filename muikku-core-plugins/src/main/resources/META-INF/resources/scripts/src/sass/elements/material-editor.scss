@@ -26,21 +26,10 @@
   &.material-editor--visible {
     left: 0;
   }
-
-  // CKE override styling
-  .cke_top {
-    background: $color-default;
-    border-bottom: 1px solid $color-material-page-admin-panel-main-color;
-  }
-  
-  .cke_bottom {
-    background: $color-default;
-    border-top: 1px solid $color-material-page-admin-panel-main-color;
-  }
 }
 
 .material-editor__header {
-  margin: 0 -15px 10px;
+  margin: 0 -15px 0;
   position: sticky;
   top: 0;
   z-index: 99;
@@ -78,6 +67,14 @@
   }
 }
 
+.material-editor__buttonset {
+  align-items: center;
+  bottom: 0;
+  justify-content: flex-end;
+  display: flex;
+  padding: 10px 0;
+}
+
 .material-editor__content-wrapper {
 
 }
@@ -102,8 +99,11 @@
 }
 
 .material-editor__editor-container {
+  position: sticky;
+  top: 50px;
 
-  .cke { // This needs to be here so we can override the ckeditor's visuals partly
+  // CKE override styles
+  .cke {
     background: $color-default;
     border: solid 1px $color-material-page-admin-panel-main-color;
     border-radius: 2px;
@@ -111,6 +111,14 @@
     max-width: 100%;
     min-width: 100%;
   }
-  
-}
 
+  .cke_top {
+    background: $color-default;
+    border-bottom: 1px solid $color-material-page-admin-panel-main-color;
+  }
+
+  .cke_bottom {
+    background: $color-default;
+    border-top: 1px solid $color-material-page-admin-panel-main-color;
+  }
+}

@@ -1022,8 +1022,8 @@
   background: $color-assignment;
 }
 
-// Material page management
-.button-pill--material-page-management {
+// Material page management related
+.button-pill--material-management {
   @include prefix(transition, moz o ms webkit, all 0.15s);
   background: $color-default;
   border: 1px solid $color-material-page-admin-panel-main-color;
@@ -1043,7 +1043,7 @@
   }
 }
 
-// Material page editor 
+// Material page editor related
 .button-pill--material-page-close-editor {
   @include rotate-icon-on-hover
   background: transparent;
@@ -1058,5 +1058,70 @@
 
   &:hover {
     background: transparent;
+  }
+}
+
+.button-pill--material-editor {
+  @include prefix(transition, moz o ms webkit, all 0.15s);
+  background: $color-default;
+  border: 1px solid $color-material-page-admin-panel-main-color;
+  color: $color-material-page-admin-panel-main-color;
+  border-radius: 10px;
+  font-size: 1rem;
+  height: 1.75rem;
+  margin: 0 0 0 10px;
+  overflow: visible;
+  position: relaive;
+  width: 1.75rem;
+
+  &.button-pill--disabled {
+    background: $color-default;
+    border: 1px solid $color-disabled;
+    color: $color-disabled;
+    cursor: not-allowed;
+
+    &:hover {
+      background: $color-default;
+      border: 1px solid $color-disabled;
+      color: $color-disabled;
+      cursor: not-allowed;
+    }
+  }
+}
+
+
+.button-pill--material-editor-delete-page {
+
+  &:hover {
+    background: $color-fatal;
+    border: 1px solid $color-fatal;
+    color: $color-fatal-contrast;
+  }
+}
+
+.button-pill--material-editor-show-hide-page {
+
+  &:hover {
+    background: $color-info;
+    border: 1px solid $color-info;
+    color: $color-default;
+  }
+}
+
+.button-pill--material-editor-publish-page {
+
+  &:hover {
+    background: $color-success;
+    border: 1px solid $color-success;
+    color: $color-success-contrast;
+  }
+}
+
+.button-pill--material-editor-revert-page {
+
+  &:hover {
+    background: $color-warn;
+    border: 1px solid $color-warn;
+    color: $color-warn-contrast;
   }
 }
