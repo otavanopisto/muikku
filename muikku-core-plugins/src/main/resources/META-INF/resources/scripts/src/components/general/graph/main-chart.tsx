@@ -168,74 +168,77 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
     let chartDataMap = new Map<string, MainChartData>();
     chartDataMap.set(new Date().toISOString().slice(0, 10), {SESSION_LOGGEDIN: 0, WORKSPACE_VISIT: 0, MATERIAL_EXERCISEDONE: 0, MATERIAL_ASSIGNMENTDONE: 0, FORUM_NEWMESSAGE: 0});
-    this.props.activityLogs.map((log)=>{
-        let date = log.timestamp.slice(0, 10);
-        let entry = chartDataMap.get(date) || {};
-        switch(log.type){
-        case "SESSION_LOGGEDIN":
-          entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
-          break;
-        case "FORUM_NEWMESSAGE":
-          entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
-          break;
-        case "FORUM_NEWTHREAD":
-          entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
-          break;
-        case "NOTIFICATION_ASSESMENTREQUEST":
-          entry.NOTIFICATION_ASSESMENTREQUEST = entry.NOTIFICATION_ASSESMENTREQUEST + 1|| 1;
-          break;
-        case "NOTIFICATION_NOPASSEDCOURSES":
-          entry.NOTIFICATION_NOPASSEDCOURSES = entry.NOTIFICATION_NOPASSEDCOURSES + 1|| 1;
-          break;
-        case "NOTIFICATION_SUPPLEMENTATIONREQUEST":
-          entry.NOTIFICATION_SUPPLEMENTATIONREQUEST = entry.NOTIFICATION_SUPPLEMENTATIONREQUEST + 1|| 1;
-          break;
-        case "NOTIFICATION_STUDYTIME":
-          entry.NOTIFICATION_STUDYTIME = entry.NOTIFICATION_STUDYTIME + 1|| 1;
-          break;
-        default:
-          break;
-        }
-        chartDataMap.set(date, entry);
-      });
-
-    let workspaces: {id: number, name: string, isEmpty: boolean}[] = [];
-    this.props.workspaces.map((workspace)=>{
-      workspaces.push({id: workspace.id, name: workspace.name, isEmpty: workspace.activityLogs.length == 0 });
-      if (!this.state.filteredWorkspaces.includes(workspace.id)){
-        workspace.activityLogs.map((log)=>{
+    if(this.props.activityLogs) {
+      this.props.activityLogs.map((log)=>{
           let date = log.timestamp.slice(0, 10);
           let entry = chartDataMap.get(date) || {};
           switch(log.type){
-          case "EVALUATION_REQUESTED":
-            entry.EVALUATION_REQUESTED = entry.EVALUATION_REQUESTED + 1 || 1;
+          case "SESSION_LOGGEDIN":
+            entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
             break;
-          case "EVALUATION_GOTINCOMPLETED":
-            entry.EVALUATION_GOTINCOMPLETED = entry.EVALUATION_GOTINCOMPLETED + 1|| 1;
+          case "FORUM_NEWMESSAGE":
+            entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
             break;
-          case "EVALUATION_GOTFAILED":
-            entry.EVALUATION_GOTFAILED = entry.EVALUATION_GOTFAILED + 1|| 1;
+          case "FORUM_NEWTHREAD":
+            entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
             break;
-          case "EVALUATION_GOTPASSED":
-            entry.EVALUATION_GOTPASSED = entry.EVALUATION_GOTPASSED + 1|| 1;
+          case "NOTIFICATION_ASSESMENTREQUEST":
+            entry.NOTIFICATION_ASSESMENTREQUEST = entry.NOTIFICATION_ASSESMENTREQUEST + 1|| 1;
             break;
-          case "WORKSPACE_VISIT":
-            entry.WORKSPACE_VISIT = entry.WORKSPACE_VISIT + 1|| 1;
+          case "NOTIFICATION_NOPASSEDCOURSES":
+            entry.NOTIFICATION_NOPASSEDCOURSES = entry.NOTIFICATION_NOPASSEDCOURSES + 1|| 1;
             break;
-          case "MATERIAL_EXERCISEDONE":
-            entry.MATERIAL_EXERCISEDONE = entry.MATERIAL_EXERCISEDONE + 1|| 1;
+          case "NOTIFICATION_SUPPLEMENTATIONREQUEST":
+            entry.NOTIFICATION_SUPPLEMENTATIONREQUEST = entry.NOTIFICATION_SUPPLEMENTATIONREQUEST + 1|| 1;
             break;
-          case "MATERIAL_ASSIGNMENTDONE":
-            entry.MATERIAL_ASSIGNMENTDONE = entry.MATERIAL_ASSIGNMENTDONE + 1|| 1;
+          case "NOTIFICATION_STUDYTIME":
+            entry.NOTIFICATION_STUDYTIME = entry.NOTIFICATION_STUDYTIME + 1|| 1;
             break;
           default:
             break;
           }
           chartDataMap.set(date, entry);
-        })
-      }
-    });
+        });
+    }
 
+    let workspaces: {id: number, name: string, isEmpty: boolean}[] = [];
+    if (this.props.workspaces) {
+      this.props.workspaces.map((workspace)=>{
+        workspaces.push({id: workspace.id, name: workspace.name, isEmpty: workspace.activityLogs.length == 0 });
+        if (!this.state.filteredWorkspaces.includes(workspace.id)){
+          workspace.activityLogs.map((log)=>{
+            let date = log.timestamp.slice(0, 10);
+            let entry = chartDataMap.get(date) || {};
+            switch(log.type){
+            case "EVALUATION_REQUESTED":
+              entry.EVALUATION_REQUESTED = entry.EVALUATION_REQUESTED + 1 || 1;
+              break;
+            case "EVALUATION_GOTINCOMPLETED":
+              entry.EVALUATION_GOTINCOMPLETED = entry.EVALUATION_GOTINCOMPLETED + 1|| 1;
+              break;
+            case "EVALUATION_GOTFAILED":
+              entry.EVALUATION_GOTFAILED = entry.EVALUATION_GOTFAILED + 1|| 1;
+              break;
+            case "EVALUATION_GOTPASSED":
+              entry.EVALUATION_GOTPASSED = entry.EVALUATION_GOTPASSED + 1|| 1;
+              break;
+            case "WORKSPACE_VISIT":
+              entry.WORKSPACE_VISIT = entry.WORKSPACE_VISIT + 1|| 1;
+              break;
+            case "MATERIAL_EXERCISEDONE":
+              entry.MATERIAL_EXERCISEDONE = entry.MATERIAL_EXERCISEDONE + 1|| 1;
+              break;
+            case "MATERIAL_ASSIGNMENTDONE":
+              entry.MATERIAL_ASSIGNMENTDONE = entry.MATERIAL_ASSIGNMENTDONE + 1|| 1;
+              break;
+            default:
+              break;
+            }
+            chartDataMap.set(date, entry);
+          })
+        }
+      });
+    }
     //TODO: load and parse completed workspaces
     let completedWorkspaces: {id: number, name: string, isEmpty: boolean}[] = [];
 
