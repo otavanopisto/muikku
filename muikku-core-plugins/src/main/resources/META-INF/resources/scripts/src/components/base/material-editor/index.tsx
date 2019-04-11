@@ -13,6 +13,7 @@ import CKEditor from '~/components/general/ckeditor';
 import { StatusType } from '~/reducers/base/status';
 import { LocaleListType } from '~/reducers/base/locales';
 import DeleteWorkspaceMaterialDialog from "./delete-dialog";
+import Dropdown from "~/components/general/dropdown"; 
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
@@ -146,12 +147,19 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         </div>
 
         <div className="material-editor__buttonset">
-          <ButtonPill buttonModifiers={["material-editor-publish-page","material-editor", "disabled"]} icon="publish"/>
-          <ButtonPill buttonModifiers={["material-editor-revert-page","material-editor", "disabled"]} icon="revert"/>
-          {this.props.editorState.canHide ? 
-              <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/> : null}
+          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialEditTooltip")}>
+            <ButtonPill buttonModifiers={["material-editor-publish-page","material-editor", "disabled"]} icon="publish"/>
+          </Dropdown>: null}
+          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialRevertToPublishedTooltip")}>
+            <ButtonPill buttonModifiers={["material-editor-revert-page","material-editor", "disabled"]} icon="revert"/>
+          </Dropdown>: null}
+          {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialHideTooltip")}>
+            <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
+          </Dropdown>: null}
           {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentNodeValue}>
-            <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete" onClick={this.delete}/>
+            <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialDeleteTooltip")}>
+              <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete" onClick={this.delete}/>
+            </Dropdown>
           </DeleteWorkspaceMaterialDialog> : null}
         </div>
 
