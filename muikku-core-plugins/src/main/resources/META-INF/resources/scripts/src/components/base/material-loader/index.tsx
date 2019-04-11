@@ -253,7 +253,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       opened: true,
       canDelete: typeof this.props.canDelete === "undefined" ? true : this.props.canDelete,
       canHide: typeof this.props.canHide === "undefined" ? true : this.props.canHide,
-      disablePlugins: !!this.props.disablePlugins,
+      disablePlugins: !!this.props.disablePlugins
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){

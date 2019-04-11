@@ -136,10 +136,12 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         <div className="material-editor__header">
           <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="close"/>
           <div className="material-editor__tabs-container">
-            <div className="material-editor__tabs-item active">Sisältö</div>
-            <div className="material-editor__tabs-item">Lisenssi</div>
-            <div className="material-editor__tabs-item">Tuottajat</div>
-            <div className="material-editor__tabs-item">Liitetiedostot</div>
+            <div className="material-editor__tabs-item active">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.content")}</div>
+
+            {/* TODO: These should be visible only in material views as other tabs should not do anything for any other view */}
+            <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.license")}</div>
+            <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.producers")}</div>
+            <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments")}</div>
           </div>
         </div>
 
