@@ -260,18 +260,18 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       workspace: this.props.workspace,
       section: false,
       opened: true,
-      canDelete: typeof this.props.canDelete === "undefined" ? true : this.props.canDelete,
-      canHide: typeof this.props.canHide === "undefined" ? true : this.props.canHide,
+      canDelete: typeof this.props.canDelete === "undefined" ? false : this.props.canDelete,
+      canHide: typeof this.props.canHide === "undefined" ? false : this.props.canHide,
       disablePlugins: !!this.props.disablePlugins,
-      canPublish: typeof this.props.canPublish === "undefined" ? true : this.props.canPublish,
-      canRevert: typeof this.props.canRevert === "undefined" ? true : this.props.canRevert,
-      canRestrictView: typeof this.props.canRestrictView === "undefined" ? true : this.props.canRestrictView,
-      canCopy: typeof this.props.canCopy === "undefined" ? true : this.props.canCopy,
-      canChangePageType: typeof this.props.canChangePageType === "undefined" ? true : this.props.canChangePageType,
-      canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? true : this.props.canChangeExerciseType,
-      canSetLicense: typeof this.props.canSetLicense === "undefined" ? true : this.props.canSetLicense,
-      canSetProducers: typeof this.props.canSetProducers === "undefined" ? true : this.props.canSetProducers,
-      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? true : this.props.canAddAttachments,
+      canPublish: typeof this.props.canPublish === "undefined" ? false : this.props.canPublish,
+      canRevert: typeof this.props.canRevert === "undefined" ? false : this.props.canRevert,
+      canRestrictView: typeof this.props.canRestrictView === "undefined" ? false : this.props.canRestrictView,
+      canCopy: typeof this.props.canCopy === "undefined" ? false : this.props.canCopy,
+      canChangePageType: typeof this.props.canChangePageType === "undefined" ? false : this.props.canChangePageType,
+      canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? false : this.props.canChangeExerciseType,
+      canSetLicense: typeof this.props.canSetLicense === "undefined" ? false : this.props.canSetLicense,
+      canSetProducers: typeof this.props.canSetProducers === "undefined" ? false : this.props.canSetProducers,
+      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? false : this.props.canAddAttachments
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
@@ -280,7 +280,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     if (nextProps.answerable && nextProps.material){
       //we get the composite replies
       let compositeReplies = nextProps.compositeReplies || nextState.compositeReplies;
-      
+
       //The state configuration
       this.stateConfiguration = STATES.filter((state:any)=>{
         return state['assignment-type'] === nextProps.material.assignmentType;

@@ -139,10 +139,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           <div className="material-editor__tabs-container">
             <div className="material-editor__tabs-item active">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.content")}</div>
 
-            {/* TODO: These should be visible only in material views as other tabs should not do anything for any other view */}
-            <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.license")}</div>
-            <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.producers")}</div>
-            <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments")}</div>
+            {this.props.editorState.canSetLicense ? <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.license")}</div> : null}
+            {this.props.editorState.canSetProducers ? <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.producers")}</div> : null}
+            {this.props.editorState.canAddAttachments ? <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments")}</div> : null}
           </div>
         </div>
 
@@ -166,7 +165,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         <div className="material-editor__content-wrapper">
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentNodeValue.title}></input>
-          </div>
+          </div> 
           {!this.props.editorState.section ? <div className="material-editor__editor-container">
             <CKEditor configuration={CKEditorConfig(
                 this.props.locale.current,

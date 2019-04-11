@@ -321,7 +321,7 @@ export interface WorkspaceMaterialEditorType {
   canChangeExerciseType: boolean,
   canSetLicense: boolean,
   canSetProducers: boolean,
-  canAddAttachments: boolean,
+  canAddAttachments: boolean
 }
 
 export interface WorkspacesType {
@@ -338,7 +338,6 @@ export interface WorkspacesType {
   currentMaterialsActiveNodeId: number,
   currentMaterialsReplies: MaterialCompositeRepliesListType,
   materialEditor: WorkspaceMaterialEditorType,
-  
   types?: Array<WorkspaceTypeType>
 }
 
