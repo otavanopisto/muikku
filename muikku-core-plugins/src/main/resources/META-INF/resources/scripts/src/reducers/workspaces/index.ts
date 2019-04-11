@@ -313,6 +313,12 @@ export interface WorkspaceMaterialEditorType {
   canDelete: boolean,
   canHide: boolean,
   disablePlugins: boolean,
+  canPublish: boolean,
+  canRevert: boolean,
+  canRestrictView: boolean,
+  canCopy: boolean,
+  canChangePageType: boolean,
+  canChangeExerciseType: boolean,
 }
 
 export interface WorkspacesType {
@@ -490,6 +496,12 @@ export default function workspaces(state: WorkspacesType={
     canDelete: true,
     canHide: true,
     disablePlugins: false,
+    canPublish: true,
+    canRevert: true,
+    canRestrictView: true,
+    canCopy: true,
+    canChangePageType: true,
+    canChangeExerciseType: true,
   }
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
@@ -652,6 +664,12 @@ export default function workspaces(state: WorkspacesType={
         canDelete: true,
         canHide: true,
         disablePlugins: false,
+        canPublish: true,
+        canRevert: true,
+        canRestrictView: true,
+        canCopy: true,
+        canChangePageType: true,
+        canChangeExerciseType: true,
       };
     }
     return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}

@@ -87,6 +87,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       canHide: true,
       canDelete: true,
       disablePlugins: false,
+      canPublish: true,
+      canRevert: true,
+      canRestrictView: true,
+      canCopy: false,
+      canChangePageType: false,
+      canChangeExerciseType: false,
     });
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){

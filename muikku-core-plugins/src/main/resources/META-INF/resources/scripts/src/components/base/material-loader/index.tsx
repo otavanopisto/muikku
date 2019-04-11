@@ -132,6 +132,12 @@ interface MaterialLoaderProps {
   canDelete?: boolean,
   canHide?: boolean,
   disablePlugins?: boolean,
+  canPublish?: boolean,
+  canRevert?: boolean,
+  canRestrictView?: boolean,
+  canCopy?: boolean,
+  canChangePageType?: boolean,
+  canChangeExerciseType?: boolean,
   
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
@@ -253,6 +259,12 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       canDelete: typeof this.props.canDelete === "undefined" ? true : this.props.canDelete,
       canHide: typeof this.props.canHide === "undefined" ? true : this.props.canHide,
       disablePlugins: !!this.props.disablePlugins,
+      canPublish: typeof this.props.canPublish === "undefined" ? true : this.props.canPublish,
+      canRevert: typeof this.props.canRevert === "undefined" ? true : this.props.canRevert,
+      canRestrictView: typeof this.props.canRestrictView === "undefined" ? true : this.props.canRestrictView,
+      canCopy: typeof this.props.canCopy === "undefined" ? true : this.props.canCopy,
+      canChangePageType: typeof this.props.canChangePageType === "undefined" ? true : this.props.canChangePageType,
+      canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? true : this.props.canChangeExerciseType,
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
