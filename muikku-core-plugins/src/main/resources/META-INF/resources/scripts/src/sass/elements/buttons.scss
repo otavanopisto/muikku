@@ -1031,7 +1031,7 @@
   color: $color-material-page-admin-panel-main-color;
   font-size: 1rem;
   height: 1.75rem;
-  margin: 0 10px 0 0;
+  margin: 0 5px;
   overflow: visible;
   position: relaive;
   width: 1.75rem;
@@ -1041,6 +1041,18 @@
     border: 1px solid $color-material-page-admin-panel-main-hover-color;
     color: $color-default;
   }
+}
+
+.button-pill--material-management-exercise {
+  background: $color-exercise;
+  border: 1px solid $color-exercise;
+  color: $color-default;
+}
+
+.button-pill--material-management-assignment {
+  background: $color-assignment;
+  border: 1px solid $color-assignment;
+  color: $color-default;
 }
 
 // Material page editor related
