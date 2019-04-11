@@ -133,6 +133,12 @@ interface MaterialLoaderProps {
   canDelete?: boolean,
   canHide?: boolean,
   disablePlugins?: boolean,
+  canPublish?: boolean,
+  canRevert?: boolean,
+  canRestrictView?: boolean,
+  canCopy?: boolean,
+  canChangePageType?: boolean,
+  canChangeExerciseType?: boolean,
   
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
@@ -253,7 +259,13 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       opened: true,
       canDelete: typeof this.props.canDelete === "undefined" ? true : this.props.canDelete,
       canHide: typeof this.props.canHide === "undefined" ? true : this.props.canHide,
-      disablePlugins: !!this.props.disablePlugins
+      disablePlugins: !!this.props.disablePlugins,
+      canPublish: typeof this.props.canPublish === "undefined" ? true : this.props.canPublish,
+      canRevert: typeof this.props.canRevert === "undefined" ? true : this.props.canRevert,
+      canRestrictView: typeof this.props.canRestrictView === "undefined" ? true : this.props.canRestrictView,
+      canCopy: typeof this.props.canCopy === "undefined" ? true : this.props.canCopy,
+      canChangePageType: typeof this.props.canChangePageType === "undefined" ? true : this.props.canChangePageType,
+      canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? true : this.props.canChangeExerciseType,
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
@@ -434,14 +446,9 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
       {this.props.editable ? <div className={`material-page__admin-panel material-page__admin-panel--${viewForAdminPanel}`}>
         <ButtonPill buttonModifiers="material-management" icon="edit" onClick={this.startupEditor}/> 
-
-        {/* ToDo: Needs to be checked whether we have privileges to copy material page, front page description should not allow this */}
-        <ButtonPill buttonModifiers="material-management" icon="content_copy"/>
-
+        {this.props.canCopy ?<ButtonPill buttonModifiers="material-management" icon="content_copy"/> : null}
         {this.props.canHide ? <ButtonPill buttonModifiers="material-management" icon={isHidden ? "show" : "hide"}/> : null}
-
-        {/* ToDo: Needs to be checked whether we have privileges to restrict material viewing, front page description should not allow this */}
-        <ButtonPill buttonModifiers="material-management" icon="closed-material"/>
+        {this.props.canRestrictView ? <ButtonPill buttonModifiers="material-management" icon="closed-material"/> : null}
 
       </div> : null}
       {!this.props.isInFrontPage ? <h2  className={`material-page__title material-page__title--${materialType}`}>{this.props.material.title} </h2> : null}
