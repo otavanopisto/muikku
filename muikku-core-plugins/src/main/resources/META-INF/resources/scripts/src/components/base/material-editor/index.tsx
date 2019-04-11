@@ -34,8 +34,8 @@ const CKEditorConfig = (
     disablePlugins: boolean,
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/${materialNode.path}`,
-  autoGrowOnStartup : false,
-  //autoGrow_minHeight: 400,
+  autoGrowOnStartup : true,
+  autoGrow_minHeight: 400,
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
   entities: false,
@@ -67,7 +67,7 @@ const CKEditorConfig = (
     "oembed,audio,divarea,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,autogrow,uploadimage",
 });
 
-// First we need to modify the material content nodes endpoint to be able to recieve hidden
+// First we need to modify the material content nodes endpoint to be able to receive hidden
 // nodes, we need those to be able to modify here
 class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditorState> {
   private oldOverflow:string;
