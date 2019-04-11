@@ -139,6 +139,9 @@ interface MaterialLoaderProps {
   canCopy?: boolean,
   canChangePageType?: boolean,
   canChangeExerciseType?: boolean,
+  canSetLicense?: boolean,
+  canSetProducers?: boolean,
+  canAddAttachments?: boolean,
   
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
@@ -266,6 +269,9 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       canCopy: typeof this.props.canCopy === "undefined" ? true : this.props.canCopy,
       canChangePageType: typeof this.props.canChangePageType === "undefined" ? true : this.props.canChangePageType,
       canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? true : this.props.canChangeExerciseType,
+      canSetLicense: typeof this.props.canSetLicense === "undefined" ? true : this.props.canSetLicense,
+      canSetProducers: typeof this.props.canSetProducers === "undefined" ? true : this.props.canSetProducers,
+      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? true : this.props.canAddAttachments,
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){

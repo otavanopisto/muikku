@@ -319,6 +319,9 @@ export interface WorkspaceMaterialEditorType {
   canCopy: boolean,
   canChangePageType: boolean,
   canChangeExerciseType: boolean,
+  canSetLicense: boolean,
+  canSetProducers: boolean,
+  canAddAttachments: boolean,
 }
 
 export interface WorkspacesType {
@@ -502,6 +505,9 @@ export default function workspaces(state: WorkspacesType={
     canCopy: true,
     canChangePageType: true,
     canChangeExerciseType: true,
+    canSetLicense: true,
+    canSetProducers: true,
+    canAddAttachments: true,
   }
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
@@ -659,17 +665,8 @@ export default function workspaces(state: WorkspacesType={
         currentNodeValue: null,
         parentNodeValue: null,
         workspace: null,
-        section: false,
         opened: false,
-        canDelete: true,
-        canHide: true,
-        disablePlugins: false,
-        canPublish: true,
-        canRevert: true,
-        canRestrictView: true,
-        canCopy: true,
-        canChangePageType: true,
-        canChangeExerciseType: true,
+        ...newEditor,
       };
     }
     return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
