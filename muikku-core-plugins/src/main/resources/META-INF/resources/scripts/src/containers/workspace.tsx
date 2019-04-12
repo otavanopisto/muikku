@@ -163,7 +163,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       if (state.status.loggedIn && state.status.isActiveUser && state.status.permissions.WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS){
         this.props.store.dispatch(loadAnnouncementsAsAClient({
-          hideEnvironmentAnnouncements: "false",
+          hideEnvironmentAnnouncements: "true",
           workspaceEntityId: state.status.currentWorkspaceId
         }) as Action);
       }
@@ -223,7 +223,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(loadAnnouncementsAsAClient({
-        hideEnvironmentAnnouncements: "false",
+        hideEnvironmentAnnouncements: "true",
         workspaceEntityId: state.status.currentWorkspaceId
       }) as Action);
       
