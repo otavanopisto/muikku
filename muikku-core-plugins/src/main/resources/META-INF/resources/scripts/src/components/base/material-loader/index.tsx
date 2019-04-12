@@ -446,12 +446,11 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
 
     //Setting this up
-    let materialType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
+    let materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     let viewForAdminPanel = this.props.isInFrontPage ? "workspace-description" : "workspace-materials";
     let isHidden = this.props.material.hidden || (this.props.page && this.props.page.hidden);
-    let assignmentType = "material-management-" + materialType;
 
-    return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
+    return <article className={`material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
       {this.props.editable ? <div className={`material-page__admin-panel material-page__admin-panel--${viewForAdminPanel}`}>
         <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialEditTooltip")}>
           <ButtonPill buttonModifiers="material-management" icon="edit" onClick={this.startupEditor}/>
@@ -462,17 +461,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         {this.props.canHide ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialHideTooltip")}>
           <ButtonPill buttonModifiers="material-management" icon={isHidden ? "show" : "hide"}/>
         </Dropdown> : null}
-        {this.props.canRestrictView ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialViewRestrictionTooltip")}>
-          <ButtonPill buttonModifiers="material-management" icon="closed-material"/>
-        </Dropdown> : null}
-        {this.props.canChangePageType ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialChangeAssesmentTypeTooltip")}>
-          <ButtonPill buttonModifiers={["material-management",assignmentType]} icon="assignment"/>
-        </Dropdown> : null}
-        {this.props.canChangeExerciseType && this.props.material.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip")}>
-          <ButtonPill buttonModifiers="material-management" icon="correct-answers"/>
-        </Dropdown> : null}
       </div> : null}
-      {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialType}`}>{this.props.material.title} </h2> : null}
+      {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>{this.props.material.title} </h2> : null}
       <div className="react-required-container" onClick={this.stopPropagation}>
         {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
          <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}

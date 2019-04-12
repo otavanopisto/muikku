@@ -1043,18 +1043,6 @@
   }
 }
 
-.button-pill--material-management-exercise {
-  background: $color-exercise;
-  border: 1px solid $color-exercise;
-  color: $color-default;
-}
-
-.button-pill--material-management-assignment {
-  background: $color-assignment;
-  border: 1px solid $color-assignment;
-  color: $color-default;
-}
-
 // Material page editor related
 .button-pill--material-page-close-editor {
   @include rotate-icon-on-hover
@@ -1104,6 +1092,36 @@
       cursor: not-allowed;
     }
   }
+
+  &:hover {
+    background: $color-info;
+    border: 1px solid $color-info;
+    color: $color-default;
+  }
+}
+
+.button-pill--material-editor-exercise {
+  background: $color-exercise;
+  border: 1px solid $color-exercise;
+  color: $color-default;
+  
+  &:hover {
+    background: $color-exercise;
+    border: 1px solid $color-exercise;
+    color: $color-default;
+  }
+}
+
+.button-pill--material-editor-assignment {
+  background: $color-assignment;
+  border: 1px solid $color-assignment;
+  color: $color-default;
+
+  &:hover {
+    background: $color-assignment;
+    border: 1px solid $color-assignment;
+    color: $color-default;
+  }
 }
 
 .button-pill--material-editor-delete-page {
@@ -1112,15 +1130,6 @@
     background: $color-fatal;
     border: 1px solid $color-fatal;
     color: $color-fatal-contrast;
-  }
-}
-
-.button-pill--material-editor-show-hide-page {
-
-  &:hover {
-    background: $color-info;
-    border: 1px solid $color-info;
-    color: $color-default;
   }
 }
 
