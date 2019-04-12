@@ -50,7 +50,7 @@ const Page1 = (props) => (
       <li>kevään kirjoitusten osalta 20.11.</li>
       <li>syksyn kirjoitusten osalta 20.5.</li>
     </ul>
-    <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavanopisto.fi).</p>
+    <p>Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavia.fi).</p>
     <p><b>Ilmoittautuminen on sitova.</b></p>
     {props.enrollmentSent ?
       <div style={ WARNING_STYLE } className="pure-u-22-24">
@@ -223,6 +223,7 @@ const Page2 = (props) => (
                   value={props.enrollAs} className="pure-u-23-24">
             <option value="UPPERSECONDARY">Lukion opiskelijana</option>
             <option value="VOCATIONAL">Ammatillisten opintojen perusteella</option>
+            <option value="UNKNOWN">Muu tausta</option>
           </select>
         </div>
         <div className="pure-u-1-2">
@@ -242,6 +243,15 @@ const Page2 = (props) => (
           </div>: null}
         {props.enrollAs === "UPPERSECONDARY" && props.numMandatoryCourses !== "" && props.numMandatoryCourses < 20 ?
           <div style={ WARNING_STYLE } className="pure-u-22-24">Sinulla ei ole tarpeeksi pakollisia kursseja suoritettuna. Tarkistamme ilmoittautumisesi ja otamme sinuun yhteyttä.</div>: null}
+        <div className="pure-u-1-1">
+          <label>Tutkintotyyppi</label>
+          <select onChange={({target}) => {props.setDegreeType(target.value);}}
+                  value={props.degreeType} className="pure-u-23-24">
+            <option value="MATRICULATIONEXAMINATION">Yo-tutkinto</option>
+            <option value="MATRICULATIONEXAMINATIONSUPPLEMENT">Tutkinnon korottaja tai täydentäjä</option>
+            <option value="SEPARATEEXAM">Erillinen koe (ilman yo-tutkintoa)</option>
+          </select>
+        </div>
         <div className="pure-u-1-2">
           <label style={{paddingTop: "0.7rem"}} >Aloitan tutkinnon suorittamisen uudelleen&nbsp;
             <input value={props.restartExam} type="checkbox" />
@@ -255,7 +265,7 @@ const Page2 = (props) => (
       {props.enrolledAttendances.map((attendance, i) =>
       <React.Fragment key={i}>
         <div className="pure-u-1-4"
-          style={(attendance.subject === "" || attendance.mandatory === "" || attendance.repeat === "") ? {"background": "pink"} : {}}>
+          style={(attendance.subject === "") ? {"background": "pink"} : {}}>
           <SubjectSelect
             i={i}
             value={attendance.subject}
@@ -264,7 +274,7 @@ const Page2 = (props) => (
             />
         </div>
         <div className="pure-u-1-4"
-          style={(attendance.subject === "" || attendance.mandatory === "" || attendance.repeat === "") ? {"background": "pink"} : {}}>
+          style={(attendance.mandatory === "" || props.isConflictingMandatory(attendance)) ? {"background": "pink"} : {}}>
           <MandatorySelect
             i={i}
             value={attendance.mandatory}
@@ -272,15 +282,14 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4"
-          style={(attendance.subject === "" || attendance.mandatory === "" || attendance.repeat === "") ? {"background": "pink"} : {}}>
+          style={(attendance.repeat === "" || props.isConflictingRepeat(attendance)) ? {"background": "pink"} : {}}>
           <RepeatSelect
             i={i}
             value={attendance.repeat}
             onChange={({target}) => {props.modifyEnrolledAttendance(i, "repeat", target.value);}}
           />
         </div>
-        <div className="pure-u-1-4"
-          style={(attendance.subject === "" || attendance.mandatory === "" || attendance.repeat === "") ? {"background": "pink"} : {}}>
+        <div className="pure-u-1-4">
           <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
             Poista
           </button>
@@ -318,7 +327,8 @@ const Page2 = (props) => (
             onChange={({target}) => {props.modifyFinishedAttendance(i, "subject", target.value);}}
           />
         </div>
-        <div className="pure-u-1-5">
+        <div className="pure-u-1-5"
+            style={ ( props.enrolledAttendances.filter((era) => { return (era.subject === attendance.subject) && (era.mandatory != attendance.mandatory) }).length > 0 ) ? {"background": "pink"} : {}}>
           <MandatorySelect 
             i={i} 
             value={attendance.mandatory} 
@@ -388,7 +398,21 @@ const Page2 = (props) => (
       <div style={ WARNING_STYLE } className="pure-u-22-24">
       Ole hyvä ja täytä kaikki rivit
       </div>: null}
+        
+    {
+      props.mandatoryConflicts ?
+      <div style={ WARNING_STYLE } className="pure-u-22-24">
+        Ainetta uusittaessa pakollisuustiedon on oltava sama kuin aiemmalla suorituskerralla
+      </div>: null
+    }
 
+    {
+      props.conflictingRepeats ?
+      <div style={ WARNING_STYLE } className="pure-u-22-24">
+        Aine on merkittävä uusittavaksi, kun siitä on aiempi suorituskerta
+      </div>: null
+    }
+    
     {
       props.amountOfFinnishAttendances == REQUIRED_FINNISH_ATTENDANCES && props.amountOfMandatoryAttendances == REQUIRED_MANDATORY_ATTENDANCES && props.amountOfAcademicSubjectAttendances < REQUIRED_ACADEMIC_SUBJECT_ATTENDANCE_LESS_THAN && props.amountOfMandatoryAdvancedSubjectAttendances > REQUIRED_MANDATORY_SUBJECT_ATTENDANCE_MORE_THAN
         ? null
@@ -511,6 +535,7 @@ class App extends React.Component {
       nationalStudentNumber: "",
       guider: "",
       enrollAs: "UPPERSECONDARY",
+      degreeType: "MATRICULATIONEXAMINATION",
       numMandatoryCourses: "",
       location: "Mikkeli",
       message: "",
@@ -525,6 +550,9 @@ class App extends React.Component {
             + date.getFullYear(),
       lastSave: date.getTime()
     };
+    
+    this.isConflictingMandatory = this.isConflictingMandatory.bind(this);
+    this.isConflictingRepeat = this.isConflictingRepeat.bind(this);
   }
 
   componentDidMount() {
@@ -684,6 +712,28 @@ class App extends React.Component {
   }
 
   /**
+   * Returns an array of attendances which includes enrolledAttendances, plannedAttendances
+   * and such finishedAttendances that have subjects not yet included from the previous
+   * two lists.
+   * 
+   * I.e. the array is missing the duplicates (repeated exams) which come from finished list.
+   */
+  getNonDuplicateAttendances() {
+    const attendances = [].concat(this.state.enrolledAttendances,this.state.plannedAttendances);
+    const attendedSubjects = attendances.map((attendance) => {
+      return attendance.subject;
+    });
+    
+    this.state.finishedAttendances.forEach((finishedAttendance) => {
+      if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
+        attendances.push(finishedAttendance);
+      }
+    });
+    
+    return attendances;
+  }
+  
+  /**
    * Returns count of attendances in finnish courses.
    * 
    * Attendances with grade IMPROBATUR are ignored while counting attendances
@@ -691,11 +741,7 @@ class App extends React.Component {
    * @returns count of attendances in finnish courses
    */
   getAmountOfFinnishAttendances() {
-    return this.getAttendances().filter((attendance) => {
-      if (attendance.grade == "IMPROBATUR") {
-        return false;
-      }
-
+    return this.getNonDuplicateAttendances().filter((attendance) => {
       return FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
@@ -708,11 +754,7 @@ class App extends React.Component {
    * @returns count of attendances in mandatory courses
    */
   getAmountOfMandatoryAttendances() {
-    return this.getAttendances().filter((attendance) => {
-      if (attendance.grade == "IMPROBATUR") {
-        return false;
-      }
-
+    return this.getNonDuplicateAttendances().filter((attendance) => {
       return attendance.mandatory === "true";
     }).length;
   }
@@ -725,11 +767,7 @@ class App extends React.Component {
    * @returns count of attendances in academic subjects
    */
   getAmountOfAcademicSubjectAttendances() {
-    return this.getAttendances().filter((attendance) => {
-      if (attendance.grade == "IMPROBATUR") {
-        return false;
-      }
-
+    return this.getNonDuplicateAttendances().filter((attendance) => {
       return attendance.mandatory === "true" && ACADEMIC_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
@@ -742,11 +780,7 @@ class App extends React.Component {
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
   getAmountOfMandatoryAdvancedSubjectAttendances() {
-    return this.getAttendances().filter((attendance) => {
-      if (attendance.grade == "IMPROBATUR") {
-        return false;
-      }
-
+    return this.getNonDuplicateAttendances().filter((attendance) => {
       return attendance.mandatory === "true" && ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1;
     }).length;
   }
@@ -826,6 +860,50 @@ class App extends React.Component {
     }
   }
 
+  /**
+   * Returns true if enrolled attendance is not a repeat but there is a 
+   * previous exam with the same subject.
+   */
+  isConflictingRepeat(attendance) {
+    if (attendance.repeat === "false") {
+      return this.getFinishedSubjects().indexOf(attendance.subject) != -1;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Returns true if there are any conflicting repeats; see isConflictingRepeat.
+   */
+  hasConflictingRepeats() {
+    const finishedSubjects = this.getFinishedSubjects();
+    
+    return this.state.enrolledAttendances.filter((attendance) => { 
+      return attendance.repeat === "false" && finishedSubjects.indexOf(attendance.subject) != -1;
+    }).length > 0;
+  }
+  
+  /**
+   * Returns true if there is a finished attendance with the same subject but different mandatory.
+   */
+  isConflictingMandatory(attendance) {
+    return this.state.finishedAttendances.filter((fin) => { 
+      return (fin.subject === attendance.subject) && (fin.mandatory != attendance.mandatory) 
+    }).length > 0;
+  }
+    
+  /**
+   * Returns true if there are any conflicting mandatories; see isConflictingMandatory.
+   */
+  hasMandatoryConflicts() {
+    const attendances = [].concat(this.state.enrolledAttendances, this.state.plannedAttendances);
+    return attendances.filter((attendance) => { 
+      return this.state.finishedAttendances.filter((fin) => { 
+        return (fin.subject === attendance.subject) && (fin.mandatory != attendance.mandatory) 
+      }).length > 0;
+    }).length > 0;
+  }
+
   currentTerm() {
     let now = new Date();
     let year, term;
@@ -841,6 +919,8 @@ class App extends React.Component {
   
   isInvalid() {
     return this.isConflictingAttendances()
+      || this.hasConflictingRepeats()
+      || this.hasMandatoryConflicts()
       || this.isIncompleteAttendances()
       || !this.isValidAttendances();
   }
@@ -869,6 +949,7 @@ class App extends React.Component {
           city: this.state.locality,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
+          degreeType: this.state.degreeType,
           numMandatoryCourses: this.state.numMandatoryCourses ? Number(this.state.numMandatoryCourses) : null,
           location: this.state.location,
           message: message,
@@ -909,6 +990,7 @@ class App extends React.Component {
           changedContactInfo: this.state.changedContactInfo,
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
+          degreeType: this.state.degreeType,
           numMandatoryCourses: this.state.numMandatoryCourses,
           enrolledAttendances: this.state.enrolledAttendances,
           plannedAttendances: this.state.plannedAttendances,
@@ -947,6 +1029,7 @@ class App extends React.Component {
                   setChangedContactInfo={(value) => { this.setState({changedContactInfo: value});}}
                   setGuider={(value) => { this.setState({guider : value}); }}
                   setEnrollAs={(value) => { this.setState({enrollAs : value}); }}
+                  setDegreeType={(value) => { this.setState({degreeType : value}); }}
                   setNumMandatoryCourses={(value) => { this.setState({numMandatoryCourses : value}); }}
                   setPage={(page) => {this.setState({page});}}
                   newEnrolledAttendance={() => {this.newEnrolledAttendance();}}
@@ -962,8 +1045,12 @@ class App extends React.Component {
                   amountOfMandatoryAttendances={ this.getAmountOfMandatoryAttendances() }
                   amountOfAcademicSubjectAttendances={ this.getAmountOfAcademicSubjectAttendances() }
                   amountOfMandatoryAdvancedSubjectAttendances = { this.getAmountOfMandatoryAdvancedSubjectAttendances() }
+                  isConflictingMandatory={this.isConflictingMandatory}
                   conflictingAttendances={this.isConflictingAttendances()}
+                  isConflictingRepeat={this.isConflictingRepeat}
+                  conflictingRepeats={this.hasConflictingRepeats()}
                   incompleteAttendances={this.isIncompleteAttendances()}
+                  mandatoryConflicts={this.hasMandatoryConflicts()}
                   invalid={this.isInvalid()}
                   pastTermOptions={this.getPastTermOptions()}
                   nextTermOptions={this.getNextTermOptions()}
