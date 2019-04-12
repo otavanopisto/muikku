@@ -282,11 +282,12 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
   }
   loadWorkspaceAnnouncerData(location: string[]){
+    const actualLocation = location.filter(l => !!l);
     let state = this.props.store.getState();
-    if (location.length === 1){
-      this.props.store.dispatch(loadAnnouncements(location[0], state.status.currentWorkspaceId) as Action);
+    if (actualLocation.length === 1){
+      this.props.store.dispatch(loadAnnouncements(actualLocation[0], state.status.currentWorkspaceId) as Action);
     } else {
-      this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1]), state.status.currentWorkspaceId) as Action);
+      this.props.store.dispatch(loadAnnouncement(actualLocation[0], parseInt(actualLocation[1]), state.status.currentWorkspaceId) as Action);
     }
   }
   loadWorkspaceMaterialsData(id: number): void {
