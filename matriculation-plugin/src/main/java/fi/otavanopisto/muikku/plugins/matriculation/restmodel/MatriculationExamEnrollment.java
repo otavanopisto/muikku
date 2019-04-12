@@ -148,6 +148,14 @@ public class MatriculationExamEnrollment {
     this.attendances = attendances;
   }
 
+  public String getDegreeType() {
+    return degreeType;
+  }
+
+  public void setDegreeType(String degreeType) {
+    this.degreeType = degreeType;
+  }
+
   private String name;
   private String ssn;
   private String email;
@@ -158,6 +166,7 @@ public class MatriculationExamEnrollment {
   private String nationalStudentNumber;
   private String guider;
   private String enrollAs;
+  private String degreeType;
   private int numMandatoryCourses;
   private boolean restartExam;
   private String location;
@@ -166,5 +175,4 @@ public class MatriculationExamEnrollment {
   private String studentIdentifier;
   private String state;
   private List<MatriculationExamAttendance> attendances;
-
 }

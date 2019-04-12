@@ -153,10 +153,10 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
   inputContactsAutofillLoaders() {
     return {
       studentsLoader: (searchString: string) => promisify(mApi().communicator.recipientsUsersSearch.read({
-        searchString: searchString
+        q: searchString
       }), 'callback'),
       workspacesLoader: (searchString: string) => promisify(mApi().communicator.recipientsWorkspacesSearch.read({
-        searchString: searchString
+        q: searchString
       }), 'callback')
     }
   }

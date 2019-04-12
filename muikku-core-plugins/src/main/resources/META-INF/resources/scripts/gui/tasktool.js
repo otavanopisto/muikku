@@ -234,7 +234,7 @@ $(document).ready(function(){
          }
          
          
-         mApi({async: false}).user.users.read({ 'searchString' : filterTerm }).callback(
+         mApi({async: false}).user.users.read({ 'q' : filterTerm }).callback(
           function (err, usr) {
             if(typeof usr !== "undefined"){
               for (var i = 0, l = usr.length; i < l; i++) {
@@ -256,7 +256,7 @@ $(document).ready(function(){
             } 
        });       
        
-//       mApi({async: false}).workspace.workspaces.read({ 'searchString' : searchTerm }).callback(
+//       mApi({async: false}).workspace.workspaces.read({ 'q' : searchTerm }).callback(
 //           function (err, workspaces) {
 //              for (var i = 0, l = workspaces.length; i < l; i++) {
 //
@@ -282,7 +282,7 @@ $(document).ready(function(){
        
     
      
-     mApi({async: false}).workspace.workspaces.read({ 'search' : filterTerm }).callback(
+     mApi({async: false}).workspace.workspaces.read({ 'q' : filterTerm }).callback(
          function (err, workspace) {
            if(typeof workspace !== "undefined"){           
              for (var i = 0, l = workspace.length; i < l; i++) {

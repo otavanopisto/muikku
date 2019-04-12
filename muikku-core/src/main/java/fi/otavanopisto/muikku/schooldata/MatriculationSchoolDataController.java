@@ -30,21 +30,21 @@ public class MatriculationSchoolDataController {
     throw new SchoolDataBridgeException("Invalid data source for matriculation");
   }
 
-	public Long getStudentId(SchoolDataIdentifier studentIdentifier) {
-	 return getMatriculationBridge().getStudentId(studentIdentifier);
-	}
-	
-	public MatriculationExam getMatriculationExam() {
+  public Long getStudentId(SchoolDataIdentifier studentIdentifier) {
+    return getMatriculationBridge().getStudentId(studentIdentifier);
+  }
+  
+  public MatriculationExam getMatriculationExam() {
     return getMatriculationBridge().getMatriculationExam();
-	}
-	
-	public MatriculationExamEnrollment createMatriculationExamEnrollment() {
-	  return getMatriculationBridge().createMatriculationExamEnrollment();
-	}
-	
-	public void submitMatriculationExamEnrollment(MatriculationExamEnrollment enrollment) {
+  }
+  
+  public MatriculationExamEnrollment createMatriculationExamEnrollment() {
+    return getMatriculationBridge().createMatriculationExamEnrollment();
+  }
+  
+  public void submitMatriculationExamEnrollment(MatriculationExamEnrollment enrollment) {
     getMatriculationBridge().submitMatriculationExamEnrollment(enrollment);
-	}
+  }
   
   public MatriculationExamAttendance createMatriculationExamAttendance() {
     return getMatriculationBridge().createMatriculationExamAttendance();

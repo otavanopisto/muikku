@@ -169,11 +169,11 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
               onClick={this.props.messages.toolbarLock ? null : this.toggleCurrentMessageReadStatus}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
-            <ButtonPill buttonModifiers="next-page" icon="arrow-left"
+            <ButtonPill buttonModifiers="next-page" icon="arrow-left-thin"
               disabled={this.props.messages.currentThread.newerThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}/>
 
-             <ButtonPill buttonModifiers="prev-page" icon="arrow-right"
+             <ButtonPill buttonModifiers="prev-page" icon="arrow-right-thin"
                disabled={this.props.messages.currentThread.olderThreadId === null}
                onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>
           </ApplicationPanelToolbarActionsAside>

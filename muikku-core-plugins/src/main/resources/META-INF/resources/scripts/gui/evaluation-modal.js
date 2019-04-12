@@ -928,8 +928,7 @@
     },
     
     confirmRequestArchive: function(card, callback) {
-      var workspaceEntityId = $(card).attr('data-workspace-entity-id');
-      var UserEntityId =$(card).attr('data-user-entity-id');
+      var workspaceUserEntityId =$(card).attr('data-workspace-user-entity-id');
       var studentName = $(card).find('.evaluation-card-student').text();
       var workspaceName = $(card).attr('data-workspace-name');
       
@@ -945,8 +944,8 @@
             'text' : dialog.attr('data-button-remove-text'),
             'class' : 'remove-button',
             'click' : function(event) {
-            mApi().evaluation.workspace.user.evaluationrequestarchive
-              .update(workspaceEntityId, UserEntityId)
+            mApi().evaluation.workspaceuser.evaluationrequestarchive
+              .update(workspaceUserEntityId)
               .callback($.proxy(function (err) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);

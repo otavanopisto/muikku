@@ -387,7 +387,7 @@
       };
       
       if (this._searchString) {
-        options['searchString'] = this._searchString;
+        options['q'] = this._searchString;
       }
       
       if (this._userGroupIds) {
@@ -605,7 +605,7 @@
     
     _createStaffMemberSearch: function (term, existingIds) {
       return $.proxy(function (callback) {
-        mApi().user.staffMembers.read({ 'searchString' : term }).callback(function (err, staffMembers) {
+        mApi().user.staffMembers.read({ 'q' : term }).callback(function (err, staffMembers) {
           if (err) {
             callback(err);
           } else {
