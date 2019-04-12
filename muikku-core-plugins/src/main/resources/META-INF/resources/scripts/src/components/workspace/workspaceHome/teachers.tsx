@@ -74,9 +74,12 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                       <div className="item-list__user-phone"><span className="glyph icon-phone"></span>{teacher.properties['profile-phone']}
                     </div> : null}
                   </div>
-                  {teacher.properties['profile-vacation-period'] ?
-                    <div className="item-list__user-vacation-period">{this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")} {teacher.properties['profile-vacation-period']}
-                  </div> : null}
+                  {teacher.properties['profile-vacation-start'] ?
+                    <div className="item-list__user-vacation-period">
+                      {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
+                      {this.props.i18n.time.format(teacher.properties['profile-vacation-start'])}
+                      {teacher.properties['profile-vacation-end'] ? " - " + this.props.i18n.time.format(teacher.properties['profile-vacation-end']) : null}
+                    </div> : null}
                   <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
                       type: "staff",
                       value: teacher
