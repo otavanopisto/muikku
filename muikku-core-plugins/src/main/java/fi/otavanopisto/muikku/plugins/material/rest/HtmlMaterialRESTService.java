@@ -31,6 +31,7 @@ import fi.foyt.coops.CoOpsUsageException;
 import fi.foyt.coops.model.File;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
+import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
@@ -114,16 +115,12 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   }
 
   @PUT
-  @Path("/{id}")
+  @Path("/{id}/content")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateMaterial(@PathParam("id") Long id, @QueryParam("removeAnswers") @DefaultValue("false") boolean removeAnswers, HtmlRestMaterial entity) {
+  public Response updateMaterialContent(@PathParam("id") Long id, @QueryParam("removeAnswers") @DefaultValue("false") boolean removeAnswers, String content) {
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
       return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
-    }
-    
-    if (!id.equals(entity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Payload id mismatch").build();
     }
 
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
@@ -132,9 +129,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     }
     
     try {
-      htmlMaterial = htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, entity.getHtml(),removeAnswers);
-      htmlMaterial = htmlMaterialController.updateHtmlMaterialTitle(htmlMaterial, entity.getTitle());
-      // TODO entity license & viewRestrict
+      htmlMaterial = htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, content, removeAnswers);
     }
     catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.CONFLICT).entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
@@ -144,7 +139,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     }
     return Response.ok(createRestModel(htmlMaterial)).build();
   }
-  
+
   @POST
   @Path("/{id}/publish/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
