@@ -82,11 +82,11 @@ public class HtmlMaterialController {
     htmlMaterialDAO.delete(htmlMaterial);
   }
 
-  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) {
+  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) throws WorkspaceMaterialContainsAnswersExeption {
     return updateHtmlMaterialHtml(htmlMaterial, html, false);
   }
   
-  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html, boolean removeAnswers) {
+  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
     HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, removeAnswers);
     materialUpdateEvent.fire(event);
     return htmlMaterialDAO.updateData(htmlMaterial, html);
