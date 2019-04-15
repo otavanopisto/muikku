@@ -6,7 +6,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import {ButtonPill} from '~/components/general/button';
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
-
+import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/avatar.scss';
 import { getName, filterMatch, filterHighlight } from "~/util/modifiers";
@@ -109,26 +109,29 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
         studyProgrammeName: this.state.studentCurrentlyBeingSentMessage.studyProgrammeName,
       }
     
-    return (<div className="panel panel--workspace-users">
-      <div className="panel__header">
-        <div className="panel__header-icon panel__header-icon--workspace-signup icon-book"></div>
-        <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')} - {this.props.workspace && this.props.workspace.name}</div>
+    return (<div className="application-panel application-panel--workspace-users">
+      <div className="application-panel__container">  
+      <div className="application-panel__header"> 
+        <div className="application-panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')} - {this.props.workspace && this.props.workspace.name}</div>
       </div>
-      <div className="panel__body">
+      <div className="application-panel__body">
         <h2>{this.props.i18n.text.get('plugin.workspace.users.teachers.title')}</h2>
-        <div className="loader-empty">
+        <div className="application-list application-list--workspace-staffmembers">
+        
           {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.map((staff)=>{
             let userCategory = staff.userEntityId > 10 ? staff.userEntityId % 10 + 1 : staff.userEntityId;
-            return <div key={staff.userEntityId}>
-              <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
-              <span>{getName(staff, true)}</span>
-              <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
-                type: "staff",
-                value: staff
-              }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
-                initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
-                <ButtonPill buttonModifiers="workspace-users-contact" icon="message-unread"/>
-              </CommunicatorNewMessage>
+            return <div className="application-list__item" key={staff.userEntityId}>
+              <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-staffmembers">
+                <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
+                <span>{getName(staff, true)}</span>
+                <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
+                  type: "staff",
+                  value: staff
+                }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
+                  initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
+                  <ButtonPill buttonModifiers="workspace-users-contact" icon="message-unread"/>
+                </CommunicatorNewMessage>
+              </div>
             </div>
           })}
         </div>
@@ -176,6 +179,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
             }
           }
         ]}/>
+        </div>
       </div>
 
       {currentStudentBeingSentMessage ? <CommunicatorNewMessage isOpen onClose={this.removeStudentBeingSentMessage}
