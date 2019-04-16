@@ -1021,3 +1021,132 @@
 .button--muikku-update-assignment {
   background: $color-assignment;
 }
+
+// Material page management related
+.button-pill--material-management {
+  @include prefix(transition, moz o ms webkit, all 0.15s);
+  background: $color-default;
+  border: 1px solid $color-material-page-admin-panel-main-color;
+  border-radius: 10px;
+  color: $color-material-page-admin-panel-main-color;
+  font-size: 1rem;
+  height: 1.75rem;
+  margin: 0 5px;
+  overflow: visible;
+  position: relaive;
+  width: 1.75rem;
+
+  &:hover {
+    background: $color-material-page-admin-panel-main-hover-color;
+    border: 1px solid $color-material-page-admin-panel-main-hover-color;
+    color: $color-default;
+  }
+}
+
+// Material page editor related
+.button-pill--material-page-close-editor {
+  @include rotate-icon-on-hover
+  background: transparent;
+  color: $color-default;
+  font-size: 1rem;
+  height: 2rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 2rem;
+  z-index: 2;
+
+  &:hover {
+    background: transparent;
+  }
+
+  @include breakpoint($breakpoint-pad) { 
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+}
+
+.button-pill--material-editor {
+  @include prefix(transition, moz o ms webkit, all 0.15s);
+  background: $color-default;
+  border: 1px solid $color-material-page-admin-panel-main-color;
+  color: $color-material-page-admin-panel-main-color;
+  border-radius: 10px;
+  font-size: 1rem;
+  height: 1.75rem;
+  margin: 0 0 0 10px;
+  overflow: visible;
+  position: relaive;
+  width: 1.75rem;
+
+  &.button-pill--disabled {
+    background: $color-default;
+    border: 1px solid $color-disabled;
+    color: $color-disabled;
+    cursor: not-allowed;
+
+    &:hover {
+      background: $color-default;
+      border: 1px solid $color-disabled;
+      color: $color-disabled;
+      cursor: not-allowed;
+    }
+  }
+
+  &:hover {
+    background: $color-info;
+    border: 1px solid $color-info;
+    color: $color-default;
+  }
+}
+
+.button-pill--material-editor-exercise {
+  background: $color-exercise;
+  border: 1px solid $color-exercise;
+  color: $color-default;
+  
+  &:hover {
+    background: $color-exercise;
+    border: 1px solid $color-exercise;
+    color: $color-default;
+  }
+}
+
+.button-pill--material-editor-assignment {
+  background: $color-assignment;
+  border: 1px solid $color-assignment;
+  color: $color-default;
+
+  &:hover {
+    background: $color-assignment;
+    border: 1px solid $color-assignment;
+    color: $color-default;
+  }
+}
+
+.button-pill--material-editor-delete-page {
+
+  &:hover {
+    background: $color-fatal;
+    border: 1px solid $color-fatal;
+    color: $color-fatal-contrast;
+  }
+}
+
+.button-pill--material-editor-publish-page {
+
+  &:hover {
+    background: $color-success;
+    border: 1px solid $color-success;
+    color: $color-success-contrast;
+  }
+}
+
+.button-pill--material-editor-revert-page {
+
+  &:hover {
+    background: $color-warn;
+    border: 1px solid $color-warn;
+    color: $color-warn-contrast;
+  }
+}

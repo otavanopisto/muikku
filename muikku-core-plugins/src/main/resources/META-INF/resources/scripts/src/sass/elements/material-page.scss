@@ -3,11 +3,40 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+// ADMIN PANEL
+.material-page__admin-panel {
+  background: $color-default-body;
+  border-bottom: 1px solid $color-default-separator-border;
+  line-height: 1;
+  margin: -21px -21px 15px -21px;
+  padding: 10px;
+  position: relative;
+  text-align: center;
+}
+
+.material-page__admin-panel--workspace-description {
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  top: -36px;
+  
+  @include breakpoint($breakpoint-pad) {
+    top: -44px;
+  }
+}
+
 .material-page {
   background-color: $color-application-panel-box-background;
   padding: 10px;
   position: relative;
   width: 100%;
+  
+  &.material-page--hidden {
+  	opacity: 0.5;
+  } 
 
   @include breakpoint($breakpoint-pad) {
     padding: 20px;
@@ -27,6 +56,18 @@
     font-size: 1.375rem;
     margin: 0 0 20px;
   }
+}
+
+.material-page__title--exercise {
+  border-left: 5px solid $color-exercise;
+  margin: 0 0 15px -20px;
+  padding: 0 0 0 15px;
+}
+
+.material-page__title--assignment {
+  border-left: 5px solid $color-assignment;
+  margin: 0 0 15px -20px;
+  padding: 0 0 0 15px;
 }
 
 .material-page__label {
@@ -1355,7 +1396,7 @@
 
 // Math field
 .material-page__mathfield-wrapper {
-  margin: 2px 0;  
+  margin: 2px 0;
 }
 
 .material-page__mathfield {

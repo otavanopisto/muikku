@@ -226,3 +226,19 @@
     border-bottom-color: $color-taskfield-hint-border;
   }
 }
+
+.dropdown--material-page-management-tooltip {
+
+  .dropdown__container {
+    border-radius: 2px;
+    color: $color-default;
+    min-width: 0;
+    padding: 3px 6px;
+    text-align: left;
+
+    @include breakpoint($breakpoint-pad) {
+      font-weight: 300;
+      padding: 5px 10px;
+    }
+  }
+}

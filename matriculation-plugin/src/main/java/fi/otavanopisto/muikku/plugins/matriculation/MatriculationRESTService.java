@@ -2,10 +2,13 @@ package fi.otavanopisto.muikku.plugins.matriculation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,11 +21,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.matriculation.persistence.dao.SavedMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.matriculation.persistence.dao.SentMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment;
 import fi.otavanopisto.muikku.matriculation.persistence.model.SentMatriculationEnrollment;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
@@ -38,6 +46,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 
 @Path("/matriculation")
@@ -65,6 +74,9 @@ public class MatriculationRESTService {
   private UserEmailEntityController userEmailEntityController;
   
   @Inject
+  private UserGroupEntityController userGroupEntityController; 
+  
+  @Inject
   private SessionController sessionController;
   
   @Inject
@@ -76,13 +88,37 @@ public class MatriculationRESTService {
   @Inject
   private MatriculationNotificationController matriculationNotificationController;
   
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_GET_EXAM)
   @Path("/currentExam")
   public Response fetchCurrentExam() {
     MatriculationExam exam = matriculationController.getMatriculationExam();
+    boolean eligible = false;
     
     if (sessionController.isLoggedIn() && exam != null) {
+      String eligibleGroupIdentifiers = pluginSettingsController.getPluginSetting("matriculation", "eligibleGroupIdentifiers");
+      if (StringUtils.isBlank(eligibleGroupIdentifiers)) {
+        // If no groups are set, default to everyone
+        eligible = true;
+      } else {
+        String[] identifierStrings = StringUtils.split(eligibleGroupIdentifiers, ',');
+        Set<SchoolDataIdentifier> eligibleUserGroupIdentifiers = Arrays.stream(identifierStrings)
+          .map(identifierString -> SchoolDataIdentifier.fromId(identifierString))
+          .filter(Objects::nonNull)
+          .collect(Collectors.toSet());
+        
+        List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserEntity(sessionController.getLoggedUserEntity());
+        Set<SchoolDataIdentifier> usersUserGroupEntityIdentifiers = userGroupEntities.stream()
+          .map(userGroupEntity -> new SchoolDataIdentifier(userGroupEntity.getIdentifier(), userGroupEntity.getSchoolDataSource().getIdentifier()))
+          .filter(Objects::nonNull)
+          .collect(Collectors.toSet());
+        
+        eligible = CollectionUtils.containsAny(eligibleUserGroupIdentifiers, usersUserGroupEntityIdentifiers);
+      }
+      
       User user = userController.findUserByIdentifier(sessionController.getLoggedUser());
       if (user != null) {
         UserProperty property = userSchoolDataController.getUserProperty(user, "matriculation.examEnrollmentExpiryDate");
@@ -92,20 +128,8 @@ public class MatriculationRESTService {
             
             final long startDate = exam.getStarts();
             final long endDate = Math.max(exam.getEnds(), matriculationExamEnrollmentExpiryDate);
-            
-            exam = new MatriculationExam() {
-              @Override
-              public long getStarts() {
-                return startDate;
-              }
-              
-              @Override
-              public long getEnds() {
-                return endDate;
-              }
-            };
-            
-            return Response.ok(exam).build();
+                        
+            return Response.ok(new MatriculationCurrentExam(startDate, endDate, eligible)).build();
           } catch (NumberFormatException nfe) {
             logger.warning(String.format("User Property was expected to include a date in long format but parsing it failed (%s)", sessionController.getLoggedUserIdentifier()));
           }
@@ -113,7 +137,7 @@ public class MatriculationRESTService {
       }
     }
     
-    return Response.ok(exam).build();
+    return Response.ok(new MatriculationCurrentExam(exam.getStarts(), exam.getEnds(), eligible)).build();
   }
   
   @GET
@@ -253,6 +277,7 @@ public class MatriculationRESTService {
     schoolDataEntity.setNationalStudentNumber(enrollment.getNationalStudentNumber());
     schoolDataEntity.setGuider(enrollment.getGuider());
     schoolDataEntity.setEnrollAs(enrollment.getEnrollAs());
+    schoolDataEntity.setDegreeType(enrollment.getDegreeType());
     schoolDataEntity.setRestartExam(enrollment.isRestartExam());
     schoolDataEntity.setNumMandatoryCourses(enrollment.getNumMandatoryCourses());
     schoolDataEntity.setLocation(enrollment.getLocation());

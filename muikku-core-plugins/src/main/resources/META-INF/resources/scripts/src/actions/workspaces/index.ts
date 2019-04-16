@@ -48,6 +48,7 @@ export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE
   material: MaterialContentNodeType,
   update: Partial<MaterialContentNodeType>,
 }>{};
+export interface DELETE_MATERIAL_CONTENT_NODE extends SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -138,6 +139,14 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
 
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (material: MaterialContentNodeType, update: Partial<MaterialContentNodeType>):AnyActionType
+}
+
+export interface DeleteWorkspaceMaterialContentNodeTriggerType {
+  (data: {
+    material: MaterialContentNodeType,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -349,7 +358,7 @@ export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
   ():AnyActionType
 }
 export interface LoadWholeWorkspaceMaterialsTriggerType {
-  (workspaceId: number, callback?:(nodes: Array<MaterialContentNodeType>)=>any):AnyActionType
+  (workspaceId: number, includeHidden: boolean, callback?:(nodes: Array<MaterialContentNodeType>)=>any):AnyActionType
 }
 export interface SignupIntoWorkspaceTriggerType {
   (data: {
@@ -623,11 +632,11 @@ let toggleActiveStateOfStudentOfWorkspace:ToggleActiveStateOfStudentOfWorkspaceT
   }
 }
 
-let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = function loadWholeWorkspaceMaterials(workspaceId, callback){
+let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = function loadWholeWorkspaceMaterials(workspaceId, includeHidden, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let contentNodes:Array<MaterialContentNodeType> = <Array<MaterialContentNodeType>>(await promisify(mApi().workspace.
-          workspaces.materialContentNodes.read(workspaceId), 'callback')()) || [];
+          workspaces.materialContentNodes.read(workspaceId, {includeHidden}), 'callback')()) || [];
       dispatch({
         type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
         payload: contentNodes
@@ -1274,6 +1283,29 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
   }
 }
 
+let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTriggerType = function deleteWorkspaceMaterialContentNode(data) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      
+      // TODO write the code for the actual deletition
+      
+      dispatch({
+        type: "DELETE_MATERIAL_CONTENT_NODE",
+        payload: data.material
+      });
+      
+      data.success && data.success();
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      
+      data.fail && data.fail();
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete material'), 'error'));
+    }
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
@@ -1281,4 +1313,5 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
-  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode}
+  loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
+  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode}

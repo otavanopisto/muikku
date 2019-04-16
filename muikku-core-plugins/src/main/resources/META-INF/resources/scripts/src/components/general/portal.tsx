@@ -178,7 +178,6 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       });
     } else if (this.props.openByHoverOn){
       return React.cloneElement(this.props.openByHoverOn, {
-        onClick: this.handleWrapperClick,
         onMouseEnter: this.handleWrapperClick,
         onMouseLeave: this.handleOutsideMouseClick
       });

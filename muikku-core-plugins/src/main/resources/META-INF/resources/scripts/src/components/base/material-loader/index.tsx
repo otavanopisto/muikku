@@ -22,6 +22,7 @@ import { bindActionCreators } from 'redux';
 import { UpdateAssignmentStateTriggerType, updateAssignmentState,
   setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType } from '~/actions/workspaces';
 import equals = require("deep-equal");
+import Dropdown from "~/components/general/dropdown"; 
 
 //These represent the states assignments and exercises can be in
 const STATES = [{
@@ -121,6 +122,7 @@ interface MaterialLoaderProps {
   modifiers?: string | Array<string>,
   id?: string,
   websocket: WebsocketStateType,
+  isInFrontPage?: boolean,
   
   //Whether or not the thing can be answered
   //and then it will use the state configuration
@@ -128,6 +130,18 @@ interface MaterialLoaderProps {
   
   //Edition mode, should only be available to admins
   editable?: boolean,
+  canDelete?: boolean,
+  canHide?: boolean,
+  disablePlugins?: boolean,
+  canPublish?: boolean,
+  canRevert?: boolean,
+  canRestrictView?: boolean,
+  canCopy?: boolean,
+  canChangePageType?: boolean,
+  canChangeExerciseType?: boolean,
+  canSetLicense?: boolean,
+  canSetProducers?: boolean,
+  canAddAttachments?: boolean,
   
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
@@ -166,8 +180,8 @@ let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 //Treat this class with care it uses a lot of hacks to be efficient
 //The compositeReplies which answers are ignored and only used for setting the initial replies
 //Overall there are a ton of hacks for making it fast
-//So try only to updnullnullate the composite replies only, however any changes will be ignored by the field themselves and used only on purposes of
-//updating the layout and whatnot basically here, down the line all changes are scraped, base never ever updates
+//So try only to update the composite replies only, however any changes will be ignored by the field themselves and used only on purposes of
+//updating the layout and what not basically here, down the line all changes are scraped, base never ever updates
 //and the field never changes its state, a change in the content of the field, can destroy it and break the page
 //you can add styles here but don't mess up with the low level rendering
 class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
@@ -180,7 +194,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //stop propagation of clicks
     this.stopPropagation = this.stopPropagation.bind(this);
 
-    //initial state has no composite replies and the asnwers are not visible or checked
+    //initial state has no composite replies and the answers are not visible or checked
     let state:MaterialLoaderState = {
       compositeReplies: null,
       answersVisible: false,
@@ -195,7 +209,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       answerRegistry: {}
     };
     
-    //A sync version of the righness registry, it can change so fast
+    //A sync version of the answer registry, it can change so fast
     //setStates might stack
     this.answerRegistrySync = {};
     
@@ -246,6 +260,18 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       workspace: this.props.workspace,
       section: false,
       opened: true,
+      canDelete: typeof this.props.canDelete === "undefined" ? false : this.props.canDelete,
+      canHide: typeof this.props.canHide === "undefined" ? false : this.props.canHide,
+      disablePlugins: !!this.props.disablePlugins,
+      canPublish: typeof this.props.canPublish === "undefined" ? false : this.props.canPublish,
+      canRevert: typeof this.props.canRevert === "undefined" ? false : this.props.canRevert,
+      canRestrictView: typeof this.props.canRestrictView === "undefined" ? false : this.props.canRestrictView,
+      canCopy: typeof this.props.canCopy === "undefined" ? false : this.props.canCopy,
+      canChangePageType: typeof this.props.canChangePageType === "undefined" ? false : this.props.canChangePageType,
+      canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? false : this.props.canChangeExerciseType,
+      canSetLicense: typeof this.props.canSetLicense === "undefined" ? false : this.props.canSetLicense,
+      canSetProducers: typeof this.props.canSetProducers === "undefined" ? false : this.props.canSetProducers,
+      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? false : this.props.canAddAttachments
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
@@ -254,7 +280,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     if (nextProps.answerable && nextProps.material){
       //we get the composite replies
       let compositeReplies = nextProps.compositeReplies || nextState.compositeReplies;
-      
+
       //The state configuration
       this.stateConfiguration = STATES.filter((state:any)=>{
         return state['assignment-type'] === nextProps.material.assignmentType;
@@ -380,10 +406,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   //Some items do not trigger this function, which means your rightness count might differ from the
   //amount of fields, because fields self register
   onAnswerChange(name: string, value?: boolean){
-    
+
     //The reason we need a sync registry is that the rightness can change so fast
-    //that it can overwritte itself in async opperations like setState and this.state
-    
+    //that it can overwrite itself in async operations like setState and this.state
+
     //A value of null represents no rightness, some fields can have unknown rightness
     if (value === null){
       delete this.answerRegistrySync[name];
@@ -394,7 +420,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.setState({
       answerRegistry: newObj
     })
-    
+
     //NOTE if you would rather have 3 answer states here in order
     //to make all fields show in the correct answer count you might modify and change how
     //the function operates within the fields freely
@@ -416,20 +442,27 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     }
   }
   render(){
-    //The modifieers in use
+    //The modifiers in use
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
 
     //Setting this up
-    let materialType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
-    return <article className={`material-page material-page--${materialType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")}`} ref="root" id={this.props.id}>
-      <h2 className="material-page__title">
-        {this.props.material.title}
-        {this.props.material.assignmentType ? <div className={`material-page__label material-page__label--${this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment"}`}>
-          {this.props.material.assignmentType === "EXERCISE" ? this.props.i18n.text.get("plugin.workspace.materialsLoader.exerciseLabel") : this.props.i18n.text.get("plugin.workspace.materialsLoader.assignmentLabel")}
-        </div> : null }
-        {this.props.editable ? <ButtonPill icon="edit" onClick={this.startupEditor}/> : null}
-      </h2>
-      
+    let materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
+    let viewForAdminPanel = this.props.isInFrontPage ? "workspace-description" : "workspace-materials";
+    let isHidden = this.props.material.hidden || (this.props.page && this.props.page.hidden);
+
+    return <article className={`material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
+      {this.props.editable ? <div className={`material-page__admin-panel material-page__admin-panel--${viewForAdminPanel}`}>
+        <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialEditTooltip")}>
+          <ButtonPill buttonModifiers="material-management" icon="edit" onClick={this.startupEditor}/>
+        </Dropdown>
+        {this.props.canCopy ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.copyMaterialTooltip")}>
+          <ButtonPill buttonModifiers="material-management" icon="content_copy"/>
+        </Dropdown> : null}
+        {this.props.canHide ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialHideTooltip")}>
+          <ButtonPill buttonModifiers="material-management" icon={isHidden ? "show" : "hide"}/>
+        </Dropdown> : null}
+      </div> : null}
+      {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>{this.props.material.title} </h2> : null}
       <div className="react-required-container" onClick={this.stopPropagation}>
         {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
          <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}

@@ -132,10 +132,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.props.store.dispatch(loadStudent(originalData.c) as Action)
   }
   loadAnnouncerData(location: string[]){
-    if (location.length === 1){
-      this.props.store.dispatch(loadAnnouncements(location[0]) as Action);
+    const actualLocation = location.filter(l => !!l);
+    if (actualLocation.length === 1){
+      this.props.store.dispatch(loadAnnouncements(actualLocation[0]) as Action);
     } else {
-      this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1])) as Action);
+      this.props.store.dispatch(loadAnnouncement(actualLocation[0], parseInt(actualLocation[1])) as Action);
     }
   }
   loadAnnouncementsData(announcementId: number){

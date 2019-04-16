@@ -149,6 +149,10 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
       
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
       this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId, success: (workspace)=>{
@@ -159,7 +163,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       if (state.status.loggedIn && state.status.isActiveUser && state.status.permissions.WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS){
         this.props.store.dispatch(loadAnnouncementsAsAClient({
-          hideEnvironmentAnnouncements: "false",
+          hideEnvironmentAnnouncements: "true",
           workspaceEntityId: state.status.currentWorkspaceId
         }) as Action);
       }
@@ -175,6 +179,10 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
+      
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
       
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
@@ -215,7 +223,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(loadAnnouncementsAsAClient({
-        hideEnvironmentAnnouncements: "false",
+        hideEnvironmentAnnouncements: "true",
         workspaceEntityId: state.status.currentWorkspaceId
       }) as Action);
       
@@ -274,11 +282,12 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
   }
   loadWorkspaceAnnouncerData(location: string[]){
+    const actualLocation = location.filter(l => !!l);
     let state = this.props.store.getState();
-    if (location.length === 1){
-      this.props.store.dispatch(loadAnnouncements(location[0], state.status.currentWorkspaceId) as Action);
+    if (actualLocation.length === 1){
+      this.props.store.dispatch(loadAnnouncements(actualLocation[0], state.status.currentWorkspaceId) as Action);
     } else {
-      this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1]), state.status.currentWorkspaceId) as Action);
+      this.props.store.dispatch(loadAnnouncement(actualLocation[0], parseInt(actualLocation[1]), state.status.currentWorkspaceId) as Action);
     }
   }
   loadWorkspaceMaterialsData(id: number): void {
@@ -299,7 +308,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
       this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId}) as Action);
       this.props.store.dispatch(loadWorkspaceCompositeMaterialReplies(state.status.currentWorkspaceId) as Action);
-      this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId, (result)=>{
+      this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId, state.status.permissions.WORKSPACE_MANAGE_WORKSPACE, (result)=>{
         if (!window.location.hash.replace("#", "") && result[0] && result[0].children && result[0].children[0]){
           this.loadWorkspaceMaterialsData(result[0].children[0].workspaceMaterialId);
         } else if (window.location.hash.replace("#", "")){

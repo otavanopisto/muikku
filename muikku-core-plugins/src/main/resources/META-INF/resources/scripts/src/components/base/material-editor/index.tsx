@@ -8,10 +8,12 @@ import { connect, Dispatch } from 'react-redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { WorkspaceMaterialEditorType, WorkspaceType, MaterialContentNodeType } from "~/reducers/workspaces";
-import { ButtonPill } from '~/components/general/button';
+import Button, { ButtonPill } from '~/components/general/button';
 import CKEditor from '~/components/general/ckeditor';
 import { StatusType } from '~/reducers/base/status';
 import { LocaleListType } from '~/reducers/base/locales';
+import DeleteWorkspaceMaterialDialog from "./delete-dialog";
+import Dropdown from "~/components/general/dropdown"; 
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
@@ -23,13 +25,14 @@ interface MaterialEditorProps {
 }
 
 interface MaterialEditorState {
-}
+}4
 
 const CKEditorConfig = (
     locale: string,
     contextPath: string,
     workspace: WorkspaceType,
-    materialNode: MaterialContentNodeType
+    materialNode: MaterialContentNodeType,
+    disablePlugins: boolean,
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/${materialNode.path}`,
   autoGrowOnStartup : true,
@@ -39,7 +42,6 @@ const CKEditorConfig = (
   entities: false,
   entities_latin: false,
   entities_greek: false,
-  skin : 'moono',
   height : 500,
   language: locale,
   stylesSet : 'workspace-material-styles:' + contextPath + '/scripts/ckplugins/styles/workspace-material-styles.js',
@@ -62,12 +64,11 @@ const CKEditorConfig = (
     { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },          
     { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
   ],
-  extraPlugins: "oembed,audio,divarea,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,autogrow,uploadimage",
-  //extraPlugins: 'oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,autogrow,uploadimage'
-  //extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,image2,oembed,audio,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target'
+  extraPlugins: disablePlugins ? 'oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,autogrow,widget,lineutils,filetools,uploadwidget,uploadimage,divarea' :
+    "oembed,audio,divarea,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,autogrow,uploadimage",
 });
 
-// First we need to modify the material content nodes endpoint to be able to recieve hidden
+// First we need to modify the material content nodes endpoint to be able to receive hidden
 // nodes, we need those to be able to modify here
 class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditorState> {
   private oldOverflow:string;
@@ -130,38 +131,65 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
   render(){
     if (!this.props.editorState || !this.props.editorState.currentNodeValue) {
-      return <div
-        className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}
-      />
+      return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}/>
     }
-          return <div
-            className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}
-          >
-            <div>
-              <div>{this.props.i18n.text.get("TODO edit material")}</div>
-              <ButtonPill onClick={this.close} icon="close"/>
-            </div>
-            <div>
-              <ButtonPill onClick={this.delete} icon="delete"/>
-              <ButtonPill onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
-            </div>
-            <div>
-              <input type="text" onChange={this.updateTitle} value={this.props.editorState.currentNodeValue.title}></input>
-            </div>
-            {!this.props.editorState.section ? <div>
-              <CKEditor
-                configuration={CKEditorConfig(
-                  this.props.locale.current,
-                  this.props.status.contextPath,
-                  this.props.editorState.workspace,
-                  this.props.editorState.currentNodeValue
-                )}
-                onChange={this.updateContent}
-              >
-                {this.props.editorState.currentNodeValue.html}
-              </CKEditor>
-            </div> : null}
+      let materialPageType = this.props.editorState.currentNodeValue.assignmentType ? (this.props.editorState.currentNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
+      let assignmentPageType = "material-editor-" + materialPageType;
+      
+      return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}>
+        <div className="material-editor__header">
+          <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="close"/>
+          <div className="material-editor__tabs-container">
+            <div className="material-editor__tabs-item active">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.content")}</div>
+            {this.props.editorState.canSetLicense ? <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.license")}</div> : null}
+            {this.props.editorState.canSetProducers ? <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.producers")}</div> : null}
+            {this.props.editorState.canAddAttachments ? <div className="material-editor__tabs-item">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments")}</div> : null}
           </div>
+        </div>
+
+        <div className="material-editor__buttonset">
+          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialEditTooltip")}>
+            <ButtonPill buttonModifiers={["material-editor-publish-page","material-editor", "disabled"]} icon="publish"/>
+          </Dropdown> : null}
+          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialRevertToPublishedTooltip")}>
+            <ButtonPill buttonModifiers={["material-editor-revert-page","material-editor", "disabled"]} icon="revert"/>
+          </Dropdown> : null}
+          {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialHideTooltip")}>
+            <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
+          </Dropdown> : null}
+          {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialViewRestrictionTooltip")}>
+              <ButtonPill buttonModifiers={["material-editor-restrict-page","material-editor"]} icon="closed-material"/>
+            </Dropdown> : null}
+            {this.props.editorState.canChangePageType ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialChangeAssesmentTypeTooltip")}>
+              <ButtonPill buttonModifiers={["material-editor-change-page-type","material-editor",assignmentPageType]} icon="assignment"/>
+            </Dropdown> : null}
+            {this.props.editorState.canChangeExerciseType && this.props.editorState.currentNodeValue.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip")}>
+              <ButtonPill buttonModifiers={["material-editor-change-answer-reveal-type","material-editor"]} icon="correct-answers"/>
+            </Dropdown> : null}
+          {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentNodeValue}>
+            <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialDeleteTooltip")}>
+              <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete" onClick={this.delete}/>
+            </Dropdown>
+          </DeleteWorkspaceMaterialDialog> : null}
+        </div>
+
+        <div className="material-editor__content-wrapper">
+          <div className="material-editor__title-container">
+            <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentNodeValue.title}></input>
+          </div> 
+          {!this.props.editorState.section ? <div className="material-editor__editor-container">
+            <CKEditor configuration={CKEditorConfig(
+                this.props.locale.current,
+                this.props.status.contextPath,
+                this.props.editorState.workspace,
+                this.props.editorState.currentNodeValue,
+                this.props.editorState.disablePlugins,
+              )} onChange={this.updateContent}>
+              {this.props.editorState.currentNodeValue.html}
+            </CKEditor>
+          </div> : null}
+        </div>
+     </div>
   }
 }
   

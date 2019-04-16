@@ -14,7 +14,8 @@ import MaterialLoader from "~/components/base/material-loader";
 interface DescriptionPanelProps {
   status: StatusType,
   workspace: WorkspaceType,
-  i18n: i18nType
+  i18n: i18nType,
+  isInFrontPage? : boolean
 }
 
 interface DescriptionPanelState {
@@ -30,8 +31,9 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</div>
       </div>
       <div className="panel__body">
-        {this.props.workspace && <MaterialLoader modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
-          readOnly/>}
+        {this.props.workspace && <MaterialLoader isInFrontPage editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+          modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
+          canDelete={false} canHide={false} disablePlugins readOnly/>}
       </div>
     </div>;
   }

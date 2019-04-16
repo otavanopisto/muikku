@@ -132,8 +132,8 @@
 }
 
 .content-panel__navigation-content {
-  @include prefix(transition, webkit moz o ms, right 0.3s);
   @include no-scrollbars;
+  @include prefix(transition, webkit moz o ms, right 0.3s);
   box-shadow: 0 2px 3px $color-panel-shadow;
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
@@ -144,6 +144,10 @@
   top: 0;
   right: 0;
   width: 90%;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 70%;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     box-shadow: none;
@@ -159,11 +163,15 @@
   padding: 0;
   position: relative;
 
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px;
+  }
+
   @include breakpoint($breakpoint-desktop) {
-    flex-basis: calc(65% - 30px);
-    margin: 0 20px 10px 10px;
+    flex-basis: calc(65% - 60px);
+    margin: 0 50px 10px 10px;
     max-width: 700px;
-    min-width: 655px;
+    min-width: 650px;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
@@ -192,6 +200,10 @@
   margin: 0 0 -1px;
   padding: 10px;
   position: relative;
+  
+  &.content-panel__chapter-title--hidden {
+  	opacity: 0.5;
+  }
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.375rem;
@@ -201,14 +213,14 @@
 
 .content-panel__item {
   border: solid 1px $color-application-panel-box-border;
-  margin: 0 0 10px;
+  margin: 0 0 20px;
 
   &:last-child {
     margin: 0;
   }
 
   @include breakpoint($breakpoint-pad) {
-    margin: 0 0 20px;
+    margin: 0 0 30px;
 
     &:last-child {
       margin: 0;

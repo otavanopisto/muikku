@@ -84,6 +84,18 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       workspace: this.props.workspace,
       section: true,
       opened: true,
+      canHide: true,
+      canDelete: true,
+      disablePlugins: false,
+      canPublish: true,
+      canRevert: true,
+      canRestrictView: true,
+      canCopy: false,
+      canChangePageType: false,
+      canChangeExerciseType: false,
+      canSetLicense: false,
+      canSetProducers: false,
+      canAddAttachments: false,
     });
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
@@ -147,7 +159,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
       {this.props.materials.map((chapter)=>{
         return <section className="content-panel__chapter" key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId}>
-          <h2 className="content-panel__chapter-title">
+          <h2 className={`content-panel__chapter-title ${chapter.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
             {chapter.title}
             {titlesAreEditable ? <ButtonPill icon="edit" onClick={this.startupEditor.bind(this, chapter)}/> : null}
           </h2>
