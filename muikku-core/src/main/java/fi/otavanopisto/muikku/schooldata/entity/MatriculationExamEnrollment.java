@@ -41,5 +41,7 @@ public interface MatriculationExamEnrollment {
   public void setState(String state);
   public List<MatriculationExamAttendance> getAttendances();
   public void setAttendances(List<MatriculationExamAttendance> attendances);
+  public String getDegreeType();
+  public void setDegreeType(String degreeType);
 }
 

@@ -23,7 +23,7 @@ addons:
     - libxi6
     - libgconf-2-4
 before_install:
-- openssl aes-256-cbc -K $encrypted_7ee9c890e4a1_key -iv $encrypted_7ee9c890e4a1_iv
+- openssl aes-256-cbc -K $encrypted_f6ca69c00a28_key -iv $encrypted_f6ca69c00a28_iv
   -in travis-encrypted.tar.enc -out travis-encrypted.tar -d
 - tar xvf travis-encrypted.tar  
 - unset GEM_PATH

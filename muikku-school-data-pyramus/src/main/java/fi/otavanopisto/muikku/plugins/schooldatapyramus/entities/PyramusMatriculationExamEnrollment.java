@@ -201,6 +201,16 @@ public class PyramusMatriculationExamEnrollment
     this.attendances = attendances;
   }
 
+  @Override
+  public String getDegreeType() {
+    return degreeType;
+  }
+
+  @Override
+  public void setDegreeType(String degreeType) {
+    this.degreeType = degreeType;
+  }
+  
   public Long id;
   public String name;
   public String ssn;
@@ -212,6 +222,7 @@ public class PyramusMatriculationExamEnrollment
   public String nationalStudentNumber;
   public String guider;
   public String enrollAs;
+  public String degreeType;
   public boolean restartExam;
   public int numMandatoryCourses;
   public String location;
