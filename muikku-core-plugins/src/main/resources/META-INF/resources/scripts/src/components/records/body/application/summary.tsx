@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import { Store } from 'react-redux';
+import {Action} from 'redux';
 import * as queryString from 'query-string';
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/empty.scss';
@@ -13,13 +15,17 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
+import MainChart from '~/components/general/graph/main-chart';
 import '~/sass/elements/application-sub-panel.scss';
+import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
+
+
 
 interface SummaryProps {
   i18n: i18nType,
   records: RecordsType,
   summary: SummaryType,
-  hops: HOPSType
+  hops: HOPSType,
 }
 
 interface SummaryState {
@@ -29,6 +35,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
   constructor(props: SummaryProps){
     super(props);
   }    
+  
   render(){        
       if (this.props.records.location !== "summary" || this.props.summary.status !== "READY" ) {
         return null;        
@@ -88,6 +95,10 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               </div>
             </div>
           </div>
+          <div className="application-sub-panel">
+            <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
+              {this.props.summary.summary.graphData.activity && this.props.summary.summary.graphData.workspaces ? <MainChart workspaces={this.props.summary.summary.graphData.workspaces} activityLogs={this.props.summary.summary.graphData.activity}/> : null}            
+           </div>
         {/* Waits for summary notifications
             <div className="application-sub-panel">
               <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.notifications.title")}</div>
@@ -135,7 +146,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 }
 
 function mapStateToProps(state: StateType){
-  return {
+  return {    
     i18n: state.i18n,
     records: state.records,
     summary: state.summary,

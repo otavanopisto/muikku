@@ -20,7 +20,7 @@ import FileDeleteDialog from '../../dialogs/file-delete';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
-import MainChart from './current-student/main-chart';
+import MainChart from '~/components/general/graph/main-chart'
 import {AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
   addFileToCurrentStudent} from '~/actions/main-function/guider';
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
@@ -224,7 +224,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
       <div className="application-sub-panel">
         <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
-        {this.props.guider.currentStudent.activityLogs && this.props.guider.currentStudent.workspaces && <MainChart/>}
+        {this.props.guider.currentStudent.activityLogs && this.props.guider.currentStudent.workspaces ?  <MainChart workspaces={this.props.guider.currentStudent.workspaces} activityLogs={this.props.guider.currentStudent.activityLogs}/> : null}
       </div>
       {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
     </div>

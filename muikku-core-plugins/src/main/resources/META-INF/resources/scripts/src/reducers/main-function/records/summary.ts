@@ -1,21 +1,29 @@
 import { ActionType } from "actions";
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
+import { WorkspaceListType, ActivityLogType} from "~/reducers/main-function/workspaces";
 
 
 export type SummaryStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
+export type SummaryWorkspaceListType = WorkspaceListType;
 
 export interface SummaryDataType {
   eligibilityStatus: number,
   activity: number,
   returnedExercises: number,
+  graphData:GraphDataType ,
   coursesDone: number
 }
 
 export interface SummaryType {
   summary: SummaryDataType
   status: SummaryStatusType
+}
+
+export interface GraphDataType {
+  activity: Array<ActivityLogType>,
+  workspaces: WorkspaceListType
 }
 
 export default function summary(state:SummaryType={
