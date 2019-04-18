@@ -72,7 +72,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.mockLogin(student);
       login();
       
-      navigate("/records", false);
+      navigate("/records#records", false);
       waitForPresent(".application-list__item-header--course .application-list__header-primary");
       assertText(".application-list__item-header--course .application-list__header-primary", "testcourses (test extension)");
       
@@ -175,7 +175,7 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         
-        navigate("/records", false);
+        navigate("/records#records", false);
         waitForPresent(".application-list__header-primary");
         waitAndClick(".application-list__header-primary");
         waitForPresent(".application-list__indicator-badge--task");
@@ -186,9 +186,9 @@ public class ToRTestsBase extends AbstractUITest {
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
-        }
-      } finally {
-        mockBuilder.wiremockReset();
+      }
+    } finally {
+      mockBuilder.wiremockReset();
     }
   }
   

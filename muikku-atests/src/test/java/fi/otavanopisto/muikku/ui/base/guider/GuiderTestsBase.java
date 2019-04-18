@@ -125,7 +125,7 @@ public class GuiderTestsBase extends AbstractUITest {
       logout();
       mockBuilder.mockLogin(student);
       login();
-      navigate("/records", false);
+      navigate("/records#records", false);
       waitForPresent("a.uploaded-files__item-title");
       assertText("a.uploaded-files__item-title", "img_100x100_3x8bit_RGB_circles_center_0016.png");
     } finally {
