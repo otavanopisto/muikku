@@ -1267,11 +1267,25 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         }
       });
       
-      // TODO write the code for the actual update
+      if (!isDraft) {
+        // TODO handle conflicts
+        // Trying to update the actual thing
+        if (material.html !== update.html) {
+//          await promisify(mApi().materials.html.content
+//              .update(material.materialId, {
+//                
+//              }, update.html), 'callback')();
+        }
+      } else {
+        // Trying to update the draft
+        // TODO
+      }
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
+      
+      // TODO handle conflicts
       
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",

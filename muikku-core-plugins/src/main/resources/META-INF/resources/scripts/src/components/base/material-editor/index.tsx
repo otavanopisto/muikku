@@ -91,7 +91,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     // TODO same we need an endpoint for this
     
     this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
-      hidden: !this.props.editorState.currentNodeValue.hidden,
+      hidden: !this.props.editorState.currentDraftNodeValue.hidden,
     }, true);
   }
   
