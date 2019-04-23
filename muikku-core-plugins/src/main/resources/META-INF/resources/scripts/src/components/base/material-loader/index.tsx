@@ -256,6 +256,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   startupEditor(){
     this.props.setWorkspaceMaterialEditorState({
       currentNodeValue: this.props.material,
+      currentDraftNodeValue: {...this.props.material},
       parentNodeValue: this.props.page,
       workspace: this.props.workspace,
       section: false,
