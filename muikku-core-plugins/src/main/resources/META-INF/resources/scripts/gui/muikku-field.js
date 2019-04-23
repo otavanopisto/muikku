@@ -91,10 +91,106 @@
           .addClass('muikku-save-page-wrapper')
           .appendTo(this.element);
         
-        $('<button>')
+        var assignmentButton = $('<button>')
           .addClass('muikku-assignment-button')
-          .appendTo(buttonWrapper)
-          .click($.proxy(this._onAssignmentButtonClick, this));
+          .appendTo(buttonWrapper);
+        if (MUIKKU_LOGGED_USER_ID) {
+          assignmentButton.click($.proxy(this._onAssignmentButtonClick, this));
+        }
+        
+        // #4589: Show evaluation or supplementation request if one exists
+
+        if (assignmentType == 'EVALUATED' && MUIKKU_LOGGED_USER_ID) {
+          mApi().evaluation.workspace.user.workspacematerial.evaluationinfo
+          .read(this.workspaceEntityId(), MUIKKU_LOGGED_USER_ID, this.workspaceMaterialId())
+          .callback($.proxy(function (err, evaluationinfo) {
+            if (!err && evaluationinfo) {
+              var buttonClass = evaluationinfo.type == 'INCOMPLETE' ? 'incomplete' : evaluationinfo.type == 'FAILED' ? 'failed' : 'passed';
+              $('<button>')
+              .addClass('muikku-show-evaluation-button')
+              .addClass(buttonClass)
+              .text(evaluationinfo.type == 'INCOMPLETE' ? getLocaleText('plugin.workspace.materialsLoader.supplementationRequest.showButton') : getLocaleText('plugin.workspace.materialsLoader.showEvaluation'))
+              .insertAfter(this.element.find('.muikku-assignment-button'))
+              .click($.proxy(function() {
+                var evaluationContainer = this.element.find('.evaluation-container');
+                if (evaluationContainer.attr('data-loaded') == 'true') {
+                  this._toggleEvaluationContainer();
+                }
+                else {
+                  if (evaluationinfo.type == 'INCOMPLETE') {
+                    evaluationContainer.attr('data-loaded', 'true')
+                    evaluationContainer.append($('<div>')
+                        .addClass('assignment-literal-container')
+                        .append($('<div>')
+                            .addClass('assignment-literal-label')
+                            .text(getLocaleText('plugin.workspace.materialsLoader.supplementationRequest.literal.label')))
+                            .append($('<div>')
+                                .addClass('assignment-literal-data')
+                                .html(evaluationinfo.text))
+                    );
+                    evaluationContainer.append($('<div>')
+                        .addClass('assignment-date-container')
+                        .append($('<span>')
+                            .addClass('assignment-date-label')
+                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.date.label')))
+                            .append($('<span>')
+                                .addClass('assignment-date-data')
+                                .html(formatDate(moment(evaluationinfo.date).toDate())))
+                    );
+                    if (evaluationContainer.attr('data-open') == 'false') {
+                      this._toggleEvaluationContainer();
+                    }
+                  }
+                  else {
+                    evaluationContainer.attr('data-loaded', 'true')
+                    evaluationContainer.append($('<div>')
+                        .addClass('assignment-literal-container')
+                        .append($('<div>')
+                            .addClass('assignment-literal-label')
+                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.literal.label')))
+                            .append($('<div>')
+                                .addClass('assignment-literal-data')
+                                .html(evaluationinfo.text))
+                    );
+                    evaluationContainer.append($('<div>')
+                        .addClass('assignment-grade-container')
+                        .append($('<span>')
+                            .addClass('assignment-grade-label')
+                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.grade.label')))
+                            .append($('<span>')
+                                .addClass('assignment-grade-data')
+                                .html(evaluationinfo.grade))
+                    );
+                    evaluationContainer.append($('<div>')
+                        .addClass('assignment-date-container')
+                        .append($('<span>')
+                            .addClass('assignment-date-label')
+                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.date.label')))
+                            .append($('<span>')
+                                .addClass('assignment-date-data')
+                                .html(formatDate(moment(evaluationinfo.date).toDate())))
+                    );
+                    if ((typeof MathJax) != 'undefined') {
+                      MathJax.Hub.Config({
+                        "HTML-CSS": {
+                          scale: 90
+                        },
+                        NativeMML: {
+                          scale: 90
+                        }
+                      });
+                      MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                    }
+                    if (evaluationContainer.attr('data-open') == 'false') {
+                      this._toggleEvaluationContainer();
+                    }
+                  }
+                }
+              }, this));
+
+            }
+          }, this));
+        }
 
         $('<button>')
           .addClass('muikku-show-correct-answers-button')
@@ -252,109 +348,19 @@
         this.checkExercises();
       }
 
-      // #2421: Show evaluation
+      // #4589: Show evaluation button (if it's there) unless the page has been submitted
       
-      if (assignmentType == 'EVALUATED' && (state == 'FAILED' || state == 'PASSED' || state == 'INCOMPLETE')) {
-        var buttonClass = state == 'INCOMPLETE' ? 'incomplete' : state == 'FAILED' ? 'failed' : 'passed';
-        $('<button>')
-          .addClass('muikku-show-evaluation-button')
-          .addClass(buttonClass)
-          .text(state == 'INCOMPLETE' ? getLocaleText('plugin.workspace.materialsLoader.supplementationRequest.showButton') : getLocaleText('plugin.workspace.materialsLoader.showEvaluation'))
-          .insertAfter(this.element.find('.muikku-assignment-button'))
-          .click($.proxy(function() {
-            var evaluationContainer = this.element.find('.evaluation-container');
-            if (evaluationContainer.attr('data-loaded') == 'true') {
-              this._toggleEvaluationContainer();
-            }
-            else {
-              if (state == 'INCOMPLETE') {
-                mApi().evaluation.workspace.user.workspacematerial.supplementationrequest
-                  .read(this.workspaceEntityId(), MUIKKU_LOGGED_USER_ID, this.workspaceMaterialId())
-                  .callback($.proxy(function (err, supplementationRequest) {
-                    if (err) {
-                      $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.evaluation.fail'), err);
-                    }
-                    else {
-                      evaluationContainer.attr('data-loaded', 'true')
-                      evaluationContainer.append($('<div>')
-                          .addClass('assignment-literal-container')
-                            .append($('<div>')
-                            .addClass('assignment-literal-label')
-                            .text(getLocaleText('plugin.workspace.materialsLoader.supplementationRequest.literal.label')))
-                            .append($('<div>')
-                            .addClass('assignment-literal-data')
-                            .html(supplementationRequest.requestText))
-                      );
-                      evaluationContainer.append($('<div>')
-                          .addClass('assignment-date-container')
-                            .append($('<span>')
-                            .addClass('assignment-date-label')
-                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.date.label')))
-                            .append($('<span>')
-                            .addClass('assignment-date-data')
-                            .html(formatDate(moment(supplementationRequest.requestDate).toDate())))
-                      );
-                      if (evaluationContainer.attr('data-open') == 'false') {
-                        this._toggleEvaluationContainer();
-                      }
-                    }
-                  }, this));
-              }
-              else {
-                mApi().workspace.users.materials.evaluation
-                  .read(MUIKKU_LOGGED_USER_ID, this.workspaceMaterialId())
-                  .callback($.proxy(function (err, evaluation) {
-                    if (err) {
-                      $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.evaluation.fail'), err);
-                    }
-                    else {
-                      evaluationContainer.attr('data-loaded', 'true')
-                      evaluationContainer.append($('<div>')
-                          .addClass('assignment-literal-container')
-                            .append($('<div>')
-                            .addClass('assignment-literal-label')
-                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.literal.label')))
-                            .append($('<div>')
-                            .addClass('assignment-literal-data')
-                            .html(evaluation.verbalAssessment))
-                      );
-                      evaluationContainer.append($('<div>')
-                          .addClass('assignment-grade-container')
-                            .append($('<span>')
-                            .addClass('assignment-grade-label')
-                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.grade.label')))
-                            .append($('<span>')
-                            .addClass('assignment-grade-data')
-                            .html(evaluation.grade))
-                      );
-                      evaluationContainer.append($('<div>')
-                          .addClass('assignment-date-container')
-                            .append($('<span>')
-                            .addClass('assignment-date-label')
-                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.date.label')))
-                            .append($('<span>')
-                            .addClass('assignment-date-data')
-                            .html(formatDate(moment(evaluation.assessmentDate).toDate())))
-                      );
-                      if ((typeof MathJax) != 'undefined') {
-                        MathJax.Hub.Config({
-                          "HTML-CSS": {
-                            scale: 90
-                          },
-                          NativeMML: {
-                            scale: 90
-                          }
-                        });
-                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-                      }
-                      if (evaluationContainer.attr('data-open') == 'false') {
-                        this._toggleEvaluationContainer();
-                      }
-                    }
-                  }, this));
-              }
-            }
-          }, this));
+      if (assignmentType == 'EVALUATED') {
+        if (state == 'WITHDRAWN' || state == 'FAILED' || state == 'PASSED' || state == 'INCOMPLETE') {
+          this.element.find('.muikku-show-evaluation-button').show();
+        }
+        else {
+          this.element.find('.muikku-show-evaluation-button').hide();
+          var evaluationContainer = this.element.find('.evaluation-container');
+          if (evaluationContainer.attr('data-open') == 'true') {
+            this._toggleEvaluationContainer();
+          }
+        }
       }
       
       var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(this.element).attr('data-workspace-material-id') + '"]');
