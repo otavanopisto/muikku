@@ -134,9 +134,9 @@
 
 .application-sub-panel__body--studies-yo-cards {
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
-  
+  justify-content: space-between;
+
   @include breakpoint($breakpoint-pad) {
     flex-direction: row;
   }
@@ -151,9 +151,9 @@
 }
 
 .application-sub-panel__notification-body--yo-status-incomplete {
+  align-items: center;
   color: $color-default;
   display: flex;
-  align-items: center;
 }
 
 .application-sub-panel__notification-content:not(:first-child) {
@@ -248,8 +248,8 @@
 
 .application-sub-panel__item--summarizer {
   align-items: normal;
-  flex-flow: column wrap;
   flex-basis: 50;
+  flex-flow: column wrap;
 
   @include breakpoint($breakpoint-desktop) {
     flex-flow: column nowrap;
@@ -353,7 +353,7 @@
   border-radius: 3px;
   display: inline-block;
   margin-left: 5px;
-  margin-right: 5px; 
+  margin-right: 5px;
   padding: 2px 5px;
 }
 
@@ -475,7 +475,7 @@
 
 .application-sub-panel__text--task-evaluation {
   background: $color-task-evaluation;
-  border-radius: 3px; 
+  border-radius: 3px;
 }
 
 .application-sub-panel__text--course-evaluation {
