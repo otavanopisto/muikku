@@ -15,6 +15,8 @@ import { LocaleListType } from '~/reducers/base/locales';
 import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 import Dropdown from "~/components/general/dropdown"; 
 
+import equals = require("deep-equal");
+
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   i18n: i18nType,
@@ -25,7 +27,7 @@ interface MaterialEditorProps {
 }
 
 interface MaterialEditorState {
-}4
+}
 
 const CKEditorConfig = (
     locale: string,
@@ -81,14 +83,16 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
     this.close = this.close.bind(this);
+    this.publish = this.publish.bind(this);
+    this.revert = this.revert.bind(this);
   }
   
   toggleHiddenStatus() {
     // TODO same we need an endpoint for this
     
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentNodeValue, {
-      hidden: !this.props.editorState.currentNodeValue.hidden,
-    });
+    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
+      hidden: !this.props.editorState.currentDraftNodeValue.hidden,
+    }, true);
   }
   
   delete() {
@@ -106,9 +110,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     // there's a functional endpoint right now for normal
     // chapters but we need an unified one
     
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentNodeValue, {
+    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
       title: e.target.value,
-    });
+    }, true);
   }
   
   updateContent(content: string) {
@@ -117,9 +121,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     // this cannot be achieved until that is modified
     // got to wait
     
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentNodeValue, {
+    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
       html: content,
-    });
+    }, true);
   }
   
   close() {
@@ -128,13 +132,37 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       opened: false
     });
   }
+  
+  publish() {
+    this.props.updateWorkspaceMaterialContentNode(
+      this.props.editorState.currentNodeValue,
+      this.props.editorState.currentDraftNodeValue
+    );
+    this.close();
+  }
+  
+  revert() {
+    this.props.updateWorkspaceMaterialContentNode(
+      this.props.editorState.currentDraftNodeValue,
+      this.props.editorState.currentNodeValue,
+      true,
+    );
+  }
 
   render(){
-    if (!this.props.editorState || !this.props.editorState.currentNodeValue) {
+    if (!this.props.editorState || !this.props.editorState.currentDraftNodeValue) {
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}/>
     }
-      let materialPageType = this.props.editorState.currentNodeValue.assignmentType ? (this.props.editorState.currentNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
+      let materialPageType = this.props.editorState.currentDraftNodeValue.assignmentType ? (this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
       let assignmentPageType = "material-editor-" + materialPageType;
+      
+      let canPublish = !equals(this.props.editorState.currentNodeValue, this.props.editorState.currentDraftNodeValue);
+      const publishModifiers = ["material-editor-publish-page","material-editor"];
+      const revertModifiers = ["material-editor-revert-page","material-editor"];
+      if (!canPublish) {
+        publishModifiers.push("disabled");
+        revertModifiers.push("disabled");
+      }
       
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}>
         <div className="material-editor__header">
@@ -149,13 +177,13 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
         <div className="material-editor__buttonset">
           {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialEditTooltip")}>
-            <ButtonPill buttonModifiers={["material-editor-publish-page","material-editor", "disabled"]} icon="publish"/>
+            <ButtonPill buttonModifiers={publishModifiers} onClick={canPublish ? this.publish : null} icon="publish"/>
           </Dropdown> : null}
           {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialRevertToPublishedTooltip")}>
-            <ButtonPill buttonModifiers={["material-editor-revert-page","material-editor", "disabled"]} icon="revert"/>
+            <ButtonPill buttonModifiers={revertModifiers} onClick={canPublish ? this.revert : null} icon="revert"/>
           </Dropdown> : null}
           {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialHideTooltip")}>
-            <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentNodeValue.hidden ? "show" : "hide"}/>
+            <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentDraftNodeValue.hidden ? "show" : "hide"}/>
           </Dropdown> : null}
           {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialViewRestrictionTooltip")}>
               <ButtonPill buttonModifiers={["material-editor-restrict-page","material-editor"]} icon="closed-material"/>
@@ -163,10 +191,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             {this.props.editorState.canChangePageType ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialChangeAssesmentTypeTooltip")}>
               <ButtonPill buttonModifiers={["material-editor-change-page-type","material-editor",assignmentPageType]} icon="assignment"/>
             </Dropdown> : null}
-            {this.props.editorState.canChangeExerciseType && this.props.editorState.currentNodeValue.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip")}>
+            {this.props.editorState.canChangeExerciseType && this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialShowAlwaysCorrectAnswersTooltip")}>
               <ButtonPill buttonModifiers={["material-editor-change-answer-reveal-type","material-editor"]} icon="correct-answers"/>
             </Dropdown> : null}
-          {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentNodeValue}>
+          {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentDraftNodeValue}>
             <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialDeleteTooltip")}>
               <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete" onClick={this.delete}/>
             </Dropdown>
@@ -175,17 +203,17 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
         <div className="material-editor__content-wrapper">
           <div className="material-editor__title-container">
-            <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentNodeValue.title}></input>
+            <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
           {!this.props.editorState.section ? <div className="material-editor__editor-container">
             <CKEditor configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.workspace,
-                this.props.editorState.currentNodeValue,
+                this.props.editorState.currentDraftNodeValue,
                 this.props.editorState.disablePlugins,
               )} onChange={this.updateContent}>
-              {this.props.editorState.currentNodeValue.html}
+              {this.props.editorState.currentDraftNodeValue.html}
             </CKEditor>
           </div> : null}
         </div>

@@ -306,6 +306,7 @@ export interface WorkspaceTypeType {
 //section = false && currentNodeValue = x && parentNodeValue = x        (edit material)
 export interface WorkspaceMaterialEditorType {
   currentNodeValue?: MaterialContentNodeType,
+  currentDraftNodeValue?: MaterialContentNodeType,
   parentNodeValue?: MaterialContentNodeType,
   workspace: WorkspaceType,
   section: boolean,
@@ -595,17 +596,21 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let newCurrentWorkspace = state.currentWorkspace;
-    if (newCurrentWorkspace.help.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && newCurrentWorkspace.help.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
       newCurrentWorkspace = {...newCurrentWorkspace};
       newCurrentWorkspace.help = {...newCurrentWorkspace.help, ...action.payload.update};
     }
-    if (!found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && !found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
       newCurrentWorkspace = {...newCurrentWorkspace};
       newCurrentWorkspace.contentDescription = {...newCurrentWorkspace.contentDescription, ...action.payload.update};
     }
     let mapMaterial = (m: MaterialContentNodeType) => {
+      if (action.payload.isDraft) {
+        return m;
+      }
+      
       if (found) {
         return m;
       }
@@ -620,12 +625,15 @@ export default function workspaces(state: WorkspacesType={
     }
     
     let newEditor = state.materialEditor;
-    if (newEditor && newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.currentNodeValue = {...newEditor.currentNodeValue, ...action.payload.update};
-    } else if (newEditor && newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    } else if (!action.payload.isDraft && newEditor && newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.parentNodeValue = {...newEditor.parentNodeValue, ...action.payload.update};
+    } else if (action.payload.isDraft && newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      newEditor = {...newEditor};
+      newEditor.currentDraftNodeValue = {...newEditor.currentDraftNodeValue, ...action.payload.update};
     }
     return {
       ...state,

@@ -47,6 +47,7 @@ export interface UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REP
 export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
   material: MaterialContentNodeType,
   update: Partial<MaterialContentNodeType>,
+  isDraft?: boolean,
 }>{};
 export interface DELETE_MATERIAL_CONTENT_NODE extends SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
 
@@ -138,7 +139,7 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
 }
 
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
-  (material: MaterialContentNodeType, update: Partial<MaterialContentNodeType>):AnyActionType
+  (material: MaterialContentNodeType, update: Partial<MaterialContentNodeType>, isDraft?: boolean):AnyActionType
 }
 
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
@@ -1254,28 +1255,44 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
   };
 }
 
-let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(material, update) {
+let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(material, update, isDraft) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
         payload: {
           material,
-          update
+          update,
+          isDraft,
         }
       });
       
-      // TODO write the code for the actual update
+      if (!isDraft) {
+        // TODO handle conflicts
+        // Trying to update the actual thing
+        if (material.html !== update.html) {
+//          await promisify(mApi().materials.html.content
+//              .update(material.materialId, {
+//                
+//              }, update.html), 'callback')();
+        }
+      } else {
+        // Trying to update the draft
+        // TODO
+      }
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       
+      // TODO handle conflicts
+      
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
         payload: {
           material,
-          update: material
+          update: material,
+          isDraft,
         }
       });
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
