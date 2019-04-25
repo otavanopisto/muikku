@@ -322,7 +322,8 @@ export interface WorkspaceMaterialEditorType {
   canChangeExerciseType: boolean,
   canSetLicense: boolean,
   canSetProducers: boolean,
-  canAddAttachments: boolean
+  canAddAttachments: boolean,
+  showRemoveAnswersDialog: boolean,
 }
 
 export interface WorkspacesType {
@@ -508,6 +509,7 @@ export default function workspaces(state: WorkspacesType={
     canSetLicense: true,
     canSetProducers: true,
     canAddAttachments: true,
+    showRemoveAnswersDialog: false,
   }
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
@@ -635,6 +637,8 @@ export default function workspaces(state: WorkspacesType={
       newEditor = {...newEditor};
       newEditor.currentDraftNodeValue = {...newEditor.currentDraftNodeValue, ...action.payload.update};
     }
+    newEditor.showRemoveAnswersDialog = action.payload.showRemoveAnswersDialog;
+    
     return {
       ...state,
       currentWorkspace: newCurrentWorkspace,

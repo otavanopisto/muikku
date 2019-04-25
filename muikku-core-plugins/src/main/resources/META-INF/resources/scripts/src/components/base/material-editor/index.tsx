@@ -14,6 +14,7 @@ import { StatusType } from '~/reducers/base/status';
 import { LocaleListType } from '~/reducers/base/locales';
 import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 import Dropdown from "~/components/general/dropdown"; 
+import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
 
 import equals = require("deep-equal");
 
@@ -90,9 +91,13 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   toggleHiddenStatus() {
     // TODO same we need an endpoint for this
     
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
-      hidden: !this.props.editorState.currentDraftNodeValue.hidden,
-    }, true);
+    this.props.updateWorkspaceMaterialContentNode({
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        hidden: !this.props.editorState.currentDraftNodeValue.hidden,
+      },
+      isDraft: true
+    });
   }
   
   delete() {
@@ -100,19 +105,13 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
   
   updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
-    // TODO, the current endpoint currently doesn't work
-    // we need an unified endpoint that would take any
-    // content node the other one is controlled by the
-    // collaboration plugin
-    // all this function does is to update the title but
-    // does not do anything to the server
-    
-    // there's a functional endpoint right now for normal
-    // chapters but we need an unified one
-    
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
-      title: e.target.value,
-    }, true);
+    this.props.updateWorkspaceMaterialContentNode({
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        title: e.target.value,
+      },
+      isDraft: true,
+    });
   }
   
   updateContent(content: string) {
@@ -121,9 +120,13 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     // this cannot be achieved until that is modified
     // got to wait
     
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
-      html: content,
-    }, true);
+    this.props.updateWorkspaceMaterialContentNode({
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        html: content,
+      },
+      isDraft: true,
+    });
   }
   
   close() {
@@ -134,19 +137,18 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
   
   publish() {
-    this.props.updateWorkspaceMaterialContentNode(
-      this.props.editorState.currentNodeValue,
-      this.props.editorState.currentDraftNodeValue
-    );
-    this.close();
+    this.props.updateWorkspaceMaterialContentNode({
+      material: this.props.editorState.currentNodeValue,
+      update: this.props.editorState.currentDraftNodeValue,
+    });
   }
   
   revert() {
-    this.props.updateWorkspaceMaterialContentNode(
-      this.props.editorState.currentDraftNodeValue,
-      this.props.editorState.currentNodeValue,
-      true,
-    );
+    this.props.updateWorkspaceMaterialContentNode({
+      material: this.props.editorState.currentDraftNodeValue,
+      update: this.props.editorState.currentNodeValue,
+      isDraft: true,
+    });
   }
 
   render(){
@@ -217,6 +219,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             </CKEditor>
           </div> : null}
         </div>
+          
+        <ConfirmPublishPageWithAnswersDialog/>
      </div>
   }
 }

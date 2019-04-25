@@ -45,6 +45,7 @@ export interface UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REP
     workspaceMaterialReplyId: number
 }>{};
 export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
+  showRemoveAnswersDialog: boolean,
   material: MaterialContentNodeType,
   update: Partial<MaterialContentNodeType>,
   isDraft?: boolean,
@@ -139,7 +140,14 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
 }
 
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
-  (material: MaterialContentNodeType, update: Partial<MaterialContentNodeType>, isDraft?: boolean):AnyActionType
+  (data: {
+    material: MaterialContentNodeType,
+    update: Partial<MaterialContentNodeType>,
+    isDraft?: boolean,
+    removeAnswers?: boolean,
+    success?: ()=>any,
+    fail?: ()=>any,
+  }):AnyActionType
 }
 
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
@@ -1255,47 +1263,66 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
   };
 }
 
-let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(material, update, isDraft) {
+let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
         payload: {
-          material,
-          update,
-          isDraft,
+          showRemoveAnswersDialog: false,
+          material: data.material,
+          update: data.update,
+          isDraft: data.isDraft,
         }
       });
       
-      if (!isDraft) {
+      if (!data.isDraft) {
         // TODO handle conflicts
         // Trying to update the actual thing
-        if (material.html !== update.html) {
-//          await promisify(mApi().materials.html.content
-//              .update(material.materialId, {
-//                
-//              }, update.html), 'callback')();
+        if (data.material.html !== data.update.html) {
+          await promisify(mApi().materials.html.content
+              .update(data.material.materialId, {
+                content: data.update.html,
+                removeAnswers: false,
+              }), 'callback')();
         }
       } else {
         // Trying to update the draft
         // TODO
       }
+      
+      data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       
-      // TODO handle conflicts
+      let showRemoveAnswersDialog = false;
+      if (!data.removeAnswers && err.message) {
+        try {
+          let message = JSON.parse(err.message);
+          if (message.reason === "CONTAINS_ANSWERS") {
+            showRemoveAnswersDialog = true;
+          }
+        } catch (e) {
+        }
+      }
       
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
         payload: {
-          material,
-          update: material,
-          isDraft,
+          showRemoveAnswersDialog,
+          material: data.material,
+          update: data.material,
+          isDraft: data.isDraft,
         }
       });
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
+      
+      data.fail && data.fail();
+      
+      if (!showRemoveAnswersDialog){
+        dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
+      }
     }
   }
 }

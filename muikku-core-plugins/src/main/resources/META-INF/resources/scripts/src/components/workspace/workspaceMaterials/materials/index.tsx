@@ -97,6 +97,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       canSetLicense: false,
       canSetProducers: false,
       canAddAttachments: false,
+      showRemoveAnswersDialog: false,
     });
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){

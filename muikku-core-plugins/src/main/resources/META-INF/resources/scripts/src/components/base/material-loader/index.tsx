@@ -272,7 +272,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? false : this.props.canChangeExerciseType,
       canSetLicense: typeof this.props.canSetLicense === "undefined" ? false : this.props.canSetLicense,
       canSetProducers: typeof this.props.canSetProducers === "undefined" ? false : this.props.canSetProducers,
-      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? false : this.props.canAddAttachments
+      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? false : this.props.canAddAttachments,
+      showRemoveAnswersDialog: false,
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
