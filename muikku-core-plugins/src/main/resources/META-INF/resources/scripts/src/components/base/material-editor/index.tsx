@@ -15,6 +15,7 @@ import { LocaleListType } from '~/reducers/base/locales';
 import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 import Dropdown from "~/components/general/dropdown"; 
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
+import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 
 import equals = require("deep-equal");
 
@@ -221,6 +222,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         </div>
           
         <ConfirmPublishPageWithAnswersDialog/>
+        <ConfirmRemovePageWithAnswersDialog/>
      </div>
   }
 }

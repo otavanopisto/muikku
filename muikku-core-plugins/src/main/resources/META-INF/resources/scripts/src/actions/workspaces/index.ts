@@ -45,7 +45,7 @@ export interface UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REP
     workspaceMaterialReplyId: number
 }>{};
 export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
-  showRemoveAnswersDialog: boolean,
+  showRemoveAnswersDialogForPublish: boolean,
   material: MaterialContentNodeType,
   update: Partial<MaterialContentNodeType>,
   isDraft?: boolean,
@@ -153,6 +153,7 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
     material: MaterialContentNodeType,
+    removeAnswers?: boolean,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
@@ -1269,7 +1270,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
         payload: {
-          showRemoveAnswersDialog: false,
+          showRemoveAnswersDialogForPublish: false,
           material: data.material,
           update: data.update,
           isDraft: data.isDraft,
@@ -1297,12 +1298,12 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         throw err;
       }
       
-      let showRemoveAnswersDialog = false;
+      let showRemoveAnswersDialogForPublish = false;
       if (!data.removeAnswers && err.message) {
         try {
           let message = JSON.parse(err.message);
           if (message.reason === "CONTAINS_ANSWERS") {
-            showRemoveAnswersDialog = true;
+            showRemoveAnswersDialogForPublish = true;
           }
         } catch (e) {
         }
@@ -1311,7 +1312,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
         payload: {
-          showRemoveAnswersDialog,
+          showRemoveAnswersDialogForPublish,
           material: data.material,
           update: data.material,
           isDraft: data.isDraft,
@@ -1320,7 +1321,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       
       data.fail && data.fail();
       
-      if (!showRemoveAnswersDialog){
+      if (!showRemoveAnswersDialogForPublish){
         dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
       }
     }
@@ -1338,10 +1339,27 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
         payload: data.material
       });
       
+      await promisify(mApi().workspaces.materials
+          .del(data.material.id, data.material.workspaceMaterialId, {
+            removeAnswers: data.removeAnswers || false,
+            updateLinkedMaterials: true,
+          }), 'callback')()
+      
       data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
+      }
+      
+      if (!data.removeAnswers && err.message) {
+        try {
+          let message = JSON.parse(err.message);
+          if (message.reason === "CONTAINS_ANSWERS") {
+            const currentEditorState = getState().workspaces.materialEditor;
+            dispatch(setWorkspaceMaterialEditorState({...currentEditorState, showRemoveAnswersDialogForDelete: true}))
+          }
+        } catch (e) {
+        }
       }
       
       data.fail && data.fail();

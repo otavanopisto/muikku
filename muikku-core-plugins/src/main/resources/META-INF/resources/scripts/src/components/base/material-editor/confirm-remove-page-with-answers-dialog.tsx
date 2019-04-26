@@ -11,21 +11,21 @@ import Button from '~/components/general/button';
 import { bindActionCreators } from 'redux';
 import { WorkspaceType, MaterialContentNodeType, WorkspaceMaterialEditorType } from '~/reducers/workspaces';
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
-  updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from '~/actions/workspaces';
+  deleteWorkspaceMaterialContentNode, DeleteWorkspaceMaterialContentNodeTriggerType } from '~/actions/workspaces';
 
-interface ConfirmPublishPageWithAnswersDialogProps {
+interface ConfirmDeletePageWithAnswersDialogProps {
   i18n: i18nType,
   materialEditor: WorkspaceMaterialEditorType,
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
-  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType
+  deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType
 }
 
-interface ConfirmPublishPageWithAnswersDialogState {
+interface ConfirmDeletePageWithAnswersDialogState {
   locked: boolean
 }
 
-class ConfirmPublishPageWithAnswersDialog extends React.Component<ConfirmPublishPageWithAnswersDialogProps, ConfirmPublishPageWithAnswersDialogState> {
-  constructor(props: ConfirmPublishPageWithAnswersDialogProps){
+class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePageWithAnswersDialogProps, ConfirmDeletePageWithAnswersDialogState> {
+  constructor(props: ConfirmDeletePageWithAnswersDialogProps){
     super(props);
     this.state = {
       locked: false
@@ -39,9 +39,8 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<ConfirmPublish
       locked: true
     });
     
-    this.props.updateWorkspaceMaterialContentNode({
+    this.props.deleteWorkspaceMaterialContentNode({
       material: this.props.materialEditor.currentNodeValue,
-      update: this.props.materialEditor.currentDraftNodeValue,
       removeAnswers: true,
       success: ()=>{
         this.setState({
@@ -65,24 +64,24 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<ConfirmPublish
   }
   render(){
     let content = (closeDialog: ()=>any) => <div>
-      <span>{this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.text")}</span>
+      <span>{this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.text")}</span>
     </div>
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.confirm.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.confirmButton")}
+            {this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.confirmButton")}
           </Button>
           <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.cancel.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.cancelButton")}
+            {this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.cancelButton")}
           </Button>
         </div>
       )
     }
     
     return <Dialog modifier="confirm-remove-answer-dialog" isOpen={this.props.materialEditor.showRemoveAnswersDialogForPublish} onClose={this.cancel}
-      title={this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.title")}
+      title={this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.title")}
       content={content} footer={footer}/>
   }
 }
@@ -95,10 +94,10 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode}, dispatch);
+  return bindActionCreators({setWorkspaceMaterialEditorState, deleteWorkspaceMaterialContentNode}, dispatch);
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ConfirmPublishPageWithAnswersDialog);
+)(ConfirmDeletePageWithAnswersDialog);
