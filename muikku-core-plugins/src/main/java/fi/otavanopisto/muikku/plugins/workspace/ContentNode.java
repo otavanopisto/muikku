@@ -11,7 +11,7 @@ public class ContentNode {
 
   public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
+      Long parentId, Long nextSiblingId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
       String license, String producers, MaterialViewRestrict viewRestrict, boolean viewRestricted) {
     super();
     this.children = new ArrayList<>();
@@ -23,6 +23,7 @@ public class ContentNode {
     this.assignmentType = assignmentType;
     this.correctAnswers = correctAnswers;
     this.parentId = parentId;
+    this.nextSiblingId = nextSiblingId;
     this.hidden = hidden;
     this.html = html;
     this.currentRevision = currentRevision;
@@ -158,6 +159,14 @@ public class ContentNode {
     this.viewRestrict = viewRestrict;
   }
 
+  public Long getNextSiblingId() {
+    return nextSiblingId;
+  }
+
+  public void setNextSiblingId(Long nextSiblingId) {
+    this.nextSiblingId = nextSiblingId;
+  }
+
   private String title;
   private String type;
   private List<ContentNode> children;
@@ -168,6 +177,7 @@ public class ContentNode {
   private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
   private Boolean hidden;
   private Long parentId;
+  private Long nextSiblingId;
   private String html;
   private Long currentRevision;
   private Long publishedRevision;

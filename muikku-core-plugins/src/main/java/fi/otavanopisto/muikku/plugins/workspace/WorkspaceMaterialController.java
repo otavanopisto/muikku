@@ -802,15 +802,16 @@ public class WorkspaceMaterialController {
     List<FlattenedWorkspaceNode> result = new ArrayList<>();
 
     for (WorkspaceNode workspaceNode : workspaceNodes) {
+      WorkspaceNode nextSibling = findWorkspaceNodeNextSibling(workspaceNode);
       if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) workspaceNode;
         List<WorkspaceNode> children = includeHidden
             ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
             : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
-        result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), workspaceFolder, level, workspaceFolder.getParent().getId(), workspaceFolder.getHidden()));
+        result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), workspaceFolder, level, workspaceFolder.getParent().getId(), nextSibling == null ? null : nextSibling.getId(), workspaceFolder.getHidden()));
         result.addAll(flattenWorkspaceNodes(children, level + 1, includeHidden));
       } else {
-        result.add(new FlattenedWorkspaceNode(false, null, workspaceNode, level, workspaceNode.getParent().getId(), workspaceNode.getHidden()));
+        result.add(new FlattenedWorkspaceNode(false, null, workspaceNode, level, workspaceNode.getParent().getId(), nextSibling == null ? null : nextSibling.getId(), workspaceNode.getHidden()));
       }
     }
 
@@ -855,6 +856,7 @@ public class WorkspaceMaterialController {
   }
 
   private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean processHtml, boolean includeHidden) throws WorkspaceMaterialException {
+    WorkspaceNode nextSibling = findWorkspaceNodeNextSibling(rootMaterialNode);
     boolean viewRestricted = false;
     try {
       switch (rootMaterialNode.getType()) {
@@ -870,6 +872,7 @@ public class WorkspaceMaterialController {
             null,
             null,
             rootMaterialNode.getParent().getId(),
+            nextSibling == null ? null : nextSibling.getId(),
             rootMaterialNode.getHidden(),
             null,
             0l,
@@ -889,13 +892,14 @@ public class WorkspaceMaterialController {
         else {
           flattenedChildren = new ArrayList<>();
           for (WorkspaceNode node : children) {
-            flattenedChildren.add(new FlattenedWorkspaceNode(false, null, node, level, node.getParent().getId(), node.getHidden()));
+            WorkspaceNode nextSibiling = findWorkspaceNodeNextSibling(node);
+            flattenedChildren.add(new FlattenedWorkspaceNode(false, null, node, level, node.getParent().getId(), nextSibiling == null ? null : nextSibling.getId(), node.getHidden()));
           }
         }
         for (FlattenedWorkspaceNode child : flattenedChildren) {
           ContentNode contentNode;
           if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.hidden, null, 0l, 0l, child.node.getPath(), null, null, MaterialViewRestrict.NONE, false);
+            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSiblingId, child.hidden, null, 0l, 0l, child.node.getPath(), null, null, MaterialViewRestrict.NONE, false);
           } else {
             contentNode = createContentNode(child.node, child.level, processHtml, includeHidden);
           }
@@ -941,6 +945,8 @@ public class WorkspaceMaterialController {
           html = String.format("<p class=\"content-view-restricted-message\">%s</p>", localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
         }
           
+        nextSibling = findWorkspaceNodeNextSibling(workspaceMaterial);
+        
         return new ContentNode(
             workspaceMaterial.getTitle(),
             material.getType(),
@@ -950,6 +956,7 @@ public class WorkspaceMaterialController {
             workspaceMaterial.getAssignmentType(),
             workspaceMaterial.getCorrectAnswers(),
             workspaceMaterial.getParent().getId(),
+            nextSibling == null ? null : nextSibling.getId(),
             workspaceMaterial.getHidden(),
             html,
             currentRevision,
@@ -1124,12 +1131,13 @@ public class WorkspaceMaterialController {
 
   private static class FlattenedWorkspaceNode {
 
-    public FlattenedWorkspaceNode(boolean isEmptyFolder, String emptyFolderTitle, WorkspaceNode node, int level, Long parentId, Boolean hidden) {
+    public FlattenedWorkspaceNode(boolean isEmptyFolder, String emptyFolderTitle, WorkspaceNode node, int level, Long parentId, Long nextSiblingId, Boolean hidden) {
       this.isEmptyFolder = isEmptyFolder;
       this.emptyFolderTitle = emptyFolderTitle;
       this.node = node;
       this.level = level;
       this.parentId = parentId;
+      this.nextSiblingId = nextSiblingId;
       this.hidden = hidden;
     }
 
@@ -1138,6 +1146,7 @@ public class WorkspaceMaterialController {
     public final WorkspaceNode node;
     public final int level;
     public final Long parentId;
+    public final Long nextSiblingId;
     public final Boolean hidden;
   }
 
