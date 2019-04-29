@@ -40,3 +40,6 @@ insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/dnm'
 
 insert into PluginSettingKey (name, plugin) select 'fileUploadBasePath', 'transcriptofrecords' from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'fileUploadBasePath' having count(*) = 0;
 insert into PluginSetting (value, key_id) select '/tmp/', id from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'fileUploadBasePath';
+
+insert into PluginSettingKey(name, plugin) select 'mandatoryCoursesRequiredForMatriculation', 'transcriptofrecords' from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'mandatoryCoursesRequiredForMatriculation' having count(*) = 0;
+insert into PluginSetting (value, key_id) select '10', (select id from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'mandatoryCoursesRequiredForMatriculation') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'mandatoryCoursesRequiredForMatriculation') having count(*) = 0;

@@ -377,7 +377,7 @@ public class UserSchoolDataController {
         "pakollinen"
     );
   }
-
+// TODO: Something missing here?
   public LocalDate getLatestStudentEnrollmentDate(SchoolDataIdentifier studentIdentifier) {
     logger.severe("getLatestStudentEnrollmentDate unimplemented");
     return null;

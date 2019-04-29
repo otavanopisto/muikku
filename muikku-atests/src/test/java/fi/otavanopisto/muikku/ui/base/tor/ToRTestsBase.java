@@ -11,12 +11,13 @@ import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
-import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
@@ -30,17 +31,17 @@ public class ToRTestsBase extends AbstractUITest {
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
       Long courseId = 2l;
-      
+      Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
+      mockBuilder
+        .addStudent(student)
+        .addStaffMember(admin)
+        .addCourse(course1)
+        .mockLogin(admin)
+        .build();
       login();
       
-      Workspace workspace = createWorkspace("testcourses", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
-      
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
       mockBuilder
@@ -59,14 +60,15 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date)
         .mockStaffCompositeCourseAssessmentRequests()      
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date)
         .mockStaffCompositeCourseAssessmentRequests()
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
-        .mockCourseAssessments(courseStudent, admin);
+        .mockCourseAssessments(courseStudent, admin)
+        .mockStudentCourseStats(student.getId(), 10).build();
       
       logout();
       mockBuilder.mockLogin(student);
@@ -98,19 +100,17 @@ public class ToRTestsBase extends AbstractUITest {
     OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
-      
       Long courseId = 1l;
-      
+      Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
+      mockBuilder
+        .addStudent(student)
+        .addStaffMember(admin)
+        .addCourse(course1)
+        .mockLogin(admin)
+        .build();
       login();
       
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-
-      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
-      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
-      
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
       mockBuilder
@@ -143,9 +143,9 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date)
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
