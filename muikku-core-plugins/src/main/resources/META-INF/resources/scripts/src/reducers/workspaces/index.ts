@@ -305,6 +305,7 @@ export interface WorkspaceTypeType {
 //section = true && currentNodeValue = x && parentNodeValue = null      (edit section)
 //section = false && currentNodeValue = x && parentNodeValue = x        (edit material)
 export interface WorkspaceMaterialEditorType {
+  currentNodeWorkspace?: WorkspaceType,
   currentNodeValue?: MaterialContentNodeType,
   currentDraftNodeValue?: MaterialContentNodeType,
   parentNodeValue?: MaterialContentNodeType,
@@ -648,6 +649,8 @@ export default function workspaces(state: WorkspacesType={
       materialEditor: newEditor
     }
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
+    // TODO IMPORTANT, fix the nextSilblingId
+
     let found = false;
     let filterMaterial = (m: MaterialContentNodeType) => {
       if (found) {

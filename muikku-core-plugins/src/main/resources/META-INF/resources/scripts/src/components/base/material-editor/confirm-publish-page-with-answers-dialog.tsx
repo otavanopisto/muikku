@@ -40,6 +40,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<ConfirmPublish
     });
     
     this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.materialEditor.currentNodeWorkspace,
       material: this.props.materialEditor.currentNodeValue,
       update: this.props.materialEditor.currentDraftNodeValue,
       removeAnswers: true,

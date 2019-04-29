@@ -141,6 +141,7 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
 
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (data: {
+    workspace: WorkspaceType,
     material: MaterialContentNodeType,
     update: Partial<MaterialContentNodeType>,
     isDraft?: boolean,
@@ -1280,12 +1281,31 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       if (!data.isDraft) {
         // TODO handle conflicts
         // Trying to update the actual thing
-        if (data.material.html !== data.update.html) {
+        if (typeof data.update.html !== "undefined" && data.material.html !== data.update.html) {
           await promisify(mApi().materials.html.content
               .update(data.material.materialId, {
                 content: data.update.html,
                 removeAnswers: false,
               }), 'callback')();
+        }
+        
+        const fields = ["materialId", "parentId", "nextSiblingId", "hidden", "assignmentType", "correctAnswers", "path", "title"]
+        const result:any = {
+          id: data.material.workspaceMaterialId
+        };
+        let changed = false;
+        fields.forEach((field) => {
+          if (typeof (data.update as any)[field] !== "undefined" &&
+             (data.material as any)[field] !== (data.update as any)[field]) {
+            changed = true;
+          }
+          result[field] = typeof (data.update as any)[field] !== "undefined" ?
+            (data.update as any)[field] :
+            (data.material as any)[field]
+        });
+        if (changed) {
+          await promisify(mApi().workspace.workspaces.materials
+              .update(data.workspace.id, data.material.workspaceMaterialId, result), 'callback')();
         }
       } else {
         // Trying to update the draft

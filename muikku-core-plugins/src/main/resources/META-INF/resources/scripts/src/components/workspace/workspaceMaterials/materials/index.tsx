@@ -79,6 +79,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   }
   startupEditor(chapter: MaterialContentNodeType) {
     this.props.setWorkspaceMaterialEditorState({
+      currentNodeWorkspace: this.props.workspace,
       currentNodeValue: chapter,
       currentDraftNodeValue: {...chapter},
       parentNodeValue: null,

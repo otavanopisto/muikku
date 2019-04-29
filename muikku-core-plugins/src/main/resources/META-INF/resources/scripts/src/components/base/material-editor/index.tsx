@@ -93,6 +93,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     // TODO same we need an endpoint for this
     
     this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         hidden: !this.props.editorState.currentDraftNodeValue.hidden,
@@ -107,6 +108,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   
   updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         title: e.target.value,
@@ -122,6 +124,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     // got to wait
     
     this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         html: content,
@@ -139,6 +142,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   
   publish() {
     this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentNodeValue,
       update: this.props.editorState.currentDraftNodeValue,
     });
@@ -146,6 +150,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   
   revert() {
     this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: this.props.editorState.currentNodeValue,
       isDraft: true,
