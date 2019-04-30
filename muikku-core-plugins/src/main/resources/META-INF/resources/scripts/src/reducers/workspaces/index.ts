@@ -650,7 +650,6 @@ export default function workspaces(state: WorkspacesType={
       materialEditor: newEditor
     }
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
-    // TODO IMPORTANT, fix the nextSilblingId
 
     let filterMaterial = (m: MaterialContentNodeType) => {
       if (m.workspaceMaterialId === action.payload.workspaceMaterialId) {

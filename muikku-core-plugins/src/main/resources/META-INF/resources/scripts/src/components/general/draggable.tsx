@@ -71,6 +71,7 @@ interface DraggableProps extends React.DetailedHTMLProps<React.HTMLAttributes<HT
   as?: string,
   denyWidth?: boolean,
   denyHeight?: boolean,
+  handleSelector?: string,
       
   __debugVoidStyle?: boolean
 }
@@ -151,7 +152,12 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       rootElement = this.refs.root as HTMLDivElement;
     }
     
-    if (!checkIsParentOrSelf(e.target as HTMLElement, rootElement)){
+    let handleElement:Element = rootElement;
+    if (this.props.handleSelector) {
+      handleElement = handleElement.querySelector(this.props.handleSelector);
+    }
+    
+    if (!checkIsParentOrSelf(e.target as HTMLElement, handleElement as HTMLElement)){
       return;
     }
     
@@ -313,7 +319,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     //now we check the contestants
     if (contestants.length){
       
-      console.log(contestants);
+      // console.log(contestants);
       
       //the basic winner is the only contestant
       let winner = contestants[0];
@@ -374,6 +380,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     delete nProps["clone"];
     delete nProps["denyWidth"];
     delete nProps["denyHeight"];
+    delete nProps["handleSelector"];
     
     if (this.state.isDragging) {
       let nStyle = {...this.props.style} || {};
