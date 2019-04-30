@@ -573,7 +573,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     try {
       WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
-      return Response.ok(workspaceMaterialController.createContentNode(frontPage)).build();
+      return Response.ok(workspaceMaterialController.createContentNode(frontPage, null)).build();
     } catch (WorkspaceMaterialException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
@@ -589,7 +589,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     try {
       WorkspaceMaterial helpPage = workspaceMaterialController.ensureWorkspaceHelpPageExists(workspaceEntity);
-      return Response.ok(workspaceMaterialController.createContentNode(helpPage)).build();
+      return Response.ok(workspaceMaterialController.createContentNode(helpPage, null)).build();
     } catch (WorkspaceMaterialException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
