@@ -192,4 +192,78 @@ public class ToRTestsBase extends AbstractUITest {
     }
   }
   
+  @Test
+  public void studiesSummaryTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.toDate(2035, 1, 1));
+    OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
+    Builder mockBuilder = mocker();
+    try{
+      Long courseId = 1l;
+      Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
+      mockBuilder
+        .addStudent(student)
+        .addStaffMember(admin)
+        .addCourse(course1)
+        .mockLogin(admin)
+        .build();
+      login();
+      
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(courseId, courseStaffMember)
+        .addCourseStudent(courseId, courseStudent)
+        .mockStudentCourseStats(student.getId(), 10).build()
+        .build();
+   
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+        "Test exercise", "text/html;editor=CKEditor", 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+        "EVALUATED");
+      try{        
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+
+        selectFinnishLocale();        
+        navigate("/records", false);
+
+        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivämäärä");        
+        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-start-date");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-start-date span", "01.01.2012");
+
+        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeus päättyy");
+        waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-end-date");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-end-date span", "01.01.2035");
+        
+        waitForPresent(".application-sub-panel__card-header--summary-evaluated");
+        assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
+        waitForPresent(".application-sub-panel__card-highlight--summary-evaluated");
+        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-evaluated", "0");
+        
+        waitForPresent(".application-sub-panel__card-header--summary-activity");
+        assertTextIgnoreCase(".application-sub-panel__card-header--summary-activity", "Aktiivisuus");
+        waitForPresent(".application-sub-panel__card-highlight--summary-activity");
+//        TODO: Depending on the order tests are run this number can be anything between 1-4 so commenting for now
+//        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-activity", "1");
+
+        waitForPresent(".application-sub-panel__card-header--summary-returned");
+        assertTextIgnoreCase(".application-sub-panel__card-header--summary-returned", "Palautetut tehtävät");
+        waitForPresent(".application-sub-panel__card-highlight--summary-returned");
+        assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
+      } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+          deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
 }
