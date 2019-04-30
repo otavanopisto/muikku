@@ -383,6 +383,7 @@ export interface MaterialContentNodeType {
   correctAnswers?: MaterialCorrectAnswersType,
   hidden?: boolean,
   parentId?: number,
+  nextSiblingId?: number,
   path?: string,
   viewRestricted?: boolean,
   producers?: any,
@@ -651,25 +652,16 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
     // TODO IMPORTANT, fix the nextSilblingId
 
-    let found = false;
     let filterMaterial = (m: MaterialContentNodeType) => {
-      if (found) {
-        return true;
-      }
-      
       if (m.workspaceMaterialId === action.payload.workspaceMaterialId) {
-        found = true;
         return false;
       }
       
       return true;
     }
-    let mapMaterial = (m: MaterialContentNodeType) => {
-      if (found) {
-        return m;
-      }
-      
-      const newM:MaterialContentNodeType = {...m, children: m.children ? m.children.filter(filterMaterial) : m.children};
+    let mapMaterial = (m: MaterialContentNodeType, index: number, arr: Array<MaterialContentNodeType>) => {
+      const nextSiblingId = arr[index + 1] ? arr[index + 1].workspaceMaterialId : null;
+      const newM:MaterialContentNodeType = {...m, nextSiblingId, children: m.children ? m.children.filter(filterMaterial).map(mapMaterial) : m.children};
       return newM;
     }
     
