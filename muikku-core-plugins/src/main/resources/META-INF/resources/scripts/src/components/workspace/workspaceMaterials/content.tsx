@@ -24,6 +24,22 @@ interface ContentState {
   materials: MaterialContentNodeListType,
 }
 
+function repairContentNodes(base: MaterialContentNodeListType, parentNodeId?: number): MaterialContentNodeListType {
+  return base.map((cn, index) => {
+    const nextSibling = base[index + 1];
+    const nextSiblingId = nextSibling ? nextSibling.id : null;
+    const parentId = typeof parentNodeId !== "number" ? cn.parentId : parentNodeId;
+    const children = cn.children && cn.children.length ? repairContentNodes(cn.children, cn.workspaceMaterialId) : cn.children;
+    
+    return {
+      ...cn,
+      nextSiblingId,
+      parentId,
+      children,
+    }
+  });
+}
+
 function isScrolledIntoView(el: HTMLElement) {
   let rect = el.getBoundingClientRect();
   let elemTop = rect.top;
@@ -42,6 +58,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     };
     
     this.hotInsertBeforeSection = this.hotInsertBeforeSection.bind(this);
+    this.hotInsertBeforeSubnode = this.hotInsertBeforeSubnode.bind(this);
     this.onInteractionBetweenSections = this.onInteractionBetweenSections.bind(this);
     this.onInteractionBetweenSubnodes = this.onInteractionBetweenSubnodes.bind(this);
   }
@@ -62,17 +79,44 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     }
   }
   hotInsertBeforeSection(baseIndex: number, targetBeforeIndex: number) {
-    // TODO nextsiblingid thing calc here or something
+    // TODO do the action update here for the base index to do server side update
     const newMaterialState = [...this.state.materials]
     newMaterialState.splice(baseIndex, 1);
-    // we can do this and don't do -1 because we have removed 1 from the same list
     newMaterialState.splice(targetBeforeIndex, 0, this.state.materials[baseIndex]);
     this.setState({
-      materials: newMaterialState,
+      materials: repairContentNodes(newMaterialState),
     });
   }
-  hotSwapSubnodes(parentIndexA: number, indexA: number, parentIndexB: number, indexB: number) {
+  hotInsertBeforeSubnode(parentBaseIndex: number, baseIndex: number, parentTargetBeforeIndex: number, targetBeforeIndex: number) {
+    // TODO do the action update here for server side update
+    const newMaterialState = [...this.state.materials]
+    newMaterialState[parentBaseIndex] = {
+      ...newMaterialState[parentBaseIndex],
+      children: [...newMaterialState[parentBaseIndex].children],
+    }
+    newMaterialState[parentBaseIndex].children.splice(baseIndex, 1);
+    newMaterialState[parentTargetBeforeIndex] = {
+      ...newMaterialState[parentTargetBeforeIndex],
+      children: [...newMaterialState[parentTargetBeforeIndex].children],
+    }
+    if (targetBeforeIndex === null) {
+      newMaterialState[parentTargetBeforeIndex].children.push(this.state.materials[parentBaseIndex].children[baseIndex]);
+    } else if (parentBaseIndex === parentTargetBeforeIndex) {
+      newMaterialState[parentTargetBeforeIndex].children.splice(targetBeforeIndex, 0, this.state.materials[parentBaseIndex].children[baseIndex]);
+    } else {
+      newMaterialState[parentTargetBeforeIndex].children.splice(targetBeforeIndex, 0, this.state.materials[parentBaseIndex].children[baseIndex]);
+    }
     
+    const repariedNodes = repairContentNodes(newMaterialState);
+    const workspaceId = this.state.materials[parentBaseIndex].children[baseIndex].workspaceMaterialId;
+    
+    this.setState({
+      materials: repariedNodes,
+    }, ()=>{
+      if (parentBaseIndex !== parentTargetBeforeIndex) {
+        (this.refs[`draggable-${parentTargetBeforeIndex}-${workspaceId}`] as Draggable).onRootSelectStart(null, true);
+      }
+    });
   }
   onInteractionBetweenSections(base: MaterialContentNodeType, target: MaterialContentNodeType) {
     this.hotInsertBeforeSection(
@@ -80,8 +124,18 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       this.state.materials.findIndex(m => m.workspaceMaterialId === target.workspaceMaterialId),
     );
   }
-  onInteractionBetweenSubnodes(a: MaterialContentNodeType, b: MaterialContentNodeType) {
-    console.log(a, b);
+  onInteractionBetweenSubnodes(base: MaterialContentNodeType, target: MaterialContentNodeType | number) {
+    const parentBaseIndex = this.state.materials.findIndex(m => m.workspaceMaterialId === base.parentId);
+    const baseIndex = this.state.materials[parentBaseIndex].children.findIndex(m => m.workspaceMaterialId === base.workspaceMaterialId);
+    if (typeof target === "number") {
+      this.hotInsertBeforeSubnode(parentBaseIndex, baseIndex,
+        this.state.materials.findIndex(m => m.workspaceMaterialId === target), null);
+      return;
+    }
+    const parentTargetBeforeIndex = this.state.materials.findIndex(m => m.workspaceMaterialId === target.parentId);
+    const targetBeforeIndex = this.state.materials[parentTargetBeforeIndex].children.findIndex(m => m.workspaceMaterialId === target.workspaceMaterialId);
+    this.hotInsertBeforeSubnode(parentBaseIndex, baseIndex,
+      parentTargetBeforeIndex, targetBeforeIndex);
   }
   render(){
     if (!this.props.materials || !this.props.materials.length){
@@ -90,7 +144,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
-      {this.state.materials.map((node)=>{
+      {this.state.materials.map((node, nodeIndex)=>{
         const topic = <TocTopic name={node.title} key={node.workspaceMaterialId} className="toc__section-container">
           {node.children.map((subnode)=>{
             let isAssignment = subnode.assignmentType === "EVALUATED";
@@ -156,6 +210,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                 className="toc__element-drag-container"
                 handleSelector=".handle"
                 onInteractionWith={this.onInteractionBetweenSubnodes.bind(this, subnode)}
+                ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
               >
                 <span className="handle">Draggable Handle, can be anywhere inside the drag thing</span>
                 {pageElement}
