@@ -907,14 +907,11 @@ public class PyramusMock {
             .withBody(courseArrayJson)
             .withStatus(200)));
 
-        stubFor(get(urlPathEqualTo("/1/courses/courses"))
-            .withQueryParam("filterArchived", equalTo("false"))
-            .withQueryParam("firstResult", matching(".*"))
-            .withQueryParam("maxResults", matching(".*"))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(courseArrayJson)
-            .withStatus(200)));
+        stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(courseArrayJson)
+              .withStatus(200)));
        
         return this;
       }
