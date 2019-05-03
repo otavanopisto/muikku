@@ -148,6 +148,7 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
     removeAnswers?: boolean,
     success?: ()=>any,
     fail?: ()=>any,
+    fakeIt?: boolean,
   }):AnyActionType
 }
 
@@ -370,6 +371,9 @@ export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
 }
 export interface LoadWholeWorkspaceMaterialsTriggerType {
   (workspaceId: number, includeHidden: boolean, callback?:(nodes: Array<MaterialContentNodeType>)=>any):AnyActionType
+}
+export interface SetWholeWorkspaceMaterialsTriggerType {
+  (materials: MaterialContentNodeListType): AnyActionType
 }
 export interface SignupIntoWorkspaceTriggerType {
   (data: {
@@ -659,6 +663,13 @@ let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = functio
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load materials'), 'error'));
     }
+  }
+}
+
+let setWholeWorkspaceMaterials:SetWholeWorkspaceMaterialsTriggerType = function setWholeWorkspaceMaterials(materials){
+  return {
+    type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
+    payload: materials
   }
 }
 
@@ -1268,15 +1279,17 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
 let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      dispatch({
-        type: "UPDATE_MATERIAL_CONTENT_NODE",
-        payload: {
-          showRemoveAnswersDialogForPublish: false,
-          material: data.material,
-          update: data.update,
-          isDraft: data.isDraft,
-        }
-      });
+      if (!data.fakeIt) {
+        dispatch({
+          type: "UPDATE_MATERIAL_CONTENT_NODE",
+          payload: {
+            showRemoveAnswersDialogForPublish: false,
+            material: data.material,
+            update: data.update,
+            isDraft: data.isDraft,
+          }
+        });
+      }
       
       if (!data.isDraft) {
         // TODO handle conflicts
@@ -1329,15 +1342,17 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         }
       }
       
-      dispatch({
-        type: "UPDATE_MATERIAL_CONTENT_NODE",
-        payload: {
-          showRemoveAnswersDialogForPublish,
-          material: data.material,
-          update: data.material,
-          isDraft: data.isDraft,
-        }
-      });
+      if (!data.fakeIt) {
+        dispatch({
+          type: "UPDATE_MATERIAL_CONTENT_NODE",
+          payload: {
+            showRemoveAnswersDialogForPublish,
+            material: data.material,
+            update: data.material,
+            isDraft: data.isDraft,
+          }
+        });
+      }
       
       data.fail && data.fail();
       
@@ -1396,4 +1411,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
-  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode}
+  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials}

@@ -631,13 +631,13 @@ export default function workspaces(state: WorkspacesType={
     }
     
     let newEditor = state.materialEditor;
-    if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue && newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.currentNodeValue = {...newEditor.currentNodeValue, ...action.payload.update};
-    } else if (!action.payload.isDraft && newEditor && newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    } else if (!action.payload.isDraft && newEditor && newEditor.parentNodeValue && newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.parentNodeValue = {...newEditor.parentNodeValue, ...action.payload.update};
-    } else if (action.payload.isDraft && newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    } else if (action.payload.isDraft && newEditor && newEditor.currentDraftNodeValue && newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.currentDraftNodeValue = {...newEditor.currentDraftNodeValue, ...action.payload.update};
     }

@@ -10,6 +10,9 @@ import '~/sass/elements/item-list.scss';
 import { ButtonPill } from '~/components/general/button';
 import Toc, { TocTopic, TocElement } from '~/components/general/toc';
 import Draggable, { Droppable } from "~/components/general/draggable";
+import { bindActionCreators } from "redux";
+import { updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType,
+  setWholeWorkspaceMaterials, SetWholeWorkspaceMaterialsTriggerType } from "~/actions/workspaces";
 
 interface ContentProps {
   i18n: i18nType,
@@ -18,6 +21,8 @@ interface ContentProps {
   activeNodeId: number,
   workspace: WorkspaceType,
   editable: boolean,
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
+  setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType,
 }
 
 interface ContentState {
@@ -27,7 +32,7 @@ interface ContentState {
 function repairContentNodes(base: MaterialContentNodeListType, parentNodeId?: number): MaterialContentNodeListType {
   return base.map((cn, index) => {
     const nextSibling = base[index + 1];
-    const nextSiblingId = nextSibling ? nextSibling.id : null;
+    const nextSiblingId = nextSibling ? nextSibling.workspaceMaterialId : null;
     const parentId = typeof parentNodeId !== "number" ? cn.parentId : parentNodeId;
     const children = cn.children && cn.children.length ? repairContentNodes(cn.children, cn.workspaceMaterialId) : cn.children;
     
@@ -79,12 +84,29 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     }
   }
   hotInsertBeforeSection(baseIndex: number, targetBeforeIndex: number) {
-    // TODO do the action update here for the base index to do server side update
     const newMaterialState = [...this.state.materials]
     newMaterialState.splice(baseIndex, 1);
     newMaterialState.splice(targetBeforeIndex, 0, this.state.materials[baseIndex]);
+    const contentNodesRepaired = repairContentNodes(newMaterialState);
+    
+    const material = this.state.materials[baseIndex];
+    const update = contentNodesRepaired.find((cn) => cn.workspaceMaterialId === material.workspaceMaterialId);
+    
     this.setState({
-      materials: repairContentNodes(newMaterialState),
+      materials: contentNodesRepaired,
+    }, () => {
+      this.props.updateWorkspaceMaterialContentNode({
+        workspace: this.props.workspace,
+        material,
+        update: {
+          parentId: update.parentId,
+          nextSiblingId: update.nextSiblingId,
+        },
+        success: () => {
+          this.props.setWholeWorkspaceMaterials(contentNodesRepaired);
+        },
+        fakeIt: true,
+      })
     });
   }
   hotInsertBeforeSubnode(parentBaseIndex: number, baseIndex: number, parentTargetBeforeIndex: number, targetBeforeIndex: number) {
@@ -110,12 +132,28 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     const repariedNodes = repairContentNodes(newMaterialState);
     const workspaceId = this.state.materials[parentBaseIndex].children[baseIndex].workspaceMaterialId;
     
+    const material = this.state.materials[parentBaseIndex].children[baseIndex];
+    const update = repariedNodes[parentTargetBeforeIndex].children.find((cn) => cn.workspaceMaterialId === material.workspaceMaterialId);
+    
     this.setState({
       materials: repariedNodes,
     }, ()=>{
       if (parentBaseIndex !== parentTargetBeforeIndex) {
         (this.refs[`draggable-${parentTargetBeforeIndex}-${workspaceId}`] as Draggable).onRootSelectStart(null, true);
       }
+      
+      this.props.updateWorkspaceMaterialContentNode({
+        workspace: this.props.workspace,
+        material,
+        update: {
+          parentId: update.parentId,
+          nextSiblingId: update.nextSiblingId,
+        },
+        success: () => {
+          this.props.setWholeWorkspaceMaterials(repariedNodes);
+        },
+        fakeIt: true,
+      });
     });
   }
   onInteractionBetweenSections(base: MaterialContentNodeType, target: MaterialContentNodeType) {
@@ -254,7 +292,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({updateWorkspaceMaterialContentNode, setWholeWorkspaceMaterials}, dispatch);
 };
 
 export default connect(
