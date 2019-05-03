@@ -4,7 +4,7 @@ import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
-import {ButtonPill} from '~/components/general/button';
+import {IconButton, ButtonPill} from '~/components/general/button';
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
@@ -110,30 +110,36 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
       }
     
     return (<div className="application-panel application-panel--workspace-users">
-      <div className="application-panel__container">  
+      <div className="application-panel__container">
       <div className="application-panel__header"> 
         <div className="application-panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')} - {this.props.workspace && this.props.workspace.name}</div>
       </div>
       <div className="application-panel__body">
-        <h2>{this.props.i18n.text.get('plugin.workspace.users.teachers.title')}</h2>
-        <div className="application-list application-list--workspace-staffmembers">
-        
+        <div className="application-list application-list--workspace-staff-members">
+          <div className="application-list__header application-list__header--workspace-users">
+            <h2 className="application-list__title">{this.props.i18n.text.get('plugin.workspace.users.teachers.title')}</h2>
+          </div>
+          <div className="application-list__body application-list__body--workspace-staff-members">   
           {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.map((staff)=>{
             let userCategory = staff.userEntityId > 10 ? staff.userEntityId % 10 + 1 : staff.userEntityId;
-            return <div className="application-list__item" key={staff.userEntityId}>
-              <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-staffmembers">
+            return <div className="application-list__item application-list__item--workspace-user" key={staff.userEntityId}>
+              <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-staff-members">
                 <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
-                <span>{getName(staff, true)}</span>
+                <div className="application-list__item-content-main application-list__item-content-main--workspace-staffmember">
+                  <div>{getName(staff, true)}</div>
+                  <div className="application-list__item-content-secondary-data">{staff.email}</div>
+                </div>
                 <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
                   type: "staff",
                   value: staff
                 }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
                   initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
-                  <ButtonPill buttonModifiers="workspace-users-contact" icon="message-unread"/>
+                  <IconButton buttonModifiers="workspace-users-contact" icon="message-unread"/>
                 </CommunicatorNewMessage>
               </div>
             </div>
           })}
+          </div>
         </div>
         <h2>{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
         

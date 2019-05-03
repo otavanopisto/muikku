@@ -195,6 +195,11 @@ $color-workspace-signup-readmore-button-background: #ff008d;
 $color-button-profile-image-edit-delete-background: rgba(0, 0, 0, 0.5);
 $color-button-profile-image-edit-delete-hover-background: rgba(0, 0, 0, 0.9);
 
+
+// Icon button theme
+
+$color-icon-button-text: #0fa5e4;
+
 // Button pill theme
 $color-button-pill-background: $color-primary;
 $color-button-pill-text: $color-default-contrast;
@@ -218,7 +223,9 @@ $color-label-secondary: $color-secondary;
 $color-label-inverse: $color-default;
 
 // Text
+
 $color-text-default: $color-inverse;
+$color-text-secondary: #cecece;
 $color-text-link: $color-primary;
 $color-text-link-selected: $color-default;
 

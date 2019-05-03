@@ -451,13 +451,12 @@
   padding: 2px 6px;
 }
 
-.button-pill {
+.button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
-  background-color: $color-button-pill-background;
-  border-radius: 100%;
-  color: $color-button-pill-text;
+  background-color: transparent;
+  color:$color-icon-button-text;  
   cursor: pointer;
   display: inline-flex;
   font-size: $button-pill-mobile-font-size;
@@ -480,7 +479,60 @@
 
   &:hover,
   &.hover {
+    background-color: transparent;
+  }
+
+  &:active,
+  &.active {
+    background-color: transparent;
+  }
+
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+    cursor: default;
+  }
+ 
+  input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+
+.button-pill {
+  @include prefix(user-select, moz o ms webkit, none);
+  @include prefix(transition, moz o ms webkit, background-color 0.3s);
+  align-items: center;
+  background-color: $color-button-pill-background;  
+  color: $color-button-pill-text;
+  cursor: pointer;
+  border-radius: 100%;
+  display: inline-flex;
+  font-size: $button-pill-mobile-font-size;
+  height: $button-pill-mobile-size;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  width: $button-pill-mobile-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-pill-desktop-font-size;
+    height: $button-pill-desktop-size;
+    width: $button-pill-desktop-size;  
+  }
+
+  &:hover,
+  &.hover {
     background-color: darken($color-button-pill-background, 10%);
+
   }
 
   &:active,
@@ -502,6 +554,17 @@
   	opacity: 0;
   }
 }
+
+.button-pill--workspace-users-contact {
+  background-color: transparent;
+  color: #0fa5e4;
+
+  &:hover,
+  &.hover {
+    background-color: transparent;
+  }
+}
+
 
 .button-pill--floating {
   background-color: $color-primary;

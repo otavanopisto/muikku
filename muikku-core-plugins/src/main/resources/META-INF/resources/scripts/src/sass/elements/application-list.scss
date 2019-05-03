@@ -14,11 +14,7 @@
   }
 }
 
-.application-list--workspace-staffmembers {
-  display:flex;
-}
-
-.application-list__header-container {
+.application-list__header {
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
@@ -29,7 +25,7 @@
   }
 }
 
-.application-list__header {
+.application-list__title {
   font-size: 1.125rem;
   font-weight: 400;
 }
@@ -163,14 +159,29 @@
   display: inline-block;
 }
 
+.application-list__body--workspace-staff-members {
+  display:flex;
+  flex-wrap: wrap;
+}
+
+
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
 }
 
-.application-list__item-content-wrapper--workspace-staffmembers {
+.application-list__item-content-wrapper--workspace-staff-members {
   align-items: center;
+  padding: 10px;
+}
+
+.application-list__item--workspace-user {
+  flex-basis: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
 }
 
 .application-list__item {
@@ -341,6 +352,14 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+}
+
+.application-list__item-content-main--workspace-staffmember {
+  margin-left: 5px;
+}
+
+.application-list__item-content-secondary-data {
+  color: $color-text-secondary;
 }
 
 .application-list__item-content-avatar {
@@ -536,9 +555,21 @@
   flex-shrink: 1;
 }
 
+
+// Workspace
+
+.application-list__header--workspace-users {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0 10px 10px;
+  }
+}
+
+
 // Discussion 
 
-.application-list__header-container--discussion {
+.application-list__header--discussion {
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
@@ -726,7 +757,7 @@
 }
 
 // Studies
-.application-list__header-container--studies-detailed-info {
+.application-list__header--studies-detailed-info {
   padding: 10px 0;
   font-size: 1.125rem;
 
