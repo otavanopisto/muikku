@@ -7,6 +7,7 @@ import { StatusType } from "~/reducers/base/status";
 import {IconButton, ButtonPill} from '~/components/general/button';
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import '~/sass/elements/application-panel.scss';
+import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/avatar.scss';
 import { getName, filterMatch, filterHighlight } from "~/util/modifiers";
@@ -111,80 +112,83 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     
     return (<div className="application-panel application-panel--workspace-users">
       <div className="application-panel__container">
-      <div className="application-panel__header"> 
-        <div className="application-panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')} - {this.props.workspace && this.props.workspace.name}</div>
-      </div>
-      <div className="application-panel__body">
-        <div className="application-list application-list--workspace-staff-members">
-          <div className="application-list__header application-list__header--workspace-users">
-            <h2 className="application-list__title">{this.props.i18n.text.get('plugin.workspace.users.teachers.title')}</h2>
-          </div>
-          <div className="application-list__body application-list__body--workspace-staff-members">   
-          {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.map((staff)=>{
-            let userCategory = staff.userEntityId > 10 ? staff.userEntityId % 10 + 1 : staff.userEntityId;
-            return <div className="application-list__item application-list__item--workspace-user" key={staff.userEntityId}>
-              <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-staff-members">
-                <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
-                <div className="application-list__item-content-main application-list__item-content-main--workspace-staffmember">
-                  <div>{getName(staff, true)}</div>
-                  <div className="application-list__item-content-secondary-data">{staff.email}</div>
-                </div>
-                <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
-                  type: "staff",
-                  value: staff
-                }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
-                  initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
-                  <IconButton buttonModifiers="workspace-users-contact" icon="message-unread"/>
-                </CommunicatorNewMessage>
-              </div>
-            </div>
-          })}
-          </div>
+        <div className="application-panel__header"> 
+          <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')} - {this.props.workspace && this.props.workspace.name}</h2>
         </div>
-        <h2>{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
-        
-        <input type="text" className="form-element__input form-element__input--main-function-search"
-          value={this.state.currentSearch} onChange={this.updateSearch}/>
-        
-        <Tabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
-          {
-            id: "ACTIVE",
-            name: this.props.i18n.text.get('plugin.workspace.users.students.link.active'),
-            component: ()=>{
-              let activeStudents = this.props.workspace && this.props.workspace.students &&
-                this.props.workspace.students
-                .filter(s=>s.active)
-                .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
-                .map(s=><Student highlight={this.state.currentSearch}
-                  onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
-                  key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
-              
-              return <div className="loader-empty">
-                {this.props.workspace && this.props.workspace.students ? (
-                  activeStudents.length ? activeStudents : <div>{this.props.i18n.text.get('TODO no active students')}</div>
-                ): null}
+        <div className="application-panel__body">
+          <div className="application-sub-panel application-sub-panel--workspace-users">
+            <h2 className="application-sub-panel__header application-sub-panel__header--workspace-users">
+               {this.props.i18n.text.get('plugin.workspace.users.teachers.title')}
+            </h2>
+            <div className="application-sub-panel__body application-list application-list--workspace-staff-members">   
+            {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.map((staff)=>{
+              let userCategory = staff.userEntityId > 10 ? staff.userEntityId % 10 + 1 : staff.userEntityId;
+              return <div className="application-list__item application-list__item--workspace-user" key={staff.userEntityId}>
+                <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-staff-members">
+                  <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
+                  <div className="application-list__item-content-main application-list__item-content-main--workspace-staffmember">
+                    <div>{getName(staff, true)}</div>
+                    <div className="application-list__item-content-secondary-data">{staff.email}</div>
+                  </div>
+                  <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
+                    type: "staff",
+                    value: staff
+                  }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
+                    initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
+                    <IconButton buttonModifiers="workspace-users-contact" icon="message-unread"/>
+                  </CommunicatorNewMessage>
+                </div>
               </div>
-            }
-          },
-          {
-            id: "INACTIVE",
-            name: this.props.i18n.text.get('plugin.workspace.users.students.link.inactive'),
-            component: ()=>{
-              let inactiveStudents = this.props.workspace && this.props.workspace.students &&
-                this.props.workspace.students
-                .filter(s=>!s.active)
-                .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
-                .map(s=><Student onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
-                  highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
-              
-              return <div className="loader-empty">
-                {this.props.workspace && this.props.workspace.students ? (
-                  inactiveStudents.length ? inactiveStudents : <div>{this.props.i18n.text.get('TODO no inactive students')}</div>
-                ): null}
-              </div>
-            }
-          }
-        ]}/>
+            })}
+            </div>
+          </div>
+          <div className="application-sub-panel application-sub-panel--workspace-users">  
+            <h2 className="application-sub-panel__header application-sub-panel__header--workspace-users">{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
+          </div>
+          <div className="">
+            <input type="text" className="form-element__input form-element__input--main-function-search"
+              value={this.state.currentSearch} onChange={this.updateSearch}/>
+            
+            <Tabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
+              {
+                id: "ACTIVE",
+                name: this.props.i18n.text.get('plugin.workspace.users.students.link.active'),
+                component: ()=>{
+                  let activeStudents = this.props.workspace && this.props.workspace.students &&
+                    this.props.workspace.students
+                    .filter(s=>s.active)
+                    .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
+                    .map(s=><Student highlight={this.state.currentSearch}
+                      onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+                      key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
+                  
+                  return <div className="loader-empty">
+                    {this.props.workspace && this.props.workspace.students ? (
+                      activeStudents.length ? activeStudents : <div>{this.props.i18n.text.get('TODO no active students')}</div>
+                    ): null}
+                  </div>
+                }
+              },
+              {
+                id: "INACTIVE",
+                name: this.props.i18n.text.get('plugin.workspace.users.students.link.inactive'),
+                component: ()=>{
+                  let inactiveStudents = this.props.workspace && this.props.workspace.students &&
+                    this.props.workspace.students
+                    .filter(s=>!s.active)
+                    .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
+                    .map(s=><Student onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+                      highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
+                  
+                  return <div className="loader-empty">
+                    {this.props.workspace && this.props.workspace.students ? (
+                      inactiveStudents.length ? inactiveStudents : <div>{this.props.i18n.text.get('TODO no inactive students')}</div>
+                    ): null}
+                  </div>
+                }
+              }
+            ]}/>
+          </div>        
         </div>
       </div>
 

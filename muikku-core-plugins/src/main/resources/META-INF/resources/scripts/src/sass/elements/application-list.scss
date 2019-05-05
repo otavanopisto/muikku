@@ -25,9 +25,14 @@
   }
 }
 
+.application-list--workspace-staff-members {
+  display:flex;
+  flex-wrap: wrap;
+  padding: 0 0 10px;
+}
+
 .application-list__title {
-  font-size: 1.125rem;
-  font-weight: 400;
+  @include workspace-subpanel-title;
 }
 
 .application-list__header-title {
@@ -159,10 +164,6 @@
   display: inline-block;
 }
 
-.application-list__body--workspace-staff-members {
-  display:flex;
-  flex-wrap: wrap;
-}
 
 
 .application-list__item-content-wrapper {
