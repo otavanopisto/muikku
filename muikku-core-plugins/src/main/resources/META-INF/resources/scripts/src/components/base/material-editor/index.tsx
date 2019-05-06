@@ -213,7 +213,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
-          {!this.props.editorState.section ? <div className="material-editor__editor-container">
+          {!this.props.editorState.section && this.props.editorState.canEditContent ? <div className="material-editor__editor-container">
             <CKEditor configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,

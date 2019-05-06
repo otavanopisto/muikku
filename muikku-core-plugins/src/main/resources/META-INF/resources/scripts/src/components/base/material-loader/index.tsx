@@ -142,6 +142,7 @@ interface MaterialLoaderProps {
   canSetLicense?: boolean,
   canSetProducers?: boolean,
   canAddAttachments?: boolean,
+  canEditContent?: boolean,
   
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
@@ -274,6 +275,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       canSetLicense: typeof this.props.canSetLicense === "undefined" ? false : this.props.canSetLicense,
       canSetProducers: typeof this.props.canSetProducers === "undefined" ? false : this.props.canSetProducers,
       canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? false : this.props.canAddAttachments,
+      canEditContent: typeof this.props.canAddAttachments === "undefined" ? true : this.props.canAddAttachments,
       showRemoveAnswersDialogForPublish: false,
       showRemoveAnswersDialogForDelete: false,
     });

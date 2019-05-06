@@ -324,6 +324,7 @@ export interface WorkspaceMaterialEditorType {
   canSetLicense: boolean,
   canSetProducers: boolean,
   canAddAttachments: boolean,
+  canEditContent: boolean,
   showRemoveAnswersDialogForPublish: boolean,
   showRemoveAnswersDialogForDelete: boolean,
 }
@@ -512,6 +513,7 @@ export default function workspaces(state: WorkspacesType={
     canSetLicense: true,
     canSetProducers: true,
     canAddAttachments: true,
+    canEditContent: true,
     showRemoveAnswersDialogForPublish: false,
     showRemoveAnswersDialogForDelete: false,
   }

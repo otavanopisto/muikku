@@ -34,7 +34,11 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
     this.props.setCurrentWorkspace({workspaceId: this.props.workspace.id, refreshActivity: true});
   }
   render(){
-    return <MaterialLoader canPublish canRevert canCopy canHide canDelete canRestrictView canChangePageType canChangeExerciseType canSetLicense canSetProducers canAddAttachments page={this.props.page} editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+    const isBinary = this.props.materialContentNode.type === "binary";
+    return <MaterialLoader canPublish={!isBinary}
+      canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
+      canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
+      canAddAttachments={!isBinary} canEditContent={!isBinary} page={this.props.page} editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
       material={this.props.materialContentNode} workspace={this.props.workspace}
       compositeReplies={this.props.compositeReplies} answerable onAssignmentStateModified={this.updateWorkspaceActivity}/>
   }
