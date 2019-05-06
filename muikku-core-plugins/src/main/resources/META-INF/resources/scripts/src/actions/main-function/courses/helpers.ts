@@ -49,7 +49,6 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
-  let search = actualFilters.query;
   
   let myWorkspaces = false;
   let includeUnpublished = false;
@@ -73,7 +72,7 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   }
   
   if (actualFilters.query){
-    (params as any).search = actualFilters.query;
+    (params as any).q = actualFilters.query;
   }
   
   try {

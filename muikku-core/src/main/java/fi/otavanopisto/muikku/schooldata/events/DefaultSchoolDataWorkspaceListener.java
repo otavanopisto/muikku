@@ -167,7 +167,7 @@ public class DefaultSchoolDataWorkspaceListener {
           String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
           if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
             
-            // WorkspaceUserEntity found, but it points to a new study program
+            // WorkspaceUserEntity found, but it points to a different study program
             
             UserSchoolDataIdentifier newUserIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
                 event.getUserDataSource(), event.getUserIdentifier());
@@ -175,44 +175,24 @@ public class DefaultSchoolDataWorkspaceListener {
               logger.warning(String.format("Unable to update workspace user. UserSchoolDataIdentifier for %s/%s not found", event.getUserDataSource(), event.getUserIdentifier()));
             }
             else {
-              WorkspaceUserEntity existingUser = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(
-                  workspaceEntity, newUserIdentifier);
-              if (existingUser != null) {
-                if (!existingUser.getArchived().equals(workspaceUserEntity.getArchived())) {
-                  if (existingUser.getArchived()) {
-                    workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingUser);
-                  }
-                  else {
-                    workspaceUserEntityController.archiveWorkspaceUserEntity(existingUser);
-                  }
-                }
-                workspaceUserEntityController.updateIdentifier(existingUser, workspaceUserEntity.getIdentifier());
-                // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
-                if (event.getIsActive() && !existingUser.getActive()) {
-                  workspaceUserEntityController.updateActive(existingUser, event.getIsActive());
-                }
-                workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
-              }
-              else {
-                workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
-                // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
-                if (event.getIsActive() && !workspaceUserEntity.getActive()) {
-                  workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
-                }
+              workspaceUserEntity = workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
+              // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
+              if (event.getIsActive() && !workspaceUserEntity.getActive()) {
+                workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
               }
             }
           }
           else {
             WorkspaceRoleEntity workspaceRoleEntity = workspaceController.findWorkspaceRoleEntityByDataSourceAndIdentifier(event.getRoleDataSource(), event.getRoleIdentifier());
             if (workspaceRoleEntity != null && !workspaceRoleEntity.getId().equals(workspaceUserEntity.getWorkspaceUserRole().getId())) {
-              workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);
+              workspaceUserEntity = workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);
             }
           }
 
           // If a student has ended their studies but they are still active in the workspace, change them inactive (but not vice versa)
           
           if (!event.getIsActive() && workspaceUserEntity.getActive()) {
-            workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+            workspaceUserEntity = workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
           }
         
         }

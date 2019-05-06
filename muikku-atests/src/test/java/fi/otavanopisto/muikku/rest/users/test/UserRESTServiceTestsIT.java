@@ -156,7 +156,7 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
     String searchString = "a";
     
     Response response = asAdmin()
-        .param("searchString", searchString)
+        .param("q", searchString)
         .get("/user/users");
 
     response.then().statusCode(200);

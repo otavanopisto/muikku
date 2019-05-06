@@ -192,7 +192,7 @@ public class UserRESTService extends AbstractRESTService {
   @Path("/students")
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStudents(
-      @QueryParam("searchString") String searchString,
+      @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
       @QueryParam("userGroupIds") List<Long> userGroupIds,
@@ -1077,7 +1077,7 @@ public class UserRESTService extends AbstractRESTService {
   @Path("/users")
   @RESTPermitUnimplemented
   public Response searchUsers(
-      @QueryParam("searchString") String searchString,
+      @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
       @QueryParam("userGroupIds") List<Long> userGroupIds,
@@ -1348,7 +1348,7 @@ public class UserRESTService extends AbstractRESTService {
   @Path("/staffMembers")
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStaffMembers(
-      @QueryParam("searchString") String searchString,
+      @QueryParam("q") String searchString,
       @QueryParam("properties") String properties,
       @QueryParam("workspaceEntityId") Long workspaceEntityId,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,

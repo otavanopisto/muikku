@@ -205,7 +205,7 @@ public class GuiderRESTService extends PluginRESTService {
   @Path("/students")
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStudents(
-      @QueryParam("searchString") String searchString,
+      @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
       @QueryParam("userGroupIds") List<Long> userGroupIds,
@@ -343,6 +343,14 @@ public class GuiderRESTService extends PluginRESTService {
         userIdentifiers = userEntityIdentifiers;
       } else {
         userIdentifiers.retainAll(userEntityIdentifiers);
+      }
+    }
+    
+    // #4585: By default, teachers should only see their own students
+    if (CollectionUtils.isEmpty(workspaceIds) && !Boolean.TRUE.equals(myWorkspaces)) {
+      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER) {
+        myWorkspaces = true;
       }
     }
     

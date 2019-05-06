@@ -306,7 +306,7 @@
       return $.proxy(function (callback) {
         mApi().communicator.recipientsWorkspacesSearch
           .read({
-            searchString: term
+            q: term
           })
           .callback($.proxy(function (err, results) {
             if (err) {
@@ -331,7 +331,7 @@
       
       return $.proxy(function (callback) {
         mApi().usergroup.groups
-          .read({ 'searchString' : term })
+          .read({ 'q' : term })
           .callback(function(err, results) {
             if (err) {
               callback(err);
@@ -355,7 +355,7 @@
       var existingUserIds = this._getRecipientIds();
       return $.proxy(function (callback) {
         mApi().communicator.recipientsUsersSearch
-          .read({ 'searchString' : term })
+          .read({ 'q' : term })
           .callback(function(err, results) {
             if (err) {
               callback(err);

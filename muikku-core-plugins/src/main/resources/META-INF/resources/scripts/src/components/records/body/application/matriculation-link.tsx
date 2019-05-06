@@ -14,6 +14,7 @@ interface MatriculationLinkState {
 interface CurrentExam {
   starts: Number;
   ends: Number;
+  eligible: boolean;
 }
 
 export class MatriculationLink extends React.Component<MatriculationLinkProps, MatriculationLinkState> {
@@ -31,7 +32,7 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
           return;
         }
         const now : Number = new Date().getTime();
-        if (data && data.starts <= now && data.ends >= now) {
+        if (data && data.eligible && data.starts <= now && data.ends >= now) {
           this.setState({enabled: true});
         }
       });

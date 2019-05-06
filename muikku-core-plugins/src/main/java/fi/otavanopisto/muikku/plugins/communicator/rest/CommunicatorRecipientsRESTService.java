@@ -101,7 +101,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
   @Path("/recipientsUsersSearch") // TODO mApi requires ids between all resources - this should be /recipients/users/search
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response searchUsers(
-      @QueryParam("searchString") String searchString,
+      @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults
     ) {
@@ -216,7 +216,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
   @Path("/recipientsWorkspacesSearch") // TODO mApi requires ids between all resources - this should be /recipients/workspaces/search
   @RESTPermitUnimplemented
   public Response listWorkspaces(
-        @QueryParam("searchString") String searchString,
+        @QueryParam("q") String searchString,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
         @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
 
