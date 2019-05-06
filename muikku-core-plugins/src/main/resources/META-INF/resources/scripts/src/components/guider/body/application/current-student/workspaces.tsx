@@ -20,12 +20,14 @@ class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesP
   render(){
     //TODO WAT?... mf???? o.o communicator?...
     return this.props.guider.currentStudent.workspaces ?  (this.props.guider.currentStudent.workspaces.length ? <div className="application-list">
-        {this.props.guider.currentStudent.workspaces.map((workspace)=>{
-          return <Workspace workspace={workspace} key={workspace.id}/>
-        })}
-      </div> : <div className="mf-content-empty cm-no-messages flex-row">
-        <h3 className=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-align-items-center">{this.props.i18n.text.get("plugin.guider.noWorkspaces")}</h3>
-      </div>) : null;
+      {this.props.guider.currentStudent.workspaces.sort(function(a, b) {
+        return ('' + a.name).localeCompare(b.name, 'fi' ,{sensitivity: 'base'});
+      }).map((workspace)=>{
+        return <Workspace workspace={workspace} key={workspace.id}/>
+      })}
+    </div> : <div className="mf-content-empty cm-no-messages flex-row">
+      <h3 className=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-align-items-center">{this.props.i18n.text.get("plugin.guider.noWorkspaces")}</h3>
+    </div>) : null;
   }
 }
 
