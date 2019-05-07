@@ -81,7 +81,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     super(props);
 
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
-    this.delete = this.delete.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
     this.close = this.close.bind(this);
@@ -100,10 +99,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       },
       isDraft: true
     });
-  }
-  
-  delete() {
-    // TODO not sure what to do here
   }
   
   updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
@@ -204,7 +199,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             </Dropdown> : null}
           {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentDraftNodeValue}>
             <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialDeleteTooltip")}>
-              <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete" onClick={this.delete}/>
+              <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete"/>
             </Dropdown>
           </DeleteWorkspaceMaterialDialog> : null}
         </div>

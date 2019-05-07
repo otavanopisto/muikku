@@ -41,6 +41,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePa
     
     this.props.deleteWorkspaceMaterialContentNode({
       material: this.props.materialEditor.currentNodeValue,
+      workspace: this.props.materialEditor.currentNodeWorkspace,
       removeAnswers: true,
       success: ()=>{
         this.setState({

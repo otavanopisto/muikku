@@ -305,11 +305,10 @@ export interface WorkspaceTypeType {
 //section = true && currentNodeValue = x && parentNodeValue = null      (edit section)
 //section = false && currentNodeValue = x && parentNodeValue = x        (edit material)
 export interface WorkspaceMaterialEditorType {
-  currentNodeWorkspace?: WorkspaceType,
+  currentNodeWorkspace: WorkspaceType,
   currentNodeValue?: MaterialContentNodeType,
   currentDraftNodeValue?: MaterialContentNodeType,
   parentNodeValue?: MaterialContentNodeType,
-  workspace: WorkspaceType,
   section: boolean,
   opened: boolean,
   canDelete: boolean,
@@ -498,7 +497,7 @@ export default function workspaces(state: WorkspacesType={
   currentMaterialsActiveNodeId: null,
   types: null,
   materialEditor: {
-    workspace: null,
+    currentNodeWorkspace: null,
     section: false,
     opened: false,
     canDelete: true,
@@ -673,7 +672,7 @@ export default function workspaces(state: WorkspacesType={
       newEditor = {
         currentNodeValue: null,
         parentNodeValue: null,
-        workspace: null,
+        currentNodeWorkspace: null,
         opened: false,
         ...newEditor,
       };

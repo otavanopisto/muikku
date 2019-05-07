@@ -87,7 +87,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       currentNodeValue: chapter,
       currentDraftNodeValue: {...chapter},
       parentNodeValue: null,
-      workspace: this.props.workspace,
       section: true,
       opened: true,
       canHide: true,

@@ -260,7 +260,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       currentNodeValue: this.props.material,
       currentDraftNodeValue: {...this.props.material},
       parentNodeValue: this.props.page,
-      workspace: this.props.workspace,
       section: false,
       opened: true,
       canDelete: typeof this.props.canDelete === "undefined" ? false : this.props.canDelete,

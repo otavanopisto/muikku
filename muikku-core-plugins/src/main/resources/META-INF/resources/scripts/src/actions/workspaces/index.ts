@@ -155,6 +155,7 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
     material: MaterialContentNodeType,
+    workspace: WorkspaceType,
     removeAnswers?: boolean,
     success: ()=>any,
     fail: ()=>any
@@ -1374,8 +1375,8 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
         payload: data.material
       });
       
-      await promisify(mApi().workspaces.materials
-          .del(data.material.id, data.material.workspaceMaterialId, {
+      await promisify(mApi().workspace.workspaces.materials
+          .del(data.workspace.id, data.material.workspaceMaterialId, {
             removeAnswers: data.removeAnswers || false,
             updateLinkedMaterials: true,
           }), 'callback')()
