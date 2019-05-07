@@ -25,7 +25,7 @@
   }
 }
 
-.application-list--workspace-staff-members {
+.application-list--workspace-users {
   display:flex;
   flex-wrap: wrap;
   padding: 0 0 10px;
@@ -172,8 +172,9 @@
   flex-flow: row nowrap;
 }
 
-.application-list__item-content-wrapper--workspace-staff-members {
+.application-list__item-content-wrapper--workspace-users {
   align-items: center;
+  flex-grow: 1;
   padding: 10px;
 }
 
@@ -355,7 +356,7 @@
   flex-shrink: 1;
 }
 
-.application-list__item-content-main--workspace-staffmember {
+.application-list__item-content-main--workspace-user {
   margin-left: 5px;
 }
 
