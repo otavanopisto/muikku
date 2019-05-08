@@ -106,6 +106,9 @@
           .callback($.proxy(function (err, evaluationinfo) {
             if (!err && evaluationinfo) {
               var buttonClass = evaluationinfo.type == 'INCOMPLETE' ? 'incomplete' : evaluationinfo.type == 'FAILED' ? 'failed' : 'passed';
+              // #4599: Set secondary state to choose correct icon for withdrawn assignments that have been evaluated
+              $(this.element).attr('data-secondary-state', buttonClass);
+              this._applyState(this.assignmentType(), this.workspaceMaterialState()); // refresh TOC
               $('<button>')
               .addClass('muikku-show-evaluation-button')
               .addClass(buttonClass)
@@ -381,6 +384,26 @@
             break;
           case "WITHDRAWN":
             $(tocItem).find('.assignment').children('span').remove();
+            // #4599: Use secondary state to mark incomplete and failed assignments with correct icon 
+            var secondaryState = $(this.element).attr('data-secondary-state');
+            if (secondaryState == 'incomplete') {
+              $(tocItem).find('.assignment').append($('<span>')
+                  .addClass('evaluated-incomplete')
+                  .attr("title", getLocaleText('plugin.workspace.materials.assignmentIncompleteTooltip'))
+              );
+            }
+            else if (secondaryState == 'failed') {
+              $(tocItem).find('.assignment').append($('<span>')
+                  .addClass('evaluated-failed')
+                  .attr("title", getLocaleText('plugin.workspace.materials.assignmentFailedTooltip'))
+              );
+            }
+            else if (secondaryState == 'passed') { // not that passed assignments could even be withdrawn...
+              $(tocItem).find('.assignment').append($('<span>')
+                  .addClass('evaluated-passed')
+                  .attr("title", getLocaleText('plugin.workspace.materials.assignmentPassedTooltip'))
+              );
+            }
             break;
           case "INCOMPLETE":
             $(tocItem).find('.assignment').append($('<span>')
