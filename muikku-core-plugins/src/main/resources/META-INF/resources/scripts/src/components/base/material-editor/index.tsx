@@ -14,6 +14,8 @@ import { StatusType } from '~/reducers/base/status';
 import { LocaleListType } from '~/reducers/base/locales';
 import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 import Dropdown from "~/components/general/dropdown"; 
+import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
+import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 
 import equals = require("deep-equal");
 
@@ -79,7 +81,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     super(props);
 
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
-    this.delete = this.delete.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
     this.close = this.close.bind(this);
@@ -90,29 +91,25 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   toggleHiddenStatus() {
     // TODO same we need an endpoint for this
     
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
-      hidden: !this.props.editorState.currentNodeValue.hidden,
-    }, true);
-  }
-  
-  delete() {
-    // TODO not sure what to do here
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        hidden: !this.props.editorState.currentDraftNodeValue.hidden,
+      },
+      isDraft: true
+    });
   }
   
   updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
-    // TODO, the current endpoint currently doesn't work
-    // we need an unified endpoint that would take any
-    // content node the other one is controlled by the
-    // collaboration plugin
-    // all this function does is to update the title but
-    // does not do anything to the server
-    
-    // there's a functional endpoint right now for normal
-    // chapters but we need an unified one
-    
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
-      title: e.target.value,
-    }, true);
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        title: e.target.value,
+      },
+      isDraft: true,
+    });
   }
   
   updateContent(content: string) {
@@ -121,9 +118,14 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     // this cannot be achieved until that is modified
     // got to wait
     
-    this.props.updateWorkspaceMaterialContentNode(this.props.editorState.currentDraftNodeValue, {
-      html: content,
-    }, true);
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        html: content,
+      },
+      isDraft: true,
+    });
   }
   
   close() {
@@ -134,19 +136,20 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
   
   publish() {
-    this.props.updateWorkspaceMaterialContentNode(
-      this.props.editorState.currentNodeValue,
-      this.props.editorState.currentDraftNodeValue
-    );
-    this.close();
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentNodeValue,
+      update: this.props.editorState.currentDraftNodeValue,
+    });
   }
   
   revert() {
-    this.props.updateWorkspaceMaterialContentNode(
-      this.props.editorState.currentDraftNodeValue,
-      this.props.editorState.currentNodeValue,
-      true,
-    );
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: this.props.editorState.currentNodeValue,
+      isDraft: true,
+    });
   }
 
   render(){
@@ -196,7 +199,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             </Dropdown> : null}
           {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentDraftNodeValue}>
             <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialDeleteTooltip")}>
-              <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete" onClick={this.delete}/>
+              <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete"/>
             </Dropdown>
           </DeleteWorkspaceMaterialDialog> : null}
         </div>
@@ -205,11 +208,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
-          {!this.props.editorState.section ? <div className="material-editor__editor-container">
+          {!this.props.editorState.section && this.props.editorState.canEditContent ? <div className="material-editor__editor-container">
             <CKEditor configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
-                this.props.editorState.workspace,
+                this.props.editorState.currentNodeWorkspace,
                 this.props.editorState.currentDraftNodeValue,
                 this.props.editorState.disablePlugins,
               )} onChange={this.updateContent}>
@@ -217,6 +220,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             </CKEditor>
           </div> : null}
         </div>
+          
+        <ConfirmPublishPageWithAnswersDialog/>
+        <ConfirmRemovePageWithAnswersDialog/>
      </div>
   }
 }

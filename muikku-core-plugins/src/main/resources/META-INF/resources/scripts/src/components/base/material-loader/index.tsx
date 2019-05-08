@@ -142,6 +142,7 @@ interface MaterialLoaderProps {
   canSetLicense?: boolean,
   canSetProducers?: boolean,
   canAddAttachments?: boolean,
+  canEditContent?: boolean,
   
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
@@ -255,10 +256,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   }
   startupEditor(){
     this.props.setWorkspaceMaterialEditorState({
+      currentNodeWorkspace: this.props.workspace,
       currentNodeValue: this.props.material,
       currentDraftNodeValue: {...this.props.material},
       parentNodeValue: this.props.page,
-      workspace: this.props.workspace,
       section: false,
       opened: true,
       canDelete: typeof this.props.canDelete === "undefined" ? false : this.props.canDelete,
@@ -272,7 +273,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? false : this.props.canChangeExerciseType,
       canSetLicense: typeof this.props.canSetLicense === "undefined" ? false : this.props.canSetLicense,
       canSetProducers: typeof this.props.canSetProducers === "undefined" ? false : this.props.canSetProducers,
-      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? false : this.props.canAddAttachments
+      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? false : this.props.canAddAttachments,
+      canEditContent: typeof this.props.canAddAttachments === "undefined" ? true : this.props.canAddAttachments,
+      showRemoveAnswersDialogForPublish: false,
+      showRemoveAnswersDialogForDelete: false,
     });
   }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){

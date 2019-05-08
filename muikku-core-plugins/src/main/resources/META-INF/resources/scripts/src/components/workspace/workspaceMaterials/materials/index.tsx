@@ -56,6 +56,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
+    this.createPage = this.createPage.bind(this);
+    this.createChapter = this.createChapter.bind(this);
+    this.pastePage = this.pastePage.bind(this);
+    this.attachFile = this.attachFile.bind(this);
     
     this.getFlattenedMaterials(props);
   }
@@ -79,10 +83,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   }
   startupEditor(chapter: MaterialContentNodeType) {
     this.props.setWorkspaceMaterialEditorState({
+      currentNodeWorkspace: this.props.workspace,
       currentNodeValue: chapter,
       currentDraftNodeValue: {...chapter},
       parentNodeValue: null,
-      workspace: this.props.workspace,
       section: true,
       opened: true,
       canHide: true,
@@ -97,7 +101,22 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       canSetLicense: false,
       canSetProducers: false,
       canAddAttachments: false,
+      canEditContent: false,
+      showRemoveAnswersDialogForPublish: false,
+      showRemoveAnswersDialogForDelete: false,
     });
+  }
+  createPage(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
+    
+  }
+  createChapter(nextSibling: MaterialContentNodeType) {
+    
+  }
+  pastePage(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
+    
+  }
+  attachFile(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
+    
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
     this.flattenedMaterial = [];
@@ -158,8 +177,20 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation}
       title={this.props.workspace.name} ref="content-panel">
       {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
-      {this.props.materials.map((chapter)=>{
+      {this.props.materials.map((chapter, index)=>{
         return <section className="content-panel__chapter" key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId}>
+        
+          <ButtonPill icon="assignment" onClick={this.createChapter.bind(this, chapter)}/>
+          {index !== 0 ?
+            <ButtonPill icon="add" onClick={this.createPage.bind(this, this.props.materials[index - 1], null)}/>
+          : null}
+          {index !== 0 ?
+            <ButtonPill icon="content_paste" onClick={this.pastePage.bind(this, this.props.materials[index - 1], null)}/>
+          : null}
+          {index !== 0 ?
+            <ButtonPill icon="attachment" onClick={this.attachFile.bind(this, this.props.materials[index - 1], null)}/>
+          : null}
+        
           <h2 className={`content-panel__chapter-title ${chapter.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
             {chapter.title}
             {titlesAreEditable ? <ButtonPill icon="edit" onClick={this.startupEditor.bind(this, chapter)}/> : null}
@@ -169,6 +200,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
             let material = !this.props.workspace || !this.props.materialReplies  ? null :
               <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
                 <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
+              
+                <ButtonPill icon="add" onClick={this.createPage.bind(this, chapter, node)}/>
+                <ButtonPill icon="content_paste" onClick={this.pastePage.bind(this, chapter, node)}/>
+                <ButtonPill icon="attachment" onClick={this.attachFile.bind(this, chapter, node)}/>
+                
                 <WorkspaceMaterial page={chapter} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
               </ContentPanelItem>;
             return material;

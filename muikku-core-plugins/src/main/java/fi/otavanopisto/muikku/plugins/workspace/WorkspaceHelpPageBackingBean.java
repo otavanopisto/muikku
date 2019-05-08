@@ -60,7 +60,7 @@ public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
     
     try {
       WorkspaceMaterial helpPage = workspaceMaterialController.ensureWorkspaceHelpPageExists(workspaceEntity);
-      contentNodes = Arrays.asList(workspaceMaterialController.createContentNode(helpPage));
+      contentNodes = Arrays.asList(workspaceMaterialController.createContentNode(helpPage, null));
     }
     catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Error loading materials", e);

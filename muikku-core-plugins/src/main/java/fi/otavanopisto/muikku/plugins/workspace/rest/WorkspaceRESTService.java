@@ -573,7 +573,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     try {
       WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
-      return Response.ok(workspaceMaterialController.createContentNode(frontPage)).build();
+      return Response.ok(workspaceMaterialController.createContentNode(frontPage, null)).build();
     } catch (WorkspaceMaterialException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
@@ -589,8 +589,27 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     try {
       WorkspaceMaterial helpPage = workspaceMaterialController.ensureWorkspaceHelpPageExists(workspaceEntity);
-      return Response.ok(workspaceMaterialController.createContentNode(helpPage)).build();
-    } catch (WorkspaceMaterialException e) {
+      return Response.ok(workspaceMaterialController.createContentNode(helpPage, null)).build();
+    }
+    catch (WorkspaceMaterialException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/asContentNode/{WORKSPACENODEID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getAsContentNode(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACENODEID") Long workspaceNodeId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceNodeId);
+    if (workspaceEntity == null || node == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    try {
+      WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(node);
+      return Response.ok(workspaceMaterialController.createContentNode(node, nextSibling)).build();
+    }
+    catch (WorkspaceMaterialException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
   }

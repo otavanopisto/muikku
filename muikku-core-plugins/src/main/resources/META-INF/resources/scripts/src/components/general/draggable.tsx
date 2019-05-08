@@ -71,6 +71,7 @@ interface DraggableProps extends React.DetailedHTMLProps<React.HTMLAttributes<HT
   as?: string,
   denyWidth?: boolean,
   denyHeight?: boolean,
+  handleSelector?: string,
       
   __debugVoidStyle?: boolean
 }
@@ -94,6 +95,9 @@ interface DraggableState {
     marginBottom: string
   }
 }
+
+let lastHackedDraggableX: number;
+let lastHackedDraggableY: number;
 
 export default class Draggable extends React.Component<DraggableProps, DraggableState> {
   private originalPageX:number;
@@ -143,7 +147,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     document.body.removeEventListener("mousemove", this.onMove);
     document.body.removeEventListener("mouseup", this.onRootSeletEnd);
   }
-  onRootSelectStart(e: MouseEvent){
+  onRootSelectStart(e: MouseEvent, force?: boolean){
     let rootElement:HTMLElement;
     if (this.props.interactionData){
       rootElement = (this.refs.root as Droppable).getDOMComponent();
@@ -151,18 +155,23 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       rootElement = this.refs.root as HTMLDivElement;
     }
     
-    if (!checkIsParentOrSelf(e.target as HTMLElement, rootElement)){
+    let handleElement:Element = rootElement;
+    if (this.props.handleSelector) {
+      handleElement = handleElement.querySelector(this.props.handleSelector);
+    }
+    
+    if (!force && !checkIsParentOrSelf(e.target as HTMLElement, handleElement as HTMLElement)){
       return;
     }
     
     this.timer = (new Date()).getTime();
-    this.isFirstDrag = true;
+    this.isFirstDrag = !force;
     
     let clientRect = rootElement.getBoundingClientRect();
     let style = getComputedStyle(rootElement);
     
-    this.originalPageX = e.pageX;
-    this.originalPageY = e.pageY;
+    this.originalPageX = force ? lastHackedDraggableX : e.pageX;
+    this.originalPageY = force ? lastHackedDraggableY : e.pageY;
     
     this.rootFixedY = clientRect.top - parseFloat(style.marginTop);
     this.rootFixedX = clientRect.left - parseFloat(style.marginLeft);
@@ -204,6 +213,9 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     });
   }
   onMove(e: MouseEvent){
+    lastHackedDraggableX = e.pageX;
+    lastHackedDraggableY = e.pageY;
+    
     if (this.props.__debugVoidStyle){
       return;
     }
@@ -313,7 +325,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     //now we check the contestants
     if (contestants.length){
       
-      console.log(contestants);
+      // console.log(contestants);
       
       //the basic winner is the only contestant
       let winner = contestants[0];
@@ -374,6 +386,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     delete nProps["clone"];
     delete nProps["denyWidth"];
     delete nProps["denyHeight"];
+    delete nProps["handleSelector"];
     
     if (this.state.isDragging) {
       let nStyle = {...this.props.style} || {};

@@ -14,7 +14,8 @@ interface DropdownProps {
   content?: any,
   openByHover?: boolean
   persistent?:boolean;
-  onClose?: ()=>any
+  onClose?: ()=>any;
+  onClick?: ()=>any;
 }
 
 interface DropdownState {
@@ -82,11 +83,14 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     (this.refs["portal"] as Portal).closePortal();
   }
   render(){
-    let elementCloned : React.ReactElement<any> = React.cloneElement(this.props.children, { ref: "activator" });
+    let elementCloned : React.ReactElement<any> = React.cloneElement(this.props.children, { ref: "activator"});
     let portalProps:any = {};
     if (!this.props.openByHover){
       portalProps.openByClickOn = elementCloned;
     } else {
+      if (this.props.onClick) {
+        elementCloned = React.cloneElement(this.props.children, { ref: "activator", onClick: this.props.onClick });
+      }
       portalProps.openByHoverOn = elementCloned;
     }
     

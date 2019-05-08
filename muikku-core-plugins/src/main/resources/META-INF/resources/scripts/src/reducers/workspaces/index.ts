@@ -305,10 +305,10 @@ export interface WorkspaceTypeType {
 //section = true && currentNodeValue = x && parentNodeValue = null      (edit section)
 //section = false && currentNodeValue = x && parentNodeValue = x        (edit material)
 export interface WorkspaceMaterialEditorType {
+  currentNodeWorkspace: WorkspaceType,
   currentNodeValue?: MaterialContentNodeType,
   currentDraftNodeValue?: MaterialContentNodeType,
   parentNodeValue?: MaterialContentNodeType,
-  workspace: WorkspaceType,
   section: boolean,
   opened: boolean,
   canDelete: boolean,
@@ -322,7 +322,10 @@ export interface WorkspaceMaterialEditorType {
   canChangeExerciseType: boolean,
   canSetLicense: boolean,
   canSetProducers: boolean,
-  canAddAttachments: boolean
+  canAddAttachments: boolean,
+  canEditContent: boolean,
+  showRemoveAnswersDialogForPublish: boolean,
+  showRemoveAnswersDialogForDelete: boolean,
 }
 
 export interface WorkspacesType {
@@ -380,6 +383,7 @@ export interface MaterialContentNodeType {
   correctAnswers?: MaterialCorrectAnswersType,
   hidden?: boolean,
   parentId?: number,
+  nextSiblingId?: number,
   path?: string,
   viewRestricted?: boolean,
   producers?: any,
@@ -493,7 +497,7 @@ export default function workspaces(state: WorkspacesType={
   currentMaterialsActiveNodeId: null,
   types: null,
   materialEditor: {
-    workspace: null,
+    currentNodeWorkspace: null,
     section: false,
     opened: false,
     canDelete: true,
@@ -508,6 +512,9 @@ export default function workspaces(state: WorkspacesType={
     canSetLicense: true,
     canSetProducers: true,
     canAddAttachments: true,
+    canEditContent: true,
+    showRemoveAnswersDialogForPublish: false,
+    showRemoveAnswersDialogForDelete: false,
   }
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
@@ -625,16 +632,18 @@ export default function workspaces(state: WorkspacesType={
     }
     
     let newEditor = state.materialEditor;
-    if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue && newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.currentNodeValue = {...newEditor.currentNodeValue, ...action.payload.update};
-    } else if (!action.payload.isDraft && newEditor && newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    } else if (!action.payload.isDraft && newEditor && newEditor.parentNodeValue && newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.parentNodeValue = {...newEditor.parentNodeValue, ...action.payload.update};
-    } else if (action.payload.isDraft && newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    } else if (action.payload.isDraft && newEditor && newEditor.currentDraftNodeValue && newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.currentDraftNodeValue = {...newEditor.currentDraftNodeValue, ...action.payload.update};
     }
+    newEditor.showRemoveAnswersDialogForPublish = action.payload.showRemoveAnswersDialogForPublish;
+    
     return {
       ...state,
       currentWorkspace: newCurrentWorkspace,
@@ -642,25 +651,17 @@ export default function workspaces(state: WorkspacesType={
       materialEditor: newEditor
     }
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
-    let found = false;
+
     let filterMaterial = (m: MaterialContentNodeType) => {
-      if (found) {
-        return true;
-      }
-      
       if (m.workspaceMaterialId === action.payload.workspaceMaterialId) {
-        found = true;
         return false;
       }
       
       return true;
     }
-    let mapMaterial = (m: MaterialContentNodeType) => {
-      if (found) {
-        return m;
-      }
-      
-      const newM:MaterialContentNodeType = {...m, children: m.children ? m.children.filter(filterMaterial) : m.children};
+    let mapMaterial = (m: MaterialContentNodeType, index: number, arr: Array<MaterialContentNodeType>) => {
+      const nextSiblingId = arr[index + 1] ? arr[index + 1].workspaceMaterialId : null;
+      const newM:MaterialContentNodeType = {...m, nextSiblingId, children: m.children ? m.children.filter(filterMaterial).map(mapMaterial) : m.children};
       return newM;
     }
     
@@ -671,7 +672,7 @@ export default function workspaces(state: WorkspacesType={
       newEditor = {
         currentNodeValue: null,
         parentNodeValue: null,
-        workspace: null,
+        currentNodeWorkspace: null,
         opened: false,
         ...newEditor,
       };

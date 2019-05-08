@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.material.rest;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -116,7 +115,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   @PUT
   @Path("/{id}/content")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateMaterialContent(@PathParam("id") Long id, @QueryParam("removeAnswers") @DefaultValue("false") boolean removeAnswers, String content) {
+  public Response updateMaterialContent(@PathParam("id") Long id, HtmlRestMaterialContent entity) {
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
       return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
@@ -128,7 +127,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     }
     
     try {
-      htmlMaterial = htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, content, removeAnswers);
+      htmlMaterial = htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, entity.getContent(), entity.getRemoveAnswers());
     }
     catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.CONFLICT).entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();

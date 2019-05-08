@@ -9,7 +9,7 @@ import '~/sass/elements/link.scss';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 import { bindActionCreators } from 'redux';
-import { WorkspaceType, MaterialContentNodeType } from '~/reducers/workspaces';
+import { WorkspaceType, MaterialContentNodeType, WorkspaceMaterialEditorType } from '~/reducers/workspaces';
 import { deleteWorkspaceMaterialContentNode, DeleteWorkspaceMaterialContentNodeTriggerType } from '~/actions/workspaces';
 
 interface DeleteWorkspaceMaterialDialogProps {
@@ -17,7 +17,8 @@ interface DeleteWorkspaceMaterialDialogProps {
   children: any,
   isSection?: boolean,
   material: MaterialContentNodeType,
-  deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType
+  deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType,
+  materialEditor: WorkspaceMaterialEditorType,
 }
 
 interface DeleteWorkspaceMaterialDialogState {
@@ -39,6 +40,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
     });
     this.props.deleteWorkspaceMaterialContentNode({
       material: this.props.material,
+      workspace: this.props.materialEditor.currentNodeWorkspace,
       success: ()=>{
         this.setState({
           locked: false
@@ -76,6 +78,8 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
       )
     }
     
+    console.log(this.props.children);
+    
     return <Dialog modifier="evaluation-cancel-dialog"
       title={this.props.i18n.text.get(this.props.isSection ?
         "plugin.workspace.materialsManagement.confirmSectionDelete.title" :
@@ -86,7 +90,8 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
 
 function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    materialEditor: state.workspaces.materialEditor,
   }
 };
 

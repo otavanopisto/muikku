@@ -45,6 +45,7 @@ export interface UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REP
     workspaceMaterialReplyId: number
 }>{};
 export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
+  showRemoveAnswersDialogForPublish: boolean,
   material: MaterialContentNodeType,
   update: Partial<MaterialContentNodeType>,
   isDraft?: boolean,
@@ -139,12 +140,23 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
 }
 
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
-  (material: MaterialContentNodeType, update: Partial<MaterialContentNodeType>, isDraft?: boolean):AnyActionType
+  (data: {
+    workspace: WorkspaceType,
+    material: MaterialContentNodeType,
+    update: Partial<MaterialContentNodeType>,
+    isDraft?: boolean,
+    removeAnswers?: boolean,
+    success?: ()=>any,
+    fail?: ()=>any,
+    fakeIt?: boolean,
+  }):AnyActionType
 }
 
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
     material: MaterialContentNodeType,
+    workspace: WorkspaceType,
+    removeAnswers?: boolean,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
@@ -360,6 +372,9 @@ export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
 }
 export interface LoadWholeWorkspaceMaterialsTriggerType {
   (workspaceId: number, includeHidden: boolean, callback?:(nodes: Array<MaterialContentNodeType>)=>any):AnyActionType
+}
+export interface SetWholeWorkspaceMaterialsTriggerType {
+  (materials: MaterialContentNodeListType): AnyActionType
 }
 export interface SignupIntoWorkspaceTriggerType {
   (data: {
@@ -649,6 +664,13 @@ let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = functio
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load materials'), 'error'));
     }
+  }
+}
+
+let setWholeWorkspaceMaterials:SetWholeWorkspaceMaterialsTriggerType = function setWholeWorkspaceMaterials(materials){
+  return {
+    type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
+    payload: materials
   }
 }
 
@@ -1255,33 +1277,89 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
   };
 }
 
-let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(material, update, isDraft) {
+let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      dispatch({
-        type: "UPDATE_MATERIAL_CONTENT_NODE",
-        payload: {
-          material,
-          update,
-          isDraft,
-        }
-      });
+      if (!data.fakeIt) {
+        dispatch({
+          type: "UPDATE_MATERIAL_CONTENT_NODE",
+          payload: {
+            showRemoveAnswersDialogForPublish: false,
+            material: data.material,
+            update: data.update,
+            isDraft: data.isDraft,
+          }
+        });
+      }
       
-      // TODO write the code for the actual update
+      if (!data.isDraft) {
+        // TODO handle conflicts
+        // Trying to update the actual thing
+        if (typeof data.update.html !== "undefined" && data.material.html !== data.update.html) {
+          await promisify(mApi().materials.html.content
+              .update(data.material.materialId, {
+                content: data.update.html,
+                removeAnswers: false,
+              }), 'callback')();
+        }
+        
+        const fields = ["materialId", "parentId", "nextSiblingId", "hidden", "assignmentType", "correctAnswers", "path", "title"]
+        const result:any = {
+          id: data.material.workspaceMaterialId
+        };
+        let changed = false;
+        fields.forEach((field) => {
+          if (typeof (data.update as any)[field] !== "undefined" &&
+             (data.material as any)[field] !== (data.update as any)[field]) {
+            changed = true;
+          }
+          result[field] = typeof (data.update as any)[field] !== "undefined" ?
+            (data.update as any)[field] :
+            (data.material as any)[field]
+        });
+        if (changed) {
+          await promisify(mApi().workspace.workspaces.materials
+              .update(data.workspace.id, data.material.workspaceMaterialId, result), 'callback')();
+        }
+      } else {
+        // Trying to update the draft
+        // TODO
+      }
+      
+      data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       
-      dispatch({
-        type: "UPDATE_MATERIAL_CONTENT_NODE",
-        payload: {
-          material,
-          update: material,
-          isDraft,
+      let showRemoveAnswersDialogForPublish = false;
+      if (!data.removeAnswers && err.message) {
+        try {
+          let message = JSON.parse(err.message);
+          if (message.reason === "CONTAINS_ANSWERS") {
+            showRemoveAnswersDialogForPublish = true;
+          }
+        } catch (e) {
         }
-      });
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
+      }
+      
+      if (!data.fakeIt) {
+        dispatch({
+          type: "UPDATE_MATERIAL_CONTENT_NODE",
+          payload: {
+            showRemoveAnswersDialogForPublish,
+            material: data.material,
+            update: data.material,
+            isDraft: data.isDraft,
+          }
+        });
+      }
+      
+      data.fail && data.fail();
+      
+      if (!showRemoveAnswersDialogForPublish){
+        dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
+      }
     }
   }
 }
@@ -1297,10 +1375,27 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
         payload: data.material
       });
       
+      await promisify(mApi().workspace.workspaces.materials
+          .del(data.workspace.id, data.material.workspaceMaterialId, {
+            removeAnswers: data.removeAnswers || false,
+            updateLinkedMaterials: true,
+          }), 'callback')()
+      
       data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
+      }
+      
+      if (!data.removeAnswers && err.message) {
+        try {
+          let message = JSON.parse(err.message);
+          if (message.reason === "CONTAINS_ANSWERS") {
+            const currentEditorState = getState().workspaces.materialEditor;
+            dispatch(setWorkspaceMaterialEditorState({...currentEditorState, showRemoveAnswersDialogForDelete: true}))
+          }
+        } catch (e) {
+        }
       }
       
       data.fail && data.fail();
@@ -1317,4 +1412,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
-  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode}
+  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials}
