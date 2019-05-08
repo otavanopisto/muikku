@@ -77,7 +77,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                       {/*<p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>*/}
                     </article>
                   </ApplicationListItemBody>
-                  <div className="labels item-list__announcement-workspaces">
+                  { (announcement.workspaces.length !== 0 || announcement.userGroupEntityIds.length !== 0) ? <div className="labels item-list__announcement-workspaces">
                     {announcement.workspaces.map((workspace)=>{
                       if (announcement.workspaces.length !== 0){
                         return <span className="label" key={workspace.id}>
@@ -94,7 +94,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                         </span>
                       }
                     })}
-                    </div>
+                    </div> : null }
                   <ApplicationListItemFooter modifiers="announcement-actions">  
                     <NewEditAnnouncement announcement={announcement}>
                       <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
