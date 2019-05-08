@@ -212,7 +212,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             <CKEditor configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
-                this.props.editorState.workspace,
+                this.props.editorState.currentNodeWorkspace,
                 this.props.editorState.currentDraftNodeValue,
                 this.props.editorState.disablePlugins,
               )} onChange={this.updateContent}>
