@@ -148,7 +148,7 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
     removeAnswers?: boolean,
     success?: ()=>any,
     fail?: ()=>any,
-    fakeIt?: boolean,
+    dontTriggerReducerActions?: boolean,
   }):AnyActionType
 }
 
@@ -1280,7 +1280,7 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
 let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      if (!data.fakeIt) {
+      if (!data.dontTriggerReducerActions) {
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
           payload: {
@@ -1343,7 +1343,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         }
       }
       
-      if (!data.fakeIt) {
+      if (!data.dontTriggerReducerActions) {
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
           payload: {
