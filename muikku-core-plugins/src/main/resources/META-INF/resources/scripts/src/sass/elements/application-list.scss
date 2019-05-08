@@ -25,11 +25,19 @@
   }
 }
 
+.application-list--workspace-staff-members {
+  display:flex;
+  flex-wrap: wrap;  
+  padding: 0 0 10px;
+}
+
 .application-list--workspace-users {
   display:flex;
+  flex-direction: column;
   flex-wrap: wrap;
   padding: 0 0 10px;
 }
+
 
 .application-list__title {
   @include workspace-subpanel-title;

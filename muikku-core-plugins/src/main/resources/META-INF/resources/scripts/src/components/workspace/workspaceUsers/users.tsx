@@ -43,14 +43,14 @@ interface StudentProps {
 }
 
 function Student(props: StudentProps){
+  
   return <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-users">
     <LazyLoader className="avatar-container">
       <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
     </LazyLoader>
     <div className="application-list__item-content-main application-list__item-content-main--workspace-user">
-      <div>{props.student.firstName} {props.student.lastName}</div>
-      <div className="application-list__item-content-secondary-data">{filterHighlight(getName(props.student, true), props.highlight) +
-        (props.student.studyProgrammeName ? " (" + props.student.studyProgrammeName + ")" : "")}</div>
+      <div>{filterHighlight(getName(props.student, true), props.highlight)}</div>
+      <div className="application-list__item-content-secondary-data">{props.student.studyProgrammeName ? " (" + props.student.studyProgrammeName + ")" : ""}</div>
     </div>
     {props.student.active ? <IconButton buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/> : null}
     {props.student.active ? <IconButton icon="delete" onClick={props.onSetToggleStatus}/> : <IconButton icon="goback" onClick={props.onSetToggleStatus}/>}
@@ -125,7 +125,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-users">
                {this.props.i18n.text.get('plugin.workspace.users.teachers.title')}
             </h2>
-            <div className="application-sub-panel__body application-list application-list--workspace-users">   
+            <div className="application-sub-panel__body application-list--workspace-staff-members">   
             {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.map((staff)=>{
               let userCategory = staff.userEntityId > 10 ? staff.userEntityId % 10 + 1 : staff.userEntityId;
               return <div className="application-list__item application-list__item--workspace-user" key={staff.userEntityId}>
