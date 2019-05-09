@@ -59,6 +59,31 @@
   }
 }
 
+.toc__section--drag-container,
+.toc__item--drag-container {
+  position: relative;
+}
+
+.toc__section--drag-handle,
+.toc__item--drag-handle {
+  align-items: center;
+  cursor: grab;
+  display: flex;
+  font-size: 16px;
+  height: 20px;
+  justify-content: center;
+  right: 5px;
+  padding: 4px;
+  position: absolute;
+  top: 4px;
+  width: 20px;
+  z-index: 9999;
+}
+
+.toc__section--drag-handle {
+  top: 0px;
+}
+
 .toc__item--exercise {
   border-color: $color-exercise;
 }
