@@ -155,11 +155,6 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
     if (workspace.studentActivity.assessmentState.date){
       resultingStateText += " - " + this.props.i18n.time.format(workspace.studentActivity.assessmentState.date);
     }
-
-    //  ------------------------------------------------------------------
-    
-
-    //--------------------------------------------------------------------
     
     return <ApplicationListItem className={`course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
         <ApplicationListItemHeader modifiers="course" onClick={this.toggleActivitiesVisible}>
