@@ -1,6 +1,9 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/main-function/workspaces";
+import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementState } from "~/reducers/main-function/workspaces";
+import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
+
+
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import {StateType} from '~/reducers';
@@ -14,6 +17,7 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/workspace-activity.scss';
 import { ApplicationListItem, ApplicationListItemHeader } from "~/components/general/application-list";
 
+
 interface StudentWorkspaceProps {
   i18n: i18nType,
   workspace: WorkspaceType
@@ -22,6 +26,7 @@ interface StudentWorkspaceProps {
 interface StudentWorkspaceState {
   activitiesVisible: boolean
 }
+
 
 function CourseActivityRow(props: {
   i18n: i18nType,  
@@ -57,6 +62,50 @@ function CourseActivityRow(props: {
       <span>{output}</span>
     </div>
   </div>
+}
+
+function getWorkspaceAssessmentsAndPercents(props: StudentWorkspaceProps, workspace: WorkspaceType){
+
+  if (workspace.studentActivity.assessmentState && workspace.studentActivity.assessmentState.grade){
+    return <span className="application-list__header-secondary">
+      <span>{props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date))}</span>
+      <span title={props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date)) +
+        getShortenGradeExtension(workspace.studentActivity.assessmentState.grade)}
+        className={`application-list__indicator-badge application-list__indicator-badge--course ${
+          workspace.studentActivity.assessmentState.state === "pass" || workspace.studentActivity.assessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
+        {shortenGrade(workspace.studentActivity.assessmentState.grade)}
+      </span>
+    </span>
+
+  } else if (workspace.studentActivity.assessmentState &&
+    (workspace.studentActivity.assessmentState.state === "incomplete" || workspace.studentActivity.assessmentState.state === "fail")){
+    let status = props.i18n.text.get(workspace.studentActivity.assessmentState.state === "incomplete" ?
+    	"plugin.guider.workspace.incomplete" : "plugin.guider.workspace.failed");
+    return <span className="application-list__header-secondary">
+      <span className="workspace-activity__assignment-done-percent" title={props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
+        workspace.studentActivity.evaluablesDonePercent}%
+      </span>
+      <span> / </span>
+      <span className="workspace-activity__exercise-done-percent" title={props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
+        workspace.studentActivity.exercisesDonePercent}%
+      </span>
+      <span className="workspace-activity__evaluated-date">{props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date))}</span>
+      <span title={props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date)) + " - " + status}
+        className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentActivity.assessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+        {status[0].toLocaleUpperCase()}
+      </span>
+    </span>
+  } else {
+    return <span className="application-list__header-secondary">
+      <span className="workspace-activity__assignment-done-percent" title={props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
+        workspace.studentActivity.evaluablesDonePercent}%
+      </span>
+      <span> / </span>
+      <span className="workspace-activity__exercise-done-percent" title={props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
+        workspace.studentActivity.exercisesDonePercent}%
+      </span>
+    </span>
+  }
 }
 
 class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWorkspaceState>{
@@ -106,18 +155,19 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
     if (workspace.studentActivity.assessmentState.date){
       resultingStateText += " - " + this.props.i18n.time.format(workspace.studentActivity.assessmentState.date);
     }
+
+    //  ------------------------------------------------------------------
+    
+
+    //--------------------------------------------------------------------
     
     return <ApplicationListItem className={`course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
         <ApplicationListItemHeader modifiers="course" onClick={this.toggleActivitiesVisible}>
           <span className="application-list__header-icon icon-books"></span>
           <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
           <span className="application-list__header-secondary workspace-activity">
-            <span className="workspace-activity__assignment-done-percent" title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
-              workspace.studentActivity.evaluablesDonePercent}%
-            </span>
-            <span> / </span>
-            <span className="workspace-activity__exercise-done-percent" title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
-              workspace.studentActivity.exercisesDonePercent}%
+            <span className="workspace-student__assessment-state">
+            {getWorkspaceAssessmentsAndPercents(this.props, workspace)}
             </span>
           </span>
           <Dropdown persistent modifier={"workspace-chart workspace-" + workspace.id} items={[<WorkspaceChart workspace={workspace}/>]}>
