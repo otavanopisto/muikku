@@ -148,13 +148,24 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
     removeAnswers?: boolean,
     success?: ()=>any,
     fail?: ()=>any,
-    fakeIt?: boolean,
+    dontTriggerReducerActions?: boolean,
   }):AnyActionType
 }
 
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
     material: MaterialContentNodeType,
+    workspace: WorkspaceType,
+    removeAnswers?: boolean,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
+export interface CreateWorkspaceMaterialContentNodeTriggerType {
+  (data: {
+    parentMaterial?: MaterialContentNodeType,
+    nextSibling?: MaterialContentNodeType,
     workspace: WorkspaceType,
     removeAnswers?: boolean,
     success: ()=>any,
@@ -1280,7 +1291,7 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
 let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      if (!data.fakeIt) {
+      if (!data.dontTriggerReducerActions) {
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
           payload: {
@@ -1343,7 +1354,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         }
       }
       
-      if (!data.fakeIt) {
+      if (!data.dontTriggerReducerActions) {
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
           payload: {
@@ -1400,6 +1411,18 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
       
       data.fail && data.fail();
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete material'), 'error'));
+    }
+  }
+}
+
+let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTriggerType = function createWorkspaceMaterialContentNode(data) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
     }
   }
 }

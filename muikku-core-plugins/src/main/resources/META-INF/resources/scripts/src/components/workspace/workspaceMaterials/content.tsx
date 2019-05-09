@@ -105,7 +105,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         success: () => {
           this.props.setWholeWorkspaceMaterials(contentNodesRepaired);
         },
-        fakeIt: true,
+        dontTriggerReducerActions: true,
       })
     });
   }
@@ -152,7 +152,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         success: () => {
           this.props.setWholeWorkspaceMaterials(repariedNodes);
         },
-        fakeIt: true,
+        dontTriggerReducerActions: true,
       });
     });
   }
