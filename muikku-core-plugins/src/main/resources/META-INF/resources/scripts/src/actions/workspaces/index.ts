@@ -162,6 +162,17 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   }):AnyActionType
 }
 
+export interface CreateWorkspaceMaterialContentNodeTriggerType {
+  (data: {
+    parentMaterial?: MaterialContentNodeType,
+    nextSibling?: MaterialContentNodeType,
+    workspace: WorkspaceType,
+    removeAnswers?: boolean,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
   if (!conditional){
     return null;
@@ -1400,6 +1411,18 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
       
       data.fail && data.fail();
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete material'), 'error'));
+    }
+  }
+}
+
+let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTriggerType = function createWorkspaceMaterialContentNode(data) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
     }
   }
 }
