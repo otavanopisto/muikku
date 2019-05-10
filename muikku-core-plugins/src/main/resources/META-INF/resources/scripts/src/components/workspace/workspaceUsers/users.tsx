@@ -74,6 +74,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     this.updateSearch = this.updateSearch.bind(this);
     this.removeStudentBeingToggledStatus = this.removeStudentBeingToggledStatus.bind(this);
     this.setStudentBeingToggledStatus = this.setStudentBeingToggledStatus.bind(this);
+    this.onTabChange = this.onTabChange.bind(this);
   }
   onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType){
     this.setState({
@@ -85,9 +86,9 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
       studentCurrentlyBeingSentMessage: null
     });
   }
-  onTabChange(newactive: "ACTIVE" | "INACTIVE"){
+  onTabChange(id: "ACTIVE" | "INACTIVE"){
     this.setState({
-      activeTab: newactive
+      activeTab: id
     });
   }
   updateSearch(e: React.ChangeEvent<HTMLInputElement>){

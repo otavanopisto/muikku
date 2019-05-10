@@ -25,6 +25,12 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
             key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
         })}
       </div>
+      <div className="tab-labels">
+        {this.props.tabs.map((tab, index)=>{
+          return <div className={`tab  ${tab.type ? "tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "tab-active" : ""}`}
+            key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
+        })}
+      </div>
       <div className="tab-data-container">
         {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
           .map(t=><div key={t.id} className={`tab-data ${t.type ? "tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "tab-content--active" : "tab-content-inactive"}`}>
@@ -34,3 +40,4 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
     </div>
   }
 }
+
