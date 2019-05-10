@@ -137,6 +137,13 @@
   margin: 0 0 0 10px;
 }
 
+.application-list__indicator-badge--course-in-guider {
+  font-size: $text-desktop-font-size;
+  font-weight: 600;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
 .application-list__indicator-badge--task {
   margin: 0 10px 0 0;
 }
