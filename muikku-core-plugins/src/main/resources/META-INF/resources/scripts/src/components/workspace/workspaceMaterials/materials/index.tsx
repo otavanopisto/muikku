@@ -12,7 +12,8 @@ import equals = require("deep-equal");
 import WorkspaceMaterial from './material';
 import { ButtonPill } from "~/components/general/button";
 import { bindActionCreators } from "redux";
-import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType } from "~/actions/workspaces";
+import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
+  createWorkspaceMaterialContentNode, CreateWorkspaceMaterialContentNodeTriggerType } from "~/actions/workspaces";
 
 interface WorkspaceMaterialsProps {
   i18n: i18nType,
@@ -25,7 +26,8 @@ interface WorkspaceMaterialsProps {
   onActiveNodeIdChange: (activeNodeId: number)=>any,
   onOpenNavigation: ()=>any,
   
-  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
+  createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType,
 }
 
 interface WorkspaceMaterialsState {
@@ -113,7 +115,18 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     
   }
   pastePage(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
+    const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;
+    const workspaceCopiedId = localStorage.getItem("workspace-copied-id") || null;
     
+    if (workspaceMaterialCopiedId) {
+      this.props.createWorkspaceMaterialContentNode({
+        workspace: this.props.workspace,
+        parentMaterial: chapter,
+        nextSibling,
+        copyMaterialId: parseInt(workspaceMaterialCopiedId),
+        copyWorkspaceId: parseInt(workspaceCopiedId),
+      })
+    }
   }
   attachFile(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     
@@ -228,7 +241,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({setWorkspaceMaterialEditorState}, dispatch);
+  return bindActionCreators({setWorkspaceMaterialEditorState, createWorkspaceMaterialContentNode}, dispatch);
 };
 
 export default connect(

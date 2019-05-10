@@ -13,6 +13,7 @@ import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType,
   setWholeWorkspaceMaterials, SetWholeWorkspaceMaterialsTriggerType } from "~/actions/workspaces";
+import { repairContentNodes } from "~/util/modifiers";
 
 interface ContentProps {
   i18n: i18nType,
@@ -27,22 +28,6 @@ interface ContentProps {
 
 interface ContentState {
   materials: MaterialContentNodeListType,
-}
-
-function repairContentNodes(base: MaterialContentNodeListType, parentNodeId?: number): MaterialContentNodeListType {
-  return base.map((cn, index) => {
-    const nextSibling = base[index + 1];
-    const nextSiblingId = nextSibling ? nextSibling.workspaceMaterialId : null;
-    const parentId = typeof parentNodeId !== "number" ? cn.parentId : parentNodeId;
-    const children = cn.children && cn.children.length ? repairContentNodes(cn.children, cn.workspaceMaterialId) : cn.children;
-    
-    return {
-      ...cn,
-      nextSiblingId,
-      parentId,
-      children,
-    }
-  });
 }
 
 function isScrolledIntoView(el: HTMLElement) {
@@ -133,7 +118,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     const workspaceId = this.state.materials[parentBaseIndex].children[baseIndex].workspaceMaterialId;
     
     const material = this.state.materials[parentBaseIndex].children[baseIndex];
-    const update = repariedNodes[parentTargetBeforeIndex].children.find((cn) => cn.workspaceMaterialId === material.workspaceMaterialId);
+    const update = repariedNodes[parentTargetBeforeIndex].children.find((cn: MaterialContentNodeType) => cn.workspaceMaterialId === material.workspaceMaterialId);
     
     this.setState({
       materials: repariedNodes,

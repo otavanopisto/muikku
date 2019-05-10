@@ -1,5 +1,6 @@
 import {ActionType} from '~/actions';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
+import { repairContentNodes } from '~/util/modifiers';
 
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
@@ -149,7 +150,8 @@ export interface WorkspaceDetailsType {
   beginDate: string,
   endDate: string,
   externalViewUrl: string,
-  typeId: string
+  typeId: string,
+  rootFolderId: number,
 }
 
 export type WorkspaceAccessType = "MEMBERS_ONLY" | "LOGGED_IN" | "ANYONE";
@@ -678,6 +680,24 @@ export default function workspaces(state: WorkspacesType={
       };
     }
     return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
+  } else if (action.type === "INSERT_MATERIAL_CONTENT_NODE") {
+    let insertedContentNode: MaterialContentNodeType = action.payload;
+    let newCurrentMaterials = [...state.currentMaterials];
+    let targetArray = newCurrentMaterials;
+    if (insertedContentNode.parentId !== state.currentWorkspace.details.rootFolderId) {
+      const targetIndex = newCurrentMaterials.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.parentId);
+      newCurrentMaterials[targetIndex] = {...newCurrentMaterials[targetIndex]};
+      newCurrentMaterials[targetIndex].children = [...newCurrentMaterials[targetIndex].children];
+      targetArray = newCurrentMaterials[targetIndex].children;
+    }
+    if (insertedContentNode.nextSiblingId) {
+      const siblingIndex = targetArray.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.nextSiblingId);
+      targetArray.splice(siblingIndex, 0, insertedContentNode);
+    } else {
+      targetArray.push(insertedContentNode);
+    }
+    
+    return {...state, currentMaterials: repairContentNodes(newCurrentMaterials)}
   }
   return state;
 }

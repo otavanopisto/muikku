@@ -51,6 +51,7 @@ export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE
   isDraft?: boolean,
 }>{};
 export interface DELETE_MATERIAL_CONTENT_NODE extends SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
+export interface INSERT_MATERIAL_CONTENT_NODE extends SpecificActionType<"INSERT_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -114,7 +115,8 @@ export interface SetCurrentWorkspaceTriggerType {
     workspaceId: number,
     refreshActivity?: boolean,
     success?: (workspace: WorkspaceType)=>any,
-    fail?: ()=>any
+    fail?: ()=>any,
+    loadDetails?: boolean,
   }):AnyActionType
 }
 
@@ -166,10 +168,11 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (data: {
     parentMaterial?: MaterialContentNodeType,
     nextSibling?: MaterialContentNodeType,
+    copyWorkspaceId?: number,
+    copyMaterialId?: number,
     workspace: WorkspaceType,
-    removeAnswers?: boolean,
-    success: ()=>any,
-    fail: ()=>any
+    success?: ()=>any,
+    fail?: ()=>any
   }):AnyActionType
 }
 
@@ -209,8 +212,9 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let producers:Array<WorkspaceProducerType>;
       let isCourseMember:boolean;
       let journals:WorkspaceJournalsType;
+      let details:WorkspaceDetailsType;
       let status = getState().status;
-      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help, isCourseMember, journals] = await Promise.all([
+      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help, isCourseMember, journals, details] = await Promise.all([
                                                  reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
@@ -245,7 +249,11 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                  reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
                                                      ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()),
                                                      
-                                                 reuseExistantValue(true, workspace && workspace.journals, ()=>null)
+                                                 reuseExistantValue(true, workspace && workspace.journals, ()=>null),
+                                                 
+                                                 data.loadDetails ? reuseExistantValue(true, workspace && workspace.details,
+                                                     ()=>promisify(mApi().workspace.workspaces
+                                                         .details.read(data.workspaceId), 'callback')()) : null,
                                                      
                                                   ]) as any
       workspace.studentAssessments = assesments;
@@ -258,6 +266,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       workspace.help = help;
       workspace.isCourseMember = isCourseMember;
       workspace.journals = journals;
+      workspace.details = details;
 
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',
@@ -1418,7 +1427,32 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
 let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTriggerType = function createWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
+      const parentId = data.parentMaterial ? data.parentMaterial.workspaceMaterialId : data.workspace.details.rootFolderId;
+      const nextSiblingId = data.nextSibling ? data.nextSibling.workspaceMaterialId : null;
+      let workspaceMaterialId: number = null;
+      if (data.copyMaterialId) {
+        workspaceMaterialId = (await promisify(mApi().workspace.workspaces.materials
+          .create(data.workspace.id, {
+            parentId,
+            nextSiblingId,
+          }, {
+            sourceNodeId: data.copyMaterialId,
+            targetNodeId: parentId,
+            sourceWorkspaceEntityId: data.workspace.id,
+            targetWorkspaceEntityId: data.copyWorkspaceId,
+            copyOnlyChildren: false,
+            cloneMaterials: true,
+            updateLinkedMaterials: true
+          }), 'callback')() as any).id;
+      }
       
+      const newContentNode: MaterialContentNodeType = <MaterialContentNodeType>(await promisify(mApi().workspace.workspaces.
+          asContentNode.read(data.workspace.id, workspaceMaterialId), 'callback')());
+      
+      dispatch({
+        type: "INSERT_MATERIAL_CONTENT_NODE",
+        payload: newContentNode,
+      });
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
@@ -1435,4 +1469,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
-  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials}
+  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode}
