@@ -193,6 +193,7 @@ public class EvaluationController {
     if (supplementationRequest.getStudentEntityId() != null && supplementationRequest.getWorkspaceEntityId() != null) {
       markWorkspaceAssessmentRequestsAsHandled(supplementationRequest.getStudentEntityId(), supplementationRequest.getWorkspaceEntityId());
     }
+    handleSupplementationNotifications(supplementationRequest);
     return supplementationRequest;
   }
   
