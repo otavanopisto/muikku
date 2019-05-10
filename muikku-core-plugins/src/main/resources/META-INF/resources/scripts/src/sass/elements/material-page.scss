@@ -35,7 +35,7 @@
   width: 100%;
   
   &.material-page--hidden {
-  	opacity: 0.5;
+    opacity: 0.5;
   } 
 
   @include breakpoint($breakpoint-pad) {
