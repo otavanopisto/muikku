@@ -306,14 +306,16 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.state.workspaceType,
       beginDate: this.state.workspaceStartDate ? this.state.workspaceStartDate.toISOString() : null,
-      endDate: this.state.workspaceEndDate ? this.state.workspaceEndDate.toISOString() : null
+      endDate: this.state.workspaceEndDate ? this.state.workspaceEndDate.toISOString() : null,
+      rootFolderId: this.props.workspace.details.rootFolderId,
     }
     
     let currentWorkspaceAsDetails: WorkspaceDetailsType = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.props.workspace.details.typeId,
       beginDate: this.props.workspace.details.beginDate,
-      endDate: this.props.workspace.details.endDate
+      endDate: this.props.workspace.details.endDate,
+      rootFolderId: this.props.workspace.details.rootFolderId,
     }
       
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)){
