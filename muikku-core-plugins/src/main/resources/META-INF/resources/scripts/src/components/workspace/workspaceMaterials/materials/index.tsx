@@ -109,10 +109,19 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     });
   }
   createPage(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
-    
+    this.props.createWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      parentMaterial: chapter,
+      nextSibling,
+      title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
+    });
   }
   createChapter(nextSibling: MaterialContentNodeType) {
-    
+    this.props.createWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      nextSibling,
+      title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
+    });
   }
   pastePage(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;

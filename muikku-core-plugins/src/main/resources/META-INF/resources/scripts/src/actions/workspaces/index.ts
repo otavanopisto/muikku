@@ -170,8 +170,9 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
     nextSibling?: MaterialContentNodeType,
     copyWorkspaceId?: number,
     copyMaterialId?: number,
+    title?: string,
     workspace: WorkspaceType,
-    success?: ()=>any,
+    success?: (newNode: MaterialContentNodeType)=>any,
     fail?: ()=>any
   }):AnyActionType
 }
@@ -1444,6 +1445,18 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
             cloneMaterials: true,
             updateLinkedMaterials: true
           }), 'callback')() as any).id;
+      } else {
+        const materialId = (await promisify(mApi().materials.html.create({
+          title: data.title,
+          contentType: "text/html;editor=CKEditor",
+        }), 'callback')() as any).id;
+        
+        workspaceMaterialId = (await promisify(mApi().workspace.workspaces.materials
+          .create(data.workspace.id, {
+            materialId,
+            parentId,
+            nextSiblingId,
+          }), 'callback')() as any).id;
       }
       
       const newContentNode: MaterialContentNodeType = <MaterialContentNodeType>(await promisify(mApi().workspace.workspaces.
@@ -1453,10 +1466,14 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
         type: "INSERT_MATERIAL_CONTENT_NODE",
         payload: newContentNode,
       });
+      
+      data.success && data.success(newContentNode);
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
+      
+      data.fail && data.fail();
     }
   }
 }
