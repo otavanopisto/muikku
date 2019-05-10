@@ -5,7 +5,8 @@ export type WorkspaceAssessementState = "unassessed" | "pending" | "pending_pass
 export interface WorkspaceStudentActivityType {
   assessmentState: {
     date: string,
-    state: WorkspaceAssessementState
+    state: WorkspaceAssessementState,
+    grade?: string
   },
   evaluablesAnswered: number,
   evaluablesAnsweredLastDate: string,
