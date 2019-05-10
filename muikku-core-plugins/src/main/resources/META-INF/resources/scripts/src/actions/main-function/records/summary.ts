@@ -27,6 +27,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       /* Get user id */
       
       let pyramusId = getState().status.userSchoolDataIdentifier;
+      let id = getState().status.userId;
             
       /* We need completed courses from Eligibility */
 
@@ -57,29 +58,30 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       });
       
       /* User workspaces */
-      
-      let workspaces:any = await promisify(mApi().workspace.workspaces.read({userIdentifier: pyramusId, includeInactiveWorkspaces: true}), 'callback')();
-        if (workspaces && workspaces.length){
-          await Promise.all(workspaces.map(async (workspace:any, index:number) => {
-              let courseActivity:ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
-              .read(pyramusId, {workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')();
-              workspaces[index].activityLogs = courseActivity
-            }));
-          }
 
-// No rights for these
-//                             Promise.all(workspaces.map(async (workspace, index)=>{
-//                               let statistics:WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
-//                                   .read(workspace.id, {userIdentifier: pyramusId}), 'callback')();
-//                                 workspaces[index].forumStatistics = statistics;
-//                               })
-//                             ),
-//                            Promise.all(workspaces.map(async (workspace, index)=>{
-//                              let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
-//                                  .read(workspace.id, id), 'callback')();
-//                                workspaces[index].studentActivity = activity;
-//                              })
-//                            ),
+        let workspaces:any = await promisify(mApi().workspace.workspaces.read({userIdentifier: pyramusId, includeInactiveWorkspaces: true}), 'callback')();
+          if (workspaces && workspaces.length){
+            await Promise.all([
+              Promise.all(workspaces.map(async (workspace:any, index:any)=>{
+                let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
+                    .read(workspace.id, pyramusId), 'callback')();
+                  workspaces[index].studentActivity = activity;
+                })
+              ),
+              Promise.all(workspaces.map(async (workspace:any, index:any)=>{
+                let statistics:WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
+                    .read(workspace.id, {userIdentifier: pyramusId}), 'callback')();
+                  workspaces[index].forumStatistics = statistics;
+                })
+              ),
+              Promise.all(workspaces.map(async (workspace:any, index:any)=>{
+                let courseActivity:ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
+                    .read(pyramusId, {workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')();
+                  workspaces[index].activityLogs = courseActivity;
+                })
+              )
+            ]);
+          }
 
       let graphData = {
         activity : activityLogs.general,
