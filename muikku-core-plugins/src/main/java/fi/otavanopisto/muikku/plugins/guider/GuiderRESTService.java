@@ -173,7 +173,7 @@ public class GuiderRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
-  @RESTPermit (GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERIDENTIFIER") String userId) {
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     if (userIdentifier == null) {
@@ -188,6 +188,12 @@ public class GuiderRESTService extends PluginRESTService {
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
     if (workspaceUserEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
+    }
+    
+    if (!sessionController.hasWorkspacePermission(GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY, workspaceEntity)) {
+      if (!sessionController.getLoggedUserEntity().getId().equals(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
