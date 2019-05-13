@@ -347,6 +347,14 @@ public class GuiderRESTService extends PluginRESTService {
       }
     }
     
+    // #4585: By default, teachers should only see their own students
+    if (CollectionUtils.isEmpty(workspaceIds) && !Boolean.TRUE.equals(myWorkspaces)) {
+      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.TEACHER) {
+        myWorkspaces = true;
+      }
+    }
+    
     if ((myWorkspaces != null) && myWorkspaces) {
       // Workspaces where user is a member
       List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
