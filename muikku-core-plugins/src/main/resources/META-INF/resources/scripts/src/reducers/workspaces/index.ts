@@ -363,6 +363,12 @@ export interface MaterialAssignmentType {
   title: string
 }
 
+export interface MaterialContentNodeProducerType {
+  id: number;
+  name: string;
+  materialId: number;
+}
+
 export interface MaterialContentNodeType {
   title: string,
   license: string,
@@ -388,7 +394,7 @@ export interface MaterialContentNodeType {
   nextSiblingId?: number,
   path?: string,
   viewRestricted?: boolean,
-  producers?: any,
+  producers?: MaterialContentNodeProducerType[],
   
   //Assigned fields
   evaluation?: MaterialEvaluationType,
