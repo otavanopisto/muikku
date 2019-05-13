@@ -2,27 +2,27 @@
   padding: 10px;
 }
 
-.tab-labels {
+.tabs__tab-labels {
   display:flex;
 }
 
-.tab {
+.tabs__tab {
   padding: 10px;
 }
 
-.tab--workspace-students {
+.tabs__tab--workspace-students {
   flex-basis: 50%;
 }
 
-.tab-data-container {
+.tabs__tab-data-container {
   display: flex;
 }
 
-.tab-data {
+.tabs__tab-data {
   padding: 10px;
 }
 
-.tab-data--workspace-students {
+.tabs__tab-data--workspace-students {
   display: flex;
   flex-basis: 50%;
 }

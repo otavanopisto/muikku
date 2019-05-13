@@ -14,7 +14,7 @@ import '~/sass/elements/avatar.scss';
 import { getName, filterMatch, filterHighlight } from "~/util/modifiers";
 import { ShortWorkspaceUserWithActiveStatusType, UserIndexType, UserType } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
-import Tabs from "~/components/general/tabs";
+import {MobileOnlyTabs} from "~/components/general/tabs";
 import Avatar from "~/components/general/avatar";
 import DeactivateReactivateUserDialog from './dialogs/deactivate-reactivate-user';
 import LazyLoader from "~/components/general/lazy-loader";
@@ -54,7 +54,6 @@ function Student(props: StudentProps){
     </div>
     {props.student.active ? <IconButton buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/> : null}
     {props.student.active ? <IconButton icon="delete" onClick={props.onSetToggleStatus}/> : <IconButton icon="goback" onClick={props.onSetToggleStatus}/>}
-
   </div>
 }
 
@@ -156,7 +155,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                 value={this.state.currentSearch} onChange={this.updateSearch}/>
               <div className="form-element__input-decoration--main-function-search icon-search"></div>
             </div>
-            <Tabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
+            <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
               {
                 id: "ACTIVE",
                 name: this.props.i18n.text.get('plugin.workspace.users.students.link.active'),
