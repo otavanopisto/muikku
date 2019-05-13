@@ -65,7 +65,7 @@ export class DiscussionCurrentThread extends React.Component<{
 },{}> {
   render(){
     return <ApplicationList>
-      <div className="application-list__header-container application-list__header-container--discussion">
+      <div className="application-list__header application-list__header--discussion">
         {this.props.locked ?
           <div className="discussion__icon icon-lock"/> : null
         }

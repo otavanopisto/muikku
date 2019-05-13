@@ -82,3 +82,27 @@ export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
     </Element>
   }
 }
+
+interface IconButtonProps extends ButtonProps {
+  icon: string
+}
+
+
+export class IconButton extends React.Component<IconButtonProps, ButtonState> {
+      render(){
+        let Element = this.props.buttonAs || Link;
+        let elementProps:any = Object.assign({}, this.props);
+        delete elementProps["buttonAs"];
+        delete elementProps["buttonModifiers"];
+        delete elementProps["className"];
+        delete elementProps["icon"];
+        
+        let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
+        
+        return <Element {...elementProps} onClick={this.props.onClick ? reactivationDelayWrapper.bind(null, this.props.onClick) : null}
+        className={`button-icon ${(modifiers || []).map(s=>`button-icon--${s}`).join(" ")}`}>
+          {this.props.icon && <span className={`icon-${this.props.icon}`}></span>}
+          {this.props.children}
+        </Element>
+      }
+    }
