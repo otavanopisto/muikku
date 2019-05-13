@@ -1,0 +1,28 @@
+.tabs {
+  padding: 10px;
+}
+
+.tabs__tab-labels {
+  display:flex;
+}
+
+.tabs__tab {
+  padding: 10px;
+}
+
+.tabs__tab--workspace-students {
+  flex-basis: 50%;
+}
+
+.tabs__tab-data-container {
+  display: flex;
+}
+
+.tabs__tab-data {
+  padding: 10px;
+}
+
+.tabs__tab-data--workspace-students {
+  display: flex;
+  flex-basis: 50%;
+}
