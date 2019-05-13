@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -883,7 +884,7 @@ public class WorkspaceMaterialController {
             0l,
             workspaceFolder.getPath(),
             null,
-            null,
+            Collections.emptyList(),
             workspaceFolder.getViewRestrict(),
             viewRestricted);
         List<WorkspaceNode> children = includeHidden
@@ -903,7 +904,7 @@ public class WorkspaceMaterialController {
         for (FlattenedWorkspaceNode child : flattenedChildren) {
           ContentNode contentNode;
           if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(), child.hidden, null, 0l, 0l, child.node.getPath(), null, null, MaterialViewRestrict.NONE, false);
+            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(), child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(), MaterialViewRestrict.NONE, false);
           } else {
             contentNode = createContentNode(child.node, child.level, processHtml, includeHidden, child.nextSibling);
           }
@@ -930,16 +931,10 @@ public class WorkspaceMaterialController {
         Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
         Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
 
-        List<String> producerNames = null;
         String html;
        
         List<MaterialProducer> producers = materialController.listMaterialProducers(material);
-        if ((producers != null) && !producers.isEmpty()) {
-          producerNames = new ArrayList<>();
-          for (MaterialProducer producer : producers) {
-            producerNames.add(StringUtils.replace(StringEscapeUtils.escapeHtml4(producer.getName()), ",", "&#44;"));
-          }
-        }
+        List<String> producerNames = producers == null ? Collections.emptyList() : producers.stream().map(p -> p.getName()).collect(Collectors.toList());
         
         viewRestricted = !sessionController.isLoggedIn() && material.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
         if (!viewRestricted) {
@@ -967,7 +962,7 @@ public class WorkspaceMaterialController {
             publishedRevision,
             workspaceMaterial.getPath(),
             material.getLicense(),
-            StringUtils.join(producerNames, ','),
+            producerNames,
             material.getViewRestrict(),
             viewRestricted);
       default:

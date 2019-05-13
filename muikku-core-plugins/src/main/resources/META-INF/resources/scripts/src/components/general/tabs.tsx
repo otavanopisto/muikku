@@ -11,6 +11,7 @@ interface TabsProps {
     component: ()=>React.ReactElement<any>
   }>,
   renderAllComponents?: boolean
+  children?: React.ReactNode;
 }
 
 interface TabsState {
@@ -24,6 +25,7 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
           return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "tabs__tab-active" : ""}`}
             key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
         })}
+        {this.props.children}
       </div>
       <div className="tabs__tab-data-container">
         {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
