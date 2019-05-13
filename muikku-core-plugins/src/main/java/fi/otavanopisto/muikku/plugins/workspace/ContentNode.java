@@ -12,7 +12,7 @@ public class ContentNode {
   public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Long nextSiblingId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
-      String license, String producers, MaterialViewRestrict viewRestrict, boolean viewRestricted) {
+      String license, List<String> producers, MaterialViewRestrict viewRestrict, boolean viewRestricted) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -147,7 +147,7 @@ public class ContentNode {
     this.viewRestricted = viewRestricted;
   }
   
-  public String getProducers() {
+  public List<String> getProducers() {
     return producers;
   }
   
@@ -185,5 +185,5 @@ public class ContentNode {
   private String license;
   private MaterialViewRestrict viewRestrict;
   private boolean viewRestricted;
-  private String producers;
+  private List<String> producers;
 }
