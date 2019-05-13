@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { UserType, UserWithSchoolDataType, UserStaffType } from '~/reducers/user-index';
 import $ from '~/lib/jquery';
+import { MaterialContentNodeListType } from '~/reducers/workspaces';
 
 function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -354,4 +355,20 @@ export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scr
       }
     }, 500);
   }
+}
+
+export function repairContentNodes(base: MaterialContentNodeListType, parentNodeId?: number): MaterialContentNodeListType {
+  return base.map((cn, index) => {
+    const nextSibling = base[index + 1];
+    const nextSiblingId = nextSibling ? nextSibling.workspaceMaterialId : null;
+    const parentId = typeof parentNodeId !== "number" ? cn.parentId : parentNodeId;
+    const children = cn.children && cn.children.length ? repairContentNodes(cn.children, cn.workspaceMaterialId) : cn.children;
+    
+    return {
+      ...cn,
+      nextSiblingId,
+      parentId,
+      children,
+    }
+  });
 }

@@ -20,9 +20,11 @@ import { WebsocketStateType } from '~/reducers/util/websocket';
 import Button, { ButtonPill } from '~/components/general/button';
 import { bindActionCreators } from 'redux';
 import { UpdateAssignmentStateTriggerType, updateAssignmentState,
-  setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType } from '~/actions/workspaces';
+  setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode } from '~/actions/workspaces';
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
+import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
 
 //These represent the states assignments and exercises can be in
 const STATES = [{
@@ -157,6 +159,8 @@ interface MaterialLoaderProps {
   
   updateAssignmentState: UpdateAssignmentStateTriggerType,
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
+  displayNotification: DisplayNotificationTriggerType,
 }
 
 interface MaterialLoaderState {
@@ -221,6 +225,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
+    this.toggleVisiblePageStatus = this.toggleVisiblePageStatus.bind(this);
+    this.copyPage = this.copyPage.bind(this);
     
     //if it is answerable
     if (props.answerable && props.material){
@@ -446,6 +452,25 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       this.setState({answerCheckable});
     }
   }
+  toggleVisiblePageStatus() {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      material: this.props.material,
+      update: {
+        hidden: !this.props.material.hidden,
+      },
+      isDraft: false,
+    });
+  }
+  copyPage() {
+    localStorage.setItem("workspace-material-copied-id", this.props.material.workspaceMaterialId.toString(10));
+    localStorage.setItem("workspace-copied-id", this.props.workspace.id.toString(10));
+    
+    this.props.displayNotification(
+      this.props.i18n.text.get("plugin.workspace.materialsManagement.materialCopiedToClipboardMessage", this.props.material.title),
+      "success"
+    );
+  }
   render(){
     //The modifiers in use
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
@@ -461,10 +486,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           <ButtonPill buttonModifiers="material-management" icon="edit" onClick={this.startupEditor}/>
         </Dropdown>
         {this.props.canCopy ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.copyMaterialTooltip")}>
-          <ButtonPill buttonModifiers="material-management" icon="content_copy"/>
+          <ButtonPill buttonModifiers="material-management" icon="content_copy" onClick={this.copyPage}/>
         </Dropdown> : null}
         {this.props.canHide ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialHideTooltip")}>
-          <ButtonPill buttonModifiers="material-management" icon={isHidden ? "show" : "hide"}/>
+          <ButtonPill buttonModifiers="material-management" icon={isHidden ? "show" : "hide"} onClick={this.toggleVisiblePageStatus}/>
         </Dropdown> : null}
       </div> : null}
       {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>{this.props.material.title} </h2> : null}
@@ -516,7 +541,8 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateAssignmentState, setWorkspaceMaterialEditorState}, dispatch);
+  return bindActionCreators({updateAssignmentState, setWorkspaceMaterialEditorState,
+    updateWorkspaceMaterialContentNode, displayNotification}, dispatch);
 };
 
 export default connect(

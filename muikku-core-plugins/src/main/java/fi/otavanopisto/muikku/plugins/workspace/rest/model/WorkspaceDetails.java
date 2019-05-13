@@ -7,12 +7,13 @@ public class WorkspaceDetails {
   public WorkspaceDetails() {
   }
 
-  public WorkspaceDetails(String typeId, OffsetDateTime beginDate, OffsetDateTime endDate, String externalViewUrl) {
+  public WorkspaceDetails(String typeId, OffsetDateTime beginDate, OffsetDateTime endDate, String externalViewUrl, Long rootFolderId) {
     super();
     this.typeId = typeId;
     this.beginDate = beginDate;
     this.endDate = endDate;
     this.externalViewUrl = externalViewUrl;
+    this.rootFolderId = rootFolderId;
   }
 
   public String getTypeId() {
@@ -39,8 +40,17 @@ public class WorkspaceDetails {
     return endDate;
   }
 
+  public Long getRootFolderId() {
+    return rootFolderId;
+  }
+
+  public void setRootFolderId(Long rootFolderId) {
+    this.rootFolderId = rootFolderId;
+  }
+
   private String typeId;
   private String externalViewUrl;
   private OffsetDateTime beginDate;
   private OffsetDateTime endDate;
+  private Long rootFolderId;
 }
