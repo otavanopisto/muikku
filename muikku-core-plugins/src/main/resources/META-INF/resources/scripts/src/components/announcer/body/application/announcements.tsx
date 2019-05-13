@@ -76,23 +76,24 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                       {/*<p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>*/}
                     </article>
                   </ApplicationListItemBody>
-                  {announcement.userGroupEntityIds.length ? <div className="labels item-list__announcement-workspaces">
-                    {announcement.workspaces.length && announcement.workspaces.map((workspace)=>
-                      <span className="label" key={workspace.id}>
-                        <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                        <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
-                      </span>
-                    )}
-                    {announcement.userGroupEntityIds.map((userGroupId)=>{
-                      if (!this.props.userIndex.groups[userGroupId]){
-                        return null;
+                  { (announcement.workspaces.length !== 0 || announcement.userGroupEntityIds.length !== 0) ? <div className="labels item-list__announcement-workspaces">
+                    {announcement.workspaces.map((workspace)=>{
+                      if (announcement.workspaces.length !== 0){
+                        return <span className="label" key={workspace.id}>
+                          <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                          <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                        </span>
                       }
-                      return <span className="label" key={userGroupId}>
-                        <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
-                        <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
-                      </span>
                     })}
-                    </div> : null}
+                    {announcement.userGroupEntityIds.map((userGroupId)=>{
+                      if (this.props.userIndex.groups[userGroupId]){
+                          return <span className="label" key={userGroupId}>
+                          <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
+                          <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
+                        </span>
+                      }
+                    })}
+                    </div> : null }
                   <ApplicationListItemFooter modifiers="announcement-actions">  
                     <NewEditAnnouncement announcement={announcement}>
                       <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
