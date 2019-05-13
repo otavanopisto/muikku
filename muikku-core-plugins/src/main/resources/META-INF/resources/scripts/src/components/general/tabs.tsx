@@ -10,6 +10,7 @@ interface TabsProps {
     component: ()=>React.ReactElement<any>
   }>,
   renderAllComponents?: boolean
+  children?: React.ReactNode;
 }
 
 interface TabsState {
@@ -23,6 +24,7 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
           return <div className={`tab ${tab.id === this.props.activeTab ? "tab-active" : ""}`}
             key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
         })}
+        {this.props.children}
       </div>
       {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
         .map(t=><div key={t.id} className={`tab-content ${t.id === this.props.activeTab ? "tab-content--active" : "tab-content-inactive"}`}>
