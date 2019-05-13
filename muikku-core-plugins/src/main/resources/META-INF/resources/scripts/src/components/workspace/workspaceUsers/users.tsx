@@ -45,7 +45,7 @@ function Student(props: StudentProps){
     <LazyLoader className="avatar-container">
       <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
     </LazyLoader>
-    <span>{filterHighlight(getName(props.student, true), props.highlight) +
+    <span>{filterHighlight(getName(props.student, true), props.highlight)} {
       (props.student.studyProgrammeName ? " (" + props.student.studyProgrammeName + ")" : "")}</span>
     {props.student.active ? <ButtonPill buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/> : null}
     {props.student.active ? <ButtonPill icon="delete" onClick={props.onSetToggleStatus}/> : <ButtonPill icon="goback" onClick={props.onSetToggleStatus}/>}
