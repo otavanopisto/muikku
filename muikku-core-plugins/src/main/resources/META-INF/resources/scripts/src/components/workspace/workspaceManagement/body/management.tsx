@@ -359,7 +359,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         <div className="panel__header-title">{this.props.i18n.text.get("plugin.workspace.management.pageTitle")}</div>
       </div>
       <div className="panel__body">
-        <section>
+        <section className="application-sub-panel">
           <input type="text" className="form-element form-element__input"
             value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
           <Button href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
@@ -369,9 +369,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
             <Button buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Button>
           </CopyWizardDialog>
         </section>
-        <section>
-          <h2>{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
-          <div>
+        <section className="application-sub-panel">
+          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
+          <div className="application-sub-panel__body">
             <img src={actualBackgroundSRC} onClick={this.editCurrentImage}/>
             <ButtonPill buttonAs="a" icon="edit">
               <input name="file" type="file" accept="image/*" onChange={this.readNewImage}/>
@@ -383,9 +383,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
              onImageChange={this.acceptNewImage}/>
           </div>
         </section>
-        <section>
-          <h2>{this.props.i18n.text.get("plugin.workspace.management.settingsSectionTitle")}</h2>
-          <div>
+        <section className="application-sub-panel">
+          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.settingsSectionTitle")}</h2>
+          <div className="application-sub-panel__body">
             <div>{this.props.i18n.text.get("plugin.workspace.management.settings.publicity")}</div>
             <div>
               <span className="form-element">
@@ -403,8 +403,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
             </div>
           </div>
           <div>
-            <div>{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</div>
-            <div>
+            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</div>
+            <div className="application-sub-panel__body">
               <span className="form-element">
                 <input type="radio"
                  checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
@@ -426,14 +426,14 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
             </div>
           </div>
         </section>
-        <section>
-          <h2>{this.props.i18n.text.get("plugin.workspace.management.additionalInfoSectionTitle")}</h2>
-          <div>
+        <section className="application-sub-panel">
+          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfoSectionTitle")}</h2>
+          <div className="application-sub-panel__body">
             <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</div>
             <input type="text" className="form-element form-element__input"
              value={this.state.workspaceExtension || ""} onChange={this.updateWorkspaceExtension}/>
           </div>
-          <div>
+          <div className="application-sub-panel__body">
             <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</div>
             <select className="form-element" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
               {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
@@ -441,25 +441,25 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               )}
             </select>
           </div>
-          <div>
+          <div className="application-sub-panel__body">
             <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.startDate")}</div>
             <DatePicker className="form-element__input" onChange={this.updateStartDate}
               maxDate={this.state.workspaceEndDate}
               locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceStartDate}/>
           </div>
-          <div>
+          <div className="application-sub-panel__body">
             <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.endDate")}</div>
             <DatePicker className="form-element__input" onChange={this.updateEndDate}
               minDate={this.state.workspaceStartDate}
               locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceEndDate}/>
           </div>
         </section>
-        <section> 
-          <h2>{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
+        <section className="application-sub-panel"> 
+          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
           <LicenseSelector value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
         </section>
-        <section>
-          <h2>{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
+        <section className="application-sub-panel">
+          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
           <input type="text" className="form-element form-element__input"
             value={this.state.currentWorkspaceProducerInputValue} onChange={this.updateCurrentWorkspaceProducerInputValue}
             onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}/>
@@ -475,8 +475,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
             })}
           </div>
         </section>
-        <section>
-          <h2>{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h2>
+        <section className="application-sub-panel">
+          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h2>
           <CKEditor width="100%" height="210"
             onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
         </section>

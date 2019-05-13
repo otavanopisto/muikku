@@ -61,3 +61,14 @@
   }
 }
 
+@mixin workspace-subpanel-title {
+  font-size: 1.225rem;
+  font-weight: 300;
+}
+
+@mixin form-element-toolbar {
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}

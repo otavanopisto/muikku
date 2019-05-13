@@ -44,8 +44,8 @@ export function filterHighlight(string: string, filter: string){
       accumulator.push([]);
     } else if (element.toLocaleLowerCase() === filter.toLocaleLowerCase()) {
       accumulator[accumulator.length - 1].push(React.createElement(
-          "b",
-          {key: index},
+          "span",
+          { key: index, className: 'form-element__autocomplete-highlight'},         
           element
       ))
     } else {
