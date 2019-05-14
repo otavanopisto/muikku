@@ -38,16 +38,25 @@
 .material-editor__buttonset {
   align-items: center;
   bottom: 0;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   justify-content: flex-end;
   display: flex;
   margin: 0 0 10px;
 }
 
 .material-editor__content-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  height: calc(100vh - 40px);
   padding: 10px;
 }
 
 .material-editor__title-container {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 0 0 10px;
 }
 
@@ -67,8 +76,9 @@
 }
 
 .material-editor__editor-container {
-  position: sticky;
-  top: 50px;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 
   // CKE override styles
   .cke {
@@ -90,3 +100,19 @@
     border-top: 1px solid $color-material-page-admin-panel-main-color;
   }
 }
+
+.material-editor__add-producers {
+  
+}
+
+.material-editor__list-producers {
+  
+}
+
+.material-editor__producer {
+  
+}
+
+
+
+

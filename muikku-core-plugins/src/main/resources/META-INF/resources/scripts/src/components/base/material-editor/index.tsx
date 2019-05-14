@@ -220,7 +220,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     }
       let materialPageType = this.props.editorState.currentDraftNodeValue.assignmentType ? (this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
       let assignmentPageType = "material-editor-" + materialPageType;
-      
+
       let canPublish = !equals(this.props.editorState.currentNodeValue, this.props.editorState.currentDraftNodeValue);
       const publishModifiers = ["material-editor-publish-page","material-editor"];
       const revertModifiers = ["material-editor-revert-page","material-editor"];
@@ -228,7 +228,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         publishModifiers.push("disabled");
         revertModifiers.push("disabled");
       }
-      
+
       let editorButtonSet = <div className="material-editor__buttonset">
         {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialEditTooltip")}>
           <ButtonPill buttonModifiers={publishModifiers} onClick={canPublish ? this.publish : null} icon="publish"/>
@@ -254,14 +254,14 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           </Dropdown>
         </DeleteWorkspaceMaterialDialog> : null}
       </div>;
-      
+
       const allTabs = [{
         id: "content",
         type: "material-editor",
         name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.content"),
         component: () => <div className="material-editor__content-wrapper">
           {editorButtonSet}
-      
+
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
@@ -278,7 +278,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           </div> : null}
         </div>
       }];
-      
+
       if (this.props.editorState.canSetLicense) {
         allTabs.push({
           id: "license",
@@ -287,7 +287,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           component: () => <div className="material-editor__content-wrapper"></div>,
         })
       }
-      
+
       if (this.props.editorState.canSetProducers) {
         allTabs.push({
           id: "producers",
@@ -295,16 +295,21 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.producers"),
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
-        
-            {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
-              return <div key={index}>{p.name}<button onClick={this.removeProducer.bind(this, index)}>x</button></div>
-            })}
-            <input type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
-            <button onClick={this.addProducer}>Enter</button>
+
+            <div className="material-editor__add-producers">
+              <input type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
+              <button onClick={this.addProducer}>Enter</button>
+            </div>
+
+            <div className="material-editor__list-producers">
+              {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
+                return <div className="material-editor__producer" key={index}>{p.name}<button onClick={this.removeProducer.bind(this, index)}>x</button></div>
+              })}
+            </div>
           </div>,
         })
       }
-      
+
       if (this.props.editorState.canAddAttachments) {
         allTabs.push({
           id: "attachments",
