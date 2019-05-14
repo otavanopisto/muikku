@@ -46,7 +46,7 @@
   user-select: none; // This is to prevent select-by-panting when drag 'n dropping toc items
 
   @include breakpoint($breakpoint-desktop-xl) {
-    padding: 4px 8px;
+    padding: 4px 4px 4px 8px;
   }
 
   &:hover {
