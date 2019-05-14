@@ -8,6 +8,10 @@
 
 .tabs__tab {
   padding: 10px;
+  
+  &.active {
+   border: 1px solid #000;
+  }
 }
 
 .tabs__tab--workspace-students {
@@ -20,9 +24,14 @@
 
 .tabs__tab-data {
   padding: 10px;
+  display: none;
+
+  &.active {
+    display: flex;
+    flex-basis: 100%;
+  }
 }
 
 .tabs__tab-data--workspace-students {
-  display: flex;
   flex-basis: 50%;
 }

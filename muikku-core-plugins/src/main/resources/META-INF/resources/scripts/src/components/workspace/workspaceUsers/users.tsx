@@ -149,7 +149,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
           </div>
           <div className="application-sub-panel application-sub-panel--workspace-users">  
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-users">{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
-          <div>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-students">
             <div className="form-element form-element--workspace-toolbar">
               <input type="text" className="form-element__input form-element__input--main-function-search"
                 value={this.state.currentSearch} onChange={this.updateSearch}/>
