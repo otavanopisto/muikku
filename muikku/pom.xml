@@ -320,33 +320,11 @@
     </profile>
 
     <profile>
-      <id>facebook-oauth-plugin</id>
-      <dependencies>
-        <dependency>
-          <groupId>fi.otavanopisto.muikku</groupId>
-          <artifactId>facebook-oauth-plugin</artifactId>
-          <version>1.1.115-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
       <id>evaluation-plugin</id>
       <dependencies>
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>evaluation-plugin</artifactId>
-          <version>1.1.115-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>deus-nex-machina-plugin</id>
-      <dependencies>
-        <dependency>
-          <groupId>fi.otavanopisto.muikku</groupId>
-          <artifactId>deus-nex-machina</artifactId>
           <version>1.1.115-SNAPSHOT</version>
         </dependency>
       </dependencies>
