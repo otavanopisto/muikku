@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -25,7 +24,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
 import org.cyberneko.html.HTMLConfiguration;
@@ -44,7 +42,6 @@ import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
@@ -932,10 +929,6 @@ public class WorkspaceMaterialController {
         Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
 
         String html;
-       
-        List<MaterialProducer> producers = materialController.listMaterialProducers(material);
-        List<String> producerNames = producers == null ? Collections.emptyList() : producers.stream().map(p -> p.getName()).collect(Collectors.toList());
-        
         viewRestricted = !sessionController.isLoggedIn() && material.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
         if (!viewRestricted) {
           html = processHtml ? getMaterialHtml(material, parser, transformer) : null;
@@ -962,7 +955,7 @@ public class WorkspaceMaterialController {
             publishedRevision,
             workspaceMaterial.getPath(),
             material.getLicense(),
-            producerNames,
+            materialController.listMaterialProducers(material),
             material.getViewRestrict(),
             viewRestricted);
       default:

@@ -31,6 +31,7 @@ interface MaterialEditorProps {
 
 interface MaterialEditorState {
   tab: string;
+  producerEntryName: string;
 }
 
 const CKEditorConfig = (
@@ -89,9 +90,13 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.publish = this.publish.bind(this);
     this.revert = this.revert.bind(this);
     this.changeTab = this.changeTab.bind(this);
+    this.removeProducer = this.removeProducer.bind(this);
+    this.addProducer = this.addProducer.bind(this);
+    this.updateProducerEntryName = this.updateProducerEntryName.bind(this);
     
     this.state = {
       tab: "content",
+      producerEntryName: "",
     }
   }
   
@@ -145,7 +150,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       opened: false
     });
     this.setState({
-      tab: "content"
+      tab: "content",
+      producerEntryName: "",
     })
   }
   
@@ -163,6 +169,48 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       material: this.props.editorState.currentDraftNodeValue,
       update: this.props.editorState.currentNodeValue,
       isDraft: true,
+    });
+  }
+  
+  removeProducer(index: number) {
+    const newProducers = [...(this.props.editorState.currentDraftNodeValue.producers || [])];
+    newProducers.splice(index, 1);
+    
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        producers: newProducers,
+      },
+      isDraft: true,
+    });
+  }
+  
+  addProducer() {
+    const newProducers = [...(this.props.editorState.currentDraftNodeValue.producers || [])];
+    newProducers.push({
+      id: null,
+      name: this.state.producerEntryName,
+      materialId: this.props.editorState.currentDraftNodeValue.id,
+    });
+    
+    this.setState({
+      producerEntryName: "",
+    });
+    
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        producers: newProducers,
+      },
+      isDraft: true,
+    });
+  }
+  
+  updateProducerEntryName(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      producerEntryName: e.target.value,
     });
   }
 
@@ -242,7 +290,13 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         allTabs.push({
           id: "producers",
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.producers"),
-          component: () => <div></div>,
+          component: () => <div>
+            {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
+              return <div key={index}>{p.name}<button onClick={this.removeProducer.bind(this, index)}>x</button></div>
+            })}
+            <input type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
+            <button onClick={this.addProducer}>Enter</button>
+          </div>,
         })
       }
       
