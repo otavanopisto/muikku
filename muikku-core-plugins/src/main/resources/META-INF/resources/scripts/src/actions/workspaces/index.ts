@@ -1342,6 +1342,8 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
           await promisify(mApi().workspace.workspaces.materials
               .update(data.workspace.id, data.material.workspaceMaterialId, result), 'callback')();
         }
+        
+        // TODO producers, license and that stuff
       } else {
         // Trying to update the draft
         // TODO

@@ -28,7 +28,6 @@ export function filterMatch(string: string, filter: string){
 }
 
 export function filterHighlight(string: string, filter: string){
-  console.log(string);
   if (filter === ""){
     return React.createElement(
         "span",
