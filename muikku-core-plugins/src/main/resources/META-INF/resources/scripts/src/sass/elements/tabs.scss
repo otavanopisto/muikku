@@ -1,25 +1,65 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
 .tabs {
-  padding: 10px;
+
 }
 
 .tabs__tab-labels {
-  display:flex;
+  align-items: center;
+  background: $color-material-page-edit-header-background;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 5px 40px 0 5px;
+
+  @include breakpoint($breakpoint-pad) { 
+    padding: 5px 40px 0 10px;
+  }
 }
 
 .tabs__tab {
+  @include text;
+  cursor: pointer;
   padding: 10px;
+  user-select: none;
 }
 
+// Used when editing material page
+.tabs__tab--material-editor {
+  background: lighten($color-material-page-admin-panel-main-color,10%);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: $color-default;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  line-height: 1;
+  margin: 0 1px;
+  padding: 6px 8px 8px;
+  
+  &.active {
+    background: $color-default-body;
+    color: $color-material-page-admin-panel-main-color;
+  }
+
+  @include breakpoint($breakpoint-pad) { 
+    padding: 10px 16px 12px;
+  }
+}
+
+// Used when viewing workspace students
 .tabs__tab--workspace-students {
   flex-basis: 50%;
 }
 
 .tabs__tab-data-container {
-  display: flex;
+
 }
 
 .tabs__tab-data {
-  padding: 10px;
+
 }
 
 .tabs__tab-data--workspace-students {
