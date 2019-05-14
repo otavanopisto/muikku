@@ -22,7 +22,7 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
     return <div className="tabs">
       <div className="tabs__tab-labels">
         {this.props.tabs.map((tab, index)=>{
-          return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "tabs__tab-active" : ""}`}
+          return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "active" : ""}`}
             key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
         })}
         {this.props.children}
@@ -42,13 +42,13 @@ export class MobileOnlyTabs extends React.Component<TabsProps, TabsState>{
     return <div className="tabs">
       <div className="tabs__tab-labels tabs__tab-labels--mobile">
         {this.props.tabs.map((tab, index)=>{
-          return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "tabs__tab-active" : ""}`}
+          return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "active" : ""}`}
             key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
         })}
       </div>
       <div className="tabs__tab-labels tabs__tab-labels--desktop">
         {this.props.tabs.map((tab, index)=>{
-          return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "tabs__tab-active" : ""}`}
+          return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "active" : ""}`}
             key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>
         })}
       </div>
