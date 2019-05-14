@@ -6,7 +6,8 @@ import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Worksp
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
-import { MaterialContentNodeType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType, WorkspacePermissionsType, WorkspaceMaterialEditorType } from '~/reducers/workspaces';
+import { MaterialContentNodeType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType, WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType } from '~/reducers/workspaces';
+import equals = require("deep-equal");
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -1343,7 +1344,38 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
               .update(data.workspace.id, data.material.workspaceMaterialId, result), 'callback')();
         }
         
-        // TODO producers, license and that stuff
+        if (
+          typeof data.update.producers !== "undefined" &&
+          !equals(data.material.producers, data.update.producers)
+        ) {
+          const newProducers: MaterialContentNodeProducerType[] = await Promise.all<MaterialContentNodeProducerType>(data.update.producers.map((p) => {
+            if (p.id === null) {
+              return (
+                  <Promise<MaterialContentNodeProducerType>>promisify(mApi().materials.material.producers
+                  .create(data.material.materialId, {name: p.name}), 'callback')()
+              );
+            }
+            return p;
+          }));
+          dispatch({
+            type: "UPDATE_MATERIAL_CONTENT_NODE",
+            payload: {
+              showRemoveAnswersDialogForPublish: false,
+              material: data.material,
+              update: {
+                producers: newProducers,
+              },
+              isDraft: false,
+            }
+          });
+          
+          
+          const deletedProducers = data.material.producers.filter((p) => !newProducers.find((p2) => p2.id === p.id));
+          await Promise.all(deletedProducers.map((p) => {
+            return promisify(mApi().materials.material.producers
+                .del(data.material.materialId, p.id), 'callback')();
+          }));
+        }
       } else {
         // Trying to update the draft
         // TODO
