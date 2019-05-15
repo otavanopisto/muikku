@@ -46,7 +46,9 @@ function Student(props: StudentProps){
   
   return <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-users">
     <LazyLoader className="avatar-container">
-      <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
+      <div className="item-list__profile-picture">
+        <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
+      </div>
     </LazyLoader>
     <div className="application-list__item-content-main application-list__item-content-main--workspace-user">
       <div>{filterHighlight(getName(props.student, true), props.highlight)}</div>
@@ -130,7 +132,9 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               let userCategory = staff.userEntityId > 10 ? staff.userEntityId % 10 + 1 : staff.userEntityId;
               return <div className="application-list__item application-list__item--workspace-user" key={staff.userEntityId}>
                 <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-users">
-                  <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
+                  <div className="item-list__profile-picture">
+                    <Avatar id={staff.userEntityId} hasImage firstName={staff.firstName}/>
+                  </div>
                   <div className="application-list__item-content-main application-list__item-content-main--workspace-user">
                     <div>{getName(staff, true)}</div>
                     <div className="application-list__item-content-secondary-data">{staff.email}</div>
