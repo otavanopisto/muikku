@@ -4,6 +4,7 @@ import * as React from 'react';
 interface TabsProps {
   onTabChange:(id: string)=>any,
   activeTab: string,
+  modifier?: string,
   tabs: Array<{
     id: string,
     name: string,
@@ -20,7 +21,7 @@ interface TabsState {
 export default class Tabs extends React.Component<TabsProps, TabsState>{
   render(){
     return <div className="tabs">
-      <div className="tabs__tab-labels">
+      <div className={`tabs__tab-labels ${this.props.modifier ? "tabs__tab-labels--" + this.props.modifier : ""}`}>
         {this.props.tabs.map((tab, index)=>{
           return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "active" : ""}`}
             key={tab.id} onClick={this.props.onTabChange.bind(this, tab.id)}>{tab.name}</div>

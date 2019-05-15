@@ -340,7 +340,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       }
       
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}>
-        <Tabs activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
+        <Tabs modifier="material-editor" activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
           <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="close"/>
         </Tabs>
           

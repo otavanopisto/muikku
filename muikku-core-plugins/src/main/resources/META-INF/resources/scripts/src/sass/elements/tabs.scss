@@ -57,6 +57,7 @@
     border-right: 1px solid $color-tab-border;
     border-top: 1px solid $color-tab-border;
     margin-bottom: -1px;
+    padding: 9px 10px 11px;
   }
 }
 
@@ -88,6 +89,10 @@
 }
 
 // Used when editing material page
+.tabs__tab-labels--material-editor {
+  padding: 0 40px 0 2px;
+}
+
 .tabs__tab--material-editor {
 
 }
