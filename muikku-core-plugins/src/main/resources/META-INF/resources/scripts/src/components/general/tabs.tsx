@@ -29,7 +29,7 @@ export default class Tabs extends React.Component<TabsProps, TabsState>{
       </div>
       <div className="tabs__tab-data-container">
         {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
-          .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "tabs__tab-content--active" : "tabs__tab-content-inactive"}`}>
+          .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
           {t.component()}
         </div>)}
       </div>
@@ -54,7 +54,7 @@ export class MobileOnlyTabs extends React.Component<TabsProps, TabsState>{
       </div>
       <div className="tabs__tab-data-container">
         {this.props.tabs.filter(t=>this.props.renderAllComponents || t.id===this.props.activeTab)
-          .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "tabs__tab-content--active" : "tabs__tab-content-inactive"}`}>
+          .map(t=><div key={t.id} className={`tabs__tab-data ${t.type ? "tabs__tab-data--" + t.type : ""}  ${t.id === this.props.activeTab ? "active" : ""}`}>
           {t.component()}
         </div>)}
       </div>
