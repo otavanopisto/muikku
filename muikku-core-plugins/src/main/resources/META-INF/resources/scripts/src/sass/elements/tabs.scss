@@ -5,12 +5,14 @@
 
 .tabs {
   margin-top: 10px;
+  @include text;
 }
 
 .tabs__tab-labels {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
+  border-bottom: 1px solid $color-tab-border;
 }
 
 .tabs__tab-labels--mobile {
@@ -29,20 +31,23 @@
 }
 
 .tabs__tab {
+
   background: $color-tab-blur-background;
-  border-bottom: 1px solid $color-tab-border;
-  border-radius: 2px;
+  border-radius: 5px 5px 0 0 ;
+  color: $color-tab-blur-font;
   cursor: pointer;
   padding: 10px;
   user-select: none;
-  @include text;
+
 
   &.active {
     background: $color-tab-focus-background;
     border-bottom: none;
+    color: $color-tab-focus-font;
     border-left: 1px solid $color-tab-border;
     border-right: 1px solid $color-tab-border;
     border-top: 1px solid $color-tab-border;
+    margin-bottom: -1px;
   }
 }
 
