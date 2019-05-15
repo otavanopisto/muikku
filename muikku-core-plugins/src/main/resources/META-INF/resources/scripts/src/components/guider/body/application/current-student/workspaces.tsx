@@ -10,7 +10,8 @@ import '~/sass/elements/application-list.scss';
 
 interface CurrentStudentWorkspacesProps {
   i18n: i18nType,
-  guider: GuiderType
+  guider: GuiderType,
+  locale: string
 }
 
 interface CurrentStudentWorkspacesState {
@@ -18,10 +19,10 @@ interface CurrentStudentWorkspacesState {
 
 class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesProps, CurrentStudentWorkspacesState> {
   render(){
-    //TODO WAT?... mf???? o.o communicator?...
+    let reactComponent = this;
     return this.props.guider.currentStudent.workspaces ?  (this.props.guider.currentStudent.workspaces.length ? <div className="application-list">
       {this.props.guider.currentStudent.workspaces.sort(function(a, b) {
-        return ('' + a.name).localeCompare(b.name, 'fi' ,{sensitivity: 'base'});
+        return ('' + a.name).localeCompare(b.name, reactComponent.props.locale , {sensitivity: 'base'});
       }).map((workspace)=>{
         return <Workspace workspace={workspace} key={workspace.id}/>
       })}
@@ -34,7 +35,8 @@ class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesP
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guider: state.guider
+    guider: state.guider,
+    locale: state.locales.current
   }
 };
 
