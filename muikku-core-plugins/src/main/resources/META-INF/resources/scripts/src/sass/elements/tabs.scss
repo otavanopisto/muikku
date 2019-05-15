@@ -4,29 +4,68 @@
 @import "../base/breakpoints";
 
 .tabs {
-
+  margin-top: 10px;
 }
 
 .tabs__tab-labels {
   align-items: center;
-  background: $color-material-page-edit-header-background;
   display: flex;
   flex-flow: row nowrap;
-  padding: 5px 40px 0 5px;
+}
+
+.tabs__tab-labels--mobile {
+  @include breakpoint($breakpoint-pad) { 
+    display:none;
+  }
+}
+
+.tabs__tab-labels--desktop {
+  background: $color-default;
+  display:none;
 
   @include breakpoint($breakpoint-pad) { 
-    padding: 5px 40px 0 10px;
+    display: flex;
   }
 }
 
 .tabs__tab {
-  @include text;
+  background: $color-tab-blur-background;
+  border-bottom: 1px solid $color-tab-border;
+  border-radius: 2px;
   cursor: pointer;
   padding: 10px;
   user-select: none;
+  @include text;
+
+  &.active {
+    background: $color-tab-focus-background;
+    border-bottom: none;
+    border-left: 1px solid $color-tab-border;
+    border-right: 1px solid $color-tab-border;
+    border-top: 1px solid $color-tab-border;
+  }
 }
 
+.tabs__tab--workspace-students {
+
+  @include breakpoint($breakpoint-pad) { 
+    background: $color-default;
+    color: $color-text-default;
+    border: none;
+  }
+
+  &.active {
+    @include breakpoint($breakpoint-pad) { 
+      background: $color-default;
+      color: $color-text-default;
+      border: none;
+    }
+  }
+}
+
+
 // Used when editing material page
+
 .tabs__tab--material-editor {
   background: lighten($color-material-page-admin-panel-main-color,10%);
   border-top-left-radius: 5px;
@@ -38,11 +77,6 @@
   line-height: 1;
   margin: 0 1px;
   padding: 6px 8px 8px;
-  
-  &.active {
-    background: $color-default-body;
-    color: $color-material-page-admin-panel-main-color;
-  }
 
   @include breakpoint($breakpoint-pad) { 
     padding: 10px 16px 12px;
@@ -50,19 +84,30 @@
 }
 
 // Used when viewing workspace students
+
 .tabs__tab--workspace-students {
   flex-basis: 50%;
 }
 
 .tabs__tab-data-container {
-
+  display:flex;
 }
 
 .tabs__tab-data {
-
+  display: none;
+  flex-basis: 100%;
 }
 
 .tabs__tab-data--workspace-students {
-  display: flex;
-  flex-basis: 50%;
+  display: none;
+  flex-basis: 100%;
+  
+  &.active {
+    display: flex;
+  }
+  
+  @include breakpoint($breakpoint-pad) { 
+    display: flex;
+    flex-basis: 50%;
+  }
 }

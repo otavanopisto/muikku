@@ -15,7 +15,7 @@
 }
 
 .application-sub-panel--workspace-users {
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid $color-workspace-subpanel-border;
 }
 
 .application-sub-panel__header {
@@ -47,7 +47,6 @@
   @include workspace-subpanel-title;
   padding: 10px 10px 0;
 }
-
 
 .application-sub-panel__header-main-container {
   align-items: flex-start;
@@ -121,6 +120,10 @@
 
 .application-sub-panel__body {
   padding: 10px 0;
+}
+
+.application-sub-panel__body--workspace-students {
+  padding: 10px;
 }
 
 .application-sub-panel__item {
