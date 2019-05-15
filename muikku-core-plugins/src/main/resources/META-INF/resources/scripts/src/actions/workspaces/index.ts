@@ -1344,6 +1344,25 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
               .update(data.workspace.id, data.material.workspaceMaterialId, result), 'callback')();
         }
         
+        const materialFields = ["id", "license", "viewRestrict"]
+        const materialResult:any = {
+          title: data.update.title || data.material.title,
+        };
+        changed = false;
+        materialFields.forEach((field) => {
+          if (typeof (data.update as any)[field] !== "undefined" &&
+             (data.material as any)[field] !== (data.update as any)[field]) {
+            changed = true;
+          }
+          materialResult[field] = typeof (data.update as any)[field] !== "undefined" ?
+            (data.update as any)[field] :
+            (data.material as any)[field]
+        });
+        if (changed) {
+          await promisify(mApi().materials.material
+              .update(data.material.materialId, materialResult), 'callback')();
+        }
+        
         if (
           typeof data.update.producers !== "undefined" &&
           !equals(data.material.producers, data.update.producers)
