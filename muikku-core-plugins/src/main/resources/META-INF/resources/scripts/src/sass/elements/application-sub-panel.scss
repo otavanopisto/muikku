@@ -48,7 +48,6 @@
   padding: 10px 10px 0;
 }
 
-
 .application-sub-panel__header-main-container {
   align-items: flex-start;
   display: flex;
@@ -121,6 +120,10 @@
 
 .application-sub-panel__body {
   padding: 10px 0;
+}
+
+.application-sub-panel__body--workspace-students {
+  padding: 10px;
 }
 
 .application-sub-panel__item {

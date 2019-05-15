@@ -11,7 +11,7 @@
   left: -100%;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 0 15px 15px;
+  padding: 0 0 15px;
   position: fixed;
   top: 0;
   width: 100%;
@@ -35,52 +35,16 @@
   z-index: 99;
 }
 
-.material-editor__tabs-container {
-  align-items: center;
-  background: $color-material-page-edit-header-background;
-  display: flex;
-  flex-flow: row nowrap;
-  padding: 5px 40px 0 5px;
-  
-  @include breakpoint($breakpoint-pad) { 
-    padding: 5px 40px 0 10px;
-  }
-}
-
-.material-editor__tabs-item {
-  @include text;
-  background: lighten($color-material-page-admin-panel-main-color,10%);
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  color: $color-default;
-  cursor: pointer;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  line-height: 1;
-  margin: 0 1px;
-  padding: 6px 8px 8px;
-
-  &.active {
-    background: $color-default-body;
-    color: $color-material-page-admin-panel-main-color;
-  }
-  
-  @include breakpoint($breakpoint-pad) { 
-    padding: 10px 16px 12px;
-  }
-}
-
 .material-editor__buttonset {
   align-items: center;
   bottom: 0;
   justify-content: flex-end;
   display: flex;
-  padding: 10px 0;
+  margin: 0 0 10px;
 }
 
 .material-editor__content-wrapper {
-
+  padding: 10px;
 }
 
 .material-editor__title-container {

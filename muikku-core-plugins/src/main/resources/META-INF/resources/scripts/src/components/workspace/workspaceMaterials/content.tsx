@@ -222,7 +222,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             const pageElement = <TocElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId}
               isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
               hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>;
-            
+
             if (!this.props.editable) {
               return pageElement;
             } else {
@@ -230,21 +230,21 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                 interactionData={subnode}
                 interactionGroup="TOC_SUBNODE"
                 key={subnode.workspaceMaterialId}
-                className="toc__element-drag-container"
-                handleSelector=".handle"
+                className="toc__item--drag-container"
+                handleSelector=".toc__item--drag-handle"
                 onInteractionWith={this.onInteractionBetweenSubnodes.bind(this, subnode)}
                 ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
               >
-                <span className="handle">Draggable Handle, can be anywhere inside the drag thing</span>
+                <div className="toc__item--drag-handle icon-move"></div>
                 {pageElement}
               </Draggable>
             }
           }).concat(this.props.editable ? <Droppable
             key="LAST" interactionData={node.workspaceMaterialId}
             interactionGroup="TOC_SUBNODE"
-            className="toc__element-drag-placeholder-container">Last Droppable Element, placeholder for drops</Droppable> : [])}
+            className="toc__element--drag-placeholder-container">Last Droppable Element, placeholder for drops</Droppable> : [])}
         </TocTopic>
-        
+
         if (!this.props.editable) {
           return topic;
         } else {
@@ -252,11 +252,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             interactionData={node}
             interactionGroup="TOC"
             key={node.workspaceMaterialId}
-            className="toc__section-drag-container"
-            handleSelector=".handle"
+            className="toc__section--drag-container"
+            handleSelector=".toc__section--drag-handle"
             onInteractionWith={this.onInteractionBetweenSections.bind(this, node)}
           >
-            <span className="handle">Draggable Handle, can be anywhere inside the drag thing</span>
+          <div className="toc__section--drag-handle icon-move"></div>
             {topic}
           </Draggable>
         }

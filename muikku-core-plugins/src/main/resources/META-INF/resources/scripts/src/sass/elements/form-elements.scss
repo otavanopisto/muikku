@@ -70,14 +70,13 @@
 }
 
 .form-element--workspace-toolbar {
-    @include form-element-toolbar;
-    margin-left: 10px;
-    width: 95%;
+  @include form-element-toolbar;
+  width: 95%;
 
-    @include breakpoint($breakpoint-pad) {
-      width: 50%;
-      font-size: $text-desktop-font-size;
-    }
+  @include breakpoint($breakpoint-pad) {
+    width: 50%;
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .form-element--profile {

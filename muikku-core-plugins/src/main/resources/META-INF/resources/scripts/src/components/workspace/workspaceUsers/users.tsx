@@ -196,7 +196,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                 }
               }
             ]}/>
-          </div>        
+          </div>
           </div>
         </div>
       </div>

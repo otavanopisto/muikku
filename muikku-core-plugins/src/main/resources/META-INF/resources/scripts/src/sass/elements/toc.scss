@@ -26,6 +26,7 @@
   display: flex;
   margin: 12px 10px;
   text-transform: uppercase;
+  user-select: none; // This is to prevent select-by-panting when drag 'n dropping toc items
 }
 
 .toc__item {
@@ -39,12 +40,13 @@
   cursor: pointer;
   display: flex;
   font-weight: 300;
-  margin: 6px 8px;
+  margin: 6px 4px 6px 8px;
   padding: 4px;
   position: relative;
+  user-select: none; // This is to prevent select-by-panting when drag 'n dropping toc items
 
   @include breakpoint($breakpoint-desktop-xl) {
-    padding: 4px 8px;
+    padding: 4px 4px 4px 8px;
   }
 
   &:hover {
@@ -57,6 +59,33 @@
     font-weight: 400;
     letter-spacing: -0.026rem; // This prevents active toc item to create unnecessary line break as font weight increases
   }
+}
+
+.toc__section--drag-container,
+.toc__item--drag-container {
+  position: relative;
+}
+
+.toc__section--drag-handle,
+.toc__item--drag-handle {
+  align-items: center;
+  background: $color-default;
+  border-radius: 100%;
+  color: $color-material-page-admin-panel-main-color;
+  cursor: grab;
+  display: flex;
+  font-size: 0.8125rem;
+  height: 1.25rem;
+  justify-content: center;
+  right: 8px;
+  position: absolute;
+  top: 4px;
+  width: 1.25rem;
+  z-index: 9999;
+}
+
+.toc__section--drag-handle {
+  top: 0px;
 }
 
 .toc__item--exercise {
@@ -90,6 +119,8 @@
 
 .toc__item--passed {
 
+Ryhmittele presidenttien ja keisareiden ominaispiirteitä
+  
   .toc__icon {
     background: $color-passed;
   }
@@ -110,11 +141,11 @@
 }
 
 .toc__text-body {
-  flex-basis: auto;
-  flex-grow: 1;
+  flex-basis: calc(100% - 20px);
+  flex-grow: 0;
   flex-shrink: 1;
   font-size: $text-mobile-font-size;
-  padding: 0 2px 0 0;
+  padding: 0 4px 0 0;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -135,5 +166,4 @@
   justify-content: center;
   width: 1.25rem;
 }
-
 
