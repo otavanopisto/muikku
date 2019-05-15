@@ -4,8 +4,8 @@
 @import "../base/breakpoints";
 
 .tabs {
-  margin-top: 10px;
   @include text;
+  margin-top: 10px;
 }
 
 .tabs__tab-labels {
@@ -35,7 +35,6 @@
 }
 
 .tabs__tab {
-  @include text;
   background: $color-tab-blur-background;
   border-left: 1px solid $color-tab-blur-background;
   border-right: 1px solid $color-tab-blur-background;
