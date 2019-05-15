@@ -9,7 +9,7 @@
 
 .tabs__tab-labels {
   align-items: center;
-  background: $color-material-page-edit-header-background;
+  background: $color-default;
   display: flex;
   flex-flow: row nowrap;
   padding: 5px 40px 0 5px;
@@ -40,7 +40,7 @@
   padding: 6px 8px 8px;
   
   &.active {
-    background: $color-default-body;
+    background: $color-default;
     color: $color-material-page-admin-panel-main-color;
   }
 
