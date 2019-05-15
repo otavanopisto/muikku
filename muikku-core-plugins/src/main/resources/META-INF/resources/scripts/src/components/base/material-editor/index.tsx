@@ -19,6 +19,7 @@ import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answe
 
 import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
+import { LicenseSelector } from '~/components/general/license-selector';
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
@@ -93,6 +94,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.removeProducer = this.removeProducer.bind(this);
     this.addProducer = this.addProducer.bind(this);
     this.updateProducerEntryName = this.updateProducerEntryName.bind(this);
+    this.updateLicense = this.updateLicense.bind(this);
     
     this.state = {
       tab: "content",
@@ -213,6 +215,17 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       producerEntryName: e.target.value,
     });
   }
+  
+  updateLicense(newLicense: string) {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        license: newLicense,
+      },
+      isDraft: true,
+    });
+  }
 
   render(){
     if (!this.props.editorState || !this.props.editorState.currentDraftNodeValue) {
@@ -284,7 +297,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           id: "license",
           type: "material-editor",
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.license"),
-          component: () => <div className="material-editor__content-wrapper"></div>,
+          component: () => <div className="material-editor__content-wrapper">
+            {editorButtonSet}
+            
+            <LicenseSelector value={this.props.editorState.currentDraftNodeValue.license} onChange={this.updateLicense} i18n={this.props.i18n}/>
+          </div>,
         })
       }
 
