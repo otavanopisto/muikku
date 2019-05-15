@@ -5,6 +5,7 @@
 
 .tabs {
   margin-top: 10px;
+  @include text;
 }
 
 .tabs__tab-labels {
@@ -13,6 +14,7 @@
   display: flex;
   flex-flow: row nowrap;
   padding: 0 2px;
+  border-bottom: 1px solid $color-tab-border;
 }
 
 .tabs__tab-labels--mobile {
@@ -38,8 +40,8 @@
   border-left: 1px solid $color-tab-blur-background;
   border-right: 1px solid $color-tab-blur-background;
   border-top: 1px solid $color-tab-blur-background;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-radius: 5px 5px 0 0 ;
+  color: $color-tab-blur-font;
   cursor: pointer;
   flex-basis: auto;
   flex-grow: 1;
@@ -51,6 +53,7 @@
 
   &.active {
     background: $color-tab-focus-background;
+    color: $color-tab-focus-font;
     border-left: 1px solid $color-tab-border;
     border-right: 1px solid $color-tab-border;
     border-top: 1px solid $color-tab-border;
