@@ -17,16 +17,6 @@ let CC_URL_PREFIX_NOSSL = "http://creativecommons.org/licenses/";
 let CC0_URL_SSL = 'https://creativecommons.org/publicdomain/zero/1.0/';
 let CC0_URL_NOSSL = 'http://creativecommons.org/publicdomain/zero/1.0/';
 
-function validURL(str: string) {
-  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-  return !!pattern.test(str);
-}
-
 interface CCPropsType {
   allowModifications: null | "nd" | "sa",
   commercialUse: null | "nc"
@@ -149,13 +139,8 @@ const LICENSES: Array<LicenseType> = [
     validate: (value: string)=>value === CC0_URL_SSL || value === CC0_URL_NOSSL
   },
   {
-    id: "link",
-    i18n: "TODO i18n link",
-    validate: validURL
-  },
-  {
-    id: "text",
-    i18n: "TODO i18n text",
+    id: "text_or_link",
+    i18n: "TODO i18n text or link",
     validate: (value: string)=>typeof value === "string"
   },
   {
@@ -165,14 +150,6 @@ const LICENSES: Array<LicenseType> = [
     validate: ()=>true
   }
 ]
-
-function parseLicense(value: string){
-  if (value.indexOf("http") === 0){
-    if (value.indexOf(CC_URL_PREFIX_SSL) === 0 || value.indexOf(CC_URL_PREFIX_NOSSL) === 0){
-      return 
-    }
-  }
-}
 
 export class LicenseSelector extends React.Component<LicenseSelectorProps, LicenseSelectorState> {
   constructor(props: LicenseSelectorProps){
