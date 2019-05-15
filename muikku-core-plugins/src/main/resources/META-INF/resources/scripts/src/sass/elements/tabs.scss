@@ -22,38 +22,43 @@
 .tabs__tab-labels--desktop {
   background: $color-default;
   display:none;
-  
+
   @include breakpoint($breakpoint-pad) { 
     display: flex;
   }
 }
 
 .tabs__tab {
-  background: $color-default;
-  border-bottom: 1px solid $color-material-page-admin-panel-main-color;
+  background: $color-tab-blur-background;
+  border-bottom: 1px solid $color-tab-border;
+  border-radius: 2px;
   cursor: pointer;
   padding: 10px;
   user-select: none;
   @include text;
-    
+
   &.active {
-    background: $color-default;
-    border-top: 1px solid $color-material-page-admin-panel-main-color;
+    background: $color-tab-focus-background;
     border-bottom: none;
-    border-left: 1px solid $color-material-page-admin-panel-main-color;
-    border-right: 1px solid $color-material-page-admin-panel-main-color;
+    border-left: 1px solid $color-tab-border;
+    border-right: 1px solid $color-tab-border;
+    border-top: 1px solid $color-tab-border;
   }
 }
 
 .tabs__tab--workspace-students {
+
   @include breakpoint($breakpoint-pad) { 
     background: $color-default;
     color: $color-text-default;
-  }    
+    border: none;
+  }
+
   &.active {
     @include breakpoint($breakpoint-pad) { 
       background: $color-default;
       color: $color-text-default;
+      border: none;
     }
   }
 }
@@ -72,7 +77,6 @@
   line-height: 1;
   margin: 0 1px;
   padding: 6px 8px 8px;
-  
 
   @include breakpoint($breakpoint-pad) { 
     padding: 10px 16px 12px;

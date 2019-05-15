@@ -125,16 +125,8 @@
 .form-element__input--main-function-search {
   background-color: $color-default;
   border: 2px solid $color-main-function-input-field-border;
-  border-radius: 2px;
-  border-right: 0;
-  font-size: 0.925rem;
-  height: 35px;
-  padding: 5px 10px;
-  width: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    height: 40px;
-  }
+  
+  @include form-element-input-search;
 }
 
 .form-element__input-decoration--main-function-search {
@@ -142,17 +134,25 @@
   border-radius: 2px;
 
   &::before {
-    align-items: center;
-    color: $color-main-function-search-icon;
-    display: flex;
-    height: 35px;
-    justify-content: center;
-    width: 35px;
+    color: $color-main-function-search-icon;  
+    @include form-element-input-search-decoration;
+  }
+}
 
-    @include breakpoint($breakpoint-pad) {
-      height: 40px;
-      width: 40px;
-    }
+.form-element__input--subpanel-search {
+  background-color: $color-default;
+  border: 2px solid $color-subpanel-search-border;
+  
+  @include form-element-input-search;
+}
+
+.form-element__input-decoration--subpanel-search {
+  background-color: $color-subpanel-search-icon-background;
+  border-radius: 2px;
+
+  &::before {
+    color: $color-subpanel-search-icon;
+    @include form-element-input-search-decoration;
   }
 }
 
