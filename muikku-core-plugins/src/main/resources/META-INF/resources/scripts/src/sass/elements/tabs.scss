@@ -23,7 +23,9 @@
 
 .tabs__tab-labels--desktop {
   background: $color-default;
+  border: none;
   display:none;
+  
 
   @include breakpoint($breakpoint-pad) { 
     display: flex;
