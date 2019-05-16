@@ -142,6 +142,10 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
   (newState: WorkspaceMaterialEditorType):AnyActionType
 }
 
+export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
+  (workspace: WorkspaceType, material: MaterialContentNodeType):AnyActionType
+}
+
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (data: {
     workspace: WorkspaceType,
@@ -1299,6 +1303,21 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
   };
 }
 
+let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
+  function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(mApi().workspace.workspaces.materials.read(workspace.id, {
+        parentId: material.workspaceMaterialId,
+      }), 'callback')();
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+    }
+  }
+}
+
 let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTriggerType = function updateWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
@@ -1539,4 +1558,5 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
-  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode}
+  updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
+  requestWorkspaceMaterialContentNodeAttachments}

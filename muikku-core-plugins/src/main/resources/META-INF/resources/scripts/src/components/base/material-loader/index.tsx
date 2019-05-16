@@ -21,7 +21,8 @@ import Button, { ButtonPill } from '~/components/general/button';
 import { bindActionCreators } from 'redux';
 import { UpdateAssignmentStateTriggerType, updateAssignmentState,
   setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
-  UpdateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode } from '~/actions/workspaces';
+  UpdateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode,
+  requestWorkspaceMaterialContentNodeAttachments, RequestWorkspaceMaterialContentNodeAttachmentsTriggerType } from '~/actions/workspaces';
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
@@ -161,6 +162,7 @@ interface MaterialLoaderProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
   displayNotification: DisplayNotificationTriggerType,
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
 }
 
 interface MaterialLoaderState {
@@ -261,6 +263,9 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     e.stopPropagation();
   }
   startupEditor(){
+    if (this.props.page && (typeof this.props.canAddAttachments === "undefined"  || this.props.canAddAttachments)) {
+      this.props.requestWorkspaceMaterialContentNodeAttachments(this.props.workspace, this.props.material);
+    }
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
       currentNodeValue: this.props.material,
@@ -542,7 +547,7 @@ function mapStateToProps(state: StateType){
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({updateAssignmentState, setWorkspaceMaterialEditorState,
-    updateWorkspaceMaterialContentNode, displayNotification}, dispatch);
+    updateWorkspaceMaterialContentNode, displayNotification, requestWorkspaceMaterialContentNodeAttachments}, dispatch);
 };
 
 export default connect(
