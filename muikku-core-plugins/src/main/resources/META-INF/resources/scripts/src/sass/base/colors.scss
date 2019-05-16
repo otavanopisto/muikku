@@ -103,7 +103,7 @@ $color-taskfield-hint-background: #ffffe1;
 $color-material-edit-panel-shadow: rgba(0, 0, 0, 0.7);
 $color-material-page-admin-panel-main-color: #5db5c5;
 $color-material-page-admin-panel-main-hover-color: #494949;
-$color-material-page-edit-header-background: #5db5c5;
+$color-material-page-admin-panel-section-color: #c0eaf2;
 
 // General
 $color-default-body: #f5f5f5;
@@ -461,7 +461,9 @@ $color-workspace-subpanel-border: #e0e0e0;
 // TAB
 
 $color-tab-blur-background: #f5f5f5;
+$color-tab-blur-font: #9a9a9a;
 $color-tab-focus-background: $color-default;
+$color-tab-focus-font: $color-text-default;
 $color-tab-border: #5db5c5;
 
 

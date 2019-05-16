@@ -1110,7 +1110,7 @@
 .button-pill--material-page-close-editor {
   @include rotate-icon-on-hover
   background: transparent;
-  color: $color-default;
+  color: $color-material-page-admin-panel-main-color;
   font-size: 1rem;
   height: 2rem;
   position: absolute;

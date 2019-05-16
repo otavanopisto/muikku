@@ -233,7 +233,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     }
       let materialPageType = this.props.editorState.currentDraftNodeValue.assignmentType ? (this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
       let assignmentPageType = "material-editor-" + materialPageType;
-      
+
       let canPublish = !equals(this.props.editorState.currentNodeValue, this.props.editorState.currentDraftNodeValue);
       const publishModifiers = ["material-editor-publish-page","material-editor"];
       const revertModifiers = ["material-editor-revert-page","material-editor"];
@@ -241,9 +241,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         publishModifiers.push("disabled");
         revertModifiers.push("disabled");
       }
-      
+
       let editorButtonSet = <div className="material-editor__buttonset">
-        {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialEditTooltip")}>
+        {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialPublishTooltip")}>
           <ButtonPill buttonModifiers={publishModifiers} onClick={canPublish ? this.publish : null} icon="publish"/>
         </Dropdown> : null}
         {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialRevertToPublishedTooltip")}>
@@ -267,14 +267,14 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           </Dropdown>
         </DeleteWorkspaceMaterialDialog> : null}
       </div>;
-      
+
       const allTabs = [{
         id: "content",
         type: "material-editor",
         name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.content"),
         component: () => <div className="material-editor__content-wrapper">
           {editorButtonSet}
-      
+
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
@@ -291,48 +291,56 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           </div> : null}
         </div>
       }];
-      
-      if (this.props.editorState.canSetLicense) {
+
+      if (this.props.editorState.canSetLicense || this.props.editorState.canSetProducers) {
         allTabs.push({
-          id: "license",
+          id: "metadata",
           type: "material-editor",
-          name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.license"),
+          name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.metadata"),
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
-            
-            <LicenseSelector value={this.props.editorState.currentDraftNodeValue.license} onChange={this.updateLicense} i18n={this.props.i18n}/>
+
+            {this.props.editorState.canSetLicense ? 
+              <div className="material-editor__sub-section">
+                <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.license")}</h3>
+                <div className="material-editor__add-license-container">
+                  <LicenseSelector value={this.props.editorState.currentDraftNodeValue.license} onChange={this.updateLicense} i18n={this.props.i18n}/>
+                </div>
+              </div>
+            : null }
+
+            {this.props.editorState.canSetProducers ?
+              <div className="material-editor__sub-section">
+                <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.producers")}</h3>
+                <div className="material-editor__add-producers-container">
+                  <input className="material-editor__add-producer-field" type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
+                  <button className="" onClick={this.addProducer}>Enter</button>
+                </div>
+  
+                <div className="material-editor__list-producers-container">
+                  {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
+                    return <div className="material-editor__producer" key={index}>{p.name}<button onClick={this.removeProducer.bind(this, index)}>x</button></div>
+                  })}
+                </div>
+              </div>
+            : null }
           </div>,
         })
       }
-      
-      if (this.props.editorState.canSetProducers) {
-        allTabs.push({
-          id: "producers",
-          type: "material-editor",
-          name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.producers"),
-          component: () => <div className="material-editor__content-wrapper">
-            {editorButtonSet}
-        
-            {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
-              return <div key={index}>{p.name}<button onClick={this.removeProducer.bind(this, index)}>x</button></div>
-            })}
-            <input type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
-            <button onClick={this.addProducer}>Enter</button>
-          </div>,
-        })
-      }
-      
+
       if (this.props.editorState.canAddAttachments) {
         allTabs.push({
           id: "attachments",
           type: "material-editor",
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments"),
-          component: () => <div className="material-editor__content-wrapper"></div>,
+          component: () => <div className="material-editor__content-wrapper">
+            {editorButtonSet}
+          </div>,
         })
       }
       
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}>
-        <Tabs activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
+        <Tabs modifier="material-editor" activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
           <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="close"/>
         </Tabs>
           
