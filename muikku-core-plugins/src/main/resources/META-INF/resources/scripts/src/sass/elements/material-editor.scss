@@ -6,7 +6,7 @@
 .material-editor {
   @include no-scrollbars;
   @include prefix(transition, webkit ms o moz, left 0.3s);
-  background: $color-default-body;
+  background: $color-default;
   height: 100%;
   left: -100%;
   overflow-y: auto;
@@ -38,22 +38,33 @@
 .material-editor__buttonset {
   align-items: center;
   bottom: 0;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   justify-content: flex-end;
   display: flex;
   margin: 0 0 10px;
 }
 
 .material-editor__content-wrapper {
+  @include text;
+  display: flex;
+  flex-flow: column nowrap;
+  height: calc(100vh - 40px);
   padding: 10px;
+  width: 100%;
 }
 
 .material-editor__title-container {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 0 0 10px;
 }
 
 .material-editor__title {
   background: $color-default;
-  border: solid 1px $color-material-page-admin-panel-main-color;
+  border: solid 2px lighten($color-material-page-admin-panel-main-color,20%);
   border-radius: 2px;
   font-size: 1.25rem;
   font-weight: 300;
@@ -67,13 +78,14 @@
 }
 
 .material-editor__editor-container {
-  position: sticky;
-  top: 50px;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 
   // CKE override styles
   .cke {
     background: $color-default;
-    border: solid 1px $color-material-page-admin-panel-main-color;
+    border: solid 2px lighten($color-material-page-admin-panel-main-color,20%);
     border-radius: 2px;
     box-sizing: border-box;
     max-width: 100%;
@@ -82,11 +94,45 @@
 
   .cke_top {
     background: $color-default;
-    border-bottom: 1px solid $color-material-page-admin-panel-main-color;
+    border-bottom: 1px solid  lighten($color-material-page-admin-panel-main-color,20%);
   }
 
   .cke_bottom {
     background: $color-default;
-    border-top: 1px solid $color-material-page-admin-panel-main-color;
+    border-top: 1px solid  lighten($color-material-page-admin-panel-main-color,20%);
   }
 }
+
+.material-editor__sub-section {
+  border-bottom: solid 1px $color-material-page-admin-panel-main-color;
+  border-radius: 2px;
+  margin: 0 0 10px;
+  padding: 15px;
+
+  &:last-child {
+    border: 0;
+  }
+}
+
+.material-editor__sub-title {
+  font-size: 1.25rem;
+  font-weight: 300;
+  line-height: 1;
+  margin: 0 0 10px;
+}
+
+.material-editor__add-producers-container {
+  
+}
+
+.material-editor__list-producers-container {
+  
+}
+
+.material-editor__producer {
+  
+}
+
+
+
+

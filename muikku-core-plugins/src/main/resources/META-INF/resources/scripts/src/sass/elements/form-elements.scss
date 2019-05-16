@@ -71,7 +71,7 @@
 
 .form-element--workspace-toolbar {
   @include form-element-toolbar;
-  width: 95%;
+  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     width: 50%;

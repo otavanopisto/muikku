@@ -4,18 +4,21 @@
 @import "../base/breakpoints";
 
 .tabs {
-  margin-top: 10px;
   @include text;
+  margin-top: 10px;
 }
 
 .tabs__tab-labels {
   align-items: center;
+  border-bottom: 1px solid $color-tab-border;
   display: flex;
   flex-flow: row nowrap;
+  padding: 0 2px;
   border-bottom: 1px solid $color-tab-border;
 }
 
 .tabs__tab-labels--mobile {
+
   @include breakpoint($breakpoint-pad) { 
     display:none;
   }
@@ -23,8 +26,8 @@
 
 .tabs__tab-labels--desktop {
   background: $color-default;
-  border: none;
-  display:none;
+  border: 0;
+  display: none;
   
 
   @include breakpoint($breakpoint-pad) { 
@@ -33,23 +36,29 @@
 }
 
 .tabs__tab {
-
   background: $color-tab-blur-background;
+  border-left: 1px solid $color-tab-blur-background;
+  border-right: 1px solid $color-tab-blur-background;
+  border-top: 1px solid $color-tab-blur-background;
   border-radius: 5px 5px 0 0 ;
   color: $color-tab-blur-font;
   cursor: pointer;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: 1;
+  margin: 0 2px;
   padding: 10px;
   user-select: none;
 
-
   &.active {
     background: $color-tab-focus-background;
-    border-bottom: none;
     color: $color-tab-focus-font;
     border-left: 1px solid $color-tab-border;
     border-right: 1px solid $color-tab-border;
     border-top: 1px solid $color-tab-border;
     margin-bottom: -1px;
+    padding: 9px 10px 11px;
   }
 }
 
@@ -58,42 +67,17 @@
   @include breakpoint($breakpoint-pad) { 
     background: $color-default;
     color: $color-text-default;
-    border: none;
+    border: 0;
   }
 
   &.active {
+
     @include breakpoint($breakpoint-pad) { 
       background: $color-default;
       color: $color-text-default;
-      border: none;
+      border: 0;
     }
   }
-}
-
-
-// Used when editing material page
-
-.tabs__tab--material-editor {
-  background: lighten($color-material-page-admin-panel-main-color,10%);
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  color: $color-default;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  line-height: 1;
-  margin: 0 1px;
-  padding: 6px 8px 8px;
-
-  @include breakpoint($breakpoint-pad) { 
-    padding: 10px 16px 12px;
-  }
-}
-
-// Used when viewing workspace students
-
-.tabs__tab--workspace-students {
-  flex-basis: 50%;
 }
 
 .tabs__tab-data-container {
@@ -105,10 +89,29 @@
   flex-basis: 100%;
 }
 
+// Used when editing material page
+.tabs__tab-labels--material-editor {
+  padding: 0 40px 0 2px;
+}
+
+.tabs__tab--material-editor {
+
+}
+
+.tabs__tab-data--material-editor {
+
+  &.active {
+    display: flex;
+  }
+}
+
+// Used when viewing workspace students
+.tabs__tab--workspace-students {
+  flex-basis: 50%;
+}
+
 .tabs__tab-data--workspace-students {
-  display: none;
-  flex-basis: 100%;
-  
+
   &.active {
     display: flex;
   }
