@@ -6,7 +6,9 @@ import {WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, Worksp
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
-import { MaterialContentNodeType, MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType, WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType, WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType } from '~/reducers/workspaces';
+import { MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
+  WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
+  WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 
 export interface LoadUserWorkspacesFromServerTriggerType {
@@ -1307,9 +1309,21 @@ let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialConte
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      await promisify(mApi().workspace.workspaces.materials.read(workspace.id, {
+      const childrenAttachments:MaterialContentNodeType[] = (await promisify(mApi().workspace.workspaces.materials.read(workspace.id, {
         parentId: material.workspaceMaterialId,
-      }), 'callback')();
+      }), 'callback')() as MaterialContentNodeType[]) || [];
+      
+      dispatch({
+        type: "UPDATE_MATERIAL_CONTENT_NODE",
+        payload: {
+          showRemoveAnswersDialogForPublish: false,
+          material: material,
+          update: {
+            childrenAttachments,
+          },
+          isDraft: false,
+        }
+      });
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
@@ -1395,17 +1409,19 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
             }
             return p;
           }));
-          dispatch({
-            type: "UPDATE_MATERIAL_CONTENT_NODE",
-            payload: {
-              showRemoveAnswersDialogForPublish: false,
-              material: data.material,
-              update: {
-                producers: newProducers,
-              },
-              isDraft: false,
-            }
-          });
+          if (!data.dontTriggerReducerActions) {
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                showRemoveAnswersDialogForPublish: false,
+                material: data.material,
+                update: {
+                  producers: newProducers,
+                },
+                isDraft: false,
+              }
+            });
+          }
           
           
           const deletedProducers = data.material.producers.filter((p) => !newProducers.find((p2) => p2.id === p.id));

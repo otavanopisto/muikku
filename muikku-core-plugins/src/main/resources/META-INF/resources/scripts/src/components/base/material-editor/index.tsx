@@ -335,6 +335,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments"),
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
+            
+            {this.props.editorState.currentNodeValue.childrenAttachments && this.props.editorState.currentNodeValue.childrenAttachments.map((a) => {
+              return <div key={a.materialId}>{a.title}</div>
+            })}
           </div>,
         })
       }

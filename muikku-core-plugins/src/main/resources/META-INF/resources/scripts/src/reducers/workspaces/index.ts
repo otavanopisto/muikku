@@ -397,6 +397,7 @@ export interface MaterialContentNodeType {
   producers?: MaterialContentNodeProducerType[],
   
   //Assigned fields
+  childrenAttachments?: Array<MaterialContentNodeType>, // this is usually missing and has to be manually retrieved
   evaluation?: MaterialEvaluationType,
   assignment?: MaterialAssignmentType
 }
