@@ -101,7 +101,6 @@
   width: 45px;
   right: 0;
   top: 0;
-  color: $color-menu-default-header-button-close;
   vertical-align: middle;
   line-height: $navbar-mobile-height;
   transition: background-color .3s;
@@ -114,6 +113,14 @@
   &:active, &.active {
     background-color: $color-menu-default-header-button-close-background-active;
   }
+}
+
+.menu--main-function .menu__header__button--close {
+  color: $color-menu-default-header-button-close;
+}
+
+.menu--frontpage .menu__header__button--close {
+  color: $color-menu-main-function-header-button-close;
 }
 
 .menu__items {
