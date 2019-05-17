@@ -53,7 +53,7 @@
 .navbar--frontpage .navbar__logo {
 
   @include breakpoint($breakpoint-desktop-xl) {
-    background-image: url("/gfx/oo-branded-site-logo-text.png") ;
+    background-image: url("/gfx/oo-branded-site-logo-text.png");
     display: inline-block;
   }
 }
