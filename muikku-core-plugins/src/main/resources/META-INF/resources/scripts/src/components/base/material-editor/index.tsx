@@ -3,7 +3,8 @@ import Portal from '~/components/general/portal';
 
 import '~/sass/elements/material-editor.scss';
 import { bindActionCreators } from 'redux';
-import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType, updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from '~/actions/workspaces';
+import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
+  updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from '~/actions/workspaces';
 import { connect, Dispatch } from 'react-redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
@@ -16,6 +17,7 @@ import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 import Dropdown from "~/components/general/dropdown"; 
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
+import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 
 import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
@@ -27,7 +29,7 @@ interface MaterialEditorProps {
   status: StatusType,
   editorState: WorkspaceMaterialEditorType,
   locale: LocaleListType,
-  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
 }
 
 interface MaterialEditorState {
@@ -337,7 +339,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             {editorButtonSet}
             
             {this.props.editorState.currentNodeValue.childrenAttachments && this.props.editorState.currentNodeValue.childrenAttachments.map((a) => {
-              return <div key={a.materialId}>{a.title}</div>
+              return <div key={a.materialId}>
+                <h3>{a.title}</h3>
+                <p>/workspace/{this.props.editorState.currentNodeWorkspace.urlName}/{this.props.editorState.currentNodeValue.path}/{a.path}</p>
+                <ConfirmRemoveAttachment attachment={a}><button>delete</button></ConfirmRemoveAttachment>
+              </div>
             })}
           </div>,
         })
@@ -353,7 +359,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
      </div>
   }
 }
-  
+
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,

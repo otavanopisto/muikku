@@ -166,8 +166,8 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
     material: MaterialContentNodeType,
     workspace: WorkspaceType,
     removeAnswers?: boolean,
-    success: ()=>any,
-    fail: ()=>any
+    success?: ()=>any,
+    fail?: ()=>any
   }):AnyActionType
 }
 
@@ -182,6 +182,14 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
     success?: (newNode: MaterialContentNodeType)=>any,
     fail?: ()=>any
   }):AnyActionType
+}
+
+export interface CreateWorkspaceMaterialAttachmentTriggerType {
+  ():AnyActionType
+}
+
+export interface DeleteWorkspaceMaterialAttachmentTriggerType {
+  ():AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -1348,8 +1356,6 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       }
       
       if (!data.isDraft) {
-        // TODO handle conflicts
-        // Trying to update the actual thing
         if (typeof data.update.html !== "undefined" && data.material.html !== data.update.html) {
           await promisify(mApi().materials.html.content
               .update(data.material.materialId, {
@@ -1358,6 +1364,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
               }), 'callback')();
         }
         
+        // TODO clutch the path from the title
         const fields = ["materialId", "parentId", "nextSiblingId", "hidden", "assignmentType", "correctAnswers", "path", "title"]
         const result:any = {
           id: data.material.workspaceMaterialId
@@ -1476,16 +1483,13 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
 let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTriggerType = function deleteWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      
-      // TODO write the code for the actual deletition
-      
       dispatch({
         type: "DELETE_MATERIAL_CONTENT_NODE",
         payload: data.material
       });
       
       await promisify(mApi().workspace.workspaces.materials
-          .del(data.workspace.id, data.material.workspaceMaterialId, {
+          .del(data.workspace.id, data.material.workspaceMaterialId || data.material.id, {
             removeAnswers: data.removeAnswers || false,
             updateLinkedMaterials: true,
           }), 'callback')()
@@ -1566,6 +1570,12 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
   }
 }
 
+let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerType = function createWorkspaceMaterialAttachment() {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    
+  }
+}
+
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
@@ -1575,4 +1585,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments}
+  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment}

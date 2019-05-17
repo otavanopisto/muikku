@@ -662,7 +662,10 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
 
     let filterMaterial = (m: MaterialContentNodeType) => {
-      if (m.workspaceMaterialId === action.payload.workspaceMaterialId) {
+      // Sometimes I get id sometimes workspaceMaterialId, super inconsistent
+      if (typeof m.id !== "undefined" && typeof action.payload.id !== "undefined" && m.id === action.payload.id) {
+        return false;
+      } else if (m.workspaceMaterialId === action.payload.workspaceMaterialId) {
         return false;
       }
       
@@ -670,7 +673,14 @@ export default function workspaces(state: WorkspacesType={
     }
     let mapMaterial = (m: MaterialContentNodeType, index: number, arr: Array<MaterialContentNodeType>) => {
       const nextSiblingId = arr[index + 1] ? arr[index + 1].workspaceMaterialId : null;
-      const newM:MaterialContentNodeType = {...m, nextSiblingId, children: m.children ? m.children.filter(filterMaterial).map(mapMaterial) : m.children};
+      const newM:MaterialContentNodeType = {
+        ...m,
+        nextSiblingId,
+        children: m.children ? m.children.filter(filterMaterial).map(mapMaterial) : m.children
+      };
+      if (newM.childrenAttachments) {
+        newM.childrenAttachments = newM.childrenAttachments.filter(filterMaterial);
+      }
       return newM;
     }
     
@@ -685,6 +695,11 @@ export default function workspaces(state: WorkspacesType={
         opened: false,
         ...newEditor,
       };
+    }
+    if (newEditor && newEditor.currentNodeValue && newEditor.currentNodeValue.childrenAttachments) {
+      newEditor = {...newEditor};
+      newEditor.currentNodeValue = {...newEditor.currentNodeValue};
+      newEditor.currentNodeValue.childrenAttachments = newEditor.currentNodeValue.childrenAttachments.filter(filterMaterial);
     }
     return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
   } else if (action.type === "INSERT_MATERIAL_CONTENT_NODE") {
