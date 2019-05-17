@@ -35,32 +35,34 @@
   
 // NAVBAR LOGO
 .navbar__logo {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
   display: none;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   height: $navbar-mobile-height;
-  
+  width: 175px;
+
   @include breakpoint($breakpoint-pad) {
     height: $navbar-desktop-height;
   }
 }
-  
+
 .navbar--frontpage .navbar__logo {
 
   @include breakpoint($breakpoint-desktop-xl) {
-    background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
+    background-image: url("/gfx/oo-branded-site-logo-text.png") ;
     display: inline-block;
-    width: 175px;
   }
 }
-  
+
 .navbar--main-function .navbar__logo {
 
   @include breakpoint($breakpoint-desktop) {
-    background: url("/gfx/oo-branded-site-logo-text-white.png") no-repeat left center;
+    background-image: url("/gfx/oo-branded-site-logo-text-white.png");
     display: inline-block;
-    width: 185px;
   }
 }
 

@@ -48,6 +48,7 @@
 
 .menu__logo {
   background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
+  background-size: contain;
   display: inline-block;
   height: $navbar-mobile-height;
   width: 175px;
