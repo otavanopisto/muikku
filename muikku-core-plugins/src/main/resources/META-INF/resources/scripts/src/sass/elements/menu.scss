@@ -94,7 +94,7 @@
   width: 100%;
 }
 
-.menu__header__button--close {
+.menu__header__button-close {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   position: absolute;
   height: $navbar-mobile-height;
@@ -115,11 +115,11 @@
   }
 }
 
-.menu--main-function .menu__header__button--close {
+.menu__header__button-close--main-function {
   color: $color-menu-default-header-button-close;
 }
 
-.menu--frontpage .menu__header__button--close {
+.menu__header__button-close--frontpage {
   color: $color-menu-main-function-header-button-close;
 }
 

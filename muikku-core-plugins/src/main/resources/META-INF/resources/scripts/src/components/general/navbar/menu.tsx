@@ -144,7 +144,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
       <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
         <div className="menu__header">
           <div className="menu__logo"></div>
-          <Link className="menu__header__button--close icon-arrow-left-thin"></Link>
+          <Link className={`menu__header__button-close menu__header__button-close--${this.props.modifier} icon-arrow-left-thin`}></Link>
         </div>
         <div className="menu__body">
           {this.props.navigation ? <div className="menu__extras">{this.props.navigation}</div> : null}
