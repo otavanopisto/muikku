@@ -66,7 +66,7 @@
   left: -$menu-width-mobile;
   position: absolute;
   top: 0;
-  width: $menu-width-mobile;    
+  width: $menu-width-mobile;
 }
 
 .menu__extras {
@@ -78,7 +78,7 @@
   &:empty {
     display: none;
   }
-}    
+}
 
 .menu__header {
   background-color: $color-menu-default-header-background;
@@ -135,10 +135,10 @@
   height: 50px;
   text-transform: uppercase;
 }
-        
+
 .menu__item--space {
   height: 30px;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: 45px;
   }
