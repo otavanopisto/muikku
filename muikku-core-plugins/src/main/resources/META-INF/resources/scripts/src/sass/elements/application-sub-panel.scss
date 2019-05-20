@@ -55,7 +55,6 @@
   }
 }
 
-
 .application-sub-panel__header-main {
   flex-basis: 100%;
   flex-grow: 1;
@@ -67,7 +66,6 @@
     flex-shrink: 1;
     font-size: 1.25rem;
   }
-
 }
 
 .application-sub-panel__header-main--guider-profile-student-name {
@@ -133,6 +131,11 @@
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
+}
+
+.application-sub-panel__item--empty {
+  font-style: italic;
+  padding: 0 0 10px;
 }
 
  .application-sub-panel__item-header {
