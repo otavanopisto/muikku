@@ -79,6 +79,11 @@
   }
 }
 
+.form-element--material-editor-add-producers {
+  @include form-element-toolbar;
+  width: 100%;
+}
+
 .form-element--profile {
   margin: 10px 0 0;
 }
@@ -123,10 +128,17 @@
 }
 
 .form-element__input--main-function-search {
+  @include form-element-input-search;
   background-color: $color-default;
   border: 2px solid $color-main-function-input-field-border;
-  
-  @include form-element-input-search;
+  margin-right: -2px; // Hides the right border and border-radius effect to provide more unified look 
+}
+
+.form-element__input--material-editor-add-producer {
+  @include form-element-input-add-producers;
+  background-color: $color-default;
+  border: solid 2px lighten($color-material-page-admin-panel-main-color,20%);
+  margin-right: -2px; // Hides the right border and border-radius effect to provide more unified look
 }
 
 .form-element__input-decoration--main-function-search {
@@ -134,8 +146,18 @@
   border-radius: 2px;
 
   &::before {
-    color: $color-main-function-search-icon;  
     @include form-element-input-search-decoration;
+    color: $color-main-function-search-icon;
+  }
+}
+
+.form-element__input-decoration--material-editor-add-producer {
+  background-color: $color-material-page-admin-panel-main-color;
+  border-radius: 2px;
+
+  &::before {
+    @include form-element-input-add-producers-decoration;
+    color: $color-main-function-search-icon;
   }
 }
 
@@ -187,6 +209,18 @@
   padding: 5px 25px 5px 5px;
   text-transform: uppercase;
   vertical-align: top;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+  }
+}
+
+.form-element__select--material-editor {
+  border: solid 2px lighten($color-material-page-admin-panel-main-color,20%);
+  height: 35px;
+  font-weight: 300;
+  padding: 5px 25px 5px 5px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {

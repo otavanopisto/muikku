@@ -315,8 +315,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.producers")}</h3>
                 <div className="material-editor__add-producers-container">
-                  <input className="material-editor__add-producer-field" type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
-                  <button className="" onClick={this.addProducer}>Enter</button>
+                  <div className="form-element form-element--material-editor-add-producers">
+                    <input placeholder={this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')} className="form-element__input form-element__input--material-editor-add-producer" type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
+                    <div className="form-element__input-decoration--material-editor-add-producer icon-add" onClick={this.addProducer}></div>
+                  </div>
                 </div>
   
                 <div className="material-editor__list-producers-container">
@@ -337,7 +339,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments"),
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
-            
+
             {this.props.editorState.currentNodeValue.childrenAttachments && this.props.editorState.currentNodeValue.childrenAttachments.map((a) => {
               return <div key={a.materialId}>
                 <h3>{a.title}</h3>
@@ -348,12 +350,12 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           </div>,
         })
       }
-      
+
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}>
         <Tabs modifier="material-editor" activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
           <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="close"/>
         </Tabs>
-          
+
         <ConfirmPublishPageWithAnswersDialog/>
         <ConfirmRemovePageWithAnswersDialog/>
      </div>

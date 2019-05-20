@@ -20,7 +20,7 @@ interface TabsState {
 
 export default class Tabs extends React.Component<TabsProps, TabsState>{
   render(){
-    return <div className="tabs">
+    return <div className={`tabs ${this.props.modifier ? "tabs--" + this.props.modifier : ""}`}>
       <div className={`tabs__tab-labels ${this.props.modifier ? "tabs__tab-labels--" + this.props.modifier : ""}`}>
         {this.props.tabs.map((tab, index)=>{
           return <div className={`tabs__tab  ${tab.type ? "tabs__tab--" + tab.type : ""} ${tab.id === this.props.activeTab ? "active" : ""}`}

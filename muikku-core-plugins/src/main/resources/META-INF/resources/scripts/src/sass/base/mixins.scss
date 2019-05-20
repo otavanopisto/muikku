@@ -83,7 +83,20 @@
   
   @include breakpoint($breakpoint-pad) {
     height: 40px;
-  }  
+  }
+}
+
+@mixin form-element-input-add-producers {
+  border-radius: 2px;
+  border-right: 0;
+  font-size: 0.925rem;
+  height: 35px;
+  padding: 5px 10px;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+  }
 }
 
 @mixin form-element-input-search-decoration {
@@ -98,3 +111,17 @@
     width: 40px;
   }
 }
+
+@mixin form-element-input-add-producers-decoration {
+  align-items: center;
+  display: flex;
+  height: 35px;
+  justify-content: center;
+  width: 35px;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+    width: 40px;
+  }
+}
+
