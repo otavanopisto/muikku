@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -85,6 +86,16 @@ public class TranscriptOfRecordsFile {
     this.id = id;
   }
 
+  @Transient
+  public Long getSize() {
+    return size;
+  }
+
+  @Transient
+  public void setSize(Long size) {
+    this.size = size;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -112,4 +123,7 @@ public class TranscriptOfRecordsFile {
   @NotNull
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
+  
+  @Transient
+  private Long size;
 }

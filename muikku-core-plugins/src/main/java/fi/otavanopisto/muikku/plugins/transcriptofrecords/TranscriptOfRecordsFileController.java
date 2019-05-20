@@ -44,7 +44,7 @@ public class TranscriptOfRecordsFileController {
     
     return basePath;
   }
-
+  
   public TranscriptOfRecordsFile attachFile(
       UserEntity student,
       InputStream content,
@@ -62,21 +62,31 @@ public class TranscriptOfRecordsFileController {
       throw new RuntimeException("Couldn't save file", ex);
     }
     
-    return transcriptOfRecordsFileDAO.create(
+    TranscriptOfRecordsFile torFile = transcriptOfRecordsFileDAO.create(
       student,
       fileUuid,
       contentType,
       title,
       description
     );
+    torFile.setSize(file.length());
+    return torFile;
   }
   
   public List<TranscriptOfRecordsFile> listFiles(UserEntity student) {
-    return transcriptOfRecordsFileDAO.listByUserEntity(student);
+    List<TranscriptOfRecordsFile> files = transcriptOfRecordsFileDAO.listByUserEntity(student);
+    for (TranscriptOfRecordsFile file : files) {
+      file.setSize(getFileSize(file));
+    }
+    return files;
   }
   
   public TranscriptOfRecordsFile findFileById(Long id) {
-    return transcriptOfRecordsFileDAO.findById(id);
+    TranscriptOfRecordsFile file = transcriptOfRecordsFileDAO.findById(id);
+    if (file != null) {
+      file.setSize(getFileSize(file));
+    }
+    return file;
   }
   
   public void outputFileToStream(TranscriptOfRecordsFile torFile, OutputStream stream) {
@@ -96,4 +106,11 @@ public class TranscriptOfRecordsFileController {
   public void delete(TranscriptOfRecordsFile file) {
     transcriptOfRecordsFileDAO.archive(file);
   }
+
+  private Long getFileSize(TranscriptOfRecordsFile transcriptOfRecordsFile) {
+    String fileUuid = transcriptOfRecordsFile.getFileName();
+    File file = Paths.get(getFileUploadBasePath(), fileUuid).toFile();
+    return file == null ? 0 : file.length();
+  }
+
 }
