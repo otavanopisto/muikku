@@ -26,6 +26,7 @@ import { UpdateAssignmentStateTriggerType, updateAssignmentState,
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
+import Link from '~/components/general/link';
 
 //These represent the states assignments and exercises can be in
 const STATES = [{
@@ -508,6 +509,18 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           checkAnswers={this.state.answersChecked} onAnswerChange={this.onAnswerChange} onAnswerCheckableChange={this.onAnswerCheckableChange}/>
          }
       </div>
+      {
+        this.props.material.type === "binary" ?
+        (this.props.material.contentType.indexOf("image/") === 0 ? 
+          <div>
+            <img src={`/rest/materials/binary/${this.props.material.materialId}/content`} alt={this.props.material.title}/>
+          </div> :
+          <div>
+            <Link href={`/rest/materials/binary/${this.props.material.materialId}/content`} openInNewTab={this.props.material.title}>
+              {this.props.i18n.text.get("Donwnload")}
+            </Link>
+          </div>) : null
+      }
       {this.props.answerable && this.stateConfiguration ? <div className="material-page__buttonset">
         {!this.stateConfiguration['button-disabled'] ? <Button buttonModifiers={this.stateConfiguration['button-class']}
           onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.state.answerCheckable ?

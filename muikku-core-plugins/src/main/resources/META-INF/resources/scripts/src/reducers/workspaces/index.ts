@@ -381,7 +381,7 @@ export interface MaterialContentNodeType {
   id?: number,
   contentType?: string,
   
-  //Extended Fields (only available when loaded via workspace rest endpoint)
+  //Extended Fields (only available when loaded via content node rest endpoint)
   type?: string,
   children?: Array<MaterialContentNodeType>,
   workspaceMaterialId?: number,

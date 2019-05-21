@@ -35,7 +35,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
   }
   render(){
     const isBinary = this.props.materialContentNode.type === "binary";
-    return <MaterialLoader canPublish={!isBinary}
+    return <MaterialLoader canPublish
       canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
       canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
       canAddAttachments={!isBinary} canEditContent={!isBinary} page={this.props.page} editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
