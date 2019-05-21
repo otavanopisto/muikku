@@ -27,6 +27,7 @@ import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
 import Link from '~/components/general/link';
+import BinaryMaterialLoader from '~/components/base/material-loader/binary';
 
 //These represent the states assignments and exercises can be in
 const STATES = [{
@@ -511,15 +512,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       </div>
       {
         this.props.material.type === "binary" ?
-        (this.props.material.contentType.indexOf("image/") === 0 ? 
-          <div>
-            <img src={`/rest/materials/binary/${this.props.material.materialId}/content`} alt={this.props.material.title}/>
-          </div> :
-          <div>
-            <Link href={`/rest/materials/binary/${this.props.material.materialId}/content`} openInNewTab={this.props.material.title}>
-              {this.props.i18n.text.get("Donwnload")}
-            </Link>
-          </div>) : null
+        <BinaryMaterialLoader material={this.props.material} i18n={this.props.i18n}/> : null
       }
       {this.props.answerable && this.stateConfiguration ? <div className="material-page__buttonset">
         {!this.stateConfiguration['button-disabled'] ? <Button buttonModifiers={this.stateConfiguration['button-class']}

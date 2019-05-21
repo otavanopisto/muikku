@@ -376,10 +376,10 @@ export interface MaterialContentNodeType {
   html: string,
   currentRevision: number,
   publishedRevision: number,
+  contentType: string,
   
   //Standard Fields (only available when loaded through materials rest endpoint)
   id?: number,
-  contentType?: string,
   
   //Extended Fields (only available when loaded via content node rest endpoint)
   type?: string,
