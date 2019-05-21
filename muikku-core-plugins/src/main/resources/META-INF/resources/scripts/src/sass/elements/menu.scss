@@ -48,6 +48,7 @@
 
 .menu__logo {
   background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
+  background-size: contain;
   display: inline-block;
   height: $navbar-mobile-height;
   width: 175px;
@@ -65,7 +66,7 @@
   left: -$menu-width-mobile;
   position: absolute;
   top: 0;
-  width: $menu-width-mobile;    
+  width: $menu-width-mobile;
 }
 
 .menu__extras {
@@ -77,7 +78,7 @@
   &:empty {
     display: none;
   }
-}    
+}
 
 .menu__header {
   background-color: $color-menu-default-header-background;
@@ -93,14 +94,13 @@
   width: 100%;
 }
 
-.menu__header__button--close {
+.menu__button-close {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   position: absolute;
   height: $navbar-mobile-height;
   width: 45px;
   right: 0;
   top: 0;
-  color: $color-menu-default-header-button-close;
   vertical-align: middle;
   line-height: $navbar-mobile-height;
   transition: background-color .3s;
@@ -115,6 +115,14 @@
   }
 }
 
+.menu__button-close--main-function {
+  color: $color-menu-default-header-button-close;
+}
+
+.menu__button-close--frontpage {
+  color: $color-menu-main-function-header-button-close;
+}
+
 .menu__items {
   list-style-type: none;
   margin: 0;
@@ -127,10 +135,10 @@
   height: 50px;
   text-transform: uppercase;
 }
-        
+
 .menu__item--space {
   height: 30px;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: 45px;
   }
