@@ -10,6 +10,7 @@ import { MaterialContentNodeListType, MaterialCompositeRepliesListType, Material
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
   WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType } from '~/reducers/workspaces';
 import equals = require("deep-equal");
+import $ from '~/lib/jquery';
 
 export interface LoadUserWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -185,11 +186,13 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
 }
 
 export interface CreateWorkspaceMaterialAttachmentTriggerType {
-  ():AnyActionType
-}
-
-export interface DeleteWorkspaceMaterialAttachmentTriggerType {
-  ():AnyActionType
+  (data: {
+    workspace: WorkspaceType,
+    material: MaterialContentNodeType,
+    files: File[],
+    success?: () => any,
+    fail?: () => any,
+  }):AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -1570,9 +1573,58 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
   }
 }
 
-let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerType = function createWorkspaceMaterialAttachment() {
+let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerType = function createWorkspaceMaterialAttachment(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      const tempFilesData = await Promise.all(data.files.map((file) => {
+        //create the form data
+        let formData = new FormData();
+        //we add it to the file
+        formData.append("file", file);
+        //and do the thing
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            url: getState().status.contextPath + '/tempFileUploadServlet',
+            type: 'POST',
+            data: formData,
+            success: (data: any)=>{
+              resolve(data);
+            },
+            error: (xhr:any, err:Error)=>{
+              reject(err);
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+          });
+        });
+      }));
+      
+      await Promise.all(tempFilesData.map(async (tempFileData: any, index) => {
+        const materialResult:any = await promisify(mApi().materials.binary.create({
+          title: data.files[index].name,
+          contentType: tempFileData.fileContentType || data.files[index].type,
+          fileId: tempFileData.fileId,
+        }), 'callback')();
+        
+        await promisify(mApi().workspace.workspaces.materials.create(data.workspace.id, {
+          materialId: materialResult.id,
+          parentId: data.material.workspaceMaterialId,
+        }, {
+          updateLinkedMaterials: true
+        }), 'callback')();
+      }));
+      
+      data.success && data.success();
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      
+      data.fail && data.fail();
+    }
     
+    dispatch(requestWorkspaceMaterialContentNodeAttachments(data.workspace, data.material));
   }
 }
 
