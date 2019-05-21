@@ -4,7 +4,8 @@ import Portal from '~/components/general/portal';
 import '~/sass/elements/material-editor.scss';
 import { bindActionCreators } from 'redux';
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
-  updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from '~/actions/workspaces';
+  updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType,
+  createWorkspaceMaterialAttachment, CreateWorkspaceMaterialAttachmentTriggerType } from '~/actions/workspaces';
 import { connect, Dispatch } from 'react-redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
@@ -30,11 +31,13 @@ interface MaterialEditorProps {
   editorState: WorkspaceMaterialEditorType,
   locale: LocaleListType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
+  createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType
 }
 
 interface MaterialEditorState {
   tab: string;
   producerEntryName: string;
+  uploading: boolean;
 }
 
 const CKEditorConfig = (
@@ -81,8 +84,6 @@ const CKEditorConfig = (
 // First we need to modify the material content nodes endpoint to be able to receive hidden
 // nodes, we need those to be able to modify here
 class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditorState> {
-  private oldOverflow:string;
-
   constructor(props: MaterialEditorProps){
     super(props);
 
@@ -97,11 +98,34 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.addProducer = this.addProducer.bind(this);
     this.updateProducerEntryName = this.updateProducerEntryName.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
+    this.onFilesUpload = this.onFilesUpload.bind(this);
     
     this.state = {
       tab: "content",
       producerEntryName: "",
+      uploading: false,
     }
+  }
+  
+  onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      uploading: true
+    });
+    this.props.createWorkspaceMaterialAttachment({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentNodeValue,
+      files: Array.from(e.target.files),
+      success: () => {
+        this.setState({
+          uploading: false
+        });
+      },
+      fail: () => {
+        this.setState({
+          uploading: false
+        });
+      }
+    })
   }
   
   changeTab(tab: string) {
@@ -338,6 +362,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
             
+            {!this.state.uploading ?
+              <input type="file" multiple onChange={this.onFilesUpload}/> :
+              "uploading..."
+            }
+            
             {this.props.editorState.currentNodeValue.childrenAttachments && this.props.editorState.currentNodeValue.childrenAttachments.map((a) => {
               return <div key={a.materialId}>
                 <h3>{a.title}</h3>
@@ -370,7 +399,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode}, dispatch);
+  return bindActionCreators({setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode, createWorkspaceMaterialAttachment}, dispatch);
 };
 
 export default connect(
