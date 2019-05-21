@@ -20,10 +20,9 @@ interface CurrentStudentWorkspacesState {
 
 class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesProps, CurrentStudentWorkspacesState> {
   render(){
-    let reactComponent = this;
     return this.props.guider.currentStudent.workspaces ?  (this.props.guider.currentStudent.workspaces.length ? <div className="application-list">
-      {this.props.guider.currentStudent.workspaces.sort(function(a, b) {
-        return ('' + a.name).localeCompare(b.name, reactComponent.props.locale ,{sensitivity: 'base'});
+      {this.props.guider.currentStudent.workspaces.sort((a, b) => {
+        return ('' + a.name).localeCompare(b.name, this.props.locale ,{sensitivity: 'base'});
       }).map((workspace)=>{
         return <Workspace workspace={workspace} key={workspace.id}/>
       })}
