@@ -73,55 +73,29 @@
   flex-shrink: 1;
 }
 
-@mixin form-element-input-search {
-  border-radius: 2px;
-  border-right: 0;
-  font-size: 0.925rem;
-  height: 35px;
-  padding: 5px 10px;
-  width: 100%;
-  
-  @include breakpoint($breakpoint-pad) {
-    height: 40px;
-  }
-}
-
-@mixin form-element-input-add-producers {
-  border-radius: 2px;
-  border-right: 0;
-  font-size: 0.925rem;
-  height: 35px;
-  padding: 5px 10px;
-  width: 100%;
-  
-  @include breakpoint($breakpoint-pad) {
-    height: 40px;
-  }
-}
-
 @mixin form-element-input-search-decoration {
   align-items: center;
   display: flex;
-  height: 35px;
+  height: 2.25rem;
   justify-content: center;
-  width: 35px;
+  width: 2.25rem;
 
   @include breakpoint($breakpoint-pad) {
-    height: 40px;
-    width: 40px;
+    height: 2.5rem;
+    width: 2.5rem;
   }
 }
 
 @mixin form-element-input-add-producers-decoration {
   align-items: center;
   display: flex;
-  height: 35px;
+  height: 2.25rem;
   justify-content: center;
-  width: 35px;
+  width: 2.25rem;
 
   @include breakpoint($breakpoint-pad) {
-    height: 40px;
-    width: 40px;
+    height: 2.5rem;
+    width: 2.5rem;
   }
 }
 

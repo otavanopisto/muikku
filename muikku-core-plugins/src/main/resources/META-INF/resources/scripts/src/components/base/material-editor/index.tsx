@@ -347,7 +347,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   
                 <div className="material-editor__list-producers-container">
                   {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
-                    return <div className="material-editor__producer" key={index}>{p.name}<button onClick={this.removeProducer.bind(this, index)}>x</button></div>
+                    return <div className="material-editor__producer" key={index}>{p.name}<span className="material-editor__remove-producer icon-close" onClick={this.removeProducer.bind(this, index)}></span></div>
                   })}
                 </div>
               </div>
