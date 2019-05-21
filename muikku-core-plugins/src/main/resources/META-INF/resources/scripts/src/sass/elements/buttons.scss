@@ -1131,10 +1131,10 @@
 
 .button-pill--material-editor {
   @include prefix(transition, moz o ms webkit, all 0.15s);
-  background: $color-default;
+  background: $color-material-page-admin-panel-main-color;
   border: 1px solid $color-material-page-admin-panel-main-color;
-  color: $color-material-page-admin-panel-main-color;
-  border-radius: 10px;
+  color: $color-default;
+  border-radius: 25%;
   font-size: 1rem;
   height: 1.75rem;
   margin: 0 0 0 10px;
@@ -1143,15 +1143,15 @@
   width: 1.75rem;
 
   &.button-pill--disabled {
-    background: $color-default;
-    border: 1px solid $color-disabled;
-    color: $color-disabled;
+    background: lighten($color-disabled,15%);
+    border: 1px solid lighten($color-disabled,15%);
+    color: $color-default;
     cursor: not-allowed;
 
     &:hover {
-      background: $color-default;
-      border: 1px solid $color-disabled;
-      color: $color-disabled;
+      background: lighten($color-disabled,15%);
+      border: 1px solid lighten($color-disabled,15%);
+      color: $color-default;
       cursor: not-allowed;
     }
   }
