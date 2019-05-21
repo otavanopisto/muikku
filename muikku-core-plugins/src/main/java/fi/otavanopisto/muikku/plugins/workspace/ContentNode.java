@@ -10,7 +10,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAn
 
 public class ContentNode {
 
-  public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
+  public ContentNode(String title, String type, String contentType, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Long nextSiblingId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
       String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict, boolean viewRestricted) {
@@ -18,6 +18,7 @@ public class ContentNode {
     this.children = new ArrayList<>();
     this.title = title;
     this.type = type;
+    this.contentType = contentType;
     this.workspaceMaterialId = workspaceMaterialId;
     this.materialId = materialId;
     this.level = level;
@@ -46,6 +47,10 @@ public class ContentNode {
 
   public String getType() {
     return type;
+  }
+
+  public String getContentType() {
+    return contentType;
   }
 
   public List<ContentNode> getChildren() {
@@ -170,6 +175,7 @@ public class ContentNode {
 
   private String title;
   private String type;
+  private String contentType;
   private List<ContentNode> children;
   private Long workspaceMaterialId;
   private Long materialId;

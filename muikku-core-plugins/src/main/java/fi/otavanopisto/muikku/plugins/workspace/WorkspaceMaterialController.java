@@ -40,6 +40,7 @@ import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
+import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
@@ -868,6 +869,7 @@ public class WorkspaceMaterialController {
         ContentNode folderContentNode = new ContentNode(
             workspaceFolder.getTitle(),
             "folder",
+            null,
             rootMaterialNode.getId(),
             null,
             level,
@@ -901,7 +903,7 @@ public class WorkspaceMaterialController {
         for (FlattenedWorkspaceNode child : flattenedChildren) {
           ContentNode contentNode;
           if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(), child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(), MaterialViewRestrict.NONE, false);
+            contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(), child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(), MaterialViewRestrict.NONE, false);
           } else {
             contentNode = createContentNode(child.node, child.level, processHtml, includeHidden, child.nextSibling);
           }
@@ -927,6 +929,7 @@ public class WorkspaceMaterialController {
         Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
         Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
         Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
+        String contentType = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getContentType() : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;
 
         String html;
         viewRestricted = !sessionController.isLoggedIn() && material.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
@@ -942,6 +945,7 @@ public class WorkspaceMaterialController {
         return new ContentNode(
             workspaceMaterial.getTitle(),
             material.getType(),
+            contentType,
             rootMaterialNode.getId(),
             material.getId(),
             level,
