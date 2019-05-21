@@ -1,5 +1,7 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
+import '~/sass/elements/form-elements.scss';
+
 
 interface LicenseSelectorProps {
   value: string,
@@ -204,15 +206,15 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
   render(){
     let currentLicense = LICENSES.find(v=>v.validate(this.props.value));
     let currentPropertyValues = currentLicense.propertiesParser ? currentLicense.propertiesParser(this.props.value) : {};
-    return <div>
-      <select className="form-element" value={currentLicense.id} onChange={this.onChangeLicenseType}>
+    return <div className="form-element">
+      <select className="form-element__select" value={currentLicense.id} onChange={this.onChangeLicenseType}>
         {LICENSES.map(l=><option key={l.id} value={l.id}>{this.props.i18n.text.get(l.i18n)}</option>)}
       </select>
       {currentLicense.properties ? <div>
         {
          currentLicense.properties.map(property => <div key={property.id}>
            <h4>{this.props.i18n.text.get(property.i18n)}</h4>
-           <div>
+           <div className="form-element">
              {property.values.map((v, index)=><span key={index}>
                <input type="radio" className="form-element" name={property.id} value={v.value || ""}
                 checked={currentPropertyValues[property.id] === v.value}
