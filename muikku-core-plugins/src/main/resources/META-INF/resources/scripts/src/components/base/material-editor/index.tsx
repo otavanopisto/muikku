@@ -347,7 +347,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   
                 <div className="material-editor__list-producers-container">
                   {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
-                    return <div className="material-editor__producer" key={index}>{p.name}<span className="material-editor__remove-producer icon-close" onClick={this.removeProducer.bind(this, index)}></span></div>
+                    return <div className="material-editor__producer" key={index}>{p.name}<ButtonPill buttonModifiers="material-editor-remove-producer" onClick={this.removeProducer.bind(this, index)} icon="close"/></div>
                   })}
                 </div>
               </div>
@@ -382,7 +382,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}>
         <Tabs modifier="material-editor" activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
-          <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="close"/>
+          <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="arrow-left-thin"/>
         </Tabs>
 
         <ConfirmPublishPageWithAnswersDialog/>

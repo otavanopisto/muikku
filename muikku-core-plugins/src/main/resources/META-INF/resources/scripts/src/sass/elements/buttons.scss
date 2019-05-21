@@ -1108,14 +1108,13 @@
 
 // Material page editor related
 .button-pill--material-page-close-editor {
-  @include rotate-icon-on-hover
   background: transparent;
   color: $color-material-page-admin-panel-main-color;
-  font-size: 1rem;
+  font-size: 1.25rem;
   height: 2rem;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 3px;
   width: 2rem;
   z-index: 2;
 
@@ -1124,7 +1123,9 @@
   }
 
   @include breakpoint($breakpoint-pad) { 
+    font-size: 1.5rem;
     height: 2.5rem;
+    top: 0;
     width: 2.5rem;
   }
 }
@@ -1139,7 +1140,7 @@
   height: 1.75rem;
   margin: 0 0 0 10px;
   overflow: visible;
-  position: relaive;
+  position: relative;
   width: 1.75rem;
 
   &.button-pill--disabled {
@@ -1167,7 +1168,7 @@
   background: $color-exercise;
   border: 1px solid $color-exercise;
   color: $color-default;
-  
+
   &:hover {
     background: $color-exercise;
     border: 1px solid $color-exercise;
@@ -1211,5 +1212,24 @@
     background: $color-warn;
     border: 1px solid $color-warn;
     color: $color-warn-contrast;
+  }
+}
+
+.button-pill--material-editor-remove-producer {
+  background: $color-default;
+  border: 1px solid $color-fatal;
+  border-radius: 100%; 
+  color: $color-fatal;
+  cursor: pointer;
+  font-size: 0.65rem; 
+  margin: 0 0 0 10px;
+  padding: 4px;
+  
+  height: auto;
+  width: auto;
+
+  &:hover {
+    background: $color-fatal;
+    color: $color-default;
   }
 }

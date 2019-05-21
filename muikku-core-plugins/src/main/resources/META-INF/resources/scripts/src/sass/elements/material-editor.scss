@@ -122,7 +122,7 @@
 }
 
 .material-editor__add-producers-container {
-  
+  // For future use
 }
 
 .material-editor__list-producers-container {
@@ -133,28 +133,14 @@
 
 .material-editor__producer {
   align-items: center;
-  background: lighten($color-disabled,40%);
+  background: lighten($color-disabled,25%);
   border-radius: 2px;
   display: flex;
   flex-basis: auto;
   flex-grow: 0;
   flex-flow: row nowrap;
   flex-shrink: 0;
-  margin: 0 5px 5px 0;
-  padding: 4px 8px;
-
-  &:last-child {
-    margin: 0;
-  }
+  margin: 0 10px 10px 0;
+  padding: 6px 8px;
 }
-
-.material-editor__remove-producer {
-  color: $color-fatal;
-  cursor: pointer;
-  font-size: 0.65rem; 
-  margin: 0 0 0 5px;
-}
-
-
-
 
