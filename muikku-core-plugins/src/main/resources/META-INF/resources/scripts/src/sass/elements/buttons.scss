@@ -1085,8 +1085,28 @@
   background: $color-assignment;
 }
 
+// Material master management related
+.button-pill--material-management-master {
+  @include prefix(transition, moz o ms webkit, all 0.15s);
+  background: transparent;
+  border-radius: 15px;
+  color: $color-material-page-admin-panel-main-color;
+  font-size: 1.5rem;
+  height: 2.75rem;
+  margin: 0 5px;
+  overflow: visible;
+  position: relaive;
+  width: 2.75rem;
+
+  &:hover {
+    background: $color-material-page-admin-panel-main-hover-color;
+    color: $color-default;
+  }
+}
+
 // Material page management related
-.button-pill--material-management {
+.button-pill--material-management-page,
+.button-pill--material-management-chapter {
   @include prefix(transition, moz o ms webkit, all 0.15s);
   background: $color-default;
   border: 1px solid $color-material-page-admin-panel-main-color;

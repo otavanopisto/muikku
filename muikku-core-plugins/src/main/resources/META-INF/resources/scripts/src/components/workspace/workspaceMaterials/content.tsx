@@ -7,6 +7,8 @@ import ProgressData from '../progressData';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
+import '~/sass/elements/material-page.scss';
+import '~/sass/elements/material-admin.scss';
 import { ButtonPill } from '~/components/general/button';
 import Toc, { TocTopic, TocElement } from '~/components/general/toc';
 import Draggable, { Droppable } from "~/components/general/draggable";
