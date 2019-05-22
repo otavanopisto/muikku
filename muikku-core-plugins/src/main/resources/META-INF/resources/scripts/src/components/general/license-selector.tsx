@@ -25,33 +25,33 @@ interface CCPropsType {
 const CCPROPS = [
     {
       id: "allowModifications",
-      i18n: "TODO i18n allow modifications",
+      i18n: "plugin.workspace.materialsManagement.editorView.license.subTitle.allowModifications",
       values: [
         {
           value: null,
-          i18n: "TODO i18n license yes"
+          i18n: "plugin.workspace.materialsManagement.editorView.license.selection.yes"
         },
         {
           value: "nd",
-          i18n: "TODO i18n license no"
+          i18n: "plugin.workspace.materialsManagement.editorView.license.selection.no"
         },
         {
           value: "sa",
-          i18n: "TODO i18n license yes as long as other share alike"
+          i18n: "plugin.workspace.materialsManagement.editorView.license.selection.shareAlike"
         },
       ]
     },
     {
       id: "commercialUse",
-      i18n: "TODO i18n commercial use",
+      i18n: "plugin.workspace.materialsManagement.editorView.license.subTitle.allowCommercial",
       values: [
         {
           value: null,
-          i18n: "TODO i18n license yes"
+          i18n: "plugin.workspace.materialsManagement.editorView.license.selection.yes"
         },
         {
           value: "nc",
-          i18n: "TODO i18n license no"
+          i18n: "plugin.workspace.materialsManagement.editorView.license.selection.no"
         }
       ]
     },
@@ -116,7 +116,7 @@ interface LicenseType {
 const LICENSES: Array<LicenseType> = [
   {
     id: "CC4",
-    i18n: "TODO i18n creative commons 4.0",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.cc4",
     properties: CCPROPS,
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
@@ -125,7 +125,7 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "CC3",
-    i18n: "TODO i18n creative commons 3.0",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.cc3",
     properties: CCPROPS,
     propertiesParser: CCPROPSPARSER,
     propertiesDefault: CCPROPSDEF,
@@ -134,18 +134,23 @@ const LICENSES: Array<LicenseType> = [
   },
   {
     id: "CC0",
-    i18n: "TODO i18n creative commons zero",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.cc0",
     value: ()=>CC0_URL_SSL,
     validate: (value: string)=>value === CC0_URL_SSL || value === CC0_URL_NOSSL
   },
   {
-    id: "text_or_link",
-    i18n: "TODO i18n text or link",
+    id: "link",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.link",
+    validate: (value: string)=>typeof value === "string"
+  },
+  {
+    id: "text",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.text",
     validate: (value: string)=>typeof value === "string"
   },
   {
     id: "none",
-    i18n: "TODO i18n no license",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.inherited",
     value: ()=>null,
     validate: ()=>true
   }
@@ -204,8 +209,8 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
   render(){
     let currentLicense = LICENSES.find(v=>v.validate(this.props.value));
     let currentPropertyValues = currentLicense.propertiesParser ? currentLicense.propertiesParser(this.props.value) : {};
-    return <div>
-      <select className="form-element" value={currentLicense.id} onChange={this.onChangeLicenseType}>
+    return <div className="form-element">
+      <select className="form-element__select form-element__select--material-editor" value={currentLicense.id} onChange={this.onChangeLicenseType}>
         {LICENSES.map(l=><option key={l.id} value={l.id}>{this.props.i18n.text.get(l.i18n)}</option>)}
       </select>
       {currentLicense.properties ? <div>
@@ -213,8 +218,8 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
          currentLicense.properties.map(property => <div key={property.id}>
            <h4>{this.props.i18n.text.get(property.i18n)}</h4>
            <div>
-             {property.values.map((v, index)=><span key={index}>
-               <input type="radio" className="form-element" name={property.id} value={v.value || ""}
+             {property.values.map((v, index)=><span className="form-element" key={index}>
+               <input type="radio" name={property.id} value={v.value || ""}
                 checked={currentPropertyValues[property.id] === v.value}
                 onChange={this.setAPropertyAndTriggerChange.bind(this, currentPropertyValues, property.id)}/>
                {this.props.i18n.text.get(v.i18n)}

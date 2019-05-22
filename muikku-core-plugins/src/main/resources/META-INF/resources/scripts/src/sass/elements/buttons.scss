@@ -1108,14 +1108,13 @@
 
 // Material page editor related
 .button-pill--material-page-close-editor {
-  @include rotate-icon-on-hover
   background: transparent;
   color: $color-material-page-admin-panel-main-color;
-  font-size: 1rem;
+  font-size: 1.25rem;
   height: 2rem;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 3px;
   width: 2rem;
   z-index: 2;
 
@@ -1124,34 +1123,36 @@
   }
 
   @include breakpoint($breakpoint-pad) { 
+    font-size: 1.5rem;
     height: 2.5rem;
+    top: 0;
     width: 2.5rem;
   }
 }
 
 .button-pill--material-editor {
   @include prefix(transition, moz o ms webkit, all 0.15s);
-  background: $color-default;
+  background: $color-material-page-admin-panel-main-color;
   border: 1px solid $color-material-page-admin-panel-main-color;
-  color: $color-material-page-admin-panel-main-color;
-  border-radius: 10px;
+  color: $color-default;
+  border-radius: 25%;
   font-size: 1rem;
   height: 1.75rem;
   margin: 0 0 0 10px;
   overflow: visible;
-  position: relaive;
+  position: relative;
   width: 1.75rem;
 
   &.button-pill--disabled {
-    background: $color-default;
-    border: 1px solid $color-disabled;
-    color: $color-disabled;
+    background: lighten($color-disabled,15%);
+    border: 1px solid lighten($color-disabled,15%);
+    color: $color-default;
     cursor: not-allowed;
 
     &:hover {
-      background: $color-default;
-      border: 1px solid $color-disabled;
-      color: $color-disabled;
+      background: lighten($color-disabled,15%);
+      border: 1px solid lighten($color-disabled,15%);
+      color: $color-default;
       cursor: not-allowed;
     }
   }
@@ -1167,7 +1168,7 @@
   background: $color-exercise;
   border: 1px solid $color-exercise;
   color: $color-default;
-  
+
   &:hover {
     background: $color-exercise;
     border: 1px solid $color-exercise;
