@@ -1214,22 +1214,3 @@
     color: $color-warn-contrast;
   }
 }
-
-.button-pill--material-editor-remove-producer {
-  background: $color-default;
-  border: 1px solid $color-fatal;
-  border-radius: 100%; 
-  color: $color-fatal;
-  cursor: pointer;
-  font-size: 0.65rem; 
-  margin: 0 0 0 10px;
-  padding: 4px;
-  
-  height: auto;
-  width: auto;
-
-  &:hover {
-    background: $color-fatal;
-    color: $color-default;
-  }
-}
