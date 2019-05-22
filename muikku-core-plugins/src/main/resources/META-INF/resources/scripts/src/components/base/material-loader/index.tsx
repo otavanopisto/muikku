@@ -536,7 +536,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         </div>
      : null}
       {this.props.material.producers && this.props.material.producers.length ?
-        <div className="material-page__producers">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}: {this.props.material.producers.map((p) => p.name).join(", ")}</div> : null}
+        <div className="material-page__producers">
+          <div className="material-page__producers-label">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}:</div><div className="material-page__producers-item">{this.props.material.producers.map((p) => p.name).join(", ")}</div>
+        </div>
+      : null}
       {this.props.material.license ?
         <div className="material-page__license">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}: {this.props.material.license}</div> : null}
     </article>
