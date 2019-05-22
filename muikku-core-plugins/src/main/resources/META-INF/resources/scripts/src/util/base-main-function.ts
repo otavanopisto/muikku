@@ -54,7 +54,7 @@ export default function(store: Store<StateType>){
     }
   }
   
-  $.ajax({type:"HEAD", url: `${window.location.protocol}//${window.location.hostname}/rest/user/files/user/${state.status.userId}/identifier/profile-image-96`}).done(()=>{
+  $.ajax({type:"HEAD", url: `/rest/user/files/user/${state.status.userId}/identifier/profile-image-96`}).done(()=>{
     store.dispatch(<Action>updateStatusHasImage(true));
   });
   
