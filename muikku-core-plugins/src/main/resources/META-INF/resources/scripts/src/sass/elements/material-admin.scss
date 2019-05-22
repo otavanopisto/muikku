@@ -1,0 +1,24 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// ADMIN PANEL
+.material-admin-panel {
+  line-height: 1;
+}
+
+.material-admin-panel--page-functions {
+  position: absolute;
+  right: 5px;
+  top: -14px;
+}
+
+.material-admin-panel--master-functions {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  margin: 30px 0;
+  position: relative,
+}
