@@ -62,6 +62,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.createChapter = this.createChapter.bind(this);
     this.pastePage = this.pastePage.bind(this);
     this.attachFile = this.attachFile.bind(this);
+    this.createPageFromBinary = this.createPageFromBinary.bind(this);
     
     this.getFlattenedMaterials(props);
   }
@@ -115,6 +116,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
     });
+  }
+  createPageFromBinary(e: React.ChangeEvent<HTMLInputElement>) {
+    
   }
   createChapter(nextSibling: MaterialContentNodeType) {
     this.props.createWorkspaceMaterialContentNode({
@@ -201,7 +205,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
       {this.props.materials.map((chapter, index)=>{
         return <section className="content-panel__chapter" key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId}>
-        
+          {
+            index !== 0 ? 
+            <input type="file" onChange={this.createPageFromBinary}/> : null
+          }
+
           <ButtonPill icon="assignment" onClick={this.createChapter.bind(this, chapter)}/>
           {index !== 0 ?
             <ButtonPill icon="add" onClick={this.createPage.bind(this, this.props.materials[index - 1], null)}/>
@@ -211,8 +219,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           : null}
           {index !== 0 ?
             <ButtonPill icon="attachment" onClick={this.attachFile.bind(this, this.props.materials[index - 1], null)}/>
-          : null}
-        
+          : null}  
+          
           <h2 className={`content-panel__chapter-title ${chapter.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
             {chapter.title}
             {titlesAreEditable ? <ButtonPill icon="edit" onClick={this.startupEditor.bind(this, chapter)}/> : null}
