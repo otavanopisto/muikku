@@ -149,7 +149,6 @@ public class GuiderTestsBase extends AbstractUITest {
   }
   
   @Test
-<<<<<<< HEAD
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
@@ -240,7 +239,6 @@ public class GuiderTestsBase extends AbstractUITest {
     }
   }
       
-=======
   public void studentsWorkspacesInAlphabeticalOrderTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(4l, 4l, "Second", "User", "teststuerdenert@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -294,7 +292,5 @@ public class GuiderTestsBase extends AbstractUITest {
   }
 
 
-  
->>>>>>> refs/remotes/origin/devel
   
 }
