@@ -535,13 +535,21 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
         </div>
      : null}
-      {this.props.material.producers && this.props.material.producers.length ?
-        <div className="material-page__producers">
-          <div className="material-page__producers-label">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}:</div><div className="material-page__producers-item">{this.props.material.producers.map((p) => p.name).join(", ")}</div>
+      {(this.props.material.producers && this.props.material.producers.length) || this.props.material.license ?
+        <div className="material-page__metadata-container">
+          {this.props.material.producers && this.props.material.producers.length ?
+            <div className="material-page__producers">
+              <div className="material-page__producers-label">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}:</div><div className="material-page__producers-item">{this.props.material.producers.map((p) => p.name).join(", ")}</div>
+            </div>
+          : null}
+          {this.props.material.license ?
+            <div className="material-page__license">
+              <div className="material-page__license-label">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:</div>
+              <div className="material-page__license-item">{this.props.material.license}</div>
+            </div> 
+          : null}
         </div>
       : null}
-      {this.props.material.license ?
-        <div className="material-page__license">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}: {this.props.material.license}</div> : null}
     </article>
   }
 }
