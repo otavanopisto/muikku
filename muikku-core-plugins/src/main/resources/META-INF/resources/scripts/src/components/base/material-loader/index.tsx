@@ -21,10 +21,13 @@ import Button, { ButtonPill } from '~/components/general/button';
 import { bindActionCreators } from 'redux';
 import { UpdateAssignmentStateTriggerType, updateAssignmentState,
   setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
-  UpdateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode } from '~/actions/workspaces';
+  UpdateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode,
+  requestWorkspaceMaterialContentNodeAttachments, RequestWorkspaceMaterialContentNodeAttachmentsTriggerType } from '~/actions/workspaces';
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
+import Link from '~/components/general/link';
+import BinaryMaterialLoader from '~/components/base/material-loader/binary';
 
 //These represent the states assignments and exercises can be in
 const STATES = [{
@@ -161,6 +164,7 @@ interface MaterialLoaderProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
   displayNotification: DisplayNotificationTriggerType,
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
 }
 
 interface MaterialLoaderState {
@@ -261,6 +265,9 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     e.stopPropagation();
   }
   startupEditor(){
+    if (this.props.page && (typeof this.props.canAddAttachments === "undefined"  || this.props.canAddAttachments)) {
+      this.props.requestWorkspaceMaterialContentNodeAttachments(this.props.workspace, this.props.material);
+    }
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
       currentNodeValue: this.props.material,
@@ -503,6 +510,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           checkAnswers={this.state.answersChecked} onAnswerChange={this.onAnswerChange} onAnswerCheckableChange={this.onAnswerCheckableChange}/>
          }
       </div>
+      {
+        this.props.material.type === "binary" ?
+        <BinaryMaterialLoader material={this.props.material} i18n={this.props.i18n}/> : null
+      }
       {this.props.answerable && this.stateConfiguration ? <div className="material-page__buttonset">
         {!this.stateConfiguration['button-disabled'] ? <Button buttonModifiers={this.stateConfiguration['button-class']}
           onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.state.answerCheckable ?
@@ -542,7 +553,7 @@ function mapStateToProps(state: StateType){
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({updateAssignmentState, setWorkspaceMaterialEditorState,
-    updateWorkspaceMaterialContentNode, displayNotification}, dispatch);
+    updateWorkspaceMaterialContentNode, displayNotification, requestWorkspaceMaterialContentNodeAttachments}, dispatch);
 };
 
 export default connect(

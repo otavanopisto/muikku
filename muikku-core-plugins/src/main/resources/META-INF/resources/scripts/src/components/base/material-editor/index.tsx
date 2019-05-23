@@ -3,7 +3,9 @@ import Portal from '~/components/general/portal';
 
 import '~/sass/elements/material-editor.scss';
 import { bindActionCreators } from 'redux';
-import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType, updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from '~/actions/workspaces';
+import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
+  updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType,
+  createWorkspaceMaterialAttachment, CreateWorkspaceMaterialAttachmentTriggerType } from '~/actions/workspaces';
 import { connect, Dispatch } from 'react-redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
@@ -16,6 +18,7 @@ import DeleteWorkspaceMaterialDialog from "./delete-dialog";
 import Dropdown from "~/components/general/dropdown"; 
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
+import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 
 import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
@@ -27,12 +30,14 @@ interface MaterialEditorProps {
   status: StatusType,
   editorState: WorkspaceMaterialEditorType,
   locale: LocaleListType,
-  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
+  createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType
 }
 
 interface MaterialEditorState {
   tab: string;
   producerEntryName: string;
+  uploading: boolean;
 }
 
 const CKEditorConfig = (
@@ -79,8 +84,6 @@ const CKEditorConfig = (
 // First we need to modify the material content nodes endpoint to be able to receive hidden
 // nodes, we need those to be able to modify here
 class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditorState> {
-  private oldOverflow:string;
-
   constructor(props: MaterialEditorProps){
     super(props);
 
@@ -95,11 +98,34 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.addProducer = this.addProducer.bind(this);
     this.updateProducerEntryName = this.updateProducerEntryName.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
+    this.onFilesUpload = this.onFilesUpload.bind(this);
     
     this.state = {
       tab: "content",
       producerEntryName: "",
+      uploading: false,
     }
+  }
+  
+  onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      uploading: true
+    });
+    this.props.createWorkspaceMaterialAttachment({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentNodeValue,
+      files: Array.from(e.target.files),
+      success: () => {
+        this.setState({
+          uploading: false
+        });
+      },
+      fail: () => {
+        this.setState({
+          uploading: false
+        });
+      }
+    })
   }
   
   changeTab(tab: string) {
@@ -313,13 +339,15 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.producers")}</h3>
                 <div className="material-editor__add-producers-container">
-                  <input className="material-editor__add-producer-field" type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
-                  <button className="" onClick={this.addProducer}>Enter</button>
+                  <div className="form-element form-element--material-editor-add-producers">
+                    <input placeholder={this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')} className="form-element__input form-element__input--material-editor-add-producer" type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
+                    <div className="form-element__input-decoration--material-editor-add-producer icon-add" onClick={this.addProducer}></div>
+                  </div>
                 </div>
   
                 <div className="material-editor__list-producers-container">
                   {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
-                    return <div className="material-editor__producer" key={index}>{p.name}<button onClick={this.removeProducer.bind(this, index)}>x</button></div>
+                    return <div className="material-editor__producer" key={index}>{p.name}<span className="material-editor__remove-producer icon-close" onClick={this.removeProducer.bind(this, index)}></span></div>
                   })}
                 </div>
               </div>
@@ -335,21 +363,34 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments"),
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
+
+            {!this.state.uploading ?
+              <input type="file" multiple onChange={this.onFilesUpload}/> :
+              "uploading..."
+            }
+
+            {this.props.editorState.currentNodeValue.childrenAttachments && this.props.editorState.currentNodeValue.childrenAttachments.map((a) => {
+              return <div key={a.materialId}>
+                <h3>{a.title}</h3>
+                <p>/workspace/{this.props.editorState.currentNodeWorkspace.urlName}/{this.props.editorState.currentNodeValue.path}/{a.path}</p>
+                <ConfirmRemoveAttachment attachment={a}><button>delete</button></ConfirmRemoveAttachment>
+              </div>
+            })}
           </div>,
         })
       }
-      
+
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}>
         <Tabs modifier="material-editor" activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
           <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="close"/>
         </Tabs>
-          
+
         <ConfirmPublishPageWithAnswersDialog/>
         <ConfirmRemovePageWithAnswersDialog/>
      </div>
   }
 }
-  
+
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
@@ -360,7 +401,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode}, dispatch);
+  return bindActionCreators({setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode, createWorkspaceMaterialAttachment}, dispatch);
 };
 
 export default connect(
