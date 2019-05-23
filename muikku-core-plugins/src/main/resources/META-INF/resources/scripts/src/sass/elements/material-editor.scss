@@ -46,6 +46,20 @@
   margin: 0 0 10px;
 }
 
+.material-editor__buttonset-primary {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: left;
+}
+
+.material-editor__buttonset-secondary {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: right;
+}
+
 .material-editor__content-wrapper {
   @include text;
   background: $color-default;
