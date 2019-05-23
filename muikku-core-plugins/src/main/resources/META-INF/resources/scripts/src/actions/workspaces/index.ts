@@ -179,6 +179,7 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
     copyWorkspaceId?: number,
     copyMaterialId?: number,
     title?: string,
+    file?: File,
     workspace: WorkspaceType,
     success?: (newNode: MaterialContentNodeType)=>any,
     fail?: ()=>any
@@ -1540,6 +1541,42 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
             cloneMaterials: true,
             updateLinkedMaterials: true
           }), 'callback')() as any).id;
+      } else if (data.file) {
+        let formData = new FormData();
+        //we add it to the file
+        formData.append("file", data.file);
+        //and do the thing
+        const tempFileData:any = await (new Promise((resolve, reject) => {
+          $.ajax({
+            url: getState().status.contextPath + '/tempFileUploadServlet',
+            type: 'POST',
+            data: formData,
+            success: (data: any)=>{
+              resolve(data);
+            },
+            error: (xhr:any, err:Error)=>{
+              reject(err);
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+          });
+        }));
+        
+        const materialResult:any = await promisify(mApi().materials.binary.create({
+          title: data.title,
+          contentType: tempFileData.fileContentType || data.file.type,
+          fileId: tempFileData.fileId,
+        }), 'callback')();
+        
+        workspaceMaterialId = (await promisify(mApi().workspace.workspaces.materials.create(data.workspace.id, {
+          materialId: materialResult.id,
+          parentId,
+          nextSiblingId,
+        }, {
+          updateLinkedMaterials: true
+        }), 'callback')() as any).id;
+        
       } else {
         const materialId = (await promisify(mApi().materials.html.create({
           title: data.title,

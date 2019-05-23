@@ -65,9 +65,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     });
   }
   refresh(props:ContentProps = this.props){
-    let element = (this.refs[props.activeNodeId] as TocElement).getElement();
-    if (!isScrolledIntoView(element)){
-      element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    const tocElement = (this.refs[props.activeNodeId] as TocElement);
+    if (tocElement) {
+      const element = tocElement.getElement();
+      if (!isScrolledIntoView(element)){
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      }
     }
   }
   hotInsertBeforeSection(baseIndex: number, targetBeforeIndex: number) {

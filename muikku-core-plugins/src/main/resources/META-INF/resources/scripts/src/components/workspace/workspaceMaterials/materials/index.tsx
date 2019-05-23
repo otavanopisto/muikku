@@ -63,6 +63,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.createChapter = this.createChapter.bind(this);
     this.pastePage = this.pastePage.bind(this);
     this.attachFile = this.attachFile.bind(this);
+    this.createPageFromBinary = this.createPageFromBinary.bind(this);
     
     this.getFlattenedMaterials(props);
   }
@@ -115,6 +116,19 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       parentMaterial: chapter,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
+    });
+  }
+  createPageFromBinary(
+      chapter: MaterialContentNodeType,
+      nextSibling: MaterialContentNodeType,
+      e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    this.props.createWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      parentMaterial: chapter,
+      nextSibling,
+      title: e.target.files[0].name,
+      file: e.target.files[0],
     });
   }
   createChapter(nextSibling: MaterialContentNodeType) {
@@ -202,7 +216,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
       {this.props.materials.map((chapter, index)=>{
         return <section className="content-panel__chapter" key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId}>
-
+          {/*TOP OF THE CHAPTER*/}
           <div className="material-admin-panel material-admin-panel--master-functions">
             <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
               <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createChapter.bind(this, chapter)}/>
@@ -219,11 +233,14 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
             : null}
             {index !== 0 ?
               <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.attachFileTooltip")}>
-                <ButtonPill icon="attachment" onClick={this.attachFile.bind(this, this.props.materials[index - 1], null)}/>
+                <ButtonPill buttonAs="div" buttonModifiers="material-management-master" icon="attachment">
+                  <input type="file" onChange={this.createPageFromBinary.bind(this, this.props.materials[index - 1], null)}/>
+                </ButtonPill>
               </Dropdown>
             : null}
           </div>
 
+            
           <h2 className={`content-panel__chapter-title ${chapter.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
             {chapter.title}
             {titlesAreEditable ? 
@@ -234,11 +251,13 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               </div>
             : null}
           </h2>
+            
           {chapter.children.map((node)=>{
             let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
             let material = !this.props.workspace || !this.props.materialReplies  ? null :
               <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
                 <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
+                {/*TOP OF THE PAGE*/}
                 <div className="material-admin-panel material-admin-panel--master-functions">
                   <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createPageTooltip")}>
                     <ButtonPill buttonModifiers="material-management-master"icon="add" onClick={this.createPage.bind(this, chapter, node)}/>
@@ -247,7 +266,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
                     <ButtonPill buttonModifiers="material-management-master"icon="content_paste" onClick={this.pastePage.bind(this, chapter, node)}/>
                   </Dropdown>
                   <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.attachFileTooltip")}>
-                    <ButtonPill buttonModifiers="material-management-master"icon="attachment" onClick={this.attachFile.bind(this, chapter, node)}/>
+                    <ButtonPill buttonModifiers="material-management-master" icon="attachment">
+                      <input type="file" onChange={this.createPageFromBinary.bind(this, chapter, node)}/>
+                    </ButtonPill>
                   </Dropdown>
                 </div>
                 <WorkspaceMaterial page={chapter} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
