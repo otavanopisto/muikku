@@ -105,11 +105,12 @@
 }
 
 .material-page__producers-label {
+  color: lighten($color-default-contrast,15%);
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   text-transform: uppercase;
-  margin: 0 10px 0 0;
+  margin: 0 5px 0 0;
 }
 
 .material-page__producers-item {
@@ -127,11 +128,12 @@
 }
 
 .material-page__license-label {
+  color: lighten($color-default-contrast,15%);
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   text-transform: uppercase;
-  margin: 0 10px 0 0;
+  margin: 0 5px 0 0;
 }
 
 .material-page__license-item {
