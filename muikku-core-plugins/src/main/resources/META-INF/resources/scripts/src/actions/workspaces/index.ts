@@ -1577,7 +1577,7 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
           updateLinkedMaterials: true
         }), 'callback')() as any).id;
         
-      } else {
+      } else if (data.parentMaterial) {
         const materialId = (await promisify(mApi().materials.html.create({
           title: data.title,
           contentType: "text/html;editor=CKEditor",
@@ -1589,6 +1589,11 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
             parentId,
             nextSiblingId,
           }), 'callback')() as any).id;
+      } else {
+        workspaceMaterialId = (await promisify(mApi().workspace.workspaces.folders
+          .create(data.workspace.id, {
+            nextSiblingId,
+          }), 'callback')() as any).id; 
       }
       
       const newContentNode: MaterialContentNodeType = <MaterialContentNodeType>(await promisify(mApi().workspace.workspaces.

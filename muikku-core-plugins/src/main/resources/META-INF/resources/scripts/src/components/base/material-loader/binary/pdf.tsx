@@ -9,7 +9,7 @@ export default function Pdf(props: {
 }) {
   return <div>
     <object type="application/pdf" data="file_with_actions.pdf">
-      <Link href={`/rest/materials/binary/${this.props.material.materialId}/content`} openInNewTab={props.material.title}>
+      <Link href={`/rest/materials/binary/${props.material.materialId}/content`} openInNewTab={props.material.title}>
         {props.i18n.text.get("Donwnload")}
       </Link>
     </object>

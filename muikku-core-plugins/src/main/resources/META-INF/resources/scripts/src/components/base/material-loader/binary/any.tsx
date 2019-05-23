@@ -8,7 +8,7 @@ export default function Any(props: {
   i18n: i18nType,
 }) {
   return <div>
-    <Link href={`/rest/materials/binary/${this.props.material.materialId}/content`} openInNewTab={props.material.title}>
+    <Link href={`/rest/materials/binary/${props.material.materialId}/content`} openInNewTab={props.material.title}>
       {props.i18n.text.get("Donwnload")}
     </Link>
   </div>

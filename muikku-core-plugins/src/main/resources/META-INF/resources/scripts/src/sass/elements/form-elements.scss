@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .form-element {
-  width: 100%;
+  width: auto;
 
   label {
     font-family: $text-font-family;
@@ -45,6 +45,7 @@
     display: flex;
     height: 1rem;
     justify-content: center;
+    margin-right: 5px;
     width: 1rem;
   }
 
@@ -59,6 +60,10 @@
     font-family: muikku;
     font-size: .875rem;
   }
+}
+
+.form-element--workspace-management {
+  width: auto;
 }
 
 .form-element--guider-toolbar {

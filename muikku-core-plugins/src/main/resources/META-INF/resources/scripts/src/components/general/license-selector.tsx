@@ -1,8 +1,11 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/license-selector.scss';
 
 interface LicenseSelectorProps {
   value: string,
+  className?: string,
   i18n: i18nType,
   onChange: (newValue: string)=>any
 }
@@ -209,26 +212,28 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
   render(){
     let currentLicense = LICENSES.find(v=>v.validate(this.props.value));
     let currentPropertyValues = currentLicense.propertiesParser ? currentLicense.propertiesParser(this.props.value) : {};
-    return <div className="form-element">
-      <select className="form-element__select form-element__select--material-editor" value={currentLicense.id} onChange={this.onChangeLicenseType}>
+    return <div className="license-selector form-element">
+      <select className="form-element__select" value={currentLicense.id} onChange={this.onChangeLicenseType}>
         {LICENSES.map(l=><option key={l.id} value={l.id}>{this.props.i18n.text.get(l.i18n)}</option>)}
       </select>
-      {currentLicense.properties ? <div>
+      {currentLicense.properties ? <div className="license-selector__options-container">
         {
          currentLicense.properties.map(property => <div key={property.id}>
-           <h4>{this.props.i18n.text.get(property.i18n)}</h4>
-           <div>
-             {property.values.map((v, index)=><span className="form-element" key={index}>
+           <h4  className="license-selector__options-title">{this.props.i18n.text.get(property.i18n)}</h4>
+           <div className="license-selector__options-body">
+             {property.values.map((v, index)=><span className="license-selector__option" key={index}>
                <input type="radio" name={property.id} value={v.value || ""}
                 checked={currentPropertyValues[property.id] === v.value}
                 onChange={this.setAPropertyAndTriggerChange.bind(this, currentPropertyValues, property.id)}/>
-               {this.props.i18n.text.get(v.i18n)}
+               <label>
+                 {this.props.i18n.text.get(v.i18n)}
+               </label>
              </span>)}
            </div>
          </div>)
         }
       </div> : null}
-      {!currentLicense.value ? <input type="text" className={`form-element ${this.state.valid ? "" : "form-element--invalid"}`}
+      {!currentLicense.value  ? <input type="text" className={`form-element__input license-selector__text-input ${this.state.valid ? "" : "form-element--invalid"}`}
           value={this.state.text} onChange={this.onChangeText}/> : null}
     </div>
   }
