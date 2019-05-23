@@ -495,7 +495,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         {this.props.canCopy ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.copyPageTooltip")}>
           <ButtonPill buttonModifiers="material-management-page" icon="content_copy" onClick={this.copyPage}/>
         </Dropdown> : null}
-        {this.props.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
+        {this.props.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
           <ButtonPill buttonModifiers="material-management-page" icon={isHidden ? "show" : "hide"} onClick={this.toggleVisiblePageStatus}/>
         </Dropdown> : null}
       </div> : null}

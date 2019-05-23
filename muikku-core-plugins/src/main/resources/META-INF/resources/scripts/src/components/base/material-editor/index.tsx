@@ -275,7 +275,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.revertToPublishedPageTooltip")}>
           <ButtonPill buttonModifiers={revertModifiers} onClick={canPublish ? this.revert : null} icon="revert"/>
         </Dropdown> : null}
-        {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
+        {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.editorState.currentDraftNodeValue.hidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
           <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentDraftNodeValue.hidden ? "show" : "hide"}/>
         </Dropdown> : null}
         {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.viewRestrictionPageTooltip")}>
