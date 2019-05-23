@@ -488,15 +488,15 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let isHidden = this.props.material.hidden || (this.props.page && this.props.page.hidden);
 
     return <article className={`material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
-      {this.props.editable ? <div className={`material-page__admin-panel material-page__admin-panel--${viewForAdminPanel}`}>
-        <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialEditTooltip")}>
-          <ButtonPill buttonModifiers="material-management" icon="edit" onClick={this.startupEditor}/>
+      {this.props.editable ? <div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
+        <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editPageTooltip")}>
+          <ButtonPill buttonModifiers="material-management-page" icon="edit" onClick={this.startupEditor}/>
         </Dropdown>
-        {this.props.canCopy ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.copyMaterialTooltip")}>
-          <ButtonPill buttonModifiers="material-management" icon="content_copy" onClick={this.copyPage}/>
+        {this.props.canCopy ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.copyPageTooltip")}>
+          <ButtonPill buttonModifiers="material-management-page" icon="content_copy" onClick={this.copyPage}/>
         </Dropdown> : null}
-        {this.props.canHide ? <Dropdown openByHover modifier="material-page-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.materialHideTooltip")}>
-          <ButtonPill buttonModifiers="material-management" icon={isHidden ? "show" : "hide"} onClick={this.toggleVisiblePageStatus}/>
+        {this.props.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
+          <ButtonPill buttonModifiers="material-management-page" icon={isHidden ? "show" : "hide"} onClick={this.toggleVisiblePageStatus}/>
         </Dropdown> : null}
       </div> : null}
       {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>{this.props.material.title} </h2> : null}
@@ -536,7 +536,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         </div>
      : null}
       {this.props.material.producers && this.props.material.producers.length ?
-        <div className="material-page__producers">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}: {this.props.material.producers.map((p) => p.name).join(", ")}</div> : null}
+        <div className="material-page__producers">
+          <div className="material-page__producers-label">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}:</div><div className="material-page__producers-item">{this.props.material.producers.map((p) => p.name).join(", ")}</div>
+        </div>
+      : null}
       {this.props.material.license ?
         <div className="material-page__license">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}: {this.props.material.license}</div> : null}
     </article>

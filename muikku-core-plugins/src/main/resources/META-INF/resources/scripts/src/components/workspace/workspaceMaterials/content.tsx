@@ -7,6 +7,8 @@ import ProgressData from '../progressData';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
+import '~/sass/elements/material-page.scss';
+import '~/sass/elements/material-admin.scss';
 import { ButtonPill } from '~/components/general/button';
 import Toc, { TocTopic, TocElement } from '~/components/general/toc';
 import Draggable, { Droppable } from "~/components/general/draggable";
@@ -63,9 +65,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     });
   }
   refresh(props:ContentProps = this.props){
-    let element = (this.refs[props.activeNodeId] as TocElement).getElement();
-    if (!isScrolledIntoView(element)){
-      element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    const tocElement = (this.refs[props.activeNodeId] as TocElement);
+    if (tocElement) {
+      const element = tocElement.getElement();
+      if (!isScrolledIntoView(element)){
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      }
     }
   }
   hotInsertBeforeSection(baseIndex: number, targetBeforeIndex: number) {
