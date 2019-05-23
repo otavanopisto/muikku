@@ -144,14 +144,12 @@ const LICENSES: Array<LicenseType> = [
   {
     id: "link",
     i18n: "plugin.workspace.materialsManagement.editorView.license.link",
-    value: ()=> "link",
-    validate: (value: string)=> value === "link"
+    validate: (value: string)=>typeof value === "string"
   },
   {
     id: "text",
     i18n: "plugin.workspace.materialsManagement.editorView.license.text",
-    value: ()=> "text",
-    validate: (value: string)=> value === "text"
+    validate: (value: string)=>typeof value === "string"
   },
   {
     id: "none",
@@ -235,7 +233,7 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
          </div>)
         }
       </div> : null}
-      {!currentLicense.value ? <input type="text" className={`form-element ${this.state.valid ? "" : "form-element--invalid"}`}
+      {!currentLicense.value  ? <input type="text" className={`form-element__input license-selector__text-input ${this.state.valid ? "" : "form-element--invalid"}`}
           value={this.state.text} onChange={this.onChangeText}/> : null}
     </div>
   }
