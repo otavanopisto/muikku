@@ -7,21 +7,21 @@
   padding: 10px;
 }
 
+.license-selector--material-editor {
+  padding: 0;
+}
+
 .license-selector__options-container {
   margin-top: 10px;
 }
 
 .license-selector__options-body {
-  display: flex;
   align-items: center;
+  display: flex;
 }
 
 .license-selector__option {
   display: flex;
   padding: 10px; 
-  
 }
 
-.license-selector__text-input {
-  margin-left: 10px;
-}

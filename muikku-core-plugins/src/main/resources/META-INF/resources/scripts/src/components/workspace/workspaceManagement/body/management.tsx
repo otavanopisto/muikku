@@ -472,7 +472,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         </section>
         <section className="form-element application-sub-panel application-sub-panel--workspace-settings"> 
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
-          <LicenseSelector className="" value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
+          <LicenseSelector modifier="" value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
         </section>
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>

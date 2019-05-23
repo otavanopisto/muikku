@@ -334,7 +334,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.license")}</h3>
                 <div className="material-editor__add-license-container">
-                  <LicenseSelector value={this.props.editorState.currentDraftNodeValue.license} onChange={this.updateLicense} i18n={this.props.i18n}/>
+                  <LicenseSelector modifier="material-editor" value={this.props.editorState.currentDraftNodeValue.license} onChange={this.updateLicense} i18n={this.props.i18n}/>
                 </div>
               </div>
             : null }

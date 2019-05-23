@@ -5,7 +5,7 @@ import '~/sass/elements/license-selector.scss';
 
 interface LicenseSelectorProps {
   value: string,
-  className?: string,
+  modifier?: string,
   i18n: i18nType,
   onChange: (newValue: string)=>any
 }
@@ -142,13 +142,8 @@ const LICENSES: Array<LicenseType> = [
     validate: (value: string)=>value === CC0_URL_SSL || value === CC0_URL_NOSSL
   },
   {
-    id: "link",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.link",
-    validate: (value: string)=>typeof value === "string"
-  },
-  {
-    id: "text",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.text",
+    id: "text_or_link",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.textOrLink",
     validate: (value: string)=>typeof value === "string"
   },
   {
@@ -212,8 +207,8 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
   render(){
     let currentLicense = LICENSES.find(v=>v.validate(this.props.value));
     let currentPropertyValues = currentLicense.propertiesParser ? currentLicense.propertiesParser(this.props.value) : {};
-    return <div className="license-selector form-element">
-      <select className="form-element__select" value={currentLicense.id} onChange={this.onChangeLicenseType}>
+    return <div className={`license-selector ${this.props.modifier ? "license-selector--" + this.props.modifier : ""} form-element`}>
+      <select className={`form-element__select ${this.props.modifier ? "form-element__select--" + this.props.modifier : ""}`} value={currentLicense.id} onChange={this.onChangeLicenseType}>
         {LICENSES.map(l=><option key={l.id} value={l.id}>{this.props.i18n.text.get(l.i18n)}</option>)}
       </select>
       {currentLicense.properties ? <div className="license-selector__options-container">
@@ -233,8 +228,8 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
          </div>)
         }
       </div> : null}
-      {!currentLicense.value  ? <input type="text" className={`form-element__input license-selector__text-input ${this.state.valid ? "" : "form-element--invalid"}`}
-          value={this.state.text} onChange={this.onChangeText}/> : null}
+      {!currentLicense.value  ? <div className="license-selector__options-container"><input placeholder={this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.license.textOrLink.placeHolder")} type="text" className={`form-element__input ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""} ${this.state.valid ? "" : "form-element--invalid"}`}
+          value={this.state.text} onChange={this.onChangeText}/></div> : null}
     </div>
   }
 }
