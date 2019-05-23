@@ -244,9 +244,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           <h2 className={`content-panel__chapter-title ${chapter.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
             {chapter.title}
             {titlesAreEditable ? 
-              <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>
-                <ButtonPill buttonModifiers="material-management-chapter" icon="edit" onClick={this.startupEditor.bind(this, chapter)}/>
-              </Dropdown>
+              <div className="material-admin-panel material-admin-panel--chapter-functions">
+                <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>
+                  <ButtonPill buttonModifiers="material-management-chapter" icon="edit" onClick={this.startupEditor.bind(this, chapter)}/>
+                </Dropdown>
+              </div>
             : null}
           </h2>
             
