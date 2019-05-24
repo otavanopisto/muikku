@@ -82,8 +82,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
         {shortenGrade(workspace.studentAssessmentState.grade)}
       </span>
     </span>
-  } else if (workspace.studentAssessmentState &&
-    (workspace.studentAssessmentState.state === "incomplete" || workspace.studentAssessmentState.state === "fail")){
+  } else if (workspace.studentAssessmentState && workspace.studentAssessmentState.state === "incomplete"){
     let status = props.i18n.text.get(workspace.studentAssessmentState.state === "incomplete" ?
     		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
     return <span className="application-list__header-secondary">
