@@ -82,32 +82,61 @@
   }
 }
 
-// PRODUCERS
-.material-page__producers {
-  align-items: center;
+// METADATA
+.material-page__metadata-container {
   border-top: 1px solid $color-application-panel-box-border;
-  display: flex;
-  flex-flow: row wrap;
   font-size: 0.825rem;
   font-weight: 300;
   margin: 15px -10px 0 -10px;
-  padding: 10px;
+  padding: 5px 10px;
 
   @include breakpoint($breakpoint-pad) {
     margin: 20px -20px 0 -20px;
-    padding: 15px 20px;
+    padding: 10px 20px;
   }
 }
 
+// PRODUCERS
+.material-page__producers {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px 0;
+}
+
 .material-page__producers-label {
+  color: lighten($color-default-contrast,15%);
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   text-transform: uppercase;
-  margin: 0 10px 0 0;
+  margin: 0 5px 0 0;
 }
 
 .material-page__producers-item {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+// LICENSE
+.material-page__license {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px 0;
+}
+
+.material-page__license-label {
+  color: lighten($color-default-contrast,15%);
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  margin: 0 5px 0 0;
+}
+
+.material-page__license-item {
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;

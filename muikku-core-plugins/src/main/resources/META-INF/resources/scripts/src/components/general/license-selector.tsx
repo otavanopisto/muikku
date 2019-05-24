@@ -1,8 +1,11 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/license-selector.scss';
 
 interface LicenseSelectorProps {
   value: string,
+  modifier?: string,
   i18n: i18nType,
   onChange: (newValue: string)=>any
 }
@@ -139,13 +142,8 @@ const LICENSES: Array<LicenseType> = [
     validate: (value: string)=>value === CC0_URL_SSL || value === CC0_URL_NOSSL
   },
   {
-    id: "link",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.link",
-    validate: (value: string)=>typeof value === "string"
-  },
-  {
-    id: "text",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.text",
+    id: "text_or_link",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.textOrLink",
     validate: (value: string)=>typeof value === "string"
   },
   {
@@ -209,27 +207,29 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
   render(){
     let currentLicense = LICENSES.find(v=>v.validate(this.props.value));
     let currentPropertyValues = currentLicense.propertiesParser ? currentLicense.propertiesParser(this.props.value) : {};
-    return <div className="form-element">
-      <select className="form-element__select form-element__select--material-editor" value={currentLicense.id} onChange={this.onChangeLicenseType}>
+    return <div className={`license-selector ${this.props.modifier ? "license-selector--" + this.props.modifier : ""} form-element`}>
+      <select className={`form-element__select ${this.props.modifier ? "form-element__select--" + this.props.modifier : ""}`} value={currentLicense.id} onChange={this.onChangeLicenseType}>
         {LICENSES.map(l=><option key={l.id} value={l.id}>{this.props.i18n.text.get(l.i18n)}</option>)}
       </select>
-      {currentLicense.properties ? <div>
+      {currentLicense.properties ? <div className="license-selector__options-container">
         {
          currentLicense.properties.map(property => <div key={property.id}>
-           <h4>{this.props.i18n.text.get(property.i18n)}</h4>
-           <div>
-             {property.values.map((v, index)=><span className="form-element" key={index}>
+           <h4  className="license-selector__options-title">{this.props.i18n.text.get(property.i18n)}</h4>
+           <div className="license-selector__options-body">
+             {property.values.map((v, index)=><span className="license-selector__option" key={index}>
                <input type="radio" name={property.id} value={v.value || ""}
                 checked={currentPropertyValues[property.id] === v.value}
                 onChange={this.setAPropertyAndTriggerChange.bind(this, currentPropertyValues, property.id)}/>
-               {this.props.i18n.text.get(v.i18n)}
+               <label>
+                 {this.props.i18n.text.get(v.i18n)}
+               </label>
              </span>)}
            </div>
          </div>)
         }
       </div> : null}
-      {!currentLicense.value ? <input type="text" className={`form-element ${this.state.valid ? "" : "form-element--invalid"}`}
-          value={this.state.text} onChange={this.onChangeText}/> : null}
+      {!currentLicense.value  ? <div className="license-selector__options-container"><input placeholder={this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.license.textOrLink.placeHolder")} type="text" className={`form-element__input ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""} ${this.state.valid ? "" : "form-element--invalid"}`}
+          value={this.state.text} onChange={this.onChangeText}/></div> : null}
     </div>
   }
 }
