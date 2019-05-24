@@ -393,7 +393,6 @@ export interface MaterialContentNodeType {
   parentId?: number,
   nextSiblingId?: number,
   path?: string,
-  viewRestricted?: boolean,
   producers?: MaterialContentNodeProducerType[],
   
   //Assigned fields
@@ -720,6 +719,8 @@ export default function workspaces(state: WorkspacesType={
     }
     
     return {...state, currentMaterials: repairContentNodes(newCurrentMaterials)}
+  } else if (action.type === "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES") {
+    return {...state, currentMaterials: repairContentNodes(state.currentMaterials, action.payload.newPath, action.payload.material.workspaceMaterialId)}
   }
   return state;
 }

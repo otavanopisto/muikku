@@ -271,7 +271,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
                     </ButtonPill>
                   </Dropdown>
                 </div>
-                <WorkspaceMaterial page={chapter} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
+                <WorkspaceMaterial folder={chapter} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
               </ContentPanelItem>;
             return material;
            })}

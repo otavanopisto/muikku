@@ -119,7 +119,7 @@ const STATES = [{
 
 interface MaterialLoaderProps {
   material: MaterialContentNodeType,
-  page?: MaterialContentNodeType,
+  folder?: MaterialContentNodeType,
   
   workspace: WorkspaceType,
   i18n: i18nType,
@@ -231,6 +231,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.startupEditor = this.startupEditor.bind(this);
     this.toggleVisiblePageStatus = this.toggleVisiblePageStatus.bind(this);
     this.copyPage = this.copyPage.bind(this);
+    this.toggleViewRestriction = this.toggleViewRestriction.bind(this);
     
     //if it is answerable
     if (props.answerable && props.material){
@@ -265,14 +266,14 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     e.stopPropagation();
   }
   startupEditor(){
-    if (this.props.page && (typeof this.props.canAddAttachments === "undefined"  || this.props.canAddAttachments)) {
+    if (this.props.folder && (typeof this.props.canAddAttachments === "undefined"  || this.props.canAddAttachments)) {
       this.props.requestWorkspaceMaterialContentNodeAttachments(this.props.workspace, this.props.material);
     }
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
       currentNodeValue: this.props.material,
       currentDraftNodeValue: {...this.props.material},
-      parentNodeValue: this.props.page,
+      parentNodeValue: this.props.folder,
       section: false,
       opened: true,
       canDelete: typeof this.props.canDelete === "undefined" ? false : this.props.canDelete,
@@ -469,6 +470,16 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       isDraft: false,
     });
   }
+  toggleViewRestriction() {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      material: this.props.material,
+      update: {
+        viewRestrict: this.props.material.viewRestrict === "LOGGED_IN" ? "NONE" : "LOGGED_IN",
+      },
+      isDraft: false,
+    });
+  }
   copyPage() {
     localStorage.setItem("workspace-material-copied-id", this.props.material.workspaceMaterialId.toString(10));
     localStorage.setItem("workspace-copied-id", this.props.workspace.id.toString(10));
@@ -485,7 +496,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //Setting this up
     let materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     let viewForAdminPanel = this.props.isInFrontPage ? "workspace-description" : "workspace-materials";
-    let isHidden = this.props.material.hidden || (this.props.page && this.props.page.hidden);
+    let isHidden = this.props.material.hidden;
+    const isViewRestricted = this.props.material.viewRestrict === "LOGGED_IN";
 
     return <article className={`material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
       {this.props.editable ? <div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
@@ -497,6 +509,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         </Dropdown> : null}
         {this.props.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
           <ButtonPill buttonModifiers="material-management-page" icon={isHidden ? "show" : "hide"} onClick={this.toggleVisiblePageStatus}/>
+        </Dropdown> : null}
+        {this.props.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip"
+          content={this.props.i18n.text.get("plugin.workspace.materialsManagement.viewRestrictionPageTooltip")}>
+          <ButtonPill buttonModifiers="material-management-page" icon={isViewRestricted ? "show" : "hide"} onClick={this.toggleViewRestriction}/>
         </Dropdown> : null}
       </div> : null}
       {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>{this.props.material.title} </h2> : null}
