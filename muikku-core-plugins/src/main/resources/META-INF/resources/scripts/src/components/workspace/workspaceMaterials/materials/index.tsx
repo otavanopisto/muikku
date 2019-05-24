@@ -278,6 +278,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
          </section>
        })
       }
+      <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
+        <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createChapter.bind(this, null)}/>
+      </Dropdown>
     </ContentPanel>
   }
 }
