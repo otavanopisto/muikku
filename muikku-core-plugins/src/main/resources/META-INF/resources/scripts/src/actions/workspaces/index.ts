@@ -56,6 +56,10 @@ export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE
 }>{};
 export interface DELETE_MATERIAL_CONTENT_NODE extends SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
 export interface INSERT_MATERIAL_CONTENT_NODE extends SpecificActionType<"INSERT_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
+export interface UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES extends SpecificActionType<"UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES", {
+  material: MaterialContentNodeType,
+  newPath: string;
+}>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -1434,12 +1438,25 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
             });
           }
           
-          
           const deletedProducers = data.material.producers.filter((p) => !newProducers.find((p2) => p2.id === p.id));
           await Promise.all(deletedProducers.map((p) => {
             return promisify(mApi().materials.material.producers
                 .del(data.material.materialId, p.id), 'callback')();
           }));
+        }
+        
+        // if the title changed we need to update the path, sadly only the server knows
+        if (data.update.title && data.material.title !== data.update.title && !data.dontTriggerReducerActions) {
+          const refetchedContentNode: MaterialContentNodeType = <MaterialContentNodeType>(await promisify(mApi().workspace.workspaces.
+              asContentNode.read(data.workspace.id, data.material.workspaceMaterialId), 'callback')());
+        
+          dispatch({
+            type: "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES",
+            payload: {
+              material: data.material,
+              newPath: refetchedContentNode.path,
+            }
+          });
         }
       } else {
         // Trying to update the draft
@@ -1577,7 +1594,7 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
           updateLinkedMaterials: true
         }), 'callback')() as any).id;
         
-      } else {
+      } else if (data.parentMaterial) {
         const materialId = (await promisify(mApi().materials.html.create({
           title: data.title,
           contentType: "text/html;editor=CKEditor",
@@ -1589,6 +1606,11 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
             parentId,
             nextSiblingId,
           }), 'callback')() as any).id;
+      } else {
+        workspaceMaterialId = (await promisify(mApi().workspace.workspaces.folders
+          .create(data.workspace.id, {
+            nextSiblingId,
+          }), 'callback')() as any).id; 
       }
       
       const newContentNode: MaterialContentNodeType = <MaterialContentNodeType>(await promisify(mApi().workspace.workspaces.

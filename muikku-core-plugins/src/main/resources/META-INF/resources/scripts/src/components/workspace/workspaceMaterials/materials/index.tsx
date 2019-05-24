@@ -266,18 +266,21 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
                     <ButtonPill buttonModifiers="material-management-master"icon="content_paste" onClick={this.pastePage.bind(this, chapter, node)}/>
                   </Dropdown>
                   <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.attachFileTooltip")}>
-                    <ButtonPill buttonModifiers="material-management-master" icon="attachment">
+                    <ButtonPill buttonAs="div" buttonModifiers="material-management-master" icon="attachment">
                       <input type="file" onChange={this.createPageFromBinary.bind(this, chapter, node)}/>
                     </ButtonPill>
                   </Dropdown>
                 </div>
-                <WorkspaceMaterial page={chapter} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
+                <WorkspaceMaterial folder={chapter} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
               </ContentPanelItem>;
             return material;
            })}
          </section>
        })
       }
+      <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
+        <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createChapter.bind(this, null)}/>
+      </Dropdown>
     </ContentPanel>
   }
 }

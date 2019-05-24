@@ -13,7 +13,7 @@ interface WorkspaceMaterialProps {
   i18n: i18nType,
   status: StatusType,
   materialContentNode: MaterialContentNodeType,
-  page: MaterialContentNodeType,
+  folder: MaterialContentNodeType,
   compositeReplies: MaterialCompositeRepliesType,
   workspace: WorkspaceType,
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType
@@ -38,7 +38,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
     return <MaterialLoader canPublish
       canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
       canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
-      canAddAttachments={!isBinary} canEditContent={!isBinary} page={this.props.page} editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+      canAddAttachments={!isBinary} canEditContent={!isBinary} folder={this.props.folder} editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
       material={this.props.materialContentNode} workspace={this.props.workspace}
       compositeReplies={this.props.compositeReplies} answerable onAssignmentStateModified={this.updateWorkspaceActivity}/>
   }

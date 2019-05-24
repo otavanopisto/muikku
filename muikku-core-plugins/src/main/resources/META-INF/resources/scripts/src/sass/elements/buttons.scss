@@ -1109,10 +1109,10 @@
 .button-pill--material-management-page,
 .button-pill--material-management-chapter {
   @include prefix(transition, moz o ms webkit, all 0.15s);
-  background: $color-default;
+  background: $color-material-page-admin-panel-main-color;
   border: 1px solid $color-material-page-admin-panel-main-color;
   border-radius: 10px;
-  color: $color-material-page-admin-panel-main-color;
+  color: $color-default;
   font-size: 1rem;
   height: 1.75rem;
   margin: 0 5px;
@@ -1156,10 +1156,10 @@
   background: $color-material-page-admin-panel-main-color;
   border: 1px solid $color-material-page-admin-panel-main-color;
   color: $color-default;
-  border-radius: 25%;
+  border-radius: 10px;
   font-size: 1rem;
   height: 1.75rem;
-  margin: 0 0 0 10px;
+  margin: 0 5px;
   overflow: visible;
   position: relative;
   width: 1.75rem;
@@ -1179,8 +1179,8 @@
   }
 
   &:hover {
-    background: $color-info;
-    border: 1px solid $color-info;
+    background: $color-material-page-admin-panel-main-hover-color;
+    border: 1px solid $color-material-page-admin-panel-main-hover-color;
     color: $color-default;
   }
 }
@@ -1189,49 +1189,28 @@
   background: $color-exercise;
   border: 1px solid $color-exercise;
   color: $color-default;
-
-  &:hover {
-    background: $color-exercise;
-    border: 1px solid $color-exercise;
-    color: $color-default;
-  }
 }
 
 .button-pill--material-editor-assignment {
   background: $color-assignment;
   border: 1px solid $color-assignment;
   color: $color-default;
-
-  &:hover {
-    background: $color-assignment;
-    border: 1px solid $color-assignment;
-    color: $color-default;
-  }
-}
-
-.button-pill--material-editor-delete-page {
-
-  &:hover {
-    background: $color-fatal;
-    border: 1px solid $color-fatal;
-    color: $color-fatal-contrast;
-  }
 }
 
 .button-pill--material-editor-publish-page {
-
-  &:hover {
-    background: $color-success;
-    border: 1px solid $color-success;
-    color: $color-success-contrast;
-  }
+  background: $color-success;
+  border: 1px solid $color-success;
+  color: $color-default;
 }
 
 .button-pill--material-editor-revert-page {
+  background: $color-warn;
+  border: 1px solid $color-warn;
+  color: $color-default;
+}
 
-  &:hover {
-    background: $color-warn;
-    border: 1px solid $color-warn;
-    color: $color-warn-contrast;
-  }
+.button-pill--material-editor-delete-page {
+  background: $color-fatal;
+  border: 1px solid $color-fatal;
+  color: $color-default;
 }
