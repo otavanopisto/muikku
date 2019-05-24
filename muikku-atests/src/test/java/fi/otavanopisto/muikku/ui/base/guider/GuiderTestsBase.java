@@ -15,12 +15,9 @@ import org.openqa.selenium.WebElement;
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
-<<<<<<< HEAD
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
-=======
 import fi.otavanopisto.muikku.mock.CourseBuilder;
->>>>>>> refs/remotes/origin/devel
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
