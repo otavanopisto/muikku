@@ -104,7 +104,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     
     //items are update with the swapped version, and after that's done we check for rightness
     this.setState({
-      items
+      items,
     }, this.checkAnswers);
   }
   checkAnswers(){
@@ -252,7 +252,8 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
            className={`material-page__sorterfield-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
          "material-page__sorterfield-item--selected" : ""} ${itemStateAfterCheck}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
-           onClick={this.selectItem.bind(this, item)} onDrag={this.cancelSelectedItem}>
+           onClick={this.selectItem.bind(this, item)} onDrag={this.selectItem.bind(this, item)} 
+           onDropInto={this.cancelSelectedItem}>
            <span className="material-page__sorterfield-item-icon icon-move"></span>
            <span className="material-page__sorterfield-item-label">{text}</span>
          </Draggable>

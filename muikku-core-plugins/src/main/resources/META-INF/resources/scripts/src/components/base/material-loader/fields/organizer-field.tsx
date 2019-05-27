@@ -223,7 +223,8 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
         //and the use list too, note how the use list might have duplicated term ids
         //this is fancy as if two boxes share the same termId in their array then it will be
         //in the use list twice
-        useList: [...this.state.useList, termId]
+        useList: [...this.state.useList, termId],
+        selectedItemId: null,
       }, this.checkAnswers);
       
       //Call the onchange function stringifying as usual
@@ -338,7 +339,7 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
               return <Draggable parentContainerSelector=".material-page__organizerfield"
                 className={className} interactionGroup={this.props.content.name}
                 clone key={id} onDropInto={this.onDropDraggableItem.bind(this, id)}
-                onDrag={this.cancelSelectedItemId} onClick={this.selectItemId.bind(this, id)}>
+                onDrag={this.selectItemId.bind(this, id)} onClick={this.selectItemId.bind(this, id)}>
                   <span className="material-page__organizerfield-term-icon icon-move"></span>
                   <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
               </Draggable>
