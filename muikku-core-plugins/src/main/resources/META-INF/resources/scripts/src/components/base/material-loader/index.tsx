@@ -512,7 +512,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         </Dropdown> : null}
         {this.props.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip"
           content={this.props.i18n.text.get("plugin.workspace.materialsManagement.viewRestrictionPageTooltip")}>
-          <ButtonPill buttonModifiers="material-management-page" icon={isViewRestricted ? "show" : "hide"} onClick={this.toggleViewRestriction}/>
+          <ButtonPill buttonModifiers="material-management-page" icon="closed-material" onClick={this.toggleViewRestriction}/>
         </Dropdown> : null}
       </div> : null}
       {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>{this.props.material.title} </h2> : null}
