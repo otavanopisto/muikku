@@ -121,7 +121,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
   }
   //removing file is simple, we just remove it
   removeFileAt(index: number){
-    let newValues = this.state.values.slice(index, 1);
+    let newValues = this.state.values.filter((a, i) => i !== index);
     this.setState({
       values: newValues
     }, this.checkDoneAndRunOnChange)

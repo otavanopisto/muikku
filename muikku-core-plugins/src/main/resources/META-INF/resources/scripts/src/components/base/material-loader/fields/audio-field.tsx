@@ -75,7 +75,12 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
     this.state = {
       recording: false,
       time: 0,
-      values: [],
+      values: ((props.initialValue && (JSON.parse(props.initialValue) || [])) || []).map((a: any) => {
+        return {
+          ...a,
+          url: `/rest/workspace/audioanswer/${a.id}`,
+        }
+      }),
       
       //modified synced and syncerror are false, true and null by default
       modified: false,
@@ -185,8 +190,9 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
   }
   //remove a clip
   removeClipAt(index: number){
+    const newValues = this.state.values.filter((a, i) => i !== index);
     this.setState({
-      values: [...this.state.values.slice(0, index), ...this.state.values.slice(index+1)]
+      values: newValues,
     });
   }
   //when the file changes (old method for bad browsers)
