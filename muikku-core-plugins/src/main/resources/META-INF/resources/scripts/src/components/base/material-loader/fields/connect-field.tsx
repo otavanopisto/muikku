@@ -74,11 +74,22 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
       //and the counterparts
       counterparts = [];
       
+      let usedCounterparts:string[] = [];
+      let shuffledCounterparts = shuffle(props.content.counterparts);
       //and now we match the counterpart with the fields as given by the initial value
       fields.forEach((field)=>{
         let counterpartId = value[field.name];
-        counterparts.push(props.content.counterparts.find((c)=>c.name === counterpartId))
+        // now for some reason we might have uncomplete values
+        if (!counterpartId) {
+          counterpartId = shuffledCounterparts.find((c) => !usedCounterparts.includes(c.name)).name;
+        }
+        usedCounterparts.push(counterpartId);
+        let counterpart = props.content.counterparts.find((c)=>c.name === counterpartId);
+        counterparts.push(counterpart)
       });
+      
+      // This is where edited ids array could be but it's not possible because
+      // the value contains all the combos, even if they weren't edited
     } else {
       //otherwise we just shuffle the thing
       counterparts = shuffle(props.content.counterparts);

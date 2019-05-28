@@ -50,13 +50,19 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     super(props);
     
     let value = null;
-    let items;
+    let items: Array<SorterFieldItemType>;
     //We take the initial value and parse it because somehow it comes as a string
     //this comes from the composite reply as so
     if (props.initialValue){
       value = JSON.parse(props.initialValue);
       //We set it up properly
       items = value.map((v:string)=>this.props.content.items.find(i=>i.id === v));
+      let itemsSuffled = shuffle(props.content.items) || [];
+      itemsSuffled.forEach((i) => {
+        if (!items.find((si) => si.id === i.id)) {
+          items.push(i);
+        }
+      })
     } else {
       //if we don't have a value, we 
       items = shuffle(props.content.items) || [];
