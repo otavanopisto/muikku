@@ -21,10 +21,14 @@ import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
+import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
+import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
+import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
@@ -43,18 +47,28 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changeCourseNameTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
       login();
-      long courseId = 1l;
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        waitAndClick(".workspace-management-container input[name=\"workspaceName\"]");
-        clearElement(".workspace-management-container input[name=\"workspaceName\"]");
-        sendKeys(".workspace-management-container input[name=\"workspaceName\"]", "Testing course");
+        waitAndClick(".application-sub-panel__body--workspace-description input");
+        clearElement(".application-sub-panel__body--workspace-description input");
+        sendKeys(".application-sub-panel__body--workspace-description input", "Testing course");
 
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
 
@@ -62,22 +76,22 @@ public class CourseManagementTestsBase extends AbstractUITest {
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
       
-        waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
-        waitForNotVisible(".loading");
+        waitAndClick(".panel__footer .button");
+        waitForPresentAndVisible(".notification-queue__items");
         
-        Course course = new Course(courseId, "Testing course", created, created, "<p>test course for testing</p>\n", false, 1, 
+        Course course = new Course(course1.getId(), "Testing course", created, created, "<p>test course for testing</p>\n", false, 1, 
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
             null, null);
-        String courseJson = objectMapper.writeValueAsString(course);        
-        stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
+        String courseJson = objectMapper.writeValueAsString(course);
+        stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(courseJson)
               .withStatus(200)));
         
-        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
+        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(courseJson)
@@ -87,8 +101,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
-        assertTextIgnoreCase(".workspace-header-wrapper .workspace-header-container h1.workspace-title", "Testing course");
+        waitForPresent(".hero__workspace-title");
+        assertTextIgnoreCase(".hero__workspace-title", "Testing course");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -108,22 +122,34 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changePublishedStateTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
       login();
-      long courseId = 1l;
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        waitAndClick(".workspace-management-container .additionalinfo-data input[value=\"false\"]");
-        waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
-        waitForNotVisible(".loading");
         
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".workspace-publication-container .workspace-publish-button");
-        assertVisible(".workspace-publication-container .workspace-publish-button");
+        waitForPresent("section:nth-child(3) div.application-sub-panel__item-data.application-sub-panel__item-data--workspace-management > span:nth-child(2) > input[type=\"radio\"]");
+        scrollIntoView("section:nth-child(3) div.application-sub-panel__item-data.application-sub-panel__item-data--workspace-management > span:nth-child(2) > input[type=\"radio\"]");
+        waitAndClick("section:nth-child(3) div.application-sub-panel__item-data.application-sub-panel__item-data--workspace-management > span:nth-child(2) > input[type=\"radio\"]");
+        waitAndClick(".panel__footer .button");
+        waitForPresentAndVisible(".notification-queue__items");
+        sleep(500);
+        navigate("/coursepicker", false);
+        waitForPresent(".application-panel__content .application-panel__main-container");
+        assertClassPresent(".application-panel__content .application-panel__main-container", "loader-empty");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -143,13 +169,22 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changeAdditionalInfoTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
       login();
-      long courseId = 1l;
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         scrollIntoView(".additionalinfo-data input[name=\"workspaceNameExtension\"]");
@@ -164,19 +199,19 @@ public class CourseManagementTestsBase extends AbstractUITest {
         OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-        Course course = new Course(courseId, "testcourse", created, created, "<p>test course for testing</p>\n", false, 1, 
+        Course course = new Course(course1.getId(), "Test", created, created, "<p>test course for testing</p>\n", false, 1, 
             (long) 25, begin, end, "For Test", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
             null, null);
         String courseJson = objectMapper.writeValueAsString(course);        
-        stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
+        stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(courseJson)
               .withStatus(200)));
         
-        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
+        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(courseJson)
@@ -207,14 +242,22 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changeWorkspaceTypeTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
       login();
-      long courseId = 1l;      
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent(".additionalinfo-data .workspace-type");
@@ -229,19 +272,19 @@ public class CourseManagementTestsBase extends AbstractUITest {
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
  
-        Course course = new Course(courseId, "testcourse", created, created, "<p>test course for testing</p>\n", false, 1, 
+        Course course = new Course(course1.getId(), "testcourse", created, created, "<p>test course for testing</p>\n", false, 1, 
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 2, 
             null, null);
         String courseJson = objectMapper.writeValueAsString(course);
-        stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
+        stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
               .withBody(courseJson)
               .withStatus(200)));
         
-        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
+        stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
             .withBody(courseJson)
@@ -272,13 +315,22 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changeLicenseTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
       login();
-      long courseId = 1l;
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent(".workspace-material-license select");
@@ -309,13 +361,22 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void addWorkspaceProducerTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
       login();
-      long courseId = 1l;
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent(".workspace-material-producers input");
