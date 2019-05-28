@@ -109,6 +109,11 @@ public interface Workspace extends SchoolDataEntity {
   )
   public SchoolDataIdentifier getEducationSubtypeIdentifier();
 
+  @IndexField (
+    toId = true
+  )
+  public SchoolDataIdentifier getOrganizationIdentifier();
+
   public Double getLength();
 
   public String getLengthUnitIdentifier();
