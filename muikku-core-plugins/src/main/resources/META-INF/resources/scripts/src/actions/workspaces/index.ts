@@ -1368,7 +1368,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
           await promisify(mApi().materials.html.content
               .update(data.material.materialId, {
                 content: data.update.html,
-                removeAnswers: false,
+                removeAnswers: data.removeAnswers || false,
               }), 'callback')();
         }
         
@@ -1393,9 +1393,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         }
         
         const materialFields = ["id", "license", "viewRestrict"]
-        const materialResult:any = {
-          title: data.update.title || data.material.title,
-        };
+        const materialResult:any = {};
         changed = false;
         materialFields.forEach((field) => {
           if (typeof (data.update as any)[field] !== "undefined" &&

@@ -403,7 +403,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //We use this function to basically modify the state with the modify state
     //Currently only used in exercises when the modify state sends them back to be answered
     let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
-    if (this.stateConfiguration['modify-state'] &&
+    if (this.stateConfiguration && this.stateConfiguration['modify-state'] &&
         (compositeReplies || {state: "UNANSWERED"}).state !== this.stateConfiguration['modify-state']){
       //The modify state is forced in so we use false to call to the server
       this.props.updateAssignmentState(this.stateConfiguration['modify-state'], false,
