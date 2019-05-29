@@ -1109,15 +1109,15 @@
 .button-pill--material-management-page,
 .button-pill--material-management-chapter {
   @include prefix(transition, moz o ms webkit, all 0.15s);
-  background: $color-material-page-admin-panel-main-color;
-  border: 1px solid $color-material-page-admin-panel-main-color;
+  background: $color-default;
+  border: 0px;
   border-radius: 10px;
-  color: $color-default;
+  color: $color-material-page-admin-panel-main-color;
   font-size: 1rem;
   height: 1.75rem;
   margin: 0 5px;
   overflow: visible;
-  position: relaive;
+  position: relative;
   width: 1.75rem;
 
   &:hover {
