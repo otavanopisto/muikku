@@ -1214,3 +1214,15 @@
   border: 1px solid $color-fatal;
   color: $color-default;
 }
+
+.button-pill--material-editor-never, .button-pill--material--danger {
+  background-color: $color-material-page-admin-panel-danger-color;
+}
+
+.button-pill--material-editor-on-request, .button-pill--material--warning {
+  background-color: $color-material-page-admin-panel-warning-color;
+}
+
+.button-pill--material-editor-always, .button-pill--material--info {
+  background-color: $color-material-page-admin-panel-info-color;
+}
