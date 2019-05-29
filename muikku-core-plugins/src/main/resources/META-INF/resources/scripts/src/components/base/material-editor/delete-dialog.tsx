@@ -31,7 +31,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
     this.state = {
       locked: false
     }
-    
+
     this.cancel = this.cancel.bind(this);
   }
   cancel(closeDialog: ()=>any){
@@ -60,9 +60,9 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
           "plugin.workspace.materialsManagement.confirmSectionDelete.text" :
           'plugin.workspace.materialsManagement.confirmDelete.text')}</span>
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.cancel.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get(this.props.isSection ?
@@ -77,9 +77,9 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
         </div>
       )
     }
-    
+
     console.log(this.props.children);
-    
+
     return <Dialog modifier="evaluation-cancel-dialog"
       title={this.props.i18n.text.get(this.props.isSection ?
         "plugin.workspace.materialsManagement.confirmSectionDelete.title" :

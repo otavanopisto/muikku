@@ -265,7 +265,6 @@
 }
 
 .link--profile {
-  font-size: 14px;
   background-color: $color-environment-link-profile-menu-background;
   color: $color-default-contrast;
   justify-content: flex-start;
@@ -275,6 +274,20 @@
   &:active,
   &.active {
     background-color: $color-environment-link-profile-menu-hover-background;
+    color: $color-default-contrast;
+  }
+}
+
+.link--material-management {
+  background-color: $color-workspace-link-material-management-background;
+  color: $color-workspace-link-material-management-text;
+  justify-content: flex-start;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-workspace-link-material-management-hover-background;
     color: $color-default-contrast;
   }
 }

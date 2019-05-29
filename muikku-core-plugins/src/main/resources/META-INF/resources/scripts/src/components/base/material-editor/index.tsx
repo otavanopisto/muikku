@@ -102,14 +102,14 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.updateProducerEntryName = this.updateProducerEntryName.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
     this.onFilesUpload = this.onFilesUpload.bind(this);
-    
+
     this.state = {
       tab: "content",
       producerEntryName: "",
       uploading: false,
     }
   }
-  
+
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       uploading: true
