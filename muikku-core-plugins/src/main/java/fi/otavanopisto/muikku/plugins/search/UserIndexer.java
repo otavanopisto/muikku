@@ -75,10 +75,6 @@ public class UserIndexer {
           extra.put("userEntityId", userEntity.getId());
           extra.put("isDefaultIdentifier", isDefaultIdentifier);
           
-          if (userSchoolDataIdentifier.getOrganization() != null) {
-            extra.put("organization", userSchoolDataIdentifier.getOrganization().getId());
-          }
-          
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
 

@@ -85,29 +85,25 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
-    String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
-
-    boolean hidden = false;
-    
     return new PyramusUser(
         identifierMapper.getStaffIdentifier(staffMember.getId()),
         staffMember.getFirstName(),
         staffMember.getLastName(),
         null,
         null,
-        displayName,
+        StringUtils.join(staffMember.getFirstName(), " ", staffMember.getLastName()),
         null,
         null,
         null,
         null,
         null,
         null,
-        null,
-        null,
-        null,
-        null,
-        false,
-        hidden);
+        identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId()).toId(),
+        null, // studyStartDate
+        null, // studyEndDate
+        null, //studyTimeEnded
+        false, // evaluationFees
+        false); // hidden
   }
 
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
