@@ -22,7 +22,7 @@ export default class FrontpageHero extends React.Component<FrontpageHeroProps, F
         <div className="hero__item hero__item--frontpage">
           <Bubble modifier="application" title={this.props.i18n.text.get( 'plugin.header.studentApplicationBubble.title')}
             content={this.props.i18n.text.get( 'plugin.header.studentApplicationBubble.description')}>
-            <Button buttonModifiers={["branded", "frontpage-bubble", "warn"]} href="https://pyramus.otavanopisto.fi/applications/index.page" openInNewTab="_blank">
+            <Button buttonModifiers={["branded", "frontpage-bubble", "warn"]} href="https://haku.otavanopisto.fi" openInNewTab="_blank">
               {this.props.i18n.text.get( 'plugin.header.studentApplicationBubble.link' )}
             </Button>
           </Bubble>
