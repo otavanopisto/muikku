@@ -85,6 +85,7 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
+    SchoolDataIdentifier organizationIdentifier = identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId());
     return new PyramusUser(
         identifierMapper.getStaffIdentifier(staffMember.getId()),
         staffMember.getFirstName(),
@@ -98,7 +99,7 @@ public class PyramusSchoolDataEntityFactory {
         null,
         null,
         null,
-        identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId()).toId(),
+        organizationIdentifier == null ? null : organizationIdentifier.toId(),
         null, // studyStartDate
         null, // studyEndDate
         null, //studyTimeEnded
