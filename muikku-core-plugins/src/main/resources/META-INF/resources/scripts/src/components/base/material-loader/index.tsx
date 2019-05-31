@@ -498,6 +498,14 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let viewForAdminPanel = this.props.isInFrontPage ? "workspace-description" : "workspace-materials";
     let isHidden = this.props.material.hidden;
     const isViewRestricted = this.props.material.viewRestrict === "LOGGED_IN";
+    const viewRestrictionButtonModifiers = ["material-management-page"];
+    if (isViewRestricted) {
+      viewRestrictionButtonModifiers.push("material--danger");
+    }
+    const hideShowButtonModifiers = ["material-management-page"];
+    if (isHidden) {
+      hideShowButtonModifiers.push("material--danger");
+    }
 
     return <article className={`material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
       {this.props.editable ? <div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
@@ -508,11 +516,11 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           <ButtonPill buttonModifiers="material-management-page" icon="content_copy" onClick={this.copyPage}/>
         </Dropdown> : null}
         {this.props.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
-          <ButtonPill buttonModifiers="material-management-page" icon={isHidden ? "show" : "hide"} onClick={this.toggleVisiblePageStatus}/>
+          <ButtonPill buttonModifiers={hideShowButtonModifiers} icon={isHidden ? "show" : "hide"} onClick={this.toggleVisiblePageStatus}/>
         </Dropdown> : null}
         {this.props.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip"
           content={this.props.i18n.text.get("plugin.workspace.materialsManagement.viewRestrictionPageTooltip")}>
-          <ButtonPill buttonModifiers="material-management-page" icon="closed-material" onClick={this.toggleViewRestriction}/>
+          <ButtonPill buttonModifiers={viewRestrictionButtonModifiers} icon="closed-material" onClick={this.toggleViewRestriction}/>
         </Dropdown> : null}
       </div> : null}
       {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>{this.props.material.title} </h2> : null}

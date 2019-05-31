@@ -88,6 +88,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     super(props);
 
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
+    this.toggleViewRestrictionStatus = this.toggleViewRestrictionStatus.bind(this);
+    this.cycleAssignmentType = this.cycleAssignmentType.bind(this);
+    this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
     this.close = this.close.bind(this);
@@ -99,14 +102,14 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.updateProducerEntryName = this.updateProducerEntryName.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
     this.onFilesUpload = this.onFilesUpload.bind(this);
-    
+
     this.state = {
       tab: "content",
       producerEntryName: "",
       uploading: false,
     }
   }
-  
+
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       uploading: true
@@ -133,13 +136,49 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
   
   toggleHiddenStatus() {
-    // TODO same we need an endpoint for this
-    
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         hidden: !this.props.editorState.currentDraftNodeValue.hidden,
+      },
+      isDraft: true
+    });
+  }
+  
+  toggleViewRestrictionStatus() {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        viewRestrict: this.props.editorState.currentDraftNodeValue.viewRestrict === "NONE" ? "LOGGED_IN" : "NONE",
+      },
+      isDraft: true
+    });
+  }
+  
+  cycleAssignmentType() {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        assignmentType: !this.props.editorState.currentDraftNodeValue.assignmentType ? "EXERCISE" : (
+          this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "EVALUATED" : null
+        ),
+      },
+      isDraft: true
+    });
+  }
+  
+  cycleCorrectAnswers() {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        correctAnswers: !this.props.editorState.currentDraftNodeValue.correctAnswers ||
+          this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"  ? "ON_REQUEST" : (
+          this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? "NEVER" : "ALWAYS"
+        ),
       },
       isDraft: true
     });
@@ -257,30 +296,47 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     if (!this.props.editorState || !this.props.editorState.currentDraftNodeValue) {
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}/>
     }
-      let materialPageType = this.props.editorState.currentDraftNodeValue.assignmentType ? (this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
-      let assignmentPageType = "material-editor-" + materialPageType;
+      const materialPageType = this.props.editorState.currentDraftNodeValue.assignmentType ? (this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
+      const assignmentPageType = "material-editor-" + materialPageType;
 
-      let canPublish = !equals(this.props.editorState.currentNodeValue, this.props.editorState.currentDraftNodeValue);
+      const canPublish = !equals(this.props.editorState.currentNodeValue, this.props.editorState.currentDraftNodeValue);
       const publishModifiers = ["material-editor-publish-page","material-editor"];
       const revertModifiers = ["material-editor-revert-page","material-editor"];
       if (!canPublish) {
         publishModifiers.push("disabled");
         revertModifiers.push("disabled");
       }
-
+      
+      const isHidden = this.props.editorState.currentDraftNodeValue.hidden;
+      const hideShowButtonModifiers = ["material-editor-show-hide-page","material-editor"];
+      if (isHidden) {
+        hideShowButtonModifiers.push("material--danger");
+      }
+      
+      const isViewRestricted = this.props.editorState.currentDraftNodeValue.viewRestrict === "LOGGED_IN";
+      const viewRestrictionButtonModifiers = ["material-editor-restrict-page","material-editor"];
+      if (isViewRestricted) {
+        viewRestrictionButtonModifiers.push("material--danger");
+      }
+      
+      const exerciseRevealType = !this.props.editorState.currentDraftNodeValue.correctAnswers ||
+        this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? "always" :
+          (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? "on-request" : "never");
+      const correctAnswersModifiers = ["material-editor-change-answer-reveal-type", "material-editor", "material-editor-" + exerciseRevealType];
+      
       let editorButtonSet = <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
           {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.editorState.currentDraftNodeValue.hidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
-            <ButtonPill buttonModifiers={["material-editor-show-hide-page","material-editor"]} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentDraftNodeValue.hidden ? "show" : "hide"}/>
+            <ButtonPill buttonModifiers={hideShowButtonModifiers} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentDraftNodeValue.hidden ? "show" : "hide"}/>
           </Dropdown> : null}
           {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.viewRestrictionPageTooltip")}>
-            <ButtonPill buttonModifiers={["material-editor-restrict-page","material-editor"]} icon="closed-material"/>
+            <ButtonPill buttonModifiers={viewRestrictionButtonModifiers} icon="closed-material" onClick={this.toggleViewRestrictionStatus}/>
           </Dropdown> : null}
           {this.props.editorState.canChangePageType ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip")}>
-            <ButtonPill buttonModifiers={["material-editor-change-page-type","material-editor",assignmentPageType]} icon="assignment"/>
+            <ButtonPill buttonModifiers={["material-editor-change-page-type","material-editor", assignmentPageType]} icon="assignment" onClick={this.cycleAssignmentType}/>
           </Dropdown> : null}
           {this.props.editorState.canChangeExerciseType && this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip")}>
-            <ButtonPill buttonModifiers={["material-editor-change-answer-reveal-type","material-editor"]} icon="correct-answers"/>
+            <ButtonPill buttonModifiers={correctAnswersModifiers} icon="correct-answers" onClick={this.cycleCorrectAnswers}/>
           </Dropdown> : null}
         </div>
         <div className="material-editor__buttonset-secondary">

@@ -1109,15 +1109,15 @@
 .button-pill--material-management-page,
 .button-pill--material-management-chapter {
   @include prefix(transition, moz o ms webkit, all 0.15s);
-  background: $color-material-page-admin-panel-main-color;
-  border: 1px solid $color-material-page-admin-panel-main-color;
+  background: $color-default;
+  border: 0px;
   border-radius: 10px;
-  color: $color-default;
+  color: $color-material-page-admin-panel-main-color;
   font-size: 1rem;
   height: 1.75rem;
   margin: 0 5px;
   overflow: visible;
-  position: relaive;
+  position: relative;
   width: 1.75rem;
 
   &:hover {
@@ -1213,4 +1213,16 @@
   background: $color-fatal;
   border: 1px solid $color-fatal;
   color: $color-default;
+}
+
+.button-pill--material-editor-never, .button-pill--material--danger {
+  background-color: $color-material-page-admin-panel-danger-color;
+}
+
+.button-pill--material-editor-on-request, .button-pill--material--warning {
+  background-color: $color-material-page-admin-panel-warning-color;
+}
+
+.button-pill--material-editor-always, .button-pill--material--info {
+  background-color: $color-material-page-admin-panel-info-color;
 }
