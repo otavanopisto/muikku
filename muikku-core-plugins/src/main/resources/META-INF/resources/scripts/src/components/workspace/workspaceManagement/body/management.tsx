@@ -16,6 +16,7 @@ import '~/sass/elements/item-list.scss';
 import '~/sass/elements/form-elements.scss';
 import { LicenseSelector } from "~/components/general/license-selector";
 import UploadImageDialog from '../dialogs/upload-image';
+import AddProducer from '~/components/general/add-producer';
 import { updateWorkspace, UpdateWorkspaceTriggerType,
   updateWorkspaceProducersForCurrentWorkspace, UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType,
@@ -91,13 +92,15 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.updateStartDate = this.updateStartDate.bind(this);
     this.updateEndDate = this.updateEndDate.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
-    this.updateCurrentWorkspaceProducerInputValue = this.updateCurrentWorkspaceProducerInputValue.bind(this);
     this.updateWorkspaceExtension = this.updateWorkspaceExtension.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
     this.removeCustomImage = this.removeCustomImage.bind(this);
     this.readNewImage = this.readNewImage.bind(this);
     this.acceptNewImage = this.acceptNewImage.bind(this);
     this.editCurrentImage = this.editCurrentImage.bind(this);
+    this.updateCurrentWorkspaceProducerInputValue = this.updateCurrentWorkspaceProducerInputValue.bind(this);
+    this.addProducer = this.addProducer.bind(this);
+    this.removeProducer = this.removeProducer.bind(this);
     this.checkIfEnterKeyIsPressedAndAddProducer = this.checkIfEnterKeyIsPressedAndAddProducer.bind(this);
     this.save = this.save.bind(this);
   }
@@ -120,6 +123,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.setState({
       workspaceName: e.target.value
     });
+    
   }
   setWorkspacePublishedTo(value: boolean){
     this.setState({
@@ -156,17 +160,17 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       currentWorkspaceProducerInputValue: e.target.value
     });
   }
+  
   checkIfEnterKeyIsPressedAndAddProducer(e: React.KeyboardEvent<HTMLInputElement>){
     if (e.keyCode == 13) {
       this.addProducer(this.state.currentWorkspaceProducerInputValue);
     }
   }
+  
   addProducer(name: string){
     this.setState({
       currentWorkspaceProducerInputValue: "",
       workspaceProducers: [...this.state.workspaceProducers, {
-        id: null,
-        workspaceEntityId: this.props.workspace.id,
         name
       }]
     });
@@ -290,11 +294,10 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     }
     
     let workspaceMaterialProducers = this.state.workspaceProducers;
-    
     if (!equals(workspaceMaterialProducers, this.props.workspace.producers)){
       totals++;
       this.props.updateWorkspaceProducersForCurrentWorkspace({
-        newProducers: workspaceMaterialProducers,
+        appliedProducers: workspaceMaterialProducers,
         success: ()=>{
           this.props.displayNotification(this.props.i18n.text.get("TODO succesfully updated workspace producers"), "success");
           onDone();
@@ -472,28 +475,15 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         </section>
         <section className="form-element application-sub-panel application-sub-panel--workspace-settings"> 
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
-          <LicenseSelector className="" value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
+          <LicenseSelector value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
         </section>
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
-          <input type="text" className="form-element__input"
-            value={this.state.currentWorkspaceProducerInputValue} onChange={this.updateCurrentWorkspaceProducerInputValue}
-            onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}/>
-          <Button onClick={this.addProducer.bind(this, this.state.currentWorkspaceProducerInputValue)}>
-            {this.props.i18n.text.get("TODO Add workspace producer")}
-          </Button>
-          <div>
-            {this.state.workspaceProducers && this.state.workspaceProducers.map((producer, index) => {
-              return <span className="" key={index}>
-                {producer.name}
-                <ButtonPill icon="close" onClick={this.removeProducer.bind(this, index)}/>
-              </span>
-            })}
-          </div>
+          {this.state.workspaceProducers? 
+            <AddProducer removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.state.workspaceProducers} i18n={this.props.i18n}/>
+          : null}
         </section>
-        <section className="application-sub-panel application-sub-panel--workspace-settings">
-
-        </section>
+        <section className="application-sub-panel application-sub-panel--workspace-settings"></section>
       </div>
       <div className="panel__footer">
         <Button disabled={this.state.locked} 
@@ -502,6 +492,25 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     </div>);
   }
 }
+
+//<section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+//<h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
+//<input type="text" className="form-element__input"
+//value={this.state.currentWorkspaceProducerInputValue} onChange={this.updateCurrentWorkspaceProducerInputValue}
+//onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}/>
+//<Button onClick={this.addProducer.bind(this, this.state.currentWorkspaceProducerInputValue)}>
+//{this.props.i18n.text.get("TODO Add workspace producer")}
+//</Button>
+//<div>
+//{this.state.workspaceProducers && this.state.workspaceProducers.map((producer, index) => {
+//  return <span className="" key={index}>
+//    {producer.name}
+//    <ButtonPill icon="close" onClick={this.removeProducer.bind(this, index)}/>
+//  </span>
+//})}
+//</div>
+//</section>
+
 
 function mapStateToProps(state: StateType){
   return {

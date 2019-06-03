@@ -20,7 +20,6 @@ interface WorkspaceMaterialProps {
 }
 
 interface WorkspaceMaterialState {
-  
 }
 
 class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, WorkspaceMaterialState> {

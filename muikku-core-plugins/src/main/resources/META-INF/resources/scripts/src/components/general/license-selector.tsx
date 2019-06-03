@@ -233,7 +233,7 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
          </div>)
         }
       </div> : null}
-      {!currentLicense.value  ? <input type="text" className={`form-element__input license-selector__text-input ${this.state.valid ? "" : "form-element--invalid"}`}
+      {!currentLicense.value  ? <input type="text" className={`form-element__input ${this.state.valid ? "" : "form-element--invalid"}`}
           value={this.state.text} onChange={this.onChangeText}/> : null}
     </div>
   }
