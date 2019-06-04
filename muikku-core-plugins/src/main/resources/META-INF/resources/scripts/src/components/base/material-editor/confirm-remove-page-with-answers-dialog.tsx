@@ -60,7 +60,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePa
     closeDialog && closeDialog();
     this.props.setWorkspaceMaterialEditorState({
       ...this.props.materialEditor,
-      showRemoveAnswersDialogForPublish: false,
+      showRemoveAnswersDialogForDelete: false,
     });
   }
   render(){
@@ -81,7 +81,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePa
       )
     }
     
-    return <Dialog modifier="confirm-remove-answer-dialog" isOpen={this.props.materialEditor.showRemoveAnswersDialogForPublish} onClose={this.cancel}
+    return <Dialog modifier="confirm-remove-answer-dialog" isOpen={this.props.materialEditor.showRemoveAnswersDialogForDelete} onClose={this.cancel}
       title={this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.title")}
       content={content} footer={footer}/>
   }

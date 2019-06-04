@@ -493,25 +493,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
   }
 }
 
-//<section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
-//<h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
-//<input type="text" className="form-element__input"
-//value={this.state.currentWorkspaceProducerInputValue} onChange={this.updateCurrentWorkspaceProducerInputValue}
-//onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer}/>
-//<Button onClick={this.addProducer.bind(this, this.state.currentWorkspaceProducerInputValue)}>
-//{this.props.i18n.text.get("TODO Add workspace producer")}
-//</Button>
-//<div>
-//{this.state.workspaceProducers && this.state.workspaceProducers.map((producer, index) => {
-//  return <span className="" key={index}>
-//    {producer.name}
-//    <ButtonPill icon="close" onClick={this.removeProducer.bind(this, index)}/>
-//  </span>
-//})}
-//</div>
-//</section>
-
-
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,

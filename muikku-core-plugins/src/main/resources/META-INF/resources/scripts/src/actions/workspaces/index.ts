@@ -56,6 +56,10 @@ export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE
 }>{};
 export interface DELETE_MATERIAL_CONTENT_NODE extends SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
 export interface INSERT_MATERIAL_CONTENT_NODE extends SpecificActionType<"INSERT_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
+export interface UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES extends SpecificActionType<"UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES", {
+  material: MaterialContentNodeType,
+  newPath: string;
+}>{};
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -1370,7 +1374,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
           await promisify(mApi().materials.html.content
               .update(data.material.materialId, {
                 content: data.update.html,
-                removeAnswers: false,
+                removeAnswers: data.removeAnswers || false,
               }), 'callback')();
         }
         
@@ -1395,9 +1399,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         }
         
         const materialFields = ["id", "license", "viewRestrict"]
-        const materialResult:any = {
-          title: data.update.title || data.material.title,
-        };
+        const materialResult:any = {};
         changed = false;
         materialFields.forEach((field) => {
           if (typeof (data.update as any)[field] !== "undefined" &&
@@ -1440,12 +1442,25 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
             });
           }
           
-          
           const deletedProducers = data.material.producers.filter((p) => !newProducers.find((p2) => p2.id === p.id));
           await Promise.all(deletedProducers.map((p) => {
             return promisify(mApi().materials.material.producers
                 .del(data.material.materialId, p.id), 'callback')();
           }));
+        }
+        
+        // if the title changed we need to update the path, sadly only the server knows
+        if (data.update.title && data.material.title !== data.update.title && !data.dontTriggerReducerActions) {
+          const refetchedContentNode: MaterialContentNodeType = <MaterialContentNodeType>(await promisify(mApi().workspace.workspaces.
+              asContentNode.read(data.workspace.id, data.material.workspaceMaterialId), 'callback')());
+        
+          dispatch({
+            type: "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES",
+            payload: {
+              material: data.material,
+              newPath: refetchedContentNode.path,
+            }
+          });
         }
       } else {
         // Trying to update the draft

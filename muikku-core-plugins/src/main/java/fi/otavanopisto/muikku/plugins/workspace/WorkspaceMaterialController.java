@@ -865,7 +865,6 @@ public class WorkspaceMaterialController {
       switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        viewRestricted = !sessionController.isLoggedIn() && workspaceFolder.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
         ContentNode folderContentNode = new ContentNode(
             workspaceFolder.getTitle(),
             "folder",
@@ -884,8 +883,7 @@ public class WorkspaceMaterialController {
             workspaceFolder.getPath(),
             null,
             Collections.emptyList(),
-            workspaceFolder.getViewRestrict(),
-            viewRestricted);
+            workspaceFolder.getViewRestrict());
         List<WorkspaceNode> children = includeHidden
             ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
             : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
@@ -903,7 +901,7 @@ public class WorkspaceMaterialController {
         for (FlattenedWorkspaceNode child : flattenedChildren) {
           ContentNode contentNode;
           if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(), child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(), MaterialViewRestrict.NONE, false);
+            contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(), child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(), MaterialViewRestrict.NONE);
           } else {
             contentNode = createContentNode(child.node, child.level, processHtml, includeHidden, child.nextSibling);
           }
@@ -960,8 +958,7 @@ public class WorkspaceMaterialController {
             workspaceMaterial.getPath(),
             material.getLicense(),
             materialController.listMaterialProducers(material),
-            material.getViewRestrict(),
-            viewRestricted);
+            material.getViewRestrict());
       default:
         return null;
       }

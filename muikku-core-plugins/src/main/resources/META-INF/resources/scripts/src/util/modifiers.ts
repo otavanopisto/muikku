@@ -357,18 +357,27 @@ export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scr
   }
 }
 
-export function repairContentNodes(base: MaterialContentNodeListType, parentNodeId?: number): MaterialContentNodeListType {
+export function repairContentNodes(base: MaterialContentNodeListType, pathRepair?: string, pathRepairId?: number, parentNodeId?: number): MaterialContentNodeListType {
   return base.map((cn, index) => {
     const nextSibling = base[index + 1];
     const nextSiblingId = nextSibling ? nextSibling.workspaceMaterialId : null;
     const parentId = typeof parentNodeId !== "number" ? cn.parentId : parentNodeId;
-    const children = cn.children && cn.children.length ? repairContentNodes(cn.children, cn.workspaceMaterialId) : cn.children;
+    let path = cn.path;
+    if (pathRepair && pathRepairId === cn.workspaceMaterialId) {
+      path = pathRepair;
+    } else if (pathRepair && pathRepairId === parentNodeId) {
+      const splitted = path.split("/");
+      splitted.shift();
+      path = [pathRepairId, ...splitted].join("/");
+    }
+    const children = cn.children && cn.children.length ? repairContentNodes(cn.children, pathRepair, pathRepairId, cn.workspaceMaterialId) : cn.children;
     
     return {
       ...cn,
       nextSiblingId,
       parentId,
       children,
+      path,
     }
   });
 }

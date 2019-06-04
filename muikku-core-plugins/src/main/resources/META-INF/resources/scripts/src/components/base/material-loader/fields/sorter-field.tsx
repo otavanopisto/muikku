@@ -50,13 +50,19 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     super(props);
     
     let value = null;
-    let items;
+    let items: Array<SorterFieldItemType>;
     //We take the initial value and parse it because somehow it comes as a string
     //this comes from the composite reply as so
     if (props.initialValue){
       value = JSON.parse(props.initialValue);
       //We set it up properly
       items = value.map((v:string)=>this.props.content.items.find(i=>i.id === v));
+      let itemsSuffled = shuffle(props.content.items) || [];
+      itemsSuffled.forEach((i) => {
+        if (!items.find((si) => si.id === i.id)) {
+          items.push(i);
+        }
+      })
     } else {
       //if we don't have a value, we 
       items = shuffle(props.content.items) || [];
@@ -104,7 +110,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     
     //items are update with the swapped version, and after that's done we check for rightness
     this.setState({
-      items
+      items,
     }, this.checkAnswers);
   }
   checkAnswers(){
@@ -252,7 +258,8 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
            className={`material-page__sorterfield-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
          "material-page__sorterfield-item--selected" : ""} ${itemStateAfterCheck}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
-           onClick={this.selectItem.bind(this, item)} onDrag={this.cancelSelectedItem}>
+           onClick={this.selectItem.bind(this, item)} onDrag={this.selectItem.bind(this, item)} 
+           onDropInto={this.cancelSelectedItem}>
            <span className="material-page__sorterfield-item-icon icon-move"></span>
            <span className="material-page__sorterfield-item-label">{text}</span>
          </Draggable>

@@ -12,10 +12,10 @@ interface DropdownProps {
   children?: React.ReactElement<any>,
   items?: Array<(React.ReactElement<any> | itemType2)>,
   content?: any,
-  openByHover?: boolean
-  persistent?:boolean;
-  onClose?: ()=>any;
-  onClick?: ()=>any;
+  openByHover?: boolean,
+  persistent?:boolean,
+  onClose?: ()=>any,
+  onClick?: ()=>any
 }
 
 interface DropdownState {

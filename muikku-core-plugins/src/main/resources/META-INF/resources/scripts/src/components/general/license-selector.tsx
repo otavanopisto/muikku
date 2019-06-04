@@ -5,7 +5,7 @@ import '~/sass/elements/license-selector.scss';
 
 interface LicenseSelectorProps {
   value: string,
-  className?: string,
+  modifier?: string,
   i18n: i18nType,
   onChange: (newValue: string)=>any
 }
@@ -142,13 +142,8 @@ const LICENSES: Array<LicenseType> = [
     validate: (value: string)=>value === CC0_URL_SSL || value === CC0_URL_NOSSL
   },
   {
-    id: "link",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.link",
-    validate: (value: string)=>typeof value === "string"
-  },
-  {
-    id: "text",
-    i18n: "plugin.workspace.materialsManagement.editorView.license.text",
+    id: "text_or_link",
+    i18n: "plugin.workspace.materialsManagement.editorView.license.textOrLink",
     validate: (value: string)=>typeof value === "string"
   },
   {
