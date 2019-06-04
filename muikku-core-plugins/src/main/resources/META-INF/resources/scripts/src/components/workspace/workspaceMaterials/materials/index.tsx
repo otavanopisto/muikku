@@ -61,7 +61,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.onScroll = this.onScroll.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
     this.createPage = this.createPage.bind(this);
-    this.createChapter = this.createChapter.bind(this);
+    this.createSection = this.createSection.bind(this);
     this.pastePage = this.pastePage.bind(this);
     this.attachFile = this.attachFile.bind(this);
     this.createPageFromBinary = this.createPageFromBinary.bind(this);
@@ -86,11 +86,42 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       this.getFlattenedMaterials(nextProps);
     }
   }
-  startupEditor(chapter: MaterialContentNodeType) {
+  getMaterialsOptionListDropdown(section: MaterialContentNodeType,
+      nextSection: MaterialContentNodeType, nextSibling: MaterialContentNodeType, includesSection: boolean) {
+    const materialManagementItemsOptions: Array<any> = [
+      {
+        icon: "add",
+        text: 'plugin.workspace.materialsManagement.createChapterTooltip',
+        onClick: this.createSection.bind( this, nextSection )
+      },
+      {
+        icon: "add",
+        text: 'plugin.workspace.materialsManagement.createPageTooltip',
+        onClick: this.createPage.bind( this, section, nextSibling)
+      },
+      {
+        icon: "content_paste",
+        text: 'plugin.workspace.materialsManagement.pastePageTooltip',
+        onClick: this.pastePage.bind( this, section, nextSibling)
+      },
+      {
+        icon: "attachment",
+        text: 'plugin.workspace.materialsManagement.attachFileTooltip',
+        onClick: this.createPageFromBinary.bind( this, section, nextSibling)
+      }
+    ]
+
+    if (!includesSection) {
+      materialManagementItemsOptions.shift();
+    }
+
+    return materialManagementItemsOptions;
+  }
+  startupEditor(section: MaterialContentNodeType) {
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
-      currentNodeValue: chapter,
-      currentDraftNodeValue: {...chapter},
+      currentNodeValue: section,
+      currentDraftNodeValue: {...section},
       parentNodeValue: null,
       section: true,
       opened: true,
@@ -111,49 +142,49 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       showRemoveAnswersDialogForDelete: false,
     });
   }
-  createPage(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
+  createPage(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     this.props.createWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
-      parentMaterial: chapter,
+      parentMaterial: section,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
     });
   }
   createPageFromBinary(
-      chapter: MaterialContentNodeType,
+      section: MaterialContentNodeType,
       nextSibling: MaterialContentNodeType,
       e: React.ChangeEvent<HTMLInputElement>
   ) {
     this.props.createWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
-      parentMaterial: chapter,
+      parentMaterial: section,
       nextSibling,
       title: e.target.files[0].name,
       file: e.target.files[0],
     });
   }
-  createChapter(nextSibling: MaterialContentNodeType) {
+  createSection(nextSibling: MaterialContentNodeType) {
     this.props.createWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
     });
   }
-  pastePage(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
+  pastePage(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;
     const workspaceCopiedId = localStorage.getItem("workspace-copied-id") || null;
     
     if (workspaceMaterialCopiedId) {
       this.props.createWorkspaceMaterialContentNode({
         workspace: this.props.workspace,
-        parentMaterial: chapter,
+        parentMaterial: section,
         nextSibling,
         copyMaterialId: parseInt(workspaceMaterialCopiedId),
         copyWorkspaceId: parseInt(workspaceCopiedId),
       })
     }
   }
-  attachFile(chapter: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
+  attachFile(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
@@ -211,138 +242,90 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     }
 
     const titlesAreEditable = this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE;
-
-    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name} ref="content-panel">
+    const createSectionElementWhenEmpty = this.props.materials.length === 0 ? (
       <div className="material-admin-panel material-admin-panel--master-functions">
         <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
-          <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createChapter.bind(this, null)}/>
+          <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createSection.bind(this, null)}/>
         </Dropdown>
       </div>
-      {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
-      {this.props.materials.map((chapter, index)=>{
+    ) : null;
+    
+    const results: any = [];
+    this.props.materials.forEach((section, index)=>{
+      
+      if (index === 0) {
+        results.push(<div key={"sectionfunctions-" + section.workspaceMaterialId} className="material-admin-panel material-admin-panel--master-functions">
+          <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
+            <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createSection.bind(this, section)}/>
+          </Dropdown>
+        </div>);
+      }
+      
+      const nextSection = this.props.materials[index + 1] || null;
+      
+      const lastManagementOptionsWithinSectionItem = (
+        <div className="material-admin-panel material-admin-panel--master-functions">
+          <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, null, true).map((item)=>{
+            return (closeDropdown: ()=>any)=>{
+              return <Link className={`link link--full link--material-management`}
+                onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
+                 <span className={`link__icon icon-${item.icon}`}></span>
+                 <span>{this.props.i18n.text.get(item.text)}</span>
+               </Link>}
+             })}>
+            <ButtonPill buttonModifiers="material-management-master" icon="add"/>
+          </Dropdown>
+        </div>
+      );
+    
+      const sectionSpecificContentData: any = [];
+    
+      section.children.forEach((node, index)=>{
+        const nextSibling = section.children[index + 1] || null;
+        sectionSpecificContentData.push(<div key={node.workspaceMaterialId + "-dropdown"} className="material-admin-panel material-admin-panel--master-functions">
+          <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, nextSibling, false).map((item)=>{
+            return (closeDropdown: ()=>any)=>{
+              return <Link className={`link link--full link--material-management`}
+                onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
+                 <span className={`link__icon icon-${item.icon}`}></span>
+                 <span>{this.props.i18n.text.get(item.text)}</span>
+               </Link>}
+            })}>
+            <ButtonPill buttonModifiers="material-management-master" icon="add"/>
+          </Dropdown>
+        </div>);
+      
+        let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
+        let material = !this.props.workspace || !this.props.materialReplies  ? null :
+          <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
+            <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
+            {/*TOP OF THE PAGE*/}
+            <WorkspaceMaterial folder={section} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
+          </ContentPanelItem>;
+        sectionSpecificContentData.push(material);
+      });
 
-        const materialManagementItemsWithChapter: Array<any> = [
-          {
-            icon: "add",
-            text: 'plugin.workspace.materialsManagement.createChapterTooltip',
-            onClick: this.createChapter.bind(this, chapter)
-          },
-          {
-            icon: "add",
-            text: 'plugin.workspace.materialsManagement.createPageTooltip',
-            onClick: this.createPage.bind(this, chapter, null)
-          },
-          {
-            icon: "content_paste",
-            text: 'plugin.workspace.materialsManagement.pastePageTooltip',
-            onClick: this.pastePage.bind(this, chapter, null)
-          },
-          {
-            icon: "attachment",
-            text: 'plugin.workspace.materialsManagement.attachFileTooltip',
-            onClick: this.createPageFromBinary.bind(this, chapter, null)
-          }
-        ]
-
-        const materialManagementItems: Array<any> = [
-          {
-            icon: "add",
-            text: 'plugin.workspace.materialsManagement.createPageTooltip',
-            onClick: this.createPage.bind(this, this.props.materials[index], null)
-          },
-          {
-            icon: "content_paste",
-            text: 'plugin.workspace.materialsManagement.pastePageTooltip',
-            onClick: this.pastePage.bind(this, this.props.materials[index], null)
-          },
-          {
-            icon: "attachment",
-            text: 'plugin.workspace.materialsManagement.attachFileTooltip',
-            onClick: this.createPageFromBinary.bind(this, this.props.materials[index], null)
-          }
-        ]
-
-        return <section className="content-panel__chapter" key={chapter.workspaceMaterialId} id={"section-" + chapter.workspaceMaterialId}>
-          {/*TOP OF THE CHAPTER*/}
-          <h2 className={`content-panel__chapter-title ${chapter.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
-            {titlesAreEditable ? 
-              <div className="material-admin-panel material-admin-panel--chapter-functions">
-                <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>
-                  <ButtonPill buttonModifiers="material-management-chapter" icon="edit" onClick={this.startupEditor.bind(this, chapter)}/>
-                </Dropdown>
-              </div>
-            : null}
-            {chapter.title}
-          </h2>
-
-          {/* If chapter has children then we cannot create new chapter */}
-          {chapter.children.length > 0 ?
-            <div className="material-admin-panel material-admin-panel--master-functions">
-              <Dropdown modifier="material-management" items={materialManagementItems.map((item)=>{
-                return (closeDropdown: ()=>any)=>{
-                  return <Link className={`link link--full link--material-management`}
-                    onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}}>
-                     <span className={`link__icon icon-${item.icon}`}></span>
-                     <span>{this.props.i18n.text.get(item.text)}</span>
-                   </Link>}
-               })}>
-                <ButtonPill buttonModifiers="material-management-master" icon="add"/>
+      results.push(<section key={"section-" + section.workspaceMaterialId} className="content-panel__chapter" id={"section-" + section.workspaceMaterialId}>
+        {/*TOP OF THE CHAPTER*/}
+        <h2 className={`content-panel__chapter-title ${section.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
+          {titlesAreEditable ? 
+            <div className="material-admin-panel material-admin-panel--chapter-functions">
+              <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>
+                <ButtonPill buttonModifiers="material-management-chapter" icon="edit" onClick={this.startupEditor.bind(this, section)}/>
               </Dropdown>
             </div>
-            : 
-            <div className="material-admin-panel material-admin-panel--master-functions">
-              <Dropdown modifier="material-management" items={materialManagementItemsWithChapter.map((item)=>{
-                return (closeDropdown: ()=>any)=>{
-                  return <Link className={`link link--full link--material-management`}
-                    onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}}>
-                     <span className={`link__icon icon-${item.icon}`}></span>
-                     <span>{this.props.i18n.text.get(item.text)}</span>
-                   </Link>}
-               })}>
-              <ButtonPill buttonModifiers="material-management-master" icon="add"/>
-            </Dropdown>
-          </div>
-          }
+          : null}
+          {section.title}
+        </h2>
+        {sectionSpecificContentData}
+        {lastManagementOptionsWithinSectionItem}
+       </section>);
+     });
 
-          {chapter.children.map((node, index, {length})=>{
-            let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
-            let material = !this.props.workspace || !this.props.materialReplies  ? null :
-              <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
-                <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
-                {/*TOP OF THE PAGE*/}
-                <WorkspaceMaterial folder={chapter} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
-
-                {/* After last children of the chapter we can create new chapter*/}
-                {index + 1 == length ? 
-                  <div className="material-admin-panel material-admin-panel--master-functions">
-                    <Dropdown modifier="material-management" items={materialManagementItemsWithChapter.map((item)=>{
-                      return (closeDropdown: ()=>any)=>{
-                        return <Link className={`link link--full link--material-management`}
-                          onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}}>
-                           <span className={`link__icon icon-${item.icon}`}></span>
-                           <span>{this.props.i18n.text.get(item.text)}</span>
-                         </Link>}
-                      })}>
-                      <ButtonPill buttonModifiers="material-management-master" icon="add"/>
-                    </Dropdown>
-                  </div> : <div className="material-admin-panel material-admin-panel--master-functions">
-                  <Dropdown modifier="material-management" items={materialManagementItems.map((item)=>{
-                    return (closeDropdown: ()=>any)=>{
-                      return <Link className={`link link--full link--material-management`}
-                        onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}}>
-                         <span className={`link__icon icon-${item.icon}`}></span>
-                         <span>{this.props.i18n.text.get(item.text)}</span>
-                       </Link>}
-                    })}>
-                    <ButtonPill buttonModifiers="material-management-master" icon="add"/>
-                  </Dropdown>
-                </div>}
-              </ContentPanelItem>;
-            return material;
-           })}
-         </section>
-       })
-      }
+    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name} ref="content-panel">
+      {results}
+      {!this.props.materials.length ? this.props.i18n.text.get("!TODOERRMSG no material information") : null}
+      {createSectionElementWhenEmpty}
     </ContentPanel>
   }
 }
