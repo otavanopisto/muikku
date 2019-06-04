@@ -74,7 +74,16 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
       //and the counterparts
       counterparts = [];
       
+      // Set all the counterparts that are used
       let usedCounterparts:string[] = [];
+      fields.forEach((field)=>{
+        let counterpartId = value[field.name];
+        // now for some reason we might have uncomplete values
+        if (counterpartId) {
+          usedCounterparts.push(counterpartId);
+        }
+      });
+      
       let shuffledCounterparts = shuffle(props.content.counterparts);
       //and now we match the counterpart with the fields as given by the initial value
       fields.forEach((field)=>{
@@ -82,10 +91,10 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
         // now for some reason we might have uncomplete values
         if (!counterpartId) {
           counterpartId = shuffledCounterparts.find((c) => !usedCounterparts.includes(c.name)).name;
+          usedCounterparts.push(counterpartId);
         }
-        usedCounterparts.push(counterpartId);
         let counterpart = props.content.counterparts.find((c)=>c.name === counterpartId);
-        counterparts.push(counterpart)
+        counterparts.push(counterpart);
       });
       
       // This is where edited ids array could be but it's not possible because

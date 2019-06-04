@@ -540,7 +540,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       }
       {this.props.answerable && this.stateConfiguration ? <div className="material-page__buttonset">
         {!this.stateConfiguration['button-disabled'] ? <Button buttonModifiers={this.stateConfiguration['button-class']}
-          onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.state.answerCheckable ?
+          onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.state.answerCheckable && this.props.material.assignmentType === "EXERCISE" && (this.props.material.correctAnswers || "ALWAYS") === "ALWAYS" ?
             this.stateConfiguration['button-check-text'] : this.stateConfiguration['button-text'])}</Button> : null}
         {this.stateConfiguration['displays-hide-show-answers-on-request-button-if-allowed'] &&
           this.props.material.correctAnswers === "ON_REQUEST" ? <Button 
