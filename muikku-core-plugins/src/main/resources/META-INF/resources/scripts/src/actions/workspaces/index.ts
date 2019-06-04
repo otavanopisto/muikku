@@ -827,7 +827,7 @@ export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
 
 export interface UpdateWorkspaceProducersForCurrentWorkspaceTriggerType {
   (data: {
-    newProducers: Array<WorkspaceProducerType>,
+    appliedProducers: Array<WorkspaceProducerType>,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
@@ -1040,13 +1040,19 @@ let updateWorkspaceProducersForCurrentWorkspace:UpdateWorkspaceProducersForCurre
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let state:StateType = getState();
-    
-      let workspaceProducersToAdd = data.newProducers.filter((p)=>{
-        return state.workspaces.currentWorkspace.producers.find(p2=>p2.id === p.id);
-      });
-    
-      let workspaceProducersToDelete = state.workspaces.currentWorkspace.producers.filter((p)=>{
-        return !data.newProducers.find(p2=>p2.id === p.id);
+      let existingProducers = state.workspaces.currentWorkspace.producers;
+      
+      let workspaceProducersToAdd = (existingProducers.length == 0) ? data.appliedProducers :
+        data.appliedProducers.filter(producer => {          
+          if (!producer.id) {
+            return producer;
+          }
+        });
+      
+      let workspaceProducersToDelete = existingProducers.filter(producer => {
+        if (producer.id) {
+          return !data.appliedProducers.find(keepProducer => keepProducer.id === producer.id)
+        }
       });
       
       await Promise.all(workspaceProducersToAdd.map(p=>
