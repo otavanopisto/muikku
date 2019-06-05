@@ -984,7 +984,6 @@
 .material-page__sorterfield-item--selected {
   background: $taskfield-border-color;
   color: $color-default;
-  font-weight: 400;
 
   .material-page__sorterfield-item-icon {
     background: transparent;
@@ -1083,7 +1082,6 @@
 .material-page__organizerfield-term--selected { // Single draggable term in SELEDTED state
   background: $taskfield-border-color;
   color: $color-default;
-  font-weight: 400;
 
   .material-page__organizerfield-term-icon {
     color: $color-default;
@@ -1307,7 +1305,6 @@
 .material-page__connectfield-term--selected {
   background: $taskfield-border-color;
   color: $color-default;
-  font-weight: 400;
 
   .material-page__connectfield-term-icon {
     color: $color-default;
@@ -1424,7 +1421,6 @@
 .material-page__connectfield-counterpart--selected { 
   background: $taskfield-border-color;
   color: $color-default;
-  font-weight: 400;
 
   .material-page__connectfield-counterpart-icon {
     color: $color-default;

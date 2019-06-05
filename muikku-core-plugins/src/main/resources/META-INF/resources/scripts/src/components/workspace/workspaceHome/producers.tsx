@@ -29,7 +29,7 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
         if (index !== this.props.workspace.producers.length - 1){
           textForTheName += ", "
         }
-        return <span className="producers__item" key={producer.id}>{textForTheName}</span>
+        return <span className="producers__item" key={'producer' + index}>{textForTheName}</span>
       })}
     </div>);
   }

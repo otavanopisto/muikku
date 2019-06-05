@@ -247,7 +247,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           }).concat(this.props.editable ? <Droppable
             key="LAST" interactionData={node.workspaceMaterialId}
             interactionGroup="TOC_SUBNODE"
-            className="toc__element--drag-placeholder-container">Last Droppable Element, placeholder for drops</Droppable> : [])}
+            className="toc__element--drag-placeholder-container"></Droppable> : [])}
         </TocTopic>
 
         if (!this.props.editable) {

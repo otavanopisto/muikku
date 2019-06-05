@@ -230,9 +230,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     //First we find all the interactive
     $(this.elements).find("object").addBack("object").each((index: number, element: HTMLElement)=>{
       //We get the object element as in, the react component that it will be replaced with
-      let rElement:React.ReactElement<any> = this.getObjectElement(element, props);
+      const rElement:React.ReactElement<any> = this.getObjectElement(element, props);
     
-      let newAnswerCheckableState = answerCheckables[element.getAttribute("type")] &&
+      const newAnswerCheckableState = answerCheckables[element.getAttribute("type")] &&
         answerCheckables[element.getAttribute("type")](rElement.props);
       if (newAnswerCheckableState && !this.answerCheckable){
         this.answerCheckable = true;
