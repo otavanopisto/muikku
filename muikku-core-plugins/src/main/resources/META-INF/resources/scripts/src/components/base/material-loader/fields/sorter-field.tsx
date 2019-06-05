@@ -138,7 +138,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     
     //In this case whether it overall right or not depends son whether
     //one of them failed, so we check
-    let isCorrect = newanswerState.includes("FAIL");
+    let isCorrect = !newanswerState.includes("FAIL");
     //If we have no answer state to compare with, we just send the result
     if (!this.state.answerState){
       this.props.onAnswerChange(this.props.content.name, isCorrect);

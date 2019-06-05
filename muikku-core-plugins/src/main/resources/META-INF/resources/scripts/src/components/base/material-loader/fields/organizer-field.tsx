@@ -192,10 +192,8 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
     //And we use the overall state to call the rightness change function
     let isCorrect = overallanswerState === "PASS";
     let wasCorrect = this.state.answerStateOverall === "PASS";
-    if (isCorrect && !wasCorrect){
-      this.props.onAnswerChange(this.props.content.name, true);
-    } else if (!isCorrect && wasCorrect){
-      this.props.onAnswerChange(this.props.content.name, false);
+    if (isCorrect !== wasCorrect || !this.state.answerState){
+      this.props.onAnswerChange(this.props.content.name, isCorrect);
     }
   }
   componentDidMount(){

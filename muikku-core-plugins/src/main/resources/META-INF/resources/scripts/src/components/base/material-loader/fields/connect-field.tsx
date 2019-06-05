@@ -175,7 +175,7 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
     }
     
     //check whether it is right
-    let isCorrect = newanswerState.includes("FAIL");
+    let isCorrect = !newanswerState.includes("FAIL");
     //if we don't have a answer state
     if (!this.state.answerState){
       //then send it thru
