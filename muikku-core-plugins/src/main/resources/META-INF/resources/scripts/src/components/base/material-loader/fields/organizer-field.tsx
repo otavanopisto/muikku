@@ -314,11 +314,11 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
     let answerIsCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerStateOverall === "PASS"
       
     //if elements is disabled
-    let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
+    let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
         
     //we add that class name in our component
     return <div className="material-page__organizerfield-wrapper">
-      <div className={`material-page__organizerfield ${fieldStateAfterCheck} ${ElementDisabledState}`}>
+      <div className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
         <div className="material-page__organizerfield-terms">
           <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
           <div className="material-page__organizerfield-terms-container">
@@ -350,9 +350,9 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
           {this.props.content.categories.map((category)=>{
             //we make a category class name for if the answer state is there, only worth it if the whole thing is not right
             //if the whole thing is right then every category is right
-            let fieldCategoryStateAfterCheck = this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
-              this.state.answerState && this.state.answerState[category.id] ? this.state.answerState[category.id]["*"] === "FAIL" ? 
-                "incorrect-answer" : "correct-answer" : "";
+            let fieldCategoryStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
+              this.state.answerState && this.state.answerState[category.id] ? (this.state.answerState[category.id]["*"] === "FAIL" ? 
+                "incorrect-answer" : "correct-answer") : "";
             
             //Showing the missing terms is only reasonable when display correct answers is there
             //we first check whether the category is right
@@ -374,7 +374,7 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
               <div className="material-page__organizerfield-category-terms-container">{this.state.boxes[category.id].map((termId)=>{
                 //showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
                 //otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
-                let itemStateAfterCheck = this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
+                let itemStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
                   this.state.answerState && this.state.answerState[category.id] ? this.state.answerState[category.id][termId] === "FAIL" ? 
                     "incorrect-answer" : "correct-answer" : "";
 

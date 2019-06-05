@@ -349,20 +349,17 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
     let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
     
     //if elements is disabled
-    let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
+    let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
     
     return <div className="material-page__connectfield-wrapper">
-      <div className={`material-page__connectfield ${fieldStateAfterCheck} ${ElementDisabledState}`}>
+      <div className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
         <div className="material-page__connectfield-terms-container">
           {this.state.fields.map((field, index)=>{
             //the item answer
             let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
             //the item class name only necessary if it was a fail and we are checking for rightness
-            let itemClassNameState = this.props.checkAnswers && this.state.answerState &&
-              this.state.answerState.includes("FAIL") && this.state.answerState[index] ? 
-                "state-" + this.state.answerState[index] : ""
-            let itemStateAfterCheck = itemAnswer ? this.state.answerState[index].includes("FAIL") ? 
-                "incorrect-answer" : "correct-answer" : "";
+            let itemStateAfterCheck = itemAnswer && this.props.displayCorrectAnswers ? (itemAnswer === "FAIL" ? 
+                "incorrect-answer" : "correct-answer") : "";
             //so now we get the fields here
             //the fields cannot be dragged and they remain in order
             //they are simple things
@@ -381,8 +378,8 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
            //the item answer
            let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
            //the classname state if necessary
-           let itemStateAfterCheck = itemAnswer ? this.state.answerState[index].includes("FAIL") ? 
-             "incorrect-answer" : "correct-answer" : "";
+           let itemStateAfterCheck = itemAnswer && this.props.displayCorrectAnswers ? (itemAnswer === "FAIL" ? 
+             "incorrect-answer" : "correct-answer") : "";
 
            //the basic class name
            let className = `material-page__connectfield-counterpart ${this.state.selectedField && this.state.selectedField.name === field.name ?
