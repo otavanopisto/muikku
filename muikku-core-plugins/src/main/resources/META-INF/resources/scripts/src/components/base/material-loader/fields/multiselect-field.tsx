@@ -101,7 +101,7 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
     }
     
     //Checking whether we got right in general
-    let isCorrect = newanswerState.includes("FAIL");
+    let isCorrect = !newanswerState.includes("FAIL");
     //if we had no previous answer state or it was unknown
     if (!this.state.answerState || this.state.answerState === "UNKNOWN"){
       //we just make it new
