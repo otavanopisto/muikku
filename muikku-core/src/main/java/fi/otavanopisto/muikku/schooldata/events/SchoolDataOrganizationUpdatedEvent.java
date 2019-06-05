@@ -1,10 +1,8 @@
 package fi.otavanopisto.muikku.schooldata.events;
 
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
-
 public class SchoolDataOrganizationUpdatedEvent {
 
-  public SchoolDataOrganizationUpdatedEvent(String dataSource, String identifier, WorkspaceRoleArchetype archetype, String name) {
+  public SchoolDataOrganizationUpdatedEvent(String dataSource, String identifier, String name) {
     super();
     this.dataSource = dataSource;
     this.identifier = identifier;

@@ -18,7 +18,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -30,7 +29,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -58,7 +56,6 @@ import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserDiscovere
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserUpdatedEvent;
 import fi.otavanopisto.muikku.users.EnvironmentRoleEntityController;
-import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.RoleSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -71,7 +68,6 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.Email;
-import fi.otavanopisto.pyramus.rest.model.Organization;
 import fi.otavanopisto.pyramus.rest.model.Person;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
 import fi.otavanopisto.pyramus.rest.model.Student;
@@ -122,9 +118,6 @@ public class PyramusUpdater {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
-
-  @Inject
-  private OrganizationEntityController organizationEntityController;
 
   @Inject
   private Event<SchoolDataUserUpdatedEvent> schoolDataUserUpdatedEvent;
@@ -396,6 +389,27 @@ public class PyramusUpdater {
       } else {
         fireUserGroupUserUpdated(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
       }
+    }
+  }
+
+  public void createOrganization(Long id, String name) {
+    SchoolDataIdentifier identifier = identifierMapper.getOrganizationIdentifier(id);
+    if (identifier != null) {
+      schoolDataOrganizationDiscoveredEvent.fire(new SchoolDataOrganizationDiscoveredEvent(identifier.getDataSource(), identifier.getIdentifier(), name));
+    }
+  }
+
+  public void updateOrganization(Long id, String name) {
+    SchoolDataIdentifier identifier = identifierMapper.getOrganizationIdentifier(id);
+    if (identifier != null) {
+      schoolDataOrganizationUpdatedEvent.fire(new SchoolDataOrganizationUpdatedEvent(identifier.getDataSource(), identifier.getIdentifier(), name));
+    }
+  }
+
+  public void archiveOrganization(Long id) {
+    SchoolDataIdentifier identifier = identifierMapper.getOrganizationIdentifier(id);
+    if (identifier != null) {
+      schoolDataOrganizationRemovedEvent.fire(new SchoolDataOrganizationRemovedEvent(identifier.getDataSource(), identifier.getIdentifier()));
     }
   }
 
@@ -761,57 +775,6 @@ public class PyramusUpdater {
         }
       }
     }
-    return count;
-  }
-
-  /**
-   * Updates organizations from Pyramus
-   * 
-   * @return count of updated organizations
-   */
-  public int updateOrganizations() {
-    int count = 0;
-    List<SchoolDataIdentifier> identifiers = new ArrayList<>();
-    
-    // Populate currently known identifiers
-
-    List<OrganizationEntity> existingOrganizationEntities = organizationEntityController.listByDataSourceAndArchived(
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, Boolean.FALSE);
-    for (OrganizationEntity organizationEntity : existingOrganizationEntities) {
-      identifiers.add(new SchoolDataIdentifier(organizationEntity.getIdentifier(), organizationEntity.getDataSource().getIdentifier()));
-    }
-    
-    // Load identifiers from source system
-    
-    try {
-      Organization[] sourceOrganizations = pyramusClient.get().get("/organizations", Organization[].class);
-      if (sourceOrganizations == null || sourceOrganizations.length == 0) {
-        logger.warning("Aborting organization synchronization because Pyramus returned none.");
-        return count;
-      }
-      
-      for (Organization sourceOrganization : sourceOrganizations) {
-        SchoolDataIdentifier identifier = identifierMapper.getOrganizationIdentifier(sourceOrganization.getId());
-        identifiers.remove(identifier);
-        
-        OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(
-            identifier.getDataSource(), identifier.getIdentifier());
-        if (organizationEntity == null || Boolean.TRUE.equals(organizationEntity.getArchived())) {
-          schoolDataOrganizationDiscoveredEvent.fire(new SchoolDataOrganizationDiscoveredEvent(
-              identifier.getDataSource(), identifier.getIdentifier(), sourceOrganization.getName()));
-          count++;
-        }
-      }
-  
-      // Remove the ones that were not returned from source
-      
-      for (SchoolDataIdentifier removedIdentifier : identifiers) {
-        schoolDataOrganizationRemovedEvent.fire(new SchoolDataOrganizationRemovedEvent(removedIdentifier.getDataSource(), removedIdentifier.getIdentifier()));
-      }
-    } catch (SchoolDataBridgeUnauthorizedException sdbue) {
-      logger.severe("Could not synchronize Organizations: Server returned 403.");
-    }
-
     return count;
   }
 

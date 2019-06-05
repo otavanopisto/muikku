@@ -43,7 +43,7 @@ public class DefaultSchoolDataOrganizationListener {
       event.setDiscoveredOrganizationEntityId(organizationEntity.getId());
     }
     else {
-      logger.warning("EnvironmentRoleEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
+      logger.warning("OrganizationEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
     }
   }
   
@@ -51,6 +51,12 @@ public class DefaultSchoolDataOrganizationListener {
     OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (organizationEntity != null) {
       organizationEntityController.updateName(organizationEntity, event.getName());
+    }
+    else {
+      // If organization create event was missed, do it here 
+      organizationEntity = organizationEntityController.createOrganizationEntity(event.getDataSource(), event.getIdentifier(), event.getName());
+      String discoverId = "ORG-" + event.getDataSource() + "/" + event.getIdentifier();
+      discoveredOrganizations.put(discoverId, organizationEntity.getId());
     }
   }
   
