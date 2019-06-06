@@ -368,7 +368,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           <div className="application-sub-panel__body application-sub-panel__body--workspace-description">
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
               <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h3>
-              <input name="description" type="text" className="form-element__input"
+              <input name="wokspace-name" type="text" className="form-element__input"
                 value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
               <Button href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
                 openInNewTab="_blank"
