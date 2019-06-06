@@ -66,8 +66,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
 
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        waitAndClick(".application-sub-panel__body--workspace-description input");
-        clearElement(".application-sub-panel__body--workspace-description input");
+        waitAndClick("input[name=\"wokspace-name\"]");
+        clearElement("input[name=\"wokspace-name\"]");
         sendKeys(".application-sub-panel__body--workspace-description input", "Testing course");
 
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
@@ -141,9 +141,9 @@ public class CourseManagementTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         
-        waitForPresent("section:nth-child(3) div.application-sub-panel__item-data.application-sub-panel__item-data--workspace-management > span:nth-child(2) > input[type=\"radio\"]");
-        scrollIntoView("section:nth-child(3) div.application-sub-panel__item-data.application-sub-panel__item-data--workspace-management > span:nth-child(2) > input[type=\"radio\"]");
-        waitAndClick("section:nth-child(3) div.application-sub-panel__item-data.application-sub-panel__item-data--workspace-management > span:nth-child(2) > input[type=\"radio\"]");
+        waitForPresent(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
+        scrollIntoView(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
+        waitAndClick(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
         waitAndClick(".panel__footer .button");
         waitForPresentAndVisible(".notification-queue__items");
         sleep(500);
@@ -187,11 +187,12 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        scrollIntoView(".additionalinfo-data input[name=\"workspaceNameExtension\"]");
-        waitAndClick(".additionalinfo-data input[name=\"workspaceNameExtension\"]");
-        clearElement(".additionalinfo-data input[name=\"workspaceNameExtension\"]");
-        sendKeys(".additionalinfo-data input[name=\"workspaceNameExtension\"]", "For Test");
-        waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        scrollIntoView("input[name=\"name-extension\"]");
+        waitAndClick("input[name=\"name-extension\"]");
+        clearElement("input[name=\"name-extension\"]");
+        sendKeys("input[name=\"name-extension\"]", "For Test");
+        waitAndClick(".panel__footer .button");
+        waitForPresentAndVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
@@ -221,8 +222,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         
 
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".workspace-header-wrapper .workspace-additional-info-wrapper span");
-        assertTextIgnoreCase(".workspace-header-wrapper .workspace-additional-info-wrapper span", "For Test");
+        waitForPresent(".hero__workspace-name-extension span");
+        assertTextIgnoreCase(".hero__workspace-name-extension span", "For Test");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -260,10 +261,11 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        waitForPresent(".additionalinfo-data .workspace-type");
-        scrollIntoView(".additionalinfo-data .workspace-type");
-        selectOption(".additionalinfo-data .workspace-type", "PYRAMUS-2");
-        waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");        
+        waitForPresent("select[name=\"workspace-type\"]");
+        scrollIntoView("select[name=\"workspace-type\"]");
+        selectOption("select[name=\"workspace-type\"]", "PYRAMUS-2");
+        waitAndClick(".panel__footer .button");
+        waitForPresentAndVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
@@ -294,13 +296,13 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".workspace-meta-wrapper .workspace-meta-item-wrapper:nth-child(3) .workspace-meta-desc");
-        assertTextIgnoreCase(".workspace-meta-wrapper .workspace-meta-item-wrapper:nth-child(3) .workspace-meta-desc", "Ryhmäkurssi");
+        waitForPresent(".meta--workspace .meta__item:nth-child(3) .meta__item-description");
+        assertTextIgnoreCase(".meta--workspace .meta__item:nth-child(3) .meta__item-description", "Ryhmäkurssi");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
     }finally{
-      mockBuilder.wiremockReset();
+      mockBuilder.wiremockReset();  
     }
   }
   
@@ -333,15 +335,17 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        waitForPresent(".workspace-material-license select");
-        scrollIntoView(".workspace-material-license select");
-        selectOption(".workspace-material-license select", "cc-3.0");
-        waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForPresent(".license-selector select");
+        scrollIntoView(".license-selector select");
+        selectOption(".license-selector select", "cc-3.0");
+        waitAndClick(".panel__footer .button");
+        waitForPresentAndVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".workspace-footer-license-wrapper .workspace-material-license");
-        assertTextIgnoreCase(".workspace-footer-license-wrapper .workspace-material-license", "https://creativecommons.org/licenses/by-sa/3.0");
+//        TODO: Can not see this anywhere
+//        waitForPresent(".workspace-footer-license-wrapper .workspace-material-license");
+//        assertTextIgnoreCase(".workspace-footer-license-wrapper .workspace-material-license", "https://creativecommons.org/licenses/by-sa/3.0");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -379,16 +383,18 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        waitForPresent(".workspace-material-producers input");
-        scrollIntoView(".workspace-material-producers input");
-        sendKeys(".workspace-material-producers input", "Mr. Tester");
-        findElementByCssSelector(".workspace-material-producers input").sendKeys(Keys.RETURN);
-        waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForPresent("input[name=\"add-producer\"]");
+        scrollIntoView("input[name=\"add-producer\"]");
+        selectAllAndClear("input[name=\"add-producer\"]");
+        sendKeys("input[name=\"add-producer\"]", "Mr. Tester");
+        findElementByCssSelector("input[name=\"add-producer\"]").sendKeys(Keys.RETURN);
+        waitAndClick(".panel__footer .button");
+        waitForPresentAndVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".workspace-material-producer");
-        assertTextIgnoreCase(".workspace-material-producer", "Mr. Tester");
+        waitForPresent(".footer .producers__item");
+        assertTextIgnoreCase(".footer .producers__item", "Mr. Tester");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
