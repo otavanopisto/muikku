@@ -36,14 +36,13 @@ export default class AddProducer extends React.Component<AddProducerProps, AddPr
     });
   }
   checkIfEnterKeyIsPressedAndAddProducer(e: React.KeyboardEvent<HTMLInputElement>){
-    let input = (document.getElementById("addProducer") as HTMLInputElement).value;
+    let input = this.state.currentInputValue;
     if (e.keyCode == 13 && input.length > 2) {
       this.props.addProducer(this.state.currentInputValue);
     }
   }
   addProducerByClick(){
-   let input = (document.getElementById("addProducer") as HTMLInputElement).value;
-   let test = this.state.currentInputValue;
+    let input = this.state.currentInputValue;
     if (input.length > 2) {
       this.props.addProducer(this.state.currentInputValue);
     } 
@@ -57,8 +56,8 @@ export default class AddProducer extends React.Component<AddProducerProps, AddPr
        {this.props.title ? <h3 className="add-producer__title">{this.props.i18n.text.get(this.props.title)}</h3> : null}
       <div className="add-producer__functionality-container">
         <div className={`form-element form-element--add-producer ${this.props.modifier ? "form-element--" + this.props.modifier : ""}`}>
-          <input id="addProducer" className={`form-element__input form-element__input--add-producer ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""}`} value={this.state.currentInputValue} onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer} onChange={this.updateInputValue} placeholder={this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')}  type="text" />
-          <div  className={`form-element__input-decoration form-element__input-decoration--add-producer ${this.props.modifier ? "form-element__input-decoration--" + this.props.modifier : ""} icon-add`} onClick={this.addProducerByClick}></div>
+          <input name="add-producer" className={`form-element__input form-element__input--add-producer ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""}`} value={this.state.currentInputValue} onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer} onChange={this.updateInputValue} placeholder={this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')}  type="text" />
+          <div  className={`form-element__input-decoratioin form-element__input-decoration--add-producer ${this.props.modifier ? "form-element__input-decoration--" + this.props.modifier : ""} icon-add`} onClick={this.addProducerByClick}></div>
         </div>
       </div>
       <div className="add-producer__list-container">
