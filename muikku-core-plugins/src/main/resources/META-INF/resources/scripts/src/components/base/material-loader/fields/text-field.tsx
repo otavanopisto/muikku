@@ -182,7 +182,8 @@ export default class TextField extends FieldBase<TextFieldProps, TextFieldState>
     }
 
     //The state of the whole field
-    let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.checkAnswers ? this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer" : "";
+    let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.displayCorrectAnswers && this.props.checkAnswers ?
+        (this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer") : "";
 
     if (this.props.readOnly){
       //Read only version

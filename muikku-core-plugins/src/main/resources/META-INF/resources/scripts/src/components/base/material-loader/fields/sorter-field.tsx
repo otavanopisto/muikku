@@ -138,7 +138,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     
     //In this case whether it overall right or not depends son whether
     //one of them failed, so we check
-    let isCorrect = newanswerState.includes("FAIL");
+    let isCorrect = !newanswerState.includes("FAIL");
     //If we have no answer state to compare with, we just send the result
     if (!this.state.answerState){
       this.props.onAnswerChange(this.props.content.name, isCorrect);
@@ -182,7 +182,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
   render(){
     //This element we are gunna use depends on the orientation, we use divs of spans
     let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
-    let ElementClass = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
+    let elementClassName = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
 
     if (!this.loaded){
       //TODOLANKKINEN be aware that the filler here has a correlation with the component
@@ -198,7 +198,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
         </Element>
       })
       return <Element ref="base" className="material-page__sorterfield-wrapper">
-        <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass}`}>
+        <Element className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}>
           {filler}
         </Element>
       </Element>
@@ -221,14 +221,15 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     }
 
     //Lets get the class name to match the state of the entire field if necessary
-    let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerState ? this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
+    let fieldStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && this.state.answerState ?
+        (this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer") : "";
     
     //if elements is disabled
-    let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
+    let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     //we use that element and the class to create the field
     return <Element className="material-page__sorterfield-wrapper">
-      <Element className={`material-page__sorterfield material-page__sorterfield--${ElementClass} ${fieldStateAfterCheck} ${ElementDisabledState}`}>
+      <Element className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
        {this.state.items.map((item, index)=>{
          //We get the text
          let text = item.name;
@@ -240,8 +241,8 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
          //this only happens if the answer is wrong total because otherwise is right and it's unecessary
          //we set them up so that they show each if they are right or wrong
 
-         let itemStateAfterCheck = this.props.checkAnswers && !answerIsBeingCheckedAndItisCorrect &&
-           this.state.answerState && this.state.answerState[index] ? this.state.answerState[index].includes("FAIL") ? "incorrect-answer" : "correct-answer" : "";
+         let itemStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && !answerIsBeingCheckedAndItisCorrect &&
+           this.state.answerState && this.state.answerState[index] ? (this.state.answerState[index].includes("FAIL") ? "incorrect-answer" : "correct-answer") : "";
 
          if (this.props.readOnly){
            //readonly component

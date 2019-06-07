@@ -141,9 +141,8 @@ export interface WorkspaceAdditionalInfoType {
 }
 
 export interface WorkspaceProducerType {
-  id: number,
-  workspaceEntityId: number,
-  name: string
+  name: string,
+  id?: number
 }
 
 export interface WorkspaceDetailsType {

@@ -192,11 +192,11 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                     .map(s=><Student onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
                       highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
                   
-                  return <div className="application-list application-list--workspace-users">
-                    {this.props.workspace && this.props.workspace.students ? (
-                      inactiveStudents.length ? inactiveStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.inActiveStudents.empty')}</div>
-                    ): null}
-                  </div>
+                    return <div className="application-list application-list--workspace-users">
+                      {this.props.workspace && this.props.workspace.students ? (
+                        inactiveStudents.length ? inactiveStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.inActiveStudents.empty')}</div>
+                      ): null}
+                    </div>
                 }
               }
             ]}/>

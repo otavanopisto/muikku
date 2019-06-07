@@ -22,6 +22,7 @@ import ConfirmRemoveAttachment from "./confirm-remove-attachment";
 
 import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
+import AddProducer from '~/components/general/add-producer';
 import { LicenseSelector } from '~/components/general/license-selector';
 
 interface MaterialEditorProps {
@@ -99,7 +100,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.changeTab = this.changeTab.bind(this);
     this.removeProducer = this.removeProducer.bind(this);
     this.addProducer = this.addProducer.bind(this);
-    this.updateProducerEntryName = this.updateProducerEntryName.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
     this.onFilesUpload = this.onFilesUpload.bind(this);
 
@@ -130,11 +130,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       }
     })
   }
-  
+
   changeTab(tab: string) {
     this.setState({tab});
   }
-  
+
   toggleHiddenStatus() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -145,7 +145,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true
     });
   }
-  
+
   toggleViewRestrictionStatus() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -156,7 +156,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true
     });
   }
-  
+
   cycleAssignmentType() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -169,7 +169,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true
     });
   }
-  
+
   cycleCorrectAnswers() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -183,7 +183,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true
     });
   }
- 
+
   updateTitle(e: React.ChangeEvent<HTMLInputElement>) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -194,13 +194,13 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-  
+
   updateContent(content: string) {
     // TODO content update plugin is all
     // going through the collaboration plugin
     // this cannot be achieved until that is modified
     // got to wait
-    
+
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
@@ -210,7 +210,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-  
+
   close() {
     this.props.setWorkspaceMaterialEditorState({
       ...this.props.editorState,
@@ -221,7 +221,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       producerEntryName: "",
     })
   }
-  
+
   publish() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -229,7 +229,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       update: this.props.editorState.currentDraftNodeValue,
     });
   }
-  
+
   revert() {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -238,11 +238,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-  
+
   removeProducer(index: number) {
     const newProducers = [...(this.props.editorState.currentDraftNodeValue.producers || [])];
     newProducers.splice(index, 1);
-    
+
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
@@ -252,19 +252,19 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-  
-  addProducer() {
+
+  addProducer(name: string) {
     const newProducers = [...(this.props.editorState.currentDraftNodeValue.producers || [])];
     newProducers.push({
       id: null,
-      name: this.state.producerEntryName,
+      name,
       materialId: this.props.editorState.currentDraftNodeValue.id,
     });
-    
+
     this.setState({
       producerEntryName: "",
     });
-    
+
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
@@ -274,13 +274,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-  
-  updateProducerEntryName(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({
-      producerEntryName: e.target.value,
-    });
-  }
-  
+
+
   updateLicense(newLicense: string) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -306,7 +301,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         publishModifiers.push("disabled");
         revertModifiers.push("disabled");
       }
-      
+
       const isHidden = this.props.editorState.currentDraftNodeValue.hidden;
       const hideShowButtonModifiers = ["material-editor-show-hide-page","material-editor"];
       if (isHidden) {
@@ -314,7 +309,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       } else {
         hideShowButtonModifiers.push("material-editor-enabled");
       }
-      
+
       const isViewRestricted = this.props.editorState.currentDraftNodeValue.viewRestrict === "LOGGED_IN";
       const viewRestrictionButtonModifiers = ["material-editor-restrict-page","material-editor"];
       if (isViewRestricted) {
@@ -322,18 +317,17 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       } else {
         viewRestrictionButtonModifiers.push("material-editor-enabled");
       }
-      
+
       const exerciseRevealType = !this.props.editorState.currentDraftNodeValue.correctAnswers ||
         this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? "always-show" :
           (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? "on-request" : "never-show");
       
       const correctAnswersModifiers = ["material-editor-change-answer-reveal-type", "material-editor", "material-editor-" + exerciseRevealType];
-      
       const correctAnswersTooltips =  !this.props.editorState.currentDraftNodeValue.correctAnswers || this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? 
           this.props.i18n.text.get("plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip") : 
             (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip") :
               this.props.i18n.text.get("plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"));
-      
+
       let editorButtonSet = <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
           {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.editorState.currentDraftNodeValue.hidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
@@ -405,25 +399,17 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
                   <LicenseSelector modifier="material-editor" value={this.props.editorState.currentDraftNodeValue.license} onChange={this.updateLicense} i18n={this.props.i18n}/>
                 </div>
               </div>
-            : null }
+            : null}
 
             {this.props.editorState.canSetProducers ?
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.producers")}</h3>
-                <div className="material-editor__add-producers-container">
-                  <div className="form-element form-element--material-editor-add-producers">
-                    <input placeholder={this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')} className="form-element__input form-element__input--material-editor-add-producer" type="text" value={this.state.producerEntryName} onChange={this.updateProducerEntryName}/>
-                    <div className="form-element__input-decoration--material-editor-add-producer icon-add" onClick={this.addProducer}></div>
-                  </div>
-                </div>
-  
-                <div className="material-editor__list-producers-container">
-                  {this.props.editorState.currentDraftNodeValue.producers.map((p, index) => {
-                    return <div className="material-editor__producer" key={index}>{p.name}<span className="material-editor__remove-producer icon-close" onClick={this.removeProducer.bind(this, index)}></span></div>
-                  })}
-                </div>
+                {this.props.editorState.currentDraftNodeValue.producers? 
+                  <AddProducer modifier="add-material-producer" removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.props.editorState.currentDraftNodeValue.producers} i18n={this.props.i18n}/>
+              : null}            
+
               </div>
-            : null }
+            : null}
           </div>,
         })
       }
@@ -456,7 +442,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         <Tabs modifier="material-editor" activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
           <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="arrow-left-thin"/>
         </Tabs>
-
         <ConfirmPublishPageWithAnswersDialog/>
         <ConfirmRemovePageWithAnswersDialog/>
      </div>
