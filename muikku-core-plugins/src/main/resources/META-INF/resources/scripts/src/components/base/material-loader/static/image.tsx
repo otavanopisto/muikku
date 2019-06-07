@@ -54,11 +54,22 @@ export default class Image extends FieldBase<ImageProps, ImageState>{
         children.push(<div className="image__details icon-copyright" key="details">
           <div className="image__details-container">
             <span className="image__details-label">{this.props.i18n.text.get("plugin.workspace.materials.detailsSourceLabel")} </span>
-            {this.props.dataset.source ? <a href={this.props.dataset.sourceUrl} target="_blank">{this.props.dataset.source}</a> : null}
-            {this.props.dataset.source ? <span>&nbsp;/&nbsp;</span> : null}
-            {this.props.dataset.author ? <a href={this.props.dataset.authorUrl} target="_blank">{this.props.dataset.author}</a> : null}
-            {this.props.dataset.author ? <span>,&nbsp;</span> : null}
-            {this.props.dataset.licence ? <a href={this.props.dataset.licenseUrl} target="_blank">{this.props.dataset.licence}</a> : null}
+            {this.props.dataset.source || this.props.dataset.sourceUrl
+              ? (this.props.dataset.sourceUrl ?
+                  <a href={this.props.dataset.sourceUrl} target="_blank">{this.props.dataset.source || this.props.dataset.sourceUrl}</a> :
+                  <span>{this.props.dataset.source}</span>) : null}
+            {this.props.dataset.source || this.props.dataset.sourceUrl ? <span>&nbsp;/&nbsp;</span> : null}
+            {this.props.dataset.author || this.props.dataset.authorUrl ? (
+                this.props.dataset.authorUrl ?
+                  <a href={this.props.dataset.authorUrl} target="_blank">{this.props.dataset.author || this.props.dataset.authorUrl}</a> :
+                  <span>{this.props.dataset.author}</span>
+            ) : null}
+            {this.props.dataset.author || this.props.dataset.authorUrl ? <span>,&nbsp;</span> : null}
+            {this.props.dataset.licence || this.props.dataset.licenseUrl ? (
+                this.props.dataset.licenseUrl ?
+                  <a href={this.props.dataset.licenseUrl} target="_blank">{this.props.dataset.licence || this.props.dataset.licenseUrl}</a> :
+                  <span>{this.props.dataset.licence}</span>
+            ) : null}
           </div>
         </div>);
       }
