@@ -205,7 +205,8 @@
 // DISABLED & READONLY FORM FIELDS
 .material-page__textfield[readonly],
 .material-page__selectfield[disabled],
-.material-page__memofield[readonly] {
+.material-page__memofield[readonly],
+.material-page__ckeditor-replacement--readonly {
   border-color: $color-disabled-taskfield-border !important;
   cursor: text !important;
 }
@@ -680,6 +681,22 @@
   max-width: 100%;
   min-width: 100%;
   padding: 4px 8px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
+  }
+}
+
+.material-page__ckeditor-replacement { // This is for ckeditor replacement div
+  @include taskfield-text;
+  @include taskfield-defaults;
+  line-height: 1.25rem;
+  margin: 4px 0 0;
+  max-width: 100%;
+  min-height: 1.25rem;
+  min-width: 100%;
+  padding: 5px 20px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
