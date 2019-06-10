@@ -305,34 +305,45 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       const isHidden = this.props.editorState.currentDraftNodeValue.hidden;
       const hideShowButtonModifiers = ["material-editor-show-hide-page","material-editor"];
       if (isHidden) {
-        hideShowButtonModifiers.push("material--danger");
+        hideShowButtonModifiers.push("material-editor-disabled");
+      } else {
+        hideShowButtonModifiers.push("material-editor-enabled");
       }
 
       const isViewRestricted = this.props.editorState.currentDraftNodeValue.viewRestrict === "LOGGED_IN";
       const viewRestrictionButtonModifiers = ["material-editor-restrict-page","material-editor"];
       if (isViewRestricted) {
-        viewRestrictionButtonModifiers.push("material--danger");
+        viewRestrictionButtonModifiers.push("material-editor-disabled");
+      } else {
+        viewRestrictionButtonModifiers.push("material-editor-enabled");
       }
 
       const exerciseRevealType = !this.props.editorState.currentDraftNodeValue.correctAnswers ||
-        this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? "always" :
-          (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? "on-request" : "never");
+        this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? "always-show" :
+          (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? "on-request" : "never-show");
+      
       const correctAnswersModifiers = ["material-editor-change-answer-reveal-type", "material-editor", "material-editor-" + exerciseRevealType];
+      const correctAnswersTooltips =  !this.props.editorState.currentDraftNodeValue.correctAnswers || this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? 
+          this.props.i18n.text.get("plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip") : 
+            (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip") :
+              this.props.i18n.text.get("plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"));
 
       let editorButtonSet = <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
-          {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.editorState.currentDraftNodeValue.hidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
-            <ButtonPill buttonModifiers={hideShowButtonModifiers} onClick={this.toggleHiddenStatus} icon={this.props.editorState.currentDraftNodeValue.hidden ? "show" : "hide"}/>
+          {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
+            <ButtonPill buttonModifiers={hideShowButtonModifiers} onClick={this.toggleHiddenStatus} icon="show"/>
           </Dropdown> : null}
-          {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.viewRestrictionPageTooltip")}>
+          {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={isViewRestricted ? this.props.i18n.text.get("plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip")}>
             <ButtonPill buttonModifiers={viewRestrictionButtonModifiers} icon="closed-material" onClick={this.toggleViewRestrictionStatus}/>
           </Dropdown> : null}
           {this.props.editorState.canChangePageType ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip")}>
             <ButtonPill buttonModifiers={["material-editor-change-page-type","material-editor", assignmentPageType]} icon="assignment" onClick={this.cycleAssignmentType}/>
           </Dropdown> : null}
-          {this.props.editorState.canChangeExerciseType && this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip")}>
+
+          {this.props.editorState.canChangeExerciseType && this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-management-tooltip" content={correctAnswersTooltips}>
             <ButtonPill buttonModifiers={correctAnswersModifiers} icon="correct-answers" onClick={this.cycleCorrectAnswers}/>
           </Dropdown> : null}
+
         </div>
         <div className="material-editor__buttonset-secondary">
           {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.publishPageTooltip")}>
