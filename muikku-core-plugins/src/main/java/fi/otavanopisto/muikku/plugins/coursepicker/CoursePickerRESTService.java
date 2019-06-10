@@ -49,6 +49,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.RoleController;
@@ -568,6 +569,11 @@ public class CoursePickerRESTService extends PluginRESTService {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
+    OrganizationRESTModel organization = null;
+    if (workspaceEntity.getOrganizationEntity() != null) {
+      OrganizationEntity organizationEntity = workspaceEntity.getOrganizationEntity();
+      organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+    }
     return new CoursePickerWorkspace(
         workspaceEntity.getId(), 
         workspaceEntity.getUrlName(),
@@ -581,7 +587,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         educationTypeName,
         canSignup, 
         isCourseMember,
-        hasCustomImage);
+        hasCustomImage,
+        organization);
   }
   
   private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {

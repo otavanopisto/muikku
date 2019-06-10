@@ -10,9 +10,10 @@ public class Student {
   public Student() {
   }
 
-  public Student(String id, String firstName, String lastName, String nickName, String studyProgrammeName, Boolean hasImage, String nationality, String language, String municipality, String school,
-      String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier,
-      boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags) {
+  public Student(String id, String firstName, String lastName, String nickName, String studyProgrammeName,
+      Boolean hasImage, String nationality, String language, String municipality, String school, String email,
+      Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier, boolean updatedByStudent,
+      Long userEntityId, List<StudentFlag> flags, OrganizationRESTModel organization) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -32,12 +33,13 @@ public class Student {
     this.updatedByStudent = updatedByStudent;
     this.userEntityId = userEntityId;
     this.setFlags(flags);
+    this.organization = organization;
   }
-  
+
   public String getId() {
     return id;
   }
-  
+
   public void setId(String id) {
     this.id = id;
   }
@@ -69,11 +71,11 @@ public class Student {
   public String getStudyProgrammeName() {
     return studyProgrammeName;
   }
-  
+
   public void setStudyProgrammeName(String studyProgrammeName) {
     this.studyProgrammeName = studyProgrammeName;
   }
-  
+
   public Boolean isHasImage() {
     return hasImage;
   }
@@ -129,11 +131,11 @@ public class Student {
   public void setStudyStartDate(Date studyStartDate) {
     this.studyStartDate = studyStartDate;
   }
-  
+
   public Date getStudyEndDate() {
     return studyEndDate;
   }
-  
+
   public void setStudyEndDate(Date studyEndDate) {
     this.studyEndDate = studyEndDate;
   }
@@ -153,29 +155,37 @@ public class Student {
   public void setCurriculumIdentifier(String curriculumIdentifier) {
     this.curriculumIdentifier = curriculumIdentifier;
   }
-  
+
   public boolean isUpdatedByStudent() {
     return updatedByStudent;
   }
-  
+
   public void setUpdatedByStudent(boolean updatedByStudent) {
     this.updatedByStudent = updatedByStudent;
   }
-  
+
   public List<StudentFlag> getFlags() {
-	return flags;
+    return flags;
   }
 
   public void setFlags(List<StudentFlag> flags) {
-	this.flags = flags;
+    this.flags = flags;
   }
 
   public Long getUserEntityId() {
-	return userEntityId;
+    return userEntityId;
   }
 
   public void setUserEntityId(Long userEntityId) {
-	this.userEntityId = userEntityId;
+    this.userEntityId = userEntityId;
+  }
+
+  public OrganizationRESTModel getOrganization() {
+    return organization;
+  }
+
+  public void setOrganization(OrganizationRESTModel organization) {
+    this.organization = organization;
   }
 
   private String id;
@@ -196,4 +206,5 @@ public class Student {
   private boolean updatedByStudent;
   private Long userEntityId;
   private List<StudentFlag> flags;
+  private OrganizationRESTModel organization;
 }

@@ -59,6 +59,7 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesN
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -425,6 +426,9 @@ public class GuiderRESTService extends PluginRESTService {
           }
           
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+          
+          UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+          OrganizationEntity organizationEntity = usdi.getOrganization();
 
           students.add(new fi.otavanopisto.muikku.rest.model.Student(
             studentIdentifier.toId(), 
@@ -444,7 +448,8 @@ public class GuiderRESTService extends PluginRESTService {
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
-            restFlags
+            restFlags,
+            organizationEntity == null ? null : toRestModel(organizationEntity)
           ));
         }
       }
@@ -502,6 +507,12 @@ public class GuiderRESTService extends PluginRESTService {
     Date studyEndDate = user.getStudyEndDate() != null ? Date.from(user.getStudyEndDate().toInstant()) : null;
     Date studyTimeEnd = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
 
+    OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
+    OrganizationRESTModel organizationRESTModel = null;
+    if (organizationEntity != null) {
+      organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+    }
+
     Student student = new Student(
         studentIdentifier.toId(), 
         user.getFirstName(), 
@@ -520,7 +531,8 @@ public class GuiderRESTService extends PluginRESTService {
         user.getCurriculumIdentifier(),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
-        null
+        null,
+        organizationRESTModel
     );
     
     return Response
@@ -600,6 +612,10 @@ public class GuiderRESTService extends PluginRESTService {
     String contentType = file.getContentType();
     
     return Response.ok().type(contentType).entity(output).build();
+  }
+  
+  private OrganizationRESTModel toRestModel(OrganizationEntity organizationEntity) {
+    return new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
   }
   
   private GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, WorkspaceAssessmentState assessmentState) {

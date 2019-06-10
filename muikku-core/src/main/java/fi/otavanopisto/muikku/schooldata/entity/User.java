@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 
 @Indexable (
@@ -13,6 +14,14 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
       name = "email",
       type = "string",
       index = "not_analyzed"
+    ),
+    @IndexableFieldOption (
+      name = "organizationIdentifier",
+      type = "multi_field",
+      multiFields = {
+        @IndexableFieldMultiField(name = "organizationIdentifier", type="string", index = "analyzed"),
+        @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
+      }
     )
   }
 )

@@ -58,6 +58,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.rest.model.StudentAddress;
@@ -397,6 +398,13 @@ public class UserRESTService extends AbstractRESTService {
           
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
 
+          UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+          OrganizationEntity organizationEntity = usdi.getOrganization();
+          OrganizationRESTModel organizationRESTModel = null;
+          if (organizationEntity != null) {
+            organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+          }
+
           students.add(new fi.otavanopisto.muikku.rest.model.Student(
             studentIdentifier.toId(), 
             (String) o.get("firstName"),
@@ -415,7 +423,8 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
-            restFlags
+            restFlags,
+            organizationRESTModel
           ));
         }
       }
@@ -483,6 +492,12 @@ public class UserRESTService extends AbstractRESTService {
     Date studyEndDate = user.getStudyEndDate() != null ? Date.from(user.getStudyEndDate().toInstant()) : null;
     Date studyTimeEnd = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
 
+    OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
+    OrganizationRESTModel organizationRESTModel = null;
+    if (organizationEntity != null) {
+      organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+    }
+
     Student student = new Student(
         studentIdentifier.toId(), 
         user.getFirstName(), 
@@ -501,7 +516,8 @@ public class UserRESTService extends AbstractRESTService {
         user.getCurriculumIdentifier(),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
-        null
+        null,
+        organizationRESTModel
     );
     
     return Response
@@ -1438,6 +1454,13 @@ public class UserRESTService extends AbstractRESTService {
               continue;
             }
           }
+
+          UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+          OrganizationEntity organizationEntity = usdi.getOrganization();
+          OrganizationRESTModel organizationRESTModel = null;
+          if (organizationEntity != null) {
+            organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+          }
           
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
@@ -1445,7 +1468,8 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
             email,
-            propertyMap));
+            propertyMap,
+            organizationRESTModel));
         }
       }
     }

@@ -215,9 +215,12 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       // TODO: force to have at least one organization?
-      Set<Long> organizationIds = organizations.stream().filter(Objects::nonNull).map(organization -> organization.getId()).collect(Collectors.toSet());
-      if (CollectionUtils.isNotEmpty(organizationIds)) {
-        query.must(termsQuery("organization", ArrayUtils.toPrimitive(organizationIds.toArray(new Long[0]))));
+      Set<String> organizationIdentifiers = organizations
+          .stream()
+          .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))
+          .collect(Collectors.toSet());
+      if (CollectionUtils.isNotEmpty(organizationIdentifiers)) {
+        query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifiers.toArray()));
       }
       
       if (groups != null) {
