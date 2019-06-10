@@ -264,7 +264,7 @@
   }
 }
 
-.link--profile {
+.link--navigation-dropdown {
   background-color: $color-environment-link-profile-menu-background;
   color: $color-default-contrast;
   justify-content: flex-start;
@@ -292,21 +292,16 @@
   }
 }
 
-.link--workspace-management {
-  background-color: $color-workspace-link-management-background;
-  color: $color-workspace-link-management-text;
-  justify-content: flex-start;
+.link--workspace-management{
+  text-decoration: underline;
 
   &:hover,
   &.hover {
-    background-color: opacify($color-workspace-link-management-hover-background, 0.6);
-    color: $color-workspace-link-management-text;
+    color: $color-link-default-text;
   }
 
-  &:active,
-  &.active {
-    background-color: opacify($color-environment-link-language-hover-background, 0.6);
-    color: $color-environment-link-language-text;
+  &:not(:first-child){
+    margin-left:10px;
   }
 }
 

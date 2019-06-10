@@ -84,7 +84,7 @@
   }
 }
 
-.form-element--material-editor-add-producers {
+.form-element--add-producer {
   @include form-element-toolbar;
   width: 100%;
 }
@@ -121,7 +121,9 @@
   width: 100%;
 }
 
-.form-element__input--profile {
+.form-element__input--profile, 
+.form-element__input--workspace-name {
+  
   width: 100%;
 }
 
@@ -140,11 +142,15 @@
   width: 100%;
 }
 
-.form-element__input--material-editor-add-producer {
+.form-element__input--add-producer {
   background-color: $color-default;
-  border: solid 2px lighten($color-material-page-admin-panel-main-color,20%);
+  border: solid 2px $color-form-element-border;
   margin-right: -2px; // Hides the right border and border-radius effect to provide more unified look
   width: 100%;
+}
+
+.form-element__input--add-material-producer {
+  border: solid 2px lighten($color-material-page-admin-panel-main-color,20%);
 }
 
 .form-element__input-decoration--main-function-search {
@@ -157,8 +163,8 @@
   }
 }
 
-.form-element__input-decoration--material-editor-add-producer {
-  background-color: $color-material-page-admin-panel-main-color;
+.form-element__input-decoration--add-producer {
+  background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
 
   &::before {
@@ -166,6 +172,11 @@
     color: $color-main-function-search-icon;
   }
 }
+
+.form-element__input-decoration--add-material-producer {
+  background-color: $color-material-page-admin-panel-main-color;
+}
+
 
 .form-element__input--subpanel-search {
   background-color: $color-default;

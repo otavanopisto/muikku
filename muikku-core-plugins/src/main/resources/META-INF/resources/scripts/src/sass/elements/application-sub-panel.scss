@@ -230,7 +230,7 @@
   padding: 0;
 }
 
-// Subpanel inline value
+// Subpanel item inline value
 
 .application-sub-panel__item-inline-value {
   background-color: $color-hops-readable-inline-background;
@@ -241,7 +241,14 @@
   padding: 2px 5px;
 }
 
-// Subpanel data
+// Subpanel item actions
+
+.application-sub-panel__item-actions {
+  padding: 10px 0;
+}
+
+
+// Subpanel item data
 
 .application-sub-panel__item-data {
   align-items: center;

@@ -5,6 +5,7 @@ import { WorkspaceType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProduce
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button, { ButtonPill } from "~/components/general/button";
+import Link from "~/components/general/link";
 import moment from "~/lib/moment";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
@@ -367,18 +368,20 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-description">
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
-              <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h3>
-              <input type="text" className="form-element__input"
+              <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</div>
+              <input name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
                 value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
-              <Button href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
+              <div className="application-sub-panel__item-actions">
+                <Link href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
                 openInNewTab="_blank"
-                buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Button>
-              <CopyWizardDialog>
-                <Button buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Button>
-              </CopyWizardDialog>
+                className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Link>
+                <CopyWizardDialog>
+                  <Link className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Link>
+                </CopyWizardDialog>
+              </div>
             </div>
             <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description application-sub-panel__item--workspace-management-split">
-              <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h3>
+              <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</div>
               <CKEditor width="100%" height="210"
                 onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
             </div>
@@ -405,13 +408,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity")}</div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
                 <span className="form-element">
-                  <input type="radio"
+                  <input name="publish" type="radio"
                    checked={this.state.workspacePublished === true}
                    onChange={this.setWorkspacePublishedTo.bind(this, true)}/>
                   <label>{this.props.i18n.text.get("plugin.workspace.management.settings.publicity.publish")}</label>
                 </span>
                 <span className="form-element">
-                  <input type="radio"
+                  <input name="unpublish" type="radio"
                    checked={this.state.workspacePublished === false}
                    onChange={this.setWorkspacePublishedTo.bind(this, false)}/>
                   <label>{this.props.i18n.text.get("plugin.workspace.management.settings.publicity.unpublish")}</label>
@@ -422,19 +425,19 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
                 <span className="form-element">
-                  <input type="radio"
+                  <input name="access-members" type="radio"
                    checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
                    onChange={this.setWorkspaceAccessTo.bind(this, "MEMBERS_ONLY")}/>
                   <label>{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
                 </span>
                 <span className="form-element">
-                  <input type="radio"
+                  <input name="access-loggedin" type="radio"
                    checked={this.state.workspaceAccess === "LOGGED_IN"}
                    onChange={this.setWorkspaceAccessTo.bind(this, "LOGGED_IN")}/>
                   <label>{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
                 </span>
                 <span className="form-element">
-                  <input type="radio"
+                  <input name="access-anyone" type="radio"
                    checked={this.state.workspaceAccess === "ANYONE"}
                    onChange={this.setWorkspaceAccessTo.bind(this, "ANYONE")}/>
                   <label>{this.props.i18n.text.get("plugin.workspace.management.settings.access.anyone")}</label>
@@ -448,12 +451,12 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           <div className="application-sub-panel__body application-sub-panel__body--workspace-management">
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
               <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</div>
-              <input type="text" className="form-element__input"
+              <input name="name-extension" type="text" className="form-element__input"
                value={this.state.workspaceExtension || ""} onChange={this.updateWorkspaceExtension}/>
             </div>
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
               <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</div>
-              <select className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
+              <select name="workspace-type" className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
                 {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
                   <option key={type.identifier} value={type.identifier}>{type.name}</option>
                 )}

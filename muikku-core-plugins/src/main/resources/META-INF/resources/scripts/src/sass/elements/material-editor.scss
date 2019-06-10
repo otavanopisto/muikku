@@ -118,6 +118,8 @@
   }
 }
 
+// this is the same in add-producer component style. TODO mixin.
+
 .material-editor__sub-section {
   border-radius: 2px;
   margin: 0 0 10px;
@@ -128,12 +130,16 @@
   }
 }
 
+// this is the same in add-producer component style and probably with all the subtitles everywhere. TODO mixin.
+
 .material-editor__sub-title {
   font-size: 1.25rem;
   font-weight: 300;
   line-height: 1;
   margin: 0 0 10px;
 }
+
+
 
 .material-editor__add-producers-container {
   // For future use

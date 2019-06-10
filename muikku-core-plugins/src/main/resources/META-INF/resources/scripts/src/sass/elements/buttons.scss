@@ -1165,14 +1165,14 @@
   width: 1.75rem;
 
   &.button-pill--disabled {
-    background: lighten($color-disabled,15%);
-    border: 1px solid lighten($color-disabled,15%);
+    background: $color-disabled;
+    border: 1px solid $color-disabled;
     color: $color-default;
     cursor: not-allowed;
 
     &:hover {
-      background: lighten($color-disabled,15%);
-      border: 1px solid lighten($color-disabled,15%);
+      background: $color-disabled;
+      border: 1px solid $color-disabled;
       color: $color-default;
       cursor: not-allowed;
     }
@@ -1183,6 +1183,11 @@
     border: 1px solid $color-material-page-admin-panel-main-hover-color;
     color: $color-default;
   }
+}
+
+.button-pill--material-editor-change-page-type { // This is default state for exercise/assignment buttons
+  background-color: $color-material-page-admin-panel-disabled-color;
+  border-color: $color-material-page-admin-panel-disabled-color;
 }
 
 .button-pill--material-editor-exercise {
@@ -1215,14 +1220,28 @@
   color: $color-default;
 }
 
-.button-pill--material-editor-never, .button-pill--material--danger {
-  background-color: $color-material-page-admin-panel-danger-color;
+.button-pill--material-editor-disabled {
+  background-color: $color-material-page-admin-panel-disabled-color;
+  border-color: $color-material-page-admin-panel-disabled-color;
 }
 
-.button-pill--material-editor-on-request, .button-pill--material--warning {
-  background-color: $color-material-page-admin-panel-warning-color;
+.button-pill--material-editor-enabled {
+  background-color: $color-material-page-admin-panel-enabled-color;
+  border-color: $color-material-page-admin-panel-enabled-color;
 }
 
-.button-pill--material-editor-always, .button-pill--material--info {
-  background-color: $color-material-page-admin-panel-info-color;
+
+.button-pill--material-editor-always-show {
+  background-color: $color-material-page-admin-panel-always-show-answers-color;
+  border-color: $color-material-page-admin-panel-always-show-answers-color;
+}
+
+.button-pill--material-editor-never-show {
+  background-color: $color-material-page-admin-panel-never-show-answers-color;
+  border-color: $color-material-page-admin-panel-never-show-answers-color;
+}
+
+.button-pill--material-editor-on-request {
+  background-color: $color-material-page-admin-panel-on-request-color;
+  border-color: $color-material-page-admin-panel-on-request-color;
 }
