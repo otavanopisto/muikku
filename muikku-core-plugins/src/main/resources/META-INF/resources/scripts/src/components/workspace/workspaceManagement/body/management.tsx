@@ -5,6 +5,7 @@ import { WorkspaceType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProduce
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button, { ButtonPill } from "~/components/general/button";
+import Link from "~/components/general/link";
 import moment from "~/lib/moment";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
@@ -367,18 +368,20 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-description">
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
-              <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h3>
-              <input name="wokspace-name" type="text" className="form-element__input"
+              <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</div>
+              <input name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
                 value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
-              <Button href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
+              <div className="application-sub-panel__item-actions">
+                <Link href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
                 openInNewTab="_blank"
-                buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Button>
-              <CopyWizardDialog>
-                <Button buttonModifiers="management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Button>
-              </CopyWizardDialog>
+                className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Link>
+                <CopyWizardDialog>
+                  <Link className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Link>
+                </CopyWizardDialog>
+              </div>
             </div>
             <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description application-sub-panel__item--workspace-management-split">
-              <h3 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h3>
+              <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</div>
               <CKEditor width="100%" height="210"
                 onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
             </div>

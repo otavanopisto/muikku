@@ -54,33 +54,8 @@
   width: 0;
 }
 
-.dropdown--workspace-management {
 
-  .dropdown__container {
-    background-color: $color-workspace-dropdown-management-background;
-    box-shadow: 0 10px 20px $color-environment-dropdown-language-picker-shadow;
-    color: $color-workspace-dropdown-management-text;
-  }
-
-  .dropdown__arrow {
-    border-bottom-color: $color-workspace-dropdown-management-background;
-  }
-}
-
-.dropdown--language-picker {
-
-  .dropdown__container {
-    background-color: $color-environment-dropdown-language-picker-background;
-    box-shadow: 0 10px 20px $color-environment-dropdown-language-picker-shadow;
-    color: $color-environment-dropdown-language-picker-text;
-  }
-
-  .dropdown__arrow {
-    border-bottom-color: $color-environment-dropdown-language-picker-background;
-  }
-}
-
-.dropdown--profile {
+.dropdown--navigation {
 
   .dropdown__container {
     background-color: $color-environment-dropdown-profile-menu-background;
@@ -243,28 +218,3 @@
   }
 }
 
-.dropdown--material-management {
-
-  .dropdown__container {
-    background-color: $color-environment-dropdown-profile-menu-background;
-    box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
-    color: $color-environment-dropdown-profile-menu-text;
-
-    .dropdown__item:first-child {
-      border-bottom: solid 1px darken($color-environment-dropdown-profile-menu-background, 8);
-    }
-
-    .dropdown__item {
-      border-bottom: solid 1px darken($color-environment-dropdown-profile-menu-background, 3);
-      height: 42px;
-    }
-
-    .dropdown__item:last-child {
-      border-bottom: none;
-    }
-  }
-
-  .dropdown__arrow {
-    border-bottom-color: $color-environment-dropdown-profile-menu-background;
-  }
-}
