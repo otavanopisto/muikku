@@ -172,7 +172,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
   }> = [
     {
       icon: "settings",
-      modifier: "workspace-management",
+      modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-edit"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
@@ -181,7 +181,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     },
     {
       icon: "announcer",
-      modifier: "workspace-management",
+      modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/announcer",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-announcements"),
       visible: this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL,
@@ -190,7 +190,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     },
     {
       icon: "permissions",
-      modifier: "workspace-management",
+      modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/permissions",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-permissions"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_PERMISSIONS,
@@ -199,7 +199,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     },
     {
       icon: "edit-materials",
-      modifier: "workspace-management",
+      modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/materials-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.material-management"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
@@ -208,7 +208,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     },
     {
       icon: "edit",
-      modifier: "workspace-management",
+      modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/frontpage-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.editIndex"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE,
@@ -217,7 +217,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     },
     {
       icon: "edit",
-      modifier: "workspace-management",
+      modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/helppage-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.editHelp"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_HELP,
@@ -234,11 +234,11 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_HELP ||
     this.props.status.permissions.WORKSPACE_ANNOUNCER_TOOL) ? {
       modifier: "workspace-management",
-      item: (<Dropdown key="workspace-management" modifier="workspace-management" items={managementItemList.map(item=>{
+      item: (<Dropdown key="workspace-management" modifier="navigation" items={managementItemList.map(item=>{
         if (!item.visible){
           return null
         }
-        return <Link className={`link link--full link--${item.modifier} ${this.props.activeTrail === item.trail ? "active" : ""}`}
+        return <Link className={`link link--full link--navigation-dropdown link--${item.modifier} ${this.props.activeTrail === item.trail ? "active" : ""}`}
           href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null}>
           <span className={`link__icon icon-${item.icon}`}></span>
           <span>{item.text}</span>

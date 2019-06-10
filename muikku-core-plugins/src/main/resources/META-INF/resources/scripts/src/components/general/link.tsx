@@ -4,6 +4,10 @@ import { Redirect } from "react-router-dom";
 import '~/sass/elements/link.scss';
 import { scrollToSection } from '~/util/modifiers';
 
+
+// TODO remove the className, make it a modifier and add link class automatically to all the links
+
+
 interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
   disablePropagation?: boolean,
   disabled?: boolean,
