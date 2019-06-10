@@ -330,20 +330,20 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
       let editorButtonSet = <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
-          {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.editorState.currentDraftNodeValue.hidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
+          {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
             <ButtonPill buttonModifiers={hideShowButtonModifiers} onClick={this.toggleHiddenStatus} icon="show"/>
           </Dropdown> : null}
-          {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.viewRestrictionPageTooltip")}>
+          {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={isViewRestricted ? this.props.i18n.text.get("plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip")}>
             <ButtonPill buttonModifiers={viewRestrictionButtonModifiers} icon="closed-material" onClick={this.toggleViewRestrictionStatus}/>
           </Dropdown> : null}
           {this.props.editorState.canChangePageType ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip")}>
             <ButtonPill buttonModifiers={["material-editor-change-page-type","material-editor", assignmentPageType]} icon="assignment" onClick={this.cycleAssignmentType}/>
           </Dropdown> : null}
-          
+
           {this.props.editorState.canChangeExerciseType && this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-management-tooltip" content={correctAnswersTooltips}>
             <ButtonPill buttonModifiers={correctAnswersModifiers} icon="correct-answers" onClick={this.cycleCorrectAnswers}/>
           </Dropdown> : null}
-          
+
         </div>
         <div className="material-editor__buttonset-secondary">
           {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.publishPageTooltip")}>
