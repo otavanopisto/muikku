@@ -281,7 +281,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       const sectionSpecificContentData: any = [];
     
       section.children.forEach((node, index)=>{
-        const nextSibling = section.children[index + 1] || null;
+        // this is the next sibling for the content node that is to be added, aka the current
+        const nextSibling = node;
         sectionSpecificContentData.push(<div key={node.workspaceMaterialId + "-dropdown"} className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, nextSibling, false).map((item)=>{
             return (closeDropdown: ()=>any)=>{
