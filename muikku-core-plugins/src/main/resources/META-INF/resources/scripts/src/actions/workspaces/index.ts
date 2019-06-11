@@ -214,7 +214,7 @@ function reuseExistantValue(conditional: boolean, existantValue: any, otherwise:
 let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let current:WorkspaceType = getState().workspaces.currentWorkspace;
-    if (current && current.id === data.workspaceId && !data.refreshActivity){
+    if (current && current.id === data.workspaceId && !data.refreshActivity && !data.loadDetails){
       data.success && data.success(current);
       return;
     }
