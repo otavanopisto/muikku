@@ -162,24 +162,6 @@
 .link--menu {
   justify-content: flex-start;
 }
- 
-.link--language {
-  background-color: $color-environment-link-language-background;
-  color: $color-environment-link-language-text;
-  justify-content: flex-start;
-
-  &:hover,
-  &.hover {
-    background-color: opacify($color-environment-link-language-hover-background, 0.6);
-    color: $color-environment-link-language-text;
-  }
-
-  &:active,
-  &.active {
-    background-color: opacify($color-environment-link-language-hover-background, 0.6);
-    color: $color-environment-link-language-text;
-  }
-}
 
 .link--menu {
   overflow: hidden;
@@ -209,7 +191,7 @@
   text-overflow: ellipsis;
 }
 
-.link--menu--instructions {
+.link--menu-instructions {
 
   .link__icon {
     background: $color-environment-link-menu-instructions-icon-background;
@@ -217,7 +199,7 @@
   }
 }
 
-.link--menu--helpdesk {
+.link--menu-helpdesk {
 
   .link__icon {
     background: $color-environment-link-menu-heldesk-icon-background;
@@ -231,7 +213,7 @@
   }
 }
 
-.link--menu--logout {
+.link--menu-logout {
 
   .link__icon {
     background: $color-environment-link-menu-logout-icon-background;
@@ -265,7 +247,6 @@
 }
 
 .link--navigation-dropdown {
-  background-color: $color-environment-link-profile-menu-background;
   color: $color-default-contrast;
   justify-content: flex-start;
 
@@ -273,26 +254,25 @@
   &.hover,
   &:active,
   &.active {
-    background-color: $color-environment-link-profile-menu-hover-background;
+    background-color: $color-environment-dropdown-link-hover-background;
     color: $color-default-contrast;
   }
 }
 
-.link--material-management {
-  background-color: $color-workspace-link-material-management-background;
-  color: $color-workspace-link-material-management-text;
+.link--material-management-dropdown {
+  color: $color-default;
   justify-content: flex-start;
 
   &:hover,
   &.hover,
   &:active,
   &.active {
-    background-color: $color-workspace-link-material-management-hover-background;
-    color: $color-default-contrast;
+    background-color: $color-material-page-admin-panel-main-hover-color;
+    color: $color-default;
   }
 }
 
-.link--workspace-management{
+.link--workspace-management {
   text-decoration: underline;
 
   &:hover,

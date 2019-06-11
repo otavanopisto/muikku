@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .application-sub-panel {
-  border-bottom: 1px solid $color-default-contrast;
+  border-bottom: 1px solid $color-subpanel-border;
   margin: 0 0 20px;
 
   &:last-child {
@@ -17,6 +17,10 @@
 .application-sub-panel--workspace-settings {
   padding: 0 10px;
   margin: 20px 0;
+
+  &:last-child {
+    padding: 10px;
+  }  
 }
 
 .application-sub-panel--workspace-image-settings {
@@ -28,7 +32,7 @@
 }
 
 .application-sub-panel--workspace-users {
-  border-bottom: 1px solid $color-workspace-subpanel-border;
+  border-bottom: 1px solid $color-subpanel-border;
 }
 
 // Subpanel header
@@ -153,8 +157,6 @@
   padding: 10px;
 }
 
-
-
 // Subpanel Item
 
 .application-sub-panel__item {
@@ -197,11 +199,15 @@
   }  
 }
 
+.application-sub-pane__button-container {
+  display: flex;
+}
+
 
 // Subpanel item header
 
  .application-sub-panel__item-header {
-   padding: 10px 0 0;
+   padding: 10px 0;
  }
 
 .application-sub-panel__item-header--hops {
@@ -285,7 +291,6 @@
     width: auto;
   }
 }
-
 
 // HOPS in Guider in readable state
 

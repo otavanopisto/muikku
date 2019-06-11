@@ -152,10 +152,10 @@ export default class MemoField extends FieldBase<MemoFieldProps, MemoFieldState>
     let field;
     //if readonly
     if  (this.props.readOnly){
-      //depending to whether richedit or not we make it be with the value as inner html or just raw text
+      //depending to whether rich edit or not we make it be with the value as inner html or just raw text
       field = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
           rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
-            <div className="rich-text" dangerouslySetInnerHTML={{__html: this.state.value}}/>
+            <div className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
     } else {
       //here we make it be a simple textarea or a rich text editor
       //note how somehow numbers come as string...

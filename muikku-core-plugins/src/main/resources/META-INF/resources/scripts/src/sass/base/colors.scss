@@ -102,7 +102,7 @@ $color-taskfield-hint-background: #ffffe1;
 // Material management
 $color-material-edit-panel-shadow: rgba(0, 0, 0, 0.7);
 $color-material-page-admin-panel-main-color: #5db5c5;
-$color-material-page-admin-panel-main-hover-color: #494949;
+$color-material-page-admin-panel-main-hover-color: darken(#5db5c5, 10%);
 $color-material-page-admin-panel-section-color: #c0eaf2;
 $color-material-page-admin-panel-disabled-color: $color-disabled;
 $color-material-page-admin-panel-enabled-color: #36c881;
@@ -410,12 +410,7 @@ $color-environment-link-icon-color-active: $color-default;
 $color-environment-link-icon-border-top-color-active: rgba(255, 255, 255, 0.2);
 
 // DEFAULT LINKS
-$color-environment-link-language-background: $color-link-inverse-background;
-$color-environment-link-language-text: $color-link-inverse-text;
-$color-environment-link-language-hover-background: $color-link-hover-background;
-
-$color-environment-link-profile-menu-background: $color-link-default-background;
-$color-environment-link-profile-menu-hover-background: $color-link-hover-background;
+$color-environment-dropdown-link-hover-background: $color-link-hover-background;
 
 $color-workspace-link-management-background: $color-link-inverse-background;
 $color-workspace-link-management-text: $color-link-inverse-text;
@@ -464,7 +459,7 @@ $color-environment-link-menu-navicon-icon-color: $color-inverse;
 $color-subpanel-search-icon: $color-default;
 $color-subpanel-search-border: #e0e0e0;
 $color-subpanel-search-icon-background: #e0e0e0;
-$color-workspace-subpanel-border: #e0e0e0;
+$color-subpanel-border: #e0e0e0;
 
 
 // TAB

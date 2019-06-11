@@ -51,6 +51,17 @@
   margin: 0 10px 0 0;
 }
 
+.button--execute {
+  background-color: $color-button-execute-background;
+  color: $color-button-execute-text;
+  order: 3;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 1;
+  }
+}
+
+
 .button--branded {
   font-family: $button-branded-font-family;
 }
@@ -960,7 +971,8 @@
 }
 
 // Environment dialog
-.button--dialog-execute {
+
+.button--workspace-management {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
   order: 3;
@@ -1177,71 +1189,119 @@
       cursor: not-allowed;
     }
   }
-
-  &:hover {
-    background: $color-material-page-admin-panel-main-hover-color;
-    border: 1px solid $color-material-page-admin-panel-main-hover-color;
-    color: $color-default;
-  }
 }
 
 .button-pill--material-editor-change-page-type { // This is default state for exercise/assignment buttons
-  background-color: $color-material-page-admin-panel-disabled-color;
+  background: $color-material-page-admin-panel-disabled-color;
   border-color: $color-material-page-admin-panel-disabled-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-disabled-color;
+    border-color: $color-material-page-admin-panel-disabled-color;
+  }
 }
 
 .button-pill--material-editor-exercise {
   background: $color-exercise;
-  border: 1px solid $color-exercise;
+  border-color: $color-exercise;
   color: $color-default;
+
+  &:hover {
+    background: $color-exercise;
+    border-color: $color-exercise;
+  }
 }
 
 .button-pill--material-editor-assignment {
   background: $color-assignment;
-  border: 1px solid $color-assignment;
+  border-color: $color-assignment;
   color: $color-default;
+
+  &:hover {
+    background: $color-assignment;
+    border-color: $color-assignment;
+  }
 }
 
 .button-pill--material-editor-publish-page {
   background: $color-success;
-  border: 1px solid $color-success;
+  border-color: $color-success;
   color: $color-default;
+
+  &:hover {
+    background: $color-success;
+    border-color: $color-success;
+  }
 }
 
 .button-pill--material-editor-revert-page {
   background: $color-warn;
-  border: 1px solid $color-warn;
+  border-color: $color-warn;
   color: $color-default;
+
+  &:hover {
+    background: $color-warn;
+    border-color: $color-warn;
+  }
 }
 
 .button-pill--material-editor-delete-page {
   background: $color-fatal;
-  border: 1px solid $color-fatal;
+  border-color: $color-fatal;
   color: $color-default;
+
+  &:hover {
+    background: $color-fatal;
+    border-color: $color-fatal;
+  }
 }
 
 .button-pill--material-editor-disabled {
-  background-color: $color-material-page-admin-panel-disabled-color;
+  background: $color-material-page-admin-panel-disabled-color;
   border-color: $color-material-page-admin-panel-disabled-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-disabled-color;
+    border-color: $color-material-page-admin-panel-disabled-color;
+  }
 }
 
 .button-pill--material-editor-enabled {
-  background-color: $color-material-page-admin-panel-enabled-color;
+  background: $color-material-page-admin-panel-enabled-color;
   border-color: $color-material-page-admin-panel-enabled-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-enabled-color;
+    border-color: $color-material-page-admin-panel-enabled-color;
+  }
 }
 
-
 .button-pill--material-editor-always-show {
-  background-color: $color-material-page-admin-panel-always-show-answers-color;
+  background: $color-material-page-admin-panel-always-show-answers-color;
   border-color: $color-material-page-admin-panel-always-show-answers-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-always-show-answers-color;
+    border-color: $color-material-page-admin-panel-always-show-answers-color;
+  }
 }
 
 .button-pill--material-editor-never-show {
-  background-color: $color-material-page-admin-panel-never-show-answers-color;
+  background: $color-material-page-admin-panel-never-show-answers-color;
   border-color: $color-material-page-admin-panel-never-show-answers-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-never-show-answers-color;
+    border-color: $color-material-page-admin-panel-never-show-answers-color;
+  }
 }
 
 .button-pill--material-editor-on-request {
-  background-color: $color-material-page-admin-panel-on-request-color;
+  background: $color-material-page-admin-panel-on-request-color;
   border-color: $color-material-page-admin-panel-on-request-color;
+
+  &:hover {
+    background: $color-material-page-admin-panel-on-request-color;
+    border-color: $color-material-page-admin-panel-on-request-color;
+  }
 }

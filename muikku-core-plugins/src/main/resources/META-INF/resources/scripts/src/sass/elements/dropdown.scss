@@ -202,19 +202,31 @@
   }
 }
 
+.dropdown--material-management,
 .dropdown--material-management-tooltip {
 
   .dropdown__container {
+    background: $color-material-page-admin-panel-main-color;
     border-radius: 2px;
     color: $color-default;
     min-width: 0;
-    padding: 3px 6px;
     text-align: left;
 
     @include breakpoint($breakpoint-pad) {
       font-weight: 300;
-      padding: 5px 10px;
     }
   }
+
+  .dropdown__arrow {
+    border-bottom-color: $color-material-page-admin-panel-main-color;
+  }
+}
+
+.dropdown--material-management .dropdown__container {
+  padding: 5px;
+}
+
+.dropdown--material-management-tooltip .dropdown__container {
+  padding: 5px 10px;
 }
 
