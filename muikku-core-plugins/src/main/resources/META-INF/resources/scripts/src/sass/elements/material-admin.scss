@@ -18,8 +18,12 @@
 .material-admin-panel--chapter-functions {
   border-bottom: 1px dashed $color-default-separator-border;
   margin: -10px -10px 20px;
-  padding: 0 0 10px;
+  padding: 10px 0;
   text-align: left;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 10px;
+  }
 }
 
 .material-admin-panel--master-functions {

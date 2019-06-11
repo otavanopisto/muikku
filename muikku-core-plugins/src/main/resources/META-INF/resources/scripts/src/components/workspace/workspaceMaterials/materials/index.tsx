@@ -267,7 +267,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, null, true).map((item)=>{
             return (closeDropdown: ()=>any)=>{
-              return <Link className={`link link--full link--material-management`}
+              return <Link className={`link link--full link--material-management-dropdown`}
                 onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
                  <span className={`link__icon icon-${item.icon}`}></span>
                  <span>{this.props.i18n.text.get(item.text)}</span>
@@ -286,7 +286,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         sectionSpecificContentData.push(<div key={node.workspaceMaterialId + "-dropdown"} className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, nextSibling, false).map((item)=>{
             return (closeDropdown: ()=>any)=>{
-              return <Link className={`link link--full link--material-management`}
+              return <Link className={`link link--full link--material-management-dropdown`}
                 onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
                  <span className={`link__icon icon-${item.icon}`}></span>
                  <span>{this.props.i18n.text.get(item.text)}</span>

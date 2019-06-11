@@ -159,7 +159,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
             })}
             {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu--profile" href="/profile">
+              <Link className="link link--full link--menu link--menu-profile" href="/profile">
                 <object className="button-image"
                   data={getUserImageUrl(this.props.status.userId)}
                   type="image/jpeg">
@@ -169,19 +169,19 @@ class Menu extends React.Component<MenuProps, MenuState> {
               </Link>
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu--instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
+              <Link className="link link--full link--menu link--menu-instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
                 <span className="link__icon icon-forgotpassword"/>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
               </Link>
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu--helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
+              <Link className="link link--full link--menu link--menu-helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
                 <span className="link__icon icon-helpdesk"></span>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
               </Link>
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu--logout" onClick={this.props.logout}>
+              <Link className="link link--full link--menu link--menu-logout" onClick={this.props.logout}>
                 <span className="link__icon icon-signout"></span>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
               </Link>
