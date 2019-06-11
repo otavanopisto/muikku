@@ -68,7 +68,6 @@ interface ManagementPanelState {
 class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPanelState> {
   constructor(props: ManagementPanelProps){
     super(props);
-    
     this.state = {
       workspaceName: props.workspace ? props.workspace.name : null,
       workspacePublished: props.workspace ? props.workspace.published : null,
@@ -85,7 +84,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       isImageDialogOpen: false,
       locked: false
     }
-    
+
     this.updateWorkspaceName = this.updateWorkspaceName.bind(this);
     this.setWorkspacePublishedTo = this.setWorkspacePublishedTo.bind(this);
     this.setWorkspaceAccessTo = this.setWorkspaceAccessTo.bind(this);
@@ -124,7 +123,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.setState({
       workspaceName: e.target.value
     });
-    
   }
   setWorkspacePublishedTo(value: boolean){
     this.setState({
@@ -365,10 +363,10 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       </div>
       <div className="panel__body">
         <section className="application-sub-panel application-sub-panel--workspace-settings">
-          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</h2>
+          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-description">
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
-              <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</div>
+              <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.name")}</div>
               <input name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
                 value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
               <div className="application-sub-panel__item-actions">
@@ -381,7 +379,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               </div>
             </div>
             <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description application-sub-panel__item--workspace-management-split">
-              <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.index.descriptionTitle")}</div>
+              <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.description")}</div>
               <CKEditor width="100%" height="210"
                 onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
             </div>
@@ -390,11 +388,15 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
           <div className="application-sub-panel__body">
-            <img src={actualBackgroundSRC} onClick={this.editCurrentImage}/>
-            <ButtonPill buttonAs="a" icon="edit">
+            <div className="application-sub-panel__item">
+              <img src={actualBackgroundSRC} onClick={this.editCurrentImage}/>
+            </div>
+            <div className="application-sub-panel__item-actions">
+            <Button buttonAs="a" className="link link--workspace-management">
               <input name="file" type="file" accept="image/*" onChange={this.readNewImage}/>
-            </ButtonPill>
-            {this.state.workspaceHasCustomImage ? <ButtonPill icon="delete" onClick={this.removeCustomImage}/> : null}
+            </Button>
+              {this.state.workspaceHasCustomImage ? <Button className="link link--workspace-management" onClick={this.removeCustomImage}/> : null}
+            </div>
             <UploadImageDialog isOpen={this.state.isImageDialogOpen}
              b64={this.state.newWorkspaceImageB64} file={this.state.newWorkspaceImageFile}
              onClose={()=>this.setState({isImageDialogOpen: false})} src={this.state.newWorkspaceImageSrc}
@@ -450,12 +452,12 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfoSectionTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-management">
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-              <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</div>
+              <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</div>
               <input name="name-extension" type="text" className="form-element__input"
                value={this.state.workspaceExtension || ""} onChange={this.updateWorkspaceExtension}/>
             </div>
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-              <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</div>
+              <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</div>
               <select name="workspace-type" className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
                 {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
                   <option key={type.identifier} value={type.identifier}>{type.name}</option>
@@ -463,13 +465,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               </select>
             </div>
             <div className="form-element  application-sub-panel__item application-sub-panel__item--workspace-management">
-              <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.startDate")}</div>
+              <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.startDate")}</div>
               <DatePicker className="form-element__input" onChange={this.updateStartDate}
                 maxDate={this.state.workspaceEndDate}
                 locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceStartDate}/>
             </div>
             <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-              <div>{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.endDate")}</div>
+              <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.endDate")}</div>
               <DatePicker className="form-element__input" onChange={this.updateEndDate}
                 minDate={this.state.workspaceStartDate}
                 locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceEndDate}/>
@@ -485,13 +487,15 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           {this.state.workspaceProducers? 
             <AddProducer removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.state.workspaceProducers} i18n={this.props.i18n}/>
           : null}
-        </section>
-        <section className="application-sub-panel application-sub-panel--workspace-settings"></section>
+          <div className="application-sub-pane__button-container">
+            <Button className="button--execute" disabled={this.state.locked} 
+          onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
+          </div>
+         </section>
+
+
       </div>
-      <div className="panel__footer">
-        <Button disabled={this.state.locked} 
-            onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
-      </div>
+      <div className="panel__footer"></div>
     </div>);
   }
 }
