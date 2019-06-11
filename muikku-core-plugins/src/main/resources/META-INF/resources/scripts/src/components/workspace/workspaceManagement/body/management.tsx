@@ -285,7 +285,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         workspace: this.props.workspace,
         update: workspaceUpdate,
         success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("TODO succesfully updated workspace basic data"), "success");
+          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.basicData"), "success");
           onDone();
         },
         fail: onDone
@@ -298,7 +298,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       this.props.updateWorkspaceProducersForCurrentWorkspace({
         appliedProducers: workspaceMaterialProducers,
         success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("TODO succesfully updated workspace producers"), "success");
+          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.producers"), "success");
           onDone();
         },
         fail: onDone
@@ -326,7 +326,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       this.props.updateWorkspaceDetailsForCurrentWorkspace({
         newDetails: workspaceDetails,
         success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("TODO succesfully updated workspace details"), "success");
+          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.details"), "success");
           onDone();
         },
         fail: onDone
@@ -340,7 +340,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         originalB64: this.state.newWorkspaceImageCombo.originalB64,
         croppedB64: this.state.newWorkspaceImageCombo.croppedB64,
         success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("TODO succesfully update banner image"), "success");
+          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
           onDone();
         },
         fail: onDone

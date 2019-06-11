@@ -19,6 +19,7 @@ interface DeleteWorkspaceMaterialDialogProps {
   material: MaterialContentNodeType,
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType,
   materialEditor: WorkspaceMaterialEditorType,
+  onDeleteSuccess: ()=>any,
 }
 
 interface DeleteWorkspaceMaterialDialogState {
@@ -32,9 +33,9 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
       locked: false
     }
 
-    this.cancel = this.cancel.bind(this);
+    this.delete = this.delete.bind(this);
   }
-  cancel(closeDialog: ()=>any){
+  delete(closeDialog: ()=>any){
     this.setState({
       locked: true
     });
@@ -46,6 +47,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
           locked: false
         });
         closeDialog();
+        this.props.onDeleteSuccess();
       },
       fail: ()=>{
         this.setState({
@@ -64,7 +66,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
     let footer = (closeDialog: ()=>any)=>{
       return (
         <div className="dialog__button-set">
-          <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.cancel.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.delete.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get(this.props.isSection ?
               "plugin.workspace.materialsManagement.confirmSectionDelete.confirmButton" :
               'plugin.workspace.materialsManagement.confirmDelete.confirmButton')}
