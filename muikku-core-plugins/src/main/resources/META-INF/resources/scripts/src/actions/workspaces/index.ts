@@ -1378,8 +1378,11 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
               }), 'callback')();
         }
         
-        // TODO clutch the path from the title
-        const fields = ["materialId", "parentId", "nextSiblingId", "hidden", "assignmentType", "correctAnswers", "path", "title"]
+        let newPath = data.material.path;
+        let fields = ["materialId", "parentId", "nextSiblingId", "hidden", "assignmentType", "correctAnswers", "path", "title"];
+        if (data.material.type === "folder") {
+          fields = ["hidden", "nextSiblingId", "parentId", "title", "path", "viewRestrict"];
+        }
         const result:any = {
           id: data.material.workspaceMaterialId
         };
@@ -1394,11 +1397,18 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
             (data.material as any)[field]
         });
         if (changed) {
-          await promisify(mApi().workspace.workspaces.materials
-              .update(data.workspace.id, data.material.workspaceMaterialId, result), 'callback')();
+          let urlPath = "materials";
+          if (data.material.type === "folder") {
+            urlPath = "folders";
+          }
+          newPath = (await promisify(mApi().workspace.workspaces[urlPath]
+              .update(data.workspace.id, data.material.workspaceMaterialId, result), 'callback')() as any).path;
         }
         
-        const materialFields = ["id", "license", "viewRestrict"]
+        let materialFields = ["id", "license", "viewRestrict"]
+        if (data.material.type === "folder") {
+          fields = [];
+        }
         const materialResult:any = {};
         changed = false;
         materialFields.forEach((field) => {
@@ -1450,15 +1460,12 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         }
         
         // if the title changed we need to update the path, sadly only the server knows
-        if (data.update.title && data.material.title !== data.update.title && !data.dontTriggerReducerActions) {
-          const refetchedContentNode: MaterialContentNodeType = <MaterialContentNodeType>(await promisify(mApi().workspace.workspaces.
-              asContentNode.read(data.workspace.id, data.material.workspaceMaterialId), 'callback')());
-        
+        if (data.material.path !== newPath && !data.dontTriggerReducerActions) {
           dispatch({
             type: "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES",
             payload: {
               material: data.material,
-              newPath: refetchedContentNode.path,
+              newPath,
             }
           });
         }
@@ -1513,7 +1520,11 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
         payload: data.material
       });
       
-      await promisify(mApi().workspace.workspaces.materials
+      let urlPath = "materials";
+      if (data.material.type === "folder") {
+        urlPath = "folders";
+      }
+      await promisify(mApi().workspace.workspaces[urlPath]
           .del(data.workspace.id, data.material.workspaceMaterialId || data.material.id, {
             removeAnswers: data.removeAnswers || false,
             updateLinkedMaterials: true,

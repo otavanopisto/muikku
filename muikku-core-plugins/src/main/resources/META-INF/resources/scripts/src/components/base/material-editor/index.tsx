@@ -352,7 +352,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.revertToPublishedPageTooltip")}>
             <ButtonPill buttonModifiers={revertModifiers} onClick={canPublish ? this.revert : null} icon="revert"/>
           </Dropdown> : null}
-          {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog isSection={this.props.editorState.section} material={this.props.editorState.currentDraftNodeValue}>
+          {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog
+              isSection={this.props.editorState.section}
+              material={this.props.editorState.currentDraftNodeValue}
+              onDeleteSuccess={this.close}>
             <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.deletePageTooltip")}>
               <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete"/>
             </Dropdown>
