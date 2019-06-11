@@ -1,8 +1,5 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,27 +10,8 @@ import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.xerces.parsers.DOMParser;
-import org.cyberneko.html.HTMLConfiguration;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
@@ -765,7 +743,7 @@ public class WorkspaceMaterialController {
     return workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(hidden, assignmentType, Arrays.asList(parent));
   }
   
-  public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
+  public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
     List<ContentNode> result = new ArrayList<>();
     
     List<WorkspaceMaterial> workspaceMaterials = listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
@@ -773,7 +751,7 @@ public class WorkspaceMaterialController {
     for (int i = 0; i < workspaceMaterials.size(); i++) {
       WorkspaceMaterial currentMaterial = workspaceMaterials.get(i);
       WorkspaceMaterial nextSibling = i + 1 < workspaceMaterials.size() ? workspaceMaterials.get(i + 1) : null;
-      result.add(createContentNode(currentMaterial, 0, processHtml, false, nextSibling));
+      result.add(createContentNode(currentMaterial, 0, false, nextSibling));
     }
     
     return result;
@@ -829,7 +807,7 @@ public class WorkspaceMaterialController {
    for (int i = 0; i < rootMaterialNodes.size(); i++) {
      WorkspaceNode currentNode = rootMaterialNodes.get(i);
      WorkspaceNode nextSibling = i + 1 < rootMaterialNodes.size() ? rootMaterialNodes.get(i + 1) : null;
-     ContentNode node = createContentNode(currentNode, 1, true, includeHidden, nextSibling);
+     ContentNode node = createContentNode(currentNode, 1, includeHidden, nextSibling);
      contentNodes.add(node);
    }
    return contentNodes;
@@ -856,169 +834,97 @@ public class WorkspaceMaterialController {
   }
 
   public ContentNode createContentNode(WorkspaceNode rootMaterialNode, WorkspaceNode nextSibling) throws WorkspaceMaterialException {
-    return createContentNode(rootMaterialNode, 1, true, true, nextSibling);
+    return createContentNode(rootMaterialNode, 1, true, nextSibling);
   }
 
-  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean processHtml, boolean includeHidden, WorkspaceNode nextSibling) throws WorkspaceMaterialException {
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean includeHidden, WorkspaceNode nextSibling) throws WorkspaceMaterialException {
     boolean viewRestricted = false;
-    try {
-      switch (rootMaterialNode.getType()) {
-      case FOLDER:
-        WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        ContentNode folderContentNode = new ContentNode(
-            workspaceFolder.getTitle(),
-            "folder",
-            null,
-            rootMaterialNode.getId(),
-            null,
-            level,
-            null,
-            null,
-            rootMaterialNode.getParent().getId(),
-            nextSibling == null ? null : nextSibling.getId(),
-            rootMaterialNode.getHidden(),
-            null,
-            0l,
-            0l,
-            workspaceFolder.getPath(),
-            null,
-            Collections.emptyList(),
-            workspaceFolder.getViewRestrict());
-        List<WorkspaceNode> children = includeHidden
-            ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
-            : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
-        List<FlattenedWorkspaceNode> flattenedChildren;
-        if (level >= FLATTENING_LEVEL) {
-          flattenedChildren = flattenWorkspaceNodes(children, level, includeHidden);
-        }
-        else {
-          flattenedChildren = new ArrayList<>();
-          for (WorkspaceNode node : children) {
-            WorkspaceNode nextSibiling = findWorkspaceNodeNextSibling(node);
-            flattenedChildren.add(new FlattenedWorkspaceNode(false, null, node, level, node.getParent().getId(), nextSibiling, node.getHidden()));
+    switch (rootMaterialNode.getType()) {
+    case FOLDER:
+      WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
+      ContentNode folderContentNode = new ContentNode(
+          workspaceFolder.getTitle(),
+          "folder",
+          null,
+          rootMaterialNode.getId(),
+          null,
+          level,
+          null,
+          null,
+          rootMaterialNode.getParent().getId(),
+          nextSibling == null ? null : nextSibling.getId(),
+              rootMaterialNode.getHidden(),
+              null,
+              0l,
+              0l,
+              workspaceFolder.getPath(),
+              null,
+              Collections.emptyList(),
+              workspaceFolder.getViewRestrict());
+      List<WorkspaceNode> children = includeHidden
+          ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
+              : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
+          List<FlattenedWorkspaceNode> flattenedChildren;
+          if (level >= FLATTENING_LEVEL) {
+            flattenedChildren = flattenWorkspaceNodes(children, level, includeHidden);
           }
-        }
-        for (FlattenedWorkspaceNode child : flattenedChildren) {
-          ContentNode contentNode;
-          if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(), child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(), MaterialViewRestrict.NONE);
-          } else {
-            contentNode = createContentNode(child.node, child.level, processHtml, includeHidden, child.nextSibling);
-          }
-          folderContentNode.addChild(contentNode);
-        }
-
-        return folderContentNode;
-      case MATERIAL:
-        DOMParser parser = null;
-        Transformer transformer = null;
-        
-        if (processHtml) {
-          parser = new DOMParser(new HTMLConfiguration());
-          parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
-          transformer = TransformerFactory.newInstance().newTransformer();
-          transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-          transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-          transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-          transformer.setOutputProperty(OutputKeys.INDENT, "no");
-        }
-        
-        WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
-        Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
-        Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
-        Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
-        String contentType = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getContentType() : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;
-
-        String html;
-        viewRestricted = !sessionController.isLoggedIn() && material.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
-        if (!viewRestricted) {
-          html = processHtml ? getMaterialHtml(material, parser, transformer) : null;
-        }
-        else {
-          html = String.format("<p class=\"content-view-restricted-message\">%s</p>", localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
-        }
-          
-        nextSibling = findWorkspaceNodeNextSibling(workspaceMaterial);
-        
-        return new ContentNode(
-            workspaceMaterial.getTitle(),
-            material.getType(),
-            contentType,
-            rootMaterialNode.getId(),
-            material.getId(),
-            level,
-            workspaceMaterial.getAssignmentType(),
-            workspaceMaterial.getCorrectAnswers(),
-            workspaceMaterial.getParent().getId(),
-            nextSibling == null ? null : nextSibling.getId(),
-            workspaceMaterial.getHidden(),
-            html,
-            currentRevision,
-            publishedRevision,
-            workspaceMaterial.getPath(),
-            material.getLicense(),
-            materialController.listMaterialProducers(material),
-            material.getViewRestrict());
-      default:
-        return null;
-      }
-    }
-    catch (SAXNotRecognizedException | SAXNotSupportedException | TransformerConfigurationException e) {
-      throw new WorkspaceMaterialException(e); 
-    }
-  }
-
-  private String getMaterialHtml(Material material, DOMParser parser, Transformer transformer) throws WorkspaceMaterialException {
-    try {
-      if (material instanceof HtmlMaterial) {
-        String html = ((HtmlMaterial) material).getHtml();
-        if (html == null) {
-          return null;
-        }
-
-        StringReader htmlReader = new StringReader(html);
-        try {
-          InputSource inputSource = new InputSource(htmlReader);
-          parser.parse(inputSource);
-          Document document = parser.getDocument();
- 
-          NodeList imgList = document.getElementsByTagName("img");
-          for (int i = 0, l = imgList.getLength(); i < l; i++) {
-            Element img = (Element) imgList.item(i);
-            String imgClass = img.getAttribute("class");
-            img.setAttribute("class", imgClass == null ? "lazy" : imgClass + " lazy");
-            img.setAttribute("data-original", img.getAttribute("src"));
-            img.removeAttribute("src");
-          }
-
-          NodeList iframeList = document.getElementsByTagName("iframe");
-          for (int i = iframeList.getLength() -1 ; i >= 0; i--) {
-            Element iframe = (Element) iframeList.item(i);
-            iframe.setAttribute("data-url", iframe.getAttribute("src"));
-            iframe.removeAttribute("src");
-            if (iframe.hasAttribute("class")) {
-              iframe.setAttribute("class", iframe.getAttribute("class") + " lazyFrame");
-            }
-            else {
-              iframe.setAttribute("class", "lazyFrame");
+          else {
+            flattenedChildren = new ArrayList<>();
+            for (WorkspaceNode node : children) {
+              WorkspaceNode nextSibiling = findWorkspaceNodeNextSibling(node);
+              flattenedChildren.add(new FlattenedWorkspaceNode(false, null, node, level, node.getParent().getId(), nextSibiling, node.getHidden()));
             }
           }
-
-          StringWriter writer = new StringWriter();
-          NodeList bodyChildren = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//body/*", document, XPathConstants.NODESET);
-          for (int i = 0, l = bodyChildren.getLength(); i < l; i++) {
-            transformer.transform(new DOMSource(bodyChildren.item(i)), new StreamResult(writer));
+          for (FlattenedWorkspaceNode child : flattenedChildren) {
+            ContentNode contentNode;
+            if (child.isEmptyFolder) {
+              contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(), child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(), MaterialViewRestrict.NONE);
+            } else {
+              contentNode = createContentNode(child.node, child.level, includeHidden, child.nextSibling);
+            }
+            folderContentNode.addChild(contentNode);
           }
-          return writer.getBuffer().toString();
-        } finally {
-          htmlReader.close(); 
-        }
+
+          return folderContentNode;
+    case MATERIAL:
+      WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
+      Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
+      Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
+      Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
+      String contentType = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getContentType() : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;
+
+      String html;
+      viewRestricted = !sessionController.isLoggedIn() && material.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
+      if (!viewRestricted) {
+        html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
+      }
+      else {
+        html = String.format("<p class=\"content-view-restricted-message\">%s</p>", localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
       }
 
+      nextSibling = findWorkspaceNodeNextSibling(workspaceMaterial);
+
+      return new ContentNode(
+          workspaceMaterial.getTitle(),
+          material.getType(),
+          contentType,
+          rootMaterialNode.getId(),
+          material.getId(),
+          level,
+          workspaceMaterial.getAssignmentType(),
+          workspaceMaterial.getCorrectAnswers(),
+          workspaceMaterial.getParent().getId(),
+          nextSibling == null ? null : nextSibling.getId(),
+              workspaceMaterial.getHidden(),
+              html,
+              currentRevision,
+              publishedRevision,
+              workspaceMaterial.getPath(),
+              material.getLicense(),
+              materialController.listMaterialProducers(material),
+              material.getViewRestrict());
+    default:
       return null;
-    }
-    catch (IOException | XPathExpressionException | TransformerException | SAXException e) {
-      throw new WorkspaceMaterialException(e);
     }
   }
 
