@@ -51,6 +51,17 @@
   margin: 0 10px 0 0;
 }
 
+.button--execute {
+  background-color: $color-button-execute-background;
+  color: $color-button-execute-text;
+  order: 3;
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 1;
+  }
+}
+
+
 .button--branded {
   font-family: $button-branded-font-family;
 }
@@ -960,7 +971,8 @@
 }
 
 // Environment dialog
-.button--dialog-execute {
+
+.button--workspace-management {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
   order: 3;

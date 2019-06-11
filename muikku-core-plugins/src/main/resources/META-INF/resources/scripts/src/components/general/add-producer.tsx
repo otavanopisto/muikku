@@ -22,7 +22,7 @@ export default class AddProducer extends React.Component<AddProducerProps, AddPr
     super(props);    
     
     this.state = {
-      currentInputValue: "desd"
+      currentInputValue: ""
      }
     
     this.updateInputValue = this.updateInputValue.bind(this);
