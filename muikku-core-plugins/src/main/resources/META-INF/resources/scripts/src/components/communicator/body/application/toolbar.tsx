@@ -156,7 +156,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                 return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
               }).map((label)=>{
                 let isSelected = this.props.messages.currentThread.labels.find(l=>l.labelId === label.id);
-                return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""}`}
+                return (<Link className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""}`}
                   onClick={!isSelected ? this.props.addLabelToCurrentMessageThread.bind(null, label) : this.props.removeLabelFromCurrentMessageThread.bind(null, label)}>
                   <span className="link__icon icon-tag" style={{color: label.color}}></span>
                   <span className="link__text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
@@ -218,7 +218,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         }).map((label)=>{
           let isSelected = allInCommon.includes(label.id as number);
           let isPartiallySelected = onlyInSome.includes(label.id as number);
-          return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
+          return (<Link className={`link link--full link--communicator-label-dropdown ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
             onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessageThreads.bind(null, label) : this.props.removeLabelFromSelectedMessageThreads.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
             <span className="link__text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>

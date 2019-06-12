@@ -208,7 +208,7 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
     let currentLicense = LICENSES.find(v=>v.validate(this.props.value));
     let currentPropertyValues = currentLicense.propertiesParser ? currentLicense.propertiesParser(this.props.value) : {};
     return <div className="license-selector form-element">
-      <select className="form-element__select" value={currentLicense.id} onChange={this.onChangeLicenseType}>
+      <select className={`form-element__select ${this.props.modifier ? "form-element__select--" + this.props.modifier : ""}`} value={currentLicense.id} onChange={this.onChangeLicenseType}>
         {LICENSES.map(l=><option key={l.id} value={l.id}>{this.props.i18n.text.get(l.i18n)}</option>)}
       </select>
       {currentLicense.properties ? <div className="license-selector__options-container">

@@ -267,9 +267,13 @@ $color-menu-default-header-button-close: $color-default;
 $color-menu-default-header-button-close-background-active: rgba(255, 255, 255, 0.3);
 
 // dropdown
-$color-dropdown-default-background: #494949;
-$color-dropdown-default-text: $color-default;
+$color-dropdown-default-background: $color-default;
+$color-dropdown-default-text: $color-default-contrast;
 $color-dropdown-default-shadow: rgba(0, 0, 0, 0.3);
+
+$color-workspace-dropdown-management-background: #494949;
+$color-workspace-dropdown-management-text: $color-default;
+$color-workspace-dropdown-management-shadow: rgba(0, 0, 0, 0.3);
 
 // bubble
 $color-bubble-default-title: $color-primary;
@@ -419,19 +423,6 @@ $color-workspace-link-management-hover-background: $color-link-hover-background;
 $color-workspace-link-material-management-background: $color-link-default-background;
 $color-workspace-link-material-management-text: #5db5c5;
 $color-workspace-link-material-management-hover-background: $color-link-hover-background;
-
-// DROPDOWN
-$color-environment-dropdown-language-picker-background: #494949;
-$color-environment-dropdown-language-picker-text: $color-default;
-$color-environment-dropdown-language-picker-shadow: rgba(0, 0, 0, 0.3);
-
-$color-environment-dropdown-profile-menu-background: $color-default;
-$color-environment-dropdown-profile-menu-text: $color-default-contrast;
-$color-environment-dropdown-profile-menu-shadow: rgba(0, 0, 0, 0.3);
-
-$color-workspace-dropdown-management-background: #494949;
-$color-workspace-dropdown-management-text: $color-default;
-$color-workspace-dropdown-management-shadow: rgba(0, 0, 0, 0.3);
 
 // BUTTONS
 $color-environment-button-pill-language-background: $color-inverse;
