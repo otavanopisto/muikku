@@ -148,6 +148,7 @@
   line-height: 1;
   margin: 5px;
   position: relative;
+  display: inline-block;
 
   figcaption {
     background: lighten($color-workspace,45%);
