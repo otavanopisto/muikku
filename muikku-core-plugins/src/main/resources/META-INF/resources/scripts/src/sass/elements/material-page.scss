@@ -900,28 +900,51 @@
 
   .material-page__audiofield-start-record-button,
   .material-page__audiofield-stop-record-button {
+    @include prefix(transition, moz ms o webkit, background 0.15s);
     align-items: center;
-    border-radius: 2px;
+    border-radius: 20px;
     cursor: pointer;
     display: flex;
     flex-flow: row nowrap;
     flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 0;
+    font-weight: 300;
     margin: 0 10px;
-    padding: 4px 6px;
+    padding: 6px 10px;
     text-decoration: none;
+    text-transform: uppercase;
   }
   
-  // We set the record/stop buttons colors here
+  // We set the record/stop buttons colors here 
   .material-page__audiofield-start-record-button {
     border: 1px solid $color-recording;
     color: $color-recording;
+
+    &:hover {
+      background: $color-recording;
+      border: 1px solid $color-recording;
+      color: $color-default;
+
+      .material-page__audiofield-start-record-label {
+        color: $color-default;
+      }
+    }
   }
-  
+
   .material-page__audiofield-stop-record-button {
     border: 1px solid $color-default-contrast;
     color: $color-default-contrast;
+
+    &:hover {
+      background: $color-default-contrast;
+      border: 1px solid $color-default-contrast;
+      color: $color-default;
+
+      .material-page__audiofield-stop-record-label {
+        color: $color-default;
+      }
+    }
   }
   
   .material-page__audiofield-start-record-label,

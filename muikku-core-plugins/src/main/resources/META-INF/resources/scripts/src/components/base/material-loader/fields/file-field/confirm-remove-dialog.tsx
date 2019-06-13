@@ -39,24 +39,24 @@ class ConfirmRemoveDialog extends React.Component<ConfirmRemoveDialogProps, Conf
   }
   render(){
     let content = (closeDialog: ()=>any) => <div>
-      <span>{this.props.i18n.text.get("TODO remove file content")}</span>
+      <span>{this.props.i18n.text.get("plugin.workspace.materials.assignmentFileAttachment.removeDialog.description")}</span>
     </div>
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.confirm.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get("TODO remove file confirm")}
+            {this.props.i18n.text.get("plugin.workspace.materials.assignmentFileAttachment.removeDialog.removeButtonLabel")}
           </Button>
-          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={this.cancel.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get("TODO remove file cancel")}
+          <Button buttonModifiers={["standard-cancel", "cancel"]} onClick={this.cancel.bind(this, closeDialog)} disabled={this.state.locked}>
+            {this.props.i18n.text.get("plugin.workspace.materials.assignmentFileAttachment.removeDialog.cancelButtonLabel")}
           </Button>
         </div>
       )
     }
     
     return <Dialog modifier="confirm-remove-answer-dialog"
-      title={this.props.i18n.text.get("TODO remove file title")}
+      title={this.props.i18n.text.get("plugin.workspace.materials.assignmentFileAttachment.removeDialog.title")}
       content={content} footer={footer}>{this.props.children}</Dialog>
   }
 }
