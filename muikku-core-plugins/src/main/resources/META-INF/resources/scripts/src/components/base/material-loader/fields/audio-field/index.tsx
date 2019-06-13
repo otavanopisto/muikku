@@ -6,7 +6,8 @@ let ProgressBarLine = require('react-progressbar.js').Line;
 import moment from '~/lib/moment';
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
-import FieldBase from "./base";
+import FieldBase from "../base";
+import ConfirmRemoveDialog from "./confirm-remove-dialog";
 
 //so we use the media recorder
 //the media recorder is polyfilled
@@ -193,7 +194,7 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
     const newValues = this.state.values.filter((a, i) => i !== index);
     this.setState({
       values: newValues,
-    });
+    }, this.checkDoneAndRunOnChange);
   }
   //when the file changes (old method for bad browsers)
   onFileChanged(e: React.ChangeEvent<HTMLInputElement>){
@@ -343,9 +344,11 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
             {!this.props.readOnly ? <Link className="material-page__audiofield-download-file-button icon-download"
                 title={this.props.i18n.text.get('plugin.workspace.audioField.downloadLink')} href={value.url} openInNewTab={value.name}/> : null }
 
-            {!this.props.readOnly ? <Link className="material-page__audiofield-remove-file-button icon-delete"
-                title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
-                onClick={this.removeClipAt.bind(this, index)}/> : 
+            {!this.props.readOnly ? <ConfirmRemoveDialog onConfirm={this.removeClipAt.bind(this, index)}>
+                <Link className="material-page__audiofield-remove-file-button icon-delete"
+                  title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
+                />
+              </ConfirmRemoveDialog> : 
               <Link className="material-page__audiofield-remove-file-button icon-delete"
                 title={this.props.i18n.text.get('plugin.workspace.audioField.removeLinkDisabled')}/>}
           </div>;

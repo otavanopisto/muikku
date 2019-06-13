@@ -104,7 +104,9 @@ const statics:{[componentKey:string]: any} = {
 //but hey that's the case
 function preprocessor($html: any): any{
   $html.find('img').each(function(){
+    console.log(this, $html);
     if (!$(this).parent('figure').length){
+      console.log("triggered here");
       let elem = document.createElement('figure');
       elem.className = 'image';
       
@@ -276,10 +278,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           //This is the path something odd for images
           path: "/workspace/" + props.workspace.urlName + "/materials/" + props.material.path
         }}/>;
-      
+
         //we do the same we did in the dynamics
         let parentElement = element.parentElement;
-        let newParentElement = document.createElement(parentObjects[element.getAttribute("type")]);
+        let newParentElement = document.createElement("div");
+        newParentElement.className = "static-container";
         parentElement.replaceChild(newParentElement, element);
         
         //And we push it but we add the content key to save time on updates

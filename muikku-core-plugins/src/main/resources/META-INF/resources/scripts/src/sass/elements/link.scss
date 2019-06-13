@@ -272,31 +272,27 @@
   }
 }
 
-.link--workspace-management {
-  text-decoration: underline;
+.link--main-functions-settings-dropdown {
+  color: $color-default-contrast;
+  justify-content: flex-start;
 
   &:hover,
-  &.hover {
-    color: $color-link-default-text;
-  }
-
-  &:not(:first-child){
-    margin-left:10px;
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-environment-dropdown-link-hover-background;
+    color: $color-default-contrast;
   }
 }
 
-.link--communicator-label,
-.link--guider-label {
-  border-top: 1px solid $color-default;
+.link--communicator-label-dropdown,
+.link--guider-label-dropdown {
+  color: $color-default-contrast;
   justify-content: flex-start;
-  text-transform: none;
-  max-width: 204.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 
   &:hover,
   &.hover {
-    background-color: $color-main-function-label-link-hover-background;
+    background-color: $color-environment-dropdown-link-hover-background;
   }
 
   &:active,

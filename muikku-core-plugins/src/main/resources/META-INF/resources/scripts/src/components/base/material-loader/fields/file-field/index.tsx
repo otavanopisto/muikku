@@ -6,7 +6,8 @@ import { StatusType } from "~/reducers/base/status";
 import {ButtonPill} from "~/components/general/button";
 let ProgressBarLine = require('react-progressbar.js').Line;
 import equals = require("deep-equal");
-import FieldBase from "./base";
+import FieldBase from "../base";
+import ConfirmRemoveDialog from "./confirm-remove-dialog";
 
 interface FileFieldProps {
   type: string,
@@ -229,9 +230,11 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
               {value.name}
             </div>
             <Link className="material-page__filefield-download-file-button icon-download" key={value.fileId} href={`/rest/workspace/fileanswer/${value.fileId}`} openInNewTab={value.name} title={this.props.i18n.text.get('plugin.workspace.fileField.downloadLink')}/>
-          {!this.props.readOnly ? <Link className="material-page__filefield-remove-file-button icon-delete" 
-              title={this.props.i18n.text.get('plugin.workspace.fileField.removeLink')} 
-              onClick={this.removeFileAt.bind(this, index)}/> : 
+          {!this.props.readOnly ? <ConfirmRemoveDialog onConfirm={this.removeFileAt.bind(this, index)}>
+              <Link className="material-page__filefield-remove-file-button icon-delete" 
+                title={this.props.i18n.text.get('plugin.workspace.fileField.removeLink')} 
+              />
+            </ConfirmRemoveDialog> : 
             <Link className="material-page__filefield-remove-file-button icon-delete" 
               title={this.props.i18n.text.get('plugin.workspace.fileField.removeLinkDisabled')}/>}
           </div>;

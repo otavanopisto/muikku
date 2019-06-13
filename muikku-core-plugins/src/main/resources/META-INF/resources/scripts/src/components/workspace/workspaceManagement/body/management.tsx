@@ -480,12 +480,16 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         </section>
         <section className="form-element application-sub-panel application-sub-panel--workspace-settings"> 
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
-          <LicenseSelector value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-management">
+            <LicenseSelector value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
+          </div>
         </section>
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
           {this.state.workspaceProducers? 
-            <AddProducer removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.state.workspaceProducers} i18n={this.props.i18n}/>
+            <div className="application-sub-panel__body application-sub-panel__body--workspace-management">
+              <AddProducer removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.state.workspaceProducers} i18n={this.props.i18n}/>
+            </div>
           : null}
           <div className="application-sub-pane__button-container">
             <Button className="button--execute" disabled={this.state.locked} 
