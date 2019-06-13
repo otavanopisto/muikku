@@ -40,9 +40,11 @@ export default class Image extends FieldBase<ImageProps, ImageState>{
     super.componentDidMount();
     let img = this.props.element.querySelector("img");
     let aspectRatio = img.width/img.height;
+
     if (isNaN(aspectRatio)) {
       return;
     }
+
     this.setState({
       aspectRatio,
       width: (this.refs["img"] as HTMLElement).offsetWidth,
