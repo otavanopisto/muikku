@@ -1213,13 +1213,21 @@ let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType =
     try {
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
-      
       let mimeTypeRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
       let mimeTypeOriginal = data.originalB64.match(mimeTypeRegex)[1];
       let mimeTypeCropped = data.croppedB64.match(mimeTypeRegex)[1];
-      //TODO write code for the upload of images
-    
+
+      if (data.croppedB64) {
+        await promisify(mApi().workspace.workspaces.workspacefile
+        .create(currentWorkspace.id, {
+          fileIdentifier: 'workspace-frontpage-image-cropped',
+          contentType: mimeTypeCropped,
+          base64Data: data.croppedB64
+        }), 'callback')()
+      }
+
       data.success && data.success();
+      
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
