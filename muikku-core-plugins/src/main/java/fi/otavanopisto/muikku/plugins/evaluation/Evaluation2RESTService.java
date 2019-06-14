@@ -595,6 +595,7 @@ public class Evaluation2RESTService {
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/evaluationinfo")
   @RESTPermit(handling = Handling.INLINE)
+  @Deprecated // possibly; compositeReplies endpoint includes this information already
   public Response findWorkspaceMaterialEvaluationInfo(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
     
     // Access check
