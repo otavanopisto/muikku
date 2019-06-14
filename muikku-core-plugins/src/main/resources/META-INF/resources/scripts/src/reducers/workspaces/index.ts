@@ -413,6 +413,14 @@ export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>,
   state: MaterialCompositeRepliesStateType,
   
+  //Avaliable sometimes
+  evaluationInfo?: {
+    type: MaterialCompositeRepliesStateType,
+    text: string,
+    grade: string,
+    date: string,
+  }
+  
   //Available when loaded specifically (eg. via records)
   created: string,
   lastModified: string,

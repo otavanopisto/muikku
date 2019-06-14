@@ -486,8 +486,26 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     let viewForAdminPanel = this.props.isInFrontPage ? "workspace-description" : "workspace-materials";
     let isHidden = this.props.material.hidden;
+    
+    const verbalAssesment = (this.props.material.evaluation && this.props.material.evaluation.verbalAssessment) ||
+      (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && this.props.compositeReplies.evaluationInfo.text);
+    
+    let iconForTitle = null;
+    let className = `material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`;
+    if (this.props.compositeReplies && this.props.compositeReplies.state) {
+      className += " material-page--" + this.props.compositeReplies.state;
+      if (this.props.compositeReplies.state === "FAILED" || this.props.compositeReplies.state === "INCOMPLETE") {
+        iconForTitle = "thumb-down-alt";
+      } else if (this.props.compositeReplies.state === "PASSED") {
+        iconForTitle = "thumb-up-alt";
+      } else if (this.props.compositeReplies.state === "UNANSWERED") {
+        iconForTitle = null;
+      } else {
+        iconForTitle = "checkmark";
+      }
+    }
 
-    return <article className={`material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`} ref="root" id={this.props.id}>
+    return <article className={className} ref="root" id={this.props.id}>
       {this.props.editable ? <div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
         <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editPageTooltip")}>
           <ButtonPill buttonModifiers="material-management-page" icon="edit" onClick={this.startupEditor}/>
@@ -499,7 +517,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           <ButtonPill buttonModifiers="material-management-page" icon="show" onClick={this.toggleVisiblePageStatus}/>
         </Dropdown> : null}
       </div> : null}
-      {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>{this.props.material.title} </h2> : null}
+      {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>
+        {this.props.material.title}
+        {iconForTitle ? <span className={`material-page__title-icon icon-${iconForTitle}`}/> : null}
+      </h2> : null}
       <div className="react-required-container" onClick={this.stopPropagation}>
         {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
          <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}
@@ -530,7 +551,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           {Object.keys(this.state.answerRegistry).filter((key)=>this.state.answerRegistry[key]).length} / {Object.keys(this.state.answerRegistry).length}
         </span>
       </div> : null}
-      {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
+      {verbalAssesment ?
         <div className="material-page__verbal-assessment">
           <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
         </div>

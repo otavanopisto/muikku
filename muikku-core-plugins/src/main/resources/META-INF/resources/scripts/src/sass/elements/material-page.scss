@@ -39,6 +39,11 @@
   }
 }
 
+.material-page__title-icon {
+  position: absolute;
+  right: 25px;
+}
+
 .material-page__title--exercise {
   border-left: 3px solid $color-exercise;
   margin-left: -10px;
