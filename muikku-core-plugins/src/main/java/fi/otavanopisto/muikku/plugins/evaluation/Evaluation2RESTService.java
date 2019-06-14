@@ -48,7 +48,6 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
@@ -624,40 +623,8 @@ public class Evaluation2RESTService {
       return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
     }
     
-    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(userEntityId, workspaceMaterialId, Boolean.FALSE); 
-    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-    if (supplementationRequest == null && workspaceMaterialEvaluation == null) {
-      // No evaluation, no supplementation request 
-      return Response.status(Status.NO_CONTENT).build();
-    }
-    else if (supplementationRequest != null && (workspaceMaterialEvaluation == null || workspaceMaterialEvaluation.getEvaluated().before(supplementationRequest.getRequestDate()))) {
-      // No evaluation or supplementation request is newer
-      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
-      evaluation.setType(RestAssignmentEvaluationType.INCOMPLETE);
-      evaluation.setDate(supplementationRequest.getRequestDate());
-      evaluation.setText(supplementationRequest.getRequestText());
-      return Response.ok(evaluation).build();
-    }
-    else {
-      // No supplementation request or evaluation is newer
-      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
-      evaluation.setType(RestAssignmentEvaluationType.PASSED);
-      evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
-      evaluation.setText(workspaceMaterialEvaluation.getVerbalAssessment());
-      GradingScale gradingScale = gradingController.findGradingScale(
-          workspaceMaterialEvaluation.getGradingScaleSchoolDataSource(), workspaceMaterialEvaluation.getGradingScaleIdentifier());
-      if (gradingScale != null) {
-        GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
-            gradingScale, workspaceMaterialEvaluation.getGradeSchoolDataSource(), workspaceMaterialEvaluation.getGradeIdentifier());
-        if (gradingScaleItem != null) {
-          evaluation.setGrade(gradingScaleItem.getName());
-          if (Boolean.FALSE.equals(gradingScaleItem.isPassingGrade())) {
-            evaluation.setType(RestAssignmentEvaluationType.FAILED);
-          }
-        }
-      }
-      return Response.ok(evaluation).build();
-    }
+    RestAssignmentEvaluation evaluationInfo = evaluationController.getEvaluationInfo(userEntity, workspaceMaterial);
+    return evaluationInfo == null ? Response.status(Status.NO_CONTENT).build() : Response.ok(evaluationInfo).build();
   }
 
   @PUT

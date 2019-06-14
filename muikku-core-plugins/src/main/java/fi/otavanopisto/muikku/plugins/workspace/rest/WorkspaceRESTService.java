@@ -69,10 +69,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
@@ -120,7 +116,6 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudentRestM
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserRestModel;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
-import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -128,8 +123,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
-import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
-import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -165,9 +158,6 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private EvaluationController evaluationController;
-
-  @Inject
-  private GradingController gradingController;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -1696,7 +1686,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         // Evaluation info for evaluable materials
         
         if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
-          compositeReply.setEvaluationInfo(getEvaluationInfo(sessionController.getLoggedUserEntity(), reply.getWorkspaceMaterial()));
+          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(sessionController.getLoggedUserEntity(), reply.getWorkspaceMaterial()));
         }
         
         result.add(compositeReply);
@@ -3248,43 +3238,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         commentTreeAdd(comments, c, resultList);
       });
     return resultList;
-  }
-  
-  private RestAssignmentEvaluation getEvaluationInfo(UserEntity userEntity, WorkspaceMaterial workspaceMaterial) {
-    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), Boolean.FALSE); 
-    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-    if (supplementationRequest == null && workspaceMaterialEvaluation == null) {
-      // No evaluation, no supplementation request 
-      return null;
-    }
-    else if (supplementationRequest != null && (workspaceMaterialEvaluation == null || workspaceMaterialEvaluation.getEvaluated().before(supplementationRequest.getRequestDate()))) {
-      // No evaluation or supplementation request is newer
-      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
-      evaluation.setType(RestAssignmentEvaluationType.INCOMPLETE);
-      evaluation.setDate(supplementationRequest.getRequestDate());
-      evaluation.setText(supplementationRequest.getRequestText());
-      return evaluation;
-    }
-    else {
-      // No supplementation request or evaluation is newer
-      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
-      evaluation.setType(RestAssignmentEvaluationType.PASSED);
-      evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
-      evaluation.setText(workspaceMaterialEvaluation.getVerbalAssessment());
-      GradingScale gradingScale = gradingController.findGradingScale(
-          workspaceMaterialEvaluation.getGradingScaleSchoolDataSource(), workspaceMaterialEvaluation.getGradingScaleIdentifier());
-      if (gradingScale != null) {
-        GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
-            gradingScale, workspaceMaterialEvaluation.getGradeSchoolDataSource(), workspaceMaterialEvaluation.getGradeIdentifier());
-        if (gradingScaleItem != null) {
-          evaluation.setGrade(gradingScaleItem.getName());
-          if (Boolean.FALSE.equals(gradingScaleItem.isPassingGrade())) {
-            evaluation.setType(RestAssignmentEvaluationType.FAILED);
-          }
-        }
-      }
-      return evaluation;
-    }
   }
 
 }
