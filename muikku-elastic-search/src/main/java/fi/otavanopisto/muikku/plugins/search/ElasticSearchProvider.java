@@ -625,7 +625,7 @@ public class ElasticSearchProvider implements SearchProvider {
       BoolQueryBuilder boolQuery = boolQuery();
 
       if (StringUtils.isNotBlank(query)) {
-        boolQuery.should(prefixQuery("name", query));
+        boolQuery.must(prefixQuery("name", query));
       }
 
       // TODO: force to have at least one organization?
