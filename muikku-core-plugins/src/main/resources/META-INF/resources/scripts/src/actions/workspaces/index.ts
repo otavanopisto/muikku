@@ -749,7 +749,7 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let replyId:number = existantReplyId;
-      if (!replyId && !avoidServerCall){
+      if (!replyId){
         let result:Array<{id: number, state: string}> = await promisify(mApi().workspace.workspaces.materials.replies.read(workspaceId, workspaceMaterialId), 'callback')() as Array<{id: number, state: string}>;
         if (result[0] && result[0].id){
           replyId = result[0].id;
@@ -766,7 +766,6 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
         replyId = replyGenerated ? replyGenerated.id : existantReplyId;
       }
       
-      //Indeed the reply id will be null in the case of answered setting it up
       dispatch({
         type: "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
         payload: {
