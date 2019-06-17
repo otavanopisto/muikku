@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -33,7 +32,6 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -48,6 +46,7 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
@@ -71,6 +70,9 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private OrganizationEntityController organizationEntityController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -155,10 +157,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
       Boolean onlyDefaultUsers = true;
-      
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
-      List<OrganizationEntity> organizations = Arrays.asList(organization);
+      List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
 
       SearchResult result = searchProvider.searchUsers(
           organizations,
@@ -253,9 +252,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       boolean includeUnpublished = false;
       List<Sort> sorts = null;
       
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
-      List<OrganizationEntity> organizations = Arrays.asList(organization);
+      List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
       List<SchoolDataIdentifier> organizationIdentifiers = organizations.stream().map(org -> new SchoolDataIdentifier(org.getIdentifier(), org.getDataSource().getIdentifier())).collect(Collectors.toList());
       
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
