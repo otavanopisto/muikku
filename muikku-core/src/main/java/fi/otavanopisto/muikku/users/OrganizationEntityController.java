@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.users;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,7 +11,10 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.OrganizationEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.session.SessionController;
 
 public class OrganizationEntityController {
 
@@ -17,10 +22,16 @@ public class OrganizationEntityController {
   private Logger logger;
   
   @Inject
+  private SessionController sessionController;
+  
+  @Inject
   private OrganizationEntityDAO organizationEntityDAO;
   
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   public OrganizationEntity createOrganizationEntity(String dataSource, String identifier, String name) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
@@ -45,6 +56,22 @@ public class OrganizationEntityController {
   
   public OrganizationEntity updateName(OrganizationEntity organizationEntity, String name) {
     return organizationEntityDAO.updateName(organizationEntity, name);
+  }
+  
+  public List<OrganizationEntity> listLoggedUserOrganizations() {
+    if (sessionController.isLoggedIn()) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_ALL_ORGANIZATIONS)) {
+        SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser );
+        return (userSchoolDataIdentifier != null && userSchoolDataIdentifier.getOrganization() != null) ?
+            Arrays.asList(userSchoolDataIdentifier.getOrganization()) : Collections.emptyList();
+      } else {
+        // User can access all organizations
+        return listUnarchived();
+      }
+    } else {
+      return Collections.emptyList();
+    }
   }
   
   public List<OrganizationEntity> listUnarchived() {

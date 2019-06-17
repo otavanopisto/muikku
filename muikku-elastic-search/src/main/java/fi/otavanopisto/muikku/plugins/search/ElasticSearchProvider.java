@@ -612,7 +612,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
-  public SearchResult searchUserGroups(String query, SchoolDataIdentifier organizationIdentifier, int start, int maxResults) {
+  public SearchResult searchUserGroups(String query, List<OrganizationEntity> organizations, int start, int maxResults) {
     try {
       query = sanitizeSearchString(query);
       
@@ -628,10 +628,15 @@ public class ElasticSearchProvider implements SearchProvider {
         boolQuery.should(prefixQuery("name", query));
       }
 
-      if (organizationIdentifier != null) {
-        boolQuery.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier.toId()));
+      // TODO: force to have at least one organization?
+      Set<String> organizationIdentifiers = organizations
+          .stream()
+          .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))
+          .collect(Collectors.toSet());
+      if (CollectionUtils.isNotEmpty(organizationIdentifiers)) {
+        boolQuery.must(termsQuery("organizationIdentifier.untouched", organizationIdentifiers.toArray()));
       }
-  
+
       SearchResponse response = requestBuilder
           .setQuery(boolQuery)
           .execute()

@@ -41,7 +41,7 @@ public interface SearchProvider {
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore,
       Date studyTimeEndsBefore);
   
-  SearchResult searchUserGroups(String searchTerm, SchoolDataIdentifier organizationIdentifier, int start, int maxResults);
+  SearchResult searchUserGroups(String searchTerm, List<OrganizationEntity> organizations, int start, int maxResults);
   
   public class Sort {
     

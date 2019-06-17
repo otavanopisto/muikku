@@ -23,10 +23,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
@@ -41,7 +42,6 @@ import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 @Stateful
 @RequestScoped
@@ -55,9 +55,6 @@ public class UserGroupRESTService extends AbstractRESTService {
   @Inject
   private UserGroupEntityController userGroupEntityController;
 
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
   @Inject
   private UserEntityController userEntityController;
   
@@ -125,12 +122,10 @@ public class UserGroupRESTService extends AbstractRESTService {
     } else {
       SearchProvider elasticSearchProvider = getProvider("elastic-search");
       if (elasticSearchProvider != null) {
-        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-        OrganizationEntity organization = userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getOrganization() : null;
-        SchoolDataIdentifier organizationIdentifier = organization != null ? new SchoolDataIdentifier(organization.getIdentifier(), organization.getDataSource().getIdentifier()) : null;
+        List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
         
-        if (organizationIdentifier != null) {
-          SearchResult result = elasticSearchProvider.searchUserGroups(searchString, organizationIdentifier, firstResult, maxResults);
+        if (CollectionUtils.isNotEmpty(organizations)) {
+          SearchResult result = elasticSearchProvider.searchUserGroups(searchString, organizations, firstResult, maxResults);
 
           List<Map<String, Object>> results = result.getResults();
 
