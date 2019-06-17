@@ -53,6 +53,7 @@ class DeleteWorkspaceMaterialDialog extends React.Component<DeleteWorkspaceMater
         this.setState({
           locked: false
         });
+        closeDialog();
       }
     })
   }

@@ -446,7 +446,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="arrow-left-thin"/>
         </Tabs>
         <ConfirmPublishPageWithAnswersDialog/>
-        <ConfirmRemovePageWithAnswersDialog/>
+        <ConfirmRemovePageWithAnswersDialog onDeleteSuccess={this.close}/>
      </div>
   }
 }

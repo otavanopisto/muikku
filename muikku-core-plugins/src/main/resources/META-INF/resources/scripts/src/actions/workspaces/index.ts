@@ -1533,7 +1533,7 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
         urlPath = "folders";
       }
       await promisify(mApi().workspace.workspaces[urlPath]
-          .del(data.workspace.id, data.material.workspaceMaterialId || data.material.id, {
+          .del(data.workspace.id, data.material.workspaceMaterialId || data.material.id, {}, {
             removeAnswers: data.removeAnswers || false,
             updateLinkedMaterials: true,
           }), 'callback')()
@@ -1544,19 +1544,23 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
         throw err;
       }
       
+      let showRemoveAnswersDialogForDelete = false;
       if (!data.removeAnswers && err.message) {
         try {
           let message = JSON.parse(err.message);
           if (message.reason === "CONTAINS_ANSWERS") {
+            showRemoveAnswersDialogForDelete = true;
             const currentEditorState = getState().workspaces.materialEditor;
-            dispatch(setWorkspaceMaterialEditorState({...currentEditorState, showRemoveAnswersDialogForDelete: true}))
+            dispatch(setWorkspaceMaterialEditorState({...currentEditorState, showRemoveAnswersDialogForDelete}))
           }
         } catch (e) {
         }
       }
       
       data.fail && data.fail();
-      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete material'), 'error'));
+      if (!showRemoveAnswersDialogForDelete) {
+        dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete material'), 'error'));
+      }
     }
   }
 }

@@ -17,7 +17,8 @@ interface ConfirmDeletePageWithAnswersDialogProps {
   i18n: i18nType,
   materialEditor: WorkspaceMaterialEditorType,
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
-  deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType
+  deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType,
+  onDeleteSuccess: ()=>any,
 }
 
 interface ConfirmDeletePageWithAnswersDialogState {
@@ -47,6 +48,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePa
         this.setState({
           locked: false
         });
+        this.props.onDeleteSuccess();
         closeDialog();
       },
       fail: ()=>{
