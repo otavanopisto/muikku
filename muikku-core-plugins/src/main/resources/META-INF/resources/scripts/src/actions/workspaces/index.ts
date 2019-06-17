@@ -749,12 +749,6 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let replyId:number = existantReplyId;
-      if (!replyId){
-        let result:Array<{id: number, state: string}> = await promisify(mApi().workspace.workspaces.materials.replies.read(workspaceId, workspaceMaterialId), 'callback')() as Array<{id: number, state: string}>;
-        if (result[0] && result[0].id){
-          replyId = result[0].id;
-        }
-      }
       if (!avoidServerCall){
         let replyGenerated:any = await promisify(existantReplyId ? mApi().workspace.workspaces.materials.replies
             .update(workspaceId, workspaceMaterialId, existantReplyId, {
@@ -764,6 +758,12 @@ let updateAssignmentState:UpdateAssignmentStateTriggerType = function updateAssi
               state: successState
             }), 'callback')();
         replyId = replyGenerated ? replyGenerated.id : existantReplyId;
+      }
+      if (!replyId){
+        let result:Array<{id: number, state: string}> = await promisify(mApi().workspace.workspaces.materials.replies.read(workspaceId, workspaceMaterialId), 'callback')() as Array<{id: number, state: string}>;
+        if (result[0] && result[0].id){
+          replyId = result[0].id;
+        }
       }
       
       dispatch({
