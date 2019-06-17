@@ -63,6 +63,35 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
     </span>
 }
 
+
+
+function getAssessments(props: RecordsProps, workspace: WorkspaceType){
+  if (workspace.studentAssessmentState && workspace.studentAssessmentState.grade){
+    return <span className="application-list__header-secondary">
+      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
+      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) +
+        getShortenGradeExtension(workspace.studentAssessmentState.grade)}
+        className={`application-list__indicator-badge application-list__indicator-badge--course ${
+          workspace.studentAssessmentState.state === "pass" || workspace.studentAssessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
+        {shortenGrade(workspace.studentAssessmentState.grade)}
+      </span>
+    </span>
+  } else if (workspace.studentAssessmentState && workspace.studentAssessmentState.state === "incomplete"){
+    let status = props.i18n.text.get(workspace.studentAssessmentState.state === "incomplete" ?
+    		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
+    return <span className="application-list__header-secondary">
+      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
+      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
+        className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+      {status[0].toLocaleUpperCase()}
+    </span>
+  </span>
+  } else {
+    return null;
+  }
+}
+
+
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
   if (workspace.studentAssessments.assessments.length){
     let assessment = workspace.studentAssessments.assessments[0];
@@ -224,11 +253,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     </ApplicationListItem>
                   })}
             </ApplicationList>
-            }) : <h4>{this.props.i18n.text.get("plugin.records.records.empty")}</h4>}
+            }) : <div className="application-sub-panel__item application-sub-panel__item--empty">{this.props.i18n.text.get("plugin.records.courses.empty")}</div>}
           </div>
           </div>
         })}
-      </div>  
+      </div>
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
     
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>

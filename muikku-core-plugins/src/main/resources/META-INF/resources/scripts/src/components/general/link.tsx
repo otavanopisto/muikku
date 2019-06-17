@@ -140,7 +140,6 @@ export default class Link extends React.Component<LinkProps, LinkState> {
   }
   render(){
     if (this.state.redirect){
-      console.log("REDIRECT");
       return <Redirect push to={this.props.to}/>
     }
     
