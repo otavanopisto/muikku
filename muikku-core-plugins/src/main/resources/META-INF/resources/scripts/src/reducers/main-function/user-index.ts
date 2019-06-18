@@ -42,10 +42,16 @@ export interface UserWithSchoolDataType {
   userEntityId: number
 }
 
+export interface OrganizationType {
+  id: number,
+  name: string
+}
+
 export interface UserGroupType {
   id: number,
   name: string,
-  userCount: number
+  userCount: number,
+  organization?: OrganizationType
 }
 
 export interface UserStaffType {
