@@ -62,6 +62,56 @@ function getTextForAssessmentState(state: WorkspaceAssessementStateType, i18n: i
   return i18n.text.get(text);
 }
 
+function getIconForAssessmentState(state: WorkspaceAssessementStateType){
+  let icon;
+  switch(state){
+  case "unassessed":
+    icon = "unassessed";
+    break;
+  case "pending":
+  case "pending_fail":
+  case "pending_pass":
+    icon = "pending";
+    break;
+  case "fail":
+  case "incomplete":
+    icon = "fail";
+    break;
+  case "pass":
+    icon = "pass";
+    break;
+  default:
+    icon = "canceled";
+    break;
+  }
+  return icon;
+}
+
+function getClassNameForAssessmentState(state: WorkspaceAssessementStateType){
+  let className;
+  switch(state){
+  case "pending":
+  case "pending_fail":
+  case "pending_pass":
+    className = "pending";
+    break;
+  case "fail":
+    className = "failed";
+    break;
+  case "incomplete":
+    className = "incomplete";
+    break;
+  case "pass":
+    className = "passed";
+    break;
+  case "unassessed":
+  default:
+    className = "unassessed";
+    break;
+  }
+  return className;
+}
+
 class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNavbarState> {
   constructor(props: WorkspaceNavbarProps){
     super(props);
@@ -147,17 +197,17 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     modifier: "assessment-request",
     //TODO add the styles for the following "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete"
     //with the required happy or unhappy faces
+
     item: (<Dropdown openByHover key="assessment-request" modifier="assessment"
         content={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}>
       <Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)} title={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
-        className={`link link--icon link--full link--workspace-navbar link--workspace-navbar-${this.props.currentWorkspace.studentAssessments.assessmentState} 
-          icon icon-assessment-${this.props.currentWorkspace.studentAssessments.assessmentState}`}></Link>
+        className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)} link--workspace-navbar icon-assessment-${getIconForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)}`}></Link>
     </Dropdown>)
   } : null;
 
   let assessmentRequestMenuItem = assessmentRequestItem ? (<Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)}
       className="link link--full link--menu link--assessment-request">
-    <span className={`link__icon icon-assessment-${this.props.currentWorkspace.studentAssessments.assessmentState}`}/>
+    <span className={`link__icon icon-assessment-${getIconForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)}`}/>
     <span className="link--menu__text">{getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}</span>
   </Link>) : null;
 
