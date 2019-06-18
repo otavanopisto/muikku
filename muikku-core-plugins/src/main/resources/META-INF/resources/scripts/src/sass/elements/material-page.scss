@@ -700,13 +700,14 @@
   line-height: 1.25rem;
   margin: 4px 0 0;
   max-width: 100%;
-  min-height: 1.25rem;
+  min-height: 2.25rem;
   min-width: 100%;
   padding: 5px 20px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.75rem;
+    min-height: 2.75rem;
   }
 }
 
@@ -1494,8 +1495,3 @@
 .material-page__mathfield-toolbar {
   
 }
-
-
-
-
-
