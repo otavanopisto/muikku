@@ -13,13 +13,11 @@ import '~/sass/elements/file-uploader.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
-
-let ProgressBarLine = require('react-progressbar.js').Line;
 
 interface RecordsProps {
   i18n: i18nType,
@@ -38,14 +36,14 @@ let storedCurriculumIndex:any = {};
 function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: WorkspaceType){
   let assesmentState:WorkspaceAssessementState;
   let assesmentDate:string;
-  if (workspace.studentAssessments && workspace.studentAssessments.assessmentState){
-    assesmentState = workspace.studentAssessments.assessmentState;
-    assesmentDate = workspace.studentAssessments.assessmentStateDate;
+  if (workspace.studentAssessmentState && workspace.studentAssessmentState.state){
+    assesmentState = workspace.studentAssessmentState.state;
+    assesmentDate = workspace.studentAssessmentState.date;
   } else if (workspace.studentActivity && workspace.studentActivity.assessmentState){
-    assesmentState = workspace.studentActivity.assessmentState.state;
-    assesmentDate = workspace.studentActivity.assessmentState.date;
+    assesmentState = workspace.studentAssessmentState.state;
+    assesmentDate = workspace.studentAssessmentState.date;
   }
-  
+
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
     return <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))} className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending"></span>
   }
@@ -63,57 +61,20 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
     </span>
 }
 
-
-
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
-  if (workspace.studentAssessmentState && workspace.studentAssessmentState.grade){
-    return <span className="application-list__header-secondary">
-      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
-      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) +
-        getShortenGradeExtension(workspace.studentAssessmentState.grade)}
-        className={`application-list__indicator-badge application-list__indicator-badge--course ${
-          workspace.studentAssessmentState.state === "pass" || workspace.studentAssessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
-        {shortenGrade(workspace.studentAssessmentState.grade)}
-      </span>
-    </span>
+  if (workspace.studentAssessmentState && workspace.studentAssessmentState.grade) {
+    return <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) +
+    getShortenGradeExtension(workspace.studentAssessmentState.grade)}
+    className={`application-list__indicator-badge application-list__indicator-badge--course ${
+      workspace.studentAssessmentState.state === "pass" || workspace.studentAssessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
+    {shortenGrade(workspace.studentAssessmentState.grade)}
+  </span>    
   } else if (workspace.studentAssessmentState && workspace.studentAssessmentState.state === "incomplete"){
-    let status = props.i18n.text.get(workspace.studentAssessmentState.state === "incomplete" ?
-    		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
-    return <span className="application-list__header-secondary">
-      <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
-      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
-        className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
-      {status[0].toLocaleUpperCase()}
-    </span>
-  </span>
-  } else {
-    return null;
-  }
-}
+    let status = props.i18n.text.get("plugin.records.workspace.incomplete");
 
-
-function getAssessments(props: RecordsProps, workspace: WorkspaceType){
-  if (workspace.studentAssessments.assessments.length){
-    let assessment = workspace.studentAssessments.assessments[0];
-    if (!assessment){
-      return null;
-    }
-    let gradeId = [
-      assessment.gradingScaleSchoolDataSource,
-      assessment.gradingScaleIdentifier,
-      assessment.gradeSchoolDataSource,
-      assessment.gradeIdentifier].join('-');
-    let grade = props.records.grades[gradeId];
-    return <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated)) +
-        getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge--course ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
-        {shortenGrade(grade.grade)}
-      </span>    
-  } else if (workspace.studentAssessments.assessmentState &&
-    (workspace.studentAssessments.assessmentState === "incomplete" || workspace.studentAssessments.assessmentState === "fail")){
-    let status = props.i18n.text.get(workspace.studentAssessments.assessmentState === "incomplete" ?
-        "plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
-    return <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
-      {status[0].toLocaleUpperCase()}
+    return   <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
+    className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+    {status[0].toLocaleUpperCase()}
     </span>
   } else {
     return null;
@@ -163,6 +124,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     )
   }
   
+  
   sortWorkspaces(data: any){
     let key = "name";
     let sortDirection = this.state.sortDirectionWorkspaces;
@@ -178,15 +140,13 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     let key = "courseName";
     let sortDirection = this.state.sortDirectionRecords;  
     let sortedData = this.sortBy(data, key, sortDirection);
-
       this.setState({
         sortDirectionRecords : this.state.sortDirectionRecords === "asc" ? "desc" : "asc",
         sortedRecords : sortedData
       });
   }
-  
+
   render(){
-    
     if (this.props.records.userDataStatus === "LOADING"){
       return null;
     } else if (this.props.records.userDataStatus === "ERROR"){
@@ -217,11 +177,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   //Do we want an special way to display all these different states? passed is very straightforward but failed and
                   //incomplete might be difficult to understand
                   let extraClassNameState = "";
-                  if (workspace.studentAssessments.assessmentState === "pass"){
+                  if (workspace.studentAssessmentState.state === "pass"){
                     extraClassNameState = "state-PASSED"
-                  } else if (workspace.studentAssessments.assessmentState === "fail"){
+                  } else if (workspace.studentAssessmentState.state === "fail"){
                     extraClassNameState = "state-FAILED"
-                  } else if (workspace.studentAssessments.assessmentState === "incomplete"){
+                  } else if (workspace.studentAssessmentState.state === "incomplete"){
                     extraClassNameState = "state-INCOMPLETE"
                   }
                   return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
