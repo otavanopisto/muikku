@@ -183,7 +183,6 @@
 
 .application-sub-panel__item--workspace-management {
   display: block;
-  padding: 10px;
   flex-basis: auto;
   
   &:not(:last-child) {
@@ -193,6 +192,7 @@
 
 .application-sub-panel__item--workspace-management-split {
   flex-basis: 100%;
+  padding: 10px;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 50%;
