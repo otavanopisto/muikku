@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -18,6 +17,7 @@ public class TranscriptOfRecordsFile {
       Long userEntityId,
       String fileName,
       String contentType,
+      Long size,
       Boolean archived,
       String title,
       String description) {
@@ -25,6 +25,7 @@ public class TranscriptOfRecordsFile {
     this.userEntityId = userEntityId;
     this.fileName = fileName;
     this.contentType = contentType;
+    this.size = size;
     this.archived = archived;
     this.title = title;
     this.description = description;
@@ -86,12 +87,10 @@ public class TranscriptOfRecordsFile {
     this.id = id;
   }
 
-  @Transient
   public Long getSize() {
     return size;
   }
 
-  @Transient
   public void setSize(Long size) {
     this.size = size;
   }
@@ -124,6 +123,6 @@ public class TranscriptOfRecordsFile {
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
   
-  @Transient
   private Long size;
+
 }
