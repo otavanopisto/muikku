@@ -82,8 +82,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
         {shortenGrade(workspace.studentAssessmentState.grade)}
       </span>
     </span>
-  } else if (workspace.studentAssessmentState &&
-    (workspace.studentAssessmentState.state === "incomplete" || workspace.studentAssessmentState.state === "fail")){
+  } else if (workspace.studentAssessmentState && workspace.studentAssessmentState.state === "incomplete"){
     let status = props.i18n.text.get(workspace.studentAssessmentState.state === "incomplete" ?
     		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
     return <span className="application-list__header-secondary">
@@ -239,7 +238,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                       </ApplicationListItem>
                     })}
               </ApplicationList>
-            }) : <h4>{this.props.i18n.text.get("TODO no records")}</h4>}
+            }) : <div className="application-sub-panel__item application-sub-panel__item--empty">{this.props.i18n.text.get("plugin.records.courses.empty")}</div>}
           </div>
           </div>
         })}
@@ -260,15 +259,14 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
       <div className="application-sub-panel__body">
       {this.props.records.files.length ?
-        <ApplicationList className="uploaded-files text">
+        <ApplicationList className="uploaded-files">
           {this.props.records.files.map((file)=>{
             return <ApplicationListItem className="uploaded-files__item" key={file.id}>
               <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
               <Link className="uploaded-files__item-title" href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
             </ApplicationListItem>
           })}
-        </ApplicationList> :
-        <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.records.files.empty")}</div>
+        </ApplicationList> :<div className="application-sub-panel__item application-sub-panel__item--empty">{this.props.i18n.text.get("plugin.records.files.empty")}</div>
       }
       </div>
     </div>

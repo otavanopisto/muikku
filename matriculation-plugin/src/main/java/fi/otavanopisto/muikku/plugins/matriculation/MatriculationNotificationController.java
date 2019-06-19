@@ -1,8 +1,10 @@
 package fi.otavanopisto.muikku.plugins.matriculation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -49,7 +51,10 @@ public class MatriculationNotificationController {
     String content = renderJadeTemplate("enrollment-notification", templateModel);
     
     if (StringUtils.isNotBlank(enrollment.getEmail())) {
-      mailer.sendMail(MailType.HTML, Arrays.asList(enrollment.getEmail()), "Ilmoittautuminen ylioppilaskirjoituksiin", content);
+      List<String> to = Arrays.asList(enrollment.getEmail());
+      List<String> cc = new ArrayList<>();
+      List<String> bcc = Arrays.asList("riikka.turpeinen@otavia.fi");
+      mailer.sendMail(MailType.HTML, to, cc, bcc, "Ilmoittautuminen ylioppilaskirjoituksiin", content);
     }
   }
   
