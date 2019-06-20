@@ -73,7 +73,7 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
   }
   
   if (actualFilters.query){
-    (params as any).search = actualFilters.query;
+    (params as any).q = actualFilters.query;
   }
   
   try {
