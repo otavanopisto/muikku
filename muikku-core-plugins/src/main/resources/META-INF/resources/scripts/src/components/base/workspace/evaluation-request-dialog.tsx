@@ -61,27 +61,24 @@ class EvaluationRequestDialog extends React.Component<EvaluationRequestDialogPro
   }
   render(){
     let content = (closeDialog: ()=>any) => <div>
-      <div>
-        <div className="dialog__content-row">{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.title')}</div>
-        {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ?
-          <div className="form-element dialog__content-row">
-            <p><label>{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label')}</label></p>
-            <p><span>{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content')}</span></p>
-          </div> : null}
-        <div className="form-element dialog__content-row">
-          <p><label>{this.props.i18n.text.get('plugin.EvaluationRequest.messageLabel')}</label></p>
-          <p><textarea className="form-element__textarea" value={this.state.message} onChange={this.updateMessage}/></p>
-        </div>
+      <div className="dialog__content-row">{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.description')}</div>
+      {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ?
+        <div className="dialog__content-row">
+          <label>{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label')}</label>
+          <span>{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content')}</span>
+        </div> : null}
+      <div className="form-element dialog__content-row">
+        <p><textarea className="form-element__textarea" value={this.state.message} onChange={this.updateMessage}/></p>
       </div>
     </div>
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
         <div className="dialog__button-set">
-          <Button buttonModifiers={["standard-ok", "info"]} onClick={this.request.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Button buttonModifiers={["standard-ok", "execute"]} onClick={this.request.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.requestButton')}
           </Button>
-          <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers={["standard-cancel", "cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.cancelButton')}
           </Button>
         </div>

@@ -110,6 +110,13 @@ $color-material-page-admin-panel-on-request-color: #62c3eb;
 $color-material-page-admin-panel-never-show-answers-color: $color-disabled;
 $color-material-page-admin-panel-always-show-answers-color: #36c881;
 
+// Workspace assessment
+$color-assessment-pending: #009fe3;
+$color-assessment-failed: #de3211;
+$color-assessment-incomplete: #ea7503;
+$color-assessment-passed: #24c118;
+$color-assessment-box-shadow: 0 0 5px rgba(255,255,255,0.8);
+
 // General
 $color-default-body: #f5f5f5;
 $color-overlay-background: rgba(0, 0, 0, 0.5);
