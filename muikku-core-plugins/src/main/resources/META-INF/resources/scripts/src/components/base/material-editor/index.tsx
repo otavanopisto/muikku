@@ -294,7 +294,16 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       const materialPageType = this.props.editorState.currentDraftNodeValue.assignmentType ? (this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
       const assignmentPageType = "material-editor-" + materialPageType;
 
-      const canPublish = !equals(this.props.editorState.currentNodeValue, this.props.editorState.currentDraftNodeValue);
+      const comparerPoints = ["assignmentType", "hidden", "html", "license", "path", "producers", "title", "type", "viewRestrict"];
+      let canPublish = false;
+      for (let point of comparerPoints) {
+        if (!equals((this.props.editorState.currentNodeValue as any)[point],
+            (this.props.editorState.currentDraftNodeValue as any)[point])) {
+          canPublish = true;
+          break;
+        }
+      }
+      
       const publishModifiers = ["material-editor-publish-page","material-editor"];
       const revertModifiers = ["material-editor-revert-page","material-editor"];
       if (!canPublish) {
@@ -346,10 +355,12 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
         </div>
         <div className="material-editor__buttonset-secondary">
-          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.publishPageTooltip")}>
+          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip"
+              content={this.props.i18n.text.get("plugin.workspace.materialsManagement.publishPageTooltip")}>
             <ButtonPill buttonModifiers={publishModifiers} onClick={canPublish ? this.publish : null} icon="publish"/>
           </Dropdown> : null}
-          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.revertToPublishedPageTooltip")}>
+          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip"
+              content={this.props.i18n.text.get("plugin.workspace.materialsManagement.revertToPublishedPageTooltip")}>
             <ButtonPill buttonModifiers={revertModifiers} onClick={canPublish ? this.revert : null} icon="revert"/>
           </Dropdown> : null}
           {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog
