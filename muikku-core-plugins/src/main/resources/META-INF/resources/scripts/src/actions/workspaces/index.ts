@@ -326,6 +326,8 @@ let requestAssessmentAtWorkspace:RequestAssessmentAtWorkspaceTriggerType = funct
         newAssessmentState = 'pending_pass';
       } else if (newAssessmentState == 'fail') {
         newAssessmentState = 'pending_fail';
+      } else {
+        newAssessmentState = 'pending';
       }
       
       dispatch({
