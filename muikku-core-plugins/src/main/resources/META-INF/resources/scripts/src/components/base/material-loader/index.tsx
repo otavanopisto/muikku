@@ -553,7 +553,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       </div> : null}
       {verbalAssesment ?
         <div className="material-page__verbal-assessment">
-          <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
+          <div className="rich-text" dangerouslySetInnerHTML={{__html: verbalAssesment}}></div>
         </div>
      : null}
       {(this.props.material.producers && this.props.material.producers.length) || this.props.material.license ?
