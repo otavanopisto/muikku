@@ -42,8 +42,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-view");
-        assertVisible("article p");
+        waitForPresent(".material-page .material-page__title");
+        assertText(".material-page .material-page__title", "1.0 Testimateriaali");
+        waitForPresent(".material-page .material-page__content");
+        assertVisible(".material-page .material-page__content");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
       }
@@ -59,49 +61,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     browsers = {
       TestEnvironments.Browser.CHROME,
       TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
-  public void courseFullscreenReadingButtonExistsTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-    try{
-      login();
-      maximizeWindow();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-          "EXERCISE");
-      try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".icon-fullscreen");
-        assertVisible(".icon-fullscreen");
-      } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-
-  @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.CHROME_HEADLESS
-    }
-  )
-  public void courseMaterialManagementButtonExistsTest() throws Exception {
+  public void courseMaterialManagementButtonTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
