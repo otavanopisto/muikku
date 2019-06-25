@@ -671,7 +671,9 @@ export default function workspaces(state: WorkspacesType={
       // Sometimes I get id sometimes workspaceMaterialId, super inconsistent
       if (typeof m.id !== "undefined" && typeof action.payload.id !== "undefined" && m.id === action.payload.id) {
         return false;
-      } else if (m.workspaceMaterialId === action.payload.workspaceMaterialId) {
+      } else if (typeof m.workspaceMaterialId !== "undefined" &&
+          typeof action.payload.workspaceMaterialId !== "undefined" &&
+          m.workspaceMaterialId === action.payload.workspaceMaterialId) {
         return false;
       }
       
@@ -705,6 +707,7 @@ export default function workspaces(state: WorkspacesType={
     if (newEditor && newEditor.currentNodeValue && newEditor.currentNodeValue.childrenAttachments) {
       newEditor = {...newEditor};
       newEditor.currentNodeValue = {...newEditor.currentNodeValue};
+      debugger;
       newEditor.currentNodeValue.childrenAttachments = newEditor.currentNodeValue.childrenAttachments.filter(filterMaterial);
     }
     return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
