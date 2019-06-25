@@ -15,7 +15,7 @@ import { deleteWorkspaceMaterialContentNode, DeleteWorkspaceMaterialContentNodeT
 interface ConfirmRemoveAttachmentProps {
   i18n: i18nType,
   materialEditor: WorkspaceMaterialEditorType,
-  attachment: MaterialContentNodeType,
+  file: MaterialContentNodeType,
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType,
   children: any;
 }
@@ -40,7 +40,7 @@ class ConfirmRemoveAttachment extends React.Component<ConfirmRemoveAttachmentPro
     });
     
     this.props.deleteWorkspaceMaterialContentNode({
-      material: this.props.attachment,
+      material: this.props.file,
       workspace: this.props.materialEditor.currentNodeWorkspace,
       removeAnswers: false,
       fail: ()=>{

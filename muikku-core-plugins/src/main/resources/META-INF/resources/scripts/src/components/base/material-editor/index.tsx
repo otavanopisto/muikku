@@ -24,6 +24,7 @@ import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
 import AddProducer from '~/components/general/add-producer';
 import { LicenseSelector } from '~/components/general/license-selector';
+import FileUploader from '~/components/general/file-uploader';
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
@@ -435,19 +436,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments"),
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
-
-            {!this.state.uploading ?
-              <input type="file" multiple onChange={this.onFilesUpload}/> :
-              "uploading..."
-            }
-
-            {this.props.editorState.currentNodeValue.childrenAttachments && this.props.editorState.currentNodeValue.childrenAttachments.map((a) => {
-              return <div key={a.materialId}>
-                <h3>{a.title}</h3>
-                <p>/workspace/{this.props.editorState.currentNodeWorkspace.urlName}/{this.props.editorState.currentNodeValue.path}/{a.path}</p>
-                <ConfirmRemoveAttachment attachment={a}><button>delete</button></ConfirmRemoveAttachment>
-              </div>
-            })}
+            
+            <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor"
+            files={this.props.editorState.currentNodeValue.childrenAttachments} fileIdKey="materialId" fileNameKey="title"
+            fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/${this.props.editorState.currentNodeValue.path}/${a.path}`}
+            deleteDialogElement={ConfirmRemoveAttachment} emptyText="TODO empty text" hintText="TODO hint text" showURL/>
           </div>,
         })
       }
