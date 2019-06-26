@@ -166,16 +166,24 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
 
     let studentWorkspaces = <Workspaces/>;
+    
+    let formDataGenerator = (file: File, formData: FormData) => {
+      formData.append("upload", file);
+      formData.append("title", file.name);
+      formData.append("description", "");
+      formData.append("userIdentifier", this.props.guider.currentStudent.basic.id);
+    }
 
     let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
-      <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guider.currentStudent.basic.id}
+      <FileUploader url="/transcriptofrecordsfileupload/" formDataGenerator={formDataGenerator}
         onFileError={(file: File, err: Error)=>{
           this.props.displayNotification(err.message, "error");
         }} onFileSuccess={(file: File, data: UserFileType)=>{
           this.props.addFileToCurrentStudent(data);
         }} hintText={this.props.i18n.text.get("plugin.guider.user.details.files.hint")}
         files={this.props.guider.currentStudent.files} fileIdKey="id" fileNameKey="title" fileUrlGenerator={(f)=>`/rest/guider/files/${f.id}/content`}
-        deleteDialogElement={FileDeleteDialog} modifier="guider" emptyText={this.props.i18n.text.get("plugin.guider.user.details.files.empty")}/>
+        deleteDialogElement={FileDeleteDialog} modifier="guider" emptyText={this.props.i18n.text.get("plugin.guider.user.details.files.empty")}
+        uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("TODO progress text", percent)}/>
     </div>
 
     return <div className="react-required-container">
