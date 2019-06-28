@@ -14,7 +14,6 @@ interface FileUploaderProps {
   
   // taking control from it
   onFileInputChange?: (e: React.ChangeEvent<HTMLInputElement>)=>any,
-
   modifier?: string,
   files?: any[],
   fileIdKey: string,
@@ -22,7 +21,7 @@ interface FileUploaderProps {
   fileNameKey: string,
   deleteDialogElement: any,
   deleteDialogElementProps?: any,
-  emptyText: string,
+  emptyText?: string,
   hintText: string,
   showURL?: boolean,
   readOnly?: boolean,
@@ -209,10 +208,10 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
       }
     </div>
       {this.props.files && (this.props.files.length ?
-        <div className={`uploaded-files ${this.props.modifier ? "uploaded-files--" + this.props.modifier : ""} application-list`}>
+        <div className={`uploaded-files ${this.props.modifier ? "uploaded-files--" + this.props.modifier : ""}`}>
           {this.props.files.map((file)=>{
             const url = this.props.fileUrlGenerator(file);
-            return <div className="uploaded-files__item application-list__item" key={file[this.props.fileIdKey]}>
+            return <div className="uploaded-files__item" key={file[this.props.fileIdKey]}>
               <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
               <Link className="uploaded-files__item-title" href={url} openInNewTab={file[this.props.fileNameKey]}>
                 {file[this.props.fileNameKey]}
@@ -225,7 +224,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
           })}
           {this.state.uploadingValues.map((uploadingFile, index) => {
             if (uploadingFile.failed) {
-              return <div className="uploaded-files__item application-list__item" key={index}>
+              return <div className="uploaded-files__item" key={index}>
                 <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
                 <Link className="uploaded-files__item-title">
                   {uploadingFile.name}
@@ -234,7 +233,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
                   onClick={this.removeFailedFileAt.bind(this, index)}/>
               </div>
             }
-            
+
             return <div className="material-page__filefield-file-container" key={index}>
               <div className="material-page__filefield-file">
                 <ProgressBarLine containerClassName="material-page__filefield-file-upload-progressbar" options={{
@@ -258,8 +257,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
                </div>
               </div>;
           })}
-        </div> :
-        <div className="file-uploader__files-container">{this.props.emptyText}</div>
+        </div> : this.props.emptyText ? <div className="file-uploader__files-container">{this.props.emptyText}</div> : null
       )}
     </div>
   }
