@@ -490,6 +490,12 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     const verbalAssesment = (this.props.material.evaluation && this.props.material.evaluation.verbalAssessment) ||
       (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && this.props.compositeReplies.evaluationInfo.text);
     
+    const grade = (this.props.material.evaluation && this.props.material.evaluation.grade) ||
+      (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && this.props.compositeReplies.evaluationInfo.grade);
+    
+    const date = (this.props.material.evaluation && this.props.material.evaluation.evaluated) ||
+      (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && this.props.compositeReplies.evaluationInfo.date);
+    
     let iconForTitle = null;
     let className = `material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`;
     if (this.props.compositeReplies && this.props.compositeReplies.state) {
@@ -556,6 +562,16 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           <div className="rich-text" dangerouslySetInnerHTML={{__html: verbalAssesment}}></div>
         </div>
      : null}
+      {grade ?
+          <div className="material-page__grade">
+            {grade}
+          </div>
+       : null}
+      {date ?
+          <div className="material-page__date">
+            {this.props.i18n.time.format(date)}
+          </div>
+       : null}
       {(this.props.material.producers && this.props.material.producers.length) || this.props.material.license ?
         <div className="material-page__metadata-container">
           {this.props.material.producers && this.props.material.producers.length ?
