@@ -19,10 +19,13 @@ import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.muikku.mock.CourseBuilder;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -30,11 +33,23 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
   @Test
   public void courseMaterialExistsTest() throws Exception {
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
       WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
           "1.0 Testimateriaali", "text/html;editor=CKEditor", 
           "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
@@ -48,10 +63,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertVisible(".material-page .material-page__content");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
   }
@@ -65,93 +79,43 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
-  public void courseMaterialManagementButtonTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+  public void materialManagementAddChapterTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-    try{
-      login();
-      maximizeWindow();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".icon-cogs");
-        hoverOverElement(".icon-cogs");
-        waitForPresentAndVisible(".icon-edit-materials");
-        assertPresent(".icon-edit-materials");
-      } finally {
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-  
-  @Test
-  public void courseManagementButtonExistsTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-    try{
-      login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-      try {
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".icon-cogs");
-        assertPresent(".icon-cogs");
-      } finally {
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-  
-  @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.CHROME_HEADLESS,
-      TestEnvironments.Browser.SAFARI,
-    }
-  )
-  public void courseTOCExistsTest() throws Exception {
-    maximizeWindow();
-    
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try {
-      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-      
-      WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-          "1.0 Testimateriaali", "text/html;editor=CKEditor", 
-          "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-          "EXERCISE");
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       try {
-        WorkspaceFolder workspaceFolder2 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 2, "Test material 2.0", "DEFAULT");
-  
-        WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder2.getId(), 
-            "2.0 Testmaterial", "text/html;editor=CKEditor", 
-            "<html><body><p>Test Matherial:  Lorem ipsum dolor sit amet </p><p>Senim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 1l, 
-            "EXERCISE");
-        try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent("#workspaceMaterialsTOCWrapper");
-          assertVisible("#workspaceMaterialsTOCWrapper");
-        } finally {
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
-        }
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-add");
+        click(".material-admin-panel--master-functions .button-pill__icon.icon-add");
+        waitForPresent(".material-admin-panel--chapter-functions .icon-edit");
+        click(".material-admin-panel--chapter-functions .icon-edit");
+        waitForPresentAndVisible(".material-editor--visible .material-editor__title");
+        clearElement(".material-editor--visible .material-editor__title");
+        sendKeys(".material-editor--visible .material-editor__title", "Test title");
+        waitAndClick(".button-pill__icon.icon-publish");
+        waitClassPresent(".material-editor__buttonset-secondary .button-pill--material-editor-publish-page", "button-pill--disabled");
+        sleep(500);
+        waitAndClick(".button-pill--material-page-close-editor");
+        waitForNotVisible(".tabs--material-editor");
+        assertText(".content-panel__chapter-title ", "Test title");
       } finally {
-        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
-      WireMock.reset();
+      mockBuilder.wiremockReset();
     }
   }
    
@@ -166,11 +130,22 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   )
   public void courseMaterialTOCHighlightTest() throws Exception {
-    maximizeWindow();
-    
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
@@ -186,27 +161,40 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "EXERCISE");
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitAndClick(String.format("a[href='#page-%d']", htmlMaterial2.getId()));
-          waitForPresent(String.format("a.active[href='#page-%d']", htmlMaterial2.getId()));
-          assertVisible(String.format("a.active[href='#page-%d']", htmlMaterial2.getId()));
+          waitAndClick(String.format("a[href='#p-%d']", htmlMaterial2.getId()));
+          waitForPresent(String.format("a.active[href='#p-%d']", htmlMaterial2.getId()));
+          assertVisible(String.format("a.active[href='#p-%d']", htmlMaterial2.getId()));
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
         }
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        deleteWorkspace(workspace.getId());
       }
       
     } finally {
-      deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
   }
 
   @Test
   public void courseMaterialEvaluatedClassTest() throws Exception {
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
@@ -216,15 +204,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         selectFinnishLocale();
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".muikku-page-assignment-type.assignment");
-        assertTextIgnoreCase(".muikku-page-assignment-type.assignment", "Arvioitava tehtävä");
+        waitForPresent(".button--muikku-submit-assignment");
+        assertTextIgnoreCase(".button--muikku-submit-assignment", "Palauta tehtävä");
       } finally {
-        WireMock.reset();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
 
