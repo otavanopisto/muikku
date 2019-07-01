@@ -1498,12 +1498,12 @@
 
 // Assignment assessment 
 .material-page__assignment-assessment {
-  border-radius: 3px;
-  margin: 20px 0;
-  padding: 10px;
+  border-top: solid 1px $color-application-panel-box-border;
+  margin: 20px -20px 0;
+  padding: 10px 20px 20px;
 }
 
-.material-page__assignment-assessment-verbal {
+.material-page__assignment-assessment-literal {
   
 }
 
