@@ -3,10 +3,7 @@ import {ActionType} from '~/actions';
 export type WorkspaceAssessementState = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
 export interface WorkspaceStudentActivityType {
-  assessmentState: {
-    date: string,
-    state: WorkspaceAssessementState
-  },
+  assessmentState: WorkspaceStudentAssessmentStateType,
   evaluablesAnswered: number,
   evaluablesAnsweredLastDate: string,
   evaluablesDonePercent: number,

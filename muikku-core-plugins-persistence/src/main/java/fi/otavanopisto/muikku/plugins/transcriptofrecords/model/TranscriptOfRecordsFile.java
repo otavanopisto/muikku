@@ -17,6 +17,7 @@ public class TranscriptOfRecordsFile {
       Long userEntityId,
       String fileName,
       String contentType,
+      Long size,
       Boolean archived,
       String title,
       String description) {
@@ -24,6 +25,7 @@ public class TranscriptOfRecordsFile {
     this.userEntityId = userEntityId;
     this.fileName = fileName;
     this.contentType = contentType;
+    this.size = size;
     this.archived = archived;
     this.title = title;
     this.description = description;
@@ -85,6 +87,14 @@ public class TranscriptOfRecordsFile {
     this.id = id;
   }
 
+  public Long getSize() {
+    return size;
+  }
+
+  public void setSize(Long size) {
+    this.size = size;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -112,4 +122,7 @@ public class TranscriptOfRecordsFile {
   @NotNull
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
+  
+  private Long size;
+
 }
