@@ -204,10 +204,14 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
             const url = this.props.fileUrlGenerator(file);
             return <div className="file-uploader__item" key={file[this.props.fileIdKey]}>
               <span className="file-uploader__item-attachment-icon icon-attachment"></span>
-              <span className="file-uploader__item-title">
-                {file[this.props.fileNameKey]}
-                {this.props.showURL ? " - " + url : null}
-              </span>
+              {this.props.showURL ? <span className="file-uploader__item-title-container">
+                <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
+                <span className="file-uploader__item-url">{url}</span></span>
+                : 
+                <span className="file-uploader__item-title-container">
+                  <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
+                </span>
+                }
               <Link href={url} openInNewTab={file[this.props.fileNameKey]} className="file-uploader__item-download-icon icon-download" title={this.props.downloadFileText ? this.props.downloadFileText : ""}/>
               <DialogDeleteElement file={file} {...this.props.deleteDialogElementProps}>
                 <Link disablePropagation className="file-uploader__item-delete-icon icon-delete" title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
@@ -246,7 +250,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
                  progress={uploadingFile.progress}/>
               </div>;
           })}
-        </div> : this.props.emptyText ? <div className="file-uploader__items-container">{this.props.emptyText}</div> : null
+        </div> : this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
       )}
     </div>
   }

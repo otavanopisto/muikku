@@ -7,6 +7,14 @@
   border: 2px solid $color-tertiary;
 }
 
+.file-uploader--taskfield {
+  border: solid 2px $taskfield-border-color;
+}
+
+.file-uploader--material-editor {
+  border: solid 2px lighten($color-material-page-admin-panel-main-color,20%);
+}
+
 .file-uploader__field-container {
   padding: 10px;
   position: relative;
@@ -35,6 +43,10 @@
 .file-uploader__items-container {
   border-top: 3px dotted lighten($taskfield-border-color,20%);
   position: relative;
+}
+
+.file-uploader__items-container--empty {
+  padding: 10px; 
 }
 
 .file-uploader__item {
@@ -66,11 +78,22 @@
     margin-right: 10px;
   }
 
-  .file-uploader__item-title {
+  .file-uploader__item-title-container {
     @include text;
+    display: flex;
     flex-basis: auto;
+    flex-flow: column nowrap; 
     flex-grow: 1;
     flex-shrink: 1;
+  }
+
+  .file-uploader__item-title {
+  
+  }
+
+  .file-uploader__item-url {
+    color: $color-info;
+    font-style: italic;
   }
 
   .file-uploader__item-download-icon {
