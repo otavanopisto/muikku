@@ -216,9 +216,8 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
           })}
           {this.state.uploadingValues.map((uploadingFile, index) => {
             if (uploadingFile.failed) {
-              return <div className="file-uploader__item" key={index}>
-                <span className="file-uploader__item-attachment-icon icon-attachment"></span>
-                <span className="file-uploader__item-title file-uploader__item-title--FAILED-TO-UPLOAD">
+              return <div className="file-uploader__item file-uploader__item--FAILED-TO-UPLOAD" key={index}>
+                <span className="file-uploader__item-title">
                   {uploadingFile.name}
                 </span>
                 <Link disablePropagation className="file-uploader__item-delete-icon icon-delete"

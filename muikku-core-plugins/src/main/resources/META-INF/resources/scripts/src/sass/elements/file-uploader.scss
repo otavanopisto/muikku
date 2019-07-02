@@ -45,6 +45,18 @@
   padding: 0 5px;
   transition: all 0.3s ease-in-out;
 
+  &.file-uploader__item--FAILED-TO-UPLOAD {
+
+    .file-uploader__item-title {
+      color: $color-fatal;
+      margin: 0 0 0 27px;
+    }
+
+    .file-uploader__item-attachment-icon {
+      color: $color-disabled;
+    }
+  }
+
   .file-uploader__item-attachment-icon {
     display: inline-flex;
     flex-basis: auto;
@@ -59,11 +71,6 @@
     flex-basis: auto;
     flex-grow: 1;
     flex-shrink: 1;
-
-    &.file-uploader__item-title--FAILED-TO-UPLOAD {
-      color: $color-fatal;
-      font-style: italic;
-    }
   }
 
   .file-uploader__item-download-icon {
