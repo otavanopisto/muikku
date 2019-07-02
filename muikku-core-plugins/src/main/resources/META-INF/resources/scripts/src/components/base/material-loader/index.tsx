@@ -486,30 +486,21 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     let viewForAdminPanel = this.props.isInFrontPage ? "workspace-description" : "workspace-materials";
     let isHidden = this.props.material.hidden;
+
+    const assignmentHasAssessment = this.props.material.evaluation || (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo)  
     
-    const verbalAssesment = (this.props.material.evaluation && this.props.material.evaluation.verbalAssessment) ||
+    const assessmentLiteral = (this.props.material.evaluation && this.props.material.evaluation.verbalAssessment) ||
       (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && this.props.compositeReplies.evaluationInfo.text);
-    
-    const grade = (this.props.material.evaluation && this.props.material.evaluation.grade) ||
+
+    const assessmentGrade = (this.props.material.evaluation && this.props.material.evaluation.grade) ||
       (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && this.props.compositeReplies.evaluationInfo.grade);
-    
-    const date = (this.props.material.evaluation && this.props.material.evaluation.evaluated) ||
+
+    const assessmentDate = (this.props.material.evaluation && this.props.material.evaluation.evaluated) ||
       (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && this.props.compositeReplies.evaluationInfo.date);
-    
+
     let iconForTitle = null;
+
     let className = `material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`;
-    if (this.props.compositeReplies && this.props.compositeReplies.state) {
-      className += " material-page--" + this.props.compositeReplies.state;
-      if (this.props.compositeReplies.state === "FAILED" || this.props.compositeReplies.state === "INCOMPLETE") {
-        iconForTitle = "thumb-down-alt";
-      } else if (this.props.compositeReplies.state === "PASSED") {
-        iconForTitle = "thumb-up-alt";
-      } else if (this.props.compositeReplies.state === "UNANSWERED") {
-        iconForTitle = null;
-      } else {
-        iconForTitle = "checkmark";
-      }
-    }
 
     return <article className={className} ref="root" id={this.props.id}>
       {this.props.editable ? <div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
@@ -525,7 +516,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       </div> : null}
       {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>
         {this.props.material.title}
-        {iconForTitle ? <span className={`material-page__title-icon icon-${iconForTitle}`}/> : null}
       </h2> : null}
       <div className="react-required-container" onClick={this.stopPropagation}>
         {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
@@ -557,21 +547,21 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           {Object.keys(this.state.answerRegistry).filter((key)=>this.state.answerRegistry[key]).length} / {Object.keys(this.state.answerRegistry).length}
         </span>
       </div> : null}
-      {verbalAssesment ?
-        <div className="material-page__verbal-assessment">
-          <div className="rich-text" dangerouslySetInnerHTML={{__html: verbalAssesment}}></div>
+      {assignmentHasAssessment ?
+        <div className="material-page__assignment-assessment">
+        {assessmentLiteral ?
+          <div className="material-page__assignment-assessment-literal">
+            <div className="rich-text" dangerouslySetInnerHTML={{__html: assessmentLiteral}}></div>
+          </div>
+        : null}
+        {assessmentGrade ?
+          <div className="material-page__assignment-assessment-grade">{assessmentGrade}</div>
+        : null}
+        {assessmentDate ?
+          <div className="material-page__assignment-assessment-date">{this.props.i18n.time.format(assessmentDate)}</div>
+        : null}
         </div>
-     : null}
-      {grade ?
-          <div className="material-page__grade">
-            {grade}
-          </div>
-       : null}
-      {date ?
-          <div className="material-page__date">
-            {this.props.i18n.time.format(date)}
-          </div>
-       : null}
+      : null}
       {(this.props.material.producers && this.props.material.producers.length) || this.props.material.license ?
         <div className="material-page__metadata-container">
           {this.props.material.producers && this.props.material.producers.length ?

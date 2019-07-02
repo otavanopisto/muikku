@@ -711,100 +711,6 @@
   }
 }
 
-// File field
-.material-page__filefield-wrapper {
-  
-}
-
-.material-page__filefield {
-  @include taskfield-text;
-  @include taskfield-defaults;
-  margin: 4px 0 0;
-  position: relative;
-  width: 100%;
-
-  > input[type="file"] {
-    bottom: 0;
-    cursor: pointer;
-    left: 0;
-    height: 100%;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 100%;
-  }
-}
-
-.material-page__filefield-description {
-  padding: 15px 10px;
-  text-align: center;
-}
-
-.material-page__filefield-files-container {
-  border-top: 3px dotted lighten($taskfield-border-color,20%);
-  position: relative;
-}
-
-.material-page__filefield-file-container {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 5px;
-  padding: 0 5px;
-  transition: all 0.3s ease-in-out;
-
-  // These links needs to be nested here as rich-text css rules overrides them if not
-  .material-page__filefield-remove-file-button {
-    background: transparent;
-    color: $color-fatal;
-    cursor: pointer;
-    font-size: 1.0625rem;
-    height: auto;
-    margin: 0 0 0 10px;
-    padding: 5px;
-    text-decoration: none;
-    width: auto;
-  }
-
-  .material-page__filefield-download-file-button {
-    background: transparent;
-    color: $color-info;
-    cursor: pointer;
-    font-size: 1.0625rem;
-    height: auto;
-    margin: 0 0 0 10px;
-    padding: 5px;
-    text-decoration: none;
-    width: auto;
-  }
-}
-
-.material-page__filefield-file {
-  @include text;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-
-  &.material-page__filefield-file--FAILED-TO-UPLOAD {
-    color: $color-fatal;
-    font-style: italic;
-  }
-}
-
-.material-page__filefield-file-upload-progressbar {
-  @include text;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-weight: 400;
-}
-
-.material-page__filefield-file-upload-percentage {
-  line-height: 1;
-  margin: 0 0 5px;
-}
-
 // Audio field
 .material-page__audiofield-wrapper {
 
@@ -1493,5 +1399,24 @@
 }
 
 .material-page__mathfield-toolbar {
+  
+}
+
+// Assignment assessment 
+.material-page__assignment-assessment {
+  border-top: solid 1px $color-application-panel-box-border;
+  margin: 20px -20px 0;
+  padding: 10px 20px 20px;
+}
+
+.material-page__assignment-assessment-literal {
+  
+}
+
+.material-page__assignment-assessment-grade {
+  
+}
+
+.material-page__assignment-assessment-date {
   
 }
