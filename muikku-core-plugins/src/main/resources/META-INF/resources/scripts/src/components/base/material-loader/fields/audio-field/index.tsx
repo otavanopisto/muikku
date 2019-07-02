@@ -335,7 +335,7 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
 
     //if we have values
     if (this.state.values.length){
-      //we gotta map them
+      //we need to map them
       dataInContainer = this.state.values.map((value, index)=>{
         if (!value.uploading) {
           //if the value is not uploading, we set it as static

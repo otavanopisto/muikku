@@ -22,6 +22,8 @@ interface FileUploaderProps {
   deleteDialogElement: any,
   deleteDialogElementProps?: any,
   emptyText?: string,
+  deleteFileText?: string,
+  downloadFileText?: string,
   hintText: string,
   showURL?: boolean,
   readOnly?: boolean,
@@ -189,54 +191,43 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
   }
   render(){
     const DialogDeleteElement = this.props.deleteDialogElement;
-    return <div>
-      <div className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`} style={{
-        position: "relative"
-      }}>
+    return <div className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
+      <div className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
         <span className="file-uploader__hint">{this.props.hintText}</span>
         {this.props.readOnly ? null :
-          (<input type="file" multiple style={{
-            cursor: "pointer",
-            opacity: 0,
-            left: 0,
-            top: 0,
-            right: 0,
-            bottom: 0,
-            width: "100%",
-            position: "absolute"
-          }} onChange={this.onFileInputChange}/>)
+          (<input type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange}/>)
       }
     </div>
       {this.props.files && (this.props.files.length ?
-        <div className={`uploaded-files ${this.props.modifier ? "uploaded-files--" + this.props.modifier : ""}`}>
+        <div className={`file-uploader__items-container ${this.props.modifier ? "file-uploader__items--" + this.props.modifier : ""}`}>
           {this.props.files.map((file)=>{
             const url = this.props.fileUrlGenerator(file);
-            return <div className="uploaded-files__item" key={file[this.props.fileIdKey]}>
-              <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
-              <Link className="uploaded-files__item-title" href={url} openInNewTab={file[this.props.fileNameKey]}>
+            return <div className="file-uploader__item" key={file[this.props.fileIdKey]}>
+              <span className="file-uploader__item-attachment-icon icon-attachment"></span>
+              <span className="file-uploader__item-title">
                 {file[this.props.fileNameKey]}
                 {this.props.showURL ? " - " + url : null}
-              </Link>
+              </span>
+              <Link href={url} openInNewTab={file[this.props.fileNameKey]} className="file-uploader__item-download-icon icon-download" title={this.props.downloadFileText ? this.props.downloadFileText : ""}/>
               <DialogDeleteElement file={file} {...this.props.deleteDialogElementProps}>
-                <Link disablePropagation as="span" className="uploaded-files__item-delete-icon icon-delete"/>
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-delete" title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
               </DialogDeleteElement>
             </div>
           })}
           {this.state.uploadingValues.map((uploadingFile, index) => {
             if (uploadingFile.failed) {
-              return <div className="uploaded-files__item" key={index}>
-                <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
-                <Link className="uploaded-files__item-title">
+              return <div className="file-uploader__item" key={index}>
+                <span className="file-uploader__item-attachment-icon icon-attachment"></span>
+                <span className="file-uploader__item-title file-uploader__item-title--FAILED-TO-UPLOAD">
                   {uploadingFile.name}
-                </Link>
-                <Link disablePropagation as="span" className="uploaded-files__item-delete-icon icon-delete"
-                  onClick={this.removeFailedFileAt.bind(this, index)}/>
+                </span>
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-delete"
+                  onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
               </div>
             }
 
-            return <div className="material-page__filefield-file-container" key={index}>
-              <div className="material-page__filefield-file">
-                <ProgressBarLine containerClassName="material-page__filefield-file-upload-progressbar" options={{
+            return <div className="file-uploader__item" key={index}>
+                <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
                   strokeWidth: 1,
                   duration: 1000,
                   color: "#72d200",
@@ -244,7 +235,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
                   trailWidth: 1,
                   svgStyle: {width: "100%", height: "4px"},
                   text: {
-                    className: "material-page__filefield-file-upload-percentage",
+                    className: "file-uploader__item-upload-percentage",
                     style: {
                        right: "100%"
                     }
@@ -254,10 +245,9 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
                 trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
                 text={this.props.uploadingTextProcesser(Math.round(uploadingFile.progress * 100))}
                  progress={uploadingFile.progress}/>
-               </div>
               </div>;
           })}
-        </div> : this.props.emptyText ? <div className="file-uploader__files-container">{this.props.emptyText}</div> : null
+        </div> : this.props.emptyText ? <div className="file-uploader__items-container">{this.props.emptyText}</div> : null
       )}
     </div>
   }
