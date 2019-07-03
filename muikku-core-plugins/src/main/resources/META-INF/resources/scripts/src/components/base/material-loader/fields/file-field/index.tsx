@@ -140,7 +140,7 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
            this.onFileAdded(file, data);
          }} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")} deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")} downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")}
          files={this.state.values} fileIdKey="fileId" fileNameKey="name" fileUrlGenerator={(f)=>`/rest/workspace/fileanswer/${f.fileId}`}
-         deleteDialogElement={ConfirmRemoveDialog} deleteDialogElementProps={{onConfirm: this.removeFile}} modifier="file-field"
+         deleteDialogElement={ConfirmRemoveDialog} deleteDialogElementProps={{onConfirm: this.removeFile}} modifier="taskfield"
          uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("plugin.workspace.fileField.statusUploading", percent)}/>
       </div>
     </div>
