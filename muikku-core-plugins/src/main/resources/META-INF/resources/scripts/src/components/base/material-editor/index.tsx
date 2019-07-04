@@ -419,8 +419,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             {this.props.editorState.canSetProducers ?
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.producers")}</h3>
-                {this.props.editorState.currentDraftNodeValue.producers? 
-                  <AddProducer modifier="add-material-producer" removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.props.editorState.currentDraftNodeValue.producers} i18n={this.props.i18n}/>
+                {this.props.editorState.currentDraftNodeValue.producers?
+                  <div className="material-editor__add-producer-container">
+                    <AddProducer modifier="add-material-producer" removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.props.editorState.currentDraftNodeValue.producers} i18n={this.props.i18n}/>
+                  </div>
               : null}
 
               </div>
@@ -436,11 +438,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           name: this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.tabs.label.attachments"),
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
-            
+
             <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor"
             files={this.props.editorState.currentNodeValue.childrenAttachments} fileIdKey="materialId" fileNameKey="title"
             fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/${this.props.editorState.currentNodeValue.path}/${a.path}`}
-            deleteDialogElement={ConfirmRemoveAttachment} emptyText="TODO empty text" hintText="TODO hint text" showURL/>
+            deleteDialogElement={ConfirmRemoveAttachment} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")} deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")} downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL/>
           </div>,
         })
       }

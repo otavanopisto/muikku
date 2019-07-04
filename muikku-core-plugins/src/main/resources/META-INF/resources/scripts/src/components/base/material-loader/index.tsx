@@ -414,7 +414,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
 
     //Setting this up
-    
     let isHidden = this.props.material.hidden;
     
     const materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
@@ -436,15 +435,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         this.state,
         this.stateConfiguration
       )}
-      {/* Editor buttonset */}
-      {/* title */}
-      {/* content */}
-      {/* buttons */}
-      {/* correct answer counter */}
-      {/* verbal assesment */}
-      {/* grade */}
-      {/* date */}
-      {/* producers license */}
     </article>
   }
 }
