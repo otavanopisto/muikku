@@ -7,6 +7,7 @@ const ProgressBarLine = require('react-progressbar.js').Line;
 interface FileUploaderProps {
   // Default uploading process
   onFileError?: (file: File, err:Error)=>any,
+  fileTooLargeErrorText?: string;
   onFileSuccess?: (file: File, response: any)=>any,
   formDataGenerator?: (file: File, formData: FormData) => any,
   uploadingTextProcesser?: (i: number) => string,
@@ -39,6 +40,8 @@ interface FileUploaderState {
   }>,
 }
 
+const MAX_BYTES = 10000000;
+
 export default class FileUploader extends React.Component<FileUploaderProps, FileUploaderState> {
   constructor(props: FileUploaderProps){
     super(props);
@@ -66,6 +69,21 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
     //get the file from that index
     let file:File = this.state.uploadingValues[index].file;
     //we append it in the way the server expects
+    
+    if (file.size >= MAX_BYTES) {
+      //on error we do similarly that on success
+      let newValues = [...this.state.uploadingValues];
+      const successIndex = newValues.findIndex(f => f.file === file);
+      newValues[successIndex] = {...this.state.uploadingValues[successIndex]}
+      newValues[successIndex].failed = true;
+      //and call set state
+      this.setState({
+        uploadingValues: newValues
+      });
+      
+      this.props.onFileError && this.props.onFileError(file, new Error(this.props.fileTooLargeErrorText));
+      return;
+    }
     
     this.props.formDataGenerator(file, formData);
     
@@ -156,38 +174,6 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
         this.processFileAt(realIndex);
       })
     });
-
-//    Array.prototype.slice.call(event.target.files).forEach((file: File)=>{
-//      let formData = new FormData();
-//      this.props.formDataGenerator(file, formData);
-////      formData.append("upload", file);
-////      formData.append("title", file.name);
-////      formData.append("description", "");
-////      formData.append("userIdentifier", this.props.targetUserIdentifier);
-//      
-//      
-//      
-//      $.ajax({
-//        url: this.props.url,
-//        type: 'POST',
-//        data: formData,
-//        success: (dataString: string)=>{
-//          let response = null;
-//          try {
-//            response = JSON.parse(dataString);
-//          } catch (e){
-//          }
-//          
-//          this.props.onFileSuccess && this.props.onFileSuccess(file, response);
-//        },
-//        error: (e: Error)=>{
-//          this.props.onFileError && this.props.onFileError(file, e);
-//        },
-//        contentType: false,
-//        processData: false,
-//        cache: false
-//      });
-//    });
   }
   render(){
     const DialogDeleteElement = this.props.deleteDialogElement;
