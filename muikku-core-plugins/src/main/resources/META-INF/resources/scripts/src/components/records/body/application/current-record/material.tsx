@@ -6,6 +6,12 @@ import { WorkspaceType, MaterialContentNodeType } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
+import { MaterialLoaderContent } from "~/components/base/material-loader/content";
+import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
+import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
+import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
+import { MaterialLoaderDate } from "~/components/base/material-loader/date";
+import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
 
 interface MaterialProps {
   material: MaterialContentNodeType,
@@ -51,7 +57,18 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
         </div>
         {this.state.opened ? <div className="application-list__item-body text">
           <MaterialLoader material={this.props.material} workspace={this.props.workspace}
-            readOnly loadCompositeReplies/>
+            readOnly loadCompositeReplies>
+            {(props, state, stateConfiguration) => {
+              return <div>
+                <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
+                <MaterialLoaderCorrectAnswerCounter {...props} {...state}/>
+                <MaterialLoaderAssesment {...props} {...state}/>
+                <MaterialLoaderGrade {...props} {...state}/>
+                <MaterialLoaderDate {...props} {...state}/>
+                <MaterialLoaderProducersLicense {...props} {...state}/>
+              </div>
+            }}
+          </MaterialLoader>
         </div> : null}
       </div>
     </div>

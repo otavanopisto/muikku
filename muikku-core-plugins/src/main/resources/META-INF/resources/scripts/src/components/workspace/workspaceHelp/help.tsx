@@ -8,6 +8,10 @@ import { StatusType } from "~/reducers/base/status";
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
 import MaterialLoader from "~/components/base/material-loader";
+import { MaterialLoaderContent } from "~/components/base/material-loader/content";
+import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
+import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
+import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
 
 interface HelpPanelProps {
   status: StatusType,
@@ -30,7 +34,16 @@ class HelpPanel extends React.Component<HelpPanelProps, HelpPanelState> {
         {this.props.workspace && <MaterialLoader editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
           modifiers="workspace-help" material={this.props.workspace.help} workspace={this.props.workspace}
           canDelete={false} canHide={false} disablePlugins
-          readOnly/>}
+          readOnly>
+            {(props, state, stateConfiguration) => {
+              return <div>
+                <MaterialLoaderEditorButtonSet {...props} {...state}/>
+                <MaterialLoaderTitle {...props} {...state}/>
+                <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
+                <MaterialLoaderProducersLicense {...props} {...state}/>
+              </div>
+            }}
+          </MaterialLoader>}
       </div>
     </div>);
   }

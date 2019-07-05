@@ -11,6 +11,10 @@ import '~/sass/elements/material-page.scss';
 import '~/sass/elements/material-admin.scss';
 
 import MaterialLoader from "~/components/base/material-loader";
+import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
+import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
+import { MaterialLoaderContent } from "~/components/base/material-loader/content";
+import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
 
 interface DescriptionPanelProps {
   status: StatusType,
@@ -34,7 +38,16 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
       <div className="panel__body">
         {this.props.workspace && <MaterialLoader isInFrontPage editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
           modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
-          canDelete={false} canHide={false} disablePlugins readOnly/>}
+          canDelete={false} canHide={false} disablePlugins readOnly>
+          {(props, state, stateConfiguration) => {
+            return <div>
+              <MaterialLoaderEditorButtonSet {...props} {...state}/>
+              <MaterialLoaderTitle {...props} {...state}/>
+              <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
+              <MaterialLoaderProducersLicense {...props} {...state}/>
+            </div>
+          }}  
+        </MaterialLoader>}
       </div>
     </div>;
   }

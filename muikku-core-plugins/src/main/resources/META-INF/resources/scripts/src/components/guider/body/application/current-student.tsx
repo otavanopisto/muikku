@@ -181,6 +181,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         }} onFileSuccess={(file: File, data: UserFileType)=>{
           this.props.addFileToCurrentStudent(data);
         }} hintText={this.props.i18n.text.get("plugin.guider.user.details.files.hint")}
+        fileTooLargeErrorText={this.props.i18n.text.get("TODOERRMSG FILE TOO LARGE")}
         files={this.props.guider.currentStudent.files} fileIdKey="id" fileNameKey="title" fileUrlGenerator={(f)=>`/rest/guider/files/${f.id}/content`}
         deleteDialogElement={FileDeleteDialog} modifier="guider" emptyText={this.props.i18n.text.get("plugin.guider.user.details.files.empty")}
         uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("TODO progress text", percent)}/>
