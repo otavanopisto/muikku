@@ -180,7 +180,7 @@ export interface MaterialLoaderProps {
 
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
-  compositeReplies: MaterialCompositeRepliesType,
+  compositeRepliesInState: MaterialCompositeRepliesType,
   
   //whether the answers are visible and checked
   answersVisible: boolean,
@@ -213,7 +213,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
 
     //initial state has no composite replies and the answers are not visible or checked
     let state:MaterialLoaderState = {
-      compositeReplies: null,
+      compositeRepliesInState: null,
       answersVisible: false,
       answersChecked: false,
       
@@ -269,7 +269,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //and there's a material
     if (nextProps.answerable && nextProps.material){
       //we get the composite replies
-      let compositeReplies = nextProps.compositeReplies || nextState.compositeReplies;
+      let compositeReplies = nextProps.compositeReplies || nextState.compositeRepliesInState;
 
       //The state configuration
       this.stateConfiguration = STATES.filter((state:any)=>{
@@ -313,13 +313,13 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //TODO maybe we should get rid of this way to load the composite replies
     //after all it's learned that this is part of the workspace
     if (this.props.loadCompositeReplies){
-      let compositeReplies:MaterialCompositeRepliesType = compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
-      if (!compositeReplies){
-        compositeReplies = (await promisify(mApi().workspace.workspaces.materials.compositeMaterialReplies
+      let compositeRepliesInState:MaterialCompositeRepliesType = compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
+      if (!compositeRepliesInState){
+        compositeRepliesInState = (await promisify(mApi().workspace.workspaces.materials.compositeMaterialReplies
             .read(this.props.workspace.id, this.props.material.assignment.id,
                 {userEntityId: (window as any).MUIKKU_LOGGED_USER_ID}), 'callback')()) as MaterialCompositeRepliesType;
 
-        materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = compositeReplies || null;
+        materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = compositeRepliesInState || null;
 
         setTimeout(()=>{
           delete compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
@@ -327,7 +327,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       }
 
       this.setState({
-        compositeReplies
+        compositeRepliesInState
       });
     }
   }
@@ -340,7 +340,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //So now we need that juicy success state
     if (this.stateConfiguration['success-state']){
       //Get the composite reply
-      let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
+      let compositeReplies = (this.props.compositeReplies || this.state.compositeRepliesInState);
       //We make it be the success state that was given, call this function
       //We set first the state we want
       //false because we want to call and update the state server side
@@ -426,7 +426,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       {this.props.children(
         {
           ...this.props,
-          compositeReplies: this.props.compositeReplies || this.state.compositeReplies,
+          compositeReplies: this.props.compositeReplies || this.state.compositeRepliesInState,
           onAnswerChange: this.onAnswerChange,
           onAnswerCheckableChange: this.onAnswerCheckableChange,
           onPushAnswer: this.onPushAnswer,
