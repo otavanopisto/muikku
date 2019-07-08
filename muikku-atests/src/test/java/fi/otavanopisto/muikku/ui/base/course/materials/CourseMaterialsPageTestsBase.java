@@ -217,9 +217,22 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
   @Test
   public void courseMaterialExerciseClassTest() throws Exception {
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
@@ -229,14 +242,13 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         selectFinnishLocale();
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".muikku-page-assignment-type.exercise");
-        assertTextIgnoreCase(".muikku-page-assignment-type.exercise", "Harjoitustehtävä");
+        waitForPresent(".button--muikku-check-exercises");
+        assertTextIgnoreCase(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
   }
@@ -253,9 +265,22 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   )
   public void answerTextFieldTestAdmin() throws Exception {
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
@@ -265,23 +290,22 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndSendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitForPresent(".material-page__textfield");
+        selectFinnishLocale();
+        assertVisible(".material-page__textfield");
+        assertValue(".material-page__textfield", "");
+        waitAndSendKeys(".material-page__textfield", "field value");
+        waitAndClick(".button--muikku-check-exercises");
+        waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
+        assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        
+        waitForPresent(".material-page__textfield");
+        assertValue(".material-page__textfield", "field value");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
   }
@@ -301,10 +325,21 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+
+    try {
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
     login();
-    try{
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
@@ -317,16 +352,17 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           mockBuilder.mockLogin(student);
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-          
-          assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-          assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-          assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-          sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-          waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+          waitForPresent(".material-page__textfield");
+          selectFinnishLocale();
+          assertVisible(".material-page__textfield");
+          assertValue(".material-page__textfield", "");
+          waitAndSendKeys(".material-page__textfield", "field value");
+          waitAndClick(".button--muikku-check-exercises");
+          waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
+          assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-          assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+          waitForPresent(".material-page__textfield");
+          assertValue(".material-page__textfield", "field value");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -349,10 +385,22 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   )
   public void answerDropdownTestAdmin() throws Exception {
-    loginAdmin();
-    maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
@@ -362,22 +410,19 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-        selectOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "2");
-        waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitForPresent(".material-page__selectfield");
+        selectOption(".material-page__selectfield", "2");
+//      TODO: Replace when save indicator is implemented.
+        sleep(1500);
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertSelectedOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "dos");
+        waitForPresent(".material-page__selectfield");
+        assertSelectedOption(".material-page__selectfield", "dos");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
       
     } finally {
-      deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
   }
@@ -396,11 +441,21 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
+
+    try {
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
     login();
-    try{
-      maximizeWindow();    
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
@@ -408,19 +463,19 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "Test", "text/html;editor=CKEditor", 
             "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-22p0Ll4KipuGHcP9n6W1qXBU&quot;,&quot;listType&quot;:&quot;dropdown&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;un&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;dos&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;tres&quot;,&quot;correct&quot;:false}]}\" /><select name=\"muikku-field-22p0Ll4KipuGHcP9n6W1qXBU\"></select></object></p>", 1l, 
             "EXERCISE");
-        
+        logout();        
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+          mockBuilder.mockLogin(student);
+          login();
           
-          assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-          assertValue(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "");
-          assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
-          selectOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "2");
-          waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-          assertSelectedOption(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "dos");        
+          waitForPresent(".material-page__selectfield");
+          selectOption(".material-page__selectfield", "2");
+//        TODO: Replace when save indicator is implemented.
+          sleep(1500);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".material-page__selectfield");
+          assertSelectedOption(".material-page__selectfield", "dos");       
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -444,10 +499,22 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   )
   public void answerRadioButtonsTestAdmin() throws Exception {
-    loginAdmin();
-    maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
@@ -457,22 +524,18 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(".muikku-select-field input[value=\"1\"]");
-        waitClassPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
+        waitForPresent(".material-page__radiobutton-items-wrapper");
+        waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
+        sleep(1500);
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true);
-        
+        waitForPresent(".material-page__radiobutton-items-wrapper");
+        assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
       
     } finally {
-      deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
   }
@@ -491,28 +554,38 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
+
+    try {
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
     login();
-    try{
-      maximizeWindow();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
             "Test", "text/html;editor=CKEditor", 
             "<p><object type=\"application/vnd.muikku.field.select\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB&quot;,&quot;listType&quot;:&quot;radio-vertical&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Koi&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Koppis&quot;,&quot;correct&quot;:false},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Muurahainen&quot;,&quot;correct&quot;:true}]}\" /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"1\" /><label>Koi</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"2\" /><label>Koppis</label><br /><input name=\"muikku-field-d9DLvRe9kvMvvOCdtFqH4TiB\" type=\"radio\" value=\"3\" /><label>Muurahainen</label><br /></object></p><p>&nbsp;</p>", 1l, 
             "EXERCISE");
+        logout();        
         try {
+          mockBuilder.mockLogin(student);
+          login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-          
-          assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-          assertClassNotPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
-          waitAndClick(".muikku-select-field input[value=\"1\"]");
-          waitClassPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
+          waitForPresent(".material-page__radiobutton-items-wrapper");
+          waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
+          sleep(1500);
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-          assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true); 
+          waitForPresent(".material-page__radiobutton-items-wrapper");
+          assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -535,10 +608,23 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   )
   public void answerCheckboxTestAdmin() throws Exception {
-    loginAdmin();
-    maximizeWindow();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
@@ -548,22 +634,18 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
-        waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
+        waitAndClickXPath("//input[@type='checkbox' and @value='1']");
+        //      TODO: That saved indicator stuff
+        sleep(1500);
+//        waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
-        assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
-        
+        waitForPresentXPath("//input[@type='checkbox']");
+        assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
-      
     } finally {
-      deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
   }
@@ -582,11 +664,17 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(student).build();
+
+    try {
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
     login();
-    try{
-      maximizeWindow();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
@@ -596,17 +684,16 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           "EXERCISE");
         
         try {
+          mockBuilder.mockLogin(student);
+          login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-          
-          assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
-          assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
-          waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
-          waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
+          waitAndClickXPath("//input[@type='checkbox' and @value='1']");
+          //      TODO: That saved indicator stuff
+          sleep(1500);
+//          waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
-          assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
-          
+          waitForPresentXPath("//input[@type='checkbox']");
+          assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -631,50 +718,61 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     }
   )
   public void answerConnectFieldByClickingTestAdmin() throws Exception {
-    loginAdmin();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
     try {
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      
       WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
           "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;},{&quot;name&quot;:&quot;4&quot;,&quot;text&quot;:&quot;Kinkku&quot;},{&quot;name&quot;:&quot;5&quot;,&quot;text&quot;:&quot;Leipä&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;},{&quot;name&quot;:&quot;D&quot;,&quot;text&quot;:&quot;Kebab&quot;},{&quot;name&quot;:&quot;E&quot;,&quot;text&quot;:&quot;Halko&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;},{&quot;field&quot;:&quot;4&quot;,&quot;counterpart&quot;:&quot;D&quot;},{&quot;field&quot;:&quot;5&quot;,&quot;counterpart&quot;:&quot;E&quot;}]}\"/></object><br/></p>", 1l, 
+          "<p><object type=\"application/vnd.muikku.field.connect\"><param name=\"type\" value=\"application/json\"/><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-k08yrkwguDBhVbyFyqzvi0KB&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;text&quot;:&quot;Nakki&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;text&quot;:&quot;Peruna&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;text&quot;:&quot;Juusto&quot;}],&quot;counterparts&quot;:[{&quot;name&quot;:&quot;A&quot;,&quot;text&quot;:&quot;Keppi&quot;},{&quot;name&quot;:&quot;B&quot;,&quot;text&quot;:&quot;Pulla&quot;},{&quot;name&quot;:&quot;C&quot;,&quot;text&quot;:&quot;Hampurilainen&quot;}],&quot;connections&quot;:[{&quot;field&quot;:&quot;1&quot;,&quot;counterpart&quot;:&quot;A&quot;},{&quot;field&quot;:&quot;2&quot;,&quot;counterpart&quot;:&quot;B&quot;},{&quot;field&quot;:&quot;3&quot;,&quot;counterpart&quot;:&quot;C&quot;}]}\"/></object><br/></p>", 1l, 
           "EXERCISE");
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        waitForPresent(".material-page__connectfield-wrapper");
+        scrollIntoView(".material-page__connectfield-wrapper");
+        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+            "                ']");
+        waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]");
         
-        assertVisible(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()), "muikku-field-saved");
-        String firstTermValue = getAttributeValue(".muikku-connect-field-term:nth-of-type(1)", "data-field-name");
-        
-        waitScrollAndClick(".muikku-connect-field-term:nth-of-type(1)");
-        
-        waitClassPresent(".muikku-connect-field-term:nth-of-type(1)", "muikku-connect-field-term-selected");
-        String lastCounterpartValue = getAttributeValue(".muikku-connect-field-counterpart:nth-of-type(2)", "data-field-value"); 
+        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+            "                ']");
+        waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Hampurilainen')]");
 
-        waitScrollAndClick(".muikku-connect-field-counterpart:nth-of-type(2)");
-        
-        waitClassPresent(".muikku-connect-field-counterpart:nth-of-type(1)", "muikku-connect-field-edited");
-        waitClassPresent(".muikku-connect-field-term:nth-of-type(1)", "muikku-connect-field-edited");
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d div.muikku-connect-field", htmlMaterial.getId()));
-        List<WebElement> terms = findElements(".muikku-connect-field-term");
-        List<WebElement> counterparts = findElements(".muikku-connect-field-counterpart");
-        assertTrue("No terms found", terms.size() > 0);
-        for(int i = 0; i < terms.size();i++){
-          if(terms.get(i).getAttribute("data-field-name") == firstTermValue){
-            assertEquals(lastCounterpartValue, counterparts.get(i).getAttribute("data-field-value"));
-          }
-        }
-        
+        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+            "                ']");
+        waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
+        sleep(1500);
+        waitAndClick(".button--muikku-check-exercises");
+        waitForPresent(".material-page__correct-answers-label");
+        sleep(1500);
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div", "correct-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::div", "incorrect-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::div", "incorrect-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        deleteWorkspace(workspace.getId());
       }
       
     } finally {
-      deleteWorkspace(workspace.getId());
       WireMock.reset();
     }
   }

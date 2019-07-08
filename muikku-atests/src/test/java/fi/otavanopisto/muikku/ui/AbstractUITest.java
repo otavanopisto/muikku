@@ -567,6 +567,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+  
+  protected void waitForPresentXPath(final String xpath) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElementsXPath(xpath);
+          return !elements.isEmpty();
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
 
   protected void waitForNotVisible(String selector) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector)));
@@ -586,6 +600,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
   
+  protected void clickXPath(String xpath) {
+    getWebDriver().findElement(By.xpath(xpath)).click();
+  }
+  
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
@@ -601,9 +619,31 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+  
+  protected void waitForClickableXPath(final String xpath) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElementsXPath(xpath);
+          if (elements.size() > 0) {
+            return ExpectedConditions.elementToBeClickable(elements.get(0)).apply(driver) != null;
+          }
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected void waitAndClick(String selector) {
     waitForClickable(selector);
     click(selector);
+  }
+  
+  protected void waitAndClickXPath(String xpath) {
+    waitForClickableXPath(xpath);
+    clickXPath(xpath);
   }
   
   protected void scrollToEnd() {
@@ -836,7 +876,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String[] classes = StringUtils.split(element.getAttribute("class"), " ");
     assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));
   }
-  
+
+  protected void assertClassPresentXPath(String xpath, String className) {
+    WebElement element = getWebDriver().findElement(By.xpath(xpath));
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+    assertTrue(String.format("Class %s is not present in element", className), ArrayUtils.contains(classes, className));
+  }
+    
   protected void assertValue(String selector, String value) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(value, element.getAttribute("value"));
@@ -850,6 +896,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   protected void assertChecked(String selector, Boolean expected) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(expected, element.isSelected());
+  }
+  
+  protected void assertCheckedXPath(String xpath, Boolean expected) {
+    WebElement element = getWebDriver().findElement(By.xpath(xpath));
     assertEquals(expected, element.isSelected());
   }
   
@@ -891,8 +942,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void logout() {
     navigate("/", false);
-    waitAndClick(".navbar .button-pill--profile");
-    waitAndClick("body a.link--profile > span.icon-signout+span");
+    selectFinnishLocale();
+    waitAndClickXPath("//span[@class='button-pill__icon icon-user']");
+    waitAndClickXPath("//a[@class='link link--full link--navigation-dropdown']//span[contains(text(),'Kirjaudu ulos')]");
     waitForPresent("body");
   }
   @Deprecated
@@ -1435,6 +1487,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected List<WebElement> findElements(String selector){
     try {
       return getWebDriver().findElements(By.cssSelector(selector));
+    } catch (Exception e) {
+      return new ArrayList<WebElement>();
+    }
+  }
+  
+  protected List<WebElement> findElementsXPath(String xpath){
+    try {
+      return getWebDriver().findElements(By.xpath(xpath));
     } catch (Exception e) {
       return new ArrayList<WebElement>();
     }
