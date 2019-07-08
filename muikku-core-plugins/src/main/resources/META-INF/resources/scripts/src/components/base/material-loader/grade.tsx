@@ -12,7 +12,7 @@ export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
     return null;
   }
 
-  return (<div className="material-page__grade">
+  return (<div className="material-page__assignment-assessment-grade">
     {grade}
   </div>);
 }

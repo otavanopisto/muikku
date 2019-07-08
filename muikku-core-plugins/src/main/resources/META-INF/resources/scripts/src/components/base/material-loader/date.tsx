@@ -12,7 +12,7 @@ export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
     return null;
   }
 
-  return (<div className="material-page__date">
+  return (<div className="material-page__assignment-assessment-date">
     {props.i18n.time.format(date)}
    </div>);
 }

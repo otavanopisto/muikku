@@ -56,9 +56,11 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
           <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
           <MaterialLoaderCorrectAnswerCounter {...props} {...state}/>
-          <MaterialLoaderAssesment {...props} {...state}/>
-          <MaterialLoaderGrade {...props} {...state}/>
-          <MaterialLoaderDate {...props} {...state}/>
+          <div className="material-page__assignment-assessment">
+            <MaterialLoaderAssesment {...props} {...state}/>
+            <MaterialLoaderGrade {...props} {...state}/>
+            <MaterialLoaderDate {...props} {...state}/>
+          </div>
           <MaterialLoaderProducersLicense {...props} {...state}/>
         </div>
       }}
