@@ -50,7 +50,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
   }
 
   return (<div className="react-required-container">
-    <div className="react-required-container" onClick={stopPropagation.bind(this, props)}>
+    <div className="react-required-container" onClick={stopPropagation}>
       {
         props.loadCompositeReplies && typeof props.compositeReplies === "undefined" ? null :
           <Base material={props.material} i18n={props.i18n} status={props.status}
