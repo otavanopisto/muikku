@@ -13,6 +13,8 @@ import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/workspace-activity.scss';
 import { ApplicationListItem, ApplicationListItemHeader } from "~/components/general/application-list";
+import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
+
 
 interface StudentWorkspaceProps {
   i18n: i18nType,
@@ -22,6 +24,7 @@ interface StudentWorkspaceProps {
 interface StudentWorkspaceState {
   activitiesVisible: boolean
 }
+
 
 function CourseActivityRow(props: {
   i18n: i18nType,  
@@ -57,6 +60,45 @@ function CourseActivityRow(props: {
       <span>{output}</span>
     </div>
   </div>
+}
+
+function getWorkspaceAssessmentsAndPercents(props: StudentWorkspaceProps, workspace: WorkspaceType){
+
+  if (workspace.studentActivity.assessmentState && workspace.studentActivity.assessmentState.grade){
+    return <span className="application-list__header-secondary">
+      <span title={props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date)) +
+        getShortenGradeExtension(workspace.studentActivity.assessmentState.grade)}
+        className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${
+          workspace.studentActivity.assessmentState.state === "pass" || workspace.studentActivity.assessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
+        {shortenGrade(workspace.studentActivity.assessmentState.grade)}
+      </span>
+    </span>
+  } else if (workspace.studentActivity.assessmentState && workspace.studentActivity.assessmentState.state === "incomplete"){
+    let status = props.i18n.text.get(workspace.studentActivity.assessmentState.state === "incomplete" ? "plugin.guider.workspace.incomplete" : "plugin.guider.workspace.failed");
+    return <span className="application-list__header-secondary">
+      <span className="workspace-activity__assignment-done-percent" title={props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
+        workspace.studentActivity.evaluablesDonePercent}%
+      </span>
+      <span> / </span>
+      <span className="workspace-activity__exercise-done-percent" title={props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
+        workspace.studentActivity.exercisesDonePercent}%
+      </span>
+      <span title={props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date)) + " - " + status}
+        className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${workspace.studentActivity.assessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+        {status[0].toLocaleUpperCase()}
+      </span>
+    </span>
+  } else {
+    return <span className="application-list__header-secondary">
+      <span className="workspace-activity__assignment-done-percent" title={props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
+        workspace.studentActivity.evaluablesDonePercent}%
+      </span>
+      <span> / </span>
+      <span className="workspace-activity__exercise-done-percent" title={props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
+        workspace.studentActivity.exercisesDonePercent}%
+      </span>
+    </span>
+  }
 }
 
 class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWorkspaceState>{
@@ -110,14 +152,10 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
     return <ApplicationListItem className={`course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
         <ApplicationListItemHeader modifiers="course" onClick={this.toggleActivitiesVisible}>
           <span className="application-list__header-icon icon-books"></span>
-          <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
+          <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span>
           <span className="application-list__header-secondary workspace-activity">
-            <span className="workspace-activity__assignment-done-percent" title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
-              workspace.studentActivity.evaluablesDonePercent}%
-            </span>
-            <span> / </span>
-            <span className="workspace-activity__exercise-done-percent" title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
-              workspace.studentActivity.exercisesDonePercent}%
+            <span className="workspace-student__assessment-state">
+            {getWorkspaceAssessmentsAndPercents(this.props, workspace)}
             </span>
           </span>
           <Dropdown persistent modifier={"workspace-chart workspace-" + workspace.id} items={[<WorkspaceChart workspace={workspace}/>]}>
@@ -125,16 +163,16 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
           </Dropdown>
         </ApplicationListItemHeader>
         
-        {this.state.activitiesVisible ? <div className="application-sub-panel text">      
+        {this.state.activitiesVisible ? <div className="application-sub-panel text">
           <div className="application-sub-panel__body">  
             <div className="application-sub-panel__item application-sub-panel__item--course-activity">
-              <div className="application-sub-panel__item-title"> {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}</div>        
+              <div className="application-sub-panel__item-title"> {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}</div>
               <div className="application-sub-panel__item-data">
                 <span>{resultingStateText}</span></div>
-              </div>              
+              </div>
                 
             <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits" givenDateAttributeLocale="plugin.guider.user.details.lastVisit" labelTranslationString="plugin.guider.visitedLabel" conditionalAttribute="numVisits"
-              givenDateAttribute="lastVisit" mainAttribute="studentActivity" {...this.props}/>  
+              givenDateAttribute="lastVisit" mainAttribute="studentActivity" {...this.props}/>
             
             <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfJournalEntries" givenDateAttributeLocale="plugin.guider.user.details.lastJournalEntry" labelTranslationString="plugin.guider.journalEntriesLabel" conditionalAttribute="journalEntryCount"
               givenDateAttribute="lastJournalEntry" mainAttribute="studentActivity" {...this.props}/>
@@ -142,7 +180,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfMessages" givenDateAttributeLocale="plugin.guider.user.details.lastMessage" labelTranslationString="plugin.guider.discussionMessagesLabel" conditionalAttribute="messageCount"
               givenDateAttribute="latestMessage" mainAttribute="forumStatistics" {...this.props}/>
             
-            <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.assignmentsTitle")}</h4>  
+            <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.assignmentsTitle")}</h4>
             
             <CourseActivityRow labelTranslationString="plugin.guider.unansweredAssignmentsLabel" conditionalAttribute="evaluablesUnanswered"
               mainAttribute="studentActivity" {...this.props}/>

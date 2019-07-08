@@ -4,6 +4,7 @@
 @import "../base/breakpoints";
 
 .file-uploader {
+  @include text
   border: 2px solid $color-tertiary;
 }
 
@@ -39,10 +40,14 @@
   display: flex;
   justify-content: center;
 }
-
 .file-uploader__items-container {
   border-top: 3px dotted lighten($taskfield-border-color,20%);
   position: relative;
+}
+
+.uploaded-files {
+  @include text
+  padding: 0 10px;
 }
 
 .file-uploader__items-container--empty {

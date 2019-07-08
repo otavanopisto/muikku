@@ -32,6 +32,10 @@ public class Mailer {
     this.sendMail(mailType, systemSettingsController.getSystemEmailSenderAddress(), to, new ArrayList<String>(), new ArrayList<String>(), subject, content, new ArrayList<MailAttachment>());
   }
 
+  public void sendMail(MailType mailType, List<String> to, List<String> cc, List<String> bcc, String subject, String content) {
+    this.sendMail(mailType, systemSettingsController.getSystemEmailSenderAddress(), to, cc, bcc, subject, content, new ArrayList<MailAttachment>());
+  }
+
   public void sendMail(MailType mailType, String from, List<String> to, String subject, String content) {
     this.sendMail(mailType, from, to, new ArrayList<String>(), new ArrayList<String>(), subject, content, new ArrayList<MailAttachment>());
   }
