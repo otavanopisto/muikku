@@ -1414,6 +1414,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
 
+  protected void dragAndDropXPath(String source, String target, int x, int y) {
+    WebElement sourceElement = findElementXPath(source); 
+    WebElement targetElement = findElementXPath(target);
+    (new Actions(getWebDriver()))
+    .clickAndHold(sourceElement)
+    .moveToElement(targetElement, x, y)
+    .build()
+    .perform();
+    sleep(500);
+    (new Actions(getWebDriver()))
+      .release()
+      .build()
+      .perform();  
+  }
+  
   protected void dragAndDropWithOffSetAndTimeout(String source, String target, int x, int y){  
     WebElement sourceElement = findElement(source); 
     WebElement targetElement = findElement(target);
@@ -1482,6 +1497,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   protected WebElement findElement(String selection) {
     return getWebDriver().findElement(By.cssSelector(selection));
+  }
+
+  protected WebElement findElementXPath(String xpath) {
+    return getWebDriver().findElement(By.xpath(xpath));
   }
   
   protected List<WebElement> findElements(String selector){
