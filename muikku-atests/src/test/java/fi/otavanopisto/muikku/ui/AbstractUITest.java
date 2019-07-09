@@ -502,6 +502,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     assertTrue(String.format("Could not find element %s", selector), getWebDriver().findElements(By.cssSelector(selector)).size() > 0);
   }
   
+  protected boolean isInOrder(List<WebElement> webElements) {
+    String prev = "";
+    for (WebElement webElement : webElements) {
+      String current = webElement.getText();
+      if(prev.compareToIgnoreCase(current) > 0) {
+        return false;
+      }
+      prev = webElement.getText();
+    }
+    return true;
+  }
+  
   protected void assertNotPresent(String selector) {
     int size = getWebDriver().findElements(By.cssSelector(selector)).size();
     assertTrue(String.format("Unexpectedly found element %s", selector), size == 0);
