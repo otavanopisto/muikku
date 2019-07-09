@@ -13,6 +13,7 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
   }
 
   return (<div className="material-page__assignment-assessment-literal">
-    <div className="rich-text" dangerouslySetInnerHTML={{__html: literalAssesment}}></div>
+    <div className="material-page__assignment-assessment-literal-label">{props.i18n.text.get("plugin.workspace.materialsLoader.evaluation.literal.label")}:</div>
+    <div className="material-page__assignment-assessment-literal-data rich-text" dangerouslySetInnerHTML={{__html: literalAssesment}}></div>
   </div>);
 }

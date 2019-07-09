@@ -13,6 +13,7 @@ export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
   }
 
   return (<div className="material-page__assignment-assessment-grade">
-    {grade}
+    <span className="material-page__assignment-assessment-grade-label">{props.i18n.text.get("plugin.workspace.materialsLoader.evaluation.grade.label")}:</span>
+    <span className="material-page__assignment-assessment-grade-data"> {grade}</span>
   </div>);
 }

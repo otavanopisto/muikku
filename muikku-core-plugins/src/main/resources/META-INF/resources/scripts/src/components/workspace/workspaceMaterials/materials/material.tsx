@@ -42,7 +42,26 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
     this.props.setCurrentWorkspace({workspaceId: this.props.workspace.id, refreshActivity: true});
   }
   render(){
+    const isAssignment = this.props.materialContentNode.assignmentType === "EVALUATED";
     const isBinary = this.props.materialContentNode.type === "binary";
+    let evalStateClassName:string = "";
+    if (this.props.compositeReplies){
+      switch (this.props.compositeReplies.state){
+        case "INCOMPLETE":
+          evalStateClassName = "material-page__assignment-assessment--incomplete"
+          break;
+        case "FAILED":
+          evalStateClassName = "material-page__assignment-assessment--failed"
+          break;
+        case "PASSED":
+          evalStateClassName = "material-page__assignment-assessment--passed"
+          break;
+        case "UNANSWERED":
+        default:
+          break;
+      }
+    }
+    
     return <MaterialLoader canPublish
       canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
       canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
@@ -56,11 +75,13 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
           <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
           <MaterialLoaderCorrectAnswerCounter {...props} {...state}/>
-          <div className="material-page__assignment-assessment">
-            <MaterialLoaderAssesment {...props} {...state}/>
-            <MaterialLoaderGrade {...props} {...state}/>
-            <MaterialLoaderDate {...props} {...state}/>
-          </div>
+          {isAssignment? 
+            <div className={`material-page__assignment-assessment ${evalStateClassName}`}>
+              <MaterialLoaderDate {...props} {...state}/>
+              <MaterialLoaderGrade {...props} {...state}/>
+              <MaterialLoaderAssesment {...props} {...state}/>
+            </div>
+          : null}
           <MaterialLoaderProducersLicense {...props} {...state}/>
         </div>
       }}
