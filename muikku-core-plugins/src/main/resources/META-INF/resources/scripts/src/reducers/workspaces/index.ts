@@ -7,7 +7,9 @@ export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_
 export interface WorkspaceStudentActivityType {
   assessmentState: {
     date: string,
-    state: WorkspaceAssessementStateType
+    state: WorkspaceAssessementStateType,
+    grade: string,
+    text: string,
   },
   evaluablesAnswered: number,
   evaluablesAnsweredLastDate: string,
@@ -459,8 +461,9 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(id: number, assessmentS
   if (replacement && replacement.id === id){
     if (replacement.studentActivity) {
       replacement.studentActivity = {...replacement.studentActivity, assessmentState: {
+        ...replacement.studentActivity.assessmentState,
         date,
-        state: assessmentState
+        state: assessmentState,
       }};
     }
     if (replacement.studentAssessments){

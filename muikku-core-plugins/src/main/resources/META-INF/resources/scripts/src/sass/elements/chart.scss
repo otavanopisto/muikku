@@ -18,15 +18,18 @@
 }
 
 .chart__activator {
+  align-items: center;
   background-color: $color-primary;
-  border-radius: 3px;
+  border-radius: 2px;
   color: $color-default;
   display: inline-flex;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   font-size: $text-desktop-font-size;
-  padding: 2px;
+  height: 1.25rem;
+  justify-content: center;
+  width: 1.25rem;
 
   &:hover,
   &.hover {
@@ -241,7 +244,7 @@
 
 .filter__activator {
   background-color: $color-primary;
-  border-radius: 3px;
+  border-radius: 2px;
   color: $color-default;
   cursor: pointer;
   display: inline-flex;
