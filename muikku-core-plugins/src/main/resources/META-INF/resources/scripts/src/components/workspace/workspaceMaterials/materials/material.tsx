@@ -43,21 +43,27 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
   }
   render(){
     const isAssignment = this.props.materialContentNode.assignmentType === "EVALUATED";
+    const hasAssessment = this.props.compositeReplies && (this.props.compositeReplies.state === "INCOMPLETE" || this.props.compositeReplies.state === "PASSED" || this.props.compositeReplies.state === "FAILED" || this.props.compositeReplies.state === "WITHDRAWN");
     const isBinary = this.props.materialContentNode.type === "binary";
     let evalStateClassName:string = "";
+    let evalStateIcon:string = "";
     if (this.props.compositeReplies){
       switch (this.props.compositeReplies.state){
         case "INCOMPLETE":
-          evalStateClassName = "material-page__assignment-assessment--incomplete"
+          evalStateClassName = "material-page__assignment-assessment--incomplete";
+          evalStateIcon = "icon-thumb-down-alt";
           break;
         case "FAILED":
-          evalStateClassName = "material-page__assignment-assessment--failed"
+          evalStateClassName = "material-page__assignment-assessment--failed";
+          evalStateIcon = "icon-thumb-down-alt";
           break;
         case "PASSED":
-          evalStateClassName = "material-page__assignment-assessment--passed"
+          evalStateClassName = "material-page__assignment-assessment--passed";
+          evalStateIcon = "icon-thumb-up-alt";
           break;
-        case "UNANSWERED":
-        default:
+        case "WITHDRAWN":
+          evalStateClassName = "material-page__assignment-assessment--withdrawn";
+          evalStateIcon = "";
           break;
       }
     }
@@ -75,8 +81,9 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
           <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
           <MaterialLoaderCorrectAnswerCounter {...props} {...state}/>
-          {isAssignment? 
+          {isAssignment && hasAssessment ? 
             <div className={`material-page__assignment-assessment ${evalStateClassName}`}>
+              <div className={`material-page__assignment-assessment-icon ${evalStateIcon}`}></div>
               <MaterialLoaderDate {...props} {...state}/>
               <MaterialLoaderGrade {...props} {...state}/>
               <MaterialLoaderAssesment {...props} {...state}/>
