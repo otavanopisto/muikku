@@ -1404,19 +1404,138 @@
 
 // Assignment assessment 
 .material-page__assignment-assessment {
-  border-top: solid 1px $color-application-panel-box-border;
+  border-top: 1px solid $color-default-item-separator-border;
+  display: flex;
+  flex-flow: column nowrap;
   margin: 20px -20px 0;
-  padding: 10px 20px 20px;
+  padding: 20px;
+  position: relative;
+}
+
+.material-page__assignment-assessment--incomplete {
+  background: lighten($color-incomplete, 45%);
+  border-left: 3px solid $color-incomplete;
+
+  .material-page__assignment-assessment-grade-data {
+    background: $color-incomplete;
+  }
+  
+  .material-page__assignment-assessment-icon {
+    color: $color-incomplete;
+  }
+}
+
+.material-page__assignment-assessment--passed {
+  background: lighten($color-passed, 55%);
+  border-left: 3px solid $color-passed;
+
+  .material-page__assignment-assessment-grade-data {
+    background: $color-passed;
+  }
+  
+  .material-page__assignment-assessment-icon {
+    color: $color-passed;
+  }
+}
+
+.material-page__assignment-assessment--failed {
+  background: lighten($color-failed, 45%);
+  border-left: 3px solid $color-failed;
+
+  .material-page__assignment-assessment-grade-data {
+    background: $color-failed;
+  }
+  
+  .material-page__assignment-assessment-icon {
+    color: $color-failed;
+  }
+}
+
+.material-page__assignment-assessment--withdrawn {
+  background: lighten($color-withdrawn, 45%);
+  border-left: 3px solid $color-withdrawn;
+
+  .material-page__assignment-assessment-grade-data {
+    background: $color-withdrawn;
+  }
+
+  .material-page__assignment-assessment-icon {
+    color: $color-withdrawn;
+  }
 }
 
 .material-page__assignment-assessment-literal {
-  
+  flex-basis: 100;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.material-page__assignment-assessment-literal-label {
+  @include assessment-text;
+  font-weight: bold;
+}
+
+.material-page__assignment-assessment-literal-data {
+  @include assessment-text;
+  line-height: 1.375rem;
 }
 
 .material-page__assignment-assessment-grade {
-  
+  @include assessment-text;
+  align-items: center;
+  display: flex;
+  flex-basis: 100;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 0;
+  margin: 0 0 10px;
+}
+
+.material-page__assignment-assessment-grade-label {
+  font-weight: bold;
+  padding: 0 10px 0 0;
+}
+
+.material-page__assignment-assessment-grade-data {
+  border-radius: 3px;
+  color: $color-default;
+  line-height: 1;
+  padding: 5px 8px;
+}
+
+.material-page__assignment-assessment-grade-data--incomplete {
+  font-size: 0.625rem;
+  text-transform: uppercase;
+}
+
+.material-page__assignment-assessment-icon {
+  font-size: 2rem;
+  line-height: 1;
+  opacity: 0.3;
+  position: absolute;
+  right: 20px;
+  top: 20px;
 }
 
 .material-page__assignment-assessment-date {
-  
+  @include assessment-text;
+  align-items: center;
+  display: flex;
+  flex-basis: 100;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 0;
+  margin: 0 0 10px;
 }
+
+.material-page__assignment-assessment-date-label {
+  font-weight: bold;
+  padding: 0 10px 0 0;
+}
+
+.material-page__assignment-assessment-date-data {
+
+}
+
+
+
