@@ -415,7 +415,7 @@ export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>,
   state: MaterialCompositeRepliesStateType,
   
-  //Avaliable sometimes
+  //Available sometimes
   evaluationInfo?: {
     type: MaterialCompositeRepliesStateType,
     text: string,
