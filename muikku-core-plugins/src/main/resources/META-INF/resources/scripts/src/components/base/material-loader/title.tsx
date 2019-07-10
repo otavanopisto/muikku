@@ -16,6 +16,12 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
     return null;
   }
   
+  if (props.invisible) {
+    return (<h2 className="material-page__title">
+      {props.material.title}
+    </h2>);
+  }
+  
   const modifiers:Array<string> = typeof props.modifiers === "string" ? [props.modifiers] : props.modifiers;
   
   const materialPageType = props.material.assignmentType ? (props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";

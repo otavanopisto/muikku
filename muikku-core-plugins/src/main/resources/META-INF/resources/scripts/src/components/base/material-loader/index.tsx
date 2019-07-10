@@ -170,6 +170,7 @@ export interface MaterialLoaderProps {
   onAnswerCheckableChange?: (answerCheckable: boolean) => any,
   onPushAnswer?: () => any,
   onToggleAnswersVisible?: () => any,
+  invisible?: boolean,
   
   children?: (
     props: MaterialLoaderProps,

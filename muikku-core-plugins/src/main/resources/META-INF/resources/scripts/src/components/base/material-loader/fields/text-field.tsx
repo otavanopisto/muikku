@@ -25,7 +25,9 @@ interface TextFieldProps {
       
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
-  onAnswerChange?: (name: string, value: boolean)=>any
+  onAnswerChange?: (name: string, value: boolean)=>any,
+      
+  invisible: boolean,
 }
 
 const uuidv4 = require('uuid/v4');
@@ -44,7 +46,7 @@ interface TextFieldState {
   answerState: "UNKNOWN" | "PASS" | "FAIL"
 }
 
-export default class TextField extends FieldBase<TextFieldProps, TextFieldState> {
+export default class TextField extends React.Component<TextFieldProps, TextFieldState> {
   constructor(props: TextFieldProps){
     super(props);
     
@@ -137,20 +139,12 @@ export default class TextField extends FieldBase<TextFieldProps, TextFieldState>
   }
   //We check for rightness on mount and update
   componentDidMount(){
-    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: TextFieldProps, prevState: TextFieldState){
     this.checkAnswers();
   }
   render(){
-    if (!this.loaded){
-      return <span ref="base" className="material-page__textfield-wrapper">
-        <input readOnly className="material-page__textfield"
-          size={this.props.content.columns && parseInt(this.props.content.columns)}/>
-      </span>
-    }
-    
     //This is the component that provides the summary of the correct answers
     let correctAnswersummaryComponent = null;
     //a boolean representing whether the answer is correct and we are actually checking for it
@@ -178,6 +172,14 @@ export default class TextField extends FieldBase<TextFieldProps, TextFieldState>
         {actuallyCorrectAnswers.map((answer, index)=>
           <span key={index} className="material-page__field-answer-example">{answer.text}</span>
         )}
+      </span>
+    }
+    
+    if (this.props.invisible){
+      return <span ref="base" className="material-page__textfield-wrapper">
+        <input readOnly className="material-page__textfield"
+          size={this.props.content.columns && parseInt(this.props.content.columns)}/>
+        {correctAnswersummaryComponent}
       </span>
     }
 
