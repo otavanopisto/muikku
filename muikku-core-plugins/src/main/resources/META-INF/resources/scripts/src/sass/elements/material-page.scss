@@ -1468,16 +1468,16 @@
   flex-basis: 100;
   flex-grow: 1;
   flex-shrink: 0;
+}
 
-  .material-page__assignment-assessment-literal-label {
-    @include assessment-text;
-    font-weight: bold;
-  }
+.material-page__assignment-assessment-literal-label {
+  @include assessment-text;
+  font-weight: bold;
+}
 
-  .material-page__assignment-assessment-literal-data {
-    @include assessment-text;
-    line-height: 1.375rem;
-  }
+.material-page__assignment-assessment-literal-data {
+  @include assessment-text;
+  line-height: 1.375rem;
 }
 
 .material-page__assignment-assessment-grade {
@@ -1489,18 +1489,23 @@
   flex-grow: 1;
   flex-shrink: 0;
   margin: 0 0 10px;
+}
 
-  .material-page__assignment-assessment-grade-label {
-    font-weight: bold;
-    padding: 0 10px 0 0;
-  }
+.material-page__assignment-assessment-grade-label {
+  font-weight: bold;
+  padding: 0 10px 0 0;
+}
 
-  .material-page__assignment-assessment-grade-data {
-    border-radius: 3px;
-    color: $color-default;
-    line-height: 1;
-    padding: 5px 8px;
-  }
+.material-page__assignment-assessment-grade-data {
+  border-radius: 3px;
+  color: $color-default;
+  line-height: 1;
+  padding: 5px 8px;
+}
+
+.material-page__assignment-assessment-grade-data--incomplete {
+  font-size: 0.625rem;
+  text-transform: uppercase;
 }
 
 .material-page__assignment-assessment-icon {
@@ -1521,15 +1526,16 @@
   flex-grow: 1;
   flex-shrink: 0;
   margin: 0 0 10px;
-
-  .material-page__assignment-assessment-date-label {
-    font-weight: bold;
-    padding: 0 10px 0 0;
-  }
-
-  .material-page__assignment-assessment-date-data {
-    
-  }
 }
+
+.material-page__assignment-assessment-date-label {
+  font-weight: bold;
+  padding: 0 10px 0 0;
+}
+
+.material-page__assignment-assessment-date-data {
+
+}
+
 
 
