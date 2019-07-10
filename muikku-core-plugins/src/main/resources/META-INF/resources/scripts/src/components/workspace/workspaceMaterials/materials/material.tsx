@@ -61,7 +61,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           break;
       }
     }
-    
+
     return <MaterialLoader canPublish
       canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
       canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
