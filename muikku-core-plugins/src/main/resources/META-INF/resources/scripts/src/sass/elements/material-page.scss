@@ -1405,6 +1405,8 @@
 // Assignment assessment 
 .material-page__assignment-assessment {
   border-top: 1px solid $color-default-item-separator-border;
+  border-left-style: solid;
+  border-left-width: 5px;
   display: flex;
   flex-flow: column nowrap;
   margin: 20px -20px 0;
@@ -1414,7 +1416,7 @@
 
 .material-page__assignment-assessment--incomplete {
   background: lighten($color-incomplete, 45%);
-  border-left: 3px solid $color-incomplete;
+  border-left-color: $color-incomplete;
 
   .material-page__assignment-assessment-grade-data {
     background: $color-incomplete;
@@ -1427,12 +1429,12 @@
 
 .material-page__assignment-assessment--passed {
   background: lighten($color-passed, 55%);
-  border-left: 3px solid $color-passed;
+  border-left-color: $color-passed;
 
   .material-page__assignment-assessment-grade-data {
     background: $color-passed;
   }
-  
+
   .material-page__assignment-assessment-icon {
     color: $color-passed;
   }
@@ -1440,12 +1442,12 @@
 
 .material-page__assignment-assessment--failed {
   background: lighten($color-failed, 45%);
-  border-left: 3px solid $color-failed;
+  border-left-color: $color-failed;
 
   .material-page__assignment-assessment-grade-data {
     background: $color-failed;
   }
-  
+
   .material-page__assignment-assessment-icon {
     color: $color-failed;
   }
@@ -1453,7 +1455,7 @@
 
 .material-page__assignment-assessment--withdrawn {
   background: lighten($color-withdrawn, 45%);
-  border-left: 3px solid $color-withdrawn;
+  border-left-color: $color-withdrawn;
 
   .material-page__assignment-assessment-grade-data {
     background: $color-withdrawn;
