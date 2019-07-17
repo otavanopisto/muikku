@@ -3,7 +3,6 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
-import FieldBase from "./base";
 
 interface FieldType {
   name: string,
@@ -29,7 +28,9 @@ interface ConnectFieldProps {
       
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
-  onAnswerChange?: (name: string, value: boolean)=>any
+  onAnswerChange?: (name: string, value: boolean)=>any,
+  
+  invisible?: boolean,
 }
 
 interface ConnectFieldState {
@@ -52,7 +53,7 @@ interface ConnectFieldState {
   answerState: Array<"PASS" | "FAIL">
 }
 
-export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFieldState> {
+export default class ConnectField extends React.Component<ConnectFieldProps, ConnectFieldState> {
   constructor(props: ConnectFieldProps){
     super(props);
     
@@ -332,7 +333,7 @@ export default class ConnectField extends FieldBase<ConnectFieldProps, ConnectFi
     });
   }
   render(){
-    if (!this.loaded){
+    if (this.props.invisible){
       return <div className="material-page__connectfield-wrapper">
         <div className="material-page__connectfield">
           {this.state.fields.map((field, index)=>{

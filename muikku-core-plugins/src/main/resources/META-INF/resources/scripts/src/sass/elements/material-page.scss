@@ -735,6 +735,7 @@
   margin: 10px 5px;
   padding: 0 5px;
   transition: all 0.3s ease-in-out;
+  height: 28px;
 
   // These links needs to be nested here as rich-text css rules overrides them if not
   .material-page__audiofield-remove-file-button {
@@ -809,6 +810,7 @@
   flex-flow: row wrap;
   justify-content: center;
   padding: 15px 10px;
+  height: 68px;
 
   .material-page__audiofield-start-record-button,
   .material-page__audiofield-stop-record-button {
