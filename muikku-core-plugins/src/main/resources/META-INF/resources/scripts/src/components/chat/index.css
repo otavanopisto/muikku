@@ -1,0 +1,160 @@
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+  height: 100%;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.container{
+  display: flex;
+  flex-direction: row;
+}
+
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+.single-chat {
+  width: 1%;
+  height: 1%;
+  border: 3px solid #3392FF;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.chat {
+  width: 100%;
+  height: 100%;
+  border: 3px solid #3392FF;
+  z-index: -1;
+  position: absolute;
+  right: 105%;
+  float:left;
+  top:0;
+}
+
+.chatMessages{
+  height: 320px;
+  margin-top:0;
+  overflow-y: scroll;
+  border-bottom:1px solid #999;
+}
+
+.chatMessage{
+  width:83%;
+  height:10%;
+}
+
+.chatRecipient{
+  width:74%;
+  height:4%;
+}
+
+.sendMessage{
+  height:12%;
+  border-radius: 5%;
+  background-color: #3392FF;
+  color: #fff;
+}
+
+.roomSettings{
+  background-color: #3392FF;
+  color:#fff;
+  text-align: right;
+  height: 20px;
+  width:100%;
+}
+
+.roomSettingsForm{
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 100;
+  padding:10px;
+}
+
+button.saveSettings{
+  align-content:right;
+  margin: 255px 0px 0px 300px
+}
+
+.chatButton{
+  border-radius: 100%;
+  height: 80px;
+  line-height: 80px;
+  width: 80px;
+  background-color: #3392FF;
+  color: #fff;
+  border: 3px solid #f3f3f3;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  text-align: center;
+}
+
+.chatHeader{
+  background-color: #3392FF;
+  color: #fff;
+  width: 100%;
+  text-align: right;
+  height:30px;
+}
+
+.chatControlBox-body{
+  position: fixed;
+  bottom: 0;
+  right:0;
+  width:300px;
+  height:500px;
+  border:1px solid gainsboro;
+}
+
+.chatControlBox-container{
+  overflow-y: scroll;
+  height:500px;
+}
+
+.chatBox-roomName{
+  margin-right:60%;
+}
