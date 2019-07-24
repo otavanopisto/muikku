@@ -472,16 +472,18 @@
               progress(vals[0] / vals[1] * 100);
             }
           } 
-        } else if (e.data && e.data.reply === 'done') {
+        }
+        else if (e.data && e.data.reply === 'done') {
           var blob = e.data.values[encodedName].blob;
           callback(null, {
             name: encodedName, 
             type: blob.type, 
             blob: blob
           });
-        } else if (e.data && e.data.reply === 'log') {
+        }
+        else if (e.data && e.data.reply === 'log') {
           if (e.data.values.length == 1) {
-            if (e.data.values[0].indexOf('usage summary') > -1) {
+            if (e.data.values[0].indexOf('ERROR') > -1) {
               callback("Encoding failed");
             }
           }
