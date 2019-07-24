@@ -199,7 +199,11 @@
     
     _captureUserMedia: function (mediaConstraints, successCallback, errorCallback) {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback); 
+        navigator.mediaDevices.getUserMedia(mediaConstraints)
+          .then(successCallback)
+          .catch(function(err) {
+            errorCallback(err);
+          });
       }
       else {
         $('.notification-queue').notificationQueue('notification', 'error', 'getUserMedia is not supported');
