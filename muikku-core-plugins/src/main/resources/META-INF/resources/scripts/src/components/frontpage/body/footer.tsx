@@ -39,7 +39,7 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
         </div>
         <div className="footer__item footer__item--logos">
           <img src="/gfx/otavia-logo-white.png" alt="Otavia logo" title="Otavia logo" className="logo--organization-footer" />
-          <img src="/gfx/footer_logo.jpg" alt="Muikkuverkko logo" title="Muikkuverkko logo" className="logo" />
+          <img src="/gfx/footer_logo.png" alt="Muikkuverkko logo" title="Muikkuverkko logo" className="logo logo--muikku-footer" />
         </div>
       </div>
       <div className="footer__container--plagscan"> 

@@ -117,7 +117,7 @@ const STATES = [{
   'fields-read-only': true
 }]
 
-interface MaterialLoaderProps {
+export interface MaterialLoaderProps {
   material: MaterialContentNodeType,
   folder?: MaterialContentNodeType,
   
@@ -164,12 +164,23 @@ interface MaterialLoaderProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
   displayNotification: DisplayNotificationTriggerType,
-  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  
+  onAnswerChange?: (name: string, value?: boolean) => any,
+  onAnswerCheckableChange?: (answerCheckable: boolean) => any,
+  onPushAnswer?: () => any,
+  onToggleAnswersVisible?: () => any,
+  
+  children?: (
+    props: MaterialLoaderProps,
+    state: MaterialLoaderState,
+    stateConfiguration: any,
+  ) => any,
 }
 
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
-  compositeReplies: MaterialCompositeRepliesType,
+  compositeRepliesInState: MaterialCompositeRepliesType,
   
   //whether the answers are visible and checked
   answersVisible: boolean,
@@ -200,12 +211,9 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   constructor(props: MaterialLoaderProps){
     super(props);
 
-    //stop propagation of clicks
-    this.stopPropagation = this.stopPropagation.bind(this);
-
     //initial state has no composite replies and the answers are not visible or checked
     let state:MaterialLoaderState = {
-      compositeReplies: null,
+      compositeRepliesInState: null,
       answersVisible: false,
       answersChecked: false,
       
@@ -222,15 +230,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //setStates might stack
     this.answerRegistrySync = {};
     
-    this.onConfirmedAndSyncedModification = this.onConfirmedAndSyncedModification.bind(this);
-    this.onModification = this.onModification.bind(this);
     this.onPushAnswer = this.onPushAnswer.bind(this);
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
-    this.startupEditor = this.startupEditor.bind(this);
-    this.toggleVisiblePageStatus = this.toggleVisiblePageStatus.bind(this);
-    this.copyPage = this.copyPage.bind(this);
     
     //if it is answerable
     if (props.answerable && props.material){
@@ -261,43 +264,12 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //create the composite replies if using the boolean flag
     this.create();
   }
-  stopPropagation(e: React.MouseEvent<HTMLDivElement>){
-    e.stopPropagation();
-  }
-  startupEditor(){
-    if (this.props.folder && (typeof this.props.canAddAttachments === "undefined"  || this.props.canAddAttachments)) {
-      this.props.requestWorkspaceMaterialContentNodeAttachments(this.props.workspace, this.props.material);
-    }
-    this.props.setWorkspaceMaterialEditorState({
-      currentNodeWorkspace: this.props.workspace,
-      currentNodeValue: this.props.material,
-      currentDraftNodeValue: {...this.props.material},
-      parentNodeValue: this.props.folder,
-      section: false,
-      opened: true,
-      canDelete: typeof this.props.canDelete === "undefined" ? false : this.props.canDelete,
-      canHide: typeof this.props.canHide === "undefined" ? false : this.props.canHide,
-      disablePlugins: !!this.props.disablePlugins,
-      canPublish: typeof this.props.canPublish === "undefined" ? false : this.props.canPublish,
-      canRevert: typeof this.props.canRevert === "undefined" ? false : this.props.canRevert,
-      canRestrictView: typeof this.props.canRestrictView === "undefined" ? false : this.props.canRestrictView,
-      canCopy: typeof this.props.canCopy === "undefined" ? false : this.props.canCopy,
-      canChangePageType: typeof this.props.canChangePageType === "undefined" ? false : this.props.canChangePageType,
-      canChangeExerciseType: typeof this.props.canChangeExerciseType === "undefined" ? false : this.props.canChangeExerciseType,
-      canSetLicense: typeof this.props.canSetLicense === "undefined" ? false : this.props.canSetLicense,
-      canSetProducers: typeof this.props.canSetProducers === "undefined" ? false : this.props.canSetProducers,
-      canAddAttachments: typeof this.props.canAddAttachments === "undefined" ? false : this.props.canAddAttachments,
-      canEditContent: typeof this.props.canAddAttachments === "undefined" ? true : this.props.canAddAttachments,
-      showRemoveAnswersDialogForPublish: false,
-      showRemoveAnswersDialogForDelete: false,
-    });
-  }
   componentWillUpdate(nextProps: MaterialLoaderProps, nextState: MaterialLoaderState){
     //if the component will update we need to do some changes if it's gonna be answerable
     //and there's a material
     if (nextProps.answerable && nextProps.material){
       //we get the composite replies
-      let compositeReplies = nextProps.compositeReplies || nextState.compositeReplies;
+      let compositeReplies = nextProps.compositeReplies || nextState.compositeRepliesInState;
 
       //The state configuration
       this.stateConfiguration = STATES.filter((state:any)=>{
@@ -341,13 +313,13 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //TODO maybe we should get rid of this way to load the composite replies
     //after all it's learned that this is part of the workspace
     if (this.props.loadCompositeReplies){
-      let compositeReplies:MaterialCompositeRepliesType = compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
-      if (!compositeReplies){
-        compositeReplies = (await promisify(mApi().workspace.workspaces.materials.compositeMaterialReplies
+      let compositeRepliesInState:MaterialCompositeRepliesType = compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
+      if (!compositeRepliesInState){
+        compositeRepliesInState = (await promisify(mApi().workspace.workspaces.materials.compositeMaterialReplies
             .read(this.props.workspace.id, this.props.material.assignment.id,
                 {userEntityId: (window as any).MUIKKU_LOGGED_USER_ID}), 'callback')()) as MaterialCompositeRepliesType;
 
-        materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = compositeReplies || null;
+        materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = compositeRepliesInState || null;
 
         setTimeout(()=>{
           delete compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
@@ -355,7 +327,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       }
 
       this.setState({
-        compositeReplies
+        compositeRepliesInState
       });
     }
   }
@@ -368,7 +340,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //So now we need that juicy success state
     if (this.stateConfiguration['success-state']){
       //Get the composite reply
-      let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
+      let compositeReplies = (this.props.compositeReplies || this.state.compositeRepliesInState);
       //We make it be the success state that was given, call this function
       //We set first the state we want
       //false because we want to call and update the state server side
@@ -379,42 +351,16 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
           this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAssignmentStateModified);
     }
-  }
-  //This gets called once the material modified and the server comfirmed it was modified
-  onConfirmedAndSyncedModification(){
-    //What we basically want to do this is because when the websocket gets called
-    //the state gets changed to ANSWERED from UNANSWERED but our client side
-    //tree is not aware of this change
-    let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
-    //So we check if it is UNASWERED or has no reply in which case is unanswered too
-    if (!compositeReplies || compositeReplies.state === "UNANSWERED"){
-      //We make the call using true to avoid the server call since that would be redundant
-      //We just want to make the answer answered and we know that it has been updated
-      //already as the answer has been synced
-      //that is why the true flag is there not to call the server
-      this.props.updateAssignmentState("ANSWERED", true,
-          this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
-          this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']));
-    }
-  }
-  //Gets called on any modification of the material task
-  onModification(){
-    //We use this function to basically modify the state with the modify state
-    //Currently only used in exercises when the modify state sends them back to be answered
-    let compositeReplies = (this.props.compositeReplies || this.state.compositeReplies);
-    if (this.stateConfiguration && this.stateConfiguration['modify-state'] &&
-        (compositeReplies || {state: "UNANSWERED"}).state !== this.stateConfiguration['modify-state']){
-      //The modify state is forced in so we use false to call to the server
-      this.props.updateAssignmentState(this.stateConfiguration['modify-state'], false,
-          this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
-          this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAssignmentStateModified);
-    }
+    
+    this.props.onPushAnswer && this.props.onPushAnswer();
   }
   //Toggles answers visible or not
   toggleAnswersVisible(){
     this.setState({
       answersVisible: !this.state.answersVisible
     });
+    
+    this.props.onToggleAnswersVisible && this.props.onToggleAnswersVisible();
   }
   //This function gets called every time a field answer state changes
   //because of the way it works it will only be called if checkAnswers boolean attribute
@@ -438,6 +384,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.setState({
       answerRegistry: newObj
     })
+    
+    this.props.onAnswerChange && this.props.onAnswerChange(name, value);
 
     //NOTE if you would rather have 3 answer states here in order
     //to make all fields show in the correct answer count you might modify and change how
@@ -458,119 +406,35 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     if (answerCheckable !== this.state.answerCheckable){
       this.setState({answerCheckable});
     }
-  }
-  toggleVisiblePageStatus() {
-    this.props.updateWorkspaceMaterialContentNode({
-      workspace: this.props.workspace,
-      material: this.props.material,
-      update: {
-        hidden: !this.props.material.hidden,
-      },
-      isDraft: false,
-    });
-  }
-  copyPage() {
-    localStorage.setItem("workspace-material-copied-id", this.props.material.workspaceMaterialId.toString(10));
-    localStorage.setItem("workspace-copied-id", this.props.workspace.id.toString(10));
     
-    this.props.displayNotification(
-      this.props.i18n.text.get("plugin.workspace.materialsManagement.materialCopiedToClipboardMessage", this.props.material.title),
-      "success"
-    );
+    this.props.onAnswerCheckableChange && this.props.onAnswerCheckableChange(answerCheckable);
   }
   render(){
     //The modifiers in use
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
 
     //Setting this up
-    let materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
-    let viewForAdminPanel = this.props.isInFrontPage ? "workspace-description" : "workspace-materials";
     let isHidden = this.props.material.hidden;
     
-    const verbalAssesment = (this.props.material.evaluation && this.props.material.evaluation.verbalAssessment) ||
-      (this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && this.props.compositeReplies.evaluationInfo.text);
-    
-    let iconForTitle = null;
+    const materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     let className = `material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`;
     if (this.props.compositeReplies && this.props.compositeReplies.state) {
       className += " material-page--" + this.props.compositeReplies.state;
-      if (this.props.compositeReplies.state === "FAILED" || this.props.compositeReplies.state === "INCOMPLETE") {
-        iconForTitle = "thumb-down-alt";
-      } else if (this.props.compositeReplies.state === "PASSED") {
-        iconForTitle = "thumb-up-alt";
-      } else if (this.props.compositeReplies.state === "UNANSWERED") {
-        iconForTitle = null;
-      } else {
-        iconForTitle = "checkmark";
-      }
     }
-
+    
     return <article className={className} ref="root" id={this.props.id}>
-      {this.props.editable ? <div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
-        <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editPageTooltip")}>
-          <ButtonPill buttonModifiers="material-management-page" icon="edit" onClick={this.startupEditor}/>
-        </Dropdown>
-        {this.props.canCopy ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.copyPageTooltip")}>
-          <ButtonPill buttonModifiers="material-management-page" icon="content_copy" onClick={this.copyPage}/>
-        </Dropdown> : null}
-        {this.props.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
-          <ButtonPill buttonModifiers="material-management-page" icon="show" onClick={this.toggleVisiblePageStatus}/>
-        </Dropdown> : null}
-      </div> : null}
-      {!this.props.isInFrontPage ? <h2 className={`material-page__title material-page__title--${materialPageType}`}>
-        {this.props.material.title}
-        {iconForTitle ? <span className={`material-page__title-icon icon-${iconForTitle}`}/> : null}
-      </h2> : null}
-      <div className="react-required-container" onClick={this.stopPropagation}>
-        {this.props.loadCompositeReplies && typeof this.state.compositeReplies === "undefined" ? null :
-         <Base material={this.props.material} i18n={this.props.i18n} status={this.props.status}
-          workspace={this.props.workspace} websocket={this.props.websocket} onConfirmedAndSyncedModification={this.onConfirmedAndSyncedModification}
-          onModification={this.onModification}
-          readOnly={this.props.readOnly || (this.props.answerable && this.stateConfiguration && this.stateConfiguration['fields-read-only'])}
-          compositeReplies={this.props.compositeReplies || this.state.compositeReplies} displayCorrectAnswers={this.state.answersVisible}
-          checkAnswers={this.state.answersChecked} onAnswerChange={this.onAnswerChange} onAnswerCheckableChange={this.onAnswerCheckableChange}/>
-         }
-      </div>
-      {
-        this.props.material.type === "binary" ?
-        <BinaryMaterialLoader material={this.props.material} i18n={this.props.i18n}/> : null
-      }
-      {this.props.answerable && this.stateConfiguration ? <div className="material-page__buttonset">
-        {!this.stateConfiguration['button-disabled'] ? <Button buttonModifiers={this.stateConfiguration['button-class']}
-          onClick={this.onPushAnswer}>{this.props.i18n.text.get(this.state.answerCheckable && this.props.material.assignmentType === "EXERCISE" && (this.props.material.correctAnswers || "ALWAYS") === "ALWAYS" ?
-            this.stateConfiguration['button-check-text'] : this.stateConfiguration['button-text'])}</Button> : null}
-        {this.stateConfiguration['displays-hide-show-answers-on-request-button-if-allowed'] &&
-          this.props.material.correctAnswers === "ON_REQUEST" ? <Button 
-            buttonModifiers="muikku-show-correct-answers-button" onClick={this.toggleAnswersVisible}>
-            {this.props.i18n.text.get(this.state.answersVisible ? "plugin.workspace.materialsLoader.hideAnswers" : "plugin.workspace.materialsLoader.showAnswers")}
-          </Button> : null}
-      </div> : null}
-      {this.state.answersChecked && Object.keys(this.state.answerRegistry).length ? <div className="material-page__correct-answers">
-        <span className="material-page__correct-answers-label">{this.props.i18n.text.get("plugin.workspace.materialsLoader.correctAnswersCountLabel")}</span>
-        <span className="material-page__correct-answers-data">
-          {Object.keys(this.state.answerRegistry).filter((key)=>this.state.answerRegistry[key]).length} / {Object.keys(this.state.answerRegistry).length}
-        </span>
-      </div> : null}
-      {verbalAssesment ?
-        <div className="material-page__verbal-assessment">
-          <div className="rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
-        </div>
-     : null}
-      {(this.props.material.producers && this.props.material.producers.length) || this.props.material.license ?
-        <div className="material-page__metadata-container">
-          {this.props.material.producers && this.props.material.producers.length ?
-            <div className="material-page__producers">
-              <div className="material-page__producers-label">{this.props.i18n.text.get("plugin.workspace.materials.producersLabel")}:</div><div className="material-page__producers-item">{this.props.material.producers.map((p) => p.name).join(", ")}</div>
-            </div>
-          : null}
-          {this.props.material.license ?
-            <div className="material-page__license">
-              <div className="material-page__license-label">{this.props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:</div>
-              <div className="material-page__license-item">{this.props.material.license}</div>
-            </div> 
-          : null}
-        </div>
-      : null}
+      {this.props.children(
+        {
+          ...this.props,
+          compositeReplies: this.props.compositeReplies || this.state.compositeRepliesInState,
+          onAnswerChange: this.onAnswerChange,
+          onAnswerCheckableChange: this.onAnswerCheckableChange,
+          onPushAnswer: this.onPushAnswer,
+          onToggleAnswersVisible: this.toggleAnswersVisible,
+        },
+        this.state,
+        this.stateConfiguration
+      )}
     </article>
   }
 }

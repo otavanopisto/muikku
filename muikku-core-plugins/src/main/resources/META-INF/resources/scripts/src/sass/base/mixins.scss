@@ -28,6 +28,13 @@
   }
 }
 
+@mixin assessment-text {
+  color: $color-text-default;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+}
+
 @mixin taskfield-text {
   color: $color-text-default;
   font-family: $text-font-family;

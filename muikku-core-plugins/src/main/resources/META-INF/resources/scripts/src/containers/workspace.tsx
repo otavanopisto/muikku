@@ -122,7 +122,19 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
         }
       }
     } else {
-      history.pushState(null, null, '#p-' + newId);
+      const newHash = '#p-' + newId;
+      // defusing the new id
+      if (newHash !== location.hash) {
+        const element = document.querySelector(newHash);
+        if (element) {
+          element.id = ""
+        }
+        history.pushState(null, null, newHash);
+        if (element) {
+          element.id = 'p-' + newId;
+        }
+      }
+      
       this.loadWorkspaceMaterialsData(newId);
       
       if (state.workspaces.currentWorkspace.isCourseMember){
@@ -136,7 +148,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
         });
         if (indexFound !== -1){
           this.props.store.dispatch(updateLastWorkspace({
-            url: location.origin + location.pathname + '#p-' + newId,
+            url: location.origin + location.pathname + newHash,
             workspaceName: state.workspaces.currentWorkspace.name,
             materialName: materialChapter.children[indexFound].title
           }) as Action);

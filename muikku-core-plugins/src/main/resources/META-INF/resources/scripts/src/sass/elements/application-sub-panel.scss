@@ -83,7 +83,6 @@
   }
 }
 
-
 .application-sub-panel__header-main {
   flex-basis: 100%;
   flex-grow: 1;
@@ -95,7 +94,6 @@
     flex-shrink: 1;
     font-size: 1.25rem;
   }
-
 }
 
 .application-sub-panel__header-main--guider-profile-student-name {
@@ -205,10 +203,14 @@
 
 
 // Subpanel item header
+.application-sub-panel__item--empty {
+  font-style: italic;
+  padding: 0 0 10px;
+}
 
- .application-sub-panel__item-header {
-   padding: 10px 0;
- }
+.application-sub-panel__item-header {
+  padding: 10px 0;
+}
 
 .application-sub-panel__item-header--hops {
   font-weight: 600;

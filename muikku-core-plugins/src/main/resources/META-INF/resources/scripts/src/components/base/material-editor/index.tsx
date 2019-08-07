@@ -24,6 +24,7 @@ import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
 import AddProducer from '~/components/general/add-producer';
 import { LicenseSelector } from '~/components/general/license-selector';
+import FileUploader from '~/components/general/file-uploader';
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
@@ -294,7 +295,16 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       const materialPageType = this.props.editorState.currentDraftNodeValue.assignmentType ? (this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
       const assignmentPageType = "material-editor-" + materialPageType;
 
-      const canPublish = !equals(this.props.editorState.currentNodeValue, this.props.editorState.currentDraftNodeValue);
+      const comparerPoints = ["assignmentType", "hidden", "html", "license", "path", "producers", "title", "type", "viewRestrict"];
+      let canPublish = false;
+      for (let point of comparerPoints) {
+        if (!equals((this.props.editorState.currentNodeValue as any)[point],
+            (this.props.editorState.currentDraftNodeValue as any)[point])) {
+          canPublish = true;
+          break;
+        }
+      }
+      
       const publishModifiers = ["material-editor-publish-page","material-editor"];
       const revertModifiers = ["material-editor-revert-page","material-editor"];
       if (!canPublish) {
@@ -346,10 +356,12 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
         </div>
         <div className="material-editor__buttonset-secondary">
-          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.publishPageTooltip")}>
+          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip"
+              content={this.props.i18n.text.get("plugin.workspace.materialsManagement.publishPageTooltip")}>
             <ButtonPill buttonModifiers={publishModifiers} onClick={canPublish ? this.publish : null} icon="publish"/>
           </Dropdown> : null}
-          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.revertToPublishedPageTooltip")}>
+          {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip"
+              content={this.props.i18n.text.get("plugin.workspace.materialsManagement.revertToPublishedPageTooltip")}>
             <ButtonPill buttonModifiers={revertModifiers} onClick={canPublish ? this.revert : null} icon="revert"/>
           </Dropdown> : null}
           {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog
@@ -407,8 +419,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             {this.props.editorState.canSetProducers ?
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.producers")}</h3>
-                {this.props.editorState.currentDraftNodeValue.producers? 
-                  <AddProducer modifier="add-material-producer" removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.props.editorState.currentDraftNodeValue.producers} i18n={this.props.i18n}/>
+                {this.props.editorState.currentDraftNodeValue.producers?
+                  <div className="material-editor__add-producer-container">
+                    <AddProducer modifier="add-material-producer" removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.props.editorState.currentDraftNodeValue.producers} i18n={this.props.i18n}/>
+                  </div>
               : null}
 
               </div>
@@ -425,18 +439,10 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
-            {!this.state.uploading ?
-              <input type="file" multiple onChange={this.onFilesUpload}/> :
-              "uploading..."
-            }
-
-            {this.props.editorState.currentNodeValue.childrenAttachments && this.props.editorState.currentNodeValue.childrenAttachments.map((a) => {
-              return <div key={a.materialId}>
-                <h3>{a.title}</h3>
-                <p>/workspace/{this.props.editorState.currentNodeWorkspace.urlName}/{this.props.editorState.currentNodeValue.path}/{a.path}</p>
-                <ConfirmRemoveAttachment attachment={a}><button>delete</button></ConfirmRemoveAttachment>
-              </div>
-            })}
+            <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor"
+            files={this.props.editorState.currentNodeValue.childrenAttachments} fileIdKey="materialId" fileNameKey="title"
+            fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/${this.props.editorState.currentNodeValue.path}/${a.path}`}
+            deleteDialogElement={ConfirmRemoveAttachment} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")} deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")} downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL/>
           </div>,
         })
       }

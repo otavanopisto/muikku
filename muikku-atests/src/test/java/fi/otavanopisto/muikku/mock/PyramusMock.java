@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -274,10 +275,11 @@ public class PyramusMock {
       }
       
       public Builder mockCourseStudents() throws JsonProcessingException {
-        for (Long courseId : pmock.courseStudents.keySet()) {
+        Set<Long> courseIds = pmock.courseStudents.keySet();
+        for (Long courseId : courseIds) {
           logger.log(Level.FINE, String.format("Mocking students for course %d", courseId));
-          
-          for (CourseStudent cs : pmock.courseStudents.get(courseId)) {
+          List<CourseStudent> courseStudents = pmock.courseStudents.get(courseId);
+          for (CourseStudent cs : courseStudents) {
             logger.log(Level.FINE, String.format("Mocking course student %d for course %d", cs.getId(), courseId));
             
             stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students/%d", cs.getCourseId(), cs.getId())))
@@ -316,9 +318,10 @@ public class PyramusMock {
       }
           
       public Builder mockCourseStaffMembers() throws JsonProcessingException {
-
-        for (Long courseId : pmock.courseStaffMembers.keySet()) {
-          for (CourseStaffMember cs : pmock.courseStaffMembers.get(courseId)) {
+        Set<Long> courseIds = pmock.courseStaffMembers.keySet(); 
+        for (Long courseId : courseIds) {
+          List<CourseStaffMember> courseStaffMembers = pmock.courseStaffMembers.get(courseId);
+          for (CourseStaffMember cs : courseStaffMembers) {
             stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers/%d", cs.getCourseId(), cs.getId())))
               .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")

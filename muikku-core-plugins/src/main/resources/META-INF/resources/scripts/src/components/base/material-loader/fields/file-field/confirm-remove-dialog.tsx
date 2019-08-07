@@ -12,7 +12,8 @@ import { bindActionCreators } from 'redux';
 
 interface ConfirmRemoveDialogProps {
   i18n: i18nType,
-  onConfirm: ()=>any,
+  onConfirm: (fileData: any)=>any,
+  file: any,
   children: React.ReactElement<any>,
 }
 
@@ -32,7 +33,7 @@ class ConfirmRemoveDialog extends React.Component<ConfirmRemoveDialogProps, Conf
   }
   confirm(closeDialog: ()=>any){
     closeDialog();
-    this.props.onConfirm();
+    this.props.onConfirm(this.props.file);
   }
   cancel(closeDialog?: ()=>any){
     closeDialog();

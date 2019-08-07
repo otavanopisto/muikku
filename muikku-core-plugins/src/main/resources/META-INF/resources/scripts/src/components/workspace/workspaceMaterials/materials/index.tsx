@@ -215,6 +215,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     let isAllTheWayToTheBottom = document.documentElement.scrollHeight - document.documentElement.scrollTop === document.documentElement.clientHeight;
     if (!isAllTheWayToTheBottom){
       let winnerTop:number = null;
+      let winnerVisibleWeight:number = null;
       for (let refKey of Object.keys(this.refs)){
         let refKeyInt = parseInt(refKey);
         if (!refKeyInt){
@@ -224,9 +225,27 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         let elementTop = element.getBoundingClientRect().top;
         let elementBottom = element.getBoundingClientRect().bottom;
         let isVisible = elementTop < window.innerHeight && elementBottom >= (document.querySelector("#stick") as HTMLElement).offsetHeight;
-        if (isVisible && (elementTop < winnerTop || !winner)){
-          winner = refKeyInt;
-          winnerTop = elementTop;
+        if (isVisible){
+          let cropBottom = window.innerHeight - elementBottom;
+          if (cropBottom > 0) {
+            cropBottom = 0;
+          }
+          let cropTop = elementTop;
+          if (cropTop > 0) {
+            cropTop = 0;
+          }
+          const cropTotal = -cropTop-cropBottom;
+          
+          const visibleFraction = (element.offsetHeight - cropTotal) / element.offsetHeight;
+          let weight = visibleFraction;
+          if (!winner || elementTop < winnerTop) {
+            weight += 0.4;
+          }
+          if (!winnerVisibleWeight || weight >= winnerVisibleWeight) {
+            winner = refKeyInt;
+            winnerTop = elementTop;
+            winnerVisibleWeight = weight;
+          }
         }
       }
     } else {

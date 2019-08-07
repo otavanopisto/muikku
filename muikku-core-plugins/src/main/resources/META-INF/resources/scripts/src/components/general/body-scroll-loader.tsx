@@ -22,10 +22,13 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     if (this.cancellingLoadingPropertyLocation && (this.props as any)[this.cancellingLoadingPropertyLocation]){
       return;
     }
-    if (((this.props as any)[this.statePropertyLocation] as string === "READY" &&
-        (this.props as any)[this.hasMorePropertyLocation] as boolean) ||
-        (this.applicationIsReady && this.applicationIsReady() && (this.hasMore && this.hasMore()) ||
-            (this.props as any)[this.hasMorePropertyLocation] as boolean)){
+    const isReadyByState = (this.props as any)[this.statePropertyLocation] as string === "READY" && (this.props as any)[this.hasMorePropertyLocation];
+    const isReadyByFunction = this.applicationIsReady && this.applicationIsReady();
+    const hasMoreByFunction = this.hasMore && this.hasMore();
+    const hasMoreByState = (this.props as any)[this.hasMorePropertyLocation];
+    const isReady = isReadyByState || isReadyByFunction;
+    const hasMore = hasMoreByFunction || hasMoreByState;
+    if (isReady && hasMore) {
       let scrollBottomRemaining = document.documentElement.scrollHeight -
         ((document.body.scrollTop || document.documentElement.scrollTop) + document.documentElement.offsetHeight)
       if (scrollBottomRemaining <= 100){
@@ -47,10 +50,13 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     if (this.cancellingLoadingPropertyLocation && (this.props as any)[this.cancellingLoadingPropertyLocation]){
       return;
     }
-    if (((this.props as any)[this.statePropertyLocation] as string === "READY" &&
-        (this.props as any)[this.hasMorePropertyLocation] as boolean) ||
-        (this.applicationIsReady && this.applicationIsReady() && (this.hasMore && this.hasMore()) ||
-            (this.props as any)[this.hasMorePropertyLocation] as boolean)){
+    const isReadyByState = (this.props as any)[this.statePropertyLocation] as string === "READY" && (this.props as any)[this.hasMorePropertyLocation];
+    const isReadyByFunction = this.applicationIsReady && this.applicationIsReady();
+    const hasMoreByFunction = this.hasMore && this.hasMore();
+    const hasMoreByState = (this.props as any)[this.hasMorePropertyLocation];
+    const isReady = isReadyByState || isReadyByFunction;
+    const hasMore = hasMoreByFunction || hasMoreByState;
+    if (isReady && hasMore){
       let doesNotHaveScrollBar = document.documentElement.scrollHeight === document.documentElement.offsetHeight;
       if (doesNotHaveScrollBar){
         if (this.loadMoreTriggerFunctionLocation){

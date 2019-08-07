@@ -326,6 +326,8 @@ let requestAssessmentAtWorkspace:RequestAssessmentAtWorkspaceTriggerType = funct
         newAssessmentState = 'pending_pass';
       } else if (newAssessmentState == 'fail') {
         newAssessmentState = 'pending_fail';
+      } else {
+        newAssessmentState = 'pending';
       }
       
       dispatch({
@@ -1658,6 +1660,7 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
   }
 }
 
+const MAX_ATTACHMENT_SIZE = 10000000;
 let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerType = function createWorkspaceMaterialAttachment(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
@@ -1668,6 +1671,11 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
         formData.append("file", file);
         //and do the thing
         return new Promise((resolve, reject) => {
+          if (file.size >= MAX_ATTACHMENT_SIZE) {
+            reject(new Error(getState().i18n.text.get("TODOERRMSG attachment too large")));
+            return;
+          }
+          
           $.ajax({
             url: getState().status.contextPath + '/tempFileUploadServlet',
             type: 'POST',
@@ -1706,6 +1714,7 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
         throw err;
       }
       
+      dispatch(actions.displayNotification(err.message, 'error'))
       data.fail && data.fail();
     }
     
