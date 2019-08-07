@@ -5,6 +5,10 @@
 
 .license-selector {
   padding: 10px 0;
+  
+  input {
+    margin-left: 10px;
+  }
 }
 
 .license-selector--material-editor {
