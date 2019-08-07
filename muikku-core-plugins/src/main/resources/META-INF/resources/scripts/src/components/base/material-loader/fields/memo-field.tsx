@@ -118,25 +118,6 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     });
   }
   render(){
-    if (this.props.invisible && !(!this.props.readOnly && this.props.content.richedit)){
-      let unloadedField;
-      if  (this.props.readOnly){
-         unloadedField = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
-           rows={parseInt(this.props.content.rows)}/> :
-           <div className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
-      } else {
-        unloadedField = <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)} rows={parseInt(this.props.content.rows)}/>
-      }
-      
-      //TODOLANKKINEN  Also please ensure that the material-page__count-container has a fixed height
-      //as there won't be anything inside it, the counters are placed horizontally
-      //so there is no need to render them
-      return <div ref="base" className="material-page__memofield-wrapper">
-        {unloadedField}
-        <div className="material-page__count-container"/>
-      </div>
-    }
-    
     //we have a right answer example for when
     //we are asked for displaying right answer
     //so we need to set it up
@@ -149,6 +130,23 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
         </span>
         <span className="material-page__field-answer-example">{this.props.content.example}</span>
       </span>
+    }
+    
+    if (this.props.invisible && !(!this.props.readOnly && this.props.content.richedit)){
+      let unloadedField;
+      if  (this.props.readOnly){
+         unloadedField = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
+           rows={parseInt(this.props.content.rows)}/> :
+           <div className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
+      } else {
+        unloadedField = <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)} rows={parseInt(this.props.content.rows)}/>
+      }
+      
+      return <div ref="base" className="material-page__memofield-wrapper">
+        {unloadedField}
+        <div className="material-page__counter-wrapper"/>
+        {answerExampleComponent}
+      </div>
     }
     
     //now we need the field

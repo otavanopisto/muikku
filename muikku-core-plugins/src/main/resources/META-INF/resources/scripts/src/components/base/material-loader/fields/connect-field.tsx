@@ -336,9 +336,11 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     if (this.props.invisible){
       return <div className="material-page__connectfield-wrapper">
         <div className="material-page__connectfield">
-          {this.state.fields.map((field, index)=>{
-            return <div key={index} className="material-page__connectfield-term"/>
-          })}
+          <div className="material-page__connectfield-terms-container">
+            {this.state.fields.map((field, index)=>{
+              return <div key={index} className="material-page__connectfield-term"/>
+            })}
+          </div>
         </div>
       </div>
     }
