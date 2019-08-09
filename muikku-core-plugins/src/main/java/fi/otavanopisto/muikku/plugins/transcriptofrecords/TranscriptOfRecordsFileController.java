@@ -44,39 +44,46 @@ public class TranscriptOfRecordsFileController {
     
     return basePath;
   }
-
-  public TranscriptOfRecordsFile attachFile(
-      UserEntity student,
-      InputStream content,
-      String contentType,
-      String title,
-      String description
-  ) throws IOException {
+  
+  public TranscriptOfRecordsFile attachFile(UserEntity student, InputStream content, String contentType, String title, String description) throws IOException {
     String fileUuid = UUID.randomUUID().toString();
     File file = Paths.get(getFileUploadBasePath(), fileUuid).toFile();
     try {
       FileUtils.copyInputStreamToFile(content, file);
-    } catch (IOException ex) {
+    }
+    catch (IOException ex) {
       file.delete();
-      
       throw new RuntimeException("Couldn't save file", ex);
     }
-    
-    return transcriptOfRecordsFileDAO.create(
+    TranscriptOfRecordsFile torFile = transcriptOfRecordsFileDAO.create(
       student,
       fileUuid,
       contentType,
+      file.length(),
       title,
       description
     );
+    return torFile;
   }
   
   public List<TranscriptOfRecordsFile> listFiles(UserEntity student) {
-    return transcriptOfRecordsFileDAO.listByUserEntity(student);
+    List<TranscriptOfRecordsFile> files = transcriptOfRecordsFileDAO.listByUserEntity(student);
+    // TODO Can be removed once all existing files have a size in database
+    for (TranscriptOfRecordsFile file : files) {
+      if (file.getSize() == null) {
+        transcriptOfRecordsFileDAO.updateSize(file, getFileSize(file));
+      }
+    }
+    return files;
   }
   
   public TranscriptOfRecordsFile findFileById(Long id) {
-    return transcriptOfRecordsFileDAO.findById(id);
+    TranscriptOfRecordsFile file = transcriptOfRecordsFileDAO.findById(id);
+    // TODO Can be removed once all existing files have a size in database
+    if (file != null && file.getSize() == null) {
+      file = transcriptOfRecordsFileDAO.updateSize(file, getFileSize(file));
+    }
+    return file;
   }
   
   public void outputFileToStream(TranscriptOfRecordsFile torFile, OutputStream stream) {
@@ -96,4 +103,10 @@ public class TranscriptOfRecordsFileController {
   public void delete(TranscriptOfRecordsFile file) {
     transcriptOfRecordsFileDAO.archive(file);
   }
+
+  private Long getFileSize(TranscriptOfRecordsFile transcriptOfRecordsFile) {
+    File file = Paths.get(getFileUploadBasePath(), transcriptOfRecordsFile.getFileName()).toFile();
+    return file == null ? 0 : file.length();
+  }
+
 }

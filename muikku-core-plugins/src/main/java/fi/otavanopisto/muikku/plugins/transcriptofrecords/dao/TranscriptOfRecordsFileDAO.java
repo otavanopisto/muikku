@@ -19,6 +19,7 @@ public class TranscriptOfRecordsFileDAO extends CorePluginsDAO<TranscriptOfRecor
       UserEntity userEntity,
       String fileName,
       String contentType,
+      Long size,
       String title,
       String description
   ) {
@@ -26,6 +27,7 @@ public class TranscriptOfRecordsFileDAO extends CorePluginsDAO<TranscriptOfRecor
         userEntity.getId(),
         fileName,
         contentType,
+        size,
         false,
         title,
         description);
@@ -49,7 +51,13 @@ public class TranscriptOfRecordsFileDAO extends CorePluginsDAO<TranscriptOfRecor
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public void archive(TranscriptOfRecordsFile file) {
+  public TranscriptOfRecordsFile updateSize(TranscriptOfRecordsFile file, Long size) {
+    file.setSize(size);
+    return persist(file);
+  }
+  
+  public TranscriptOfRecordsFile archive(TranscriptOfRecordsFile file) {
     file.setArchived(true);
+    return persist(file);
   }
 }
