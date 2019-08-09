@@ -153,54 +153,53 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
           </div>
           <div className="application-sub-panel application-sub-panel--workspace-users">  
             <h2 className="application-sub-panel__header application-sub-panel__header--workspace-users">{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
-          <div className="application-sub-panel__body application-sub-panel__body--workspace-students">
-            <div className="form-element form-element--workspace-toolbar">
-              <input type="text" className="form-element__input form-element__input--subpanel-search"
-                value={this.state.currentSearch} onChange={this.updateSearch}/>
-              <div className="form-element__input-decoration--subpanel-search icon-search"></div>
-            </div>
-            <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
-              {
-                id: "ACTIVE",
-                name: this.props.i18n.text.get('plugin.workspace.users.students.link.active'),
-                type: "workspace-students",
-                component: ()=>{
-                  let activeStudents = this.props.workspace && this.props.workspace.students &&
-                    this.props.workspace.students
-                    .filter(s=>s.active)
-                    .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
-                    .map(s=><Student highlight={this.state.currentSearch}
-                      onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
-                      key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
-                  
+            <div className="application-sub-panel__body application-sub-panel__body--workspace-students">
+              <div className="form-element form-element--workspace-toolbar">
+                <input type="text" className="form-element__input form-element__input--subpanel-search"
+                  value={this.state.currentSearch} onChange={this.updateSearch}/>
+                <div className="form-element__input-decoration--subpanel-search icon-search"></div>
+              </div>
+              <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
+                {
+                  id: "ACTIVE",
+                  name: this.props.i18n.text.get('plugin.workspace.users.students.link.active'),
+                  type: "workspace-students",
+                  component: ()=>{
+                    let activeStudents = this.props.workspace && this.props.workspace.students &&
+                      this.props.workspace.students
+                      .filter(s=>s.active)
+                      .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
+                      .map(s=><Student highlight={this.state.currentSearch}
+                        onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+                        key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
+                        return <div className="application-list application-list--workspace-users">
+                          {this.props.workspace && this.props.workspace.students ? (
+                            activeStudents.length ? activeStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.activeStudents.empty')}</div>
+                          ): null}
+                        </div>
+                  }
+                },
+                {
+                  id: "INACTIVE",
+                  name: this.props.i18n.text.get('plugin.workspace.users.students.link.inactive'),
+                  type: "workspace-students",
+                  component: ()=>{
+                    let inactiveStudents = this.props.workspace && this.props.workspace.students &&
+                      this.props.workspace.students
+                      .filter(s=>!s.active)
+                      .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
+                      .map(s=><Student onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+                        highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
+                    
                       return <div className="application-list application-list--workspace-users">
                         {this.props.workspace && this.props.workspace.students ? (
-                          activeStudents.length ? activeStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.activeStudents.empty')}</div>
+                          inactiveStudents.length ? inactiveStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.inActiveStudents.empty')}</div>
                         ): null}
                       </div>
+                  }
                 }
-              },
-              {
-                id: "INACTIVE",
-                name: this.props.i18n.text.get('plugin.workspace.users.students.link.inactive'),
-                type: "workspace-students",
-                component: ()=>{
-                  let inactiveStudents = this.props.workspace && this.props.workspace.students &&
-                    this.props.workspace.students
-                    .filter(s=>!s.active)
-                    .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
-                    .map(s=><Student onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
-                      highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
-                  
-                    return <div className="application-list application-list--workspace-users">
-                      {this.props.workspace && this.props.workspace.students ? (
-                        inactiveStudents.length ? inactiveStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.inActiveStudents.empty')}</div>
-                      ): null}
-                    </div>
-                }
-              }
-            ]}/>
-          </div>
+              ]}/>
+            </div>
           </div>
         </div>
       </div>

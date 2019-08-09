@@ -140,7 +140,7 @@ export class ApplicationListItemContentWrapper extends React.Component<Applicati
       <div className={`application-list__item-content-aside ${this.props.asideModifiers ? asideModifiers.map( m => `application-list__item-content-aside--${m}` ).join( " " ) : ""}`}>
         {this.props.aside}
       </div>
-      <div className={`application-list__item-content-main ${this.props.mainModifiers ? asideModifiers.map( m => `application-list__item-content-main--${m}` ).join( " " ) : ""}`}>
+      <div className={`application-list__item-content-main ${this.props.mainModifiers ? mainModifiers.map( m => `application-list__item-content-main--${m}` ).join( " " ) : ""}`}>
         {this.props.children}
       </div>
     </div>
