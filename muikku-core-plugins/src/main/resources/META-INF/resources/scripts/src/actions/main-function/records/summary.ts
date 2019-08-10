@@ -41,7 +41,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
 
       /* We need returned exercises and evaluated courses */
 
-      let exercisesDone:any = [];
+      let assignmentsDone:any = [];
       let coursesDone:any = [];
       
       
@@ -53,7 +53,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       
       activityArrays.forEach(function(element:any) {
         element.find(function(param:any) {
-          param["type"] == "MATERIAL_EXERCISEDONE" ? exercisesDone.push(param["type"]) : param["type"] == "EVALUATION_GOTPASSED" ? coursesDone.push(param["type"]) : null;
+          param["type"] == "MATERIAL_ASSIGNMENTDONE" ? assignmentsDone.push(param["type"]) : param["type"] == "EVALUATION_GOTPASSED" ? coursesDone.push(param["type"]) : null;
         });
       });
       
@@ -93,7 +93,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       let summaryData = {
         eligibilityStatus: eligibility.coursesCompleted,
         activity: activityLogs.general.length,
-        returnedExercises: exercisesDone.length,
+        returnedExercises: assignmentsDone.length,
         coursesDone: coursesDone.length,
         graphData: graphData
       }

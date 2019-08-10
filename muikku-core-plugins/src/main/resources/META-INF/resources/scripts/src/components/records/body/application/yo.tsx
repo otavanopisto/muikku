@@ -118,7 +118,6 @@ class YO extends React.Component<YOProps, YOState> {
                 <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participation.title")}</div>
                 <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">Luatikko sis</div>
               </div>
-
        */}
               <div className="application-sub-panel__item application-sub-panel__item--summarizer">
                 <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
@@ -148,7 +147,7 @@ class YO extends React.Component<YOProps, YOState> {
               </div>
             </div>
           </div>
-      */}      
+      */}
             </div>
  
       );
