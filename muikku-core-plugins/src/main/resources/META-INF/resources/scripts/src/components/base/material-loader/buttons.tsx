@@ -13,6 +13,12 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
     return null;
   }
   
+  if (props.invisible) {
+    return (<div className="material-page__buttonset">
+      <a className="button button--muikku-check-exercises">a</a>
+    </div>)
+  }
+  
   return (<div className="material-page__buttonset">
     {!props.stateConfiguration['button-disabled'] ? <Button buttonModifiers={props.stateConfiguration['button-class']}
       onClick={props.onPushAnswer}>{props.i18n.text.get(props.answerCheckable && props.material.assignmentType === "EXERCISE" && (props.material.correctAnswers || "ALWAYS") === "ALWAYS" ?

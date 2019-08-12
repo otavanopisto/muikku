@@ -28,6 +28,8 @@ interface FileUploaderProps {
   hintText: string,
   showURL?: boolean,
   readOnly?: boolean,
+  
+  invisible?: boolean,
 }
 
 interface FileUploaderState {
@@ -176,14 +178,32 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
     });
   }
   render(){
+    if (this.props.invisible) {
+      return <div className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
+        <div className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
+          <span className="file-uploader__hint">{this.props.hintText}</span>
+          {this.props.readOnly ? null :
+            (<input type="file" multiple className="file-uploader__field"/>)
+          }
+        </div>
+        {this.props.files && (this.props.files.length ?
+          <div className={`file-uploader__items-container ${this.props.modifier ? "file-uploader__items--" + this.props.modifier : ""}`}>
+            {this.props.files.map((file)=>{
+              return <div className="file-uploader__item" key={file[this.props.fileIdKey]}/>
+            })}
+          </div> : this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
+        )}
+      </div>
+    }
+    
     const DialogDeleteElement = this.props.deleteDialogElement;
     return <div className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
       <div className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
         <span className="file-uploader__hint">{this.props.hintText}</span>
         {this.props.readOnly ? null :
           (<input type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange}/>)
-      }
-    </div>
+        }
+      </div>
       {this.props.files && (this.props.files.length ?
         <div className={`file-uploader__items-container ${this.props.modifier ? "file-uploader__items--" + this.props.modifier : ""}`}>
           {this.props.files.map((file)=>{

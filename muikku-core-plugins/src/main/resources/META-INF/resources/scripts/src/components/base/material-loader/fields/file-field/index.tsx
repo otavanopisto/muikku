@@ -6,7 +6,6 @@ import { StatusType } from "~/reducers/base/status";
 import {ButtonPill} from "~/components/general/button";
 let ProgressBarLine = require('react-progressbar.js').Line;
 import equals = require("deep-equal");
-import FieldBase from "../base";
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
 
@@ -20,7 +19,9 @@ interface FileFieldProps {
   
   readOnly?: boolean,
   initialValue?: string,
-  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
+  
+  invisible?: boolean,
 }
 
 interface FileFieldState {
@@ -39,7 +40,7 @@ interface FileFieldState {
   syncError: string
 }
 
-export default class FileField extends FieldBase<FileFieldProps, FileFieldState> {
+export default class FileField extends React.Component<FileFieldProps, FileFieldState> {
   constructor(props: FileFieldProps){
     super(props);
     
@@ -104,23 +105,6 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
   }
   
   render(){
-    if (!this.loaded){
-      return <div className="material-page__filefield-wrapper">
-        <div className="material-page__filefield">
-      {!this.props.readOnly ? <div className="material-page__filefield-description">{this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}</div> : null}
-          <div className="material-page__filefield-files-container">{
-            this.state.values.map((value, index)=>
-              <div className="material-page__filefield-file-container">
-                <a className="material-page__filefield-file" key={value.fileId}>
-                  {value.name}
-                </a>
-                <Link className="material-page__filefield-download-file-button icon-download"/>
-                <Link className="material-page__filefield-remove-file-button icon-delete"/>
-              </div>)
-          }</div>
-        </div>
-      </div>
-    }
     //rendering things here
     //this is the data that it has already created
     let dataInContainer = null;
@@ -141,7 +125,8 @@ export default class FileField extends FieldBase<FileFieldProps, FileFieldState>
          }} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")} deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")} downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")}
          files={this.state.values} fileIdKey="fileId" fileNameKey="name" fileUrlGenerator={(f)=>`/rest/workspace/fileanswer/${f.fileId}`}
          deleteDialogElement={ConfirmRemoveDialog} deleteDialogElementProps={{onConfirm: this.removeFile}} modifier="taskfield"
-         uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("plugin.workspace.fileField.statusUploading", percent)}/>
+         uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("plugin.workspace.fileField.statusUploading", percent)}
+         invisible={this.props.invisible}/>
       </div>
     </div>
   }
