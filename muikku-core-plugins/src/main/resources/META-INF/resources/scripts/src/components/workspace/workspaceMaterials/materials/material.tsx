@@ -80,8 +80,9 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           <MaterialLoaderEditorButtonSet {...props} {...state}/>
           <MaterialLoaderTitle {...props} {...state}/>
           <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
+          <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration} invisible={true}/>
           {!isEvaluatedAsPassed ? 
-              <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
+            <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
           : null}
           <MaterialLoaderCorrectAnswerCounter {...props} {...state}/>
           {isAssignment && hasEvaluation ? 

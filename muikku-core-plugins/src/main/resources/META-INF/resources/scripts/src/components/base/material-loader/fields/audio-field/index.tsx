@@ -6,7 +6,6 @@ let ProgressBarLine = require('react-progressbar.js').Line;
 import moment from '~/lib/moment';
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
-import FieldBase from "../base";
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 
 //so we use the media recorder
@@ -29,7 +28,9 @@ interface AudioFieldProps {
   
   readOnly?: boolean,
   initialValue?: string,
-  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
+  onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
+      
+  invisible?: boolean,
 }
 
 interface AudioFieldState {
@@ -64,7 +65,7 @@ interface AudioFieldState {
 //this is the maximum recording time in seconds
 const MAX_RECORDING_TIME_IN_SECONDS = 60*5;
 
-export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldState> {
+export default class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
   private interval: NodeJS.Timer;
   private recorder:any;
   private stream:MediaStream;
@@ -310,21 +311,22 @@ export default class AudioField extends FieldBase<AudioFieldProps, AudioFieldSta
     this.props.onChange(this, this.props.content.name, result);
   }
   render(){
-    if (!this.loaded){
+    if (this.props.invisible){
+      let emptyData = null;
+      if (this.state.values.length){
+        //we need to map them
+        emptyData = this.state.values.map((value, index)=>{
+          //if the value is not uploading, we set it as static
+          return <div className="material-page__audiofield-file-container" key={index}/>;
+        });
+      }
       return <div className="material-page__audiofield-wrapper">
         <div className="material-page__audiofield">
-          {!this.props.readOnly && this.state.supportsMediaAPI() ?
-            <div className="material-page__audiofield-controls"/> : null}
-          <div className="material-page__audiofield-files-container">{
-            this.state.values.map((value, index)=>
-            <div className="material-page__audiofield-file-container">
-              <a className="material-page__audiofield-file" key={value.id}>
-                {value.name}
-              </a>
-              <Link className="material-page__audiofield-download-file-button icon-download"/>
-              <Link className="material-page__audiofield-remove-file-button icon-delete"/>
-            </div>)
-          }</div>
+          {!this.props.readOnly && !this.state.supportsMediaAPI() ? <input type="file"/> : null}
+          {!this.props.readOnly && this.state.supportsMediaAPI() ? <div className="material-page__audiofield-controls"/> : null}
+          {this.state.values.length > 0 ? <div className="material-page__audiofield-files-container">
+            {emptyData}
+          </div>: null }
         </div>
       </div>
     }

@@ -3,7 +3,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import CKEditor from '~/components/general/ckeditor';
 import $ from '~/lib/jquery';
 import equals = require("deep-equal");
-import FieldBase from "./base";
 
 interface MemoFieldProps {
   type: string,
@@ -21,7 +20,9 @@ interface MemoFieldProps {
   
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
-  onAnswerChange?: (name: string, value: boolean)=>any
+  onAnswerChange?: (name: string, value: boolean)=>any,
+      
+  invisible?: boolean,
 }
 
 interface MemoFieldState {
@@ -64,7 +65,7 @@ function wordCount(rawText: string){
   return rawText === '' ? 0 : rawText.trim().split(/\s+/).length;
 }
 
-export default class MemoField extends FieldBase<MemoFieldProps, MemoFieldState> {
+export default class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   constructor(props: MemoFieldProps){
     super(props);
     
@@ -117,23 +118,6 @@ export default class MemoField extends FieldBase<MemoFieldProps, MemoFieldState>
     });
   }
   render(){
-    if (!this.loaded){
-      //TODOLANKKINEN make sure the measured height is constant for your design
-      //rows and cols are ignored for ckeditor so it is rendered at a constant
-      //height, of 271, but if you ever change ckeditor height we need to fix this
-      const CKEDITOR_TAKEN_HEIGHT = 271;
-      let unloadedField = !this.props.content.richedit ? <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)}
-          rows={parseInt(this.props.content.rows)}/> : <textarea className="material-page__memofield" style={{height: CKEDITOR_TAKEN_HEIGHT}}/>
-      
-      //TODOLANKKINEN  Also please ensure that the material-page__count-container has a fixed height
-      //as there won't be anything inside it, the counters are placed horizontally
-      //so there is no need to render them
-      return <div ref="base" className="material-page__memofield-wrapper">
-        {unloadedField}
-        <div className="material-page__count-container"/>
-      </div>
-    }
-    
     //we have a right answer example for when
     //we are asked for displaying right answer
     //so we need to set it up
@@ -146,6 +130,23 @@ export default class MemoField extends FieldBase<MemoFieldProps, MemoFieldState>
         </span>
         <span className="material-page__field-answer-example">{this.props.content.example}</span>
       </span>
+    }
+    
+    if (this.props.invisible && !(!this.props.readOnly && this.props.content.richedit)){
+      let unloadedField;
+      if  (this.props.readOnly){
+         unloadedField = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
+           rows={parseInt(this.props.content.rows)}/> :
+           <div className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
+      } else {
+        unloadedField = <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)} rows={parseInt(this.props.content.rows)}/>
+      }
+      
+      return <div ref="base" className="material-page__memofield-wrapper">
+        {unloadedField}
+        <div className="material-page__counter-wrapper"/>
+        {answerExampleComponent}
+      </div>
     }
     
     //now we need the field

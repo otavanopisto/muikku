@@ -79,7 +79,9 @@ interface BaseProps {
   displayCorrectAnswers: boolean,
   checkAnswers: boolean,
   onAnswerChange: (name:string, status:boolean)=>any,
-  onAnswerCheckableChange: (status: boolean)=>any
+  onAnswerCheckableChange: (status: boolean)=>any,
+  
+  invisible: boolean,
 }
 
 interface BaseState {
@@ -276,7 +278,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           dataset: extractDataSet(element),
           i18n: props.i18n,
           //This is the path something odd for images
-          path: "/workspace/" + props.workspace.urlName + "/materials/" + props.material.path
+          path: "/workspace/" + props.workspace.urlName + "/materials/" + props.material.path,
+          invisible: props.invisible,
         }}/>;
 
         //we do the same we did in the dynamics
@@ -324,7 +327,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         element: statice.element,
         dataset: extractDataSet(statice.element),
         i18n: nextProps.i18n,
-        path: "/workspace/" + nextProps.workspace.urlName + "/materials/" + nextProps.material.path
+        path: "/workspace/" + nextProps.workspace.urlName + "/materials/" + nextProps.material.path,
+        invisible: nextProps.invisible,
       }}/>;
       
       statice.subtree = unstable_renderSubtreeIntoContainer(
@@ -424,6 +428,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     parameters["displayCorrectAnswers"] = props.displayCorrectAnswers;
     parameters["checkAnswers"] = props.checkAnswers;
     parameters["onAnswerChange"] = props.onAnswerChange;
+    
+    parameters["invisible"] = props.invisible;
     
     //and we return that thing
     return <ActualElement {...parameters}/>

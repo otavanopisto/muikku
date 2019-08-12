@@ -15,6 +15,12 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
   if (props.isInFrontPage) {
     return null;
   }
+  
+  if (props.invisible) {
+    return (<h2 className="material-page__title">
+      {props.material.title}
+    </h2>);
+  }
 
   const modifiers:Array<string> = typeof props.modifiers === "string" ? [props.modifiers] : props.modifiers;
 

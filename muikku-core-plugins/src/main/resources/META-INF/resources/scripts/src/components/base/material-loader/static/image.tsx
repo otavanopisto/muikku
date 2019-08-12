@@ -1,7 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { HTMLtoReactComponent } from "~/util/modifiers";
-import FieldBase from "../fields/base";
 
 interface ImageProps {
   element: HTMLElement,
@@ -17,95 +16,127 @@ interface ImageProps {
     //Someone thought it was smart to set up two versions of data
     original?: string
   },
-  i18n: i18nType
+  i18n: i18nType,
+
+  invisible?: boolean,
 }
 
 interface ImageState {
-  aspectRatio: number,
-  width: number,
-  height: number
+  predictedHeight: number;
+  maxWidth: number;
 }
 
-export default class Image extends FieldBase<ImageProps, ImageState>{
+export default class Image extends React.Component<ImageProps, ImageState>{
+  private predictedAspectRatio: number;
   constructor(props: ImageProps){
     super(props);
     
+    const img = this.props.element.querySelector("img");
+    const aspectRatio = img.width/img.height;
+    
     this.state = {
-        aspectRatio: null,
-        width: null,
-        height: null
+      predictedHeight: null,
+      maxWidth: null,
+    }
+
+    if (!isNaN(aspectRatio)) {
+      this.predictedAspectRatio = aspectRatio;
+    }
+    
+    this.calculatePredictedHeight = this.calculatePredictedHeight.bind(this);
+    this.calculateMaxWidth = this.calculateMaxWidth.bind(this);
+  }
+  componentDidMount() {
+    window.addEventListener("resize", this.calculatePredictedHeight);
+    this.calculatePredictedHeight();
+  }
+  componentDidUpdate() {
+    this.calculatePredictedHeight();
+  }
+  componentWillUnmount() {
+    window.addEventListener("resize", this.calculatePredictedHeight);
+  }
+  calculatePredictedHeight() {
+    if (this.predictedAspectRatio) {
+      const predictedHeight = (this.refs["img"] as HTMLImageElement).offsetWidth/this.predictedAspectRatio;
+      if (predictedHeight !== this.state.predictedHeight) {
+        this.setState({
+          predictedHeight
+        });
+      }
     }
   }
-  componentDidMount(){
-    super.componentDidMount();
-    let img = this.props.element.querySelector("img");
-    let aspectRatio = img.width/img.height;
-
-    if (isNaN(aspectRatio)) {
-      return;
+  calculateMaxWidth() {
+    const image = (this.refs["img"] as HTMLImageElement);
+    if (image.src) {
+      const maxWidth = image.naturalWidth;
+      if (maxWidth !== this.state.maxWidth) {
+        this.setState({maxWidth});
+      }
     }
-
-    this.setState({
-      aspectRatio,
-      width: (this.refs["img"] as HTMLElement).offsetWidth,
-      height: (this.refs["img"] as HTMLElement).offsetWidth/aspectRatio
-    });
   }
   render(){
-    console.log(this.props.dataset, this.props.element);
+    console.log(this.props.dataset, this.props.element, this.props.invisible);
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
       if (Tag === "figure" && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.licence)){
-        children.push(<div className="image__details icon-copyright" key="details">
-          <div className="image__details-container">
-            <span className="image__details-label">{this.props.i18n.text.get("plugin.workspace.materials.detailsSourceLabel")} </span>
-            {this.props.dataset.source || this.props.dataset.sourceUrl
-              ? (this.props.dataset.sourceUrl ?
-                  <a href={this.props.dataset.sourceUrl} target="_blank">{this.props.dataset.source || this.props.dataset.sourceUrl}</a> :
-                  <span>{this.props.dataset.source}</span>) : null}
-            {this.props.dataset.source || this.props.dataset.sourceUrl ? <span>&nbsp;/&nbsp;</span> : null}
-            {this.props.dataset.author || this.props.dataset.authorUrl ? (
-                this.props.dataset.authorUrl ?
-                  <a href={this.props.dataset.authorUrl} target="_blank">{this.props.dataset.author || this.props.dataset.authorUrl}</a> :
-                  <span>{this.props.dataset.author}</span>
-            ) : null}
-            {this.props.dataset.author || this.props.dataset.authorUrl ? <span>,&nbsp;</span> : null}
-            {this.props.dataset.licence || this.props.dataset.licenseUrl ? (
-                this.props.dataset.licenseUrl ?
-                  <a href={this.props.dataset.licenseUrl} target="_blank">{this.props.dataset.licence || this.props.dataset.licenseUrl}</a> :
-                  <span>{this.props.dataset.licence}</span>
-            ) : null}
-          </div>
-        </div>);
+        if (!this.props.invisible) {
+          children.push(<div className="image__details icon-copyright" key="details">
+            <div className="image__details-container">
+              <span className="image__details-label">{this.props.i18n.text.get("plugin.workspace.materials.detailsSourceLabel")} </span>
+              {this.props.dataset.source || this.props.dataset.sourceUrl
+                ? (this.props.dataset.sourceUrl ?
+                    <a href={this.props.dataset.sourceUrl} target="_blank">{this.props.dataset.source || this.props.dataset.sourceUrl}</a> :
+                    <span>{this.props.dataset.source}</span>) : null}
+              {this.props.dataset.source || this.props.dataset.sourceUrl ? <span>&nbsp;/&nbsp;</span> : null}
+              {this.props.dataset.author || this.props.dataset.authorUrl ? (
+                  this.props.dataset.authorUrl ?
+                    <a href={this.props.dataset.authorUrl} target="_blank">{this.props.dataset.author || this.props.dataset.authorUrl}</a> :
+                    <span>{this.props.dataset.author}</span>
+              ) : null}
+              {this.props.dataset.author || this.props.dataset.authorUrl ? <span>,&nbsp;</span> : null}
+              {this.props.dataset.licence || this.props.dataset.licenseUrl ? (
+                  this.props.dataset.licenseUrl ?
+                    <a href={this.props.dataset.licenseUrl} target="_blank">{this.props.dataset.licence || this.props.dataset.licenseUrl}</a> :
+                    <span>{this.props.dataset.licence}</span>
+              ) : null}
+            </div>
+          </div>);
+        }
+      }
+      
+      if (Tag === "figure") {
+        const img = this.props.element.querySelector("img");
+        elementProps.style = elementProps.style || {};
+        elementProps.style.width = (img.width || this.state.maxWidth) + "px";
+        elementProps.style.maxWidth = "100%";
       }
       
       if (Tag === "img"){
-        if (!this.state.width){
-          elementProps.style = elementProps.style || {};
-          elementProps.style.maxWidth = elementProps.width + "px";
-          elementProps.style.width = "100%";
-          elementProps.width = null;
-          elementProps.height = null;
-        } else {
-          elementProps.width = this.state.width;
-          elementProps.height = this.state.height;
+        if (this.predictedAspectRatio && this.props.invisible) {
+          Tag = "div";
+          delete elementProps.src;
         }
+        
+        elementProps.style = elementProps.style || {};
+        elementProps.style.width = (elementProps.width || this.state.maxWidth) + "px";
+        elementProps.style.maxWidth = "100%";
+        elementProps.style.height = this.state.predictedHeight;
+        elementProps.width = null;
+        elementProps.height =  null;
         elementProps.ref = "img";
+        elementProps.onLoad = this.calculateMaxWidth;
       }
-      
+
       //I don't know who thought it was a clever idea to have
       //two alternatives of image, one with src, and another one
       //where the source would be data-original
-      if (Tag === "img" && this.props.dataset.original){
-        if (!this.props.dataset.original.includes("//")){
-          elementProps.src = this.props.path + "/" + this.props.dataset.original;
-        } else {
-          elementProps.src = this.props.dataset.original;
-        }
-      }
-      
-      if (!this.loaded){
-        delete elementProps.src;
-      }
+//      if (Tag === "img" && this.props.dataset.original){
+//        if (!this.props.dataset.original.includes("//")){
+//          elementProps.src = this.props.path + "/" + this.props.dataset.original;
+//        } else {
+//          elementProps.src = this.props.dataset.original;
+//        }
+//      }
       
       return <Tag {...elementProps}>{children}</Tag>
     });

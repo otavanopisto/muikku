@@ -5,6 +5,7 @@ import Dropdown from '~/components/general/dropdown';
 import { ButtonPill } from '~/components/general/button';
 
 interface EditorButtonSetProps extends MaterialLoaderProps {
+  invisible?: boolean,
 }
 
 function toggleVisiblePageStatus(props: EditorButtonSetProps) {
@@ -60,6 +61,10 @@ function copyPage(props: EditorButtonSetProps) {
 export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
   if (!props.editable) {
     return null;
+  }
+  
+  if (props.invisible) {
+    return (<div className="material-admin-panel"></div>);
   }
   
   const viewForAdminPanel = props.isInFrontPage ? "workspace-description" : "workspace-materials";
