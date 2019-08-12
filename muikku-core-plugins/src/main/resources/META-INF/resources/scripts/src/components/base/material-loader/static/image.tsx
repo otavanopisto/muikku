@@ -76,7 +76,6 @@ export default class Image extends React.Component<ImageProps, ImageState>{
     }
   }
   render(){
-    console.log(this.props.dataset, this.props.element, this.props.invisible);
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
       if (Tag === "figure" && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.licence)){
         if (!this.props.invisible) {

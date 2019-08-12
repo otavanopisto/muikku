@@ -3,7 +3,6 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
-import FieldBase from "./base";
 
 interface SorterFieldItemType {
   id: string,
@@ -26,7 +25,9 @@ interface SorterFieldProps {
       
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
-  onAnswerChange?: (name: string, value: boolean)=>any
+  onAnswerChange?: (name: string, value: boolean)=>any,
+  
+  invisible?: boolean,
 }
 
 interface SorterFieldState {
@@ -45,7 +46,7 @@ interface SorterFieldState {
   answerState: Array<"PASS" | "FAIL">
 }
 
-export default class SorterField extends FieldBase<SorterFieldProps, SorterFieldState> {
+export default class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   constructor(props: SorterFieldProps){
     super(props);
     
@@ -154,11 +155,9 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     }
   }
   componentDidMount(){
-    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: SorterFieldProps, prevState: SorterFieldState){
-    super.componentDidUpdate(prevProps, prevState);
     this.checkAnswers();
   }
   selectItem(item: SorterFieldItemType){
@@ -184,7 +183,7 @@ export default class SorterField extends FieldBase<SorterFieldProps, SorterField
     let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
     let elementClassName = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
 
-    if (!this.loaded){
+    if (this.props.invisible){
       //TODOLANKKINEN be aware that the filler here has a correlation with the component
       //that is rendered, so they are both to be kept the same
       let filler = this.state.items.map((i, index)=>{
