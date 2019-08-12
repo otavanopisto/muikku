@@ -3,7 +3,6 @@ import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
-import FieldBase from "./base";
 
 interface FieldType {
   name: string,
@@ -42,7 +41,9 @@ interface OrganizerFieldProps {
       
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
-  onAnswerChange?: (name: string, value: boolean)=>any
+  onAnswerChange?: (name: string, value: boolean)=>any,
+
+  invisible?: boolean,
 }
 
 type OrganizerFieldanswerStateType = {[categoryId: string]: {[termId: string]: "PASS" | "FAIL"}};
@@ -74,7 +75,7 @@ interface OrganizerFieldState {
   answerStateMissingTerms: OrganizerFieldanswerStateMissingTermsType
 }
 
-export default class OrganizerField extends FieldBase<OrganizerFieldProps, OrganizerFieldState> {
+export default class OrganizerField extends React.Component<OrganizerFieldProps, OrganizerFieldState> {
   constructor(props: OrganizerFieldProps){
     super(props);
     
@@ -197,11 +198,9 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
     }
   }
   componentDidMount(){
-    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: OrganizerFieldProps, prevState: OrganizerFieldState){
-    super.componentDidUpdate(prevProps, prevState);
     this.checkAnswers();
   }
   onDropDraggableItem(termId: string, categoryId: string){
@@ -281,14 +280,17 @@ export default class OrganizerField extends FieldBase<OrganizerFieldProps, Organ
     return false;
   }
   render(){
-    if (!this.loaded){
+    if (this.props.invisible){
       return <div className="material-page__organizerfield-wrapper">
-        <div ref="base" className="material-page__organizerfield">
+        <div className="material-page__organizerfield">
           <div className="material-page__organizerfield-terms">
             <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
             <div className="material-page__organizerfield-terms-container">
               {this.state.order.map((id)=>{
-                return <div className="material-page__organizerfield-term" key={id}>{this.state.terms[id]}</div>
+                return <div className="material-page__organizerfield-term" key={id}>
+                  <span className="material-page__organizerfield-term-icon icon-move"></span>
+                  <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
+                </div>
               })}
             </div>
           </div>
