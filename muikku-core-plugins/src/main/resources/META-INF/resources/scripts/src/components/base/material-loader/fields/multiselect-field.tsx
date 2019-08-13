@@ -3,7 +3,6 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import uuid from "uuid/v4";
-import FieldBase from "./base";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -24,7 +23,9 @@ interface MultiSelectFieldProps {
       
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
-  onAnswerChange?: (name: string, value: boolean)=>any
+  onAnswerChange?: (name: string, value: boolean)=>any,
+      
+  invisible?: boolean,
 }
 
 interface MultiSelectFieldState {
@@ -41,7 +42,7 @@ interface MultiSelectFieldState {
   answerState: "UNKNOWN" | Array<"PASS" | "FAIL">
 }
 
-export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, MultiSelectFieldState> {
+export default class MultiSelectField extends React.Component<MultiSelectFieldProps, MultiSelectFieldState> {
   constructor(props: MultiSelectFieldProps){
     super(props);
     
@@ -118,11 +119,9 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
     }
   }
   componentDidMount(){
-    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: MultiSelectFieldProps, prevState: MultiSelectFieldState){
-    super.componentDidUpdate(prevProps, prevState);
     this.checkAnswers();
   }
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
@@ -151,18 +150,6 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
     }, this.checkAnswers);
   }
   render(){
-    if (!this.loaded){
-      return <span ref="base" className="material-page__checkbox-wrapper">
-        <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"}`}>
-          {this.props.content.options.map((o, index)=>{
-            return <span key={o.name} className="material-page__checkbox-item-container">
-              <input className="material-page__checkbox" type="checkbox" disabled/>
-              <label className="material-page__checkable-label">{o.text}</label>
-            </span>
-          })}
-        </span>
-      </span>
-    }
     //whether we mark the correct answers
     let markcorrectAnswers = false;
     //the summary component if necessary
@@ -203,6 +190,20 @@ export default class MultiSelectField extends FieldBase<MultiSelectFieldProps, M
           <span className="material-page__field-answer-example">{this.props.content.explanation}</span>
         </span>;
       }
+    }
+    
+    if (this.props.invisible){
+      return <span className="material-page__checkbox-wrappe">
+        <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"}`}>
+          {this.props.content.options.map((o, index)=>{
+            return <span key={o.name} className="material-page__checkbox-item-container">
+              <input className="material-page__checkbox" type="checkbox" disabled/>
+              <label className="material-page__checkable-label">{o.text}</label>
+            </span>
+          })}
+        </span>
+        {correctAnswersummaryComponent}
+      </span>
     }
 
     //the classname we add to the element itself depending to the state, and only available if we check answers

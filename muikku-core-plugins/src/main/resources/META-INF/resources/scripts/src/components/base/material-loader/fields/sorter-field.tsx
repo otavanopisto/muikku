@@ -183,26 +183,6 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
     let elementClassName = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
 
-    if (this.props.invisible){
-      //TODOLANKKINEN be aware that the filler here has a correlation with the component
-      //that is rendered, so they are both to be kept the same
-      let filler = this.state.items.map((i, index)=>{
-        let text = i.name;
-        if (index === 0 && this.props.content.capitalize){
-          text = text.charAt(0).toUpperCase() + text.slice(1);
-        }
-        return <Element className="material-page__sorterfield-item" key={i.id}>
-          <span className="material-page__sorterfield-item-icon icon-move"></span>
-          <span className="material-page__sorterfield-item-label">{text}</span>
-        </Element>
-      })
-      return <Element ref="base" className="material-page__sorterfield-wrapper">
-        <Element className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}>
-          {filler}
-        </Element>
-      </Element>
-    }
-
     //The summary for the correct answers
     let correctAnswersummaryComponent = null;
     let answerIsBeingCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerState && !this.state.answerState.includes("FAIL");
@@ -217,6 +197,25 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
           <span key={answer.id} className="material-page__field-answer-example">{answer.name}</span>
         )}
       </span>
+    }
+    
+    if (this.props.invisible){
+      let filler = this.state.items.map((i, index)=>{
+        let text = i.name;
+        if (index === 0 && this.props.content.capitalize){
+          text = text.charAt(0).toUpperCase() + text.slice(1);
+        }
+        return <Element className="material-page__sorterfield-item" key={i.id}>
+          <span className="material-page__sorterfield-item-icon icon-move"></span>
+          <span className="material-page__sorterfield-item-label">{text}</span>
+        </Element>
+      })
+      return <Element ref="base" className="material-page__sorterfield-wrapper">
+        <Element className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}>
+          {filler}
+        </Element>
+        {correctAnswersummaryComponent}
+      </Element>
     }
 
     //Lets get the class name to match the state of the entire field if necessary
