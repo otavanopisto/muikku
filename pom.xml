@@ -4,7 +4,7 @@
 
 	<groupId>fi.otavanopisto.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.1.117-SNAPSHOT</version>
+	<version>1.1.118-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -98,7 +98,7 @@
 			<dependency>
 				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.1.117-SNAPSHOT</version>
+				<version>1.1.118-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -200,7 +200,7 @@
 		<repository>
 			<id>jboss-public-repository</id>
 			<name>JBoss Repository</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<url>https://repository.jboss.org/nexus/content/groups/public</url>
 			<releases>
 				<updatePolicy>never</updatePolicy>
 			</releases>
@@ -227,7 +227,7 @@
 		<pluginRepository>
 			<id>jboss-public-repository</id>
 			<name>JBoss Repository</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<url>https://repository.jboss.org/nexus/content/groups/public</url>
 			<releases>
 				<updatePolicy>never</updatePolicy>
 			</releases>
