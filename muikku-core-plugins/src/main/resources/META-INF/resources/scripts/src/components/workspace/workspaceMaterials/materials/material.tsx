@@ -17,6 +17,7 @@ import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-l
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
 import { MaterialLoaderDate } from "~/components/base/material-loader/date";
+import LazyLoader from "~/components/general/lazy-loader";
 
 interface WorkspaceMaterialProps {
   i18n: i18nType,
@@ -69,34 +70,38 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
       }
     }
 
-    return <MaterialLoader canPublish
-      canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
-      canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
-      canAddAttachments={!isBinary} canEditContent={!isBinary} folder={this.props.folder} editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
-      material={this.props.materialContentNode} workspace={this.props.workspace}
-      compositeReplies={this.props.compositeReplies} answerable onAssignmentStateModified={this.updateWorkspaceActivity}>
-      {(props, state, stateConfiguration) => {
-        return <div>
-          <MaterialLoaderEditorButtonSet {...props} {...state}/>
-          <MaterialLoaderTitle {...props} {...state}/>
-          <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
-          <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration} invisible={true}/>
-          {!isEvaluatedAsPassed ? 
-            <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
-          : null}
-          <MaterialLoaderCorrectAnswerCounter {...props} {...state}/>
-          {isAssignment && hasEvaluation ? 
-            <div className={`material-page__assignment-assessment ${evalStateClassName}`}>
-              <div className={`material-page__assignment-assessment-icon ${evalStateIcon}`}></div>
-              <MaterialLoaderDate {...props} {...state}/>
-              <MaterialLoaderGrade {...props} {...state}/>
-              <MaterialLoaderAssesment {...props} {...state}/>
+    return <LazyLoader useChildrenAsLazy={true} className="material-lazy-loader-container">
+      {(loaded: boolean) => {
+        return <MaterialLoader canPublish
+          canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
+          canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
+          canAddAttachments={!isBinary} canEditContent={!isBinary} folder={this.props.folder} editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+          material={this.props.materialContentNode} workspace={this.props.workspace}
+          compositeReplies={this.props.compositeReplies} answerable onAssignmentStateModified={this.updateWorkspaceActivity}
+          invisible={!loaded}>
+          {(props, state, stateConfiguration) => {
+            return <div>
+              <MaterialLoaderEditorButtonSet {...props} {...state}/>
+              <MaterialLoaderTitle {...props} {...state}/>
+              <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
+              {!isEvaluatedAsPassed ? 
+                <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
+              : null}
+              <MaterialLoaderCorrectAnswerCounter {...props} {...state}/>
+              {isAssignment && hasEvaluation ? 
+                <div className={`material-page__assignment-assessment ${evalStateClassName}`}>
+                  <div className={`material-page__assignment-assessment-icon ${evalStateIcon}`}></div>
+                  <MaterialLoaderDate {...props} {...state}/>
+                  <MaterialLoaderGrade {...props} {...state}/>
+                  <MaterialLoaderAssesment {...props} {...state}/>
+                </div>
+              : null}
+              <MaterialLoaderProducersLicense {...props} {...state}/>
             </div>
-          : null}
-          <MaterialLoaderProducersLicense {...props} {...state}/>
-        </div>
+          }}
+        </MaterialLoader>
       }}
-    </MaterialLoader>
+    </LazyLoader>
   }
 }
 
