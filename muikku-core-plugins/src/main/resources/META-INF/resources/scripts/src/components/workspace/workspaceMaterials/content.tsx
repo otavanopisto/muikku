@@ -26,6 +26,7 @@ interface ContentProps {
   editable: boolean,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
   setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType,
+  editModeActive: boolean,
 }
 
 interface ContentState {
@@ -169,6 +170,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     if (!this.props.materials || !this.props.materials.length){
       return null;
     }
+    
+    const isEditable = this.props.editable && this.props.editModeActive;
 
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
@@ -228,7 +231,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
               hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>;
 
-            if (!this.props.editable) {
+            if (!isEditable) {
               return pageElement;
             } else {
               return <Draggable
@@ -244,13 +247,13 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                 {pageElement}
               </Draggable>
             }
-          }).concat(this.props.editable ? <Droppable
+          }).concat(isEditable ? <Droppable
             key="LAST" interactionData={node.workspaceMaterialId}
             interactionGroup="TOC_SUBNODE"
             className="toc__element--drag-placeholder-container"></Droppable> : [])}
         </TocTopic>
 
-        if (!this.props.editable) {
+        if (!isEditable) {
           return topic;
         } else {
           return <Draggable 
