@@ -238,7 +238,7 @@ public class ToRTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-start-date span", "01.01.2012");
 
         waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
-        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeus päättyy");
+        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivämäärä");
         waitForPresent(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-end-date");
         assertTextIgnoreCase(".application-sub-panel__body--studies-summary-dates .application-sub-panel__item-data--summary-end-date span", "01.01.2035");
         
