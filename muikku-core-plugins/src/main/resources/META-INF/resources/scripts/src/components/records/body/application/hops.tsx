@@ -1,8 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-
 import {i18nType} from '~/reducers/base/i18n';
-
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-panel.scss';
@@ -13,6 +11,7 @@ import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
 import { HOPSDataType } from '~/reducers/main-function/hops';
 import {StateType} from '~/reducers';
+
 
 interface HopsProps {
   i18n: i18nType,
