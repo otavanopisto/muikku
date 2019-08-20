@@ -3,7 +3,9 @@ import * as React from 'react';
 interface LazyLoaderProps {
   className: string,
   width?: string | number,
-  height?: string | number
+  height?: string | number,
+  useChildrenAsLazy?: boolean,
+  children?: any,
 }
 
 interface LazyLoaderState {
@@ -57,9 +59,14 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
   }
   render(){
     if (this.state.loaded){
+      if (this.props.useChildrenAsLazy) {
+        return this.props.children(true);
+      }
       return this.props.children;
     }
-    return <div ref="lazycomponent"
-      className={this.props.className} style={{width: this.props.width, height: this.props.height}}/>
+    return <div ref="lazycomponent" data-lazycomponent="true"
+      className={this.props.className} style={{width: this.props.width, height: this.props.height}}>
+      {this.props.useChildrenAsLazy ? this.props.children(false) : null}
+    </div>
   }
 }

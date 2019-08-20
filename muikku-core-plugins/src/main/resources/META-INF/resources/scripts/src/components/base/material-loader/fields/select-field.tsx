@@ -3,7 +3,6 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import uuid from "uuid/v4";
-import FieldBase from "./base";
 
 interface SelectFieldProps {
   type: string,
@@ -24,7 +23,9 @@ interface SelectFieldProps {
   i18n: i18nType,
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
-  onAnswerChange?: (name: string, value: boolean)=>any
+  onAnswerChange?: (name: string, value: boolean)=>any,
+   
+  invisible?: boolean,
 }
 
 interface SelectFieldState {
@@ -41,7 +42,7 @@ interface SelectFieldState {
   answerState: "UNKNOWN" | "PASS" | "FAIL"
 }
 
-export default class SelectField extends FieldBase<SelectFieldProps, SelectFieldState> {
+export default class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
   constructor(props: SelectFieldProps){
     super(props);
     
@@ -117,15 +118,13 @@ export default class SelectField extends FieldBase<SelectFieldProps, SelectField
     }
   }
   componentDidMount(){
-    super.componentDidMount();
     this.checkAnswers();
   }
   componentDidUpdate(prevProps: SelectFieldProps, prevState: SelectFieldState){
-    super.componentDidUpdate(prevProps, prevState);
     this.checkAnswers();
   }
   render(){
-    if (!this.loaded){
+    if (this.props.invisible){
       if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
         return <span className="material-page__selectfield-wrapper">
           <select className="material-page__selectfield" size={this.props.content.listType === "list" ? this.props.content.options.length : null}
