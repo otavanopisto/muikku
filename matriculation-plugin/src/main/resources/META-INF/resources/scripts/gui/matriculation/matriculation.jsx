@@ -37,7 +37,9 @@ const SUBJECT_MAP = {
   "ITC": "Italia, C-taso",
   "POC": "Portugali, C-taso",
   "LAC": "Latina, C-taso",
-  "SMC": "Saame, C-taso"
+  "SM_D": "Pohjoissaame",
+  "SM_IC": "Inarinsaame",
+  "SM_Q": "Koltansaame"
 };
 
 const Page1 = (props) => (
