@@ -13,7 +13,7 @@ interface WorkspaceMaterialsBodyProps {
 }
 
 interface WorkspaceMaterialsBodyState {
-
+  editModeActive: boolean,
 }
 
 export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMaterialsBodyProps, WorkspaceMaterialsBodyState> {
@@ -21,17 +21,28 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
+    this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
+    
+    this.state = {
+      editModeActive: true
+    }
   }
   onOpenNavigation(){
     (this.refs.content as any).getWrappedInstance().refresh();
   }
+  toggleEditModeActive() {
+    this.setState({
+      editModeActive: !this.state.editModeActive,
+    });
+  }
   render(){
-    let navigationComponent = <TableOfContentsComponent ref="content"/>;
+    let navigationComponent = <TableOfContentsComponent editModeActive={this.state.editModeActive} ref="content"/>;
     return (<div>
       <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="materials">
         <MaterialEditor/>
-        <Materials onOpenNavigation={this.onOpenNavigation}
+        <input type="checkbox" onChange={this.toggleEditModeActive} checked={this.state.editModeActive}/>
+        <Materials onOpenNavigation={this.onOpenNavigation} editModeActive={this.state.editModeActive}
           navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
       </ScreenContainer>
     </div>);
