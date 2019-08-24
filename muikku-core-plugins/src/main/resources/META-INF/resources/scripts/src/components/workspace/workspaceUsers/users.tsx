@@ -18,6 +18,8 @@ import {MobileOnlyTabs} from "~/components/general/tabs";
 import Avatar from "~/components/general/avatar";
 import DeactivateReactivateUserDialog from './dialogs/deactivate-reactivate-user';
 import LazyLoader from "~/components/general/lazy-loader";
+import WorkspaceUser from "~/components/general/workspace-user";
+
 
 interface WorkspaceUsersProps {
   status: StatusType,
@@ -30,33 +32,6 @@ interface WorkspaceUsersState {
   activeTab: "ACTIVE" | "INACTIVE",
   currentSearch: string,
   studentCurrentBeingToggledStatus: ShortWorkspaceUserWithActiveStatusType
-}
-
-interface StudentProps {
-  student: ShortWorkspaceUserWithActiveStatusType,
-  workspace: WorkspaceType,
-  i18n: i18nType
-  status: StatusType,
-  highlight: string,
-  onSendMessage?: ()=>any,
-  onSetToggleStatus: ()=>any
-}
-
-function Student(props: StudentProps){
-  
-  return <div className="application-list__item-content-wrapper application-list__item-content-wrapper--workspace-users">
-    <LazyLoader className="avatar-container">
-      <div className="item-list__profile-picture">
-        <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
-      </div>
-    </LazyLoader>
-    <div className="application-list__item-content-main application-list__item-content-main--workspace-user">
-      <div>{filterHighlight(getName(props.student, true), props.highlight)}</div>
-      <div className="application-list__item-content-secondary-data">{props.student.studyProgrammeName ? " (" + props.student.studyProgrammeName + ")" : ""}</div>
-    </div>
-    {props.student.active ? <IconButton buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/> : null}
-    {props.student.active ? <IconButton icon="delete" onClick={props.onSetToggleStatus}/> : <IconButton icon="goback" onClick={props.onSetToggleStatus}/>}
-  </div>
 }
 
 class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsersState> {
@@ -169,9 +144,10 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                       this.props.workspace.students
                       .filter(s=>s.active)
                       .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
-                      .map(s=><Student highlight={this.state.currentSearch}
+                      .map(s=><WorkspaceUser highlight={this.state.currentSearch}
                         onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
                         key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
+                    
                         return <div className="application-list application-list--workspace-users">
                           {this.props.workspace && this.props.workspace.students ? (
                             activeStudents.length ? activeStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.activeStudents.empty')}</div>
@@ -188,7 +164,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                       this.props.workspace.students
                       .filter(s=>!s.active)
                       .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
-                      .map(s=><Student onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
+                      .map(s=><WorkspaceUser onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
                         highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
                     
                       return <div className="application-list application-list--workspace-users">
