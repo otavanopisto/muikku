@@ -27,6 +27,7 @@ interface WorkspaceMaterialsProps {
   status: StatusType,
   onActiveNodeIdChange: (activeNodeId: number)=>any,
   onOpenNavigation: ()=>any,
+  editModeActive: boolean,
   
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType,
@@ -260,8 +261,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
 
-    const titlesAreEditable = this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE;
-    const createSectionElementWhenEmpty = this.props.materials.length === 0 ? (
+    const isEditable = this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE && this.props.editModeActive;
+    
+    const createSectionElementWhenEmpty = this.props.materials.length === 0 && isEditable ? (
       <div className="material-admin-panel material-admin-panel--master-functions">
         <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
           <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createSection.bind(this, null)}/>
@@ -272,7 +274,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     const results: any = [];
     this.props.materials.forEach((section, index)=>{
       
-      if (index === 0) {
+      if (index === 0 && isEditable) {
         results.push(<div key={"sectionfunctions-" + section.workspaceMaterialId} className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
             <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createSection.bind(this, section)}/>
@@ -282,7 +284,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       
       const nextSection = this.props.materials[index + 1] || null;
       
-      const lastManagementOptionsWithinSectionItem = (
+      const lastManagementOptionsWithinSectionItem = isEditable ? (
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, null, true).map((item)=>{
             return (closeDropdown: ()=>any)=>{
@@ -295,32 +297,35 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
             <ButtonPill buttonModifiers="material-management-master" icon="add"/>
           </Dropdown>
         </div>
-      );
+      ) : null;
     
       const sectionSpecificContentData: any = [];
     
       section.children.forEach((node, index)=>{
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
-        sectionSpecificContentData.push(<div key={node.workspaceMaterialId + "-dropdown"} className="material-admin-panel material-admin-panel--master-functions">
-          <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, nextSibling, false).map((item)=>{
-            return (closeDropdown: ()=>any)=>{
-              return <Link className={`link link--full link--material-management-dropdown`}
-                onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
-                 <span className={`link__icon icon-${item.icon}`}></span>
-                 <span>{this.props.i18n.text.get(item.text)}</span>
-               </Link>}
-            })}>
-            <ButtonPill buttonModifiers="material-management-master" icon="add"/>
-          </Dropdown>
-        </div>);
+        if (isEditable) {
+          sectionSpecificContentData.push(<div key={node.workspaceMaterialId + "-dropdown"} className="material-admin-panel material-admin-panel--master-functions">
+            <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, nextSibling, false).map((item)=>{
+              return (closeDropdown: ()=>any)=>{
+                return <Link className={`link link--full link--material-management-dropdown`}
+                  onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
+                   <span className={`link__icon icon-${item.icon}`}></span>
+                   <span>{this.props.i18n.text.get(item.text)}</span>
+                 </Link>}
+              })}>
+              <ButtonPill buttonModifiers="material-management-master" icon="add"/>
+            </Dropdown>
+          </div>);
+        }
       
         let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
         let material = !this.props.workspace || !this.props.materialReplies  ? null :
           <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
             <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
             {/*TOP OF THE PAGE*/}
-            <WorkspaceMaterial folder={section} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
+            <WorkspaceMaterial editModeActive={this.props.editModeActive}
+             folder={section} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
           </ContentPanelItem>;
         sectionSpecificContentData.push(material);
       });
@@ -328,7 +333,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       results.push(<section key={"section-" + section.workspaceMaterialId} className="content-panel__chapter" id={"section-" + section.workspaceMaterialId}>
         {/*TOP OF THE CHAPTER*/}
         <h2 className={`content-panel__chapter-title ${section.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
-          {titlesAreEditable ? 
+          {isEditable ? 
             <div className="material-admin-panel material-admin-panel--chapter-functions">
               <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>
                 <ButtonPill buttonModifiers="material-management-chapter" icon="edit" onClick={this.startupEditor.bind(this, section)}/>

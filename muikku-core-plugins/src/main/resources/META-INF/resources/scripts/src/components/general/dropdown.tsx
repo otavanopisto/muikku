@@ -23,6 +23,8 @@ interface DropdownState {
   left: number | null,
   arrowLeft: number | null,
   arrowRight: number | null,
+  arrowTop: number | null,
+  reverseArrow: boolean,
   visible: boolean
 }
 
@@ -38,6 +40,8 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       left: null,
       arrowLeft: null,
       arrowRight: null,
+      arrowTop: null,
+      reverseArrow: false,
       visible: false
     }
   }
@@ -51,9 +55,12 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     let $arrow = $(this.refs["arrow"]);
     let $dropdown = $(this.refs["dropdown"]);
       
-    let position = $target.offset();
+    let position = activator.getBoundingClientRect();
     let windowWidth = $(window).width();
+    let windowHeight = $(window).height();
     let moreSpaceInTheLeftSide = (windowWidth - position.left) < position.left;
+    let spaceLeftInBottom = windowHeight - position.top - position.height;
+    let notEnoughSpaceInBottom = spaceLeftInBottom < $dropdown.outerHeight() + 5;
     
     let left = null;
     if (moreSpaceInTheLeftSide){
@@ -61,17 +68,30 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     } else {
       left = position.left;
     }
-    let top = position.top + $target.outerHeight() + 5;
+    let top = null;
+    let bottom = null;
+    if (notEnoughSpaceInBottom) {
+      top = position.top - 5 - $dropdown.outerHeight();
+    } else {
+      top = position.top + $target.outerHeight() + 5;
+    }
     
     let arrowLeft = null;
     let arrowRight = null;
+    let arrowTop = null;
+    let reverseArrow = false;
     if (moreSpaceInTheLeftSide){
       arrowRight = ($target.outerWidth() / 2) - ($arrow.outerWidth()/2);
     } else {
       arrowLeft = ($target.outerWidth() / 2) - ($arrow.outerWidth()/2);
     }
     
-    this.setState({top, left, arrowLeft, arrowRight, visible: true});
+    if (notEnoughSpaceInBottom) {
+      arrowTop = $dropdown.outerHeight();
+      reverseArrow = true;
+    }
+    
+    this.setState({top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, visible: true});
   }
   beforeClose(DOMNode : HTMLElement, removeFromDOM: Function){
     this.setState({
@@ -102,11 +122,18 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     return <Portal ref="portal" {...portalProps} onOpen={this.onOpen} beforeClose={this.beforeClose}>
       <div ref="dropdown"
         style={{
+          position: "fixed",
           top: this.state.top,
-          left: this.state.left
+          left: this.state.left,
         }}
         className={`dropdown ${this.props.modifier ? 'dropdown--' + this.props.modifier : ''} ${this.state.visible ? "visible" : ""}`}>
-        <span className="dropdown__arrow" ref="arrow" style={{left: this.state.arrowLeft, right: this.state.arrowRight}}></span>
+        <span className="dropdown__arrow" ref="arrow"
+         style={{
+           left: this.state.arrowLeft,
+           right: this.state.arrowRight,
+           top: this.state.arrowTop,
+           transform: this.state.reverseArrow ? "scaleY(-1)" : null,
+         }}></span>
         <div className="dropdown__container">
           {this.props.content}
           {this.props.items && this.props.items.map((item, index)=>{
