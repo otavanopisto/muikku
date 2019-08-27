@@ -9,6 +9,7 @@
 }
 
 .file-uploader--taskfield {
+  @include taskfield-text;
   border: solid 2px $taskfield-border-color;
 }
 
