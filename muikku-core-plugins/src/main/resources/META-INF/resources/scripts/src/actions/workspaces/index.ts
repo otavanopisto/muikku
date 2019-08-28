@@ -8,7 +8,7 @@ import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/acti
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 import { MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
-  WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType } from '~/reducers/workspaces';
+  WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType, MaterialContentNodeMetadata } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
 
@@ -1336,6 +1336,7 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
   };
 }
 
+const META_KEYS = ["license", "source-text", "source-url"];
 let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -1343,6 +1344,17 @@ let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialConte
       const childrenAttachments:MaterialContentNodeType[] = (await promisify(mApi().workspace.workspaces.materials.read(workspace.id, {
         parentId: material.workspaceMaterialId,
       }), 'callback')() as MaterialContentNodeType[]) || [];
+    
+      await Promise.all(childrenAttachments.map(async (attachment, index) => {
+        const metadata:Array<MaterialContentNodeMetadata> = (
+          await promisify(mApi().materials.materials.meta.read(attachment.materialId), 'callback')() as Array<MaterialContentNodeMetadata>
+        );
+        if (metadata) {
+          childrenAttachments[index].metadata = metadata;
+        } else {
+          childrenAttachments[index].metadata = META_KEYS.map((key) => ({materialId: attachment.materialId, key, value: null}));
+        }
+      }));
       
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -1477,6 +1489,18 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
               newPath,
             }
           });
+        }
+        
+        if (data.update.metadata) {
+          await Promise.all(data.update.metadata.map((metadataValue, index) => {
+            if (data.material.metadata[index].value !== metadataValue.value) {
+              if (data.material.metadata[index].value === null) {
+                return promisify(mApi().materials.materials.meta.create(metadataValue.materialId, metadataValue), 'callback')();
+              } else {
+                return promisify(mApi().materials.materials.meta.update(metadataValue.materialId, metadataValue), 'callback')();
+              }
+            }
+          }));
         }
       } else {
         // Trying to update the draft

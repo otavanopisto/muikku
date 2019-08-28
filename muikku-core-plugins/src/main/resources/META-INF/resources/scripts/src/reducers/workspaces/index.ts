@@ -370,6 +370,12 @@ export interface MaterialContentNodeProducerType {
   materialId: number;
 }
 
+export interface MaterialContentNodeMetadata {
+  materialId: number;
+  key: string;
+  value: string;
+}
+
 export interface MaterialContentNodeType {
   title: string,
   license: string,
@@ -399,7 +405,8 @@ export interface MaterialContentNodeType {
   //Assigned fields
   childrenAttachments?: Array<MaterialContentNodeType>, // this is usually missing and has to be manually retrieved
   evaluation?: MaterialEvaluationType,
-  assignment?: MaterialAssignmentType
+  assignment?: MaterialAssignmentType,
+  metadata?: Array<MaterialContentNodeMetadata>,
 }
 
 export interface MaterialAnswerType {

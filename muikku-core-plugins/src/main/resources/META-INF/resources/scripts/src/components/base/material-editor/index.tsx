@@ -19,12 +19,14 @@ import Dropdown from "~/components/general/dropdown";
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
+import ModifyWorkspaceMaterialAttachmentDataDialog from "./modify-attachment-data-dialog";
 
 import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
 import AddProducer from '~/components/general/add-producer';
 import { LicenseSelector } from '~/components/general/license-selector';
 import FileUploader from '~/components/general/file-uploader';
+import Link from '~/components/general/link';
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
@@ -442,7 +444,15 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor"
             files={this.props.editorState.currentNodeValue.childrenAttachments} fileIdKey="materialId" fileNameKey="title"
             fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/${this.props.editorState.currentNodeValue.path}/${a.path}`}
-            deleteDialogElement={ConfirmRemoveAttachment} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")} deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")} downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL/>
+            deleteDialogElement={ConfirmRemoveAttachment}
+            hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}
+            deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
+            downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL
+            fileExtraNodeGenerator={(a)=>{
+              return <ModifyWorkspaceMaterialAttachmentDataDialog attachment={a}>
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-edit" title={"TODO edit title"}/>
+              </ModifyWorkspaceMaterialAttachmentDataDialog>
+            }}/>
           </div>,
         })
       }
