@@ -768,6 +768,11 @@
   }
 }
 
+.material-page__audiofield-file-container--uploading,
+.material-page__audiofield-file-container--recording {
+  height: 40px;
+}
+
 .material-page__audiofield-file {
   @include text;
   flex-basis: auto;
