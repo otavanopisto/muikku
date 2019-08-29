@@ -40,6 +40,7 @@ interface MaterialEditorState {
   tab: string;
   producerEntryName: string;
   uploading: boolean;
+  height: number;
 }
 
 const CKEditorConfig = (
@@ -50,14 +51,12 @@ const CKEditorConfig = (
     disablePlugins: boolean,
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/${materialNode.path}`,
-  autoGrowOnStartup : true,
-  autoGrow_minHeight: 400,
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
   entities: false,
+  resize_enabled: true,
   entities_latin: false,
   entities_greek: false,
-  height : 500,
   language: locale,
   stylesSet : 'workspace-material-styles:' + contextPath + '/scripts/ckplugins/styles/workspace-material-styles.js',
   contentsCss : contextPath +  '/css/deprecated/custom-ckeditor-contentcss.css',
@@ -103,14 +102,22 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.addProducer = this.addProducer.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
     this.onFilesUpload = this.onFilesUpload.bind(this);
+    this.updateHeight = this.updateHeight.bind(this);
 
     this.state = {
       tab: "content",
       producerEntryName: "",
       uploading: false,
+      height: 0
     }
   }
 
+  
+  
+  updateHeight() {
+    this.setState({height: window.innerHeight});
+  }
+  
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       uploading: true
@@ -287,7 +294,15 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-
+  
+  componentDidMount() {
+    this.updateHeight();
+    window.addEventListener('resize', this.updateHeight);
+  }
+  componentWillUnMount() {
+    window.removeEventListener('resize', this.updateHeight);    
+  }
+  
   render(){
     if (!this.props.editorState || !this.props.editorState.currentDraftNodeValue) {
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}/>
@@ -386,7 +401,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
           {!this.props.editorState.section && this.props.editorState.canEditContent ? <div className="material-editor__editor-container">
-            <CKEditor configuration={CKEditorConfig(
+            <CKEditor width="100" height={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,
