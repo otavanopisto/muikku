@@ -814,8 +814,11 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  padding: 15px 10px;
-  height: 68px;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 20px;
+  }
 
   .material-page__audiofield-start-record-button,
   .material-page__audiofield-stop-record-button {
@@ -834,7 +837,7 @@
     text-decoration: none;
     text-transform: uppercase;
   }
-  
+
   // We set the record/stop buttons colors here 
   .material-page__audiofield-start-record-button {
     border: 1px solid $color-recording;
