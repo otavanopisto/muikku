@@ -38,8 +38,6 @@ let updateYO:updateYOTriggerType = function updateYO() {
        starts : new Date(examAvailableDate.starts).toLocaleDateString("fi-FI"),
        ends : new Date(examAvailableDate.ends).toLocaleDateString("fi-FI")
     };
-    
-
       dispatch({
         type: 'UPDATE_STUDIES_YO',
         payload: matriculationExamData
@@ -62,14 +60,14 @@ let updateYO:updateYOTriggerType = function updateYO() {
       });
     
       let eligibility:any = await promisify( mApi().records.studentMatriculationEligibility
-              .read((window as any).MUIKKU_LOGGED_USER), 'callback')();      
+              .read((window as any).MUIKKU_LOGGED_USER), 'callback')();
       let eligibilityStatus = eligibility.status;
       let eligibilityData = {
               coursesCompleted: eligibility.coursesCompleted,
               coursesRequired: eligibility.coursesRequired,
               enrollmentDate: eligibility.enrollmentDate,
-              examDate: eligibility.examDate                        
-            };
+              examDate: eligibility.examDate
+            }
       
       dispatch({
           type: 'UPDATE_STUDIES_YO_ELIGIBILITY_STATUS',
