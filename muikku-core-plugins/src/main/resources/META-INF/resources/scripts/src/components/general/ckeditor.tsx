@@ -16,12 +16,14 @@ const PLUGINS = {
   'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
   'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`,
   'autogrow' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/${CKEDITOR_VERSION}/`,
-  'muikku-mathjax': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/',
   'divarea': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/${CKEDITOR_VERSION}/`,
-  
-  'image2' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/4.5.8/plugin.js',
+  'language': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/language/${CKEDITOR_VERSION}/`,
+  'image2' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/${CKEDITOR_VERSION}/`,
+
   'oembed' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/oembed/1.17/',
   'audio': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/audio/1.0.0/',
+
+  'muikku-mathjax': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/',
   'muikku-fields': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-fields/',
   'muikku-selection': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-selection/',
   'muikku-textfield': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
