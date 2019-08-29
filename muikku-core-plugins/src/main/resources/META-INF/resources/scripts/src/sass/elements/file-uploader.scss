@@ -9,6 +9,7 @@
 }
 
 .file-uploader--taskfield {
+  @include taskfield-text;
   border: solid 2px $taskfield-border-color;
 }
 
@@ -51,7 +52,7 @@
 }
 
 .file-uploader__items-container--empty {
-  padding: 10px; 
+  padding: 10px;
 }
 
 .file-uploader__item {
@@ -61,7 +62,6 @@
   margin: 5px;
   padding: 0 5px;
   transition: all 0.3s ease-in-out;
-  height: 1.8rem;
 
   &.file-uploader__item--FAILED-TO-UPLOAD {
 
@@ -88,7 +88,7 @@
     @include text;
     display: flex;
     flex-basis: auto;
-    flex-flow: column nowrap; 
+    flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
   }
