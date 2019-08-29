@@ -653,6 +653,9 @@ export default function workspaces(state: WorkspacesType={
       }
       
       const newM:MaterialContentNodeType = {...m, children: m.children ? m.children.map(mapMaterial) : m.children};
+      if (newM.childrenAttachments) {
+        newM.childrenAttachments = newM.childrenAttachments.map(mapMaterial);
+      }
       return newM;
     }
     

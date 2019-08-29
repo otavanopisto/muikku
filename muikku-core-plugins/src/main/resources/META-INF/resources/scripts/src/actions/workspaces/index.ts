@@ -1492,9 +1492,11 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         }
         
         if (data.update.metadata) {
-          await Promise.all(data.update.metadata.map((metadataValue, index) => {
-            if (data.material.metadata[index].value !== metadataValue.value) {
-              if (data.material.metadata[index].value === null) {
+          await Promise.all(data.update.metadata.map((metadataValue) => {
+            const currentMetadataObj = data.material.metadata.find(d=>d.key === metadataValue.key);
+            const currentMetadataValue = currentMetadataObj && currentMetadataObj.value;
+            if (currentMetadataValue !== metadataValue.value) {
+              if (currentMetadataValue === null) {
                 return promisify(mApi().materials.materials.meta.create(metadataValue.materialId, metadataValue), 'callback')();
               } else {
                 return promisify(mApi().materials.materials.meta.update(metadataValue.materialId, metadataValue), 'callback')();
