@@ -363,7 +363,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
           </div>;
         } else {
           //if the value is uploading
-          return <div className="material-page__audiofield-file-container" key={index}>
+          return <div className="material-page__audiofield-file-container material-page__audiofield-file-container--uploading" key={index}>
             <div className="material-page__audiofield-file material-page__audiofield-file--uploading">
                <ProgressBarLine containerClassName="material-page__audiofield-file-upload-progressbar" options={{
                  strokeWidth: 1,
@@ -390,7 +390,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     }
 
     {this.state.recording ? 
-      recordingInContainer = <div className="material-page__audiofield-file-container">
+      recordingInContainer = <div className="material-page__audiofield-file-container material-page__audiofield-file-container--recording">
         <div className="material-page__audiofield-file material-page__audiofield-file--recording">
         <ProgressBarLine containerClassName="material-page__audiofield-file-record-progressbar" options={{
           strokeWidth: 1,

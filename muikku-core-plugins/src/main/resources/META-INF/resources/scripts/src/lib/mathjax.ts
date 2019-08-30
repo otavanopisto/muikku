@@ -9,7 +9,7 @@ export function loadMathJax(triggerOnLoad: boolean){
     return;
   }
   let script = document.createElement('script');
-  script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_SVG';
+  script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG';
   script.async = true;
   script.onload = ()=>{
     (window as any).MathJax.Hub.Config({
