@@ -1083,11 +1083,11 @@ class App extends React.Component {
       if (response.ok) {
         this.setState({ saveState: "SUCCESS" });
       } else {
-        throw new Error(response.text());
+        throw new Error();
       }
     })
     .catch((error) => {
-      this.setState({ error: error, saveState: "FAILED" });
+      this.setState({ saveState: "FAILED" });
     });
   }
 
