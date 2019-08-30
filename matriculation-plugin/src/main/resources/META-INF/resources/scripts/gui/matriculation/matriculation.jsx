@@ -37,9 +37,9 @@ const SUBJECT_MAP = {
   "ITC": "Italia, C-taso",
   "POC": "Portugali, C-taso",
   "LAC": "Latina, C-taso",
-  "SM_D": "Pohjoissaame",
-  "SM_IC": "Inarinsaame",
-  "SM_Q": "Koltansaame"
+  "SM_DC": "Pohjoissaame, C-taso",
+  "SM_ICC": "Inarinsaame, C-taso",
+  "SM_QC": "Koltansaame, C-taso"
 };
 
 const Page1 = (props) => (
@@ -510,14 +510,115 @@ const Page3 = (props) => (
   </div>
 );
 
-const Page4 = ({}) => (
-  <div>
-    <h1>Ilmoittautuminen ylioppilaskirjoituksiin lähetetty</h1>
-    <p>Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.</p>
-    <p>Tulosta lomake, allekirjoita ja päivää se ja lähetä skannattuna riikka.turpeinen@otavia.fi tai kirjeitse Otavia/Nettilukio, Otavantie 2B, 50670 Otava.</p>
-    <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
-  </div>
+const Page4 = (props) => (
+  {
+    "PENDING": <div />,
+    "IN_PROGRESS":
+      <div>
+        <h1>Lomaketta tallennetaan</h1>
+        <p>Lomakkeen tietoja tallennetaan, odota hetki.</p>
+      </div>,
+    "SUCCESS": 
+      <div>
+        <h1>Ilmoittautuminen ylioppilaskirjoituksiin lähetetty</h1>
+        <p>Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.</p>
+        <p>Tulosta lomake, allekirjoita ja päivää se ja lähetä skannattuna riikka.turpeinen@otavia.fi tai kirjeitse Otavia/Nettilukio, Otavantie 2B, 50670 Otava.</p>
+        <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
+      </div>,
+    "FAILED": 
+      <div>
+        <h1>Lomakkeen tallennus epäonnistui</h1>
+        <p>Lomakkeen tietojen tallennus epäonnistui. Varmista, että olet kirjautunut sisään palaamalla lomakkeelle uudelleen Muikun kautta.</p>
+      </div>
+  }[props.saveState]
 );
+
+class DraftListener extends React.Component {
+  constructor() {
+    super();
+    this.draftTimeout = undefined;
+    this.draftedFields = [
+      "changedContactInfo",
+      "guider",
+      "enrollAs",
+      "degreeType",
+      "numMandatoryCourses",
+      "restartExam",
+      "message",
+      "location",
+      "canPublishName",
+      "enrolledAttendances",
+      "plannedAttendances",
+      "finishedAttendances"
+    ];
+  }
+  
+  componentDidMount() {
+  }
+  
+  componentDidUpdate() {
+    this.resetDraftTimeout();
+  }
+  
+  shouldComponentUpdate(nextProps, nextState) {
+    return !this.comparePropertiesEqual(this.props, nextProps, this.draftedFields);
+  }
+  
+  comparePropertiesEqual(a, b, properties) {
+    for (let i = 0; i < properties.length; i++) {
+      let p = properties[i];
+      if (!(a[p] === b[p])) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  resetDraftTimeout() {
+    if (this.props.initialized) {
+      if (this.draftTimeout) {
+        clearTimeout(this.draftTimeout);
+        this.draftTimeout = undefined;
+      }
+      this.draftTimeout = setTimeout(() => {
+        this.saveDraft();
+        this.draftTimeout = undefined;
+      },
+      5000);
+    }
+  }
+
+  saveDraft() {
+    let matriculationForm = {};
+    this.draftedFields.forEach((field) => {
+      matriculationForm[field] = this.props[field];
+    });
+    
+    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify(matriculationForm)
+    })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error();
+      }
+    })
+    .catch((error) => {
+      let errMsg = 'Lomakkeen välitallennus epäonnistui, palaa Muikun etusivulle ja varmista, että olet kirjautunut sisään.';
+      this.props.onError(errMsg);
+    });
+  }
+
+  render() {
+    return null;
+  }
+}
 
 class App extends React.Component {
 
@@ -527,6 +628,7 @@ class App extends React.Component {
     // Use strings for boolean choices because they work well with <select>s
     this.state = {
       page: 1,
+      saveState: "PENDING",
       name: "",
       ssn: "",
       email: "",
@@ -566,7 +668,6 @@ class App extends React.Component {
       })
       .then((data) => {
         this.setState(data);
-        this.setState({initialized: true});
         this.fetchSavedEnrollment();
       });
   }
@@ -581,49 +682,10 @@ class App extends React.Component {
         }
       })
       .then((data) => {
-        super.setState(data);
+        this.setState(Object.assign(data, { initialized: true }));
       });
   }
 
-  resetDraftTimeout() {
-    if (this.state.draftTimeout) {
-      clearTimeout(this.state.draftTimeout);
-      this.state.draftTimeout = undefined;
-    }
-    this.state.draftTimeout = setTimeout(() => {
-      this.saveDraft();
-      this.state.draftTimeout = undefined;
-    },
-    5000);
-  }
-  
-  saveDraft() {
-    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({
-        changedContactInfo: this.state.changedContactInfo,
-        guider: this.state.guider,
-        enrollAs: this.state.enrollAs,
-        degreeType: this.state.degreeType,
-        numMandatoryCourses: this.state.numMandatoryCourses,
-        restartExam: this.state.restartExam,
-        enrolledAttendances: this.state.enrolledAttendances,
-        plannedAttendances: this.state.plannedAttendances,
-        finishedAttendances: this.state.finishedAttendances
-      })
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      // TODO why is this here at all? - it also triggers resetDraftTimeout.. 
-//      this.setState(data);
-    });
-  }
-  
   newEnrolledAttendance() {
     const enrolledAttendances = this.state.enrolledAttendances;
     enrolledAttendances.push({
@@ -969,6 +1031,7 @@ class App extends React.Component {
   }
 
   submit() {
+    this.setState({ saveState: "IN_PROGRESS" });
     let message = this.state.message;
     if (this.state.changedContactInfo) {
       message = "Yhteystiedot:\n"
@@ -1015,21 +1078,17 @@ class App extends React.Component {
           }))
         }
       )
-    }).then(function (response) {
-      if (!response.ok) {
-        this.setState({error: response.text()});
+    })
+    .then((response) => {
+      if (response.ok) {
+        this.setState({ saveState: "SUCCESS" });
+      } else {
+        throw new Error(response.text());
       }
+    })
+    .catch((error) => {
+      this.setState({ error: error, saveState: "FAILED" });
     });
-  }
-
-  setState(state) {
-    super.setState(
-        state,
-        () => {
-          // Reset draft timer after setState returns
-          this.resetDraftTimeout();
-        }
-    );
   }
 
   render() {
@@ -1038,6 +1097,8 @@ class App extends React.Component {
     }
     return (
       <React.Fragment>
+        <DraftListener {...this.state}
+          onError={(errorMsg) => {this.setState({error: errorMsg})}}/>
         {this.state.error
           ? <div class="error">{this.state.error}</div>
           : null}
@@ -1097,7 +1158,7 @@ class App extends React.Component {
                 />
               : null }
           { this.state.page === 4
-              ? <Page4
+              ? <Page4 {...this.state}
                 />
               : null }
         </form>
