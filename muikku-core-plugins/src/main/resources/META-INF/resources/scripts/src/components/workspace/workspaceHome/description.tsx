@@ -36,9 +36,9 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</div>
       </div>
       <div className="panel__body">
-        {this.props.workspace && <MaterialLoader isInFrontPage editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+        {this.props.workspace && <MaterialLoader editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
           modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
-          canDelete={false} canHide={false} disablePlugins readOnly>
+          canDelete={false} canHide={false} canPublish disablePlugins readOnly>
           {(props, state, stateConfiguration) => {
             return <div>
               <MaterialLoaderEditorButtonSet {...props} {...state}/>
