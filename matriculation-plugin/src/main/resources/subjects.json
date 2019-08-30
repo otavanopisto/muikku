@@ -29,7 +29,7 @@
   "ITC": "Italia, C-taso",
   "POC": "Portugali, C-taso",
   "LAC": "Latina, C-taso",
-  "SM_D": "Pohjoissaame",
-  "SM_IC": "Inarinsaame",
-  "SM_Q": "Koltansaame"
+  "SM_DC": "Pohjoissaame, C-taso",
+  "SM_ICC": "Inarinsaame, C-taso",
+  "SM_QC": "Koltansaame, C-taso"
 }
