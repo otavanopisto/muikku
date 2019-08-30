@@ -54,7 +54,6 @@ const CKEditorConfig = (
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
   entities: false,
-  resize_enabled: true,
   entities_latin: false,
   entities_greek: false,
   language: locale,
@@ -80,8 +79,8 @@ const CKEditorConfig = (
     { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
     { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
   ],
-  extraPlugins: disablePlugins ? 'oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,autogrow,widget,lineutils,filetools,uploadwidget,uploadimage,divarea' :
-    "language,oembed,audio,divarea,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,autogrow,uploadimage",
+  extraPlugins: disablePlugins ? 'oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,autogrow,widget,lineutils,filetools,uploadwidget,uploadimage' :
+    "language,oembed,audio,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,uploadimage,divarea",
 });
 
 // First we need to modify the material content nodes endpoint to be able to receive hidden
@@ -114,10 +113,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     }
   }
 
+
   
   
-  updateHeight() {
-    this.setState({height: window.innerHeight});
+  updateHeight(containerOffset) {
+    this.setState({height: window.innerHeight - 167});
   }
   
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -298,8 +298,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
   
   componentDidMount() {
-    this.updateHeight();
-    window.addEventListener('resize', this.updateHeight);
+    let containerTopOffset = 167;
+    this.updateHeight(containerTopOffset);
+    window.addEventListener('resize', () => {this.updateHeight(containerTopOffset)});
   }
   componentWillUnMount() {
     window.removeEventListener('resize', this.updateHeight);    
@@ -402,8 +403,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
-          {!this.props.editorState.section && this.props.editorState.canEditContent ? <div className="material-editor__editor-container">
-            <CKEditor width="100" height={this.state.height} configuration={CKEditorConfig(
+          {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
+            <CKEditor height={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,
