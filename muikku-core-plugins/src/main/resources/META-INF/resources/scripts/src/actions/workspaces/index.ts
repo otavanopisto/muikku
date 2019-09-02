@@ -1698,7 +1698,7 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
         //and do the thing
         return new Promise((resolve, reject) => {
           if (file.size >= MAX_ATTACHMENT_SIZE) {
-            reject(new Error(getState().i18n.text.get("TODOERRMSG attachment too large")));
+            reject(new Error(getState().i18n.text.get("plugin.workspace.fileFieldUpload.fileSizeTooLarge")));
             return;
           }
           
