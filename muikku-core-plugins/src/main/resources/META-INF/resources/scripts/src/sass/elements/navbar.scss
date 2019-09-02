@@ -35,43 +35,24 @@
 
 // NAVBAR LOGO
 .navbar__logo {
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: contain;
   display: none;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   height: $navbar-mobile-height;
-  width: 175px;
 
   @include breakpoint($breakpoint-pad) {
+    display: inline-block;
     height: $navbar-desktop-height;
+    width: 175px;
   }
 }
 
 .navbar--frontpage .navbar__logo {
-
-  @include breakpoint($breakpoint-desktop-xl) {
-    background-image: url("/gfx/oo-branded-site-logo-text.png");
-    display: inline-block;
-  }
-}
-
-.navbar--main-function .navbar__logo {
+  display: none;
 
   @include breakpoint($breakpoint-desktop) {
-    background-image: url("/gfx/oo-branded-site-logo-text-white.png");
     display: inline-block;
-  }
-}
-
-.navbar--workspace .navbar__logo {
-
-  @include breakpoint($breakpoint-desktop) {
-    background: url("/gfx/oo-branded-site-logo-text-white-workspace.png") no-repeat left center;
-    display: inline-block;
-    width: 185px;
   }
 }
 
@@ -137,7 +118,6 @@
 
 // NAVBAR ITEMS BREAKPOINTS
 @include breakpoint($breakpoint-pad) {
-
   .navbar--main-function .navbar__item--menu-button,
   .navbar--workspace .navbar__item--menu-button,
   .navbar__mobile-title {

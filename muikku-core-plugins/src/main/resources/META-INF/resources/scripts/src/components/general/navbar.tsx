@@ -2,6 +2,9 @@ import LanguagePicker from './navbar/language-picker';
 import ProfileItem from './navbar/profile-item';
 import Menu from './navbar/menu';
 import * as React from 'react';
+import {connect, Dispatch} from 'react-redux';
+import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/navbar.scss';
 
@@ -15,14 +18,15 @@ interface NavbarProps {
   defaultOptions: (React.ReactElement<any>)[],
   navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>,
   mobileTitle?: string,
-  extraContent?: any
+  extraContent?: any,
+  i18n: i18nType
 }
 
 interface NavbarState {
   isMenuOpen: boolean
 }
 
-export default class Navbar extends React.Component<NavbarProps, NavbarState> {
+class Navbar extends React.Component<NavbarProps, NavbarState> {
   constructor(props: NavbarProps){
     super(props);
     this.openMenu = this.openMenu.bind(this);
@@ -46,7 +50,9 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
       <div>
         <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`} id="stick">
           <div className="navbar__wrapper">
-            <div className="navbar__logo"></div>
+            <div className="navbar__logo">
+              <a href="/"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="175" height="67" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></a>
+            </div>
             <ul className="navbar__items">
               <li className={`navbar__item navbar__item--menu-button`}>
                 <a className={`link link--icon link--full ${this.props.modifier ? 'link--' + this.props.modifier : ''}`} onClick={this.openMenu}>
@@ -77,3 +83,18 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
       );
   }
 }
+
+function mapStateToProps(state: StateType){
+  return {
+    i18n: state.i18n
+  }
+};
+
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return {};
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Navbar);
