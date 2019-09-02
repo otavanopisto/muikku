@@ -118,7 +118,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
   
   
-  updateHeight(containerOffset) {
+  updateHeight() {
     this.setState({height: window.innerHeight - 167});
   }
   
@@ -300,9 +300,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
   
   componentDidMount() {
-    let containerTopOffset = 167;
-    this.updateHeight(containerTopOffset);
-    window.addEventListener('resize', () => {this.updateHeight(containerTopOffset)});
+    let containerTopOffset:number = 167;
+    this.updateHeight();
+    window.addEventListener('resize', this.updateHeight);
   }
   componentWillUnMount() {
     window.removeEventListener('resize', this.updateHeight);    
