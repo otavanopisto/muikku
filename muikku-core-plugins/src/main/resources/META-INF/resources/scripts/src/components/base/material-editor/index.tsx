@@ -456,7 +456,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
-            <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor"
+            <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor" displayNotificationOnError
             files={this.props.editorState.currentNodeValue.childrenAttachments} fileIdKey="materialId" fileNameKey="title"
             fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/${this.props.editorState.currentNodeValue.path}/${a.path}`}
             deleteDialogElement={ConfirmRemoveAttachment}
