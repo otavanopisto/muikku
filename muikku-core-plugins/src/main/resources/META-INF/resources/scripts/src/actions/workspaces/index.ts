@@ -1736,10 +1736,6 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
       
       data.success && data.success();
     } catch (err) {
-      if (!(err instanceof MApiError)){
-        throw err;
-      }
-      
       dispatch(actions.displayNotification(err.message, 'error'))
       data.fail && data.fail();
     }
