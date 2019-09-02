@@ -254,7 +254,7 @@ const Page2 = (props) => (
         </div>
         <div className="pure-u-1-2">
           <label style={{paddingTop: "0.7rem"}} >Aloitan tutkinnon suorittamisen uudelleen&nbsp;
-            <input value={props.restartExam} type="checkbox" />
+            <input onClick={({target}) => {props.setRestartExam(target.checked);}} checked={props.restartExam} type="checkbox" />
           </label>
         </div>
       </div>
@@ -512,6 +512,7 @@ const Page4 = ({}) => (
   <div>
     <h1>Ilmoittautuminen ylioppilaskirjoituksiin lähetetty</h1>
     <p>Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.</p>
+    <p>Tulosta lomake, allekirjoita ja päivää se ja lähetä skannattuna riikka.turpeinen@otavia.fi tai kirjeitse Otavia/Nettilukio, Otavantie 2B, 50670 Otava.</p>
     <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
   </div>
 );
@@ -537,6 +538,7 @@ class App extends React.Component {
       enrollAs: "UPPERSECONDARY",
       degreeType: "MATRICULATIONEXAMINATION",
       numMandatoryCourses: "",
+      restartExam: false,
       location: "Mikkeli",
       message: "",
       studentIdentifier: "",
@@ -548,7 +550,7 @@ class App extends React.Component {
       date: date.getDate() + "."
             + (date.getMonth() + 1) + "."
             + date.getFullYear(),
-      lastSave: date.getTime()
+      draftTimeout: undefined
     };
     
     this.isConflictingMandatory = this.isConflictingMandatory.bind(this);
@@ -577,10 +579,49 @@ class App extends React.Component {
         }
       })
       .then((data) => {
-        this.setState(data);
+        super.setState(data);
       });
   }
 
+  resetDraftTimeout() {
+    if (this.state.draftTimeout) {
+      clearTimeout(this.state.draftTimeout);
+      this.state.draftTimeout = undefined;
+    }
+    this.state.draftTimeout = setTimeout(() => {
+      this.saveDraft();
+      this.state.draftTimeout = undefined;
+    },
+    5000);
+  }
+  
+  saveDraft() {
+    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify({
+        changedContactInfo: this.state.changedContactInfo,
+        guider: this.state.guider,
+        enrollAs: this.state.enrollAs,
+        degreeType: this.state.degreeType,
+        numMandatoryCourses: this.state.numMandatoryCourses,
+        restartExam: this.state.restartExam,
+        enrolledAttendances: this.state.enrolledAttendances,
+        plannedAttendances: this.state.plannedAttendances,
+        finishedAttendances: this.state.finishedAttendances
+      })
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      // TODO why is this here at all? - it also triggers resetDraftTimeout.. 
+//      this.setState(data);
+    });
+  }
+  
   newEnrolledAttendance() {
     const enrolledAttendances = this.state.enrolledAttendances;
     enrolledAttendances.push({
@@ -950,6 +991,7 @@ class App extends React.Component {
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
           degreeType: this.state.degreeType,
+          restartExam: this.state.restartExam,
           numMandatoryCourses: this.state.numMandatoryCourses ? Number(this.state.numMandatoryCourses) : null,
           location: this.state.location,
           message: message,
@@ -979,32 +1021,13 @@ class App extends React.Component {
   }
 
   setState(state) {
-    super.setState(state);
-    if (new Date().getTime() - this.state.lastSave > 5000) {
-      fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8"
-        },
-        body: JSON.stringify({
-          changedContactInfo: this.state.changedContactInfo,
-          guider: this.state.guider,
-          enrollAs: this.state.enrollAs,
-          degreeType: this.state.degreeType,
-          numMandatoryCourses: this.state.numMandatoryCourses,
-          enrolledAttendances: this.state.enrolledAttendances,
-          plannedAttendances: this.state.plannedAttendances,
-          finishedAttendances: this.state.finishedAttendances
-        })
-      })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        this.setState(data);
-      });
-      super.setState({lastSave: new Date().getTime()});
-    }
+    super.setState(
+        state,
+        () => {
+          // Reset draft timer after setState returns
+          this.resetDraftTimeout();
+        }
+    );
   }
 
   render() {
@@ -1030,6 +1053,7 @@ class App extends React.Component {
                   setGuider={(value) => { this.setState({guider : value}); }}
                   setEnrollAs={(value) => { this.setState({enrollAs : value}); }}
                   setDegreeType={(value) => { this.setState({degreeType : value}); }}
+                  setRestartExam={(value) => { this.setState({restartExam : value}); }}
                   setNumMandatoryCourses={(value) => { this.setState({numMandatoryCourses : value}); }}
                   setPage={(page) => {this.setState({page});}}
                   newEnrolledAttendance={() => {this.newEnrolledAttendance();}}
