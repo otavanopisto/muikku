@@ -78,7 +78,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     this.cancelChangeTrigger = true;
   }
   resize(width: number | string, height: number | string){
-    getCKEDITOR().instances[this.name].resize(width, height);
+    getCKEDITOR().instances[this.name].resize(width, height, false, true);
     
     this.width = width;
     this.height = height;
