@@ -200,7 +200,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
 
     item: (<Dropdown openByHover key="assessment-request" modifier="assessment"
         content={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}>
-      <Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)} title={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
+      <Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)} aria-label={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
         className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)} link--workspace-navbar icon-assessment-${getIconForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)}`}></Link>
     </Dropdown>)
   } : null;
