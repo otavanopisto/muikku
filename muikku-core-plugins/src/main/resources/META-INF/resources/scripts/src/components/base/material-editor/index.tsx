@@ -19,12 +19,14 @@ import Dropdown from "~/components/general/dropdown";
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
+import ModifyWorkspaceMaterialAttachmentDataDialog from "./modify-attachment-data-dialog";
 
 import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
 import AddProducer from '~/components/general/add-producer';
 import { LicenseSelector } from '~/components/general/license-selector';
 import FileUploader from '~/components/general/file-uploader';
+import Link from '~/components/general/link';
 
 interface MaterialEditorProps {
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
@@ -40,6 +42,7 @@ interface MaterialEditorState {
   tab: string;
   producerEntryName: string;
   uploading: boolean;
+  height: number;
 }
 
 const CKEditorConfig = (
@@ -55,7 +58,6 @@ const CKEditorConfig = (
   entities: false,
   entities_latin: false,
   entities_greek: false,
-  height : 500,
   language: locale,
   language_list: ['fi:Suomi', 'en:Englanti', 'de:Saksa', 'fr:Ranska', 'it:Italia', 'ru:Venäjä', 'sv:Ruotsi'],
   stylesSet : 'workspace-material-styles:' + contextPath + '/scripts/ckplugins/styles/workspace-material-styles.js',
@@ -79,8 +81,8 @@ const CKEditorConfig = (
     { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
     { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
   ],
-  extraPlugins: disablePlugins ? 'language,oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,divarea' :
-    "language,oembed,audio,divarea,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,uploadimage",
+  extraPlugins: disablePlugins ? 'oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,autogrow,widget,lineutils,filetools,uploadwidget,uploadimage' :
+    "language,oembed,audio,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,uploadimage,divarea",
 });
 
 // First we need to modify the material content nodes endpoint to be able to receive hidden
@@ -103,14 +105,23 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.addProducer = this.addProducer.bind(this);
     this.updateLicense = this.updateLicense.bind(this);
     this.onFilesUpload = this.onFilesUpload.bind(this);
+    this.updateHeight = this.updateHeight.bind(this);
 
     this.state = {
       tab: "content",
       producerEntryName: "",
       uploading: false,
+      height: 0
     }
   }
 
+
+  
+  
+  updateHeight(containerOffset) {
+    this.setState({height: window.innerHeight - 167});
+  }
+  
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       uploading: true
@@ -287,7 +298,16 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-
+  
+  componentDidMount() {
+    let containerTopOffset = 167;
+    this.updateHeight(containerTopOffset);
+    window.addEventListener('resize', () => {this.updateHeight(containerTopOffset)});
+  }
+  componentWillUnMount() {
+    window.removeEventListener('resize', this.updateHeight);    
+  }
+  
   render(){
     if (!this.props.editorState || !this.props.editorState.currentDraftNodeValue) {
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}/>
@@ -385,8 +405,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
-          {!this.props.editorState.section && this.props.editorState.canEditContent ? <div className="material-editor__editor-container">
-            <CKEditor configuration={CKEditorConfig(
+          {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
+            <CKEditor height={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,
@@ -442,7 +462,15 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor"
             files={this.props.editorState.currentNodeValue.childrenAttachments} fileIdKey="materialId" fileNameKey="title"
             fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/${this.props.editorState.currentNodeValue.path}/${a.path}`}
-            deleteDialogElement={ConfirmRemoveAttachment} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")} deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")} downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL/>
+            deleteDialogElement={ConfirmRemoveAttachment}
+            hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}
+            deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
+            downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL
+            fileExtraNodeGenerator={(a)=>{
+              return <ModifyWorkspaceMaterialAttachmentDataDialog attachment={a}>
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-edit" title={"TODO edit title"}/>
+              </ModifyWorkspaceMaterialAttachmentDataDialog>
+            }}/>
           </div>,
         })
       }

@@ -19,6 +19,7 @@ interface FileUploaderProps {
   files?: any[],
   fileIdKey: string,
   fileUrlGenerator: (file: any)=>any,
+  fileExtraNodeGenerator?: (file: any)=>any,
   fileNameKey: string,
   deleteDialogElement: any,
   deleteDialogElementProps?: any,
@@ -222,6 +223,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
               <DialogDeleteElement file={file} {...this.props.deleteDialogElementProps}>
                 <Link disablePropagation className="file-uploader__item-delete-icon icon-delete" title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
               </DialogDeleteElement>
+              {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
             </div>
           })}
           {this.state.uploadingValues.map((uploadingFile, index) => {
