@@ -248,12 +248,6 @@ $color-toc-item-link-selected-background: #29b0c4;
 // Separator
 $color-separator-background: $color-inverse;
 
-// Navbar
-$color-navbar-default-background: #f5f5f5;
-$color-navbar-workspace-background: $color-workspace;
-$color-navbar-default-text: $color-inverse;
-$color-navbar-default-shadow: rgba(0, 0, 0, 0.2);
-
 // Links
 $color-link-frontpage-text: $color-inverse;
 $color-link-highlight-text: #00af00;
@@ -265,14 +259,6 @@ $color-link-hover-background: rgba(0, 0, 0, 0.05);
 $color-link-active-background: rgba(0, 0, 0, 0.1);
 $color-link-inverse-background: invisible;
 $color-link-application-item-footer: $color-primary;
-
-// Menu
-$color-menu-default-background: #f5f5f5;
-$color-menu-default-text: $color-inverse;
-$color-menu-default-header-background: rgba(0, 0, 0, 0.1);
-$color-menu-default-header-button-close: $color-default;
-$color-menu-default-header-button-close-background-active: rgba(255, 255, 255, 0.3);
-$color-menu-main-function-header-button-close: $color-info;
 
 // dropdown
 $color-dropdown-default-background: $color-default;
@@ -411,9 +397,13 @@ $color-autocomplete-list-item-selected: #29B0C4;
 // Transferred from main-functions.scss
 
 // NAVBAR
+$color-default-navbar-background: #f5f5f5;
+$color-default-navbar-text: $color-inverse;
+$color-default-navbar-shadow: rgba(0, 0, 0, 0.2);
 $color-environment-navbar-background: #009FE3;
 $color-environment-navbar-title: $color-default;
 $color-environment-navbar-item-menu-button: $color-default;
+$color-workspace-navbar-background: $color-workspace;
 
 // ICON LINKS
 $color-environment-link-icon-color: $color-default;
@@ -452,6 +442,15 @@ $color-environment-link-menu-helpdesk-icon-color: $color-environment-link-menu-i
 $color-environment-link-menu-logout-icon-background: #4c4c4c;
 $color-environment-link-menu-logout-icon-color: $color-default;
 $color-environment-link-menu-navicon-icon-color: $color-inverse;
+$color-menu-environment-header-button-close: $color-default;
+$color-menu-workspace-header-button-close: $color-default;
+$color-workspace-menu-header-background: $color-workspace-navbar-background;
+$color-menu-default-background: #f5f5f5;
+$color-menu-default-text: $color-inverse;
+$color-menu-default-header-background: rgba(0, 0, 0, 0.1);
+$color-menu-default-header-button-close: $color-default;
+$color-menu-default-header-button-close-background-active: rgba(255, 255, 255, 0.3);
+$color-menu-default-header-button-close: $color-info;
 
 // SUBPANEL
 

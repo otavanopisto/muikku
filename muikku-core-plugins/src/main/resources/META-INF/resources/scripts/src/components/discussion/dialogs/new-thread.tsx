@@ -157,7 +157,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
          <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
        </div> : <div key="2" className="env-dialog__row env-dialog__row--new-discussion-thread-states"/>),
-       <div className="env-dialog__row" key="3">     
+       <div className="env-dialog__row" key="3">
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
            <CKEditor key="3" width="100%" height="210"
@@ -166,7 +166,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
        </div>
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="env-dialog__actions">
          <Button buttonModifiers="dialog-execute" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}

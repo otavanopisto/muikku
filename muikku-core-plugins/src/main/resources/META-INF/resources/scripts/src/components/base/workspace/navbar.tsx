@@ -200,7 +200,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
 
     item: (<Dropdown openByHover key="assessment-request" modifier="assessment"
         content={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}>
-      <Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)} title={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
+      <Link onClick={this.onRequestEvaluationOrCancel.bind(this, this.props.currentWorkspace.studentAssessments.assessmentState)} aria-label={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}
         className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)} link--workspace-navbar icon-assessment-${getIconForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState)}`}></Link>
     </Dropdown>)
   } : null;
@@ -254,24 +254,6 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       text: this.props.i18n.text.get("plugin.workspace.dock.material-management"),
       visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
       trail: "workspace-materials-management",
-      to: true
-    },
-    {
-      icon: "edit",
-      modifier: "navigation",
-      href: "/workspace/" + this.props.workspaceUrl + "/frontpage-management",
-      text: this.props.i18n.text.get("plugin.workspace.dock.editIndex"),
-      visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_FRONTPAGE,
-      trail: "workspace-frontpage-management",
-      to: true
-    },
-    {
-      icon: "edit",
-      modifier: "navigation",
-      href: "/workspace/" + this.props.workspaceUrl + "/helppage-management",
-      text: this.props.i18n.text.get("plugin.workspace.dock.editHelp"),
-      visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE_HELP,
-      trail: "workspace-helppage-management",
       to: true
     }
   ]

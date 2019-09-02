@@ -62,7 +62,7 @@ const CKEditorConfig = (
   language_list: ['fi:Suomi', 'en:Englanti', 'de:Saksa', 'fr:Ranska', 'it:Italia', 'ru:Venäjä', 'sv:Ruotsi'],
   stylesSet : 'workspace-material-styles:' + contextPath + '/scripts/ckplugins/styles/workspace-material-styles.js',
   format_tags : 'p;h3;h4',
-  baseHref: `workspace/${workspace.urlName}/${materialNode.path}/`, 
+  baseHref: `workspace/${workspace.urlName}/${materialNode.path}/`,
   mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG',
   mathJaxClass: 'material-page__math-formula',
   toolbarCanCollapse: true,
@@ -85,7 +85,7 @@ const CKEditorConfig = (
     "language,oembed,audio,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,uploadimage,divarea",
 });
 
-// First we need to modify the material content nodes endpoint to be able to receive hidden
+// First we need to modify the material content nodes end point to be able to receive hidden
 // nodes, we need those to be able to modify here
 class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditorState> {
   constructor(props: MaterialEditorProps){
@@ -115,10 +115,12 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     }
   }
   
+
+
   updateHeight() {
     this.setState({height: window.innerHeight - 167});
   }
-  
+
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       uploading: true
@@ -205,8 +207,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
 
   updateContent(content: string) {
-    // TODO content update plugin is all
-    // going through the collaboration plugin
+    // TODO content update plug-in is all
+    // going through the collaboration plug-in
     // this cannot be achieved until that is modified
     // got to wait
 

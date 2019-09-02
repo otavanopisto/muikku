@@ -120,9 +120,11 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     return <div className="material-page__filefield-wrapper">
       <div className={`material-page__filefield ${ElementDisabledState}`}>
         <FileUploader readOnly={this.props.readOnly} url={this.props.status.contextPath + '/tempFileUploadServlet'}
+         displayNotificationOnError
          formDataGenerator={formDataGenerator} onFileSuccess={(file: File, data: any)=>{
            this.onFileAdded(file, data);
          }} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}
+         fileTooLargeErrorText={this.props.i18n.text.get("TODOERRMSG FILE TOO LARGE")}
          deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
          downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")}
          files={this.state.values} fileIdKey="fileId" fileNameKey="name" fileUrlGenerator={(f)=>`/rest/workspace/fileanswer/${f.fileId}`}

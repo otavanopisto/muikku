@@ -22,7 +22,7 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
-    
+
     this.state = {
       editModeActive: true
     }
