@@ -2,6 +2,10 @@ import * as React from "react";
 import $ from '~/lib/jquery';
 import '~/sass/elements/file-uploader.scss';
 import Link from "~/components/general/link";
+import { StateType } from "~/reducers";
+import { Dispatch, connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
 const ProgressBarLine = require('react-progressbar.js').Line;
 
 interface FileUploaderProps {
@@ -29,8 +33,11 @@ interface FileUploaderProps {
   hintText: string,
   showURL?: boolean,
   readOnly?: boolean,
+  displayNotificationOnError?: boolean,
   
   invisible?: boolean,
+      
+  displayNotification: DisplayNotificationTriggerType,
 }
 
 interface FileUploaderState {
@@ -45,7 +52,7 @@ interface FileUploaderState {
 
 const MAX_BYTES = 10000000;
 
-export default class FileUploader extends React.Component<FileUploaderProps, FileUploaderState> {
+class FileUploader extends React.Component<FileUploaderProps, FileUploaderState> {
   constructor(props: FileUploaderProps){
     super(props);
     
@@ -84,6 +91,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
         uploadingValues: newValues
       });
       
+      this.props.displayNotificationOnError && this.props.displayNotification(this.props.fileTooLargeErrorText, "error");
       this.props.onFileError && this.props.onFileError(file, new Error(this.props.fileTooLargeErrorText));
       return;
     }
@@ -122,6 +130,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
           uploadingValues: newValues
         });
         
+        this.props.displayNotificationOnError && this.props.displayNotification(err.message, "error");
         this.props.onFileError && this.props.onFileError(file, err);
       },
       xhr: ()=>{
@@ -263,3 +272,17 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
     </div>
   }
 }
+
+function mapStateToProps(state: StateType){
+  return {
+  }
+};
+
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return bindActionCreators({displayNotification}, dispatch);
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FileUploader);

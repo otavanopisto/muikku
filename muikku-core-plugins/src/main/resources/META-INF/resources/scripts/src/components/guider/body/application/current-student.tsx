@@ -176,9 +176,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
 
     let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <FileUploader url="/transcriptofrecordsfileupload/" formDataGenerator={formDataGenerator}
-        onFileError={(file: File, err: Error)=>{
-          this.props.displayNotification(err.message, "error");
-        }} onFileSuccess={(file: File, data: UserFileType)=>{
+        displayNotificationOnError onFileSuccess={(file: File, data: UserFileType)=>{
           this.props.addFileToCurrentStudent(data);
         }} hintText={this.props.i18n.text.get("plugin.guider.user.details.files.hint")}
         fileTooLargeErrorText={this.props.i18n.text.get("TODOERRMSG FILE TOO LARGE")}
