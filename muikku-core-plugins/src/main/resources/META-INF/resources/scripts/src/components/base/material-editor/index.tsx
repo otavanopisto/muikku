@@ -467,7 +467,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL
             fileExtraNodeGenerator={(a)=>{
               return <ModifyWorkspaceMaterialAttachmentDataDialog attachment={a}>
-                <Link disablePropagation className="file-uploader__item-delete-icon icon-edit" title={"TODO edit title"}/>
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-edit"/>
               </ModifyWorkspaceMaterialAttachmentDataDialog>
             }}/>
           </div>,

@@ -124,7 +124,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
          formDataGenerator={formDataGenerator} onFileSuccess={(file: File, data: any)=>{
            this.onFileAdded(file, data);
          }} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}
-         fileTooLargeErrorText={this.props.i18n.text.get("TODOERRMSG FILE TOO LARGE")}
+         fileTooLargeErrorText={this.props.i18n.text.get("plugin.workspace.fileFieldUpload.fileSizeTooLarge")}
          deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
          downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")}
          files={this.state.values} fileIdKey="fileId" fileNameKey="name" fileUrlGenerator={(f)=>`/rest/workspace/fileanswer/${f.fileId}`}
