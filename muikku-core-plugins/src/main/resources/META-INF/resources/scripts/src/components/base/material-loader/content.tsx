@@ -45,10 +45,6 @@ function onModification(props: MaterialLoaderContentProps){
 }
 
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
-  if (props.isInFrontPage) {
-    return null;
-  }
-
   return (<div className="react-required-container">
     <div className="react-required-container" onClick={stopPropagation}>
       {
