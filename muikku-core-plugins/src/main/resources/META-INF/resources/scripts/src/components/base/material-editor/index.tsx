@@ -114,6 +114,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       height: 0
     }
   }
+  
+
 
   updateHeight() {
     this.setState({height: window.innerHeight - 167});
