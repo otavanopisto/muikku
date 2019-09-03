@@ -113,6 +113,21 @@ mixin finishedTable(title, rows)
                   default
                     |Ei vielä tiedossa
 
+mixin signatureSection()
+  table(style="width: 70%; table-layout: fixed; margin-top: 4em")
+    tbody
+      tr
+        td(width="25%", style="border-bottom: 1px solid")
+        td(width="5%")
+        td(width="70%", style="border-bottom: 1px solid")
+      tr
+        td
+          |Päivämäärä
+        td
+        td
+          |Allekirjoitus
+
+
 +header("Perustiedot")
 
 +basicBlock("Nimi", enrollment.name)
@@ -153,3 +168,4 @@ if enrollment.canPublishName
 else
   +basicBlock("Julkaisulupa", "En halua nimeäni julkaistavan valmistujaislistauksissa")
 
++signatureSection()
