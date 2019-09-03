@@ -462,7 +462,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
-            <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor"
+            <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor" displayNotificationOnError
+            fileTooLargeErrorText={this.props.i18n.text.get("plugin.workspace.fileFieldUpload.fileSizeTooLarge")}
             files={this.props.editorState.currentNodeValue.childrenAttachments} fileIdKey="materialId" fileNameKey="title"
             fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/${this.props.editorState.currentNodeValue.path}/${a.path}`}
             deleteDialogElement={ConfirmRemoveAttachment}
@@ -471,7 +472,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL
             fileExtraNodeGenerator={(a)=>{
               return <ModifyWorkspaceMaterialAttachmentDataDialog attachment={a}>
-                <Link disablePropagation className="file-uploader__item-delete-icon icon-edit" title={"TODO edit title"}/>
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-edit"/>
               </ModifyWorkspaceMaterialAttachmentDataDialog>
             }}/>
           </div>,

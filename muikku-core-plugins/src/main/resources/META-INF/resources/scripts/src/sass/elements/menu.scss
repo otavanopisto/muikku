@@ -16,7 +16,7 @@
   top: 0;
   z-index: 9999;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     left: -$menu-width-pad;
     width: $menu-width-pad;
   }

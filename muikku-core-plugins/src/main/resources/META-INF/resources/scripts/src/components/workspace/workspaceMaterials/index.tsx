@@ -38,10 +38,10 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
   render(){
     let navigationComponent = <TableOfContentsComponent editModeActive={this.state.editModeActive} ref="content"/>;
     return (<div>
-      <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
+      <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}
+        editModeAvailable editModeActive={this.state.editModeActive} toggleEditModeActive={this.toggleEditModeActive}/>
       <ScreenContainer viewModifiers="materials">
         <MaterialEditor/>
-        <input type="checkbox" onChange={this.toggleEditModeActive} checked={this.state.editModeActive}/>
         <Materials onOpenNavigation={this.onOpenNavigation} editModeActive={this.state.editModeActive}
           navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
       </ScreenContainer>
