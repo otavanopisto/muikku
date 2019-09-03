@@ -18,6 +18,14 @@
     </script>
   </h:head>
   <body>
-		<div id="react-root"></div>
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <div id="react-root"></div>
+    </ui:fragment>
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+      <div>
+        <h3>Et ole kirjautunut sisään</h3>
+        <p>Sinun täytyy kirjautua sisään ilmoittautuaksesi ylioppilaskirjoituksiin</p>
+      </div>
+    </ui:fragment>
 	</body>
 </html>
