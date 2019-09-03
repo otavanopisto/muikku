@@ -153,6 +153,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
     });
   }
+  
   updateCKEditor(data: string){
     if (!getCKEDITOR()){
       return;
