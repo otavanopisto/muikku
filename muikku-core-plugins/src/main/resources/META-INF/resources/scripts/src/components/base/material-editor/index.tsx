@@ -81,7 +81,7 @@ const CKEditorConfig = (
     { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
     { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
   ],
-  extraPlugins: disablePlugins ? 'oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,autogrow,widget,lineutils,filetools,uploadwidget,uploadimage' :
+  extraPlugins: disablePlugins ? 'divarea,oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage' :
     "language,oembed,audio,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,uploadimage,divarea",
 });
 
@@ -145,6 +145,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
 
   toggleHiddenStatus() {
+
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
@@ -300,6 +301,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.updateHeight();
     window.addEventListener('resize', this.updateHeight);
   }
+
   componentWillUnMount() {
     window.removeEventListener('resize', this.updateHeight);
   }
@@ -391,6 +393,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         </div>
       </div>;
 
+      
+      let height = this.state.height;
+      
       const allTabs = [{
         id: "content",
         type: "material-editor",
@@ -402,7 +407,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
           {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
-            <CKEditor height={this.state.height} configuration={CKEditorConfig(
+            <CKEditor height={height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,
