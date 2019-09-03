@@ -35,7 +35,11 @@ interface WorkspaceNavbarProps {
   status: StatusType,
   title: string,
   workspaceUrl: string,
-  currentWorkspace: WorkspaceType
+  currentWorkspace: WorkspaceType,
+  
+  editModeAvailable?: boolean,
+  editModeActive?: boolean,
+  toggleEditModeActive?: ()=>any,
 }
 
 interface WorkspaceNavbarState {
