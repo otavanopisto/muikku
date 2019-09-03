@@ -114,8 +114,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       height: 0
     }
   }
-  
-
 
   updateHeight() {
     this.setState({height: window.innerHeight - 167});
@@ -286,7 +284,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     });
   }
 
-
   updateLicense(newLicense: string) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
@@ -297,16 +294,16 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       isDraft: true,
     });
   }
-  
+
   componentDidMount() {
     let containerTopOffset:number = 167;
     this.updateHeight();
     window.addEventListener('resize', this.updateHeight);
   }
   componentWillUnMount() {
-    window.removeEventListener('resize', this.updateHeight);    
+    window.removeEventListener('resize', this.updateHeight);
   }
-  
+
   render(){
     if (!this.props.editorState || !this.props.editorState.currentDraftNodeValue) {
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}/>
@@ -323,7 +320,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           break;
         }
       }
-      
+
       const publishModifiers = ["material-editor-publish-page","material-editor"];
       const revertModifiers = ["material-editor-revert-page","material-editor"];
       if (!canPublish) {
@@ -350,7 +347,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       const exerciseRevealType = !this.props.editorState.currentDraftNodeValue.correctAnswers ||
         this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? "always-show" :
           (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? "on-request" : "never-show");
-      
+
       const correctAnswersModifiers = ["material-editor-change-answer-reveal-type", "material-editor", "material-editor-" + exerciseRevealType];
       const correctAnswersTooltips =  !this.props.editorState.currentDraftNodeValue.correctAnswers || this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? 
           this.props.i18n.text.get("plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip") : 
