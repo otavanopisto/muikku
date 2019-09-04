@@ -125,7 +125,7 @@ class YO extends React.Component<YOProps, YOState> {
                   {this.props.hops.value.studentMatriculationSubjects.length > 0  ? 
                     {selectedMatriculationSubjects}
                   :
-                    <div className="empty">{i18n.text.get("plugin.records.matriculation.hopsNotDone")}</div> }
+                    <div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div> }
                 </div>
               </div>
             </div>
