@@ -733,6 +733,15 @@
   border-top: 3px dotted lighten($taskfield-border-color,20%);
 }
 
+.material-page__audiofield-files-container--empty {
+  border: 0;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 10px 0;
+  text-align: center;
+}
+
 .material-page__audiofield-file-container {
   align-items: center;
   display: flex;

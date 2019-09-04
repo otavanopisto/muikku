@@ -8,9 +8,39 @@
   border: 2px solid $color-tertiary;
 }
 
+// FILE UPLOADER USED IN MATERIALS AS FILE FIELD TASK
 .file-uploader--taskfield {
   @include taskfield-text;
   border: solid 2px $taskfield-border-color;
+
+  // DISABLED FILE FIELD
+  &.file-uploader--readonly {
+    border-color: $color-disabled-taskfield-border !important;
+    cursor: text !important;
+
+    .file-uploader__field-container--taskfield {
+      display: none;
+    }
+
+    .file-uploader__items-container--empty {
+      border: 0;
+      flex-basis: auto;
+      flex-grow: 1;
+      flex-shrink: 1;
+      margin: 10px 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .file-uploader__items--taskfield {
+      border: none !important;
+    }
+
+    .file-uploader__item-delete-icon {
+      color: darken($color-disabled-taskfield-icon, 20%) !important;
+      cursor: default !important;
+    }
+  }
 }
 
 .file-uploader--material-editor {
