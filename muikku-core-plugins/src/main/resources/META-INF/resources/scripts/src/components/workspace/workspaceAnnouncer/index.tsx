@@ -10,14 +10,33 @@ interface WorkspaceAnnouncerBodyProps {
 }
 
 interface WorkspaceAnnouncerBodyState {
-
+  editModeActive: boolean,
 }
 
 export default class WorkspaceAnnouncerBody extends React.Component<WorkspaceAnnouncerBodyProps, WorkspaceAnnouncerBodyState> {
+  constructor(props: WorkspaceAnnouncerBodyProps){
+    super(props);
+
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
+    this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
+
+    this.state = {
+      editModeActive: true
+    }
+  }
+  onOpenNavigation(){
+    (this.refs.content as any).getWrappedInstance().refresh();
+  }
+  toggleEditModeActive() {
+    this.setState({
+      editModeActive: !this.state.editModeActive,
+    });
+  }
   render(){
     let aside = <Aside />;
     return (<div>
-      <WorkspaceNavbar navigation={aside} activeTrail="workspace-announcer" workspaceUrl={this.props.workspaceUrl}/>
+      <WorkspaceNavbar navigation={aside} activeTrail="workspace-announcer" workspaceUrl={this.props.workspaceUrl} 
+        editModeAvailable editModeActive={this.state.editModeActive} toggleEditModeActive={this.toggleEditModeActive}/>
       <Application aside={aside}/>
     </div>);
   }

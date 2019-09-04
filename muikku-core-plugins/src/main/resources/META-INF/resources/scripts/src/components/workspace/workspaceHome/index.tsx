@@ -21,18 +21,37 @@ interface WorkspaceHomeBodyProps {
 }
 
 interface WorkspaceHomeBodyState {
-
+  editModeActive: boolean
 }
 
 export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBodyProps, WorkspaceHomeBodyState> {
+  constructor(props: WorkspaceHomeBodyProps){
+    super(props);
+
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
+    this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
+
+    this.state = {
+      editModeActive: true
+    }
+  }
+  onOpenNavigation(){
+    (this.refs.content as any).getWrappedInstance().refresh();
+  }
+  toggleEditModeActive() {
+    this.setState({
+      editModeActive: !this.state.editModeActive,
+    });
+  }
   render(){
     return (<div>
-      <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl}/>
+      <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl} 
+        editModeAvailable editModeActive={this.state.editModeActive} toggleEditModeActive={this.toggleEditModeActive}/>
       <ScreenContainer viewModifiers="workspace">
         <MaterialEditor/>
         <WorkspaceHomeHeader/>
         <div className="panel-group panel-group--workspace-main">
-          <WorkspaceDescription/>
+          <WorkspaceDescription editModeActive={this.state.editModeActive}/>
           <div className="panel-group panel-group--workspace-aside">
             <WorkspaceSignUp/>
             <WorkspaceTeachers/>

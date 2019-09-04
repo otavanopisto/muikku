@@ -9,13 +9,32 @@ interface WorkspaceUsersBodyProps {
 }
 
 interface WorkspaceUsersBodyState {
-
+  editModeActive: boolean,
 }
 
 export default class WorkspaceUsersBody extends React.Component<WorkspaceUsersBodyProps, WorkspaceUsersBodyState> {
+  constructor(props: WorkspaceUsersBodyProps){
+    super(props);
+
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
+    this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
+
+    this.state = {
+      editModeActive: true
+    }
+  }
+  onOpenNavigation(){
+    (this.refs.content as any).getWrappedInstance().refresh();
+  }
+  toggleEditModeActive() {
+    this.setState({
+      editModeActive: !this.state.editModeActive,
+    });
+  }
   render(){
     return (<div>
-      <WorkspaceNavbar activeTrail="users" workspaceUrl={this.props.workspaceUrl}/>
+      <WorkspaceNavbar activeTrail="users" workspaceUrl={this.props.workspaceUrl}
+        editModeAvailable editModeActive={this.state.editModeActive} toggleEditModeActive={this.toggleEditModeActive}/>
       <ScreenContainer viewModifiers="workspace-users">
         <Users/>
       </ScreenContainer>

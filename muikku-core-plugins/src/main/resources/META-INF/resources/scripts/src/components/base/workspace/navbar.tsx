@@ -36,7 +36,7 @@ interface WorkspaceNavbarProps {
   title: string,
   workspaceUrl: string,
   currentWorkspace: WorkspaceType,
-  
+
   editModeAvailable?: boolean,
   editModeActive?: boolean,
   toggleEditModeActive?: ()=>any,
@@ -300,6 +300,11 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       </Navigation>)
     }
 
+    let editModeSwitch = null;
+    if (this.props.editModeAvailable){
+       editModeSwitch = (<input key="3" type="checkbox" className={`button-pill button-pill--editing-master-switch ${this.props.editModeActive ? "button-pill--editing-master-switch-active" : ""}`} onChange={this.props.toggleEditModeActive} checked={this.props.editModeActive}/>)
+    }
+
     return <Navbar mobileTitle={this.props.title}
       modifier="workspace" navigation={trueNavigation} navbarItems={[
         assessmentRequestItem,
@@ -316,7 +321,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
           {item.badge ? <span className="indicator indicator--workspace">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         </Link>)
       }
-    }))} defaultOptions={this.props.status.loggedIn ? null : [
+    }))} defaultOptions={this.props.status.loggedIn ? [editModeSwitch] : [
       (<LoginButton modifier="login-main-function" key="0"/>),
       (<ForgotPasswordDialog key="1"><Link className="link link--forgot-password link--forgot-password-main-function">
         <span>{this.props.i18n.text.get('plugin.forgotpassword.forgotLink')}</span>

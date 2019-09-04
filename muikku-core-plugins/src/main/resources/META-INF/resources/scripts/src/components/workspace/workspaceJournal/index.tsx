@@ -12,13 +12,32 @@ interface WorkspaceJournalBodyProps {
 }
 
 interface WorkspaceJournalBodyState {
-
+  editModeActive: boolean,
 }
 
 export default class WorkspaceJournalBody extends React.Component<WorkspaceJournalBodyProps, WorkspaceJournalBodyState> {
+  constructor(props: WorkspaceJournalBodyProps){
+    super(props);
+
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
+    this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
+
+    this.state = {
+      editModeActive: true
+    }
+  }
+  onOpenNavigation(){
+    (this.refs.content as any).getWrappedInstance().refresh();
+  }
+  toggleEditModeActive() {
+    this.setState({
+      editModeActive: !this.state.editModeActive,
+    });
+  }
   render(){
     return (<div>
-      <WorkspaceNavbar activeTrail="journal" workspaceUrl={this.props.workspaceUrl}/>
+      <WorkspaceNavbar activeTrail="journal" workspaceUrl={this.props.workspaceUrl}
+        editModeAvailable editModeActive={this.state.editModeActive} toggleEditModeActive={this.toggleEditModeActive}/>
       <ScreenContainer viewModifiers="journal">
         <Application />
       </ScreenContainer>
