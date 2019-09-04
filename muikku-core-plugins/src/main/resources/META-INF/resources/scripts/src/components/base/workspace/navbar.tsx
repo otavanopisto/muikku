@@ -12,10 +12,12 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/indicator.scss';
 import Dropdown from '~/components/general/dropdown';
-import { WorkspaceType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
+import { WorkspaceType, WorkspaceAssessementStateType, WorkspaceEditModeStateType } from '~/reducers/workspaces';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 import EvaluationRequestDialog from './evaluation-request-dialog';
 import EvaluationCancelDialog from './evaluation-cancel-dialog';
+import { UpdateWorkspaceEditModeStateTriggerType, updateWorkspaceEditModeState } from '~/actions/workspaces';
+import { bindActionCreators } from 'redux';
 
 interface ItemDataElement {
   modifier: string,
@@ -36,10 +38,8 @@ interface WorkspaceNavbarProps {
   title: string,
   workspaceUrl: string,
   currentWorkspace: WorkspaceType,
-
-  editModeAvailable?: boolean,
-  editModeActive?: boolean,
-  toggleEditModeActive?: ()=>any,
+  workspaceEditMode: WorkspaceEditModeStateType,
+  updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType,
 }
 
 interface WorkspaceNavbarState {
@@ -126,6 +126,12 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     }
 
     this.onRequestEvaluationOrCancel = this.onRequestEvaluationOrCancel.bind(this);
+    this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
+  }
+  toggleEditModeActive() {
+    this.props.updateWorkspaceEditModeState({
+      active: !this.props.workspaceEditMode.active,
+    }, true);
   }
   onRequestEvaluationOrCancel(state: string){
     let text;
@@ -301,8 +307,11 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     }
 
     let editModeSwitch = null;
-    if (this.props.editModeAvailable){
-       editModeSwitch = (<input key="3" type="checkbox" className={`button-pill button-pill--editing-master-switch ${this.props.editModeActive ? "button-pill--editing-master-switch-active" : ""}`} onChange={this.props.toggleEditModeActive} checked={this.props.editModeActive}/>)
+    if (this.props.workspaceEditMode.available){
+       editModeSwitch = (<input key="3" type="checkbox"
+           className={`button-pill button-pill--editing-master-switch ${this.props.workspaceEditMode.active ? "button-pill--editing-master-switch-active" : ""}`}
+           onChange={this.toggleEditModeActive}
+           checked={this.props.workspaceEditMode.active}/>)
     }
 
     return <Navbar mobileTitle={this.props.title}
@@ -350,12 +359,13 @@ function mapStateToProps(state: StateType){
     i18n: state.i18n,
     status: state.status,
     title: state.title,
-    currentWorkspace: state.workspaces.currentWorkspace
+    currentWorkspace: state.workspaces.currentWorkspace,
+    workspaceEditMode: state.workspaces.editMode,
   }
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
-  return {};
+  return bindActionCreators({updateWorkspaceEditModeState}, dispatch);
 };
 
 export default connect(

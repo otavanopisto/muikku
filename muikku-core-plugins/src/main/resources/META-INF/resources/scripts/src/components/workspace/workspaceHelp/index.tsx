@@ -11,7 +11,6 @@ interface WorkspaceHelpBodyProps {
 }
 
 interface WorkspaceHelpBodyState {
-  editModeActive: boolean,
 }
 
 export default class WorkspaceHelpBody extends React.Component<WorkspaceHelpBodyProps, WorkspaceHelpBodyState> {
@@ -19,24 +18,13 @@ export default class WorkspaceHelpBody extends React.Component<WorkspaceHelpBody
     super(props);
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
-    this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
-
-    this.state = {
-      editModeActive: true
-    }
   }
   onOpenNavigation(){
     (this.refs.content as any).getWrappedInstance().refresh();
   }
-  toggleEditModeActive() {
-    this.setState({
-      editModeActive: !this.state.editModeActive,
-    });
-  }
   render(){
     return (<div>
-      <WorkspaceNavbar activeTrail="help" workspaceUrl={this.props.workspaceUrl} 
-        editModeAvailable editModeActive={this.state.editModeActive} toggleEditModeActive={this.toggleEditModeActive}/>
+      <WorkspaceNavbar activeTrail="help" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="workspace">
         <MaterialEditor/>
         <HelpPanel/>

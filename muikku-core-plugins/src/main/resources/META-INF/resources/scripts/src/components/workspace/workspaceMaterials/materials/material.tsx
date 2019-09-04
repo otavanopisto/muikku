@@ -4,8 +4,7 @@ import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 
 import MaterialLoader from "~/components/base/material-loader";
-import { StatusType } from "~/reducers/base/status";
-import { MaterialContentNodeType, WorkspaceType, MaterialCompositeRepliesType } from "~/reducers/workspaces";
+import { MaterialContentNodeType, WorkspaceType, MaterialCompositeRepliesType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 import { setCurrentWorkspace, SetCurrentWorkspaceTriggerType } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
@@ -21,13 +20,12 @@ import LazyLoader from "~/components/general/lazy-loader";
 
 interface WorkspaceMaterialProps {
   i18n: i18nType,
-  status: StatusType,
+  workspaceEditMode: WorkspaceEditModeStateType,
   materialContentNode: MaterialContentNodeType,
   folder: MaterialContentNodeType,
   compositeReplies: MaterialCompositeRepliesType,
   workspace: WorkspaceType,
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType,
-  editModeActive: boolean,
 }
 
 interface WorkspaceMaterialState {
@@ -77,7 +75,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
           canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
           canAddAttachments={!isBinary} canEditContent={!isBinary} folder={this.props.folder}
-          editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE && this.props.editModeActive}
+          editable={this.props.workspaceEditMode.active}
           material={this.props.materialContentNode} workspace={this.props.workspace}
           compositeReplies={this.props.compositeReplies} answerable onAssignmentStateModified={this.updateWorkspaceActivity}
           invisible={!loaded}>
@@ -110,7 +108,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    status: state.status
+    workspaceEditMode: state.workspaces.editMode,
   }
 };
 

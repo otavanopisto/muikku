@@ -2,11 +2,10 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType, MaterialCompositeRepliesListType } from "~/reducers/workspaces";
+import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType, MaterialCompositeRepliesListType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
 import MaterialLoader from "~/components/base/material-loader";
-import { StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
 
 import WorkspaceMaterial from './material';
@@ -24,10 +23,9 @@ interface WorkspaceMaterialsProps {
   materialReplies: MaterialCompositeRepliesListType,
   navigation: React.ReactElement<any>,
   activeNodeId: number,
-  status: StatusType,
+  workspaceEditMode: WorkspaceEditModeStateType,
   onActiveNodeIdChange: (activeNodeId: number)=>any,
   onOpenNavigation: ()=>any,
-  editModeActive: boolean,
   
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType,
@@ -261,7 +259,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       return null;
     }
 
-    const isEditable = this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE && this.props.editModeActive;
+    const isEditable = this.props.workspaceEditMode.active;
     
     const createSectionElementWhenEmpty = this.props.materials.length === 0 && isEditable ? (
       <div className="material-admin-panel material-admin-panel--master-functions">
@@ -324,8 +322,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
             <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
             {/*TOP OF THE PAGE*/}
-            <WorkspaceMaterial editModeActive={this.props.editModeActive}
-             folder={section} materialContentNode={node} workspace={this.props.workspace} compositeReplies={compositeReplies}/>
+            <WorkspaceMaterial
+              folder={section}
+              materialContentNode={node}
+              workspace={this.props.workspace}
+              compositeReplies={compositeReplies}
+             />
           </ContentPanelItem>;
         sectionSpecificContentData.push(material);
       });
@@ -361,7 +363,7 @@ function mapStateToProps(state: StateType){
     materials: state.workspaces.currentMaterials,
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
-    status: state.status
+    workspaceEditMode: state.workspaces.editMode,
   }
 };
 
