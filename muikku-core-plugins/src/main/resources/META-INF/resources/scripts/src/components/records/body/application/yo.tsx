@@ -122,7 +122,10 @@ class YO extends React.Component<YOProps, YOState> {
               <div className="application-sub-panel__item application-sub-panel__item--summarizer">
                 <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
                 <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
-                  {selectedMatriculationSubjects}
+                  {this.props.hops.value.studentMatriculationSubjects.length > 0  ? 
+                    {selectedMatriculationSubjects}
+                  :
+                    <div className="empty">{i18n.text.get("plugin.records.matriculation.message.hopsNotDone")}</div> }
                 </div>
               </div>
             </div>
