@@ -1404,6 +1404,71 @@
   }
 }
 
+// Hover effect rules for terms and counterparts when textual content 
+// is larger than what can be fitted in 1 row
+.material-page__connectfield-term--edited,
+.material-page__connectfield-counterpart--edited {
+
+  .material-page__connectfield-term-data-container:hover,
+  .material-page__connectfield-counterpart-data-container:hover {
+    background: lighten($taskfield-border-color,25%);
+  }
+}
+
+.material-page__connectfield-term--selected,
+.material-page__connectfield-counterpart--selected {
+
+  .material-page__connectfield-term-data-container:hover,
+  .material-page__connectfield-counterpart-data-container:hover {
+    background: $taskfield-border-color;
+  }
+}
+
+.material-page__connectfield-term-data-container,
+.material-page__connectfield-counterpart-data-container {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2rem;
+  position: relative;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+  }
+
+  &:hover {
+    align-items: flex-start;
+    background: $color-default;
+    border-bottom: 2px solid $taskfield-border-color;
+    border-left: 2px solid $taskfield-border-color;
+    border-right: 2px solid $taskfield-border-color;
+    height: auto;
+    left: -2px;
+    padding: 2px 0;
+    position: absolute;
+    top: 0px;
+    width: calc(100% + 4px);
+    z-index: 99;
+
+    .material-page__connectfield-term-number {
+      margin-top: 4px;
+    }
+
+    .material-page__connectfield-counterpart-icon {
+      padding: 8px 6px 6px;
+    }
+
+    .material-page__connectfield-term-label,
+    .material-page__connectfield-counterpart-label {
+      overflow: auto;
+      text-overflow: initial;
+      white-space: normal;
+    }
+  }
+}
+
 
 // Math field
 .material-page__mathfield-wrapper {

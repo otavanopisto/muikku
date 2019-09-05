@@ -27,7 +27,8 @@ interface ItemDataElement {
   to?: boolean,
   icon: string,
   condition?: boolean,
-  badge?: number
+  badge?: number,
+  openInNewTab?: string
 }
 
 interface WorkspaceNavbarProps {
@@ -200,7 +201,16 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       icon: "journal",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE
-    }];
+    },{
+      //Evaluation is also an external
+      modifier: "evaluation",
+      trail: "evaluation",
+      text: 'plugin.evaluation.evaluation',
+      href: (this.props.currentWorkspace ? ("/evaluation2?workspaceEntityId=" + this.props.currentWorkspace.id) : null),
+      icon: "evaluate",
+      condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
+      openInNewTab: "_blank"
+    }, ];
 
   let assessmentRequestItem = this.props.currentWorkspace &&
     this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? {
@@ -324,8 +334,8 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       }
       return {
         modifier: item.modifier,
-        item: (<Link href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
-          title={this.props.i18n.text.get(item.text)}>
+        item: (<Link  openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+          aria-label={this.props.i18n.text.get(item.text)}>
           <span className={`link__icon icon-${item.icon}`}/>
           {item.badge ? <span className="indicator indicator--workspace">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         </Link>)
