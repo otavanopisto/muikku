@@ -2,7 +2,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { MaterialContentNodeListType, WorkspaceType, MaterialCompositeRepliesListType, MaterialContentNodeType } from "~/reducers/workspaces";
+import { MaterialContentNodeListType, WorkspaceType, MaterialCompositeRepliesListType, MaterialContentNodeType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 import ProgressData from '../progressData';
 
 import '~/sass/elements/buttons.scss';
@@ -23,10 +23,9 @@ interface ContentProps {
   materialReplies: MaterialCompositeRepliesListType,
   activeNodeId: number,
   workspace: WorkspaceType,
-  editable: boolean,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
   setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType,
-  editModeActive: boolean,
+  workspaceEditMode: WorkspaceEditModeStateType,
 }
 
 interface ContentState {
@@ -171,7 +170,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       return null;
     }
     
-    const isEditable = this.props.editable && this.props.editModeActive;
+    const isEditable = this.props.workspaceEditMode.active;
 
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
@@ -280,7 +279,7 @@ function mapStateToProps(state: StateType){
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace,
-    editable: state.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
+    workspaceEditMode: state.workspaces.editMode,
   }
 };
 

@@ -22,13 +22,14 @@ interface workspaceUserProps {
 
 
 export default function WorkspaceUser(props: workspaceUserProps){
-  let nack = props.student.active ? <ApplicationListItemContentActions><IconButton buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/><IconButton icon="delete" onClick={props.onSetToggleStatus}/></ApplicationListItemContentActions>: <IconButton icon="goback" onClick={props.onSetToggleStatus}/>;
+  
+  let actionButtons = props.student.active ? <ApplicationListItemContentActions><IconButton buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/><IconButton icon="delete" onClick={props.onSetToggleStatus}/></ApplicationListItemContentActions>: <IconButton icon="goback" onClick={props.onSetToggleStatus}/>;
   
   return <ApplicationListItemContentWrapper modifiers="workspace-users" mainModifiers="workspace-users" aside={<LazyLoader className="avatar-container">
     <div className="item-list__profile-picture">
       <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
     </div>
-   </LazyLoader>} actions={nack}>
+   </LazyLoader>} actions={actionButtons}>
     <div className="application-list__item-content-primary-data">{filterHighlight(getName(props.student, true), props.highlight)}</div>
     <div className="application-list__item-content-secondary-data">{props.student.studyProgrammeName ? " (" + props.student.studyProgrammeName + ")" : ""}</div>
 </ApplicationListItemContentWrapper>

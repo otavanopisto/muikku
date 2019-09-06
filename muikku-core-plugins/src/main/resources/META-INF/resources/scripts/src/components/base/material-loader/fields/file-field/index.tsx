@@ -119,10 +119,14 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     //and this is the container
     return <div className="material-page__filefield-wrapper">
       <div className={`material-page__filefield ${ElementDisabledState}`}>
-        <FileUploader readOnly={this.props.readOnly} url={this.props.status.contextPath + '/tempFileUploadServlet'}
+        <FileUploader emptyText={this.props.readOnly ? this.props.i18n.text.get("plugin.workspace.fileField.noFiles") : null} readOnly={this.props.readOnly} url={this.props.status.contextPath + '/tempFileUploadServlet'}
+         displayNotificationOnError
          formDataGenerator={formDataGenerator} onFileSuccess={(file: File, data: any)=>{
            this.onFileAdded(file, data);
-         }} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")} deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")} downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")}
+         }} hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}
+         fileTooLargeErrorText={this.props.i18n.text.get("plugin.workspace.fileFieldUpload.fileSizeTooLarge")}
+         deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
+         downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")}
          files={this.state.values} fileIdKey="fileId" fileNameKey="name" fileUrlGenerator={(f)=>`/rest/workspace/fileanswer/${f.fileId}`}
          deleteDialogElement={ConfirmRemoveDialog} deleteDialogElementProps={{onConfirm: this.removeFile}} modifier="taskfield"
          uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("plugin.workspace.fileField.statusUploading", percent)}

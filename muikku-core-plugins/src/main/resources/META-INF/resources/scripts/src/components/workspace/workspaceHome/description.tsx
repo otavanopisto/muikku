@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 
@@ -17,10 +17,10 @@ import { MaterialLoaderContent } from "~/components/base/material-loader/content
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
 
 interface DescriptionPanelProps {
-  status: StatusType,
   workspace: WorkspaceType,
   i18n: i18nType,
-  isInFrontPage? : boolean
+  isInFrontPage? : boolean,
+  workspaceEditMode: WorkspaceEditModeStateType,
 }
 
 interface DescriptionPanelState {
@@ -36,9 +36,9 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.descriptionTitle')}</div>
       </div>
       <div className="panel__body">
-        {this.props.workspace && <MaterialLoader isInFrontPage editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+        {this.props.workspace && <MaterialLoader editable={this.props.workspaceEditMode.active}
           modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
-          canDelete={false} canHide={false} disablePlugins readOnly>
+          canDelete={false} canHide={false} canPublish disablePlugins readOnly isInFrontPage>
           {(props, state, stateConfiguration) => {
             return <div>
               <MaterialLoaderEditorButtonSet {...props} {...state}/>
@@ -57,7 +57,7 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    workspaceEditMode: state.workspaces.editMode,
   }
 };
 

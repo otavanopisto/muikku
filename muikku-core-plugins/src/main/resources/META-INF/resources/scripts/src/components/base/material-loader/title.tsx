@@ -15,7 +15,7 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
   if (props.isInFrontPage) {
     return null;
   }
-  
+
   if (props.invisible) {
     return (<h2 className="material-page__title">
       {props.material.title}

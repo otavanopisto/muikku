@@ -1,9 +1,8 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-import { StatusType } from "~/reducers/base/status";
 
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
@@ -14,7 +13,7 @@ import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
 
 interface HelpPanelProps {
-  status: StatusType,
+  workspaceEditMode: WorkspaceEditModeStateType,
   workspace: WorkspaceType,
   i18n: i18nType
 }
@@ -31,7 +30,7 @@ class HelpPanel extends React.Component<HelpPanelProps, HelpPanelState> {
         <div className="panel__header-title">{this.props.workspace && this.props.workspace.name}</div>
       </div>
       <div className="panel__body">
-        {this.props.workspace && <MaterialLoader editable={this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE}
+        {this.props.workspace && <MaterialLoader editable={this.props.workspaceEditMode.active}
           modifiers="workspace-help" material={this.props.workspace.help} workspace={this.props.workspace}
           canDelete={false} canHide={false} disablePlugins
           readOnly>
@@ -53,7 +52,7 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
-    status: state.status
+    workspaceEditMode: state.workspaces.editMode,
   }
 };
 

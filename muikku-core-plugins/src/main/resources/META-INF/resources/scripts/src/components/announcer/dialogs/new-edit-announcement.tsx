@@ -68,13 +68,11 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         type: "usergroup",
         value: props.userIndex.groups[id]
       } as UserGroupRecepientType;
-    }) as any) : [];
-    
-    this.baseAnnouncementCurrentTarget = this.baseAnnouncementCurrentTarget.concat(this.getPredefinedWorkspaceByIdToConcat(props));
+    }) as any) : this.getPredefinedWorkspaceByIdToConcat(props);
     
     this.state = this.getRecoverStoredState({
       text: props.announcement ? props.announcement.content : "",
-      currentTarget: props.announcement ? this.baseAnnouncementCurrentTarget : [],
+      currentTarget: this.baseAnnouncementCurrentTarget,
       subject: props.announcement ? props.announcement.caption : "",
       locked: false,
       startDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.startDate) : props.i18n.time.getLocalizedMoment(),
@@ -101,7 +99,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       this.checkStoredAgainstThisState({
         subject: "",
         text: "",
-        currentTarget: [],
+        currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props),
         startDate: this.props.i18n.time.getLocalizedMoment(),
         endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
       }, this.props.workspaceId || "");
@@ -109,11 +107,11 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
   }
   clearUp(){
     if (!this.props.announcement){
-      this.baseAnnouncementCurrentTarget = [];
+      this.baseAnnouncementCurrentTarget = this.getPredefinedWorkspaceByIdToConcat(this.props);
       this.setStateAndClear({subject: "", text: "",
         startDate: this.props.i18n.time.getLocalizedMoment(),
         endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-        currentTarget: []}, this.props.announcement.id + "-" + (this.props.workspaceId || "")
+        currentTarget: this.baseAnnouncementCurrentTarget}, this.props.workspaceId || ""
       );
     } else {
       this.baseAnnouncementCurrentTarget = this.props.announcement.workspaces.map(w=>{
@@ -129,7 +127,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         currentTarget: this.baseAnnouncementCurrentTarget,
         startDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
         endDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
-      }, this.props.workspaceId || "");
+      }, this.props.announcement.id + "-" + (this.props.workspaceId || ""));
     }
   }
   getPredefinedWorkspaceByIdToConcat(props: NewEditAnnouncementProps){
@@ -249,7 +247,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           this.setStateAndClear({locked: false, subject: "", text: "",
             startDate: this.props.i18n.time.getLocalizedMoment(),
             endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
-            currentTarget: []}, this.props.workspaceId || "");
+            currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props)}, this.props.workspaceId || "");
           closeDialog();
         },
         fail: ()=>{
@@ -337,7 +335,8 @@ function mapStateToProps(state: StateType){
     status: state.status,
     
     //For use with workspaces when announcement gives a workspace
-    //it needs to be fetched from somewhere
+    //it needs to be fetched from somewhere, this is set by default
+    //when loading
     workspaceId: state.announcements.workspaceId,
     workspaces: state.workspaces
   }

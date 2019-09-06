@@ -711,6 +711,11 @@
   }
 }
 
+// MathJax Formula
+.material-page__math-formula {
+  
+}
+
 // Audio field
 .material-page__audiofield-wrapper {
 
@@ -726,6 +731,15 @@
 
 .material-page__audiofield-files-container {
   border-top: 3px dotted lighten($taskfield-border-color,20%);
+}
+
+.material-page__audiofield-files-container--empty {
+  border: 0;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 10px 0;
+  text-align: center;
 }
 
 .material-page__audiofield-file-container {
@@ -761,6 +775,11 @@
     text-decoration: none;
     width: auto;
   }
+}
+
+.material-page__audiofield-file-container--uploading,
+.material-page__audiofield-file-container--recording {
+  height: 40px;
 }
 
 .material-page__audiofield-file {
@@ -809,8 +828,11 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  padding: 15px 10px;
-  height: 68px;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 20px;
+  }
 
   .material-page__audiofield-start-record-button,
   .material-page__audiofield-stop-record-button {
@@ -829,7 +851,7 @@
     text-decoration: none;
     text-transform: uppercase;
   }
-  
+
   // We set the record/stop buttons colors here 
   .material-page__audiofield-start-record-button {
     border: 1px solid $color-recording;
@@ -860,7 +882,7 @@
       }
     }
   }
-  
+
   .material-page__audiofield-start-record-label,
   .material-page__audiofield-stop-record-label {
     @include text;
@@ -1382,6 +1404,71 @@
   }
 }
 
+// Hover effect rules for terms and counterparts when textual content 
+// is larger than what can be fitted in 1 row
+.material-page__connectfield-term--edited,
+.material-page__connectfield-counterpart--edited {
+
+  .material-page__connectfield-term-data-container:hover,
+  .material-page__connectfield-counterpart-data-container:hover {
+    background: lighten($taskfield-border-color,25%);
+  }
+}
+
+.material-page__connectfield-term--selected,
+.material-page__connectfield-counterpart--selected {
+
+  .material-page__connectfield-term-data-container:hover,
+  .material-page__connectfield-counterpart-data-container:hover {
+    background: $taskfield-border-color;
+  }
+}
+
+.material-page__connectfield-term-data-container,
+.material-page__connectfield-counterpart-data-container {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2rem;
+  position: relative;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+  }
+
+  &:hover {
+    align-items: flex-start;
+    background: $color-default;
+    border-bottom: 2px solid $taskfield-border-color;
+    border-left: 2px solid $taskfield-border-color;
+    border-right: 2px solid $taskfield-border-color;
+    height: auto;
+    left: -2px;
+    padding: 2px 0;
+    position: absolute;
+    top: 0px;
+    width: calc(100% + 4px);
+    z-index: 99;
+
+    .material-page__connectfield-term-number {
+      margin-top: 4px;
+    }
+
+    .material-page__connectfield-counterpart-icon {
+      padding: 8px 6px 6px;
+    }
+
+    .material-page__connectfield-term-label,
+    .material-page__connectfield-counterpart-label {
+      overflow: auto;
+      text-overflow: initial;
+      white-space: normal;
+    }
+  }
+}
+
 
 // Math field
 .material-page__mathfield-wrapper {
@@ -1541,5 +1628,278 @@
 
 }
 
+// MATERIAL PAGE CUSTOM BOX STYLES
+// These classNames cannot be changed as they a part of material page html and already saved to DB
+.material-styles-block {
+  border-radius: 10px;
+  padding: 10px 15px 10px 85px;
+  margin: 20px 0;
+  min-height: 64px;
+  font-size: inherit;
+  position: relative;
 
+  p:first-child,
+  ul:first-child,
+  ol:first-child,
+  blockquote:first-child {
+    margin-top: 0 !important;
+  }
+
+  p:last-child,
+  ul:last-child,
+  ol:last-child,
+  blockquote:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  &::after {
+    width: 64px;
+    height: 64px;
+    content: "";
+    position: absolute;
+    z-index: 9;
+    top: 10px;
+    left: 10px;
+    background-repeat: no-repeat;
+  }
+
+  a {
+    color: #006a96;
+    text-decoration: underline;
+  }
+
+}
+
+// BASIC BOX
+.material-basicbox {
+  background-color: #b8f1f6;
+  border-top: 2px solid #76ccd4;
+  color: #000;
+  padding: 12px 20px;
+
+  &::after {
+    display: none;
+  }
+}
+
+// GRAMMAR BOX
+.material-grammarbox {
+  background-color: #fff7e0;
+  border-top: 2px solid #cab883;
+  color: #000;
+  padding: 12px 20px;
+
+  &::after {
+    display: none;
+  }
+}
+
+// PONDERING BOX
+.material-thinkingbox {
+  background-color: #fff089;
+  border-top: 2px solid #e9d650;
+  text-shadow:- 1px 1px 15px rgba(255,255,255,1), 1px -1px 15px rgba(255,255,255,1);
+  color: #000;
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/pondering-icon.png");
+  }
+}
+
+// OBJECTIVE BOX
+.material-objectivebox {
+  background-color: #c1f9e6;
+  border-top: 2px solid #72ddb9;
+  text-shadow: -1px 1px 10px rgba(255,255,255,1), 1px -1px 10px rgba(255,255,255,1);
+  color: #000;
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/objective-icon.png");
+  }
+}
+
+// INFORMATION BOX
+.material-infobox {
+  background-color: #bae3ff;
+  border-top: 2px solid #9dccec;
+  text-shadow: -1px 1px 20px rgba(255,255,255,1), 1px -1px 20px rgba(255,255,255,1);
+  color: #000;
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/info-icon.png");
+  }
+}
+
+// RECAP BOX
+.material-recapbox {
+  background-color: #fff6ae;
+  border-top: 2px solid #eadf87;
+  text-shadow: -1px 1px 15px rgba(255,255,255,1), 1px -1px 15px rgba(255,255,255,1);
+  color: #000;
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/recap-icon.png");
+  }
+}
+
+// INSTRUCTION BOX
+.material-instructionbox {
+  background-color: #bcfbc2;
+  border-top: 2px solid #8ce994;
+  text-shadow: -1px 1px 15px rgba(255,255,255,1), 1px -1px 15px rgba(255,255,255,1);
+  color: #000;
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/instruction-icon.png");
+  }
+}
+
+// LINK BOX
+.material-linkbox {
+  background-color: #c8e9ff;
+  border-top: 2px solid #9dccec;
+  text-shadow: -1px 1px 20px rgba(255,255,255,1), 1px -1px 20px rgba(255,255,255,1);
+  color: #000;
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/link-icon.png");
+  }
+}
+
+// AUDIO BOX
+.material-audiobox {
+  background-color: #c8e9ff;
+  border-top:2 px solid #9dccec;
+  text-shadow: -1px 1px 20px rgba(255,255,255,1), 1px -1px 20px rgba(255,255,255,1);
+  color: #000;
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/sound-icon.png");
+  }
+}
+
+// FILE BOX
+.material-filebox {
+  background-color: #c8e9ff;
+  border-top: 2px solid #9dccec;
+  text-shadow: -1px 1px 20px rgba(255,255,255,1), 1px -1px 20px rgba(255,255,255,1);
+  color: #000;
+
+  &::after {
+    background-image: url("/gfx/icons/64x64/file-icon.png");
+  }
+}
+
+// MATERIAL TEXT STYLES
+.material-styles-text { 
+  max-width: 920px;
+  margin: 20px auto;
+  min-height: 14px;
+  background-repeat: no-repeat;
+  position: relative;
+
+  p:first-child,
+  ul:first-child,
+  ol:first-child,
+  blockquote:first-child {
+    margin-top: 0 !important;
+  }
+
+  p:last-child,
+  ul:last-child,
+  ol:last-child,
+  blockquote:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  a {
+    color: #006a96;
+    text-decoration: underline;
+  }
+}
+
+// HIGHLIGTH TEXT
+.material-text-highlight {
+  background: #f8f8f8;
+  border-left: 3px solid #12cbcb;
+  border-radius: 0;
+  color: #000;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 35px;
+  padding: 15px 20px; 
+}
+
+// CITATION TEXT
+.material-citation-basic {
+  color: #000;
+  display: inline-block;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 40px;
+  padding: 10px 35px;
+  quotes: "\201C""\201D";
+
+  &::before {
+    color: #ccc;
+    content: open-quote;
+    display: inline-block;
+    font-family: arial;
+    font-size: 70px;
+    font-style: normal;
+    left: 0;
+    line-height: 1px;
+    margin-right: 25px;
+    vertical-align: -25px;
+    width: 0;
+  }
+
+  &::after {
+    color: #ccc;
+    content: close-quote;
+    display: inline-block;
+    font-family: arial;
+    font-size: 70px;
+    font-style: normal;
+    left: 3px;
+    line-height: 1px;
+    margin-left: 5px;
+    position: relative;
+    vertical-align: -25px;
+    width: 1px;
+  }
+}
+
+// LONG CITATION TEXT
+.material-citation-long {
+  padding: 5px 10px 5px 40px;
+  color: #000;
+  quotes: "\201C""\201D";
+  box-shadow: none;
+  text-shadow: none;
+  position: relative;
+  background: #f8f8f8;
+  font-style: normal;
+
+  &::before {
+    position: absolute;
+    content: open-quote;
+    font-family: arial;
+    font-size: 55px;
+    left: 10px;
+    position: absolute;
+    top: 20px;
+    color: #bbb;
+  }
+}
+
+// EXAMPLE TEXT
+.material-example {
+  padding: 0 10px 4px 15px;
+  color: #000;
+  border-left: 3px solid #11a0ff;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none;
+}
 

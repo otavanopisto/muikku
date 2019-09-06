@@ -8,8 +8,39 @@
   border: 2px solid $color-tertiary;
 }
 
+// FILE UPLOADER USED IN MATERIALS AS FILE FIELD TASK
 .file-uploader--taskfield {
+  @include taskfield-text;
   border: solid 2px $taskfield-border-color;
+
+  // DISABLED FILE FIELD
+  &.file-uploader--readonly {
+    border-color: $color-disabled-taskfield-border !important;
+    cursor: text !important;
+
+    .file-uploader__field-container--taskfield {
+      display: none;
+    }
+
+    .file-uploader__items-container--empty {
+      border: 0;
+      flex-basis: auto;
+      flex-grow: 1;
+      flex-shrink: 1;
+      margin: 10px 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .file-uploader__items--taskfield {
+      border: none !important;
+    }
+
+    .file-uploader__item-delete-icon {
+      color: darken($color-disabled-taskfield-icon, 20%) !important;
+      cursor: default !important;
+    }
+  }
 }
 
 .file-uploader--material-editor {
@@ -51,7 +82,7 @@
 }
 
 .file-uploader__items-container--empty {
-  padding: 10px; 
+  padding: 10px;
 }
 
 .file-uploader__item {
@@ -61,7 +92,7 @@
   margin: 5px;
   padding: 0 5px;
   transition: all 0.3s ease-in-out;
-  height: 1.8rem;
+  height: 3rem; //this height is required for lazyloading
 
   &.file-uploader__item--FAILED-TO-UPLOAD {
 
@@ -88,7 +119,7 @@
     @include text;
     display: flex;
     flex-basis: auto;
-    flex-flow: column nowrap; 
+    flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
   }

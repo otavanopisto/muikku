@@ -8,7 +8,7 @@ import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/acti
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 import { MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
-  WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType } from '~/reducers/workspaces';
+  WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType, MaterialContentNodeMetadata, WorkspaceEditModeStateType } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
 
@@ -26,40 +26,41 @@ export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<"UPDATE_WORKS
   newAssessmentRequest?: WorkspaceAssessmentRequestType,
   oldAssessmentRequestToDelete?: WorkspaceAssessmentRequestType
 }>
-export interface UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES extends SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>{}
-export interface UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS extends SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>{}
-export interface UPDATE_WORKSPACES_ACTIVE_FILTERS extends 
-  SpecificActionType<"UPDATE_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>{}
-export interface UPDATE_WORKSPACES_ALL_PROPS extends 
-  SpecificActionType<"UPDATE_WORKSPACES_ALL_PROPS", WorkspacesPatchType>{}
-export interface UPDATE_WORKSPACES_STATE extends 
-  SpecificActionType<"UPDATE_WORKSPACES_STATE", WorkspacesStateType>{}
-export interface UPDATE_WORKSPACE extends 
+export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<"UPDATE_WORKSPACES_EDIT_MODE_STATE", Partial<WorkspaceEditModeStateType>>;
+export type UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
+export type UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
+export type UPDATE_WORKSPACES_ACTIVE_FILTERS = 
+  SpecificActionType<"UPDATE_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
+export type UPDATE_WORKSPACES_ALL_PROPS = 
+  SpecificActionType<"UPDATE_WORKSPACES_ALL_PROPS", WorkspacesPatchType>
+export type UPDATE_WORKSPACES_STATE = 
+  SpecificActionType<"UPDATE_WORKSPACES_STATE", WorkspacesStateType>
+export type UPDATE_WORKSPACE = 
   SpecificActionType<"UPDATE_WORKSPACE", {
   original: WorkspaceType,
   update: WorkspaceUpdateType
-}>{}
-export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>{};
-export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>{};
-export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES", MaterialCompositeRepliesListType>{};
-export interface UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER
-  extends SpecificActionType<"UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER", {
+}>
+export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>;
+export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>;
+export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES", MaterialCompositeRepliesListType>;
+export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER
+  = SpecificActionType<"UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER", {
     state: MaterialCompositeRepliesStateType,
     workspaceMaterialId: number,
     workspaceMaterialReplyId: number
-}>{};
-export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
+}>;
+export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
   showRemoveAnswersDialogForPublish: boolean,
   material: MaterialContentNodeType,
   update: Partial<MaterialContentNodeType>,
   isDraft?: boolean,
-}>{};
-export interface DELETE_MATERIAL_CONTENT_NODE extends SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
-export interface INSERT_MATERIAL_CONTENT_NODE extends SpecificActionType<"INSERT_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
-export interface UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES extends SpecificActionType<"UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES", {
+}>;
+export type DELETE_MATERIAL_CONTENT_NODE = SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>;
+export type INSERT_MATERIAL_CONTENT_NODE = SpecificActionType<"INSERT_MATERIAL_CONTENT_NODE", MaterialContentNodeType>;
+export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<"UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES", {
   material: MaterialContentNodeType,
   newPath: string;
-}>{};
+}>;
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -198,6 +199,10 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
     success?: () => any,
     fail?: () => any,
   }):AnyActionType
+}
+
+export interface UpdateWorkspaceEditModeStateTriggerType {
+  (data: Partial<WorkspaceEditModeStateType>, recoverActiveFromLocalStorage?: boolean):AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -985,9 +990,9 @@ let loadWorkspaceDetailsInCurrentWorkspace:LoadWorkspaceDetailsInCurrentWorkspac
       let state:StateType = getState();
       let details:WorkspaceDetailsType = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
           .details.read(state.workspaces.currentWorkspace.id), 'callback')());
-    
+
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
-      
+
       dispatch({
         type: "UPDATE_WORKSPACE",
         payload: {
@@ -1012,9 +1017,9 @@ let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWo
       let state:StateType = getState();
       await promisify(mApi().workspace.workspaces
           .details.update(state.workspaces.currentWorkspace.id, data.newDetails), 'callback')();
-    
+
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
-      
+
       dispatch({
         type: "UPDATE_WORKSPACE",
         payload: {
@@ -1024,14 +1029,14 @@ let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWo
           }
         }
       });
-      
+
       data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
-      
+
       data.fail && data.fail();
     }
   }
@@ -1042,33 +1047,33 @@ let updateWorkspaceProducersForCurrentWorkspace:UpdateWorkspaceProducersForCurre
     try {
       let state:StateType = getState();
       let existingProducers = state.workspaces.currentWorkspace.producers;
-      
+
       let workspaceProducersToAdd = (existingProducers.length == 0) ? data.appliedProducers :
         data.appliedProducers.filter(producer => {          
           if (!producer.id) {
             return producer;
           }
         });
-      
+
       let workspaceProducersToDelete = existingProducers.filter(producer => {
         if (producer.id) {
           return !data.appliedProducers.find(keepProducer => keepProducer.id === producer.id)
         }
       });
-      
+
       await Promise.all(workspaceProducersToAdd.map(p=>
         promisify(mApi().workspace.workspaces
             .materialProducers.create(state.workspaces.currentWorkspace.id, p), 'callback')())
         .concat(workspaceProducersToDelete.map(p=>promisify(mApi().workspace.workspaces
             .materialProducers.del(state.workspaces.currentWorkspace.id, p.id), 'callback')())));
-      
+
       // For some reason the results of the request don't give the new workspace producers
       // it's a mess but whatever
       let newActualWorkspaceProducers:Array<WorkspaceProducerType> = <Array<WorkspaceProducerType>>(await promisify(mApi().workspace.workspaces.materialProducers
           .cacheClear().read(state.workspaces.currentWorkspace.id), 'callback')())
-    
+
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
-      
+
       dispatch({
         type: "UPDATE_WORKSPACE",
         payload: {
@@ -1078,14 +1083,14 @@ let updateWorkspaceProducersForCurrentWorkspace:UpdateWorkspaceProducersForCurre
           }
         }
       });
-      
+
       data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace details'), 'error'));
-      
+
       data.fail && data.fail();
     }
   }
@@ -1096,7 +1101,7 @@ let loadWorkspaceTypes:LoadWorkspaceTypesTriggerType = function loadWorkspaceTyp
     try {
       let workspaceTypes:Array<WorkspaceTypeType> = <Array<WorkspaceTypeType>>(await promisify(mApi().workspace.workspaceTypes
           .read(), 'callback')());
-      
+
       dispatch({
         type: "UPDATE_WORKSPACES_ALL_PROPS",
         payload: {
@@ -1122,9 +1127,9 @@ let deleteCurrentWorkspaceImage:DeleteCurrentWorkspaceImageTriggerType = functio
         promisify(mApi().workspace.workspaces
           .del(state.workspaces.currentWorkspace.id, 'workspace-frontpage-image-original'), 'callback')(),
       ]);
-    
+
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
-      
+
       dispatch({
         type: "UPDATE_WORKSPACE",
         payload: {
@@ -1158,27 +1163,27 @@ let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentW
           {
             sourceWorkspaceEntityId: currentWorkspace.id
           }), 'callback')());
-    
+
       data.success && data.success("initial-copy", cloneWorkspace);
-    
+
       cloneWorkspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
           .details.read(cloneWorkspace.id), 'callback')());
-      
+
       cloneWorkspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
           .details.update(cloneWorkspace.id, {
             ...cloneWorkspace.details,
             beginDate: data.beginDate,
             endDate: data.endDate
           }), 'callback')());
-      
+
       data.success && data.success("change-date", cloneWorkspace);
-      
+
       if (data.copyDiscussionAreas){
         await promisify(mApi().workspace.workspaces
             .forumAreas.create(cloneWorkspace.id, {}, {sourceWorkspaceEntityId: currentWorkspace.id}), 'callback')();
         data.success && data.success("copy-areas", cloneWorkspace);
       }
-      
+
       if (data.copyMaterials !== "NO"){
         await promisify(mApi().workspace.workspaces.materials
           .create(cloneWorkspace.id, {}, { 
@@ -1189,21 +1194,21 @@ let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentW
           }), 'callback')()
           data.success && data.success("copy-materials", cloneWorkspace);
       }
-      
+
       if (data.copyBackgroundPicture){
         await promisify(
           mApi().workspace.workspaces.workspacefilecopy
           .create(currentWorkspace.id, cloneWorkspace.id), 'callback')();
         data.success && data.success("copy-background-picture", cloneWorkspace);
       }
-      
+
       data.success && data.success("done", cloneWorkspace);
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to clone workspace'), 'error'));
-      
+
       data.fail && data.fail();
     }
   }
@@ -1228,13 +1233,13 @@ let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType =
       }
 
       data.success && data.success();
-      
+
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update workspace images'), 'error'));
-      
+
       data.fail && data.fail();
     }
   }
@@ -1245,12 +1250,12 @@ let loadCurrentWorkspaceUserGroupPermissions:LoadCurrentWorkspaceUserGroupPermis
     try {
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
-    
+
       let permissions:WorkspacePermissionsType[] = <WorkspacePermissionsType[]>(await promisify(mApi().permission.workspaceSettings.userGroups
           .read(currentWorkspace.id), 'callback')());
-                   
+
       let currentWorkspaceAsOfNow:WorkspaceType = getState().workspaces.currentWorkspace;
-      
+
       dispatch({
         type: "UPDATE_WORKSPACE",
         payload: {
@@ -1260,7 +1265,7 @@ let loadCurrentWorkspaceUserGroupPermissions:LoadCurrentWorkspaceUserGroupPermis
           }
         }
       }); 
-      
+
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
@@ -1277,7 +1282,7 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       currentPermissions = currentWorkspace.permissions;
-      
+
       let newSpecificGroupPermission = {...permissions};
       newSpecificGroupPermission.permissions = [...newSpecificGroupPermission.permissions];
       let indexFound = newSpecificGroupPermission.permissions.indexOf(toggleValue);
@@ -1286,7 +1291,7 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
       } else {
         newSpecificGroupPermission.permissions.push(toggleValue);
       }
-      
+
       dispatch({
         type: "UPDATE_WORKSPACE",
         payload: {
@@ -1296,21 +1301,21 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
               if (permissionValue.userGroupEntityId === permissions.userGroupEntityId) {
                 return newSpecificGroupPermission;
               }
-              
+
               return permissionValue;
             })
           }
         }
       });
-      
+
       await promisify(mApi().permission.workspaceSettings.userGroups
           .update(currentWorkspace.id, permissions.userGroupEntityId, newSpecificGroupPermission), 'callback')()
-      
+
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      
+
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       dispatch({
@@ -1336,6 +1341,7 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
   };
 }
 
+const META_KEYS = ["license", "source-text", "source-url"];
 let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -1343,7 +1349,18 @@ let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialConte
       const childrenAttachments:MaterialContentNodeType[] = (await promisify(mApi().workspace.workspaces.materials.read(workspace.id, {
         parentId: material.workspaceMaterialId,
       }), 'callback')() as MaterialContentNodeType[]) || [];
-      
+
+      await Promise.all(childrenAttachments.map(async (attachment, index) => {
+        const metadata:Array<MaterialContentNodeMetadata> = (
+          await promisify(mApi().materials.materials.meta.read(attachment.materialId), 'callback')() as Array<MaterialContentNodeMetadata>
+        );
+        if (metadata) {
+          childrenAttachments[index].metadata = metadata;
+        } else {
+          childrenAttachments[index].metadata = META_KEYS.map((key) => ({materialId: attachment.materialId, key, value: null}));
+        }
+      }));
+
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
         payload: {
@@ -1377,7 +1394,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
           }
         });
       }
-      
+
       if (!data.isDraft) {
         if (typeof data.update.html !== "undefined" && data.material.html !== data.update.html) {
           await promisify(mApi().materials.html.content
@@ -1386,7 +1403,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
                 removeAnswers: data.removeAnswers || false,
               }), 'callback')();
         }
-        
+
         let newPath = data.material.path;
         let fields = ["materialId", "parentId", "nextSiblingId", "hidden", "assignmentType", "correctAnswers", "path", "title"];
         if (data.material.type === "folder") {
@@ -1413,7 +1430,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
           newPath = (await promisify(mApi().workspace.workspaces[urlPath]
               .update(data.workspace.id, data.material.workspaceMaterialId, result), 'callback')() as any).path;
         }
-        
+
         let materialFields = ["id", "license", "viewRestrict"]
         if (data.material.type === "folder") {
           fields = [];
@@ -1433,7 +1450,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
           await promisify(mApi().materials.material
               .update(data.material.materialId, materialResult), 'callback')();
         }
-        
+
         if (
           typeof data.update.producers !== "undefined" &&
           !equals(data.material.producers, data.update.producers)
@@ -1460,14 +1477,14 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
               }
             });
           }
-          
+
           const deletedProducers = data.material.producers.filter((p) => !newProducers.find((p2) => p2.id === p.id));
           await Promise.all(deletedProducers.map((p) => {
             return promisify(mApi().materials.material.producers
                 .del(data.material.materialId, p.id), 'callback')();
           }));
         }
-        
+
         // if the title changed we need to update the path, sadly only the server knows
         if (data.material.path !== newPath && !data.dontTriggerReducerActions) {
           dispatch({
@@ -1478,17 +1495,31 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
             }
           });
         }
+
+        if (data.update.metadata) {
+          await Promise.all(data.update.metadata.map((metadataValue) => {
+            const currentMetadataObj = data.material.metadata.find(d=>d.key === metadataValue.key);
+            const currentMetadataValue = currentMetadataObj && currentMetadataObj.value;
+            if (currentMetadataValue !== metadataValue.value) {
+              if (currentMetadataValue === null) {
+                return promisify(mApi().materials.materials.meta.create(metadataValue.materialId, metadataValue), 'callback')();
+              } else {
+                return promisify(mApi().materials.materials.meta.update(metadataValue.materialId, metadataValue), 'callback')();
+              }
+            }
+          }));
+        }
       } else {
         // Trying to update the draft
         // TODO
       }
-      
+
       data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      
+
       let showRemoveAnswersDialogForPublish = false;
       if (!data.removeAnswers && err.message) {
         try {
@@ -1499,7 +1530,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         } catch (e) {
         }
       }
-      
+
       if (!data.dontTriggerReducerActions) {
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -1511,9 +1542,9 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
           }
         });
       }
-      
+
       data.fail && data.fail();
-      
+
       if (!showRemoveAnswersDialogForPublish){
         dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to update material'), 'error'));
       }
@@ -1528,7 +1559,7 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
         type: "DELETE_MATERIAL_CONTENT_NODE",
         payload: data.material
       });
-      
+
       let urlPath = "materials";
       if (data.material.type === "folder") {
         urlPath = "folders";
@@ -1538,13 +1569,13 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
             removeAnswers: data.removeAnswers || false,
             updateLinkedMaterials: true,
           }), 'callback')()
-      
+
       data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      
+
       let showRemoveAnswersDialogForDelete = false;
       if (!data.removeAnswers && err.message) {
         try {
@@ -1557,7 +1588,7 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
         } catch (e) {
         }
       }
-      
+
       data.fail && data.fail();
       if (!showRemoveAnswersDialogForDelete) {
         dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete material'), 'error'));
@@ -1607,13 +1638,13 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
             processData: false
           });
         }));
-        
+
         const materialResult:any = await promisify(mApi().materials.binary.create({
           title: data.title,
           contentType: tempFileData.fileContentType || data.file.type,
           fileId: tempFileData.fileId,
         }), 'callback')();
-        
+
         workspaceMaterialId = (await promisify(mApi().workspace.workspaces.materials.create(data.workspace.id, {
           materialId: materialResult.id,
           parentId,
@@ -1621,13 +1652,13 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
         }, {
           updateLinkedMaterials: true
         }), 'callback')() as any).id;
-        
+
       } else if (data.parentMaterial) {
         const materialId = (await promisify(mApi().materials.html.create({
           title: data.title,
           contentType: "text/html;editor=CKEditor",
         }), 'callback')() as any).id;
-        
+
         workspaceMaterialId = (await promisify(mApi().workspace.workspaces.materials
           .create(data.workspace.id, {
             materialId,
@@ -1640,21 +1671,21 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
             nextSiblingId,
           }), 'callback')() as any).id; 
       }
-      
+
       const newContentNode: MaterialContentNodeType = <MaterialContentNodeType>(await promisify(mApi().workspace.workspaces.
           asContentNode.read(data.workspace.id, workspaceMaterialId), 'callback')());
-      
+
       dispatch({
         type: "INSERT_MATERIAL_CONTENT_NODE",
         payload: newContentNode,
       });
-      
+
       data.success && data.success(newContentNode);
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      
+
       data.fail && data.fail();
     }
   }
@@ -1672,10 +1703,10 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
         //and do the thing
         return new Promise((resolve, reject) => {
           if (file.size >= MAX_ATTACHMENT_SIZE) {
-            reject(new Error(getState().i18n.text.get("TODOERRMSG attachment too large")));
+            reject(new Error(getState().i18n.text.get("plugin.workspace.fileFieldUpload.fileSizeTooLarge")));
             return;
           }
-          
+
           $.ajax({
             url: getState().status.contextPath + '/tempFileUploadServlet',
             type: 'POST',
@@ -1692,14 +1723,14 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
           });
         });
       }));
-      
+
       await Promise.all(tempFilesData.map(async (tempFileData: any, index) => {
         const materialResult:any = await promisify(mApi().materials.binary.create({
           title: data.files[index].name,
           contentType: tempFileData.fileContentType || data.files[index].type,
           fileId: tempFileData.fileId,
         }), 'callback')();
-        
+
         await promisify(mApi().workspace.workspaces.materials.create(data.workspace.id, {
           materialId: materialResult.id,
           parentId: data.material.workspaceMaterialId,
@@ -1707,18 +1738,32 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
           updateLinkedMaterials: true
         }), 'callback')();
       }));
-      
+
       data.success && data.success();
     } catch (err) {
-      if (!(err instanceof MApiError)){
-        throw err;
-      }
-      
       dispatch(actions.displayNotification(err.message, 'error'))
       data.fail && data.fail();
     }
-    
+
     dispatch(requestWorkspaceMaterialContentNodeAttachments(data.workspace, data.material));
+  }
+}
+
+let updateWorkspaceEditModeState:UpdateWorkspaceEditModeStateTriggerType = function updateWorkspaceEditModeState(data, restoreActiveFromLocalStorage) {
+  if (restoreActiveFromLocalStorage && typeof data.active !== "undefined") {
+    localStorage.setItem("__editmode__active", JSON.stringify(data.active));
+  } else if (restoreActiveFromLocalStorage) {
+    return {
+      type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
+      payload: {
+        ...data,
+        active: JSON.parse(localStorage.getItem("__editmode__active") || "false"),
+      },
+    }
+  }
+  return {
+    type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
+    payload: data,
   }
 }
 
@@ -1731,4 +1776,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment}
+  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState}

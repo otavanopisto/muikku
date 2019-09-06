@@ -106,7 +106,16 @@
 .toc__item--answered {
 
   .toc__icon {
-    background: $color-submitted;
+    background: transparent;
+    border: 0;
+    color: $color-submitted;
+  }
+}
+
+.toc__item--answered.active {
+
+  .toc__icon {
+    color: $color-default;
   }
 }
 
