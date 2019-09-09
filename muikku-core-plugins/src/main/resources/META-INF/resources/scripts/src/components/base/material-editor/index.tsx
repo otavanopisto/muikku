@@ -19,7 +19,6 @@ import Dropdown from "~/components/general/dropdown";
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
-import ModifyWorkspaceMaterialAttachmentDataDialog from "./modify-attachment-data-dialog";
 
 import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
@@ -467,12 +466,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             deleteDialogElement={ConfirmRemoveAttachment}
             hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}
             deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
-            downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL
-            fileExtraNodeGenerator={(a)=>{
-              return <ModifyWorkspaceMaterialAttachmentDataDialog attachment={a}>
-                <Link disablePropagation className="file-uploader__item-delete-icon icon-edit"/>
-              </ModifyWorkspaceMaterialAttachmentDataDialog>
-            }}/>
+            downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL/>
           </div>,
         })
       }
