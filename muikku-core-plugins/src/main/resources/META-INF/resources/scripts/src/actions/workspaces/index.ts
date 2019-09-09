@@ -1714,6 +1714,7 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
         }), 'callback')();
       }));
 
+      dispatch(actions.displayNotification("TODO material attachment success", 'success'));
       data.success && data.success();
     } catch (err) {
       dispatch(actions.displayNotification(err.message, 'error'))
