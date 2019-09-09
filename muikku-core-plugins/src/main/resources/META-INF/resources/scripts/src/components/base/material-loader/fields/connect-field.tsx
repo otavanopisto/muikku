@@ -368,10 +368,12 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
             //they are simple things
             return <div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
               <div className={`material-page__connectfield-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
-                "material-page__connectfield-term--selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-term--edited" : ""}
-                ${itemStateAfterCheck}`}>
-                <span className="material-page__connectfield-term-number">{index + 1}</span>
-                <span className="material-page__connectfield-term-label">{field.text}</span>
+                  "material-page__connectfield-term--selected" : ""} ${this.state.editedIds.has(field.name) ? "material-page__connectfield-term--edited" : ""}
+                  ${itemStateAfterCheck}`}>
+                <div className="material-page__connectfield-term-data-container">
+                  <span className="material-page__connectfield-term-number">{index + 1}</span>
+                  <span className="material-page__connectfield-term-label">{field.text}</span>
+                </div>
               </div>
             </div>
            })}
@@ -391,8 +393,10 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
            //if readonly we just add the classname in there
            if (this.props.readOnly){
              return <div className={className} key={field.name}>
-               <span className="material-page__connectfield-counterpart-icon icon-move"></span>
-               <span className="material-page__connectfield-counterpart-label">{field.text}</span>
+               <div className="material-page__connectfield-counterpart-data-container">
+                 <span className="material-page__connectfield-counterpart-icon icon-move"></span>
+                 <span className="material-page__connectfield-counterpart-label">{field.text}</span>
+               </div>
              </div>
            }
 
@@ -421,9 +425,11 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
              onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".material-page__connectfield"
              onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
              className={className} key={field.name}>
-               <span className="material-page__connectfield-counterpart-icon icon-move"></span>
-               <span className="material-page__connectfield-counterpart-label">{field.text}</span>
-               {itemCorrectAnswerComponent}
+               <div className="material-page__connectfield-counterpart-data-container">
+                 <span className="material-page__connectfield-counterpart-icon icon-move"></span>
+                 <span className="material-page__connectfield-counterpart-label">{field.text}</span>
+                 {itemCorrectAnswerComponent}
+               </div>
              </Draggable>
          })}
         </div>

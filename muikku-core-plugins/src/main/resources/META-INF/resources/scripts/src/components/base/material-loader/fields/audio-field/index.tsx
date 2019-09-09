@@ -416,7 +416,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
            progress={this.state.time/MAX_RECORDING_TIME_IN_SECONDS}/>
         </div>
       </div>: null }
-    
+
     //if elements is disabled
     let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
@@ -436,7 +436,9 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
         {this.state.values.length > 0 || this.state.recording ? <div className="material-page__audiofield-files-container">
           {dataInContainer}
           {recordingInContainer}
-        </div>: null }
+        </div>: null}
+        {this.props.readOnly && this.state.values.length == 0 ? 
+          <div className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">{this.props.i18n.text.get("plugin.workspace.audioField.noFiles")}</div> : null}
       </div>
     </div>
   }

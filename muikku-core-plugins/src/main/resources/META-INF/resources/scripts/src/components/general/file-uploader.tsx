@@ -201,11 +201,12 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
             {this.props.files.map((file)=>{
               return <div className="file-uploader__item" key={file[this.props.fileIdKey]}/>
             })}
-          </div> : this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
+          </div> : this.props.emptyText && this.props.readOnly ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : 
+            this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
         )}
       </div>
     }
-    
+
     const DialogDeleteElement = this.props.deleteDialogElement;
     return <div className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
       <div className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
@@ -267,7 +268,8 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                  progress={uploadingFile.progress}/>
               </div>;
           })}
-        </div> : this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
+        </div> : this.props.emptyText && this.props.readOnly ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : 
+          this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
       )}
     </div>
   }
