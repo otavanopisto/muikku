@@ -640,7 +640,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         sleep(1500);
 //        waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresentXPath("//input[@type='checkbox']");
+        waitForClickableXPath("//input[@type='checkbox' and @value='1']");
         assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -686,6 +686,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         
         try {
           mockBuilder.mockLogin(student);
+          logout();
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitAndClickXPath("//input[@type='checkbox' and @value='1']");
@@ -693,7 +694,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           sleep(1500);
 //          waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresentXPath("//input[@type='checkbox']");
+          waitForClickableXPath("//input[@type='checkbox' and @value='1']");
           assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -747,24 +748,27 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__connectfield-wrapper");
         scrollIntoView(".material-page__connectfield-wrapper");
-        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div[@class='material-page__connectfield-term material-page__connectfield-term--selected']");
+        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");                    
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+            "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]");
         
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::div[@class='material-page__connectfield-term material-page__connectfield-term--selected']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+            "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Hampurilainen')]");
 
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::div[@class='material-page__connectfield-term material-page__connectfield-term--selected']");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+            "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
         
         waitAndClick(".button--muikku-check-exercises");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div", "correct-answer");
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::div", "incorrect-answer");
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::div", "incorrect-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div/parent::div", "correct-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::div/parent::div", "incorrect-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::div/parent::div", "incorrect-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -816,7 +820,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(".button--muikku-check-exercises");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div", "correct-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div/parent::div", "correct-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());

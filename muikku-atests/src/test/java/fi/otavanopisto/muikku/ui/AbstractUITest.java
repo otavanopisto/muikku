@@ -411,6 +411,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
   
+  protected void waitForVisibleXPath(String XPath) {
+    int attempts = 0;
+    while (attempts < 2) {
+      try{
+        new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.xpath(XPath))));          
+      }catch (StaleElementReferenceException e) {
+      }      
+      attempts++;
+    }
+  }
+  
   protected void waitForUrlNotMatches(final String regex) {
     WebDriver driver = getWebDriver();
     new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
@@ -447,6 +458,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitForPresentAndVisible(String selector) {
     waitForPresent(selector);
     waitForVisible(selector);
+  }
+  
+  protected void waitForPresentAndVisibleXPath(String XPath) {
+    waitForPresentXPath(XPath);
+    waitForVisibleXPath(XPath);
   }
   
   protected void refresh() {
