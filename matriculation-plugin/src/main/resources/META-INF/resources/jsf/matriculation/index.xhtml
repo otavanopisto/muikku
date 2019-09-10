@@ -22,9 +22,13 @@
       <div id="react-root"></div>
     </ui:fragment>
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <div>
-        <h3>Et ole kirjautunut sisään</h3>
-        <p>Sinun täytyy kirjautua sisään ilmoittautuaksesi ylioppilaskirjoituksiin</p>
+      <div class="error-wrapper">
+        <div class="error-overlay"></div>
+        <div class="error">
+          <div><b>Et ole kirjautunut sisään</b></div>
+          <div>Sinun täytyy kirjautua sisään ilmoittautuaksesi ylioppilaskirjoituksiin.</div>
+          <div><a href="/" class="back-to-frontpage">Muikun etusivulle</a></div>
+        </div>
       </div>
     </ui:fragment>
 	</body>

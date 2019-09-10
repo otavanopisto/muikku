@@ -1100,7 +1100,7 @@ class App extends React.Component {
         <DraftListener {...this.state}
           onError={(errorMsg) => {this.setState({error: errorMsg})}}/>
         {this.state.error
-          ? <div class="error">{this.state.error}</div>
+          ? <div className="error-wrapper"><div className="error-overlay"></div><div className="error">{this.state.error} <div><a href="/" className="back-to-frontpage">Muikun etusivulle</a></div></div></div>
           : null}
         <form className="pure-form pure-form-stacked matriculation-form" onSubmit={(e) => {e.preventDefault();}}>
           {/* Page 1 of the wizard contains an introductory text */}
