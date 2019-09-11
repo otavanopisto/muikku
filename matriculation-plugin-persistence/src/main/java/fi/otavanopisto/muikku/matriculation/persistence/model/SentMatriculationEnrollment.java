@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -12,6 +14,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 @Entity
+@Table(
+    uniqueConstraints = @UniqueConstraint(columnNames = {"examId", "userIdentifier"})
+)
 public class SentMatriculationEnrollment {
 
   public Long getId() {
@@ -30,12 +35,23 @@ public class SentMatriculationEnrollment {
     this.userIdentifier = userIdentifier.toId();
   }
 
+  public Long getExamId() {
+    return examId;
+  }
+
+  public void setExamId(Long examId) {
+    this.examId = examId;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false)
+  private Long examId;
+  
   @NotNull
   @NotEmpty
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String userIdentifier;
 }

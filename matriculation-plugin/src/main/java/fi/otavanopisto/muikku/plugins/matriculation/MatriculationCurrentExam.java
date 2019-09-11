@@ -5,7 +5,8 @@ public class MatriculationCurrentExam {
   public MatriculationCurrentExam() {
   }
   
-  public MatriculationCurrentExam(long starts, long ends, boolean eligible) {
+  public MatriculationCurrentExam(long id, long starts, long ends, boolean eligible) {
+    this.id = id;
     this.starts = starts;
     this.ends = ends;
     this.eligible = eligible;
@@ -35,6 +36,15 @@ public class MatriculationCurrentExam {
     this.eligible = eligible;
   }
 
+  public long getId() {
+    return id;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  private long id;
   private long starts;
   private long ends;
   private boolean eligible;

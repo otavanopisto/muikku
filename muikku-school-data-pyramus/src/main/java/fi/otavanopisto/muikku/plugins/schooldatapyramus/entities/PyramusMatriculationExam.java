@@ -30,8 +30,13 @@ public class PyramusMatriculationExam implements MatriculationExam {
     this.id = id;
   }
 
+  @Override
+  public boolean isEligible() {
+    return eligible;
+  }
+  
   private long id;
   private long startTime;
   private long endTime;
-
+  private boolean eligible; 
 }
