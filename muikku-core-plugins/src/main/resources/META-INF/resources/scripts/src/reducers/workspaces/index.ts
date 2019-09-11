@@ -723,7 +723,6 @@ export default function workspaces(state: WorkspacesType={
     if (newEditor && newEditor.currentNodeValue && newEditor.currentNodeValue.childrenAttachments) {
       newEditor = {...newEditor};
       newEditor.currentNodeValue = {...newEditor.currentNodeValue};
-      debugger;
       newEditor.currentNodeValue.childrenAttachments = newEditor.currentNodeValue.childrenAttachments.filter(filterMaterial);
     }
     return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
