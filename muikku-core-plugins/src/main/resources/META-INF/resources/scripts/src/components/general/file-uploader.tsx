@@ -202,7 +202,23 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
         {this.props.files && (this.props.files.length ?
           <div className={`file-uploader__items-container ${this.props.modifier ? "file-uploader__items--" + this.props.modifier : ""}`}>
             {this.props.files.map((file)=>{
-              return <div className="file-uploader__item" key={file[this.props.fileIdKey]}/>
+              const url = this.props.fileUrlGenerator(file);
+              return <div className="file-uploader__item" key={file[this.props.fileIdKey]}>
+                <span className="file-uploader__item-attachment-icon icon-attachment"></span>
+                {this.props.showURL ? <span className="file-uploader__item-title-container">
+                  <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
+                  <span className="file-uploader__item-url">{url}</span></span>
+                  : 
+                  <span className="file-uploader__item-title-container">
+                    <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
+                  </span>
+                  }
+                <Link className="file-uploader__item-download-icon icon-download"/>
+                {this.props.readOnly ? null : 
+                  <Link className="file-uploader__item-delete-icon icon-delete"/>
+                }
+                {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
+              </div>
             })}
           </div> : this.props.emptyText && this.props.readOnly ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : 
             this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
