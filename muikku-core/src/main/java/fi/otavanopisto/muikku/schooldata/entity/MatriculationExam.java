@@ -5,4 +5,5 @@ public interface MatriculationExam {
   public long getStarts();
   public long getEnds();
   public boolean isEligible();
+  public boolean isEnrolled();
 }

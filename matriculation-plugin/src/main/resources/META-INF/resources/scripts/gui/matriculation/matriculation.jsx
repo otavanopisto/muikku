@@ -595,7 +595,7 @@ class DraftListener extends React.Component {
       matriculationForm[field] = this.props[field];
     });
     
-    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
+    fetch(`/rest/matriculation/exams/${this.props.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
@@ -627,6 +627,7 @@ class App extends React.Component {
     const date = new Date();
     // Use strings for boolean choices because they work well with <select>s
     this.state = {
+      examId: MATRICULATION_EXAM_ID,
       page: 1,
       saveState: "PENDING",
       name: "",
@@ -662,7 +663,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/rest/matriculation/initialData/${MUIKKU_LOGGED_USER}`)
+    fetch(`/rest/matriculation/exams/${this.state.examId}/initialData/${MUIKKU_LOGGED_USER}`)
       .then((response) => {
         return response.json();
       })
@@ -673,7 +674,7 @@ class App extends React.Component {
   }
 
   fetchSavedEnrollment() {
-    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`)
+    fetch(`/rest/matriculation/exams/${this.state.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`)
       .then((response) => {
         if (response.status == 404) {
           return "{}";
@@ -1039,13 +1040,14 @@ class App extends React.Component {
         + "\n\n"
         + this.state.message;
     }
-    fetch("/rest/matriculation/enrollments", {
+    fetch(`/rest/matriculation/exams/${this.state.examId}/enrollments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
       },
       body: JSON.stringify(
         {
+          examId: this.state.examId,
           name: this.state.name,
           ssn: this.state.ssn,
           email: this.state.email,

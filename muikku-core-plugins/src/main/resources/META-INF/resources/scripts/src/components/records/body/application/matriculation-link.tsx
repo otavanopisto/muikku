@@ -9,42 +9,61 @@ interface MatriculationLinkProps {
 
 interface MatriculationLinkState {
   enabled: boolean;
+  exams: CurrentExam[]
 }
 
 interface CurrentExam {
+  id: Number;
   starts: Number;
   ends: Number;
   eligible: boolean;
 }
 
 export class MatriculationLink extends React.Component<MatriculationLinkProps, MatriculationLinkState> {
+  private _isMounted: boolean;
+  
   constructor(props: MatriculationLinkProps) {
     super(props);
-
-    this.state = {enabled: false};
+    this._isMounted = false;
+    this.state = {
+      enabled: false,
+      exams: []
+    };
   }
 
   public componentDidMount() {
+    this._isMounted = true;
     if ("matriculation" in mApi()) {
-      mApi().matriculation.currentExam.read({}).callback((err: any, data: CurrentExam) => {
+      mApi().matriculation.exams.read({}).callback((err: any, data: CurrentExam[]) => {
         if (err) {
           console.log(err);
           return;
         }
-        const now : Number = new Date().getTime();
-        if (data && data.eligible && data.starts <= now && data.ends >= now) {
-          this.setState({enabled: true});
+
+        if (data && this._isMounted) {
+          this.setState({ exams: data, enabled: true });
         }
       });
     }
   }
-
+  
+  public componentWillUnmount() {
+    this._isMounted = false;
+  }
+  
   public render() {
     if (!this.state.enabled) {
-        return null;
+      return null;
     }
+    
     return <div className="application-sub-panel application-sub-panel--matriculation-enrollment">
-      <a className="link link--matriculation-enrollment" href="/jsf/matriculation/index.jsf">{this.props.i18n.text.get("plugin.records.matriculationLink")}</a>
+    {
+      this.state.exams
+        .filter((exam) => exam.eligible === true)
+        .map((exam, i) =>
+          <a key={i} className="link link--matriculation-enrollment" href={"/matriculation-enrollment/" + exam.id}>{this.props.i18n.text.get("plugin.records.matriculationLink")}</a>
+        )
+    }
     </div>
   }
 

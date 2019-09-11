@@ -35,8 +35,22 @@ public class PyramusMatriculationExam implements MatriculationExam {
     return eligible;
   }
   
+  public void setEligible(boolean eligible) {
+    this.eligible = eligible;
+  }
+
+  @Override
+  public boolean isEnrolled() {
+    return enrolled;
+  }
+
+  public void setEnrolled(boolean enrolled) {
+    this.enrolled = enrolled;
+  }
+
   private long id;
   private long startTime;
   private long endTime;
   private boolean eligible; 
+  private boolean enrolled; 
 }
