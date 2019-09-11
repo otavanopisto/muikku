@@ -292,7 +292,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -345,7 +345,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-5">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -385,7 +385,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
             Poista
           </button>
         </div>
