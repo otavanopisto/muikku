@@ -131,7 +131,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
          files={this.state.values} fileIdKey="fileId" fileNameKey="name" fileUrlGenerator={(f)=>`/rest/workspace/fileanswer/${f.fileId}`}
          deleteDialogElement={ConfirmRemoveDialog} deleteDialogElementProps={{onConfirm: this.removeFile}} modifier="taskfield"
          uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("plugin.workspace.fileField.statusUploading", percent)}
-         invisible={this.props.invisible} notificationOfSuccessText={this.props.i18n.text.get("TODO file uploaded")} displayNotificationOnSuccess/>
+         invisible={this.props.invisible} notificationOfSuccessText={this.props.i18n.text.get("plugin.workspace.fileFieldUpload.uploadSuccessful")} displayNotificationOnSuccess/>
       </div>
     </div>
   }
