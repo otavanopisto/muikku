@@ -99,6 +99,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         .build();
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent(".button-pill--editing-master-switch");
+        click(".button-pill--editing-master-switch");
         waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-add");
         click(".material-admin-panel--master-functions .button-pill__icon.icon-add");
         waitForPresent(".material-admin-panel--chapter-functions .icon-edit");
@@ -1278,7 +1280,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresent(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+        waitForPresent(".button-pill--editing-master-switch");
+        click(".button-pill--editing-master-switch");
+        waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
         click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
         waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
         waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
@@ -1325,7 +1329,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresent(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+        waitForPresent(".button-pill--editing-master-switch");
+        click(".button-pill--editing-master-switch");
+        waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
         click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
         waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
         waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
@@ -1372,7 +1378,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresent(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+        waitForPresent(".button-pill--editing-master-switch");
+        click(".button-pill--editing-master-switch");
+        waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
         click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
         waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
         waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
@@ -1419,7 +1427,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForPresent(".material-admin-panel--workspace-materials .button-pill--material-management-page");
+        waitForPresent(".button-pill--editing-master-switch");
+        click(".button-pill--editing-master-switch");
+        waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
         click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
         waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
         waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
