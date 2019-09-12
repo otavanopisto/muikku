@@ -565,6 +565,17 @@
   
 }
 
+.assignment-grade.evaluated-resubmitted {
+  
+  .assignment-grade-data {
+    background: $evaluation-requested-color;
+    color: $evaluation-modal-assignment-evaluated-incomplete-font-color;
+    font-size: 13px;
+    padding: 0 4px;
+  }
+  
+}
+
 .assignment-notdone-label {
   font-weight: 300;
   padding: 0 4px 0 0;
@@ -613,7 +624,12 @@
     .assignment-evaluate-button {
       background: $evaluation-passed-color;
     }
-  
+  }
+
+  &[data-resubmitted="true"] {
+    .assignment-evaluate-button {
+      background: $evaluation-requested-color;
+    }
   }
   
 }

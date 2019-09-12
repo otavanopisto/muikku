@@ -1,10 +1,10 @@
-<div class="assignment-wrapper material-page {materialType}" {?evaluationDate}data-evaluated="true" {?grade}data-graded="true"{/grade}{/evaluationDate}>
+<div class="assignment-wrapper material-page {materialType}" {?evaluationDate}data-evaluated="true" {?grade}data-graded="true"{/grade} {?resubmitted}data-resubmitted="true"{/resubmitted}{/evaluationDate}>
   <div class="assignment-title-wrapper">
     <div class="assignment-title">{title}</div>
     <div class="assignment-done">
       {?submitDate}
         <span class="assignment-done-label">{#localize key="plugin.evaluation.evaluationModal.assignmentDoneLabel"/}</span>
-        <span class="assignment-done-data">{submitDate|formatDate} - {submitDate|formatTime}</span>
+        <span class="assignment-done-data">{submitDate|formatDate}</span>
       {:else}
         <span class="assignment-notdone-label">{#localize key="plugin.evaluation.evaluationModal.assignmentNotDoneLabel"/}</span>
       {/submitDate}
@@ -13,9 +13,9 @@
       <span class="assignment-evaluated-label">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"/}</span>
       <span class="assignment-evaluated-data">{evaluationDate|formatDate}</span>
     </div>
-    <div class="assignment-grade {?evaluationDate}{^grade}evaluated-incomplete{/grade}{/evaluationDate}" {^evaluationDate}style="display:none;"{/evaluationDate}>
+    <div class="assignment-grade {?evaluationDate}{^grade}{?resubmitted}evaluated-resubmitted{:else}evaluated-incomplete{/resubmitted}{/grade}{/evaluationDate}" {^evaluationDate}style="display:none;"{/evaluationDate}>
       <span class="assignment-grade-label">{?grade}{#localize key="plugin.evaluation.evaluationModal.assignmentGradeLabel"/}{/grade}</span>
-      <span class="assignment-grade-data">{?grade}{grade}{:else}{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"/}{/grade}</span>
+      <span class="assignment-grade-data">{?grade}{grade}{:else}{?resubmitted}{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedResubmittedLabel"/}{:else}{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"/}{/resubmitted}{/grade}</span>
     </div>
   </div>
   {?submitDate}

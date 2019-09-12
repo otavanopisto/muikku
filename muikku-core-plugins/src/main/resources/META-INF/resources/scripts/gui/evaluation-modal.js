@@ -69,54 +69,40 @@
       $(document).muikkuMaterialLoader('option', 'workspaceEntityId', workspaceEntityId);
       $(document).muikkuMaterialLoader('option', 'baseUrl', materialsBaseUrl);
 
-      // Load assessors
-      
-      mApi().workspace.workspaces.staffMembers
-        .read(workspaceEntityId, {orderBy: 'name'})
-        .callback($.proxy(function (err, staffMembers) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            
-            // Render modal
-            
-            renderDustTemplate("evaluation/evaluation-modal-view.dust", {
-              userEntityId: $(requestCard).attr('data-user-entity-id'), 
-              studentName: $(requestCard).find('.evaluation-card-student').text(),
-              studyProgrammeName: $(requestCard).find('.evaluation-card-study-programme').text(),
-              courseName: $(requestCard).attr('data-workspace-name'),
-              gradingScales: this._gradingScales||{},
-              assessors: staffMembers,
-              workspaceUserEntityId: $(requestCard).attr('data-workspace-user-entity-id')
-            }, $.proxy(function (html) {
+      // Render modal
 
-              // Modal UI
+      renderDustTemplate("evaluation/evaluation-modal-view.dust", {
+        userEntityId: $(requestCard).attr('data-user-entity-id'), 
+        studentName: $(requestCard).find('.evaluation-card-student').text(),
+        studyProgrammeName: $(requestCard).find('.evaluation-card-study-programme').text(),
+        courseName: $(requestCard).attr('data-workspace-name'),
+        gradingScales: this._gradingScales||{},
+        workspaceUserEntityId: $(requestCard).attr('data-workspace-user-entity-id')
+      }, $.proxy(function (html) {
 
-              this._evaluationModal.append(html);
+        // Modal UI
 
-              // Material's loading animation start
+        this._evaluationModal.append(html);
 
-              this.element.trigger("loadStart", $('.eval-modal-assignments-content'));
-              
-              // Load dialog content
-              
-              this._loadMaterials();
-              this._loadJournalEntries();
-              this._setupEventsContainer();
-              this._setupWorkspaceGradeEditor();
-              this._setupWorkspaceSupplementationEditor();
-              this._setupAssignmentEditor();
+        // Material's loading animation start
 
-              // Discard modal button (top right)  
+        this.element.trigger("loadStart", $('.eval-modal-assignments-content'));
 
-              $('.eval-modal-close').click($.proxy(function (event) {
-                this.close();
-              }, this));
+        // Load dialog content
 
-            }, this));
-          }
+        this._loadMaterials();
+        this._loadJournalEntries();
+        this._setupEventsContainer();
+        this._setupWorkspaceGradeEditor();
+        this._setupWorkspaceSupplementationEditor();
+        this._setupAssignmentEditor();
+
+        // Discard modal button (top right)  
+
+        $('.eval-modal-close').click($.proxy(function (event) {
+          this.close();
         }, this));
+      }, this));
     },
     
     close: function() {
@@ -266,11 +252,6 @@
     },
     
     _setupAssignmentEditor: function() {
-      var assignmentDateEditor = $(this._evaluationModal).find('#assignmentEvaluationDate'); 
-      $(assignmentDateEditor)
-        .css({'z-index': 999, 'position': 'relative'})
-        .attr('type', 'text')
-        .datepicker();
 
       // Enabled assignment grade if assessment is marked graded
 
@@ -552,6 +533,7 @@
           workspaceMaterialId: assignment.workspaceMaterialId,
           materialId: assignment.materialId,
           path: assignment.path,
+          resubmitted: !assignment.grade && assignment.submitted && assignment.evaluated && assignment.submitted > assignment.evaluated,
           evaluationDate: assignment.evaluated,
           grade: assignment.grade,
           literalEvaluation: assignment.literalEvaluation
@@ -661,10 +643,6 @@
               else {
                 // Verbal assessment
                 CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
-                // Date
-                $('#assignmentEvaluationDate').datepicker('setDate', new Date());
-                // Assessor
-                $('#assignmentAssessor').val(assessment.assessorIdentifier);
                 // Grading
                 $('#assignmentGradedButton').prop('checked', true);
                 // Grade
@@ -694,10 +672,6 @@
               else {
                 // Verbal assessment
                 CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(supplementationRequest.requestText);
-                // Date
-                $('#assignmentEvaluationDate').datepicker('setDate', new Date());
-                // Assessor
-                $('#assignmentAssessor option[data-user-entity-id="' + supplementationRequest.userEntityId + '"]').attr('selected','selected');
                 // Grading
                 $('#assignmentIncompleteButton').prop('checked', true);
                 // Grade
@@ -712,8 +686,6 @@
         }
       }
       else {
-        $('#assignmentEvaluationDate').datepicker('setDate', new Date());
-        $('#assignmentAssessor').val(MUIKKU_LOGGED_USER);
         $('#assignmentGradedButton').prop('checked', true);
         $('#assignmentGrade').prop('disabled', false);
         $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
@@ -1009,6 +981,7 @@
       var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
       var workspaceMaterialId = $('#assignmentWorkspaceMaterialId').val();
       var gradingValue = $('input[name=assignmentGrading]:checked').val();
+      var evaluationDate = new Date(); 
       if (gradingValue == 'GRADED') {
         
         // Save an assignment evaluation
@@ -1016,11 +989,11 @@
         var scaleAndGrade = $('#assignmentGrade').val().split('@');
         mApi().evaluation.workspace.user.workspacematerial.assessment
           .create(workspaceEntityId, userEntityId, workspaceMaterialId, {
-            assessorIdentifier: $('#assignmentAssessor').val(),
+            assessorIdentifier: MUIKKU_LOGGED_USER,
             gradingScaleIdentifier: scaleAndGrade[0],
             gradeIdentifier: scaleAndGrade[1],
             verbalAssessment: CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData(),
-            assessmentDate: $('#assignmentEvaluationDate').datepicker('getDate').getTime()
+            assessmentDate: evaluationDate.getTime()
           })
           .callback($.proxy(function (err, assessment) {
             if (err) {
@@ -1038,7 +1011,7 @@
               // Show evaluation date and grade
               
               $(this._activeAssignment).find('.assignment-literal-evaluation').html(CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData());
-              $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
+              $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate(evaluationDate));
               $(this._activeAssignment).find('.assignment-evaluated').show();
               $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
               $(this._activeAssignment).find('.assignment-grade').show();
@@ -1069,10 +1042,10 @@
         
         mApi().evaluation.workspace.user.workspacematerial.supplementationrequest
           .create(workspaceEntityId, userEntityId, workspaceMaterialId, {
-            userEntityId: $('#assignmentAssessor option:selected').attr('data-user-entity-id'),
+            userEntityId: MUIKKU_LOGGED_USER_ID,
             studentEntityId: userEntityId,
             workspaceMaterialId: workspaceMaterialId,
-            requestDate: $('#assignmentEvaluationDate').datepicker('getDate').getTime(),
+            requestDate: evaluationDate.getTime(),
             requestText: CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData()
           })
           .callback($.proxy(function (err, supplementationRequest) {
@@ -1090,7 +1063,7 @@
               // Show evaluation date but hide grade
               
               $(this._activeAssignment).find('.assignment-literal-evaluation').html(CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData());
-              $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
+              $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate(evaluationDate));
               $(this._activeAssignment).find('.assignment-evaluated').show();
               $(this._activeAssignment).find('.assignment-grade-data').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"));
               $(this._activeAssignment).find('.assignment-grade-label').hide();
