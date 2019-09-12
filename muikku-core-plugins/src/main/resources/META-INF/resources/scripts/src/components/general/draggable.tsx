@@ -2,6 +2,7 @@ import Portal from "~/components/general/portal";
 import * as React from "react";
 import $ from '~/lib/jquery';
 import { guidGenerator } from "~/util/modifiers";
+import { queueJax } from "~/lib/mathjax";
 
 let interactionData:{[key: string]: any} = {}
 
@@ -210,7 +211,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
         verticalAlign: style.verticalAlign
       },
       display: style.display
-    });
+    }, queueJax);
   }
   onMove(e: MouseEvent){
     lastHackedDraggableX = e.pageX;
@@ -259,12 +260,12 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
         this.props.onClick && this.props.onClick(e as any);
         this.setState({
           isDragging: false
-        });
+        }, queueJax);
       } else {
         this.props.interactionGroup && this.props.onDropInto && this.detectCollisions(true);
         this.setState({
           isDragging: false
-        });
+        }, queueJax);
       }
     }
   }
