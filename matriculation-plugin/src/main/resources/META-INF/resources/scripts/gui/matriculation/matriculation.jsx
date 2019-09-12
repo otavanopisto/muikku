@@ -292,7 +292,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -345,7 +345,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-5">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -385,7 +385,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -1100,7 +1100,7 @@ class App extends React.Component {
         <DraftListener {...this.state}
           onError={(errorMsg) => {this.setState({error: errorMsg})}}/>
         {this.state.error
-          ? <div class="error">{this.state.error}</div>
+          ? <div className="error-wrapper"><div className="error-overlay"></div><div className="error">{this.state.error} <div><a href="/" className="back-to-frontpage">Muikun etusivulle</a></div></div></div>
           : null}
         <form className="pure-form pure-form-stacked matriculation-form" onSubmit={(e) => {e.preventDefault();}}>
           {/* Page 1 of the wizard contains an introductory text */}
