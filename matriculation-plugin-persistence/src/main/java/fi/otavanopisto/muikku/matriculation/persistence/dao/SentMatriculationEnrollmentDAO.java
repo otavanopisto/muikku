@@ -14,15 +14,16 @@ public class SentMatriculationEnrollmentDAO extends MatriculationPluginDAO<SentM
   private static final long serialVersionUID = 7506613764993681620L;
 
   public SentMatriculationEnrollment create(
-    SchoolDataIdentifier userIdentifier
+      Long examId,
+      SchoolDataIdentifier userIdentifier
   ) {
     SentMatriculationEnrollment savedEnrollment = new SentMatriculationEnrollment();
+    savedEnrollment.setExamId(examId);
     savedEnrollment.setUserIdentifier(userIdentifier);
-    getEntityManager().persist(savedEnrollment);
-    return savedEnrollment;
+    return persist(savedEnrollment);
   }
   
-  public SentMatriculationEnrollment findByUser(SchoolDataIdentifier userIdentifier) {
+  public SentMatriculationEnrollment findByUser(Long examId, SchoolDataIdentifier userIdentifier) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -30,7 +31,10 @@ public class SentMatriculationEnrollmentDAO extends MatriculationPluginDAO<SentM
     Root<SentMatriculationEnrollment> root = criteria.from(SentMatriculationEnrollment.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(SentMatriculationEnrollment_.userIdentifier), userIdentifier.toId())
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(SentMatriculationEnrollment_.examId), examId),
+            criteriaBuilder.equal(root.get(SentMatriculationEnrollment_.userIdentifier), userIdentifier.toId())
+        )
     );
     
     return getSingleResult(entityManager.createQuery(criteria));
