@@ -467,7 +467,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}
             deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
             downloadFileText={this.props.i18n.text.get("plugin.workspace.fileField.downloadLink")} showURL
-            notificationOfSuccessText={this.props.i18n.text.get("TODO file uploaded")} displayNotificationOnSuccess/>
+            notificationOfSuccessText={this.props.i18n.text.get("plugin.workspace.fileFieldUpload.uploadSuccessful")} displayNotificationOnSuccess/>
           </div>,
         })
       }

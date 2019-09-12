@@ -183,7 +183,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         files={this.props.guider.currentStudent.files} fileIdKey="id" fileNameKey="title" fileUrlGenerator={(f)=>`/rest/guider/files/${f.id}/content`}
         deleteDialogElement={FileDeleteDialog} modifier="guider" emptyText={this.props.i18n.text.get("plugin.guider.user.details.files.empty")}
         uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("TODO progress text", percent)}
-        notificationOfSuccessText={this.props.i18n.text.get("TODO file uploaded")} displayNotificationOnSuccess/>
+        notificationOfSuccessText={this.props.i18n.text.get("plugin.guider.fileUpload.successful")} displayNotificationOnSuccess/>
     </div>
 
     return <div className="react-required-container">

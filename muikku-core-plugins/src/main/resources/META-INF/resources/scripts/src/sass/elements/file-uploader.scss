@@ -157,6 +157,14 @@
   }
 }
 
+.file-uploader__item--material-editor {
+  align-items: flex-start;
+
+  .file-uploader__item-attachment-icon {
+    padding: 2px 0 0 0;
+  }
+}
+
 .file-uploader__item-upload-progressbar {
   @include text;
   flex-basis: auto;

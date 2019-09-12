@@ -230,10 +230,10 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
     let dataNode = null;
     if (this.props.files) {
       if (this.props.files.length) {
-        dataNode = <div className={`file-uploader__items-container ${this.props.modifier ? "file-uploader__items--" + this.props.modifier : ""}`}>
+        dataNode = <div className="file-uploader__items-container">
           {this.props.files.map((file)=>{
             const url = this.props.fileUrlGenerator(file);
-            return <div className="file-uploader__item" key={file[this.props.fileIdKey]}>
+            return <div className={`file-uploader__item ${this.props.modifier ? "file-uploader__item--" + this.props.modifier : ""}`} key={file[this.props.fileIdKey]}>
               <span className="file-uploader__item-attachment-icon icon-attachment"></span>
               {this.props.showURL ? <span className="file-uploader__item-title-container">
                 <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
@@ -253,8 +253,10 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
           {this.state.uploadingValues.map((uploadingFile, index) => {
             if (uploadingFile.failed) {
               return <div className="file-uploader__item file-uploader__item--FAILED-TO-UPLOAD" key={index}>
-                <span className="file-uploader__item-title">
-                  {uploadingFile.name}
+                <span className="file-uploader__item-title-container">
+                  <span className="file-uploader__item-title">
+                    {uploadingFile.name}
+                  </span>
                 </span>
                 <Link disablePropagation className="file-uploader__item-delete-icon icon-delete"
                   onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
