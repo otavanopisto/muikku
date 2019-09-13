@@ -12,10 +12,17 @@ interface WorkspaceJournalBodyProps {
 }
 
 interface WorkspaceJournalBodyState {
-
 }
 
 export default class WorkspaceJournalBody extends React.Component<WorkspaceJournalBodyProps, WorkspaceJournalBodyState> {
+  constructor(props: WorkspaceJournalBodyProps){
+    super(props);
+
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
+  }
+  onOpenNavigation(){
+    (this.refs.content as any).getWrappedInstance().refresh();
+  }
   render(){
     return (<div>
       <WorkspaceNavbar activeTrail="journal" workspaceUrl={this.props.workspaceUrl}/>

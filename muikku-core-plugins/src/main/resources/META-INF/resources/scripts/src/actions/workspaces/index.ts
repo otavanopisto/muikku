@@ -8,7 +8,8 @@ import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/acti
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 import { MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
-  WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType, MaterialContentNodeMetadata } from '~/reducers/workspaces';
+  WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType,
+  WorkspaceEditModeStateType } from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
 
@@ -26,40 +27,41 @@ export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<"UPDATE_WORKS
   newAssessmentRequest?: WorkspaceAssessmentRequestType,
   oldAssessmentRequestToDelete?: WorkspaceAssessmentRequestType
 }>
-export interface UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES extends SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>{}
-export interface UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS extends SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>{}
-export interface UPDATE_WORKSPACES_ACTIVE_FILTERS extends 
-  SpecificActionType<"UPDATE_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>{}
-export interface UPDATE_WORKSPACES_ALL_PROPS extends 
-  SpecificActionType<"UPDATE_WORKSPACES_ALL_PROPS", WorkspacesPatchType>{}
-export interface UPDATE_WORKSPACES_STATE extends 
-  SpecificActionType<"UPDATE_WORKSPACES_STATE", WorkspacesStateType>{}
-export interface UPDATE_WORKSPACE extends 
+export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<"UPDATE_WORKSPACES_EDIT_MODE_STATE", Partial<WorkspaceEditModeStateType>>;
+export type UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
+export type UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
+export type UPDATE_WORKSPACES_ACTIVE_FILTERS = 
+  SpecificActionType<"UPDATE_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
+export type UPDATE_WORKSPACES_ALL_PROPS = 
+  SpecificActionType<"UPDATE_WORKSPACES_ALL_PROPS", WorkspacesPatchType>
+export type UPDATE_WORKSPACES_STATE = 
+  SpecificActionType<"UPDATE_WORKSPACES_STATE", WorkspacesStateType>
+export type UPDATE_WORKSPACE = 
   SpecificActionType<"UPDATE_WORKSPACE", {
   original: WorkspaceType,
   update: WorkspaceUpdateType
-}>{}
-export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>{};
-export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>{};
-export interface UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES extends SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES", MaterialCompositeRepliesListType>{};
-export interface UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER
-  extends SpecificActionType<"UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER", {
+}>
+export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>;
+export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>;
+export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES", MaterialCompositeRepliesListType>;
+export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER
+  = SpecificActionType<"UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER", {
     state: MaterialCompositeRepliesStateType,
     workspaceMaterialId: number,
     workspaceMaterialReplyId: number
-}>{};
-export interface UPDATE_MATERIAL_CONTENT_NODE extends SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
+}>;
+export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
   showRemoveAnswersDialogForPublish: boolean,
   material: MaterialContentNodeType,
   update: Partial<MaterialContentNodeType>,
   isDraft?: boolean,
-}>{};
-export interface DELETE_MATERIAL_CONTENT_NODE extends SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
-export interface INSERT_MATERIAL_CONTENT_NODE extends SpecificActionType<"INSERT_MATERIAL_CONTENT_NODE", MaterialContentNodeType>{};
-export interface UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES extends SpecificActionType<"UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES", {
+}>;
+export type DELETE_MATERIAL_CONTENT_NODE = SpecificActionType<"DELETE_MATERIAL_CONTENT_NODE", MaterialContentNodeType>;
+export type INSERT_MATERIAL_CONTENT_NODE = SpecificActionType<"INSERT_MATERIAL_CONTENT_NODE", MaterialContentNodeType>;
+export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<"UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES", {
   material: MaterialContentNodeType,
   newPath: string;
-}>{};
+}>;
 
 let loadUserWorkspacesFromServer:LoadUserWorkspacesFromServerTriggerType = function loadUserWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -198,6 +200,10 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
     success?: () => any,
     fail?: () => any,
   }):AnyActionType
+}
+
+export interface UpdateWorkspaceEditModeStateTriggerType {
+  (data: Partial<WorkspaceEditModeStateType>, recoverActiveFromLocalStorage?: boolean):AnyActionType
 }
 
 function reuseExistantValue(conditional: boolean, existantValue: any, otherwise: ()=>any){
@@ -1336,7 +1342,6 @@ let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType =
   };
 }
 
-const META_KEYS = ["license", "source-text", "source-url"];
 let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -1344,17 +1349,6 @@ let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialConte
       const childrenAttachments:MaterialContentNodeType[] = (await promisify(mApi().workspace.workspaces.materials.read(workspace.id, {
         parentId: material.workspaceMaterialId,
       }), 'callback')() as MaterialContentNodeType[]) || [];
-
-      await Promise.all(childrenAttachments.map(async (attachment, index) => {
-        const metadata:Array<MaterialContentNodeMetadata> = (
-          await promisify(mApi().materials.materials.meta.read(attachment.materialId), 'callback')() as Array<MaterialContentNodeMetadata>
-        );
-        if (metadata) {
-          childrenAttachments[index].metadata = metadata;
-        } else {
-          childrenAttachments[index].metadata = META_KEYS.map((key) => ({materialId: attachment.materialId, key, value: null}));
-        }
-      }));
 
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -1489,20 +1483,6 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
               newPath,
             }
           });
-        }
-
-        if (data.update.metadata) {
-          await Promise.all(data.update.metadata.map((metadataValue) => {
-            const currentMetadataObj = data.material.metadata.find(d=>d.key === metadataValue.key);
-            const currentMetadataValue = currentMetadataObj && currentMetadataObj.value;
-            if (currentMetadataValue !== metadataValue.value) {
-              if (currentMetadataValue === null) {
-                return promisify(mApi().materials.materials.meta.create(metadataValue.materialId, metadataValue), 'callback')();
-              } else {
-                return promisify(mApi().materials.materials.meta.update(metadataValue.materialId, metadataValue), 'callback')();
-              }
-            }
-          }));
         }
       } else {
         // Trying to update the draft
@@ -1734,6 +1714,7 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
         }), 'callback')();
       }));
 
+      dispatch(actions.displayNotification("TODO material attachment success", 'success'));
       data.success && data.success();
     } catch (err) {
       dispatch(actions.displayNotification(err.message, 'error'))
@@ -1741,6 +1722,24 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
     }
 
     dispatch(requestWorkspaceMaterialContentNodeAttachments(data.workspace, data.material));
+  }
+}
+
+let updateWorkspaceEditModeState:UpdateWorkspaceEditModeStateTriggerType = function updateWorkspaceEditModeState(data, restoreActiveFromLocalStorage) {
+  if (restoreActiveFromLocalStorage && typeof data.active !== "undefined") {
+    localStorage.setItem("__editmode__active", JSON.stringify(data.active));
+  } else if (restoreActiveFromLocalStorage) {
+    return {
+      type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
+      payload: {
+        ...data,
+        active: JSON.parse(localStorage.getItem("__editmode__active") || "false"),
+      },
+    }
+  }
+  return {
+    type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
+    payload: data,
   }
 }
 
@@ -1753,4 +1752,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment}
+  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState}

@@ -21,10 +21,17 @@ interface WorkspaceHomeBodyProps {
 }
 
 interface WorkspaceHomeBodyState {
-
 }
 
 export default class WorkspaceHomeBody extends React.Component<WorkspaceHomeBodyProps, WorkspaceHomeBodyState> {
+  constructor(props: WorkspaceHomeBodyProps){
+    super(props);
+
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
+  }
+  onOpenNavigation(){
+    (this.refs.content as any).getWrappedInstance().refresh();
+  }
   render(){
     return (<div>
       <WorkspaceNavbar activeTrail="index" workspaceUrl={this.props.workspaceUrl}/>

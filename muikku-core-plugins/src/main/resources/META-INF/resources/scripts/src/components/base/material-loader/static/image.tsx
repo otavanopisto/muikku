@@ -8,7 +8,7 @@ interface ImageProps {
   dataset: {
     author: string,
     authorUrl: string,
-    licence: string,
+    license: string,
     licenseUrl: string,
     source: string,
     sourceUrl: string,
@@ -77,7 +77,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
   }
   render(){
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-      if (Tag === "figure" && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.licence)){
+      if (Tag === "figure" && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.license)){
         if (!this.props.invisible) {
           children.push(<div className="image__details icon-copyright" key="details">
             <div className="image__details-container">
@@ -86,17 +86,20 @@ export default class Image extends React.Component<ImageProps, ImageState>{
                 ? (this.props.dataset.sourceUrl ?
                     <a href={this.props.dataset.sourceUrl} target="_blank">{this.props.dataset.source || this.props.dataset.sourceUrl}</a> :
                     <span>{this.props.dataset.source}</span>) : null}
-              {this.props.dataset.source || this.props.dataset.sourceUrl ? <span>&nbsp;/&nbsp;</span> : null}
+              {(this.props.dataset.author || this.props.dataset.authorUrl) &&
+                (this.props.dataset.source || this.props.dataset.sourceUrl) ? <span>&nbsp;/&nbsp;</span> : null}
               {this.props.dataset.author || this.props.dataset.authorUrl ? (
                   this.props.dataset.authorUrl ?
                     <a href={this.props.dataset.authorUrl} target="_blank">{this.props.dataset.author || this.props.dataset.authorUrl}</a> :
                     <span>{this.props.dataset.author}</span>
               ) : null}
-              {this.props.dataset.author || this.props.dataset.authorUrl ? <span>,&nbsp;</span> : null}
-              {this.props.dataset.licence || this.props.dataset.licenseUrl ? (
+              {(this.props.dataset.license || this.props.dataset.licenseUrl) &&
+                (this.props.dataset.author || this.props.dataset.authorUrl ||
+                    this.props.dataset.source || this.props.dataset.sourceUrl) ? <span>,&nbsp;</span> : null}
+              {this.props.dataset.license || this.props.dataset.licenseUrl ? (
                   this.props.dataset.licenseUrl ?
-                    <a href={this.props.dataset.licenseUrl} target="_blank">{this.props.dataset.licence || this.props.dataset.licenseUrl}</a> :
-                    <span>{this.props.dataset.licence}</span>
+                    <a href={this.props.dataset.licenseUrl} target="_blank">{this.props.dataset.license || this.props.dataset.licenseUrl}</a> :
+                    <span>{this.props.dataset.license}</span>
               ) : null}
             </div>
           </div>);

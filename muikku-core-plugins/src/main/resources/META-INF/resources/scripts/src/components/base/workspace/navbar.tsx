@@ -12,10 +12,12 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/indicator.scss';
 import Dropdown from '~/components/general/dropdown';
-import { WorkspaceType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
+import { WorkspaceType, WorkspaceAssessementStateType, WorkspaceEditModeStateType } from '~/reducers/workspaces';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 import EvaluationRequestDialog from './evaluation-request-dialog';
 import EvaluationCancelDialog from './evaluation-cancel-dialog';
+import { UpdateWorkspaceEditModeStateTriggerType, updateWorkspaceEditModeState } from '~/actions/workspaces';
+import { bindActionCreators } from 'redux';
 
 interface ItemDataElement {
   modifier: string,
@@ -25,7 +27,8 @@ interface ItemDataElement {
   to?: boolean,
   icon: string,
   condition?: boolean,
-  badge?: number
+  badge?: number,
+  openInNewTab?: string
 }
 
 interface WorkspaceNavbarProps {
@@ -36,10 +39,8 @@ interface WorkspaceNavbarProps {
   title: string,
   workspaceUrl: string,
   currentWorkspace: WorkspaceType,
-  
-  editModeAvailable?: boolean,
-  editModeActive?: boolean,
-  toggleEditModeActive?: ()=>any,
+  workspaceEditMode: WorkspaceEditModeStateType,
+  updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType,
 }
 
 interface WorkspaceNavbarState {
@@ -126,6 +127,12 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     }
 
     this.onRequestEvaluationOrCancel = this.onRequestEvaluationOrCancel.bind(this);
+    this.toggleEditModeActive = this.toggleEditModeActive.bind(this);
+  }
+  toggleEditModeActive() {
+    this.props.updateWorkspaceEditModeState({
+      active: !this.props.workspaceEditMode.active,
+    }, true);
   }
   onRequestEvaluationOrCancel(state: string){
     let text;
@@ -194,7 +201,16 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       icon: "journal",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE
-    }];
+    },{
+      //Evaluation is also an external
+      modifier: "evaluation",
+      trail: "evaluation",
+      text: 'plugin.evaluation.evaluation',
+      href: (this.props.currentWorkspace ? ("/evaluation2?workspaceEntityId=" + this.props.currentWorkspace.id) : null),
+      icon: "evaluate",
+      condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
+      openInNewTab: "_blank"
+    }, ];
 
   let assessmentRequestItem = this.props.currentWorkspace &&
     this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? {
@@ -300,6 +316,14 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       </Navigation>)
     }
 
+    let editModeSwitch = null;
+    if (this.props.workspaceEditMode.available){
+       editModeSwitch = (<input key="3" type="checkbox"
+           className={`button-pill button-pill--editing-master-switch ${this.props.workspaceEditMode.active ? "button-pill--editing-master-switch-active" : ""}`}
+           onChange={this.toggleEditModeActive}
+           checked={this.props.workspaceEditMode.active}/>)
+    }
+
     return <Navbar mobileTitle={this.props.title}
       modifier="workspace" navigation={trueNavigation} navbarItems={[
         assessmentRequestItem,
@@ -310,13 +334,13 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       }
       return {
         modifier: item.modifier,
-        item: (<Link href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
-          title={this.props.i18n.text.get(item.text)}>
+        item: (<Link  openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+          aria-label={this.props.i18n.text.get(item.text)}>
           <span className={`link__icon icon-${item.icon}`}/>
           {item.badge ? <span className="indicator indicator--workspace">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         </Link>)
       }
-    }))} defaultOptions={this.props.status.loggedIn ? null : [
+    }))} defaultOptions={this.props.status.loggedIn ? [editModeSwitch] : [
       (<LoginButton modifier="login-main-function" key="0"/>),
       (<ForgotPasswordDialog key="1"><Link className="link link--forgot-password link--forgot-password-main-function">
         <span>{this.props.i18n.text.get('plugin.forgotpassword.forgotLink')}</span>
@@ -345,12 +369,13 @@ function mapStateToProps(state: StateType){
     i18n: state.i18n,
     status: state.status,
     title: state.title,
-    currentWorkspace: state.workspaces.currentWorkspace
+    currentWorkspace: state.workspaces.currentWorkspace,
+    workspaceEditMode: state.workspaces.editMode,
   }
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
-  return {};
+  return bindActionCreators({updateWorkspaceEditModeState}, dispatch);
 };
 
 export default connect(

@@ -303,6 +303,11 @@ export interface WorkspaceTypeType {
   name: string
 }
 
+export interface WorkspaceEditModeStateType {
+  available: boolean,
+  active: boolean,
+}
+
 //section = true && currentNodeValue = null && parentNodeValue = null   (new section)
 //section = false && currentNodeValue = null && parentNodeValue = x     (new material)
 //section = true && currentNodeValue = x && parentNodeValue = null      (edit section)
@@ -344,6 +349,7 @@ export interface WorkspacesType {
   currentMaterials: MaterialContentNodeListType,
   currentMaterialsActiveNodeId: number,
   currentMaterialsReplies: MaterialCompositeRepliesListType,
+  editMode: WorkspaceEditModeStateType,
   materialEditor: WorkspaceMaterialEditorType,
   types?: Array<WorkspaceTypeType>
 }
@@ -368,12 +374,6 @@ export interface MaterialContentNodeProducerType {
   id: number;
   name: string;
   materialId: number;
-}
-
-export interface MaterialContentNodeMetadata {
-  materialId: number;
-  key: string;
-  value: string;
 }
 
 export interface MaterialContentNodeType {
@@ -406,7 +406,6 @@ export interface MaterialContentNodeType {
   childrenAttachments?: Array<MaterialContentNodeType>, // this is usually missing and has to be manually retrieved
   evaluation?: MaterialEvaluationType,
   assignment?: MaterialAssignmentType,
-  metadata?: Array<MaterialContentNodeMetadata>,
 }
 
 export interface MaterialAnswerType {
@@ -521,6 +520,10 @@ export default function workspaces(state: WorkspacesType={
   toolbarLock: false,
   currentMaterialsActiveNodeId: null,
   types: null,
+  editMode: {
+    active: false,
+    available: false,
+  },
   materialEditor: {
     currentNodeWorkspace: null,
     section: false,
@@ -720,7 +723,6 @@ export default function workspaces(state: WorkspacesType={
     if (newEditor && newEditor.currentNodeValue && newEditor.currentNodeValue.childrenAttachments) {
       newEditor = {...newEditor};
       newEditor.currentNodeValue = {...newEditor.currentNodeValue};
-      debugger;
       newEditor.currentNodeValue.childrenAttachments = newEditor.currentNodeValue.childrenAttachments.filter(filterMaterial);
     }
     return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
@@ -744,6 +746,8 @@ export default function workspaces(state: WorkspacesType={
     return {...state, currentMaterials: repairContentNodes(newCurrentMaterials)}
   } else if (action.type === "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES") {
     return {...state, currentMaterials: repairContentNodes(state.currentMaterials, action.payload.newPath, action.payload.material.workspaceMaterialId)}
+  } else if (action.type === "UPDATE_WORKSPACES_EDIT_MODE_STATE") {
+    return {...state, editMode: {...state.editMode, ...action.payload}}
   }
   return state;
 }

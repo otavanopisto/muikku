@@ -10,10 +10,17 @@ interface WorkspaceAnnouncerBodyProps {
 }
 
 interface WorkspaceAnnouncerBodyState {
-
 }
 
 export default class WorkspaceAnnouncerBody extends React.Component<WorkspaceAnnouncerBodyProps, WorkspaceAnnouncerBodyState> {
+  constructor(props: WorkspaceAnnouncerBodyProps){
+    super(props);
+
+    this.onOpenNavigation = this.onOpenNavigation.bind(this);
+  }
+  onOpenNavigation(){
+    (this.refs.content as any).getWrappedInstance().refresh();
+  }
   render(){
     let aside = <Aside />;
     return (<div>

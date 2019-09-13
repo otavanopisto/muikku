@@ -1,4 +1,4 @@
-function actualDoProcess(){
+export function queueJax(){
   (window as any).MathJax.Hub.Queue(["Typeset",(window as any).MathJax.Hub]);
 }
 
@@ -33,7 +33,7 @@ export function loadMathJax(triggerOnLoad: boolean){
 
 export function processMathInPage(){
   if ((window as any).MathJax){
-    actualDoProcess();
+    queueJax();
   } else {
     loadMathJax(true);
   }
