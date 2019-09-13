@@ -43,7 +43,10 @@ import ProfileBody from '../components/profile/body';
 import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } from '~/actions/main-function/profile';
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
-import Chat from '../components/chat/chat';
+import {Chat} from '../components/chat/chat';
+import '../components/chat/index.css';
+
+//import {Groupchat} from '../components/chat/groupchat';
 
 interface MainFunctionProps {
   store: Store<StateType>,
@@ -68,7 +71,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
-    this.renderChat = this.renderChat.bind(this);
     this.itsFirstTime = true;
     this.loadedLibs = [];
     
@@ -327,9 +329,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     return <ProfileBody/>
   }
   
-  renderChat(){
-    return <Chat />
-  }
+
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
@@ -341,6 +341,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       <Route path="/announcer" render={this.renderAnnouncerBody}/>
       <Route path="/guider" render={this.renderGuiderBody}/>
       <Route path="/profile" render={this.renderProfileBody}/>
+      <Chat/>
     </div></BrowserRouter>);
   }
 }

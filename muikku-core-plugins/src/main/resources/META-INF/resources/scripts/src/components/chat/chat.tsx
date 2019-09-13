@@ -1,8 +1,8 @@
 /*global converse */
-import React, {Component} from 'react';
+import * as React from 'react'
 import ReactDOM from 'react-dom';
 import './index.css';
-import Groupchat from './groupchat';
+import {Groupchat} from './groupchat';
 import converse from '~/lib/converse';
 
 interface Iprops{
@@ -29,7 +29,8 @@ interface Istate {
     availableMucRooms: Object[],
     chatBox:null,
     showChatButton: boolean,
-    showControlBox: boolean
+    showControlBox: boolean,
+    isStudent?: Boolean
 }
 
 declare namespace JSX {
@@ -38,7 +39,13 @@ declare namespace JSX {
     }
   }
 
-class Chat extends React.Component<Iprops, Istate> {
+declare global {
+    interface Window {
+        MUIKKU_IS_STUDENT:boolean;
+    }
+}
+
+export class Chat extends React.Component<Iprops, Istate> {
 
 
   constructor(props: any){
@@ -64,7 +71,8 @@ class Chat extends React.Component<Iprops, Istate> {
       availableMucRooms: [],
       chatBox:null,
       showChatButton: true,
-      showControlBox: false
+      showControlBox: false,
+      isStudent: false
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.joinRoom= this.joinRoom.bind(this);
@@ -353,8 +361,9 @@ class Chat extends React.Component<Iprops, Istate> {
           
           reactComponent.setState({
             isConnectionOk: true,
-            showMaterial: true
-          });
+            showMaterial: true,
+            isStudent: window.MUIKKU_IS_STUDENT
+          }); 
 
           const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
    
@@ -394,24 +403,6 @@ class Chat extends React.Component<Iprops, Istate> {
       }, 
     });
     
-
-    converse.initialize({
-        debug: true,
-        bosh_service_url: 'https://dev.muikkuverkko.fi/http-bind/',
-        allow_muc: true,
-        whitelisted_plugins: ['myplugin','addRoom'],
-        authentication : "login",
-        keepalive : false,
-        auto_login : false,
-        muc_domain : 'conference.' + 'dev.muikkuverkko.fi',
-        muc_show_join_leave: false,
-        hide_muc_server : true,
-        ping_interval: 45,
-        auto_minimize: true,
-        auto_list_rooms: true,
-        hide_occupants:true,
-        limit_room_controls:true
-      });
 
   }
 
@@ -464,8 +455,10 @@ class Chat extends React.Component<Iprops, Istate> {
 
             <form onSubmit={this.joinRoom}>
               <label>Huoneen nimi: </label><input name="roomName" ref="roomName" type="text"></input>
+              {(!this.state.isStudent) && <div>
               <label>Pysyvä huone: </label><input type="checkbox" name="persistent"></input><br />
-              <label>Nimimerkki: </label><input name="nick" type="text"></input>
+              </div>}
+              <input name="nick" type="text"></input>
               <input type="submit" value="Liity"></input>
             </form>
 
@@ -487,12 +480,13 @@ class Chat extends React.Component<Iprops, Istate> {
 
 // ========================================
 
-ReactDOM.render(
-  <div>
-  <Chat />
-  </div>,
-  document.getElementById('root')
+//ReactDOM.render(
+//  <div>
+//  <Chat />
+//  </div>,
+//  document.getElementById('root')
   
-);
+//);
 
-export default Chat;
+
+

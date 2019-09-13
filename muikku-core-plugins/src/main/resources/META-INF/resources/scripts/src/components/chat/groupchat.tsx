@@ -1,36 +1,36 @@
 /*global converse */
-import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+import * as React from 'react'
 import './index.css';
 import converse from '~/lib/converse';
 
 interface Iprops{
-    chat: any,
-    converse: any
+    chat?: any,
+    converse?: any
 }
 
 interface Istate {
-    path: string,
-    port: Number,
-    jid: string,
-    password: string,
-    hostname: string,
-    converse: any,
-    roomJid: string,
-    roomsList: Object,
-    roomName: string,
-    roomConfig: any,
-    to: string,
-    messages: Object,
-    groupchats: Object,
-    groupMessages: any,
-    groupMessageRecipient: string,
-    receivedMUCMessages: Object,
-    availableMucRooms: Object,
-    chatBox: any,
-    chat: any,
-    showChatbox: Boolean,
-    openChatSettings: Boolean
+    path?: string,
+    port?: Number,
+    jid?: string,
+    password?: string,
+    hostname?: string,
+    converse?: any,
+    roomJid?: string,
+    roomsList?: Object,
+    roomName?: string,
+    roomConfig?: any,
+    to?: string,
+    messages?: Object,
+    groupchats?: Object,
+    groupMessages?: any,
+    groupMessageRecipient?: string,
+    receivedMUCMessages?: Object,
+    availableMucRooms?: Object,
+    chatBox?: any,
+    chat?: any,
+    showChatbox?: Boolean,
+    openChatSettings?: Boolean,
+    isStudent?: Boolean
 }
 
 declare namespace JSX {
@@ -40,8 +40,15 @@ declare namespace JSX {
     }
   }
 
+declare global {
+    interface Window {
+        MUIKKU_IS_STUDENT:boolean;
+    }
+}
+
 
 export class Groupchat extends React.Component<Iprops, Istate> {
+    
     private myRef: any;
     
     constructor(props: any){
@@ -67,7 +74,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         chatBox:null,
         chat: null,
         showChatbox: false,
-        openChatSettings: false
+        openChatSettings: false,
+        isStudent: false
       }
       this.myRef = null;
       this.sendMessage = this.sendMessage.bind(this);
@@ -102,7 +110,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         
         let nick: string;
         
-        nick ? nick : reactComponent.state.jid;
+        nick = reactComponent.state.jid;
         
         if (!nick) {
             throw new TypeError('join: You need to provide a valid nickname');
@@ -380,6 +388,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           converse: converse
         });
       }
+      
+      let testi = window.MUIKKU_IS_STUDENT;
     
   
       let chat = this.props.chat;
@@ -387,7 +397,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       if (chat){
         this.setState({
           roomName: chat.name,
-          roomJid: chat.jid
+          roomJid: chat.jid,
+          isStudent: window.MUIKKU_IS_STUDENT
         });
       }
       
@@ -413,9 +424,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                 <label>Huoneen kuvaus:</label><br />
                 <input type="text" name="newRoomDescription" />
                 <br />
-                <label>Pysyvä huone: </label><br/>
-                <input type="checkbox" name="persistent" /><br />
-  
+                {(!this.state.isStudent) && <div>
+                    <label>Pysyvä huone: </label><br/>
+                    <input type="checkbox" name="persistent" /><br />
+                </div>}
                 <input className="saveSettings"  type="submit" value="Tallenna" />
               </form>
             </div> }
@@ -432,5 +444,3 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       );
     }
   }
-
-  export default Groupchat;

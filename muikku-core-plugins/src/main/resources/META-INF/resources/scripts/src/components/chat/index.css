@@ -72,6 +72,7 @@ ol, ul {
   right: 105%;
   float:left;
   top:0;
+  background-color: #fff;
 }
 
 .chatMessages{
@@ -131,6 +132,7 @@ button.saveSettings{
   bottom: 0;
   right: 0;
   text-align: center;
+  z-index:50000;
 }
 
 .chatHeader{
@@ -148,6 +150,7 @@ button.saveSettings{
   width:300px;
   height:500px;
   border:1px solid gainsboro;
+  background-color: #fff;
 }
 
 .chatControlBox-container{
@@ -156,5 +159,6 @@ button.saveSettings{
 }
 
 .chatBox-roomName{
-  margin-right:60%;
+  width: 100%;
+  padding-right: 10%;
 }
