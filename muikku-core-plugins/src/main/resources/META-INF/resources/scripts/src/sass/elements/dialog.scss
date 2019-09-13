@@ -22,6 +22,11 @@
   opacity: 1;
 }
 
+.dialog--wizard {
+  
+}
+
+
 .dialog__window {
   background-color: $color-dialog-default-background;
   bottom: 0;
@@ -46,6 +51,15 @@
 
   @include breakpoint($breakpoint-pad) {
     box-shadow: 0 0 80px $color-dialog-default-shadow;
+  }
+}
+
+.dialog__window--wizard {
+
+  
+  @include breakpoint($breakpoint-pad) {
+    width:80%;
+    max-width: none;
   }
 }
 
