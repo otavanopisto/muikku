@@ -64,7 +64,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         {(closePortal: ()=>any)=>{
           let modifiers:Array<string> = typeof this.props.modifier === "string" ? [this.props.modifier] : this.props.modifier;
           return <div className={`dialog ${(modifiers || []).map(s=>`dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
-            <div className="dialog__window">
+            <div className={`dialog__window ${(modifiers || []).map(s=>`dialog__window--${s}`).join(" ")}`}>
               <div className="dialog__header">
                 <div className="dialog__title">
                     {this.props.title}

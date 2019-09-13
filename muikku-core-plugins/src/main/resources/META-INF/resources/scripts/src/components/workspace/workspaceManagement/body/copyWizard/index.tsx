@@ -9,9 +9,8 @@ import Step5 from "./step5";
 import Step6 from "./step6";
 const StepZilla = require('react-stepzilla').default;
 import moment from "~/lib/moment";
-
-//TODO lankkinen you might want to remove this file and add your own style
-import "react-stepzilla/src/css/main.css";
+import '~/sass/elements/stepzilla.scss';
+import '~/sass/elements/wizard.scss';
 import { copyCurrentWorkspace, CopyCurrentWorkspaceTriggerType, CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
@@ -133,26 +132,26 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     const steps =
     [
       {
-        name: this.props.i18n.text.get("TODO step1"),
+        name: this.props.i18n.text.get("plugin.workspace.management.wizard.step1"),
         component: <Step1 {...props}/>
       },
       {
-        name: this.props.i18n.text.get("TODO step2"),
+        name: this.props.i18n.text.get("plugin.workspace.management.wizard.step2"),
         component: <Step2 {...props}/>
       },
       {
-        name: this.props.i18n.text.get("TODO step3"),
+        name: this.props.i18n.text.get("plugin.workspace.management.wizard.step3"),
         component: <Step3 {...props}/>
       },
       {
-        name: this.props.i18n.text.get("TODO step4"),
+        name: this.props.i18n.text.get("plugin.workspace.management.wizard.step4"),
         component: <Step4 {...props}/>
       }
     ]
     
     if (this.state.store.copyMaterials !== "NO") {
       steps.push({
-        name: this.props.i18n.text.get("TODO step5"),
+        name: this.props.i18n.text.get("plugin.workspace.management.wizard.step5"),
         component: <Step5 {...props}/>
       });
     }
@@ -160,26 +159,28 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     //The reason step 6 is twice is so that the user can review before
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({
-      name: this.props.i18n.text.get("TODO step6"),
+      name: this.props.i18n.text.get("plugin.workspace.management.wizard.step6"),
       component: <Step6 {...props}/>
     });
     steps.push({
-      name: this.props.i18n.text.get("TODO step6 final"),
+      name: this.props.i18n.text.get("plugin.workspace.management.wizard.finalStep"),
       component: <Step6 {...props}/>
     });
 
     // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
     return (
-      <div className='example'>
-        <div className='step-progress'>
+      <div className='wizard'>
+        <div className='wizard_container'>
           <StepZilla
             stepsNavigation={!this.state.locked}
             showNavigation={!this.state.locked}
             steps={steps}
             preventEnterSubmission={true}
             nextTextOnFinalActionStep={this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}
-            nextButtonText={this.props.i18n.text.get("TODO button next")}
-            backButtonText={this.props.i18n.text.get("TODO button back")}
+            nextButtonCls="button  button--primary-function-content"
+            backButtonCls="button  button--primary-function-content"
+            nextButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.next")}
+            backButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.last")}
             onStepChange={this.checkLastStep.bind(this, steps)}
            />
         </div>

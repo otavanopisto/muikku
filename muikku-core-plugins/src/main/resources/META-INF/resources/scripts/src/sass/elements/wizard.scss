@@ -1,0 +1,120 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+@mixin step-indicator {
+  border-radius: 20px;
+  height: 20px;
+  width: 20px;
+}
+
+@mixin step-title {
+  width: 20px;
+  margin-bottom: 14px;
+}
+
+
+.wizard {
+  
+  // These override the stepzilla plugin styles
+  
+  ol.progtrckr {
+    display: flex;
+    padding: 5px 0 25px 0;
+  }
+  
+  ol.progtrckr li {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 1;
+    justify-content: center;
+    line-height: normal;
+    position: relative;
+  }
+  
+  ol.progtrckr li span {
+    padding: 0;
+    display: none;
+    @include step-title;
+    @include breakpoint($breakpoint-mobile-xl) {
+      display: flex;
+    }
+  }
+  
+  .progtrckr em {
+    padding: 0;
+    display: flex;
+    font-weight: 700;
+    @include step-title;
+    @include breakpoint($breakpoint-mobile-xl)  {
+      display: none;
+    }
+  }
+  
+  
+  ol.progtrckr li.progtrckr-todo {
+    border-bottom: 4px solid silver;
+    color: silver;
+  }
+  
+  ol.progtrckr li.progtrckr-doing {
+    border-bottom: 4px solid #CCCCCC;
+    color: black;
+  }
+  
+  ol.progtrckr li.progtrckr-done {
+    border-bottom: 4px solid #5cb85c;
+    color: black;
+  }
+  
+  ol.progtrckr li:after {
+    content: "";
+  }
+  
+  ol.progtrckr li:before {
+    bottom: -12px;
+    left: 50%;
+    position: absolute;
+  }
+  
+  ol.progtrckr li.progtrckr-todo:before {
+    @include step-indicator;
+    background-color: #ededed;
+    color: silver;
+    content: "";
+    line-height: normal;
+  }
+  
+  ol.progtrckr li.progtrckr-todo:hover:before {
+    border: 2px solid #CCCCCC;    
+  }
+  
+  ol.progtrckr li.progtrckr-doing:before {
+    @include step-indicator;
+    background-color: #CCCCCC;
+    border: 2px solid #5cb85c;
+    color: white;
+    content: "";
+    line-height: normal;
+  }
+  
+  ol.progtrckr li.progtrckr-doing:hover:before {
+    color: #ff4500;
+  }
+  
+  ol.progtrckr li.progtrckr-done:before {
+    @include step-indicator;
+    background-color: #5cb85c;
+    content: "";
+    color: white;
+    line-height: normal;
+  }
+  
+  ol.progtrckr li.progtrckr-done:hover:before {
+    color: #333;
+  }
+  
+}

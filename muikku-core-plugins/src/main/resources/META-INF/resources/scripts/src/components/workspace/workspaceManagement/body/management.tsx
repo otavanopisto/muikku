@@ -11,7 +11,6 @@ import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 import equals = require("deep-equal");
 import CopyWizardDialog from "../dialogs/copy-wizard";
-
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/form-elements.scss';
@@ -496,8 +495,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
           </div>
          </section>
-
-
       </div>
       <div className="panel__footer"></div>
     </div>);
