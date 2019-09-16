@@ -33,15 +33,19 @@ export default class Step extends React.Component<StepProps, StepState> {
     });
   }
   render(){
-    return <div>
-      <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.label")}</h3>
-      <DatePicker className="form-element__input" onChange={this.updateStartDate}
-        maxDate={this.props.getStore().endDate}
-        locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().beginDate}/>
-      <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceEndDate.label")}</h3>
-      <DatePicker className="form-element__input" onChange={this.updateEndDate}
-        minDate={this.props.getStore().beginDate}
-        locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().endDate}/>
+    return <div className="wizard__content">
+      <div className="form-element form-element--wizard">
+        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.label")}</label>
+        <DatePicker className="form-element__input" onChange={this.updateStartDate}
+          maxDate={this.props.getStore().endDate}
+          locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().beginDate}/>
+       </div>
+      <div className="form-element form-element--wizard">
+        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceEndDate.label")}</label>
+        <DatePicker className="form-element__input" onChange={this.updateEndDate}
+          minDate={this.props.getStore().beginDate}
+          locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().endDate}/>
+      </div>
     </div>;
   }
 }

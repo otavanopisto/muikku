@@ -2,6 +2,7 @@ import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
+import '~/sass/elements/form-elements.scss';
 
 interface StepProps {
   workspace: WorkspaceType,
@@ -32,11 +33,15 @@ export default class Step extends React.Component<StepProps, StepState> {
     });
   }
   render(){
-    return <div>
-      <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceName.label")}</h3>
-      <input className="form-element" value={this.props.getStore().name} onChange={this.updateName}/>
-      <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</h3>
-      <input className="form-element" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
+    return <div className="wizard__content">
+      <div className="form-element form-element--wizard">
+        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceName.label")}</label>
+        <input className="form-element__input" value={this.props.getStore().name} onChange={this.updateName}/>
+      </div>
+      <div className="form-element form-element--wizard">
+        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
+        <input className="form-element__input" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
+      </div>
     </div>;
   }
 }

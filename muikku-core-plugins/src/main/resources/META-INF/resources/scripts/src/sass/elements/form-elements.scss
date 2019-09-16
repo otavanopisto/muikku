@@ -93,6 +93,10 @@
   margin: 10px 0 0;
 }
 
+.form-element--wizard {
+  padding: 10px;
+}
+
 .form-element__input {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
   -webkit-appearance: none;

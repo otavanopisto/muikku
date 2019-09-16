@@ -38,7 +38,7 @@ export default class Step extends React.Component<StepProps, StepState> {
     });
   }
   render(){
-    return <div>
+    return <div className="wizard__content">
       <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceOtherSettings.label")}</h3>
       
       <h4>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.label")}</h4>

@@ -28,7 +28,7 @@ export default class Step extends React.Component<StepProps, StepState> {
     const beginDate = this.props.getStore().beginDate;
     const endDate = this.props.getStore().endDate;
     const nameExtension = this.props.getStore().nameExtension;
-    return <div>
+    return <div className="wizard__content">
       <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.summaryPage.title")}</h3>
       
       <div>

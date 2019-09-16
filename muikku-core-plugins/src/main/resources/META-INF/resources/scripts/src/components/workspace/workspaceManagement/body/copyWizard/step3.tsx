@@ -27,9 +27,9 @@ export default class Step extends React.Component<StepProps, StepState> {
     });
   }
   render(){
-    return <div>
-      <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</h3>
-      <CKEditor width="100%" height="210"
+    return <div className="wizard__content">
+      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
+      <CKEditor width="100%"
         onChange={this.onDescriptionChange}>{this.props.getStore().description}</CKEditor>
     </div>;
   }

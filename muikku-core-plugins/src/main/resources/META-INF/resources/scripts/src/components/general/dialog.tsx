@@ -74,9 +74,11 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
               <div className="dialog__content">
                 {this.props.content(closePortal)}
               </div>
+              {this.props.footer?
               <div className="dialog__footer">
                 {this.props.footer && this.props.footer(closePortal)}
               </div>
+              : null}
           </div>
         </div>}}
     </Portal>);

@@ -80,6 +80,12 @@ $color-grade-passed: #2ed31c;
 $color-grade-failed: #4c4c4c;
 $color-task-evaluation: #e2ffe2;
 
+// Wizard
+
+$color-wizard-todo: $color-grade-not-assessed;
+$color-wizard-doing: $color-grade-incomplete;
+$color-wizard-done: $color-grade-passed;
+
 // Assignment & Exercise
 $color-assignment:#ce01bd;
 $color-exercise: #ff9900;
