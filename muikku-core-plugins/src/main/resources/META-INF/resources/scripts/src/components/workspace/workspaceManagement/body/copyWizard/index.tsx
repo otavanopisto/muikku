@@ -9,7 +9,6 @@ import Step5 from "./step5";
 import Step6 from "./step6";
 const StepZilla = require('react-stepzilla').default;
 import moment from "~/lib/moment";
-import '~/sass/elements/stepzilla.scss';
 import '~/sass/elements/wizard.scss';
 import { copyCurrentWorkspace, CopyCurrentWorkspaceTriggerType, CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import { connect, Dispatch } from "react-redux";
