@@ -70,8 +70,8 @@ export class Chat extends React.Component<Iprops, Istate> {
       receivedMUCMessages: [],
       availableMucRooms: [],
       chatBox:null,
-      showChatButton: true,
-      showControlBox: false,
+      showChatButton: null,
+      showControlBox: null,
       isStudent: false
     }
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -332,11 +332,16 @@ export class Chat extends React.Component<Iprops, Istate> {
         showControlBox: false,
         showChatButton: true
       });
+      
+      window.sessionStorage.setItem("showControlBox", "closed");
     } else {
       this.setState({
         showControlBox: true,
         showChatButton: false
       });
+      
+      window.sessionStorage.setItem("showControlBox", "opened");
+
     }
   }
 
@@ -397,7 +402,26 @@ export class Chat extends React.Component<Iprops, Istate> {
             }
           })
 
+          let chatControlBoxStatus = window.sessionStorage.getItem("showControlBox");
           
+          if (chatControlBoxStatus){
+              if (chatControlBoxStatus === "opened"){
+                  reactComponent.setState({
+                    showControlBox: true,
+                    showChatButton: false
+                   });
+              } else {
+                  reactComponent.setState({
+                    showControlBox: false,
+                    showChatButton: true
+                  });
+              }
+          } else {
+            reactComponent.setState({
+              showControlBox: false,
+              showChatButton: true
+            });
+          }
         });
       
       }, 

@@ -30,7 +30,8 @@ interface Istate {
     chat?: any,
     showChatbox?: Boolean,
     openChatSettings?: Boolean,
-    isStudent?: Boolean
+    isStudent?: Boolean,
+    openMucRoomJids?: any
 }
 
 declare namespace JSX {
@@ -73,9 +74,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         availableMucRooms: [],
         chatBox:null,
         chat: null,
-        showChatbox: false,
+        showChatbox: null,
         openChatSettings: false,
-        isStudent: false
+        isStudent: false,
+        openMucRoomJids: []
       }
       this.myRef = null;
       this.sendMessage = this.sendMessage.bind(this);
@@ -87,11 +89,19 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   
     openMucConversation (room: string) {
       
-      
       if (this.state.showChatbox === true){
         this.setState({
           showChatbox: false
         }); 
+        
+        const result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
+
+        const filteredChats = result.filter(function(item:any) {
+            return item !== room;
+        })
+        
+        window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
+        
         return;
       } else{
   
@@ -103,10 +113,18 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
   
         var reactComponent = this;
-  
+        
+        let list = [];
+        
+        const result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
+        
+        result.push(room);
+        
         reactComponent.setState({
           showChatbox: true
         });
+        
+        window.sessionStorage.setItem("openChats", JSON.stringify(result));
         
         let nick: string;
         
@@ -149,13 +167,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             'nick': 'pyramus-student-18',
             'publicroom': true
           }), false).then((chat: any) => {
-            console.log(chat);
+
   
             reactComponent.setState({
               chatBox: chat,
               groupMessages: []
             });
   
+
             if (chat.get('connection_status') === converse.ROOMSTATUS.ENTERED) {
               // We have restored a groupchat from session storage,
               // so we don't send out a presence stanza again.
@@ -381,6 +400,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
     componentDidMount (){
   
+      let reactComponent = this;
       let converse = this.props.converse;
   
       if (converse){
@@ -399,6 +419,27 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           roomName: chat.name,
           roomJid: chat.jid,
           isStudent: window.MUIKKU_IS_STUDENT
+        });
+      }
+      
+      
+      let chatBoxState = JSON.parse(window.sessionStorage.getItem("openChats"));
+
+      
+      
+      if (chatBoxState){
+        if (chatBoxState.includes(chat.jid)){
+          reactComponent.setState({
+            showChatbox: true
+          });
+         } else {
+           reactComponent.setState({
+             showChatbox: false
+           });
+         }
+      } else {
+        reactComponent.setState({
+          showChatbox: false
         });
       }
       
