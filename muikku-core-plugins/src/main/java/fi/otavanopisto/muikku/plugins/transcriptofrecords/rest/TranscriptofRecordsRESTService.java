@@ -35,7 +35,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserEntityProperty;
+import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
@@ -249,8 +249,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return null;
     }
-    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
-    UserEntityProperty hopsProperty = userEntityController.getUserEntityPropertyByKey(userEntity, "hops");
+    UserIdentifierProperty hopsProperty = userEntityController.getUserIdentifierPropertyByKey(userIdentifier.getIdentifier(), "hops");
     if (hopsProperty != null && !StringUtils.isBlank(hopsProperty.getValue())) {
       try {
         return new ObjectMapper().readValue(hopsProperty.getValue(), HopsRESTModel.class);
@@ -412,7 +411,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     
     try {
-      userEntityController.setUserEntityProperty(sessionController.getLoggedUserEntity(), "hops", new ObjectMapper().writeValueAsString(model));
+      userEntityController.setUserIdentifierProperty(userIdentifier.getIdentifier(), "hops", new ObjectMapper().writeValueAsString(model));
     }
     catch (Exception e) {
       logger.log(Level.SEVERE, "Error serializing HOPS form", e);
