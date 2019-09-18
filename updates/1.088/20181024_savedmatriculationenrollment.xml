@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  
+  <sql>
+    alter table SavedMatriculationEnrollment add column examId bigint not null;
+  </sql>
+  <sql>
+    alter table SentMatriculationEnrollment add column examId bigint not null;
+  </sql>
+  <sql>
+    alter table SavedMatriculationEnrollment add constraint UK2rfxdc2qt78xuw3hwyvejwr4f unique (examId, userIdentifier);
+  </sql>
+  <sql>
+    alter table SentMatriculationEnrollment add constraint UK9fmfa1u6xrdil6n51llgagyfa unique (examId, userIdentifier);
+  </sql>
+
+  <sql>
+    update SavedMatriculationEnrollment set examId = 1;
+  </sql>
+  <sql>
+    update SentMatriculationEnrollment set examId = 1;
+  </sql>
+  
+</update>

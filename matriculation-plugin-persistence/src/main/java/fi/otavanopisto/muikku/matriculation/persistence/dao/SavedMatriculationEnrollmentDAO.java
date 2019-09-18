@@ -14,14 +14,15 @@ public class SavedMatriculationEnrollmentDAO extends MatriculationPluginDAO<Save
   private static final long serialVersionUID = 7506613764993681620L;
 
   public SavedMatriculationEnrollment create(
-    SchoolDataIdentifier userIdentifier,
-    String savedEnrollmentJson
+      Long examId,
+      SchoolDataIdentifier userIdentifier,
+      String savedEnrollmentJson
   ) {
     SavedMatriculationEnrollment savedEnrollment = new SavedMatriculationEnrollment();
+    savedEnrollment.setExamId(examId);
     savedEnrollment.setUserIdentifier(userIdentifier);
     savedEnrollment.setSavedEnrollmentJson(savedEnrollmentJson);
-    getEntityManager().persist(savedEnrollment);
-    return savedEnrollment;
+    return persist(savedEnrollment);
   }
 
   public SavedMatriculationEnrollment updateSavedEnrollmentJson(
@@ -29,11 +30,10 @@ public class SavedMatriculationEnrollmentDAO extends MatriculationPluginDAO<Save
     String savedEnrollmentJson
   ) {
     savedEnrollment.setSavedEnrollmentJson(savedEnrollmentJson);
-    getEntityManager().persist(savedEnrollment);
-    return savedEnrollment;
+    return persist(savedEnrollment);
   }
   
-  public SavedMatriculationEnrollment findByUser(SchoolDataIdentifier userIdentifier) {
+  public SavedMatriculationEnrollment findByUser(Long examId, SchoolDataIdentifier userIdentifier) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -41,7 +41,10 @@ public class SavedMatriculationEnrollmentDAO extends MatriculationPluginDAO<Save
     Root<SavedMatriculationEnrollment> root = criteria.from(SavedMatriculationEnrollment.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(SavedMatriculationEnrollment_.userIdentifier), userIdentifier.toId())
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(SavedMatriculationEnrollment_.examId), examId),
+            criteriaBuilder.equal(root.get(SavedMatriculationEnrollment_.userIdentifier), userIdentifier.toId())
+        )
     );
     
     return getSingleResult(entityManager.createQuery(criteria));
