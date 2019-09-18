@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -33,6 +35,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
@@ -69,6 +72,9 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -6752333351301485518L;
+
+  @Inject
+  private Logger logger;
 
   @Inject
   private TranscriptOfRecordsController transcriptOfRecordsController;
@@ -175,6 +181,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     User student = userController.findUserByIdentifier(studentIdentifier);
     
+    // TODO Refactor hops.enabled from Pyramus to Muikku?
     if (!transcriptOfRecordsController.shouldShowStudies(student)) {
       VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
@@ -238,42 +245,52 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
 
   private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
-    User user = userController.findUserByIdentifier(userIdentifier);
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
-
     if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return null;
     }
-
-    TranscriptofRecordsUserProperties userProperties = transcriptOfRecordsController.loadUserProperties(user);
-    
-    return new HopsRESTModel(
-        userProperties.asString("goalSecondarySchoolDegree"),
-        userProperties.asString("goalMatriculationExam"),
-        userProperties.asString("vocationalYears"),
-        userProperties.asString("goalJustMatriculationExam"),
-        userProperties.asString("justTransferCredits"),
-        userProperties.asString("transferCreditYears"),
-        userProperties.asString("completionYears"),
-        userProperties.asString("mathSyllabus"),
-        userProperties.asString("finnish"),
-        userProperties.asBoolean("swedish"),
-        userProperties.asBoolean("english"),
-        userProperties.asBoolean("german"),
-        userProperties.asBoolean("french"),
-        userProperties.asBoolean("italian"),
-        userProperties.asBoolean("spanish"),
-        userProperties.asString("science"),
-        userProperties.asString("religion"),
-        userProperties.asString("additionalInfo"),
-        userProperties.getStudentMatriculationSubjects()
-    );
+    UserIdentifierProperty hopsProperty = userEntityController.getUserIdentifierPropertyByKey(userIdentifier.getIdentifier(), "hops");
+    if (hopsProperty != null && !StringUtils.isBlank(hopsProperty.getValue())) {
+      try {
+        return new ObjectMapper().readValue(hopsProperty.getValue(), HopsRESTModel.class);
+      }
+      catch (Exception e) {
+        logger.log(Level.SEVERE, "Error deserializing HOPS form", e);
+      }
+    }
+    else {
+      // TODO Fallback functionality to retrieve old HOPS forms from Pyramus 
+      User user = userController.findUserByIdentifier(userIdentifier);
+      TranscriptofRecordsUserProperties userProperties = transcriptOfRecordsController.loadUserProperties(user);
+      return new HopsRESTModel(
+          userProperties.asString("goalSecondarySchoolDegree"),
+          userProperties.asString("goalMatriculationExam"),
+          userProperties.asString("vocationalYears"),
+          userProperties.asString("goalJustMatriculationExam"),
+          userProperties.asString("justTransferCredits"),
+          userProperties.asString("transferCreditYears"),
+          userProperties.asString("completionYears"),
+          userProperties.asString("mathSyllabus"),
+          userProperties.asString("finnish"),
+          userProperties.asBoolean("swedish"),
+          userProperties.asBoolean("english"),
+          userProperties.asBoolean("german"),
+          userProperties.asBoolean("french"),
+          userProperties.asBoolean("italian"),
+          userProperties.asBoolean("spanish"),
+          userProperties.asString("science"),
+          userProperties.asString("religion"),
+          userProperties.asString("additionalInfo"),
+          userProperties.getStudentMatriculationSubjects()
+      );
+    }
+    return new HopsRESTModel();
   }
-
+  
   @GET
   @Path("/hops")
   @RESTPermit(handling=Handling.INLINE)
-  public Response retrieveForm(){
+  public Response retrieveHops(){
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
@@ -293,7 +310,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @GET
   @Path("/hops/{USERIDENTIFIER}")
   @RESTPermit(handling=Handling.INLINE)
-  public Response retrieveForm(@PathParam("USERIDENTIFIER") String userIdentifierString){
+  public Response retrieveHops(@PathParam("USERIDENTIFIER") String userIdentifierString){
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
@@ -310,6 +327,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     User user = userController.findUserByIdentifier(userIdentifier);
 
+    // TODO Refactor hops.enabled from Pyramus to Muikku?
     if (!transcriptOfRecordsController.shouldShowStudies(user)) {
       return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
     }
@@ -387,32 +405,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    User user = userController.findUserByIdentifier(userIdentifier);
     EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
-
     if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
+    
+    try {
+      userEntityController.setUserIdentifierProperty(userIdentifier.getIdentifier(), "hops", new ObjectMapper().writeValueAsString(model));
+    }
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Error serializing HOPS form", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error serializing HOPS form").build();
+    }
 
-    transcriptOfRecordsController.saveStringProperty(user, "goalSecondarySchoolDegree", model.getGoalSecondarySchoolDegree());
-    transcriptOfRecordsController.saveStringProperty(user, "goalMatriculationExam", model.getGoalMatriculationExam());
-    transcriptOfRecordsController.saveStringProperty(user, "vocationalYears", model.getVocationalYears());
-    transcriptOfRecordsController.saveStringProperty(user, "goalJustMatriculationExam", model.getGoalJustMatriculationExam());
-    transcriptOfRecordsController.saveStringProperty(user, "justTransferCredits", model.getJustTransferCredits());
-    transcriptOfRecordsController.saveStringProperty(user, "transferCreditYears", model.getTransferCreditYears());
-    transcriptOfRecordsController.saveStringProperty(user, "completionYears", model.getCompletionYears());
-    transcriptOfRecordsController.saveStringProperty(user, "mathSyllabus", model.getMathSyllabus());
-    transcriptOfRecordsController.saveStringProperty(user, "finnish", model.getFinnish());
-    transcriptOfRecordsController.saveBoolProperty(user, "swedish", model.isSwedish());
-    transcriptOfRecordsController.saveBoolProperty(user, "english", model.isEnglish());
-    transcriptOfRecordsController.saveBoolProperty(user, "german", model.isGerman());
-    transcriptOfRecordsController.saveBoolProperty(user, "french", model.isFrench());
-    transcriptOfRecordsController.saveBoolProperty(user, "italian", model.isItalian());
-    transcriptOfRecordsController.saveBoolProperty(user, "spanish", model.isSpanish());
-    transcriptOfRecordsController.saveStringProperty(user, "science", model.getScience());
-    transcriptOfRecordsController.saveStringProperty(user, "religion", model.getReligion());
-    transcriptOfRecordsController.saveStringProperty(user, "additionalInfo", model.getAdditionalInfo());
-    transcriptOfRecordsController.saveStudentMatriculationSubjects(user, model.getStudentMatriculationSubjects());
     return Response.ok().entity(model).build();
   }
   

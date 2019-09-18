@@ -20,11 +20,13 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserEmailEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityPropertyDAO;
+import fi.otavanopisto.muikku.dao.users.UserIdentifierPropertyDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
+import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -41,6 +43,9 @@ public class UserEntityController implements Serializable {
 
   @Inject
   private UserEntityPropertyDAO userEntityPropertyDAO;
+
+  @Inject
+  private UserIdentifierPropertyDAO userIdentifierPropertyDAO;
   
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -73,6 +78,10 @@ public class UserEntityController implements Serializable {
     return userEntityPropertyDAO.findByUserEntityAndKey(userEntity, key);
   }
 
+  public UserIdentifierProperty getUserIdentifierPropertyByKey(String identifier, String key) {
+    return userIdentifierPropertyDAO.findByIdentifierAndKey(identifier, key);
+  }
+
   public List<UserEntityProperty> listUserEntityProperties(UserEntity userEntity) {
     return userEntityPropertyDAO.listByUserEntity(userEntity);
   }
@@ -91,6 +100,22 @@ public class UserEntityController implements Serializable {
       }
     }
     return userEntityProperty;
+  }
+
+  public UserIdentifierProperty setUserIdentifierProperty(String identifier, String key, String value) {
+    UserIdentifierProperty userIdentifierProperty = getUserIdentifierPropertyByKey(identifier, key);
+    if (userIdentifierProperty == null) {
+      userIdentifierProperty = userIdentifierPropertyDAO.create(identifier, key, value);
+    }
+    else {
+      if (StringUtils.isEmpty(value)) {
+        userIdentifierPropertyDAO.delete(userIdentifierProperty);
+      }
+      else {
+        userIdentifierPropertyDAO.updateValue(userIdentifierProperty, value);
+      }
+    }
+    return userIdentifierProperty;
   }
 
   public UserEntity findUserEntityByUser(User user) {
