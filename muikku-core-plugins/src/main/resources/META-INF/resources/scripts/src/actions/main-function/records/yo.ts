@@ -26,18 +26,22 @@ let updateYO:updateYOTriggerType = function updateYO() {
    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
 
-    let examAvailableDate:any = await promisify(mApi().matriculation.currentExam.read({
-    }), 'callback')();
+//    let examAvailableDate:any = await promisify(mApi().matriculation.currentExam.read({
+//    }), 'callback')();
+
+
+    let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
+    
     
     let now: Number = new Date().getTime();
     
-    let examAvailable = examAvailableDate && examAvailableDate.starts <= now && examAvailableDate.ends >= now ? true : false;
+//    let examAvailable = examAvailableDate && examAvailableDate.starts <= now && examAvailableDate.ends >= now ? true : false;
+//    starts : new Date(examAvailableDate.starts).toLocaleDateString("fi-FI"),
+//    ends : new Date(examAvailableDate.ends).toLocaleDateString("fi-FI")
+    
+    
+    let matriculationExamData:any = await promisify (mApi().matriculation.exams.read({}), 'callback')();
 
-    let matriculationExamData = {
-       available :  examAvailable,
-       starts : new Date(examAvailableDate.starts).toLocaleDateString("fi-FI"),
-       ends : new Date(examAvailableDate.ends).toLocaleDateString("fi-FI")
-    };
       dispatch({
         type: 'UPDATE_STUDIES_YO',
         payload: matriculationExamData
@@ -48,7 +52,6 @@ let updateYO:updateYOTriggerType = function updateYO() {
         payload: <YOStatusType>"LOADING"
       });
       
-
       
       let subjects:YOMatriculationSubjectType = await promisify(mApi().records.matriculationSubjects.read({
           matriculationSubjectsLoaded: true

@@ -4,9 +4,11 @@ export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 
 export interface YOEnrollmentType{
- available: boolean
- starts: string
- ends: string
+ id: number,
+ enrolled: boolean,
+ eligible: boolean,
+ starts: string,
+ ends: string,
 }
 
 export interface YOEligibilityType {
@@ -18,7 +20,7 @@ export interface YOEligibilityType {
 
 export interface YOType {
   status: YOStatusType,
-  enrollment: YOEnrollmentType,
+  enrollment: Array<YOEnrollmentType>,
   subjects: Array<YOMatriculationSubjectType>,
   eligibility: YOEligibilityType,
   eligibilityStatus: YOEligibilityStatusType

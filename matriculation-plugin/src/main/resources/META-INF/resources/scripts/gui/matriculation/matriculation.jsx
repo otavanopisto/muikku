@@ -37,7 +37,9 @@ const SUBJECT_MAP = {
   "ITC": "Italia, C-taso",
   "POC": "Portugali, C-taso",
   "LAC": "Latina, C-taso",
-  "SMC": "Saame, C-taso"
+  "SM_DC": "Pohjoissaame, C-taso",
+  "SM_ICC": "Inarinsaame, C-taso",
+  "SM_QC": "Koltansaame, C-taso"
 };
 
 const Page1 = (props) => (
@@ -254,7 +256,7 @@ const Page2 = (props) => (
         </div>
         <div className="pure-u-1-2">
           <label style={{paddingTop: "0.7rem"}} >Aloitan tutkinnon suorittamisen uudelleen&nbsp;
-            <input value={props.restartExam} type="checkbox" />
+            <input onClick={({target}) => {props.setRestartExam(target.checked);}} checked={props.restartExam} type="checkbox" />
           </label>
         </div>
       </div>
@@ -290,7 +292,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -343,7 +345,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-5">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -383,7 +385,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -508,13 +510,115 @@ const Page3 = (props) => (
   </div>
 );
 
-const Page4 = ({}) => (
-  <div>
-    <h1>Ilmoittautuminen ylioppilaskirjoituksiin lähetetty</h1>
-    <p>Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.</p>
-    <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
-  </div>
+const Page4 = (props) => (
+  {
+    "PENDING": <div />,
+    "IN_PROGRESS":
+      <div>
+        <h1>Lomaketta tallennetaan</h1>
+        <p>Lomakkeen tietoja tallennetaan, odota hetki.</p>
+      </div>,
+    "SUCCESS": 
+      <div>
+        <h1>Ilmoittautuminen ylioppilaskirjoituksiin lähetetty</h1>
+        <p>Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.</p>
+        <p>Tulosta lomake, allekirjoita ja päivää se ja lähetä skannattuna riikka.turpeinen@otavia.fi tai kirjeitse Otavia/Nettilukio, Otavantie 2B, 50670 Otava.</p>
+        <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
+      </div>,
+    "FAILED": 
+      <div>
+        <h1>Lomakkeen tallennus epäonnistui</h1>
+        <p>Lomakkeen tietojen tallennus epäonnistui. Varmista, että olet kirjautunut sisään palaamalla lomakkeelle uudelleen Muikun kautta.</p>
+      </div>
+  }[props.saveState]
 );
+
+class DraftListener extends React.Component {
+  constructor() {
+    super();
+    this.draftTimeout = undefined;
+    this.draftedFields = [
+      "changedContactInfo",
+      "guider",
+      "enrollAs",
+      "degreeType",
+      "numMandatoryCourses",
+      "restartExam",
+      "message",
+      "location",
+      "canPublishName",
+      "enrolledAttendances",
+      "plannedAttendances",
+      "finishedAttendances"
+    ];
+  }
+  
+  componentDidMount() {
+  }
+  
+  componentDidUpdate() {
+    this.resetDraftTimeout();
+  }
+  
+  shouldComponentUpdate(nextProps, nextState) {
+    return !this.comparePropertiesEqual(this.props, nextProps, this.draftedFields);
+  }
+  
+  comparePropertiesEqual(a, b, properties) {
+    for (let i = 0; i < properties.length; i++) {
+      let p = properties[i];
+      if (!(a[p] === b[p])) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  resetDraftTimeout() {
+    if (this.props.initialized) {
+      if (this.draftTimeout) {
+        clearTimeout(this.draftTimeout);
+        this.draftTimeout = undefined;
+      }
+      this.draftTimeout = setTimeout(() => {
+        this.saveDraft();
+        this.draftTimeout = undefined;
+      },
+      5000);
+    }
+  }
+
+  saveDraft() {
+    let matriculationForm = {};
+    this.draftedFields.forEach((field) => {
+      matriculationForm[field] = this.props[field];
+    });
+    
+    fetch(`/rest/matriculation/exams/${this.props.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      body: JSON.stringify(matriculationForm)
+    })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error();
+      }
+    })
+    .catch((error) => {
+      let errMsg = 'Lomakkeen välitallennus epäonnistui, palaa Muikun etusivulle ja varmista, että olet kirjautunut sisään.';
+      this.props.onError(errMsg);
+    });
+  }
+
+  render() {
+    return null;
+  }
+}
 
 class App extends React.Component {
 
@@ -523,7 +627,9 @@ class App extends React.Component {
     const date = new Date();
     // Use strings for boolean choices because they work well with <select>s
     this.state = {
+      examId: MATRICULATION_EXAM_ID,
       page: 1,
+      saveState: "PENDING",
       name: "",
       ssn: "",
       email: "",
@@ -537,6 +643,7 @@ class App extends React.Component {
       enrollAs: "UPPERSECONDARY",
       degreeType: "MATRICULATIONEXAMINATION",
       numMandatoryCourses: "",
+      restartExam: false,
       location: "Mikkeli",
       message: "",
       studentIdentifier: "",
@@ -548,7 +655,7 @@ class App extends React.Component {
       date: date.getDate() + "."
             + (date.getMonth() + 1) + "."
             + date.getFullYear(),
-      lastSave: date.getTime()
+      draftTimeout: undefined
     };
     
     this.isConflictingMandatory = this.isConflictingMandatory.bind(this);
@@ -556,19 +663,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/rest/matriculation/initialData/${MUIKKU_LOGGED_USER}`)
+    fetch(`/rest/matriculation/exams/${this.state.examId}/initialData/${MUIKKU_LOGGED_USER}`)
       .then((response) => {
         return response.json();
       })
       .then((data) => {
         this.setState(data);
-        this.setState({initialized: true});
         this.fetchSavedEnrollment();
       });
   }
 
   fetchSavedEnrollment() {
-    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`)
+    fetch(`/rest/matriculation/exams/${this.state.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`)
       .then((response) => {
         if (response.status == 404) {
           return "{}";
@@ -577,7 +683,7 @@ class App extends React.Component {
         }
       })
       .then((data) => {
-        this.setState(data);
+        this.setState(Object.assign(data, { initialized: true }));
       });
   }
 
@@ -926,6 +1032,7 @@ class App extends React.Component {
   }
 
   submit() {
+    this.setState({ saveState: "IN_PROGRESS" });
     let message = this.state.message;
     if (this.state.changedContactInfo) {
       message = "Yhteystiedot:\n"
@@ -933,13 +1040,14 @@ class App extends React.Component {
         + "\n\n"
         + this.state.message;
     }
-    fetch("/rest/matriculation/enrollments", {
+    fetch(`/rest/matriculation/exams/${this.state.examId}/enrollments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
       },
       body: JSON.stringify(
         {
+          examId: this.state.examId,
           name: this.state.name,
           ssn: this.state.ssn,
           email: this.state.email,
@@ -950,6 +1058,7 @@ class App extends React.Component {
           guider: this.state.guider,
           enrollAs: this.state.enrollAs,
           degreeType: this.state.degreeType,
+          restartExam: this.state.restartExam,
           numMandatoryCourses: this.state.numMandatoryCourses ? Number(this.state.numMandatoryCourses) : null,
           location: this.state.location,
           message: message,
@@ -971,40 +1080,17 @@ class App extends React.Component {
           }))
         }
       )
-    }).then(function (response) {
-      if (!response.ok) {
-        this.setState({error: response.text()});
+    })
+    .then((response) => {
+      if (response.ok) {
+        this.setState({ saveState: "SUCCESS" });
+      } else {
+        throw new Error();
       }
+    })
+    .catch((error) => {
+      this.setState({ saveState: "FAILED" });
     });
-  }
-
-  setState(state) {
-    super.setState(state);
-    if (new Date().getTime() - this.state.lastSave > 5000) {
-      fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8"
-        },
-        body: JSON.stringify({
-          changedContactInfo: this.state.changedContactInfo,
-          guider: this.state.guider,
-          enrollAs: this.state.enrollAs,
-          degreeType: this.state.degreeType,
-          numMandatoryCourses: this.state.numMandatoryCourses,
-          enrolledAttendances: this.state.enrolledAttendances,
-          plannedAttendances: this.state.plannedAttendances,
-          finishedAttendances: this.state.finishedAttendances
-        })
-      })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        this.setState(data);
-      });
-      super.setState({lastSave: new Date().getTime()});
-    }
   }
 
   render() {
@@ -1013,8 +1099,10 @@ class App extends React.Component {
     }
     return (
       <React.Fragment>
+        <DraftListener {...this.state}
+          onError={(errorMsg) => {this.setState({error: errorMsg})}}/>
         {this.state.error
-          ? <div class="error">{this.state.error}</div>
+          ? <div className="error-wrapper"><div className="error-overlay"></div><div className="error">{this.state.error} <div><a href="/" className="back-to-frontpage">Muikun etusivulle</a></div></div></div>
           : null}
         <form className="pure-form pure-form-stacked matriculation-form" onSubmit={(e) => {e.preventDefault();}}>
           {/* Page 1 of the wizard contains an introductory text */}
@@ -1030,6 +1118,7 @@ class App extends React.Component {
                   setGuider={(value) => { this.setState({guider : value}); }}
                   setEnrollAs={(value) => { this.setState({enrollAs : value}); }}
                   setDegreeType={(value) => { this.setState({degreeType : value}); }}
+                  setRestartExam={(value) => { this.setState({restartExam : value}); }}
                   setNumMandatoryCourses={(value) => { this.setState({numMandatoryCourses : value}); }}
                   setPage={(page) => {this.setState({page});}}
                   newEnrolledAttendance={() => {this.newEnrolledAttendance();}}
@@ -1071,7 +1160,7 @@ class App extends React.Component {
                 />
               : null }
           { this.state.page === 4
-              ? <Page4
+              ? <Page4 {...this.state}
                 />
               : null }
         </form>
