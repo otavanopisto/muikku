@@ -182,7 +182,7 @@
 
 .content-panel__chapter {
   margin: 20px 0 0 0;
-  
+
   &:first-child {
     margin: 0;
   }
@@ -200,9 +200,10 @@
   margin: 0 0 -1px;
   padding: 10px;
   position: relative;
-  
+  z-index: 2;
+
   &.content-panel__chapter-title--hidden {
-  	opacity: 0.5;
+    opacity: 0.5;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -228,14 +229,29 @@
 }
 
 .content-panel__navigation-open {
+  align-items: center;
+  background: $color-info;
+  border: 1px solid $color-default;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  box-shadow: -2px 0 5px $color-mobile-toc-default-shadow;
+  cursor: pointer;
+  display: flex;
+  height: 2.5rem;
+  justify-content: center;
   position: fixed;
-  top: 100px;
-  right: 10px;
-  background-color: red;
-  width: 25px;
-  height: 25px;
+  right: -1px;
+  top: 65px;
+  width: 1.75rem;
+  z-index: 10;
 
   @include breakpoint($breakpoint-desktop) {
     display: none;
+  }
+
+  .icon-arrow-left-thin {
+    color: $color-default;
+    font-size: 1.125rem;
+    padding: 0 0 0 3px;
   }
 }
