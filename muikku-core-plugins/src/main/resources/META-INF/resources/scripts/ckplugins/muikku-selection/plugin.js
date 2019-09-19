@@ -62,6 +62,7 @@
               uiElement.append(titleContainer);
               
               var optionLabel = new CKEDITOR.dom.element('label');
+              optionLabel.addClass('items-label');
               optionLabel.setText(this.label);
               titleContainer.append(optionLabel);
               
@@ -124,9 +125,11 @@
             this.optionNames.push(optionName);
           optionNameField.setValue(optionName ? optionName : this.getUniqueOptionName());
           var optionTextField = new CKEDITOR.dom.element('input');
+          optionTextField.addClass('cke_dialog_ui_input_text');
           optionTextField.setAttribute('name', 'optionText');
           optionTextField.setAttribute('type', 'text');
           var optionCorrectField = new CKEDITOR.dom.element('input');
+          optionCorrectField.addClass('cke_dialog_ui_checkbox_input');
           optionCorrectField.setAttribute('name', 'optionCorrect');
           optionCorrectField.setAttribute('type', 'checkbox');
           optionsContainer.append(optionContainer);

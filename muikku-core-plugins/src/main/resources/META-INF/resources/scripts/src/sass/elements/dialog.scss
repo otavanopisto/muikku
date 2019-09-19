@@ -26,7 +26,6 @@
   
 }
 
-
 .dialog__window {
   background-color: $color-dialog-default-background;
   bottom: 0;
@@ -41,6 +40,7 @@
   @include breakpoint($breakpoint-pad) {
     border-radius: 2px;
     bottom: auto;
+    box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-size: $text-desktop-font-size;
     left: auto;
     max-width: 450px;
@@ -48,15 +48,10 @@
     right: auto;
     top: auto;
   }
-
-  @include breakpoint($breakpoint-pad) {
-    box-shadow: 0 0 80px $color-dialog-default-shadow;
-  }
 }
 
 .dialog__window--wizard {
 
-  
   @include breakpoint($breakpoint-pad) {
     width:80%;
     max-width: none;
@@ -146,10 +141,9 @@
   line-height: $dialog-button-close-height;
   margin-top: -#{$dialog-button-close-height / 2};
   position: absolute;
-  right: 10px;
+  right: 5px;
   text-align: center;
   top: 50%;
-  vertical-align: center;
   width: $dialog-button-close-height;
 }
 

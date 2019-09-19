@@ -144,7 +144,7 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
               }</div>
             </nav>}
 
-            {this.props.navigation && <div className="content-panel__navigation-open" onClick={this.openNavigation}/>}
+            {this.props.navigation && <div className="content-panel__navigation-open" onClick={this.openNavigation}><span className="icon-arrow-left-thin"></span></div>}
           </div>
         </div>
       </div>

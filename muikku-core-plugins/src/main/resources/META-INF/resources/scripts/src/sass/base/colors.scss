@@ -105,6 +105,8 @@ $color-taskfield-explanation-background: #fafeff;
 $color-taskfield-hint-border: #d6d823;
 $color-taskfield-hint-background: #ffffe1;
 
+$color-mobile-toc-default-shadow: rgba(0, 0, 0, 0.2);
+
 // Material management
 $color-material-edit-panel-shadow: rgba(0, 0, 0, 0.7);
 $color-material-page-admin-panel-main-color: #5db5c5;
@@ -467,7 +469,6 @@ $color-subpanel-border: #e0e0e0;
 
 
 // TAB
-
 $color-tab-blur-background: #f5f5f5;
 $color-tab-blur-font: #9a9a9a;
 $color-tab-focus-background: $color-default;
