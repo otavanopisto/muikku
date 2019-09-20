@@ -385,10 +385,16 @@
 }
 
 // Button that appears inside views component
+
 .button--primary-function-content {
   background-color: $color-button-primary-background;
   color: $color-button-primary-text;
   display: inline-flex;
+  border: none;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
 
   &:hover,
   &.hover {

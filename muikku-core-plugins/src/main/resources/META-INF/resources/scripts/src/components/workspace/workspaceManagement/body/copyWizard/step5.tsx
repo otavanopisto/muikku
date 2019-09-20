@@ -27,12 +27,12 @@ export default class Step extends React.Component<StepProps, StepState> {
   }
   render(){
     return <div className="wizard__content">
-      <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.label")}</h3>
+      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.label")}</label>
       
-      <h4>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label")}</h4>
+      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label")}</label>
       <input type="radio" name="workspace-materials-clone-or-link"
         className="form-field" onChange={this.switchBetweenCloneAndLink} checked={this.props.getStore().copyMaterials === "CLONE"}/>
-      <h4>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label")}</h4>
+      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label")}</label>
       <input type="radio" name="workspace-materials-clone-or-link" 
         className="form-field" onChange={this.switchBetweenCloneAndLink} checked={this.props.getStore().copyMaterials === "LINK"}/>
     </div>;

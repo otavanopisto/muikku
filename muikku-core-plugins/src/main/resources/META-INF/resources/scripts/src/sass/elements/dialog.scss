@@ -53,7 +53,7 @@
 .dialog__window--wizard {
 
   @include breakpoint($breakpoint-pad) {
-    width:80%;
+    width: 60%;
     max-width: none;
   }
 }

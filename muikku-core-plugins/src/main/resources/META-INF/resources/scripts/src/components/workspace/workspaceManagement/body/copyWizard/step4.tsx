@@ -39,13 +39,13 @@ export default class Step extends React.Component<StepProps, StepState> {
   }
   render(){
     return <div className="wizard__content">
-      <h3>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceOtherSettings.label")}</h3>
+      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceOtherSettings.label")}</label>
       
-      <h4>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.label")}</h4>
+      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.label")}</label>
       <input type="checkbox" className="form-field" onChange={this.toggleCopyMaterials} checked={this.props.getStore().copyMaterials !== "NO"}/>
-      <h4>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceFiles.label")}</h4>
+      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceFiles.label")}</label>
       <input type="checkbox" className="form-field" onChange={this.toggleCopyBackgroundPicture} checked={this.props.getStore().copyBackgroundPicture}/>
-      <h4>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDiscussionsAreas.label")}</h4>
+      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDiscussionsAreas.label")}</label>
       <input type="checkbox" className="form-field" onChange={this.toggleCopyDiscussionAreas} checked={this.props.getStore().copyDiscussionAreas}/>
     </div>;
   }
