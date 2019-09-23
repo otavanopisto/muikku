@@ -543,6 +543,27 @@
   }
 }
 
+.application-list__item-header-main-content--journal-entry-creator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0 0 0 15px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    font-weight: 400;
+  }
+}
+
+.application-list__item-header-main-content--journal-entry-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+}
+
 .application-list__item-header-aside {
   align-items: center;
   display: flex;
@@ -570,6 +591,28 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+}
+
+// Journal
+.application-list__item-header--journal-entry {
+  flex-flow: row wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+}
+
+.application-list__item-content-header--journal-entry {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    padding: 10px 0;
+  }
+}
+
+.application-list__item-content-body--journal-entry {
+  padding: 0;
 }
 
 

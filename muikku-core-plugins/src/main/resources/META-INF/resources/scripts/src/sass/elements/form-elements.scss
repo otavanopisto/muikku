@@ -66,6 +66,10 @@
   width: auto;
 }
 
+.form-element--main-action {
+  @include form-element-toolbar;
+}
+
 .form-element--guider-toolbar {
   @include form-element-toolbar;
 }

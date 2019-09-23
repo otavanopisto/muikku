@@ -1,6 +1,7 @@
 import WorkspaceNavbar from '~/components/base/workspace/navbar';
 import ScreenContainer from '~/components/general/screen-container';
 import Application from './body/application';
+import Aside from './body/aside';
 
 import * as React from 'react';
 
@@ -24,10 +25,11 @@ export default class WorkspaceJournalBody extends React.Component<WorkspaceJourn
     (this.refs.content as any).getWrappedInstance().refresh();
   }
   render(){
+    let aside = <Aside />
     return (<div>
       <WorkspaceNavbar activeTrail="journal" workspaceUrl={this.props.workspaceUrl}/>
       <ScreenContainer viewModifiers="journal">
-        <Application />
+        <Application aside={aside}/>
       </ScreenContainer>
     </div>);
   }
