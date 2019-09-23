@@ -53,12 +53,8 @@ class Journal extends React.Component<JournalProps, JournalState>{
         <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text" dangerouslySetInnerHTML={{__html: this.props.journal.content}}></article>
       </ApplicationListItemBody>
       {this.props.journal.userEntityId === this.props.status.userId ? <ApplicationListItemFooter className="application-list__item-footer--journal-entry">
-        <EditJournal journal={this.props.journal}><Button buttonModifiers={["primary-function-content ", "workspace-journals-action"]}>
-          {this.props.i18n.text.get("plugin.workspace.journal.editEntryButton.label")}
-        </Button></EditJournal>
-        <DeleteJournal journal={this.props.journal}><Button buttonModifiers={["primary-function-content ", "workspace-journals-action"]}>
-          {this.props.i18n.text.get("plugin.workspace.journal.deleteEntryButton.label")}
-        </Button></DeleteJournal>
+        <EditJournal journal={this.props.journal}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.workspace.journal.editEntryButton.label")}</Link></EditJournal>
+        <DeleteJournal journal={this.props.journal}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.workspace.journal.deleteEntryButton.label")}</Link></DeleteJournal>
       </ApplicationListItemFooter> : null}
     </ApplicationListItem>
   }
