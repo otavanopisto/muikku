@@ -36,7 +36,7 @@ interface WorkspaceJournalApplicationState {
 class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplicationProps, WorkspaceJournalApplicationState> {
   constructor(props: WorkspaceJournalApplicationProps){
     super(props);
-    
+
     this.onWorkspaceJournalFilterChange = this.onWorkspaceJournalFilterChange.bind(this);
   }
 
@@ -50,8 +50,7 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
     let primaryOption;
     if (this.props.workspace){
       primaryOption = <div className="form-element form-element--main-action"> 
-        {!this.props.status.isStudent ?
-          this.props.workspace.journals ?
+        {!this.props.status.isStudent && this.props.workspace.journals ?
             <select className="form-element__select form-element__select--main-action"
               value={this.props.workspace.journals.userEntityId || ""} onChange={this.onWorkspaceJournalFilterChange}>
               <option value="">{this.props.i18n.text.get("plugin.workspace.journal.studentFilter.showAll")}</option>
@@ -62,7 +61,6 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
                 return <option key={student.userEntityId} value={student.userEntityId}>{getName(student, true)}</option>
               })}
             </select>
-          : null
         : 
           <NewJournal><Button buttonModifiers="primary-function">
             {this.props.i18n.text.get('plugin.workspace.journal.newEntryButton.label')}

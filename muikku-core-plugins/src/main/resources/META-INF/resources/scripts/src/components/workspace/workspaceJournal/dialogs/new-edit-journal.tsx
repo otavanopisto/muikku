@@ -127,14 +127,14 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
         <div className="env-dialog__row" key="2">
           <div className="env-dialog__form-element-container">  
             <div className="env-dialog__label">{this.props.i18n.text.get('plugin.workspace.journal.entry.title.label')}</div>
-            <input type="text" className="env-dialog__input env-dialog__input--new-edit-journal-title"         
+            <input type="text" className="env-dialog__input env-dialog__input--new-edit-journal-title"
              value={this.state.title} onChange={this.onTitleChange} autoFocus={!this.props.journal}/>
           </div> 
         </div>
-      ),        
+      ),
       (
-        <div className="env-dialog__row" key="3">     
-          <div className="env-dialog__form-element-container">  
+        <div className="env-dialog__row" key="3">
+          <div className="env-dialog__form-element-container">
             <div className="env-dialog__label">{this.props.i18n.text.get('plugin.workspace.journal.entry.content.label')}</div>
             <CKEditor width="100%" height="210" onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
           </div> 
@@ -142,7 +142,7 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
       )
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
          <div className="env-dialog__actions">
           <Button className="button button--dialog-execute" onClick={this.createOrModifyJournal.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get(this.props.journal ?
@@ -150,14 +150,14 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
           </Button>
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.workspace.journal.cancel.button.label')}
-          </Button>            
+          </Button>
           {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
               {this.props.i18n.text.get('plugin.announcer.createannouncement.button.clearDraft')}
-          </Button> : null}            
+          </Button> : null}
         </div>
       )
     }
-    
+
     return <JumboDialog modifier="new-edit-journal"
       onOpen={this.checkAgainstStoredState}
       title={this.props.journal ?
