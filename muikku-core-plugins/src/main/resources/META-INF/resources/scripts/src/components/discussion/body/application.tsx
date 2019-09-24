@@ -35,7 +35,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
     {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
     </Link></NewThread> : null;
 
-    return <div>
+    return <div className="application-panel-wrapper">
       <ApplicationPanel title={title} modifier="discussion" primaryOption={primaryOption} toolbar={toolbar}>
         <DiscussionThreads/>
         <CurrentThread/>

@@ -64,7 +64,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
       <select className="form-element__select form-element__select--main-action"><option>{this.props.i18n.text.get('plugin.coursepicker.opencourses')}</option></select> 
       }
     </div>
-    return (<div>
+    return (<div className="application-panel-wrapper">
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} asideBefore={this.props.aside} primaryOption={primaryOption}>
         <CoursepickerWorkspaces/>
       </ApplicationPanel>

@@ -32,7 +32,7 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
         <option>{this.props.i18n.text.get("plugin.guider.students.all")}</option>
       </select>
     </div>
-    return (<div>
+    return (<div className="application-panel-wrapper">
       <ApplicationPanel modifier="coursepicker" primaryOption={primaryOption} toolbar={toolbar} title={title} asideBefore={this.props.aside}>
         <Students/>
         <CurrentStudent/>

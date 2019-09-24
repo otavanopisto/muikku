@@ -145,8 +145,7 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
       return (
          <div className="env-dialog__actions">
           <Button className="button button--dialog-execute" onClick={this.createOrModifyJournal.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get(this.props.journal ?
-                'plugin.workspace.journal.update.button.label' : 'plugin.workspace.journal.create.button.label')}
+            {this.props.i18n.text.get('plugin.workspace.journal.save.button.label')}
           </Button>
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.workspace.journal.cancel.button.label')}

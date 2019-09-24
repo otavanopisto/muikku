@@ -3,6 +3,12 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.application-panel-wrapper {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .application-panel {
   align-items: center;
   display: flex;

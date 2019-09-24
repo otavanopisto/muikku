@@ -3,11 +3,22 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.content-panel-wrapper {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .content-panel {
   align-items: center;
   display: flex;
   justify-content: center;
+  padding: $navbar-mobile-height 0 10px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
 }
 
 .content-panel__container {
@@ -44,11 +55,7 @@
   font-weight: 300;
   height: $panel-header-title-height;
   line-height: 1;
-  padding: 0 10px;
-
-  @include breakpoint($breakpoint-desktop) {
-    padding: 0 20px;
-  }
+  text-transform: uppercase;
 }
 
 .content-panel__body {
@@ -101,7 +108,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height}));
-    margin: 0 10px 0 0;
+    margin: 0;
     position: sticky;
     top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height});
     z-index: 99;
@@ -163,20 +170,16 @@
   padding: 0;
   position: relative;
 
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 10px;
-  }
-
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(65% - 60px);
-    margin: 0 50px 10px 10px;
+    margin: 0 50px 10px 0;
     max-width: 700px;
     min-width: 650px;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: calc(65% - 80px);
-    margin: 0 70px 10px 10px;
+    margin: 0 70px 10px 0;
   }
 }
 

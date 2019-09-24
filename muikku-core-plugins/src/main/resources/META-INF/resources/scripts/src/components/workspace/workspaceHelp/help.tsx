@@ -26,8 +26,7 @@ class HelpPanel extends React.Component<HelpPanelProps, HelpPanelState> {
   render(){
     return (<div className="panel panel--workspace-help">
       <div className="panel__header">
-        <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
-        <div className="panel__header-title">{this.props.workspace && this.props.workspace.name}</div>
+        <div className="panel__header-title">{this.props.i18n.text.get("plugin.workspace.helpPage.title")}</div>
       </div>
       <div className="panel__body">
         {this.props.workspace && <MaterialLoader editable={this.props.workspaceEditMode.active}
