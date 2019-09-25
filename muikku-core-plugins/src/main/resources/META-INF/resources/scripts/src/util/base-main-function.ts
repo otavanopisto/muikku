@@ -1,3 +1,4 @@
+/* global converse */
 import Websocket from '~/util/websocket';
 import mApi from '~/lib/mApi';
 import {Action} from 'redux';
@@ -30,14 +31,16 @@ export default function(store: Store<StateType>){
     store.dispatch(<Action>updateUnreadMessageThreadsCount());
     
     if (state.status.loggedIn){
-      mApi().chat.status.read().callback(function(err:Error, result:{mucNickName:string,enabled:boolean}) {
+      mApi().chat.status.read().callback(function(err:Error, result:{mucNickName:string,enabled:true}) {
         if (result && result.enabled) {
           converse.initialize({
+            debug: true,
             bosh_service_url : '/http-bind/',
             authentication : "prebind",
             keepalive : true,
             prebind_url : "/rest/chat/prebind",
-            jid: state.status.userId,
+            whitelisted_plugins: ['myplugin','addRoom'],
+            jid: state.status.userSchoolDataIdentifier,
             auto_login : true,
             muc_domain : 'conference.' + location.hostname,
             muc_nickname : result.mucNickName,

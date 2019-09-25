@@ -162,3 +162,39 @@ button.saveSettings{
   width: 100%;
   padding-right: 10%;
 }
+
+.roomSettings-info{
+  width: 100%;
+  margin-top: 10%;
+  border:1px solid #d2d2d2;
+  background-color: forestgreen;
+  color:#fff;
+  padding:15px;
+  text-align: center;
+}
+
+.settingsInform-none{
+  dislpay: none;
+}
+
+.settingsInform-success {
+  display: block;
+  width: 100%;
+  margin-top: 10%;
+  border:1px solid #d2d2d2;
+  background-color: forestgreen;
+  color:#fff;
+  padding:15px;
+  text-align: center;
+}
+
+.settingsInform-failed {
+  display: block;
+  width: 100%;
+  margin-top: 10%;
+  border:1px solid #d2d2d2;
+  background-color: teal;
+  color:#fff;
+  padding:15px;
+  text-align: center;
+}
