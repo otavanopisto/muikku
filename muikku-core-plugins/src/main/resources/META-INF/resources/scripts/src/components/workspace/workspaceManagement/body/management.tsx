@@ -357,7 +357,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     }
     return (<div className="panel panel--workspace-Management">
       <div className="panel__header">
-        <div className="panel__header-icon panel__header-icon--workspace-description icon-books"></div>
         <div className="panel__header-title">{this.props.i18n.text.get("plugin.workspace.management.pageTitle")}</div>
       </div>
       <div className="panel__body">

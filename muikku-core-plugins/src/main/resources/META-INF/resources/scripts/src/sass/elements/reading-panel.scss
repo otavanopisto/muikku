@@ -54,9 +54,13 @@
   flex-shrink: 1;
   font-size: 1.5rem;
   font-weight: 300;
-  height: $panel-header-title-height;
+  height: $panel-header-title-height-mobile;
   line-height: 1;
   text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $panel-header-title-height-desktop;
+  }
 }
 
 .reading-panel__header-actions {
