@@ -349,7 +349,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
        </section>);
      });
 
-    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.workspace.name} ref="content-panel">
+    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
       {results}
       {createSectionElementWhenEmpty}
     </ContentPanel>

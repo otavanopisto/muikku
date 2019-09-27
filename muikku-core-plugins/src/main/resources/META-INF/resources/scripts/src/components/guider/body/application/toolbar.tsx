@@ -106,7 +106,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             {this.props.guider.currentStudent ? <ButtonPill icon="goback" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock}/> : null}
-            <GuiderToolbarLabels/>          
+            <GuiderToolbarLabels/>
             {this.props.guider.currentStudent ? null : 
             <ApplicationPanelToolsContainer>              
               <div className="form-element form-element--guider-toolbar">

@@ -401,7 +401,7 @@ let cancelAssessmentAtWorkspace:CancelAssessmentAtWorkspaceTriggerType = functio
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG plugin.workspace.errormessage.cancelAssessmentFail"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.workspace.errormessage.cancelAssessmentFail"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -910,11 +910,9 @@ let createWorkspaceJournalForCurrentWorkspace:CreateWorkspaceJournalForCurrentWo
 let updateWorkspaceJournalInCurrentWorkspace:UpdateWorkspaceJournalInCurrentWorkspaceTriggerType = function updateWorkspaceJournalInCurrentWorkspace(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      let newJournal:WorkspaceJournalType = <WorkspaceJournalType>(await promisify(mApi().workspace.journal
-          .update(data.journal.id, {
-            content: data.content,
-            title: data.title
-          }), 'callback')());
+      let state:StateType = getState();
+      await promisify(mApi().workspace.workspaces
+          .journal.update(state.workspaces.currentWorkspace.id, data.journal.id, {id: data.journal.id, workspaceEntityId: state.workspaces.currentWorkspace.id, content: data.content, title: data.title}), 'callback')();
     
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       

@@ -266,15 +266,6 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       visible: this.props.status.permissions.WORKSPACE_MANAGE_PERMISSIONS,
       trail: "workspace-permissions",
       to: true
-    },
-    {
-      icon: "edit-materials",
-      modifier: "navigation",
-      href: "/workspace/" + this.props.workspaceUrl + "/materials-management",
-      text: this.props.i18n.text.get("plugin.workspace.dock.material-management"),
-      visible: this.props.status.permissions.WORKSPACE_MANAGE_WORKSPACE,
-      trail: "workspace-materials-management",
-      to: true
     }
   ]
 

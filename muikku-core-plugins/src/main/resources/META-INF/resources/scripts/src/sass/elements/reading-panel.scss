@@ -3,12 +3,22 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.reading-panel-wrapper {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .reading-panel {
   @include text;
   align-items: center;
   display: flex;
   justify-content: center;
-  padding: 0 0 10px;
+  padding: $navbar-mobile-height 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
 }
 
 .reading-panel__container {
@@ -48,9 +58,13 @@
   flex-shrink: 1;
   font-size: 1.5rem;
   font-weight: 300;
-  height: $panel-header-title-height;
+  height: $panel-header-title-height-mobile;
   line-height: 1;
   text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $panel-header-title-height-desktop;
+  }
 }
 
 .reading-panel__header-actions {
@@ -121,7 +135,7 @@
     flex-basis: 40%;
     flex-grow: 1;
     flex-shrink: 1;
-    margin: 0 10px 0 10px;
+    margin: 0 0 0 10px;
     overflow: auto;
     overflow: -moz-scrollbars-none;
     -ms-overflow-style: -ms-autohiding-scrollbar;
@@ -157,7 +171,7 @@
     flex-basis: 66%;
     border: solid 1px $color-reading-panel-box-border;
     flex-basis: 60%;
-    margin: 0 10px;
+    margin: 0 10px 0 0;
   }
 
   @include breakpoint($breakpoint-desktop) {

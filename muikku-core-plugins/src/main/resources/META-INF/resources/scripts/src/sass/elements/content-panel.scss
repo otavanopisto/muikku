@@ -3,11 +3,22 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.content-panel-wrapper {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .content-panel {
   align-items: center;
   display: flex;
   justify-content: center;
+  padding: $navbar-mobile-height 0 10px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
 }
 
 .content-panel__container {
@@ -42,12 +53,12 @@
   flex-shrink: 1;
   font-size: 1.5rem;
   font-weight: 300;
-  height: $panel-header-title-height;
+  height: $panel-header-title-height-mobile;
   line-height: 1;
-  padding: 0 10px;
-
-  @include breakpoint($breakpoint-desktop) {
-    padding: 0 20px;
+  text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $panel-header-title-height-desktop;
   }
 }
 
@@ -100,10 +111,10 @@
     flex-basis: calc(35% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
-    height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height}));
-    margin: 0 10px 0 0;
+    height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop}));
+    margin: 0;
     position: sticky;
-    top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height});
+    top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop});
     z-index: 99;
 
     &:hover {
@@ -163,20 +174,16 @@
   padding: 0;
   position: relative;
 
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 10px;
-  }
-
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(65% - 60px);
-    margin: 0 50px 10px 10px;
+    margin: 0 50px 10px 0;
     max-width: 700px;
     min-width: 650px;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: calc(65% - 80px);
-    margin: 0 70px 10px 10px;
+    margin: 0 70px 10px 0;
   }
 }
 

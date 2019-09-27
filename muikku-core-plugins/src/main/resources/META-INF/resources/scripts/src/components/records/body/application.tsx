@@ -28,7 +28,7 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
     let primaryOption  = <PrimaryOption />
     let toolbar = <Toolbar />
 
-    return (<div>
+    return (<div className="application-panel-wrapper">
       <ApplicationPanel modifier="records" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
         <Records/>
         <CurrentRecord/>
