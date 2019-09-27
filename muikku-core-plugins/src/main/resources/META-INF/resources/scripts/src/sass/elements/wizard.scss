@@ -116,6 +116,15 @@
   
 }
 
-.wizard__content {
-  height: 350px;
+
+.wizard__summary-row {
+  font-size: 1.1rem;
+  padding: 15px 0;
+  
+  ul {
+    list-style-type: disc;
+  }
+  li {
+   display: block;
+  }
 }
