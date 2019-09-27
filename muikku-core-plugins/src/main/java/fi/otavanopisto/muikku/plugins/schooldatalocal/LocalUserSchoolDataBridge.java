@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
@@ -39,6 +40,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 
 @Dependent
 public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
@@ -49,6 +51,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	@Override
 	public String getSchoolDataSource() {
 		return LocalUserSchoolDataController.SCHOOL_DATA_SOURCE;
+	}
+
+	public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload payload) {
+	  throw new SchoolDataBridgeInternalException("Not supported");
 	}
 
 	/**

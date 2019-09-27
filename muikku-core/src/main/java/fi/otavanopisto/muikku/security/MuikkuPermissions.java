@@ -88,6 +88,12 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDY_GUIDER })
   public static final String ACCESS_USER_STATISTICS = "ACCESS_USER_STATISTICS";
   
+  // User management
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
+  public static final String CREATE_STAFF_MEMBER = "CREATE_STAFF_MEMBER";
+  
   /* WORKSPACE */
   
   @Scope (PermissionScope.WORKSPACE)

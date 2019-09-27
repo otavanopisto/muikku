@@ -65,6 +65,7 @@ import fi.otavanopisto.muikku.rest.model.StudentAddress;
 import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -75,6 +76,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -1229,6 +1231,49 @@ public class UserRESTService extends AbstractRESTService {
     }
 
     return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+  }
+  
+  @GET
+  @Path("/test2")
+  @RESTPermitUnimplemented
+  public Response test() {
+    return Response.ok("Hello world!").build();
+  }
+  
+  /*
+  @GET
+  @Path("/test")
+  @RESTPermit(MuikkuPermissions.CREATE_STAFF_MEMBER)
+  public Response testCreateUser() {
+    StaffMemberPayload payload = new StaffMemberPayload();
+    payload.setFirstName("Teppo");
+    payload.setLastName("Kermaviili");
+    payload.setEmail("teppo.kermaviili@teppolankartano.fi");
+    payload.setRole("TEACHER");
+    return createStaffMember(payload);
+  }
+  */
+  
+  @POST
+  @Path("/staffMembers")
+  @RESTPermit(MuikkuPermissions.CREATE_STAFF_MEMBER)
+  public Response createStaffMember(StaffMemberPayload payload) {
+    
+    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
+    }
+
+    // User creation
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    BridgeResponse<StaffMemberPayload> response = userController.createStaffMember(dataSource, payload);
+        
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getError()).build();
+    }
   }
 
   @GET
