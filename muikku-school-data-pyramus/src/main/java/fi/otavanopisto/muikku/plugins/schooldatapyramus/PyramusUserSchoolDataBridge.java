@@ -87,8 +87,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember) {
     BridgeResponse<StaffMemberPayload> response = pyramusClient.responsePost("/muikku/users", Entity.entity(staffMember, MediaType.APPLICATION_JSON), StaffMemberPayload.class);
-    if (response.getEntity() != null) {
-      response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(response.getEntity().getId()));
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
+      response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
     }
     return response;
   }
