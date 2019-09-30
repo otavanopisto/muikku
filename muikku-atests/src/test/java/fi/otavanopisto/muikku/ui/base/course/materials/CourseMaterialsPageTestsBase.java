@@ -301,8 +301,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick(".button--muikku-check-exercises");
         waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
         assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
+        assertValue(".material-page__textfield", "field value");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__textfield");
+        waitUntilValueChanges(".material-page__textfield", "value", "");
         assertValue(".material-page__textfield", "field value");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
@@ -332,11 +334,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     try {
     Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
     mockBuilder
-    .addStaffMember(admin)
-    .addStudent(student)
-    .mockLogin(admin)
-    .addCourse(course1)
-    .build();
+      .addStaffMember(admin)
+      .addStudent(student)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
@@ -365,6 +367,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__textfield");
+          waitUntilValueChanges(".material-page__textfield", "value", "");
           assertValue(".material-page__textfield", "field value");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
