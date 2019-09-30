@@ -29,9 +29,9 @@ export default class Step extends React.Component<StepProps, StepState> {
     const endDate = this.props.getStore().endDate;
     const nameExtension = this.props.getStore().nameExtension;
     return <div className="wizard__content">
-      <label>{this.props.i18n.text.get("plugin.workspacecopywizard.summaryPage.title")}</label>
+      <h1>{this.props.i18n.text.get("plugin.workspacecopywizard.summaryPage.title")}</h1>
       
-      <div>
+      <div className="wizard__summary-row">
         <label>{this.props.i18n.text.get("plugin.workspacecopywizard.doCopyButton.label")}</label>
         <p>{this.props.i18n.text.get(
            nameExtension ?
@@ -39,29 +39,33 @@ export default class Step extends React.Component<StepProps, StepState> {
            "plugin.workspacecopywizard.summarySteps.copyWorkspaceNameWithExtension", this.props.getStore().name, nameExtension
         )}</p>
       </div>
-      <div>
+      <div className="wizard__summary-row">
         <label>{this.props.i18n.text.get("plugin.workspacecopywizard.dates.title")}</label>
         <p>{this.props.i18n.text.get("plugin.workspacecopywizard.summarySteps.changeDatesBeginDate",
           beginDate ? this.props.i18n.time.format(beginDate) : this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.empty.label"))}</p>
         <p>{this.props.i18n.text.get("plugin.workspacecopywizard.summarySteps.changeDatesEndDate",
           endDate ? this.props.i18n.time.format(endDate) : this.props.i18n.text.get("plugin.workspacecopywizard.workspaceEndDate.empty.label"))}</p>
       </div>
-      {this.props.getStore().copyDiscussionAreas ? <div>
-        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.summarySteps.copyDiscussionAreas")}</label>
-      </div> : null}
-      {copyMaterials !== "NO" ? <div>
-        <label>
-          {
-            this.props.i18n.text.get(copyMaterials === "CLONE" ?
-            "plugin.workspacecopywizard.summarySteps.copyMaterials" :
-            "plugin.workspacecopywizard.summarySteps.copyMaterialsLink")
-          }
-         </label>
-      </div> : null}
-      {this.props.getStore().copyBackgroundPicture ? <div>
-        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.summarySteps.copyFiles")}</label>
-       </div> : null}
-      {this.props.step === "done" && this.props.resultingWorkspace ? <div>
+      <div className="wizard__summary-row">
+        <ul>
+        {this.props.getStore().copyDiscussionAreas ? 
+          <li>{this.props.i18n.text.get("plugin.workspacecopywizard.summarySteps.copyDiscussionAreas")}</li>
+       : null}
+        {copyMaterials !== "NO" ? 
+          <li>
+            {
+              this.props.i18n.text.get(copyMaterials === "CLONE" ?
+              "plugin.workspacecopywizard.summarySteps.copyMaterials" :
+              "plugin.workspacecopywizard.summarySteps.copyMaterialsLink")
+            }
+           </li>
+        : null}
+        {this.props.getStore().copyBackgroundPicture ? 
+          <li>{this.props.i18n.text.get("plugin.workspacecopywizard.summarySteps.copyFiles")}</li>
+        : null}
+        </ul>
+      </div>
+      {this.props.step === "done" && this.props.resultingWorkspace ? <div className="wizard__summary-row">
         <Button className="button button--primary-function-content" onClick={this.props.onDone}>{this.props.i18n.text.get("plugin.workspacecopywizard.closeWizardButton.label")}</Button>
         <Button className="button button--primary-function-content" href={`/workspace/${this.props.resultingWorkspace.urlName}`} to={`/workspace/${this.props.resultingWorkspace.urlName}`}>
           {this.props.i18n.text.get("plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label")}

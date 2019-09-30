@@ -387,7 +387,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
           <div className="application-sub-panel__body">
             <div className="application-sub-panel__item">
-              <img src={actualBackgroundSRC} onClick={this.editCurrentImage}/>
+              <img className="application-sub-panel__image" src={actualBackgroundSRC} onClick={this.editCurrentImage}/>
             </div>
             <div className="application-sub-panel__item-actions">
             <Button buttonAs="a" className="link link--workspace-management">
