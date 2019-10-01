@@ -1418,8 +1418,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitUntilValueChanges(String selector, String attribute, String originalValue){
-    WebDriver driver = getWebDriver();
-    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getAttribute(attribute));
         if (!actual.equalsIgnoreCase(originalValue)) {

@@ -304,6 +304,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertValue(".material-page__textfield", "field value");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__textfield");
+        sleep(1000);
         waitUntilValueChanges(".material-page__textfield", "value", "");
         assertValue(".material-page__textfield", "field value");
       } finally {
@@ -367,6 +368,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__textfield");
+          sleep(1000);
           waitUntilValueChanges(".material-page__textfield", "value", "");
           assertValue(".material-page__textfield", "field value");
         } finally {
@@ -880,7 +882,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
           sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
-          waitForPresent(".file-uploader__items--taskfield .file-uploader__item-download-icon");
+          waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
 //        TODO: Remove this when fileuploader can confirm finished upload
           sleep(1500);          
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -935,7 +937,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
         sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
-        waitForPresent(".file-uploader__items--taskfield .file-uploader__item-download-icon");
+        waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
 //      TODO: Remove this when fileuploader can confirm finished upload
         sleep(1500);          
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -989,7 +991,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
         sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
-        waitForPresent(".file-uploader__items--taskfield .file-uploader__item-download-icon");
+        waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
 //      TODO: Remove this when fileuploader can confirm finished upload
         sleep(1500);          
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -1055,7 +1057,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
           sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
-          waitForPresent(".file-uploader__items--taskfield .file-uploader__item-download-icon");
+          waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
 //        TODO: Remove this when fileuploader can confirm finished upload
           sleep(1500);          
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
