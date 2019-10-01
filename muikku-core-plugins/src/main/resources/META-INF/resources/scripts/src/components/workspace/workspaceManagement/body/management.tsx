@@ -110,13 +110,15 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceAccess: nextProps.workspace ? nextProps.workspace.access : null,
       workspaceExtension: nextProps.workspace ? nextProps.workspace.nameExtension : null,
       workspaceType: nextProps.workspace && nextProps.workspace.details ? nextProps.workspace.details.typeId : null,
-      workspaceStartDate: nextProps.workspace && nextProps.workspace.details ? moment(nextProps.workspace.details.beginDate) : null,
-      workspaceEndDate: nextProps.workspace && nextProps.workspace.details ? moment(nextProps.workspace.details.endDate) : null,
+      workspaceStartDate: nextProps.workspace && nextProps.workspace.details ? nextProps.workspace.details.beginDate != null ? moment(nextProps.workspace.details.beginDate) : null : null,
+      workspaceEndDate: nextProps.workspace && nextProps.workspace.details ? nextProps.workspace.details.endDate != null ? moment(nextProps.workspace.details.endDate) : null : null,
       workspaceProducers: nextProps.workspace && nextProps.workspace.producers ? nextProps.workspace.producers : null,
       workspaceLicense: nextProps.workspace ? nextProps.workspace.materialDefaultLicense : "",
       workspaceDescription: nextProps.workspace ? nextProps.workspace.description || "" : "",
       workspaceHasCustomImage: nextProps.workspace ? nextProps.workspace.hasCustomImage : false,
+          
     });
+
   }
   updateWorkspaceName(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({
@@ -348,6 +350,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     
     onDone();
   }
+  
+  
   render(){
     let actualBackgroundSRC = this.state.workspaceHasCustomImage ? 
       `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped` :
@@ -355,6 +359,16 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     if (this.state.newWorkspaceImageCombo){
       actualBackgroundSRC = this.state.newWorkspaceImageCombo.croppedB64;
     }
+    
+
+    let testStartDate = this.state.workspaceStartDate;
+    let testEndDate = this.state.workspaceEndDate;
+    
+    
+    let middle = "muu";
+    
+    
+    
     return (<div className="panel panel--workspace-Management">
       <div className="panel__header">
         <div className="panel__header-title">{this.props.i18n.text.get("plugin.workspace.management.pageTitle")}</div>
@@ -472,7 +486,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               <div className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.endDate")}</div>
               <DatePicker className="form-element__input" onChange={this.updateEndDate}
                 minDate={this.state.workspaceStartDate}
-                locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceEndDate}/>
+                locale={this.props.i18n.time.getLocale()}  selected={this.state.workspaceEndDate}/>
             </div>
           </div>
         </section>
