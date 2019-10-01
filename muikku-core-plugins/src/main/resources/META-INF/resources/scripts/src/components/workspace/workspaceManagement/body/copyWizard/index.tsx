@@ -1,8 +1,8 @@
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-import Step1 from "./alternative";
-import Step2 from "./step6";
+import Step1 from "./form";
+import Step2 from "./summary";
 const StepZilla = require('react-stepzilla').default;
 import moment from "~/lib/moment";
 import '~/sass/elements/wizard.scss';
