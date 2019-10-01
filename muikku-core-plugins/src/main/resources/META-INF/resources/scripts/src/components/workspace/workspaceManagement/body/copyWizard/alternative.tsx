@@ -95,6 +95,8 @@ export default class Step extends React.Component<StepProps, StepState> {
       </div>
     </div> : null;
 
+
+    
     return <div className="wizard__content form">
       <div className="form__row form__row--wizard">
         <div className="form-element form-element--wizard">

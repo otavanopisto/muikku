@@ -2,8 +2,7 @@ import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import Step1 from "./alternative";
-import Step5 from "./step5";
-import Step6 from "./step6";
+import Step2 from "./step6";
 const StepZilla = require('react-stepzilla').default;
 import moment from "~/lib/moment";
 import '~/sass/elements/wizard.scss';
@@ -137,11 +136,11 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({
       name: this.props.i18n.text.get("plugin.workspace.management.wizard.step6"),
-      component: <Step6 {...props}/>
+      component: <Step2 {...props}/>
     });
     steps.push({
       name: this.props.i18n.text.get("plugin.workspace.management.wizard.finalStep"),
-      component: <Step6 {...props}/>
+      component: <Step2 {...props}/>
     });
 
     // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
