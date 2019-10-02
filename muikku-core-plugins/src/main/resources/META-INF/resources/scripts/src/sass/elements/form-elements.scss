@@ -101,6 +101,11 @@
   padding: 10px;
 }
 
+.form-element--workspace-name,
+.form-element--workspace-extension {
+  flex-grow: 1;
+}
+
 .form-element__input {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
   -webkit-appearance: none;
@@ -117,6 +122,10 @@
     font-size: $text-desktop-font-size;
     height: 2.5rem;
   }
+}
+
+.form-element__input--workspace-data {
+  width: 100%;
 }
 
 .form-element__input--guider-label-name,

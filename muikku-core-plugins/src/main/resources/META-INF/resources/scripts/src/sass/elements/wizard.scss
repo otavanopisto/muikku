@@ -17,6 +17,10 @@
 
 .wizard {
   
+  .cke {
+    border: 2px solid $color-form-element-border;
+  }
+  
   // These override the stepzilla plugin styles
   
   ol.progtrckr {

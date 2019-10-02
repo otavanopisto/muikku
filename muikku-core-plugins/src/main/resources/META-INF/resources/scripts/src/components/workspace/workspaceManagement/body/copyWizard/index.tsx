@@ -1,9 +1,8 @@
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
-import Step1 from "./alternative";
-import Step5 from "./step5";
-import Step6 from "./step6";
+import Step1 from "./form";
+import Step2 from "./summary";
 const StepZilla = require('react-stepzilla').default;
 import moment from "~/lib/moment";
 import '~/sass/elements/wizard.scss';
@@ -49,8 +48,8 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
         description: props.workspace.description,
         name: props.workspace.name,
         nameExtension: props.workspace.nameExtension,
-        beginDate: moment(props.workspace.additionalInfo.beginDate),
-        endDate: moment(props.workspace.additionalInfo.endDate),
+        beginDate:  props.workspace.additionalInfo.beginDate != null ? moment(props.workspace.additionalInfo.beginDate) : null,
+        endDate: props.workspace.additionalInfo.beginDate != null ? moment(props.workspace.additionalInfo.endDate) : null,
         copyDiscussionAreas: false,
         copyMaterials: "CLONE",
         copyBackgroundPicture: true
@@ -86,8 +85,8 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       description: this.state.store.description,
       name: this.state.store.name,
       nameExtension: this.state.store.nameExtension,
-      beginDate: this.state.store.beginDate.toISOString(),
-      endDate: this.state.store.endDate.toISOString(),
+      beginDate: this.state.store.beginDate != null ? this.state.store.beginDate.toISOString() : null ,
+      endDate:  this.state.store.endDate != null ? this.state.store.endDate.toISOString() : null,
       copyDiscussionAreas: this.state.store.copyDiscussionAreas,
       copyMaterials: this.state.store.copyMaterials,
       copyBackgroundPicture: this.state.store.copyBackgroundPicture,
@@ -137,11 +136,11 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({
       name: this.props.i18n.text.get("plugin.workspace.management.wizard.step6"),
-      component: <Step6 {...props}/>
+      component: <Step2 {...props}/>
     });
     steps.push({
       name: this.props.i18n.text.get("plugin.workspace.management.wizard.finalStep"),
-      component: <Step6 {...props}/>
+      component: <Step2 {...props}/>
     });
 
     // https://github.com/newbreedofgeek/react-stepzilla/blob/master/src/examples/i18n/Example.js
