@@ -80,7 +80,6 @@ export default class Step extends React.Component<StepProps, StepState> {
   }
 
   render(){
-
     const copyMaterials = this.props.getStore().copyMaterials !== "NO" ? 
     <div className="form__row--wizard">
       <div className="form-element form-element--wizard">
@@ -94,19 +93,21 @@ export default class Step extends React.Component<StepProps, StepState> {
       onChange={this.switchBetweenCloneAndLink} checked={this.props.getStore().copyMaterials === "LINK"}/>
       </div>
     </div> : null;
-
-
     
     return <div className="wizard__content form">
       <div className="form__row form__row--wizard">
-        <div className="form-element form-element--wizard">
+        <div className="form-element form-element--wizard form-element--workspace-name">
           <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceName.label")}</label>
-          <input className="form-element__input" value={this.props.getStore().name} onChange={this.updateName}/>
+          <input className="form-element__input form-element__input--workspace-data" value={this.props.getStore().name} onChange={this.updateName}/>
         </div>
-        <div className="form-element form-element--wizard">
+      </div>
+      <div className="form__row--wizard">
+      <div className="form-element form-element--wizard form-element--workspace-extension">
           <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
-          <input className="form-element__input" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
+          <input className="form-element__input form-element__input--workspace-data" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
         </div>
+      </div>
+      <div className="form__row form__row--wizard">
         <div className="form-element form-element--wizard">
           <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.label")}</label>
           <DatePicker className="form-element__input" onChange={this.updateStartDate}

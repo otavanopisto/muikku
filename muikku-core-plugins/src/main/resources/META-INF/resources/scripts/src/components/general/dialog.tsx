@@ -8,6 +8,7 @@ interface DialogProps {
   title: string,
   modifier?: string | Array<string>,
   content: any,
+  disableScroll? : boolean,
   footer?: (closePortal: ()=>any)=>any,
   onOpen?: (e?: HTMLElement)=>any,
   onClose?: ()=>any,
@@ -47,6 +48,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.props.onOpen && this.props.onOpen(element);
     let el = element.childNodes[0].firstChild as HTMLElement;
     let marginOffset = 20;
+    if(this.props.disableScroll == true ) {
+      document.body.style.overflow = "hidden";
+    }
     document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";
   }
 
@@ -54,6 +58,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.setState({
       visible: false
     });
+    if(this.props.disableScroll == true ) {
+      document.body.style.overflow = "scroll";
+    }
     document.body.style.marginBottom = "0";
     setTimeout(removeFromDOM, 300);
   }
