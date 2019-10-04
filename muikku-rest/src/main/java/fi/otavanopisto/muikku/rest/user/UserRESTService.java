@@ -1240,20 +1240,6 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok("Hello world!").build();
   }
   
-  /*
-  @GET
-  @Path("/test")
-  @RESTPermit(MuikkuPermissions.CREATE_STAFF_MEMBER)
-  public Response testCreateUser() {
-    StaffMemberPayload payload = new StaffMemberPayload();
-    payload.setFirstName("Teppo");
-    payload.setLastName("Kermaviili");
-    payload.setEmail("teppo.kermaviili@teppolankartano.fi");
-    payload.setRole("TEACHER");
-    return createStaffMember(payload);
-  }
-  */
-  
   @POST
   @Path("/staffMembers")
   @RESTPermit(MuikkuPermissions.CREATE_STAFF_MEMBER)

@@ -25,6 +25,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 
 public class UserSchoolDataController {
@@ -341,12 +342,16 @@ public class UserSchoolDataController {
     getUserBridge(schoolDataSource).updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
 	}
 	
-  public String requestPasswordResetByEmail(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
-    return getUserBridge(schoolDataSource).requestPasswordResetByEmail(email);
+  public String requestCredentialReset(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
+    return getUserBridge(schoolDataSource).requestCredentialReset(email);
+  }
+  
+  public BridgeResponse<CredentialResetPayload> getCredentialReset(SchoolDataSource schoolDataSource, String hash) {
+    return getUserBridge(schoolDataSource).getCredentialReset(hash);
   }
 
-  public boolean confirmResetPassword(SchoolDataSource schoolDataSource, String resetCode, String newPassword) throws SchoolDataBridgeUnauthorizedException {
-    return getUserBridge(schoolDataSource).confirmResetPassword(resetCode, newPassword);
+  public BridgeResponse<CredentialResetPayload> resetCredentials(SchoolDataSource schoolDataSource, CredentialResetPayload payload) {
+    return getUserBridge(schoolDataSource).resetCredentials(payload);
   }
 
 }

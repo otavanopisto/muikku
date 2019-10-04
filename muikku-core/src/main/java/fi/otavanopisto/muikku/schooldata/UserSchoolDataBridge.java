@@ -12,6 +12,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 
 public interface UserSchoolDataBridge {
@@ -224,10 +225,6 @@ public interface UserSchoolDataBridge {
 
   public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword);
 
-  public String requestPasswordResetByEmail(String email);
-
-  public boolean confirmResetPassword(String resetCode, String newPassword);
-
   public String findUsername(String userIdentifier);
 	
   public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier);
@@ -241,5 +238,13 @@ public interface UserSchoolDataBridge {
       String country);
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier);
+  
+  // Authentication
+
+  public String requestCredentialReset(String email);
+  
+  public BridgeResponse<CredentialResetPayload> getCredentialReset(String hash);
+  
+  public BridgeResponse<CredentialResetPayload> resetCredentials(CredentialResetPayload payload);
 
 }
