@@ -66,6 +66,17 @@ public class ForgotPasswordRESTService extends PluginRESTService {
   @BaseUrl
   private String baseUrl;
 
+  /**
+   * GET mApi().forgotpassword.reset
+   * 
+   * Used to request a credential reset for the account corresponding to the given email address. 
+   * 
+   * Query parameters:
+   * email: the email address of the user requesting a password reset
+   * 
+   * Output:
+   * 204 for a successful reset request; user receives an email with a link to change the credentials 
+   */
   @Path("/reset")
   @GET
   @RESTPermitUnimplemented
@@ -103,6 +114,20 @@ public class ForgotPasswordRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
+  /**
+   * GET mApi().forgotpassword.credentialReset
+   * 
+   * For a valid credential reset hashcode, returns a credential reset entity containing the current
+   * username of the user requesting credential reset. 
+   * 
+   * Path parameters:
+   * Hashcode of the reset request
+   * 
+   * Output:
+   * {secret: always empty
+   *  username: user's current username, if any
+   *  password: always empty}
+   */
   @Path("/credentialReset/{HASH}")
   @GET
   @RESTPermitUnimplemented
@@ -136,6 +161,22 @@ public class ForgotPasswordRESTService extends PluginRESTService {
     }
   }
 
+  /**
+   * POST mApi().forgotpassword.credentialReset
+   * 
+   * Changes the username and password of the account corresponding to the credential reset hashcode.
+   * 
+   * Payload:
+   * {secret: required; hashcode of the original credential reset request
+   *  username: required; account username
+   *  password: required; account password}
+   * 
+   * Output:
+   * 204 if credential reset succeeds
+   * 
+   * Errors:
+   * 409 if chosen username is in use; response contains a localized error message 
+   */
   @Path("/credentialReset")
   @POST
   @RESTPermitUnimplemented

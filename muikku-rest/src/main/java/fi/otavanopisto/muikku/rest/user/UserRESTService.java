@@ -1233,13 +1233,27 @@ public class UserRESTService extends AbstractRESTService {
     return Response.status(Status.INTERNAL_SERVER_ERROR).build();
   }
   
-  @GET
-  @Path("/test2")
-  @RESTPermitUnimplemented
-  public Response test() {
-    return Response.ok("Hello world!").build();
-  }
-  
+  /**
+   * POST mApi().user.staffMembers
+   * 
+   * Creates a new staff member.
+   * 
+   * Payload:
+   * {firstName: required; the first name of the staff member
+   *  lastName: required; the last name of the staff member
+   *  email: required; the email address of the staff member
+   *  role: required; TEACHER to create a teacher, MANAGER to create a manager}
+   * 
+   * Output:
+   * {identifier: identifier of the created staff member
+   *  firstName: the first name of the staff member
+   *  lastName: the last name of the staff member
+   *  email: the email address of the staff member
+   *  role: TEACHER or MANAGER}
+   * 
+   * Errors:
+   * 409 if the email address is already in use; response contains a localized error message 
+   */
   @POST
   @Path("/staffMembers")
   @RESTPermit(MuikkuPermissions.CREATE_STAFF_MEMBER)
