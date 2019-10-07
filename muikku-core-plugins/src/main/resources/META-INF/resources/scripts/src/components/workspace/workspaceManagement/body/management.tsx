@@ -225,7 +225,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       });
     } else if (this.props.workspace.hasCustomImage){
       this.setState({
-        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
+        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped`,
         isImageDialogOpen: true,
         newWorkspaceImageB64: null,
         newWorkspaceImageFile: null
@@ -359,15 +359,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     if (this.state.newWorkspaceImageCombo){
       actualBackgroundSRC = this.state.newWorkspaceImageCombo.croppedB64;
     }
-    
-
-    let testStartDate = this.state.workspaceStartDate;
-    let testEndDate = this.state.workspaceEndDate;
-    
-    
-    let middle = "muu";
-    
-    
     
     return (<div className="panel panel--workspace-Management">
       <div className="panel__header">
