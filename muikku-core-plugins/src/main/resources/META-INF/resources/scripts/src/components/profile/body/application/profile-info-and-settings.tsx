@@ -40,7 +40,6 @@ interface ProfileInfoAndSettingsProps {
   i18n: i18nType,
   status: StatusType,
   profile: ProfileType,
-  
   saveProfileProperty: SaveProfilePropertyTriggerType,
   displayNotification: DisplayNotificationTriggerType
 }
