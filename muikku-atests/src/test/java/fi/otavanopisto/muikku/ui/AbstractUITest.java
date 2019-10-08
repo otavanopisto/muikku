@@ -912,6 +912,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
     
   protected void assertValue(String selector, String value) {
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(value, element.getAttribute("value"));
   }
@@ -1415,6 +1416,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     return element.getAttribute(attribute);
 
+  }
+  
+  protected void waitUntilValueChanges(String selector, String attribute, String originalValue){
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getAttribute(attribute));
+        if (!actual.equalsIgnoreCase(originalValue)) {
+          return true;
+        }
+        return false;
+      }
+    });
   }
   
   protected WebElement findElementByTag(String name) {
