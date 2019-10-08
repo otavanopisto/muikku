@@ -19,6 +19,13 @@
   flex-wrap: wrap;
 }
 
+.form__subdivision {
+  flex-basis: 100%;
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 50%;
+  }
+}
+
 .form__hidden {
   display: none;
 }

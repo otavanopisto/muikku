@@ -96,35 +96,41 @@ export default class Step extends React.Component<StepProps, StepState> {
     
     return <div className="wizard__content form">
       <div className="form__row form__row--wizard">
-        <div className="form-element form-element--wizard form-element--workspace-name">
-          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceName.label")}</label>
-          <input className="form-element__input form-element__input--workspace-data" value={this.props.getStore().name} onChange={this.updateName}/>
+        <div className="form__subdivision" >
+          <div className="form__row">
+          <div className="form-element form-element--wizard form-element--workspace-name">
+            <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceName.label")}</label>
+            <input className="form-element__input form-element__input--workspace-data" value={this.props.getStore().name} onChange={this.updateName}/>
+          </div>
+          <div className="form-element form-element--wizard form-element--workspace-extension">
+            <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
+            <input className="form-element__input form-element__input--workspace-data" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
+          </div>
+            
+          </div>
+          <div className="form__row form__row--wizard" >
+            <div className="form-element form-element--wizard">
+              <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.label")}</label>
+              <DatePicker className="form-element__input" onChange={this.updateStartDate}
+                maxDate={this.props.getStore().endDate}
+                locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().beginDate}/>
+             </div>
+            <div className="form-element form-element--wizard">
+              <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceEndDate.label")}</label>
+              <DatePicker className="form-element__input" onChange={this.updateEndDate}
+                minDate={this.props.getStore().beginDate}
+                locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().endDate}/>
+            </div>
+          </div> 
         </div>
-      </div>
-      <div className="form__row--wizard">
-      <div className="form-element form-element--wizard form-element--workspace-extension">
-          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
-          <input className="form-element__input form-element__input--workspace-data" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
-        </div>
+        <div className="form__subdivision">
+          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDescription.label")}</label>
+          <CKEditor width="100%"
+            onChange={this.onDescriptionChange}>{this.props.getStore().description}</CKEditor>
+        </div>    
       </div>
       <div className="form__row form__row--wizard">
-        <div className="form-element form-element--wizard">
-          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.label")}</label>
-          <DatePicker className="form-element__input" onChange={this.updateStartDate}
-            maxDate={this.props.getStore().endDate}
-            locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().beginDate}/>
-         </div>
-        <div className="form-element form-element--wizard">
-          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceEndDate.label")}</label>
-          <DatePicker className="form-element__input" onChange={this.updateEndDate}
-            minDate={this.props.getStore().beginDate}
-            locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().endDate}/>
-        </div>
-      </div>
-      <div className="form__row">    
-        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
-        <CKEditor width="100%"
-          onChange={this.onDescriptionChange}>{this.props.getStore().description}</CKEditor>
+
       </div>
       <header>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceOtherSettings.label")}</header>
       <div className="form__row form__row--wizard">
