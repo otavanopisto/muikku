@@ -43,6 +43,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.controller.SystemSettingsController;
+import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
+import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
@@ -70,6 +75,7 @@ import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -81,6 +87,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
+import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -104,8 +111,27 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private Logger logger;
   
+  @Inject 
+  @BaseUrl
+  private String baseUrl;
+
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  private Mailer mailer;
+
+  @Inject
+  private SystemSettingsController systemSettingsController;
+  
+  @Inject
+  private SchoolDataSourceDAO schoolDataSourceDAO;
+  
   @Inject
   private UserController userController;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -1269,6 +1295,24 @@ public class UserRESTService extends AbstractRESTService {
     BridgeResponse<StaffMemberPayload> response = userController.createStaffMember(dataSource, payload);
         
     if (response.ok()) {
+      
+      // Mail about credential creation
+
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+        String confirmationHash = userSchoolDataController.requestCredentialReset(schoolDataSource, payload.getEmail());
+        String resetLink = String.format("%s/forgotpassword/reset?h=%s", baseUrl, confirmationHash);
+        String mailSubject = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailSubject");
+        String mailContent = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailContent", new String[] { resetLink });
+        mailer.sendMail(systemSettingsController.getSystemEmailSenderAddress(), payload.getEmail(), mailSubject, mailContent);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+      
+      // Success resposne
+      
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
     else {
