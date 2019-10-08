@@ -912,6 +912,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
     
   protected void assertValue(String selector, String value) {
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(value, element.getAttribute("value"));
   }
