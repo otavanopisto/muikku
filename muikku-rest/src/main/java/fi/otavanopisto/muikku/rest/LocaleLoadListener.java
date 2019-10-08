@@ -22,6 +22,8 @@ public class LocaleLoadListener implements ServletContextListener {
   public void contextInitialized(ServletContextEvent sce) {
     localeController.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.rest.workspace.WorkspaceRestMessages", LocaleUtils.toLocale("fi")));
     localeController.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.rest.workspace.WorkspaceRestMessages", LocaleUtils.toLocale("en")));
+    localeController.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.rest.user.UserRestMessages", LocaleUtils.toLocale("fi")));
+    localeController.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.rest.user.UserRestMessages", LocaleUtils.toLocale("en")));
   }
 
   @Override

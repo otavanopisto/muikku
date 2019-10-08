@@ -10,13 +10,13 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Dependent
+@Deprecated // once UI refactored to only use ForgotPasswordRESTService methods
 public class ForgotPasswordController {
 
   @Inject
@@ -76,7 +76,10 @@ public class ForgotPasswordController {
     return null;
   }
 
+  @Deprecated // by ForgotPasswordRESTService methods
   public boolean resetPassword(String confirmationHash, String password) {
+    return false;
+    /*
     UserPendingPasswordChange userPendingPasswordChange = userPendingPasswordChangeDAO.findByConfirmationHash(confirmationHash);
     if (userPendingPasswordChange != null) {
 
@@ -99,6 +102,7 @@ public class ForgotPasswordController {
     }
     
     return false;
+    */
   }
   
 }

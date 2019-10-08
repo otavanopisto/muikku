@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.model.security.Permission;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -16,7 +16,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.security.AbstractPermissionResolver;
 import fi.otavanopisto.muikku.security.PermissionScope;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.ContextReference;
@@ -30,9 +30,6 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   private Logger logger;
   
   @Inject
-  private EnvironmentUserController environmentUserController;
-
-  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
@@ -40,6 +37,9 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @Override
   public boolean handlesPermission(String permission) {
@@ -95,14 +95,15 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   }
 
   private boolean hasEnvironmentAccess(UserEntity userEntity, Permission permission) {
-    // Environment access as an individual
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity); 
-    if (environmentUser != null) {
-      if (permissionController.hasPermission(environmentUser.getRole(), permission)) {
+    EnvironmentRoleEntity defaultIdentifierRole = userEntityController.getDefaultIdentifierRole(userEntity);
+    if (defaultIdentifierRole != null) {
+      // Environment access as an individual
+      if (permissionController.hasPermission(defaultIdentifierRole, permission)) {
         // TODO Override rules for environment users
         return true;
       }
     }
+    
     if (permission.getScope().equals(PermissionScope.ENVIRONMENT)) {
       // Environment access as a group member
       List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
@@ -113,6 +114,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
         }
       }
     }
+
     return false;
   }
 

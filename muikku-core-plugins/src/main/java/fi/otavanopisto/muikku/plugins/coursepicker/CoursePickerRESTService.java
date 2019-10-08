@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -34,6 +35,7 @@ import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
@@ -47,6 +49,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.RoleController;
@@ -65,6 +68,7 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -133,6 +137,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   private WorkspaceEntityFileController workspaceEntityFileController;
   
   @Inject
+  private OrganizationEntityController organizationEntityController;
+  
+  @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
 
@@ -167,6 +174,30 @@ public class CoursePickerRESTService extends PluginRESTService {
   }
   
   @GET
+  @Path("/organizations")
+  @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
+  public Response listOrganizations() {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<OrganizationEntity> organizations = organizationEntityController.listUnarchived();
+      
+      // TODO: Limit to organizations the user is part of / has access to
+
+      List<CoursePickerOrganization> restOrganizations = organizations.stream().map(organization -> {
+        SchoolDataIdentifier organizationIdentifier = new SchoolDataIdentifier(organization.getIdentifier(), organization.getDataSource().getIdentifier());
+        return new CoursePickerOrganization(organizationIdentifier.toId(), organization.getName());
+      }).collect(Collectors.toList());
+      
+      restOrganizations.sort((CoursePickerOrganization a, CoursePickerOrganization b)-> {
+        return a.getName().compareTo(b.getName());
+      });
+      return Response.ok(restOrganizations).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+  
+  @GET
   @Path("/workspaces/")
   @RESTPermitUnimplemented
   public Response listWorkspaces(
@@ -174,6 +205,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
+        @QueryParam("organizations") List<String> organizationIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
@@ -258,8 +290,23 @@ public class CoursePickerRESTService extends PluginRESTService {
         }
       }
       
+      // TODO: Limit to organizations the logged user has access to (how though?)
+      
+      List<SchoolDataIdentifier> organizationIdentifiers = null;
+      if (organizationIds != null) {
+        organizationIdentifiers = new ArrayList<>(organizationIds.size());
+        for (String organizationId : organizationIds) {
+          SchoolDataIdentifier organizationIdentifier = SchoolDataIdentifier.fromId(organizationId);
+          if (organizationIdentifier != null) {
+            organizationIdentifiers.add(organizationIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed organization identifier", organizationId)).build();
+          }
+        }
+      }
+      
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
-          curriculumIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
+          curriculumIdentifiers, organizationIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
       
       schoolDataBridgeSessionController.startSystemSession();
       try {
@@ -522,6 +569,11 @@ public class CoursePickerRESTService extends PluginRESTService {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
+    OrganizationRESTModel organization = null;
+    if (workspaceEntity.getOrganizationEntity() != null) {
+      OrganizationEntity organizationEntity = workspaceEntity.getOrganizationEntity();
+      organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+    }
     return new CoursePickerWorkspace(
         workspaceEntity.getId(), 
         workspaceEntity.getUrlName(),
@@ -535,7 +587,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         educationTypeName,
         canSignup, 
         isCourseMember,
-        hasCustomImage);
+        hasCustomImage,
+        organization);
   }
   
   private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {

@@ -85,28 +85,26 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
-    String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
-
-    boolean hidden = false;
-    
+    SchoolDataIdentifier organizationIdentifier = identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId());
     return new PyramusUser(
         identifierMapper.getStaffIdentifier(staffMember.getId()),
         staffMember.getFirstName(),
         staffMember.getLastName(),
         null,
         null,
-        displayName,
+        StringUtils.join(staffMember.getFirstName(), " ", staffMember.getLastName()),
         null,
         null,
         null,
         null,
         null,
         null,
-        null,
-        null,
-        null,
-        false,
-        hidden);
+        organizationIdentifier == null ? null : organizationIdentifier.toId(),
+        null, // studyStartDate
+        null, // studyEndDate
+        null, //studyTimeEnded
+        false, // evaluationFees
+        false); // hidden
   }
 
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
@@ -121,7 +119,7 @@ public class PyramusSchoolDataEntityFactory {
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,
       String nationality, String language, String municipality, String school, OffsetDateTime studyStartDate, OffsetDateTime studyEndDate,
-      OffsetDateTime studyTimeEnd, boolean evaluationFees, boolean hidden, String curriculumIdentifer, String ssn) {
+      OffsetDateTime studyTimeEnd, boolean evaluationFees, boolean hidden, String curriculumIdentifer, String ssn, String organizationIdentifier) {
     StringBuilder displayName = new StringBuilder();
 
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
@@ -145,6 +143,7 @@ public class PyramusSchoolDataEntityFactory {
         municipality,
         school,
         curriculumIdentifer,
+        organizationIdentifier,
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
@@ -322,7 +321,8 @@ public class PyramusSchoolDataEntityFactory {
         courseFeeApplicable,
         curriculumIdentifiers,
         course.getCourseNumber(),
-        educationSubtypeIdentifier);
+        educationSubtypeIdentifier,
+        identifierMapper.getOrganizationIdentifier(course.getOrganizationId()));
   }
 
   public WorkspaceType createEntity(CourseType courseType) {
@@ -457,8 +457,11 @@ public class PyramusSchoolDataEntityFactory {
   public UserGroup createEntity(StudentGroup studentGroup) {
     boolean guidanceGroup = studentGroup.getGuidanceGroup() != null ? studentGroup.getGuidanceGroup() : false;
     
+    SchoolDataIdentifier organizationIdentifier = studentGroup.getOrganizationId() != null ? 
+        identifierMapper.getOrganizationIdentifier(studentGroup.getOrganizationId()) : null;
+    
     return new PyramusUserGroup(identifierMapper.getStudentGroupIdentifier(studentGroup.getId()),
-        studentGroup.getName(), guidanceGroup);
+        studentGroup.getName(), guidanceGroup, organizationIdentifier);
   }
 
   public List<UserGroup> createEntities(StudentGroup... studentGroups) {

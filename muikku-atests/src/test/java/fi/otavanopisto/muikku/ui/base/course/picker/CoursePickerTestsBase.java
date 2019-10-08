@@ -29,7 +29,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
   @Test
   public void coursePickerExistsTest() throws Exception {
     Builder mockBuilder = mocker();
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     
     try{
       Course course1 = new CourseBuilder().name("testcourse adf").id((long) 1).description("test course foraeas testing").buildCourse();
@@ -67,7 +67,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
   @Test
   public void coursePickerCourseDescriptionTest() throws Exception {
     Builder mockBuilder = mocker();
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     try{;
       Course course1 = new CourseBuilder().name("testcourse 2").id((long) 2).description("test course for testing").buildCourse();
       mockBuilder
@@ -94,7 +94,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
   
   @Test
   public void coursePickerLoadMoreTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
@@ -121,7 +121,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
   @Test
   public void coursePickerSearchTest() throws Exception {
     Builder mockBuilder = mocker();
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
 
     try{
       Course course1 = new CourseBuilder().name("testcourse hurhur").id((long) 3).description("test course for testing").buildCourse();
@@ -160,7 +160,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
   @Test
   public void coursePickerEducationTypeFilterTest() throws Exception {
     Builder mockBuilder = mocker();
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
 
     try{
       mockBuilder.addEducationType(new EducationType((long) 2, "Highschool", "HS", false)).addSubject(new Subject((long) 2, "tc_12", "Test subject", (long) 2, false));

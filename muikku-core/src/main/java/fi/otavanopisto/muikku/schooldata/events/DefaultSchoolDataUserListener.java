@@ -13,12 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.users.EnvironmentRoleEntityController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -41,15 +41,15 @@ public class DefaultSchoolDataUserListener {
   private EnvironmentRoleEntityController environmentRoleEntityController;
 
   @Inject
-  private EnvironmentUserController environmentUserController;
+  private OrganizationEntityController organizationEntityController;
   
   public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
     Long userEntityId = event.getUserEntityId();
     SchoolDataIdentifier defaultIdentifier = event.getDefaultIdentifier();
 
-    List<SchoolDataIdentifier> discoveredIdentifiers = event.getDiscoveredIdentifiers();
-    List<SchoolDataIdentifier> updatedIdentifiers = event.getUpdatedIdentifiers();
-    List<SchoolDataIdentifier> removedIdentifiers = event.getRemovedIdentifiers();
+    List<SchoolDataUserEventIdentifier> discoveredIdentifiers = event.getDiscoveredIdentifiers();
+    List<SchoolDataUserEventIdentifier> updatedIdentifiers = event.getUpdatedIdentifiers();
+    List<SchoolDataUserEventIdentifier> removedIdentifiers = event.getRemovedIdentifiers();
     
     Collection<String> allEmails = event.getAllEmails();
     if (allEmails.isEmpty()) {
@@ -100,65 +100,58 @@ public class DefaultSchoolDataUserListener {
           }
         }
       }
-      
+    
       // Attach discovered identities to user
-      for (SchoolDataIdentifier identifier : discoveredIdentifiers) {
-        List<String> identifierEmails = event.getEmails().get(identifier);
-            
+      for (SchoolDataUserEventIdentifier eventIdentifier : discoveredIdentifiers) {
+        SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
+        
+        EnvironmentRoleEntity environmentRoleEntity = eventIdentifier.getEnvironmentRoleIdentifier() == null ? null : 
+          environmentRoleEntityController.findBy(eventIdentifier.getEnvironmentRoleIdentifier());
+        OrganizationEntity organizationEntity = eventIdentifier.getOrganizationIdentifier() == null ? null :
+          organizationEntityController.findBy(eventIdentifier.getOrganizationIdentifier());
+        
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(
-            identifier.getDataSource(),
-            identifier.getIdentifier());
+            identifier.getDataSource(), identifier.getIdentifier());
         if (userSchoolDataIdentifier == null) {
-          userSchoolDataIdentifier = userSchoolDataIdentifierController.createUserSchoolDataIdentifier(identifier.getDataSource(), identifier.getIdentifier(), userEntity);
+          userSchoolDataIdentifier = userSchoolDataIdentifierController.createUserSchoolDataIdentifier(
+              identifier.getDataSource(), identifier.getIdentifier(), userEntity, environmentRoleEntity, organizationEntity);
           logger.log(Level.FINE, String.format("Added new identifier %s for user %d", identifier, userEntity.getId()));
         }
         else if (userSchoolDataIdentifier.getArchived()) {
           userSchoolDataIdentifierController.unarchiveUserSchoolDataIdentifier(userSchoolDataIdentifier);
         }
         
-        userEmailEntityController.setUserEmails(userSchoolDataIdentifier, getValidEmails(identifierEmails));
+        userEmailEntityController.setUserEmails(userSchoolDataIdentifier, getValidEmails(eventIdentifier.getEmails()));
+        userSchoolDataIdentifierController.setUserIdentifierRole(userSchoolDataIdentifier, environmentRoleEntity);
+        userSchoolDataIdentifierController.setUserIdentifierOrganization(userSchoolDataIdentifier, organizationEntity);
       }
       
-      for (SchoolDataIdentifier identifier : updatedIdentifiers) {
-        List<String> emails = event.getEmails().get(identifier);
-        userEmailEntityController.setUserEmails(identifier, getValidEmails(emails));
+      for (SchoolDataUserEventIdentifier eventIdentifier : updatedIdentifiers) {
+        SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(
+            identifier.getDataSource(), identifier.getIdentifier());
+        OrganizationEntity organizationEntity = eventIdentifier.getOrganizationIdentifier() == null ? null :
+          organizationEntityController.findBy(eventIdentifier.getOrganizationIdentifier());
+        
+        EnvironmentRoleEntity environmentRoleEntity = eventIdentifier.getEnvironmentRoleIdentifier() == null ? null : 
+          environmentRoleEntityController.findBy(eventIdentifier.getEnvironmentRoleIdentifier());
+        List<String> emails = eventIdentifier.getEmails();
+        
+        userEmailEntityController.setUserEmails(eventIdentifier.getIdentifier(), getValidEmails(emails));
+        userSchoolDataIdentifierController.setUserIdentifierRole(userSchoolDataIdentifier, environmentRoleEntity);
+        userSchoolDataIdentifierController.setUserIdentifierOrganization(userSchoolDataIdentifier, organizationEntity);
       }
       
-      for (SchoolDataIdentifier identifier : removedIdentifiers) {
-        List<String> emails = event.getEmails().get(identifier);
-        userEmailEntityController.setUserEmails(identifier, getValidEmails(emails));
-      }
-
-      // Update users environment role
-      if (event.getEnvironmentRoleIdentifier() != null) {
-        EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getEnvironmentRoleIdentifier().getDataSource(), event.getEnvironmentRoleIdentifier().getIdentifier());
-        if (environmentRoleEntity != null) {
-          EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-          if (environmentUser == null) {
-            logger.fine(String.format("UserEntity %d did not have an environment user so created new one into role %s", userEntity.getId(), environmentRoleEntity.getName()));
-            environmentUserController.createEnvironmentUser(userEntity, environmentRoleEntity);
-          } else {
-            if (environmentUser.getRole() == null || !environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
-              logger.fine(String.format("Updated UserEntity %d role into %s", userEntity.getId(), environmentRoleEntity.getName()));
-              environmentUserController.updateEnvironmentUserRole(environmentUser, environmentRoleEntity);
-            }
-          }
-        } else {
-          logger.severe(String.format("Could not find specified environment role entity %s", event.getEnvironmentRoleIdentifier()));
-        }
-      } else {
-        // Users new role has been set to null which means that we need to remove the environment role from the user
-        EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-        if (environmentUser != null) {
-          logger.info(String.format("Removed UserEntity %d environment role", userEntity.getId()));
-          environmentUserController.updateEnvironmentUserRole(environmentUser, null);
-        }
+      for (SchoolDataUserEventIdentifier eventIdentifier : removedIdentifiers) {
+        List<String> emails = eventIdentifier.getEmails();
+        userEmailEntityController.setUserEmails(eventIdentifier.getIdentifier(), getValidEmails(emails));
       }
     }
 
     // Remove identifiers in the removed list
-    for (SchoolDataIdentifier identifier : removedIdentifiers) {
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+    for (SchoolDataUserEventIdentifier eventIdentifier : removedIdentifiers) {
+      SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(identifier);
       if (userSchoolDataIdentifier != null) {
         logger.log(Level.FINE, String.format("Removing user school data identifier %s", identifier));
         userSchoolDataIdentifierController.archiveUserSchoolDataIdentifier(userSchoolDataIdentifier);
@@ -171,9 +164,13 @@ public class DefaultSchoolDataUserListener {
 
     // Finally check if user has any identifiers left, if not archive the user from the system
     if (userEntity != null) {
-      if (userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity).isEmpty()) {
+      boolean isArchived = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity).isEmpty();
+      if (isArchived && !userEntity.getArchived()) {
         logger.log(Level.INFO, String.format("UserEntity #%d has no identities left, archiving userEntity", userEntity.getId()));
         userEntityController.archiveUserEntity(userEntity);
+      } else if (!isArchived && userEntity.getArchived()) {
+        logger.log(Level.INFO, String.format("UserEntity #%d has identities but was archived, unarchiving userEntity", userEntity.getId()));
+        userEntityController.unarchiveUserEntity(userEntity);
       }
     }
     

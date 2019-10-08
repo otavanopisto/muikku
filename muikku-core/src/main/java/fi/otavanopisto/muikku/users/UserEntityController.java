@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.dao.users.UserEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityPropertyDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
@@ -238,8 +239,24 @@ public class UserEntityController implements Serializable {
     return userEntityDAO.updateArchived(userEntity, Boolean.TRUE);
   }
   
+  public UserEntity unarchiveUserEntity(UserEntity userEntity) {
+    return userEntityDAO.updateArchived(userEntity, Boolean.FALSE);
+  }
+  
   public UserEntity markAsUpdatedByStudent(UserEntity userEntity) {
     return userEntityDAO.updateUpdatedByStudent(userEntity, Boolean.TRUE);
+  }
+
+  /**
+   * Returns role for default identifier of given user
+   * 
+   * @param userEntity
+   * @return
+   */
+  public EnvironmentRoleEntity getDefaultIdentifierRole(UserEntity userEntity) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(
+        userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier(), Boolean.FALSE);
+    return userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getRole() : null;
   }
 
 }

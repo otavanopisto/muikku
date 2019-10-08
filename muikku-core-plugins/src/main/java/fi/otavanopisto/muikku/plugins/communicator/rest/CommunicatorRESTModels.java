@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -20,6 +21,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -27,6 +29,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
@@ -57,6 +60,9 @@ public class CommunicatorRESTModels {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
   
   @Inject
   private WorkspaceController workspaceController;
@@ -85,7 +91,8 @@ public class CommunicatorRESTModels {
           user.getStudyProgrammeName(),
           hasPicture,
           user.hasEvaluationFees(),
-          user.getCurriculumIdentifier());
+          user.getCurriculumIdentifier(),
+          user.getOrganizationIdentifier());
 
       return result;
     } finally {
@@ -188,11 +195,17 @@ public class CommunicatorRESTModels {
       if (entity != null) {
         Long userCount = userGroupEntityController.getGroupUserCount(entity);
         UserGroup group = userGroupController.findUserGroup(entity);
-        
-        if (group != null)
-          return new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount);
+        if (group != null) {
+          OrganizationRESTModel organization = null;
+          if (group.getOrganizationIdentifier() != null) {
+            OrganizationEntity organizationEntity = organizationEntityController.findBy(group.getOrganizationIdentifier());
+            if (organizationEntity != null) {
+              organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+            }
+          }
+          return new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization);
+        }
       }
-      
       return null;
     } finally {
       schoolDataBridgeSessionController.endSystemSession();

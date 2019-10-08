@@ -7,7 +7,7 @@ public class StaffMember {
   public StaffMember() {
   }
 
-  public StaffMember(String id, Long userEntityId, String firstName, String lastName, String email, Map<String, String> properties) {
+  public StaffMember(String id, Long userEntityId, String firstName, String lastName, String email, Map<String, String> properties, OrganizationRESTModel organization) {
     super();
     this.id = id;
     this.userEntityId = userEntityId;
@@ -15,6 +15,7 @@ public class StaffMember {
     this.lastName = lastName;
     this.email = email;
     this.properties = properties;
+    this.organization = organization;
   }
 
   public String getId() {
@@ -65,10 +66,19 @@ public class StaffMember {
     this.properties = properties;
   }
 
+  public OrganizationRESTModel getOrganization() {
+    return organization;
+  }
+
+  public void setOrganization(OrganizationRESTModel organization) {
+    this.organization = organization;
+  }
+
   private String id;
   private Long userEntityId;
   private String firstName;
   private String lastName;
   private String email;
   private Map<String, String> properties;
+  private OrganizationRESTModel organization;
 }

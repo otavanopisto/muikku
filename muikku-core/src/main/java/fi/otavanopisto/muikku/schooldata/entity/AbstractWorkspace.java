@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.Set;
-import java.time.OffsetDateTime;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
@@ -15,7 +15,7 @@ public abstract class AbstractWorkspace implements Workspace {
       SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
       String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length, String lengthUnitIdentifier,
       OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, boolean evaluationFeeApplicable, Set<SchoolDataIdentifier> curriculumIdentifiers, Integer courseNumber,
-      SchoolDataIdentifier educationSubtypeIdentifier) {
+      SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier) {
     super();
     this.identifier = identifier;
     this.name = name;
@@ -36,6 +36,7 @@ public abstract class AbstractWorkspace implements Workspace {
     this.curriculumIdentifiers = curriculumIdentifiers;
     this.courseNumber = courseNumber;
     this.educationSubtypeIdentifier = educationSubtypeIdentifier;
+    this.organizationIdentifier = organizationIdentifier;
   }
   
   @Override
@@ -110,6 +111,11 @@ public abstract class AbstractWorkspace implements Workspace {
   public SchoolDataIdentifier getEducationSubtypeIdentifier() {
     return educationSubtypeIdentifier;
   }
+
+  @Override
+  public SchoolDataIdentifier getOrganizationIdentifier() {
+    return organizationIdentifier;
+  }
   
   @Override
   public Double getLength() {
@@ -176,6 +182,7 @@ public abstract class AbstractWorkspace implements Workspace {
   private String subjectIdentifier;
   private SchoolDataIdentifier educationTypeIdentifier;
   private SchoolDataIdentifier educationSubtypeIdentifier;
+  private SchoolDataIdentifier organizationIdentifier;
   private Date modified;
   private Double length;
   private String lengthUnitIdentifier;

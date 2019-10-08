@@ -101,7 +101,7 @@ public class PyramusMock {
         pmock.subjects.add(new Subject((long) 1, "tc_11", "Test course", (long) 1, false));
         
         pmock.studyProgrammeCategories.add(new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false));
-        pmock.studyProgrammes.add(new StudyProgramme(1l, "test", "Test Study Programme", 1l, false));
+        pmock.studyProgrammes.add(new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, false));
         
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false));
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 2, "Ryhmäkurssi", false));        
@@ -169,10 +169,10 @@ public class PyramusMock {
         return this;
       }
 //      TODO: UserGroup mockings
-      public Builder addStudentGroup(Long id, String name, String description, Long creatorId, boolean archived) {
+      public Builder addStudentGroup(Long id, Long organizationId, String name, String description, Long creatorId, boolean archived) {
         OffsetDateTime date = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         List<String> tags = new ArrayList<>();
-        pmock.studentGroups.add(new StudentGroup(id, name, description, date, creatorId, date, creatorId, date, tags, false, archived));
+        pmock.studentGroups.add(new StudentGroup(id, name, description, date, creatorId, date, creatorId, date, tags, false, organizationId, archived));
         return this;
       }
       
@@ -629,7 +629,7 @@ public class PyramusMock {
         List<String> tags = new ArrayList<>();
         List<StaffMember> staffs = new ArrayList<>();
         for (MockStaffMember mockStaffMember : pmock.staffMembers) {
-          StaffMember staffMember = new StaffMember(mockStaffMember.getId(), mockStaffMember.getPersonId(), null, mockStaffMember.getFirstName(), mockStaffMember.getLastName(), null, mockStaffMember.getRole(), tags, variables);
+          StaffMember staffMember = new StaffMember(mockStaffMember.getId(), mockStaffMember.getPersonId(), mockStaffMember.getOrganizationId(), null, mockStaffMember.getFirstName(), mockStaffMember.getLastName(), null, mockStaffMember.getRole(), tags, variables);
 
           stubFor(get(urlEqualTo(String.format("/1/staff/members/%d", staffMember.getId())))
             .willReturn(aResponse()

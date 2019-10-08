@@ -23,12 +23,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections.CollectionUtils;
 
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -36,6 +38,7 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -51,9 +54,12 @@ public class UserGroupRESTService extends AbstractRESTService {
 
   @Inject
   private UserGroupEntityController userGroupEntityController;
-  
+
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private OrganizationEntityController organizationEntityController;
 
   @Inject
   private UserGroupController userGroupController;
@@ -116,25 +122,22 @@ public class UserGroupRESTService extends AbstractRESTService {
     } else {
       SearchProvider elasticSearchProvider = getProvider("elastic-search");
       if (elasticSearchProvider != null) {
-        String[] fields = new String[] { "name" };
-        SearchResult result = null;
+        List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
+        
+        if (CollectionUtils.isNotEmpty(organizations)) {
+          SearchResult result = elasticSearchProvider.searchUserGroups(searchString, organizations, firstResult, maxResults);
 
-        if (StringUtils.isBlank(searchString)) {
-          result = elasticSearchProvider.matchAllSearch(firstResult, maxResults, UserGroup.class);
-        } else {
-          result = elasticSearchProvider.search(searchString, fields, firstResult, maxResults, UserGroup.class);
-        }
+          List<Map<String, Object>> results = result.getResults();
 
-        List<Map<String, Object>> results = result.getResults();
+          if (!results.isEmpty()) {
+            for (Map<String, Object> o : results) {
+              String[] id = ((String) o.get("id")).split("/", 2);
 
-        if (!results.isEmpty()) {
-          for (Map<String, Object> o : results) {
-            String[] id = ((String) o.get("id")).split("/", 2);
-
-            UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(
-                id[1], id[0]);
-            if (userGroupEntity != null) {
-              entities.add(userGroupEntity);
+              UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(
+                  id[1], id[0]);
+              if (userGroupEntity != null) {
+                entities.add(userGroupEntity);
+              }
             }
           }
         }
@@ -149,10 +152,19 @@ public class UserGroupRESTService extends AbstractRESTService {
       for (UserGroupEntity entity : entities) {
         Long userCount = userGroupEntityController.getGroupUserCount(entity);
         UserGroup group = userGroupController.findUserGroup(entity);
-        if (group != null)
-          ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount));
-        else
+        if (group != null) {
+          OrganizationRESTModel organization = null;
+          if (group.getOrganizationIdentifier() != null) {
+            OrganizationEntity organizationEntity = organizationEntityController.findBy(group.getOrganizationIdentifier());
+            if (organizationEntity != null) {
+              organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+            }
+          }
+          ret.add(new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount, organization));
+        }
+        else {
           logger.log(Level.WARNING, "Group not found");
+        }
       }
 
       return Response.ok(ret).build();
@@ -182,8 +194,16 @@ public class UserGroupRESTService extends AbstractRESTService {
 
     Long userCount = userGroupEntityController.getGroupUserCount(userGroupEntity);
 
+    OrganizationRESTModel organization = null;
+    if (userGroup.getOrganizationIdentifier() != null) {
+      OrganizationEntity organizationEntity = organizationEntityController.findBy(userGroup.getOrganizationIdentifier());
+      if (organizationEntity != null) {
+        organization = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+      }
+    }
+
     return Response.ok(
-        new fi.otavanopisto.muikku.rest.model.UserGroup(userGroupEntity.getId(), userGroup.getName(), userCount))
+        new fi.otavanopisto.muikku.rest.model.UserGroup(userGroupEntity.getId(), userGroup.getName(), userCount, organization))
         .build();
   }
 

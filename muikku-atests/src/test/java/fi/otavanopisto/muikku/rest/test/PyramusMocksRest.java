@@ -110,7 +110,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     StudyProgrammeCategory spc = new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false);
-    StudyProgramme sp = new StudyProgramme(1l, "test", "Test Study Programme", 1l, false);
+    StudyProgramme sp = new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, false);
     
     StudyProgramme[] sps = { sp };
     StudyProgrammeCategory[] spcs = { spc };
@@ -270,10 +270,10 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     return person;
   }
   
-  private static StaffMember mockStaffMember(Long personId, Long staffMemberId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
+  private static StaffMember mockStaffMember(Long personId, Long staffMemberId, Long organizationId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-    StaffMember staffMember = new StaffMember(staffMemberId, personId, null, firstName, lastName, null, 
+    StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
         role, tags, variables);
       
     String staffMemberJson = objectMapper.writeValueAsString(staffMember);
@@ -407,10 +407,10 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     Student student1 = mockStudent(1l, 1l, "Test", "User", "testuser@example.com", tags, variables, payloads, toDate(2010, 1, 1), getNextYear());
     Student student2 = mockStudent(6l, 6l, "Hidden", "Dragon", "crouchingtiger@example.com", tags, variables, payloads, toDate(2010, 1, 1), toDate(2011, 1, 1));
 
-    StaffMember staffMember1 = mockStaffMember(2l, 2l, "Test", "Staff1member", "teacher@example.com", UserRole.USER, tags, variables, payloads);
-    StaffMember staffMember2 = mockStaffMember(3l, 3l, "Test", "Staff2member", "mana@example.com", UserRole.MANAGER, tags, variables, payloads);
-    StaffMember staffMember3 = mockStaffMember(4l, 4l, "Test", "Administrator", "admin@example.com", UserRole.ADMINISTRATOR, tags, variables, payloads);
-    StaffMember staffMember4 = mockStaffMember(5l, 5l, "Trusted", "System", "trusted@example.com", UserRole.TRUSTED_SYSTEM, tags, variables, payloads);
+    StaffMember staffMember1 = mockStaffMember(2l, 2l, 1l, "Test", "Staff1member", "teacher@example.com", UserRole.USER, tags, variables, payloads);
+    StaffMember staffMember2 = mockStaffMember(3l, 3l, 1l, "Test", "Staff2member", "mana@example.com", UserRole.MANAGER, tags, variables, payloads);
+    StaffMember staffMember3 = mockStaffMember(4l, 4l, 1l, "Test", "Administrator", "admin@example.com", UserRole.ADMINISTRATOR, tags, variables, payloads);
+    StaffMember staffMember4 = mockStaffMember(5l, 5l, 1l, "Trusted", "System", "trusted@example.com", UserRole.TRUSTED_SYSTEM, tags, variables, payloads);
 
     Student[] studentArray = { student1, student2 };
     StaffMember[] staffArray = { staffMember1, staffMember2, staffMember3, staffMember4 };
@@ -498,7 +498,8 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
        (long) 1,
        (long) 1,
        null,
-       null);
+       null,
+       1L);
   
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String courseJson = objectMapper.writeValueAsString(course);
@@ -609,7 +610,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     Long creatorId = 1l;
     Long groupId = USERGROUP1_ID;
     
-    StudentGroup studentGroup = new StudentGroup(groupId, "Group1", "", begin, creatorId, begin, creatorId, begin, null, false, false);
+    StudentGroup studentGroup = new StudentGroup(groupId, "Group1", "", begin, creatorId, begin, creatorId, begin, null, false, 1l, false);
     StudentGroup[] studentGroups = new StudentGroup[] { studentGroup };
     
     stubFor(get(urlEqualTo("/1/students/studentGroups"))

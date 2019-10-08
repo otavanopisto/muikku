@@ -19,6 +19,7 @@ public class PyramusUser extends AbstractUser implements User {
                      String municipality,
                      String school,
                      String curriculumIdentifier,
+                     String organizationIdentifier,
                      OffsetDateTime studyStartDate,
                      OffsetDateTime studyEndDate,
                      OffsetDateTime studyTimeEnd,
@@ -41,7 +42,8 @@ public class PyramusUser extends AbstractUser implements User {
         studyTimeEnd, 
         hidden, 
         evaluationFees,
-        curriculumIdentifier);
+        curriculumIdentifier,
+        organizationIdentifier);
   }
 
   @Override
