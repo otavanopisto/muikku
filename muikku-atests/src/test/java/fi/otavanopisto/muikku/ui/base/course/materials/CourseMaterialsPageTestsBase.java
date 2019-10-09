@@ -29,6 +29,76 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.CHROME_HEADLESS,
+      TestEnvironments.Browser.FIREFOX,
+    }
+  )
+  public void fileFieldTestAdmin() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addStudent(student)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      File testFile = getTestFile();
+      try {
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
+            "Test", "text/html;editor=CKEditor", 
+            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
+            "EXERCISE");
+        logout();
+        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+        mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
+        mockBuilder.mockLogin(student);
+        login();
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
+          sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
+          waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
+          waitForPresentAndVisible(".notification-queue__item--success");
+          sleep(500);
+          
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          assertTextIgnoreCase(".file-uploader__item-title", testFile.getName());
+          
+          waitForPresent(".file-uploader__item-delete-icon");
+          waitAndClick(".file-uploader__item-delete-icon");
+          waitForPresentAndVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
+          waitAndClick(".button--standard-ok");
+          waitForPresentAndVisible(".file-uploader__hint");
+          assertNotPresent(".file-uploader__item-title");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+        }
+        
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
   public void courseMaterialExistsTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
@@ -59,7 +129,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".material-page .material-page__content");
         assertVisible(".material-page .material-page__content");
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -112,7 +181,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForNotVisible(".tabs--material-editor");
         assertText(".content-panel__chapter-title ", "Test title");
       } finally {
-        logout();
         deleteWorkspace(workspace.getId());
       }
     } finally {
@@ -166,7 +234,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(String.format("a.active[href='#p-%d']", htmlMaterial2.getId()));
           assertVisible(String.format("a.active[href='#p-%d']", htmlMaterial2.getId()));
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
         }
       } finally {
@@ -209,7 +276,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".button--muikku-submit-assignment");
         assertTextIgnoreCase(".button--muikku-submit-assignment", "Palauta tehtävä");
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -248,7 +314,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".button--muikku-check-exercises");
         assertTextIgnoreCase(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -309,7 +374,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //        sleep(1000);
 //        assertValue(".material-page__textfield", "field value");
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -374,7 +438,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //          sleep(1000);
 //          assertValue(".material-page__textfield", "field value");
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
       } finally {
@@ -429,7 +492,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".material-page__selectfield");
         assertSelectedOption(".material-page__selectfield", "dos");
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -489,7 +551,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__selectfield");
           assertSelectedOption(".material-page__selectfield", "dos");
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
         
@@ -544,7 +605,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".material-page__radiobutton-items-wrapper");
         assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -601,7 +661,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__radiobutton-items-wrapper");
           assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
       } finally {
@@ -657,7 +716,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForClickableXPath("//input[@type='checkbox' and @value='1']");
         assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -712,7 +770,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForClickableXPath("//input[@type='checkbox' and @value='1']");
           assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
         
@@ -792,7 +849,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::div/parent::div", "incorrect-answer");
         assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::div/parent::div", "incorrect-answer");
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
@@ -851,73 +907,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         sleep(1500);
         assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div/parent::div", "correct-answer");
       } finally {
-        logout();
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-  
-  @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.CHROME_HEADLESS,
-      TestEnvironments.Browser.FIREFOX,
-    }
-  )
-  public void fileFieldTestAdmin() throws Exception {
-    MockStaffMember admin = new MockStaffMember(2l, 2l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-
-    try {
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
-      mockBuilder
-      .addStaffMember(admin)
-      .mockLogin(admin)
-      .addCourse(course1)
-      .build();
-      login();
-      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
-
-      CourseStaffMember courseStaffMember = new CourseStaffMember(2l, course1.getId(), admin.getId(), 7l);
-      mockBuilder
-        .addCourseStaffMember(course1.getId(), courseStaffMember)
-        .build();
-      File testFile = getTestFile();
-      try {
-        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
-            "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
-            "EXERCISE");
-
-        try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
-          sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
-          waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
-          waitForPresentAndVisible(".notification-queue__item--success");
-          sleep(500);
-          
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          assertTextIgnoreCase(".file-uploader__item-title", testFile.getName());
-          
-          waitForPresent(".file-uploader__item-delete-icon");
-          waitAndClick(".file-uploader__item-delete-icon");
-          waitForPresentAndVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
-          waitAndClick(".button--standard-ok");
-          waitForPresentAndVisible(".file-uploader__hint");
-          assertNotPresent(".file-uploader__item-title");
-        } finally {
-          logout();
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-        }
-        
-      } finally {
         deleteWorkspace(workspace.getId());
       }
     } finally {
@@ -984,7 +974,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresentAndVisible(".file-uploader__hint");
           assertNotPresent(".file-uploader__item-title");
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
         
@@ -1063,7 +1052,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           dragAndDropWithOffSetAndTimeout(".material-page__sorterfield-item:first-child", ".material-page__sorterfield-item:nth-child(2)", 20, 0);
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
       } finally {
@@ -1135,7 +1123,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresentAndVisible(".material-page__correct-answers");
           assertTextIgnoreCase(".material-page__correct-answers-data", "0 / 1");
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
       } finally {
@@ -1257,7 +1244,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__metadata-container .material-page__license-item");
           assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/publicdomain/zero/1.0/");
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         }
         
@@ -1320,7 +1306,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__metadata-container .material-page__license-item");
           assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by/4.0");
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         }
         
@@ -1383,7 +1368,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__metadata-container .material-page__license-item");
           assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by/3.0");
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         }
         
@@ -1448,7 +1432,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__metadata-container .material-page__license-item");
           assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "www.test.com");
         } finally {
-          logout();
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         }
         
