@@ -106,3 +106,7 @@
   }
 }
 
+@mixin workspace-image-button {
+  background-color: $color-button-profile-image-edit-delete-background;
+  color: white;
+}

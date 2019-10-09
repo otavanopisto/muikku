@@ -14,6 +14,7 @@ import CopyWizardDialog from "../dialogs/copy-wizard";
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/change-image.scss';
 import { LicenseSelector } from "~/components/general/license-selector";
 import UploadImageDialog from '../dialogs/upload-image';
 import AddProducer from '~/components/general/add-producer';
@@ -225,7 +226,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       });
     } else if (this.props.workspace.hasCustomImage){
       this.setState({
-        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
+        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped`,
         isImageDialogOpen: true,
         newWorkspaceImageB64: null,
         newWorkspaceImageFile: null
@@ -360,15 +361,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       actualBackgroundSRC = this.state.newWorkspaceImageCombo.croppedB64;
     }
     
-
-    let testStartDate = this.state.workspaceStartDate;
-    let testEndDate = this.state.workspaceEndDate;
-    
-    
-    let middle = "muu";
-    
-    
-    
     return (<div className="panel panel--workspace-Management">
       <div className="panel__header">
         <div className="panel__header-title">{this.props.i18n.text.get("plugin.workspace.management.pageTitle")}</div>
@@ -399,14 +391,22 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
           <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
-          <div className="application-sub-panel__body">
-            <div className="application-sub-panel__item">
-              <img className="application-sub-panel__image" src={actualBackgroundSRC} onClick={this.editCurrentImage}/>
+          <div className="change-image">
+            <div className="change-image__container change-image__container--workspace"  style={{backgroundImage: `url("${actualBackgroundSRC}")`, backgroundSize:`cover` }}>
+              <input name="file" type="file" accept="image/*" onChange={this.readNewImage}/>
+              {this.state.workspaceHasCustomImage ?
+              <div className="change-image__actions">
+                <Button buttonModifiers="change-image-edit button--change-image-workspace" onClick={this.editCurrentImage}>
+                  <span className="icon icon-edit"/>
+                  {this.props.i18n.text.get("plugin.profile.editImage")}
+                </Button>
+                 <Button buttonModifiers="change-image-delete button--change-image-workspace" onClick={this.removeCustomImage}>
+                  <span className="icon icon-delete"/>
+                  {this.props.i18n.text.get("plugin.profile.deleteImage")}
+              </Button> 
+              </div>: <div className="change-image__default-content">{this.props.i18n.text.get("plugin.workspace.management.changeImage.defaultImageInfo")}</div>}
             </div>
             <div className="application-sub-panel__item-actions">
-            <Button buttonAs="a" className="link link--workspace-management">
-              <input name="file" type="file" accept="image/*" onChange={this.readNewImage}/>
-            </Button>
               {this.state.workspaceHasCustomImage ? <Button className="link link--workspace-management" onClick={this.removeCustomImage}/> : null}
             </div>
             <UploadImageDialog isOpen={this.state.isImageDialogOpen}
