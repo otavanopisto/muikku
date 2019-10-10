@@ -38,14 +38,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   )
   public void fileFieldTestAdmin() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
 
     try {
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
-      .addStudent(student)
       .mockLogin(admin)
       .addCourse(course1)
       .build();
@@ -64,11 +62,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "Test", "text/html;editor=CKEditor", 
             "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
             "EXERCISE");
-        logout();
-        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
-        mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
-        mockBuilder.mockLogin(student);
-        login();
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
@@ -89,7 +82,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
-        
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -995,7 +987,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         TestEnvironments.Browser.SAFARI,
       }
     )
-  public void sorterFieldAsciiMathSupportTest() throws Exception {
+  public void sorterFieldWithAsciiMathSupportTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
@@ -1051,6 +1043,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //        mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
 //        assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           dragAndDropWithOffSetAndTimeout(".material-page__sorterfield-item:first-child", ".material-page__sorterfield-item:nth-child(2)", 20, 0);
+          sleep(1000);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
