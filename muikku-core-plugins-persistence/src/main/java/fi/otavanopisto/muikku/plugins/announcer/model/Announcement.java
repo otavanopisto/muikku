@@ -85,12 +85,23 @@ public class Announcement {
     this.publiclyVisible = publiclyVisible;
   }
 
+  public Long getOrganizationEntityId() {
+    return organizationEntityId;
+  }
+
+  public void setOrganizationEntityId(Long organizationEntityId) {
+    this.organizationEntityId = organizationEntityId;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column (name = "publisherUserEntity_id")
   private Long publisherUserEntityId;
+  
+  @Column (name = "organizationEntity_id")
+  private Long organizationEntityId;
   
   @NotNull
   @NotEmpty
