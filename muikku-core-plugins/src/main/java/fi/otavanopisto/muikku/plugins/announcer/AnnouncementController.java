@@ -26,6 +26,7 @@ import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
@@ -80,11 +81,10 @@ public class AnnouncementController {
     return announcement;
   }
   
-  public List<Announcement> listAnnouncements(OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity userEntity, 
-      boolean userAsOwner, boolean onlyArchived) {
-    List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserEntity(userEntity) : Collections.emptyList();
-    List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity) : Collections.emptyList();
+  public List<Announcement> listAnnouncements(SchoolDataIdentifier userIdentifier, OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived) {
+    List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier) : Collections.emptyList();
+    List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifier(userIdentifier) : Collections.emptyList();
     
     List<Announcement> announcements = announcementDAO.listAnnouncements(
         organizationEntity,
@@ -92,22 +92,21 @@ public class AnnouncementController {
         workspaceEntities,
         environment, 
         timeFrame, 
-        userAsOwner ? userEntity : null,
+        announcementOwner,
         onlyArchived);
     
     return announcements;
   }
 
   public List<Announcement> listWorkspaceAnnouncements(OrganizationEntity organizationEntity, List<WorkspaceEntity> workspaceEntities, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, 
-      boolean userAsOwner, boolean onlyArchived) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived) {
     List<Announcement> announcements = announcementDAO.listAnnouncements(
         organizationEntity,
         Collections.emptyList(),
         workspaceEntities, 
         environment, 
         timeFrame, 
-        userAsOwner ? user : null,
+        announcementOwner,
         onlyArchived);
     
     return announcements;
@@ -150,13 +149,10 @@ public class AnnouncementController {
 
   /**
    * Lists announcement workspaces and return them as sorted list so that the users' workspaces are first
-   * 
-   * @param announcement
-   * @param userEntity
-   * @return
+   * @param userIdentifier 
    */
-  public List<AnnouncementWorkspace> listAnnouncementWorkspacesSortByUserFirst(Announcement announcement, UserEntity userEntity) {
-    List<WorkspaceEntity> userWorkspaces = workspaceEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
+  public List<AnnouncementWorkspace> listAnnouncementWorkspacesSortByUserFirst(Announcement announcement, SchoolDataIdentifier userIdentifier) {
+    List<WorkspaceEntity> userWorkspaces = workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifier(userIdentifier);
     Set<Long> userWorkspaceIds = userWorkspaces.stream().map(workspace -> workspace.getId()).collect(Collectors.toSet());
     List<AnnouncementWorkspace> announcementWorkspaces = announcementWorkspaceDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE);
 

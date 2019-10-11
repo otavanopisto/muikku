@@ -92,7 +92,8 @@ public class UserGroupRESTService extends AbstractRESTService {
       if (identifier == null) {
         Response.status(Status.BAD_REQUEST).entity("Malformed userIdentifier").build();
       }
-      
+
+      SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
       UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);      
 
@@ -114,7 +115,7 @@ public class UserGroupRESTService extends AbstractRESTService {
         
         // For someone with the role feature the group entities are not necessarily accessible
         if (sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
-          List<UserGroupEntity> guiderGroups = userGroupEntityController.listUserGroupsByUserEntity(loggedUserEntity);
+          List<UserGroupEntity> guiderGroups = userGroupEntityController.listUserGroupsByUserIdentifier(loggedUser);
           Set<Long> guiderGroupIds = guiderGroups.stream().map(UserGroupEntity::getId).collect(Collectors.toSet());
           entities = entities.stream().filter((UserGroupEntity uge) -> guiderGroupIds.contains(uge.getId())).collect(Collectors.toList());
         }

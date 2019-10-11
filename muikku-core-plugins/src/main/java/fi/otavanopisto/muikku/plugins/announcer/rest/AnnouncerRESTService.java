@@ -270,12 +270,13 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyArchived") @DefaultValue("false") boolean onlyArchived,
       @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame
   ) {
-    UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-    if (currentUserEntity == null) {
+    if (!sessionController.isLoggedIn()) {
       return Response.noContent().build();
     }
     
-    UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
     OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
     if (organizationEntity == null) {
       return Response.noContent().build();
@@ -291,8 +292,8 @@ public class AnnouncerRESTService extends PluginRESTService {
     if (workspaceEntityId == null) {
       boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
-      announcements = announcementController.listAnnouncements(organizationEntity,
-          includeGroups, includeWorkspaces, environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
+      announcements = announcementController.listAnnouncements(loggedUser, organizationEntity,
+          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
     }
     else {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -305,7 +306,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       }
       
       announcements = announcementController.listWorkspaceAnnouncements(organizationEntity,
-          Arrays.asList(workspaceEntity), environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
+          Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
@@ -315,7 +316,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       }
       
       List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
-      List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, currentUserEntity);
+      List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
           
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
       restModels.add(restModel);
@@ -334,16 +335,17 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Announcement not found").build();
     }
     
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    
     // Permission checks - either global permission to access all announcements or permission via groups etc
     if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.FIND_ANNOUNCEMENT)) {
-      if (!canSeeAnnouncement(announcement, sessionController.getLoggedUser())) {
+      if (!canSeeAnnouncement(announcement, loggedUser)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
     
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
     
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
   }
@@ -361,7 +363,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       return false;
     }
     
-    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userSchoolDataIdentifier.getUserEntity());
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
     Set<Long> userGroupIds = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
     
     List<AnnouncementUserGroup> announcementGroups = announcementController.listAnnouncementUserGroups(announcement);
@@ -371,7 +373,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       return true;
     }
     
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userSchoolDataIdentifier.getUserEntity());
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userIdentifier);
     if (CollectionUtils.isNotEmpty(announcementWorkspaces)) {
       /**
        * If announcement is tied to any workspace, the user needs to have access to a workspace to find
