@@ -16,7 +16,6 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Dependent
-@Deprecated // once UI refactored to only use ForgotPasswordRESTService methods
 public class ForgotPasswordController {
 
   @Inject
