@@ -31,11 +31,12 @@ public class WorkspaceAssessmentState {
     this.text = text;
   }
 
-  public WorkspaceAssessmentState(String state, Date date, String text, String grade) {
+  public WorkspaceAssessmentState(String state, Date date, String text, String grade, Date gradeDate) {
     this.state = state;
     this.date = date;
     this.text = text;
     this.grade = grade;
+    this.gradeDate = gradeDate;
   }
 
   public String getState() {
@@ -70,9 +71,18 @@ public class WorkspaceAssessmentState {
     this.text = text;
   }
 
+  public Date getGradeDate() {
+    return gradeDate;
+  }
+
+  public void setGradeDate(Date gradeDate) {
+    this.gradeDate = gradeDate;
+  }
+
   private Date date;
   private String state;
   private String grade;
+  private Date gradeDate;
   private String text;
 
 }
