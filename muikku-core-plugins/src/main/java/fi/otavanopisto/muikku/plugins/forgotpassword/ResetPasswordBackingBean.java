@@ -42,4 +42,12 @@ public class ResetPasswordBackingBean {
     return null;
   }
 
+  public String getUrlHash() {
+    return urlHash;
+  }
+
+  public void setUrlHash(String urlHash) {
+    this.urlHash = urlHash;
+  }
+
 }
