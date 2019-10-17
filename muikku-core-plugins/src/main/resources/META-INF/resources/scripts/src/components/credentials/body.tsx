@@ -2,8 +2,8 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import $ from '~/lib/jquery';
-import Header from './body/return-credentials';
-import ScreenContainer from '~/components/general/screen-container';
+import ReturnCredentials from './body/return-credentials';
+import CredentialsContainer from './body/credentials-container';
 import {StateType} from '~/reducers';
 
 interface CredentialsBodyProps {
@@ -15,9 +15,15 @@ interface CredentialsBodyState {
 }
 
 class CredentialsBody extends React.Component<CredentialsBodyProps, CredentialsBodyState> {
+  private param = new URLSearchParams(location.search);
   render(){
+    
+    let hash:string = this.param.get("h");
+  
     return (<div>
-
+        <CredentialsContainer i18n={this.props.i18n}>
+          <ReturnCredentials secret={hash} />
+        </CredentialsContainer>
     </div>);
   }
 }

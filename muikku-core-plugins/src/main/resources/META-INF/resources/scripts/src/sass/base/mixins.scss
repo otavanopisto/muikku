@@ -18,3 +18,15 @@
     font-size: $text-desktop-font-size;
   }  
 }
+
+@mixin panel-body {
+  background-color: $color-panel-background-color;
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint($breakpoint-pad) {
+    border: solid 1px $color-panel-border;
+    box-shadow: none;
+  }
+}
