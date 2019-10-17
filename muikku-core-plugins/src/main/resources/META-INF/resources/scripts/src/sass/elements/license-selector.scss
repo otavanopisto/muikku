@@ -5,10 +5,7 @@
 
 .license-selector {
   padding: 10px 0 0;
-
-  input {
-    margin-left: 10px;
-  }
+  width: 100%;
 }
 
 .license-selector--material-editor {
@@ -19,19 +16,32 @@
   background: $color-license-options-background;
   border-radius: 3px;
   margin: 10px 0 0;
-  padding: 10px 10px 0 10px;
+  padding: 0 10px 10px;
+}
+
+.license-selector__options-title {
+  padding: 10px 0;
 }
 
 .license-selector__options-body {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
+  flex-flow: column nowrap;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    flex-flow: row nowrap;
+  }
 }
 
 .license-selector__option {
+  align-items: center;
   display: flex;
-  padding: 6px;
+  margin: 2px 5px 2px 0;
+  padding: 4px;
 
   label {
     font-weight: 400;
+    padding: 0;
   }
 }

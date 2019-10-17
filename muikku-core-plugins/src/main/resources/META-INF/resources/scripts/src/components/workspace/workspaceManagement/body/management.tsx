@@ -362,35 +362,39 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     }
     
     return (<div className="panel panel--workspace-Management">
-      <div className="panel__header">
+      <div className="panel__header panel__header--workspace-settings">
         <div className="panel__header-title">{this.props.i18n.text.get("plugin.workspace.management.pageTitle")}</div>
       </div>
       <div className="panel__body">
         <section className="application-sub-panel application-sub-panel--workspace-settings">
-          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo")}</h2>
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
-              <label htmlFor="wokspace-name" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.name")}</label>
-              <input id="wokspace-name" name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
-                value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
-              <div className="application-sub-panel__item-actions">
-                <Link href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
-                openInNewTab="_blank"
-                className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Link>
-                <CopyWizardDialog>
-                  <Link className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Link>
-                </CopyWizardDialog>
+            <div className="application-sub-panel__item-split-container">
+              <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
+                <label htmlFor="wokspace-name" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.name")}</label>
+                <input id="wokspace-name" name="wokspace-name" type="text" className="form-element__input form-element__input--workspace-name"
+                  value={this.state.workspaceName || ""} onChange={this.updateWorkspaceName}/>
+                <div className="application-sub-panel__item-actions">
+                  <Link href={this.props.workspace && this.props.workspace.details && this.props.workspace.details.externalViewUrl}
+                  openInNewTab="_blank"
+                  className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.viewInPyramus")}</Link>
+                  <CopyWizardDialog>
+                    <Link className="link link--workspace-management">{this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}</Link>
+                  </CopyWizardDialog>
+                </div>
               </div>
             </div>
-            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description application-sub-panel__item--workspace-management-split">
-              <label className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.description")}</label>
-              <CKEditor width="100%" height="210"
-                onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
+            <div className="application-sub-panel__item-split-container">
+              <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description">
+                <label className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.description")}</label>
+                <CKEditor width="100%" height="210"
+                  onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
+              </div>
             </div>
           </div>
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
-          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
             <div className="change-image">
               <div className="change-image__container change-image__container--workspace"  style={{backgroundImage: `url("${actualBackgroundSRC}")`, backgroundSize:`cover` }}>
@@ -418,9 +422,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           </div>
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
-          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.settingsSectionTitle")}</h2>
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.settingsSectionTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
+            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-publicity">
               <fieldset>
                 <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity")}</legend>
                 <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
@@ -439,7 +443,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                 </div>
               </fieldset>
             </div>
-            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
+            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-access">
               <fieldset>
                 <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</legend>
                 <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
@@ -467,47 +471,43 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           </div>
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
-          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfoSectionTitle")}</h2>
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.additionalInfoSectionTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
-              <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-                <label htmlFor="name-extension" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</label>
-                <input id="name-extension" name="name-extension" type="text" className="form-element__input form-element__input--workspace-name-extension"
-                 value={this.state.workspaceExtension || ""} onChange={this.updateWorkspaceExtension}/>
-              </div>
-              <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-                <label htmlFor="workspace-type" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</label>
-                <select id="workspace-type" name="workspace-type" className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
-                  {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
-                    <option key={type.identifier} value={type.identifier}>{type.name}</option>
-                  )}
-                </select>
-              </div>
+            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-name-extension">
+              <label htmlFor="name-extension" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.nameExtension")}</label>
+              <input id="name-extension" name="name-extension" type="text" className="form-element__input form-element__input--workspace-name-extension"
+               value={this.state.workspaceExtension || ""} onChange={this.updateWorkspaceExtension}/>
             </div>
-            <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-management-split">
-              <div className="form-element  application-sub-panel__item application-sub-panel__item--workspace-management">
-                <label htmlFor="workspaceStartDate" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.startDate")}</label>
-                <DatePicker id="workspaceStartDate" className="form-element__input" onChange={this.updateStartDate}
-                  maxDate={this.state.workspaceEndDate}
-                  locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceStartDate}/>
-              </div>
-              <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-                <label htmlFor="workspaceEndDate" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.endDate")}</label>
-                <DatePicker id="workspaceEndDate" className="form-element__input" onChange={this.updateEndDate}
-                  minDate={this.state.workspaceStartDate}
-                  locale={this.props.i18n.time.getLocale()}  selected={this.state.workspaceEndDate}/>
-              </div>
+            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-type">
+              <label htmlFor="workspace-type" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.courseType")}</label>
+              <select id="workspace-type" name="workspace-type" className="form-element__select" value={this.state.workspaceType || ""} onChange={this.updateWorkspaceType}>
+                {this.props.workspaceTypes && this.props.workspaceTypes.map(type=>
+                  <option key={type.identifier} value={type.identifier}>{type.name}</option>
+                )}
+              </select>
+            </div>
+            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
+              <label htmlFor="workspaceStartDate" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.startDate")}</label>
+              <DatePicker id="workspaceStartDate" className="form-element__input" onChange={this.updateStartDate}
+                maxDate={this.state.workspaceEndDate}
+                locale={this.props.i18n.time.getLocale()} selected={this.state.workspaceStartDate}/>
+            </div>
+            <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-end-date">
+              <label htmlFor="workspaceEndDate" className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.additionalInfo.endDate")}</label>
+              <DatePicker id="workspaceEndDate" className="form-element__input" onChange={this.updateEndDate}
+                minDate={this.state.workspaceStartDate}
+                locale={this.props.i18n.time.getLocale()}  selected={this.state.workspaceEndDate}/>
             </div>
           </div>
         </section>
         <section className="form-element application-sub-panel application-sub-panel--workspace-settings"> 
-          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
-          <div className="application-sub-panel__body application-sub-panel__body--workspace-management">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
             <LicenseSelector value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
           </div>
         </section>
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
-          <h2 className="application-sub-panel__header">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
           {this.state.workspaceProducers? 
             <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
               <AddProducer removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.state.workspaceProducers} i18n={this.props.i18n}/>

@@ -124,28 +124,17 @@
   }
 }
 
-.form-element__input--workspace-data {
-  width: 100%;
-}
-
-.form-element__input--workspace-name-extension {
-  margin: 0 20px 0 0;
-  width: 100%;
-}
-
-.form-element__input--guider-label-name,
-.form-element__input--communicator-label-name {
-  width: 100%;
-}
-
 .form-element__input--forgotpassword {
   font-size: $text-forgotpassword-font-size;
   width: 100%;
 }
 
-.form-element__input--profile, 
-.form-element__input--workspace-name {
-  
+.form-element__input--workspace-data,
+.form-element__input--guider-label-name,
+.form-element__input--communicator-label-name,
+.form-element__input--profile,
+.form-element__input--workspace-name,
+.form-element__input--workspace-name-extension {
   width: 100%;
 }
 
