@@ -191,13 +191,13 @@
   }
 }
 
- .panel__header--workspace-settings {
-   display: none;
-   
-   @include breakpoint($breakpoint-pad) {
-    display: flex;
+.panel__header--workspace-settings {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+   display: flex;
   }
- }
+}
 
 // PANEL HEADER ICONS
 .panel__header-icon {
