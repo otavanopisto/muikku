@@ -822,26 +822,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return result;
   }
 
-  /*
-  @Override
-  public boolean confirmResetPassword(String resetCode, String newPassword) {
-    String clientApplicationSecret = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientSecret");
-    
-    String secret = DigestUtils.md5Hex(resetCode + clientApplicationSecret);
-    
-    // TODO BridgeResponse refactor
-    UserCredentialReset reset = new UserCredentialReset(secret, null, newPassword);
-    
-    try {
-      pyramusClient.post("/persons/resetpasswordbyemail", reset);
-      
-      return true;
-    } catch (Exception ex) {
-      return false;
-    }
-  }
-  */
-
   @Override
   public String findUsername(String userIdentifier) {
     Long personId = getPersonId(userIdentifier);

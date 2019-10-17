@@ -209,27 +209,5 @@ public class ForgotPasswordRESTService extends PluginRESTService {
       schoolDataBridgeSessionController.endSystemSession();
     }
   }
-
-  /*
-  @Path("/confirm")
-  @GET
-  @RESTPermitUnimplemented
-  public Response confirmResetPassword(ConfirmResetPassword crp) {
-    UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByConfirmationHash(crp.getResetCode());
-    
-    UserEntity userEntity = userEntityController.findUserEntityById(passwordChange.getUserEntity());
-    
-    // TODO: tis a guesstimate of the datasource
-    SchoolDataSource schoolDataSource = userEntity.getDefaultSchoolDataSource();
-
-    try {
-      userSchoolDataController.confirmResetPassword(schoolDataSource, crp.getResetCode(), crp.getNewPassword());
-      
-      return Response.noContent().build();
-    } catch (SchoolDataBridgeUnauthorizedException e) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-  }
-  */
   
 }
