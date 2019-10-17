@@ -41,8 +41,17 @@
 }
 
 .change-image__container--workspace {
+  
   @include breakpoint($breakpoint-pad) {
+    background-position: center center;
+    background-size: cover;
+    height: auto;
+    min-height: 196px;
     width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    min-height: 250px;
   }
 }
 
