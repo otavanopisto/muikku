@@ -29,7 +29,6 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
   constructor(props: ReturnCredentialsProps){
     super(props);
     this.state = {
-        
        username: "",
        newPassword: "",
        newPasswordConfirm:"",
@@ -42,31 +41,35 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
     const data:any = await (promisify(mApi().forgotpassword.credentialReset.read(this.props.secret), 'callback')());
     this.setState({username: data.username});
     } catch (err){
+      this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed", err), "error");
       if (!(err instanceof MApiError)){
         throw err;
       }
-       alert(err);
+
     }
   }
+  
   handleNewCredentials() {
     let newPassword1 = this.state.newPassword;
     let newPassword2 = this.state.newPasswordConfirm;
     let userName = this.state.username;
     
     if(userName == "") {
-      this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.emptypass"), "error");
-      return;
-    }
-    
-    if (newPassword1 && newPassword2 == "") {
-      this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.emptypass"), "error");
+      this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.empty.username"), "error");
       return;
     }
     
     if (newPassword1 !== newPassword2) {
-      this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.failconfirm"), "error");
+      this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.passwordsDontMatch"), "error");
       return;
     }
+    
+    if (newPassword1 == "" || newPassword2 == "") {
+      this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.empty.passwords"), "error");
+      return;
+    }
+    
+
     
     this.setState({
       locked: true
@@ -81,17 +84,17 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
      mApi().forgotpassword.credentialReset.create(values).callback((err: any, result: any)=>{
        this.setState({
          locked: false
-       });       
-       
+       });
        if (err) {
-          this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.failconfirm"),err);  
+          this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.resetCreateFailed", err),"error");  
        } else {
          this.setState({
            username: "",
            newPassword: "",
-           newPasswordConfirm: ""
+           newPasswordConfirm: "",
+           handled: true
          });
-         this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.failconfirm"),err);
+         this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"),"success");
        }
      });
     
@@ -110,21 +113,21 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
         <div className="form form--forgot-password">
           <div className="form-row">
             <div className="form-element">
-              <label>TODO: Name</label>
+              <label>{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.name")}</label>
               <input className="form-element__input" type="text" value={this.state.username} onChange={this.updateField.bind(this, "username")}/>
             </div>
            </div>
           <div className="form-row">
             <div className="form-element">
-              <label>TODO: Password</label>
-              <input  className="form-element__input" type="password" onChange={this.updateField.bind(this, "newPassword")}/>
+              <label>{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.password1")}</label>
+              <input  className="form-element__input" type="password" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")}/>
             </div>
             <div className="form-element">
-              <label>TODO: Password again</label>
-              <input className="form-element__input" type="password" onChange={this.updateField.bind(this, "newPasswordConfirm")} />
+              <label>{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.password2")}</label>
+              <input className="form-element__input" type="password" value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")} />
             </div>
              <div className="form-element form-element--button-container">
-              <Button onClick={this.handleNewCredentials.bind(this)} buttonModifiers="reset-password" >TODO: Change password</Button>
+              <Button onClick={this.handleNewCredentials.bind(this)} buttonModifiers="reset-password" >{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.button")}</Button>
             </div>
           </div>
         </div>
