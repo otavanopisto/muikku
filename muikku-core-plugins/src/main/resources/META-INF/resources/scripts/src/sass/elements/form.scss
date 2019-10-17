@@ -38,3 +38,16 @@ textarea {
   outline: none;
 }
 
+fieldset {
+  border: 0;
+  
+  label,
+  .form-element label {
+    font-weight: 400;
+  }
+}
+
+legend {
+  font-weight: 600;
+}
+

@@ -4,8 +4,8 @@
 @import "../base/breakpoints";
 
 .license-selector {
-  padding: 10px 0;
-  
+  padding: 10px 0 0;
+
   input {
     margin-left: 10px;
   }
@@ -16,7 +16,10 @@
 }
 
 .license-selector__options-container {
-  margin-top: 10px;
+  background: $color-license-options-background;
+  border-radius: 3px;
+  margin: 10px 0 0;
+  padding: 10px 10px 0 10px;
 }
 
 .license-selector__options-body {
@@ -26,5 +29,9 @@
 
 .license-selector__option {
   display: flex;
-  padding: 10px; 
+  padding: 6px;
+
+  label {
+    font-weight: 400;
+  }
 }
