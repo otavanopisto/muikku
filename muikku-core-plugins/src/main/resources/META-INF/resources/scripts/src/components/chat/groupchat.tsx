@@ -1,11 +1,12 @@
 /*global converse */
 import * as React from 'react'
-import './index.css';
+import './index.scss';
 import converse from '~/lib/converse';
 
 interface Iprops{
   chat?: any,
-  converse?: any
+  converse?: any,
+  orderNumber?: any
 }
 
 interface Istate {
@@ -29,10 +30,13 @@ interface Istate {
   showChatbox?: Boolean,
   openChatSettings?: Boolean,
   isStudent?: Boolean,
-  openMucRoomJids?: any,
+  openRoomNumber: number,
   nick: string,
   isRoomConfigSavedSuccesfully: string,
-  settingsInformBox:string
+  settingsInformBox:string,
+  showRoomInfo: boolean,
+  roomAlign: string,
+  minimized: boolean
 }
 
 declare namespace JSX {
@@ -78,10 +82,13 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       showChatbox: null,
       openChatSettings: false,
       isStudent: false,
-      openMucRoomJids: [],
+      openRoomNumber:null,
       nick: "",
       isRoomConfigSavedSuccesfully: "",
-      settingsInformBox: "settingsInform-none"
+      settingsInformBox: "settingsInform-none",
+      showRoomInfo: false,
+      roomAlign: "",
+      minimized: false
     }
     this.myRef = null;
     this.sendMessage = this.sendMessage.bind(this);
@@ -89,23 +96,28 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.openChatSettings = this.openChatSettings.bind(this);
     this.saveRoomFeatures = this.saveRoomFeatures.bind(this);
     this.sendConfiguration = this.sendConfiguration.bind(this);
+    this.toggleRoomInfo = this.toggleRoomInfo.bind(this);
+    this.minimizeChats = this.minimizeChats.bind(this);
   }
   
   openMucConversation (room: string) {
     
     if (this.state.showChatbox === true){
         
-      this.setState({
-        showChatbox: false
-      }); 
+      
       
       const result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
 
       const filteredChats = result.filter(function(item:any) {
-        return item !== room;
+        return item.jid !== room;
       })
       
       window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
+      
+      this.setState({
+        showChatbox: false
+      }); 
+
       
       return;
       
@@ -123,14 +135,37 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let list = [];
       
       const result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
-      
-      result.push(room);
+      const newNumber = result.length + 1;
+      let roomData = {jid: "", orderNumber: 0};
+
+      const resultItem = result.map((item:any) => item.jid);
+
+      if (!resultItem.includes(room)){
+
+        const found = resultItem.some((el: any) => el.orderNumber === newNumber);
+
+        if (found){
+          roomData = {jid: room, orderNumber: newNumber + 1};
+
+        } else {roomData = {jid: room, orderNumber: newNumber};}
         
+
+        result.push(roomData);
+
+
+      }
+
+      let alignNumber:any;
+
+      alignNumber = 260 + (roomData.orderNumber - 1) * 350;
+
       reactComponent.setState({
         showChatbox: true,
-        nick: window.PROFILE_DATA.displayName
+        nick: window.PROFILE_DATA.displayName,
+        openRoomNumber: alignNumber
+        
       });
-      
+
       window.sessionStorage.setItem("openChats", JSON.stringify(result));
       
       let nick: string;
@@ -199,14 +234,25 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       if (stanza && stanza.attributes.type.nodeValue === "groupchat"){
         let message = stanza.textContent;
         let from = stanza.attributes.from.value;
+        let senderClass ="";
+
         from = from.split("/").pop();
-        let groupMessage: any = {from: from, content: message};
+        
+        if (from === this.state.nick){
+          senderClass = "sender-me";
+
+        }else{
+          senderClass = "sender-others";
+        }
+        let groupMessage: any = {from: from, content: message, senderClass: senderClass};
         
         if (message !== ""){
           
           let groupMessages = this.state.groupMessages;
           
           groupMessages.push(groupMessage);
+
+          
           
           this.setState({groupMessages: groupMessages});
           
@@ -250,6 +296,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       reactComponent.state.converse.api.send(chat.createMessageStanza(message));
     }
     
+
+    //--- SETTINGS & INFOS
     openChatSettings() {
       if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false){
         this.setState({
@@ -263,6 +311,18 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
       }
     }
+    
+    toggleRoomInfo() {
+        if (this.state.showRoomInfo === false){
+          this.setState({
+            showRoomInfo: true
+          });
+        } else {
+          this.setState({
+            showRoomInfo: false
+          });
+        }
+      }
     
     saveRoomFeatures(event: any){
       
@@ -378,12 +438,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       return this.state.converse.api.sendIQ(iq).then(() => 
         this.setState({
           isRoomConfigSavedSuccesfully: "Tallennettu onnistuneesti!",
-          settingsInformBox: "settingsInform-success"
+          settingsInformBox: "settingsInform --success"
         })
       ).catch(() => 
         this.setState({
           isRoomConfigSavedSuccesfully: "Tallennettu onnistuneesti!",
-          settingsInformBox: "settingsInform-failed"
+          settingsInformBox: "settingsInform --failed"
         })
       );
       
@@ -403,6 +463,18 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         .c("query", {xmlns: Strophe.NS.MUC_OWNER})
       );
     }
+
+    minimizeChats (roomJid:any){
+      if (this.state.minimized === false){
+        this.setState({
+          minimized: true
+        });
+      } else{
+        this.setState({
+          minimized: false
+        });
+      }
+    }
     
     componentDidMount (){
       
@@ -415,10 +487,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
       }
       
-      let testi = window.MUIKKU_IS_STUDENT;
       
       
       let chat = this.props.chat;
+      let orderNumber = this.props.orderNumber;
       
       if (chat){
         this.setState({
@@ -429,15 +501,39 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
       
       
-      let chatBoxState = JSON.parse(window.sessionStorage.getItem("openChats"));
+      let chatBoxState1 = JSON.parse(window.sessionStorage.getItem("openChats"));
       
       
-      
-      if (chatBoxState){
+      if (chatBoxState1){
+
+        const chatBoxState = chatBoxState1.map((item:any) => item.jid);
+        const orderNumb = chatBoxState1.map((item:any) => item.orderNumber);
+
+
         if (chatBoxState.includes(chat.jid)){
           reactComponent.setState({
             showChatbox: true
           });
+
+
+          let alignNumber:any;
+          let k:any;
+          orderNumb.map((el: any) => {
+           
+            k = el
+            
+          });
+
+          alignNumber = 260 + (k - 1) * 350;
+          reactComponent.setState({
+              openRoomNumber: alignNumber
+          });
+
+
+          
+
+
+          
         } else {
           reactComponent.setState({
             showChatbox: false
@@ -455,27 +551,42 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     render() {
       
       return  (
-        <div className="chatBox-body">
-          <b onClick={() => this.openMucConversation(this.state.roomJid)}>{this.state.roomName}</b>
-          { (this.state.showChatbox === true) && <div className="chat">
-            <div onClick={() => this.openChatSettings()} className="roomSettings">
-              <b className="chatBox-roomName">{this.state.roomName}</b>
-              Asetukset
+        <div>
+          <div className="chatBox-body">
+            <span className="toggle-info icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></span>
+            <div className="rooms-list-room-name" onClick={() => this.openMucConversation(this.state.roomJid)}>
+              {this.state.roomName}
             </div>
-            {(this.state.openChatSettings === true) && <div className="roomSettingsForm">
-              <form onSubmit={this.saveRoomFeatures}>
-                <label>Huoneen nimi:</label><br />
-                <input type="text" name="newRoomName" defaultValue={this.state.roomName} />
-                <br/>
+            { (this.state.showRoomInfo === true) && <div className="room-info"><p>plaaplaa</p></div> }
+          </div>
+
+          { (this.state.showChatbox === true) && <div style={{'right' :this.state.openRoomNumber + "px" }}  className="chat-discussion-container">
+            { (this.state.minimized === true) && <div onClick={() => this.minimizeChats(this.state.roomJid)} className="minimized-chat">{this.state.roomName} <span className="icon-close"></span></div>}
   
-                <label>Huoneen kuvaus:</label><br />
-                <input type="text" name="newRoomDescription" />
-                <br />
-                <label>Pysyvä huone: </label><br/>
-                <input type="checkbox" name="persistent" /><br />
-           
-                <input className="saveSettings"  type="submit" value="Tallenna" />
+            { (this.state.showChatbox === true && this.state.minimized === false) && <div id={this.props.orderNumber} className="chat">
+
+            <div className="roomSettings">
+              <div className="chatbox-room-name">{this.state.roomName}</div>
+              <span onClick={() => this.minimizeChats(this.state.roomJid)} className="icon-remove"></span>
+              <span onClick={() => this.openChatSettings()} className="icon-cogs room-settings-icon"></span>
+              <span onClick={() => this.openMucConversation(this.state.roomJid)} className="icon-close"></span>
+            </div>
+              
+            
+              
+              
+              
+            {(this.state.openChatSettings === true) && <div className="roomSettingsForm">
+              <span onClick={() => this.openChatSettings()} className="close-new-room-form icon-close-small"></span>
+              <form onSubmit={this.saveRoomFeatures}>
+                <label className="control-panel">Huoneen nimi: </label><input className="settings-input" name="newRoomName" defaultValue={this.state.roomName} type="text"></input>
+                <label className="control-panel">Huoneen kuvaus: </label><input className="settings-input" name="newRoomDescription" type="text"></input>
+                {(!this.state.isStudent) && <div>
+                  <label className="control-panel">Pysyvä huone: </label><input type="checkbox" name="persistent"></input><br />
+                </div>}
+                <input className="join-button" type="submit" value="Tallenna"></input>
               </form>
+
               <div className={this.state.settingsInformBox}>
                 <p>{this.state.isRoomConfigSavedSuccesfully}</p>
               </div>
@@ -483,14 +594,21 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             
             <form onSubmit={this.sendMessage}>                                                  
               <div className="chatMessages" ref={ (ref) => this.myRef=ref }>
-                {this.state.groupMessages.map((message: any, i: number) => <p key={i}><b>{message.from} </b><br />{message.content}</p>)}
+                {this.state.groupMessages.map((message: any, i: number) => 
+                <div className={message.senderClass + " message-item"} key={i}>
+                  <b className={message.senderClass + " message-item-sender"}>{message.from} </b>
+                  <p className={message.senderClass + " message-item-content"}>{message.content}</p>
+                </div>)}
               </div>
-              <label>Vastaanottaja: </label><input name="chatRecipient" className="chatRecipient" value={this.state.roomJid} readOnly/>
-              <input className="chatMessage" name="chatMessage" type="text" />
-              <input className="sendMessage" type="submit" value="Lähetä"/>
+
+              <input name="chatRecipient" className="chatRecipient" value={this.state.roomJid} readOnly/>
+              <textarea className="chatMessage" placeholder="..Kirjoita jotakin" name="chatMessage"></textarea>
+              <button className="sendMessage" type="submit" value=""><span className="icon-announcer"></span></button>
             </form>
-          </div> }
-        </div>
+          </div>}
+
+          </div>}
+      </div>
       );
     }
   }

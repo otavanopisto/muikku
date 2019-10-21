@@ -1,7 +1,7 @@
 /*global converse */
 import * as React from 'react'
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.scss';
 import {Groupchat} from './groupchat';
 import converse from '~/lib/converse';
 
@@ -30,6 +30,7 @@ interface Istate {
   chatBox:null,
   showChatButton: boolean,
   showControlBox: boolean,
+  showNewRoomForm: boolean,
   isStudent?: Boolean
 }
 
@@ -72,6 +73,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       chatBox:null,
       showChatButton: null,
       showControlBox: null,
+      showNewRoomForm: false,
       isStudent: false
     }
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -79,6 +81,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.openControlBox = this.openControlBox.bind(this);
+    this.openNewRoomForm = this.openNewRoomForm.bind(this);
   }
   
   handleSubmit(event: any) { // login
@@ -156,10 +159,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       if (!nick) {
         throw new Error("Using locked_muc_nickname but no nickname found!");
       }
-    } else {
-      nick = data.get('nick');
-      nick.trim();
-    }
+    } 
     return {
       'jid': jid,
       'nick': nick,
@@ -237,7 +237,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       
       groupchats.push(availableMucRoom);
       
-      this.setState({availableMucRooms: groupchats, chatBox: chat});
+      this.setState({availableMucRooms: groupchats, chatBox: chat, showNewRoomForm: false});
     });
     
     
@@ -253,17 +253,26 @@ export class Chat extends React.Component<Iprops, Istate> {
   onRoomsFound (iq: any) {
     //    /* Handle the IQ stanza returned from the server, containing
     //     * all its public groupchats.
-    //     */
+    //     */¨
+    
     let rooms = iq.querySelectorAll('query item');
+    const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
+
     if (rooms.length) {
       const nodesArray = [].slice.call(rooms);
       this.setState({
         availableMucRooms: nodesArray.map((room: any) => ({
           name: room.attributes.name.nodeValue,
           jid: room.attributes.jid.value,
-          chatObject: ""
+          chatObject: "",
+          desc:  this.state.converse.api.disco.info(room.attributes.jid.value, null)
+          .then((stanza:any) =>_.get(_.head(sizzle('field[var="muc#roominfo_occupants"] value', stanza)), 'textContent'))
         })).filter((room: any) => room.name !== undefined)
+        
+        
       })
+      
+      return;
     } else {
       // this.informNoRoomsFound();
     }
@@ -328,6 +337,19 @@ export class Chat extends React.Component<Iprops, Istate> {
       window.sessionStorage.setItem("showControlBox", "opened");
       
     }
+  }
+  
+  openNewRoomForm(){
+    if (!this.state.showNewRoomForm){
+        this.setState({
+            showNewRoomForm: true
+          });
+          
+        } else {
+          this.setState({
+            showNewRoomForm: false
+          });
+        }
   }
   
   
@@ -418,11 +440,16 @@ export class Chat extends React.Component<Iprops, Istate> {
       
       <div className="container">
         
-        { (this.state.showChatButton === true) && <div onClick={() => this.openControlBox()} className="chatButton">Chat!</div>}
+        { (this.state.showChatButton === true) && <div onClick={() => this.openControlBox()} className="chatButton">
+          <span className="icon-discussion"></span>
+        </div>}
         
         { (this.state.showControlBox === true) && <div className="showControlBox">
           <div className="chatControlBox-body">
-            <div onClick={() => this.openControlBox()} className="chatHeader">X</div>
+            <div className="chatHeader">
+              <span onClick={() => this.openNewRoomForm()} className="header-items-add icon-add"></span>
+              <span onClick={() => this.openControlBox()} className="icon-close close-controlbox"></span>
+            </div>
 
             { (this.state.isConnectionOk === false) && <div>
             <h1>Kirjaudu chattiin</h1>
@@ -449,27 +476,36 @@ export class Chat extends React.Component<Iprops, Istate> {
               </form>
             </div>
             
-            <h3>Huoneet: </h3>
+            <select className="user-status">
+              <option value="volvo"><span className="icon-radio-unchecked"></span>Paikalla</option>
+              <option value="saab">Poissa</option>
+              <option value="fiat">Palaan pian</option>
+            </select>
             
+            <h4 className="control-panel">Kurssikohtaiset huoneet: </h4>
             
-            <div>  
-              {this.state.availableMucRooms.map((chat, i) => <Groupchat key={i} chat={chat} converse={this.state.converse}/>)}
+            <div className="rooms-list">  
+              {this.state.availableMucRooms.map((chat, i) => <Groupchat key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)}
             </div>
             
-            <hr />
+            <h4 className="control-panel">Muut huoneet:</h4>
+           
+                
+            { (this.state.showNewRoomForm === true) && <div className="newRoom">
+            <span onClick={() => this.openNewRoomForm()} className="close-new-room-form icon-close-small"></span>
             <h3>Luo uusi huone</h3>
-            
+            <br />
             <form onSubmit={this.joinRoom}>
-              <label>Huoneen nimi: </label><input name="roomName" ref="roomName" type="text"></input>
+              <label className="control-panel">Huoneen nimi: </label><input className="settings-input" name="roomName" ref="roomName" type="text"></input>
+              <label className="control-panel">Huoneen kuvaus: </label><input className="settings-input" name="roomDesc" ref="roomDesc" type="text"></input>
               {(!this.state.isStudent) && <div>
-              <label>Pysyvä huone: </label><input type="checkbox" name="persistent"></input><br />
+              <label className="control-panel">Pysyvä huone: </label><input type="checkbox" name="persistent"></input><br />
               </div>}
-              <input name="nick" type="text"></input>
-              <input type="submit" value="Liity"></input>
+              <input className="join-button" type="submit" value="Liity"></input>
             </form>
+            </div>
+            }
             
-            <div className="chatMessages">
-              </div>
             </div>
             
             
