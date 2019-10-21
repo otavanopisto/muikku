@@ -4,6 +4,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import $ from '~/lib/jquery';
 import ReturnCredentials from './body/return-credentials';
 import CredentialsContainer from './body/credentials-container';
+import CredentialsHero from './body/credentials-hero';
 import {StateType} from '~/reducers';
 
 interface CredentialsBodyProps {
@@ -20,7 +21,8 @@ class CredentialsBody extends React.Component<CredentialsBodyProps, CredentialsB
     
     let hash:string = this.param.get("h");
   
-    return (<div>
+    return (<div className="credentials">
+        <CredentialsHero i18n={this.props.i18n}/>
         <CredentialsContainer i18n={this.props.i18n}>
           <ReturnCredentials secret={hash} />
         </CredentialsContainer>
