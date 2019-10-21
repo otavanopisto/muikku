@@ -236,7 +236,7 @@ class PyramusRestClient implements Serializable {
   @SuppressWarnings("unchecked")
   private <T> BridgeResponse<T> createBridgeResponse(Response response, String path, Class<T> type) {
     int statusCode = response.getStatus();
-    String json = response.hasEntity() ? response.readEntity(String.class) : null;
+    String json = response.hasEntity() ? response.readEntity(String.class) : null; // note: response now closed
     T entity = null;
     BridgeError error = null;
     
@@ -254,7 +254,7 @@ class PyramusRestClient implements Serializable {
       // no content response for arrays (empty array)
       entity = (T) Array.newInstance(type.getComponentType(), 0);
     }
-    else if (response.hasEntity()) {
+    else if (json != null) {
       // error response (assume BridgeError with String fallback)
       try {
         error = new ObjectMapper().readValue(json, BridgeError.class);
