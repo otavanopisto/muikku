@@ -17,7 +17,7 @@ export default class AnnouncementsBody extends React.Component<AnnouncementsBody
     let aside = <Aside />
     return (<div>
         <MainFunctionNavbar navigation={aside} activeTrail="announcements"/>
-        <ScreenContainer viewModifiers="index">
+        <ScreenContainer viewModifiers="announcements">
           <Application aside={aside} />
         </ScreenContainer>
     </div>);

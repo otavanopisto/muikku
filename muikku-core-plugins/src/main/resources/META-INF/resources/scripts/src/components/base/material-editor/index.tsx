@@ -391,10 +391,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           </DeleteWorkspaceMaterialDialog> : null}
         </div>
       </div>;
-
-      
-      let height = this.state.height;
-      
+            
       const allTabs = [{
         id: "content",
         type: "material-editor",
@@ -406,7 +403,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
           </div> 
           {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
-            <CKEditor height={height} configuration={CKEditorConfig(
+            <CKEditor height={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,

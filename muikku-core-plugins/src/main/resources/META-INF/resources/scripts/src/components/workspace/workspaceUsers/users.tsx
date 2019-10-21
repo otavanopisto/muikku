@@ -95,7 +95,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     return (<div className="application-panel application-panel--workspace-users">
       <div className="application-panel__container">
         <div className="application-panel__header"> 
-          <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')} - {this.props.workspace && this.props.workspace.name}</h2>
+          <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')}</h2>
         </div>
         <div className="application-panel__body">
           <div className="application-sub-panel application-sub-panel--workspace-users">

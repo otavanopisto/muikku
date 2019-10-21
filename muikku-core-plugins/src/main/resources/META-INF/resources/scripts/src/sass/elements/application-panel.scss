@@ -3,6 +3,12 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.application-panel-wrapper {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .application-panel {
   align-items: center;
   display: flex;
@@ -59,9 +65,13 @@
   flex-shrink: 1;
   font-size: 1.5rem;
   font-weight: 300;
-  height: $panel-header-title-height;
+  height: $panel-header-title-height-mobile;
   line-height: 1;
   text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $panel-header-title-height-desktop;
+  }
 }
 
 .application-panel__header-actions {

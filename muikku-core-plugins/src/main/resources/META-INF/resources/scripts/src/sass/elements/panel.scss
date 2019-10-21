@@ -3,7 +3,7 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
-// PANEL GROUPS 
+// PANEL GROUPS
 .panel-group {
   align-items: flex-start;
   display: flex;
@@ -191,6 +191,14 @@
   }
 }
 
+.panel__header--workspace-settings {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+   display: flex;
+  }
+}
+
 // PANEL HEADER ICONS
 .panel__header-icon {
   border: 2px solid $color-default;
@@ -275,11 +283,14 @@
   flex-shrink: 1;
   font-size: 1.25rem;
   font-weight: 300;
+  height: $panel-header-title-height-mobile;
+  line-height: 1;
   margin: 0 0 0 10px;
   text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.5rem;
+    height: $panel-header-title-height-desktop;
   }
 }
 

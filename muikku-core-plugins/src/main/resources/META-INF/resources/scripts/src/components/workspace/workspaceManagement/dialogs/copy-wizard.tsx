@@ -5,6 +5,7 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
+import '~/sass/elements/wizard.scss';
 import CopyWizard from '~/components/workspace/workspaceManagement/body/copyWizard';
 import { StateType } from '~/reducers';
 
@@ -28,8 +29,8 @@ class CopyWizardDialog extends React.Component<CopyWizardDialogProps, CopyWizard
         
       </div>
     }
-    return <Dialog title={this.props.i18n.text.get('plugin.workspace.management.copyWorkspace')}
-      content={content} footer={footer} modifier="copy-wizard">{this.props.children}</Dialog>
+    return <Dialog disableScroll={true} title={this.props.i18n.text.get('plugin.workspace.management.copyWorkspace')}
+      content={content} modifier="wizard">{this.props.children}</Dialog>
   }
 }
 

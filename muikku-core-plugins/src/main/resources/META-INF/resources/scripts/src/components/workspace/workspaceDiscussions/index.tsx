@@ -23,7 +23,9 @@ export default class WorkspaceDiscussionBody extends React.Component<WorkspaceDi
   render(){
     return (<div>
       <WorkspaceNavbar activeTrail="workspace-discussions" workspaceUrl={this.props.workspaceUrl}/>
-      <Application/>
+      <ScreenContainer viewModifiers="workspace-discussion">
+        <Application/>
+      </ScreenContainer>
     </div>);
   }
 }

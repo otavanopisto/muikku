@@ -93,6 +93,7 @@
                   uiElement.append(titleContainer);
 
                   var optionLabel = new CKEDITOR.dom.element('label');
+                  optionLabel.addClass('items-label');
                   optionLabel.setText(this.label);
                   titleContainer.append(optionLabel);
 
@@ -124,12 +125,14 @@
               optionContainer.addClass('connectfield-element-container');
 
               var optionLeftField = new CKEDITOR.dom.element('input');
+              optionLeftField.addClass('cke_dialog_ui_input_text');
               optionLeftField.setAttribute('name', 'left');
               optionLeftField.setAttribute('type', 'text');
               optionLeftField.setAttribute('value', left);
               optionContainer.append(optionLeftField);
 
               var optionRightField = new CKEDITOR.dom.element('input');
+              optionRightField.addClass('cke_dialog_ui_input_text');
               optionRightField.setAttribute('name', 'right');
               optionRightField.setAttribute('type', 'text');
               optionRightField.setAttribute('value', right);

@@ -143,7 +143,7 @@
 
 .button--cancel {
   background-color: $color-button-cancel-background;
-  color: $color-button-success-text;
+  color: $color-button-cancel-text;
 
   &:hover,
   &.hover {
@@ -385,10 +385,16 @@
 }
 
 // Button that appears inside views component
+
 .button--primary-function-content {
   background-color: $color-button-primary-background;
   color: $color-button-primary-text;
   display: inline-flex;
+  border: none;
+
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
 
   &:hover,
   &.hover {
@@ -1048,17 +1054,12 @@
   }
 }
 
-.button--profile-image-edit,
-.button--profile-image-delete {
-  background-color: $color-button-profile-image-edit-delete-background;
-  bottom: 0;
-  color: white;
-  left: 0;
-  padding: 10px 20px;
-  position: absolute;
+.button--change-image-edit,
+.button--change-image-delete {
+  @include workspace-image-button;
+  flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
-  width: 50%;
-
+  padding: 10px 20px;
   &:hover,
   &:active {
     background-color: $color-button-profile-image-edit-delete-hover-background;
@@ -1069,9 +1070,11 @@
   }
 }
 
-.button--profile-image-delete {
-  left: 50%;
+.button--change-image-workspace {
+  flex-grow: 0;
+  flex-basis: 20%;
 }
+
 
 // Buttons used in Material pages
 .button--muikku-check-exercises,

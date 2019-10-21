@@ -8,6 +8,7 @@ interface DialogProps {
   title: string,
   modifier?: string | Array<string>,
   content: any,
+  disableScroll? : boolean,
   footer?: (closePortal: ()=>any)=>any,
   onOpen?: (e?: HTMLElement)=>any,
   onClose?: ()=>any,
@@ -47,6 +48,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.props.onOpen && this.props.onOpen(element);
     let el = element.childNodes[0].firstChild as HTMLElement;
     let marginOffset = 20;
+    if(this.props.disableScroll == true ) {
+      document.body.style.overflow = "hidden";
+    }
     document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";
   }
 
@@ -54,6 +58,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.setState({
       visible: false
     });
+    if(this.props.disableScroll == true ) {
+      document.body.style.overflow = "scroll";
+    }
     document.body.style.marginBottom = "0";
     setTimeout(removeFromDOM, 300);
   }
@@ -64,7 +71,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         {(closePortal: ()=>any)=>{
           let modifiers:Array<string> = typeof this.props.modifier === "string" ? [this.props.modifier] : this.props.modifier;
           return <div className={`dialog ${(modifiers || []).map(s=>`dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
-            <div className="dialog__window">
+            <div className={`dialog__window ${(modifiers || []).map(s=>`dialog__window--${s}`).join(" ")}`}>
               <div className="dialog__header">
                 <div className="dialog__title">
                     {this.props.title}
@@ -74,9 +81,11 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
               <div className="dialog__content">
                 {this.props.content(closePortal)}
               </div>
+              {this.props.footer?
               <div className="dialog__footer">
                 {this.props.footer && this.props.footer(closePortal)}
               </div>
+              : null}
           </div>
         </div>}}
     </Portal>);

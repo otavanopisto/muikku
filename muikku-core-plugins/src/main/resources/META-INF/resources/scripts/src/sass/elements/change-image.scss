@@ -3,12 +3,8 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.profile-element {
-  padding: 0 10px;
-  width: 100%;
-}
 
-.profile-element__user-picture-container {
+.change-image {
   align-items: center;
   display: flex;
   justify-content: center;
@@ -18,7 +14,7 @@
   width: 100%;
 }
 
-.profile-element__user-picture {
+.change-image__container {
   align-items: center;
   background-color: $color-profile-empty-image-base;  
   background-size: contain;
@@ -44,7 +40,37 @@
   }
 }
 
-.profile-element__user-picture--empty {
+.change-image__container--workspace {
+  
+  @include breakpoint($breakpoint-pad) {
+    background-position: center center;
+    background-size: cover;
+    height: auto;
+    min-height: 196px;
+    width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    min-height: 250px;
+  }
+}
+
+.change-image__actions {
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.change-image__default-content {
+  @include workspace-image-button;
+  display: flex;
+  padding: 10px;
+}
+
+.change-image__container--empty {
 
   &::before {
     content: "\e114";
@@ -62,19 +88,4 @@
     text-transform: none;
     width: 65px;
   }
-}
-
-.profile-element__item {
-  padding-bottom: 12px;
-}
-
-.profile-element__title {
-  font-size: 1.6rem;
-  font-weight: 300;
-  padding-bottom: 20px;
-}
-
-.profile_element-label {
-  font-weight: 600;
-  padding-bottom: 2px;
 }

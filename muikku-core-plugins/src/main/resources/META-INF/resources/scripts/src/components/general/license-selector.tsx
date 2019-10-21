@@ -214,17 +214,19 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
       {currentLicense.properties ? <div className="license-selector__options-container">
         {
          currentLicense.properties.map(property => <div key={property.id}>
-           <h4  className="license-selector__options-title">{this.props.i18n.text.get(property.i18n)}</h4>
-           <div className="license-selector__options-body">
-             {property.values.map((v, index)=><span className="license-selector__option" key={"license-value" + index}>
-               <input type="radio" name={property.id} value={v.value || ""}
-                checked={currentPropertyValues[property.id] === v.value}
-                onChange={this.setAPropertyAndTriggerChange.bind(this, currentPropertyValues, property.id)}/>
-               <label>
-                 {this.props.i18n.text.get(v.i18n)}
-               </label>
-             </span>)}
-           </div>
+           <fieldset>
+             <legend  className="license-selector__options-title">{this.props.i18n.text.get(property.i18n)}</legend>
+             <div className="license-selector__options-body">
+               {property.values.map((v, index)=><span className="license-selector__option" key={"license-value" + index}>
+                 <input type="radio" id={property.id + index} name={property.id} value={v.value || ""}
+                  checked={currentPropertyValues[property.id] === v.value}
+                  onChange={this.setAPropertyAndTriggerChange.bind(this, currentPropertyValues, property.id)}/>
+                 <label htmlFor={property.id + index}>
+                   {this.props.i18n.text.get(v.i18n)}
+                 </label>
+               </span>)}
+             </div>
+           </fieldset>
          </div>)
         }
       </div> : null}

@@ -129,10 +129,11 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId:number | n
   let state: StateType = getState();
   let currentWorkspace = state.workspaces.currentWorkspace;
   
-  //Avoid loading again for the first time
-  if (initial && userEntityId === userEntityId && currentWorkspace.journals && currentWorkspace.journals.state === "READY"){
-    return;
-  }
+  //Avoid loading again for the first time 
+  //THIS DOES NOT WORK AND IT PREVENTS THE SELECTION OF SINGLE STUDENT'S JOURNAL 
+  //if (initial && userEntityId === userEntityId && currentWorkspace.journals && currentWorkspace.journals.state === "READY"){
+  //  return;
+  //}
   
   let actualUserEntityId = userEntityId || currentWorkspace.journals && currentWorkspace.journals.userEntityId || null;
   

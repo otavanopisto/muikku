@@ -25,7 +25,7 @@ export default class WorkspaceAnnouncementsBody extends React.Component<Workspac
     let aside = <Aside />;
     return (<div>
       <WorkspaceNavbar navigation={aside} activeTrail="workspace-announcements" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="workspace">
+      <ScreenContainer viewModifiers="workspace-announcements">
         <Application aside={aside}/>
       </ScreenContainer>
     </div>);

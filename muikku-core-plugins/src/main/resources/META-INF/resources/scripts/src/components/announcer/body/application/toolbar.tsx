@@ -4,14 +4,11 @@ import { bindActionCreators } from 'redux';
 import Link from '~/components/general/link';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
-
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
-
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import { AnnouncementsType, AnnouncementType } from '~/reducers/announcements';
-
 import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import NewEditAnnouncement from '../../dialogs/new-edit-announcement';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
@@ -32,7 +29,6 @@ interface AnnouncerToolbarState {
 class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerToolbarState> {
   constructor( props: AnnouncerToolbarProps ) {
     super( props );
-
     this.go = this.go.bind( this );
     this.onGoBackClick = this.onGoBackClick.bind( this );
     this.restoreCurrentAnnouncement = this.restoreCurrentAnnouncement.bind(this);

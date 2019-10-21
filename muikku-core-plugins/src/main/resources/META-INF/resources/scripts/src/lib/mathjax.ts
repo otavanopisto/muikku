@@ -18,7 +18,7 @@ export function loadMathJax(triggerOnLoad: boolean){
       TeX: {
         extensions: ["AMSmath.js", "AMSsymbols.js", "noErrors.js", "noUndefined.js", "mhchem.js"]
       },
-      SVG: {useFontCache: true, useGlobalCache: false, EqnChunk: 1000000, EqnDelay: 0, font: 'STIX-Web'}
+      SVG: {useFontCache: true, useGlobalCache: false, EqnChunk: 1000000, EqnDelay: 0, font: 'STIX-Web', scale: '80', lineBreaks: {automatic: true}}
     });
     if (queue.length){
       queue.forEach(q=>q());

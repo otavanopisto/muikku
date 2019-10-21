@@ -22,6 +22,10 @@
   opacity: 1;
 }
 
+.dialog--wizard {
+  
+}
+
 .dialog__window {
   background-color: $color-dialog-default-background;
   bottom: 0;
@@ -36,6 +40,7 @@
   @include breakpoint($breakpoint-pad) {
     border-radius: 2px;
     bottom: auto;
+    box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-size: $text-desktop-font-size;
     left: auto;
     max-width: 450px;
@@ -43,9 +48,15 @@
     right: auto;
     top: auto;
   }
+}
 
+.dialog__window--wizard {
+  position: absolute;
+  bottom: 0;
+  top: 0;
   @include breakpoint($breakpoint-pad) {
-    box-shadow: 0 0 80px $color-dialog-default-shadow;
+    max-width: none;
+    width: 100%;
   }
 }
 
@@ -132,10 +143,9 @@
   line-height: $dialog-button-close-height;
   margin-top: -#{$dialog-button-close-height / 2};
   position: absolute;
-  right: 10px;
+  right: 5px;
   text-align: center;
   top: 50%;
-  vertical-align: center;
   width: $dialog-button-close-height;
 }
 

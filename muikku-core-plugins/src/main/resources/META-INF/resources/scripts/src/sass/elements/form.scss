@@ -14,6 +14,18 @@
   width: 100%;
 }
 
+.form__row--wizard {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.form__subdivision {
+  flex-basis: 100%;
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 50%;
+  }
+}
+
 .form__hidden {
   display: none;
 }
@@ -24,5 +36,18 @@ option,
 textarea {
   @include text;
   outline: none;
+}
+
+fieldset {
+  border: 0;
+  
+  label,
+  .form-element label {
+    font-weight: 400;
+  }
+}
+
+legend {
+  font-weight: 600;
 }
 

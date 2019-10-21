@@ -3,11 +3,22 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.content-panel-wrapper {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .content-panel {
   align-items: center;
   display: flex;
   justify-content: center;
+  padding: $navbar-mobile-height 0 10px;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+  }
 }
 
 .content-panel__container {
@@ -42,12 +53,12 @@
   flex-shrink: 1;
   font-size: 1.5rem;
   font-weight: 300;
-  height: $panel-header-title-height;
+  height: $panel-header-title-height-mobile;
   line-height: 1;
-  padding: 0 10px;
-
-  @include breakpoint($breakpoint-desktop) {
-    padding: 0 20px;
+  text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $panel-header-title-height-desktop;
   }
 }
 
@@ -100,10 +111,10 @@
     flex-basis: calc(35% - 20px);
     flex-grow: 1;
     flex-shrink: 1;
-    height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height}));
-    margin: 0 10px 0 0;
+    height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop}));
+    margin: 0;
     position: sticky;
-    top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height});
+    top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop});
     z-index: 99;
 
     &:hover {
@@ -163,26 +174,22 @@
   padding: 0;
   position: relative;
 
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 10px;
-  }
-
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(65% - 60px);
-    margin: 0 50px 10px 10px;
+    margin: 0 50px 10px 0;
     max-width: 700px;
     min-width: 650px;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
     flex-basis: calc(65% - 80px);
-    margin: 0 70px 10px 10px;
+    margin: 0 70px 10px 0;
   }
 }
 
 .content-panel__chapter {
   margin: 20px 0 0 0;
-  
+
   &:first-child {
     margin: 0;
   }
@@ -200,9 +207,10 @@
   margin: 0 0 -1px;
   padding: 10px;
   position: relative;
-  
+  z-index: 2;
+
   &.content-panel__chapter-title--hidden {
-  	opacity: 0.5;
+    opacity: 0.5;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -228,14 +236,29 @@
 }
 
 .content-panel__navigation-open {
+  align-items: center;
+  background: $color-info;
+  border: 1px solid $color-default;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  box-shadow: -2px 0 5px $color-mobile-toc-default-shadow;
+  cursor: pointer;
+  display: flex;
+  height: 2.5rem;
+  justify-content: center;
   position: fixed;
-  top: 100px;
-  right: 10px;
-  background-color: red;
-  width: 25px;
-  height: 25px;
+  right: -1px;
+  top: 65px;
+  width: 1.75rem;
+  z-index: 10;
 
   @include breakpoint($breakpoint-desktop) {
     display: none;
+  }
+
+  .icon-arrow-left-thin {
+    color: $color-default;
+    font-size: 1.125rem;
+    padding: 0 0 0 3px;
   }
 }

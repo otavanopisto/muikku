@@ -58,12 +58,16 @@
     color: $color-default;
     content: "\e639";
     font-family: muikku;
-    font-size: .875rem;
+    font-size: 0.875rem;
   }
 }
 
 .form-element--workspace-management {
   width: auto;
+}
+
+.form-element--main-action {
+  @include form-element-toolbar;
 }
 
 .form-element--guider-toolbar {
@@ -93,6 +97,15 @@
   margin: 10px 0 0;
 }
 
+.form-element--wizard {
+  padding: 10px;
+}
+
+.form-element--workspace-name,
+.form-element--workspace-extension {
+  flex-grow: 1;
+}
+
 .form-element__input {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
   -webkit-appearance: none;
@@ -111,19 +124,17 @@
   }
 }
 
-.form-element__input--guider-label-name,
-.form-element__input--communicator-label-name {
-  width: 100%;
-}
-
 .form-element__input--forgotpassword {
   font-size: $text-forgotpassword-font-size;
   width: 100%;
 }
 
-.form-element__input--profile, 
-.form-element__input--workspace-name {
-  
+.form-element__input--workspace-data,
+.form-element__input--guider-label-name,
+.form-element__input--communicator-label-name,
+.form-element__input--profile,
+.form-element__input--workspace-name,
+.form-element__input--workspace-name-extension {
   width: 100%;
 }
 
@@ -212,7 +223,7 @@
   font-size: $text-mobile-font-size;
   height: 2.25rem;
   outline: none;
-  padding: 0 25px 0 5px;
+  padding: 0 25px 0 10px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -246,7 +257,7 @@
   font-weight: 300;
   margin-right: 20px;
   max-width: 200px;
-  padding: 5px 25px 5px 5px;
+  padding: 5px 25px 5px 10px;
   text-transform: uppercase;
   vertical-align: top;
   width: 100%;

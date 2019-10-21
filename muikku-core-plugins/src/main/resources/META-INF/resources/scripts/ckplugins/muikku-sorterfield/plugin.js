@@ -59,6 +59,7 @@
               uiElement.append(titleContainer);
               
               var itemLabel = new CKEDITOR.dom.element('label');
+              itemLabel.addClass('items-label');
               itemLabel.setText(this.label);
               titleContainer.append(itemLabel);
               
@@ -104,6 +105,7 @@
           sortHandle.addClass('icon-move');
           itemContainer.setAttribute('data-item-id', id);
           var itemTextField = new CKEDITOR.dom.element('input');
+          itemTextField.addClass('cke_dialog_ui_input_text');
           itemTextField.setAttribute('name', 'itemText');
           itemTextField.setAttribute('type', 'text');
           itemsContainer.append(itemContainer);
