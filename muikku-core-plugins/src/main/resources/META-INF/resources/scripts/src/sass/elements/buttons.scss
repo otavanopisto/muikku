@@ -17,6 +17,7 @@
   font-family: $button-font-family;
   font-size: $button-mobile-font-size;
   justify-content: center;
+  outline: none;
   overflow: hidden;
   padding: 5px 10px;
   text-decoration: none;
@@ -412,16 +413,6 @@
   background-color: $color-button-primary-save-background;
   color: $color-button-primary-save-text;
   display: inline-flex;
-
-  &:hover,
-  &.hover {
-    background-color: darken($color-button-primary-save-background, 10%);
-  }
-
-  &:active,
-  &.active {
-    background-color: darken($color-button-primary-save-background, 20%);
-  }
 }
 
 .button--guider-share-label {
@@ -1237,13 +1228,13 @@
 }
 
 .button-pill--material-editor-publish-page {
-  background: $color-success;
-  border-color: $color-success;
-  color: $color-default;
+  background: $color-button-success-background;
+  border-color: $color-button-success-background;
+  color: $color-button-success-text;
 
   &:hover {
-    background: $color-success;
-    border-color: $color-success;
+    background: $color-button-success-background;
+    border-color: $color-button-success-background;
   }
 }
 
@@ -1358,5 +1349,16 @@
     position: absolute;
     top: auto;
     width: 1.25rem;
+  }
+}
+
+.button--wizard {
+  background-color: $color-button-wizard-background;
+  color: $color-button-wizard-text;
+  display: inline-flex;
+  border: none;
+
+  &:not(:first-child) {
+    margin-left: 10px;
   }
 }

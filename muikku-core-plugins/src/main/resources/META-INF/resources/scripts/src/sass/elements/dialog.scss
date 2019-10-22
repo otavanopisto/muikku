@@ -23,7 +23,7 @@
 }
 
 .dialog--wizard {
-  
+
 }
 
 .dialog__window {
@@ -51,12 +51,21 @@
 }
 
 .dialog__window--wizard {
-  position: absolute;
   bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
   top: 0;
+
   @include breakpoint($breakpoint-pad) {
+    border-radius: 10px;
+    bottom: 20px;
+    left: 20px;
+    position: fixed;
+    right: 20px;
+    top: 20px;
     max-width: none;
-    width: 100%;
+    width: auto;
   }
 }
 
@@ -105,6 +114,21 @@
     align-items: center;
     background-color: $color-dialog-desktop-background;
     color: $color-dialog-desktop-text;
+    display: flex;
+    height: 3rem;
+    padding: 0 20px;
+  }
+}
+
+
+.dialog__header--wizard {
+  
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    background-color: $color-dialog-wizard-desktop-background;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: $color-dialog-wizard-desktop-text;
     display: flex;
     height: 3rem;
     padding: 0 20px;

@@ -81,75 +81,76 @@ export default class Step extends React.Component<StepProps, StepState> {
 
   render(){
     const copyMaterials = this.props.getStore().copyMaterials !== "NO" ? 
-    <div className="form__row--wizard">
-      <div className="form-element form-element--wizard">
-        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label")}</label>
-        <input type="radio" name="workspace-materials-clone-or-link"
+    <div className="form__row form__row--wizard">
+      <div className="form-element form-element--checkbox-radiobutton">
+        <input type="radio" id="copy-materials-as-clone" name="workspace-materials-clone-or-link"
         onChange={this.switchBetweenCloneAndLink} checked={this.props.getStore().copyMaterials === "CLONE"}/>
+        <label htmlFor="copy-materials-as-clone">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label")}</label>
       </div>
-      <div className="form-element form-element--wizard">
-        <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label")}</label>
-        <input type="radio" name="workspace-materials-clone-or-link" 
-      onChange={this.switchBetweenCloneAndLink} checked={this.props.getStore().copyMaterials === "LINK"}/>
+      <div className="form-element form-element--checkbox-radiobutton">
+        <input type="radio" id="copy-materials-as-link" name="workspace-materials-clone-or-link" 
+        onChange={this.switchBetweenCloneAndLink} checked={this.props.getStore().copyMaterials === "LINK"}/>
+        <label htmlFor="copy-materials-as-link">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label")}</label>
       </div>
     </div> : null;
-    
+
     return <div className="wizard__content form">
       <div className="form__row form__row--wizard">
-        <div className="form__subdivision" >
-          <div className="form__row">
-          <div className="form-element form-element--wizard form-element--workspace-name">
-            <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceName.label")}</label>
-            <input className="form-element__input form-element__input--workspace-data" value={this.props.getStore().name} onChange={this.updateName}/>
+        <div className="form__subdivision form__subdivision--wizard">
+          <div className="form__row form__row--wizard">
+            <div className="form-element form-element--workspace-name">
+              <label htmlFor="workspace-name">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceName.label")}</label>
+              <input id="workspace-name" className="form-element__input form-element__input--workspace-data" value={this.props.getStore().name} onChange={this.updateName}/>
+            </div>
           </div>
-          <div className="form-element form-element--wizard form-element--workspace-extension">
-            <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
-            <input className="form-element__input form-element__input--workspace-data" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
+          <div className="form__row form__row--wizard">
+            <div className="form-element form-element--workspace-extension">
+              <label htmlFor="workspace-extension">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceExtension.label")}</label>
+              <input id="workspace-extension" className="form-element__input form-element__input--workspace-data" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
+            </div>
           </div>
-            
-          </div>
-          <div className="form__row form__row--wizard" >
-            <div className="form-element form-element--wizard">
-              <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.label")}</label>
-              <DatePicker className="form-element__input" onChange={this.updateStartDate}
+          <div className="form__row form__row--wizard">
+            <div className="form-element form-element__copy-workspace-start-date">
+              <label htmlFor="workspace-start-date">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.label")}</label>
+              <DatePicker className="form-element__input form-element__input--workspace-data" id="workspace-start-date" onChange={this.updateStartDate}
                 maxDate={this.props.getStore().endDate}
                 locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().beginDate}/>
              </div>
-            <div className="form-element form-element--wizard">
-              <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceEndDate.label")}</label>
-              <DatePicker className="form-element__input" onChange={this.updateEndDate}
+            <div className="form-element form-element__copy-workspace-end-date">
+              <label htmlFor="workspace-end-date">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceEndDate.label")}</label>
+              <DatePicker className="form-element__input form-element__input--workspace-data" id="workspace-end-date" onChange={this.updateEndDate}
                 minDate={this.props.getStore().beginDate}
                 locale={this.props.i18n.time.getLocale()} selected={this.props.getStore().endDate}/>
             </div>
-          </div> 
+          </div>
         </div>
-        <div className="form__subdivision">
-          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDescription.label")}</label>
-          <CKEditor width="100%"
-            onChange={this.onDescriptionChange}>{this.props.getStore().description}</CKEditor>
-        </div>    
-      </div>
-      <div className="form__row form__row--wizard">
-
-      </div>
-      <header>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceOtherSettings.label")}</header>
-      <div className="form__row form__row--wizard">
-        <div className="form-element form-element--wizard">
-          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.label")}</label>
-          <input type="checkbox" className="form-element" onChange={this.toggleCopyMaterials} checked={this.props.getStore().copyMaterials !== "NO"}/>
-        </div>
-        <div className="form-element form-element--wizard">
-          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceFiles.label")}</label>
-          <input type="checkbox" className="form-element" onChange={this.toggleCopyBackgroundPicture} checked={this.props.getStore().copyBackgroundPicture}/>
-        </div>
-        <div className="form-element form-element--wizard">
-          <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDiscussionsAreas.label")}</label>
-          <input type="checkbox" className="form-element" onChange={this.toggleCopyDiscussionAreas} checked={this.props.getStore().copyDiscussionAreas}/>
+        <div className="form__subdivision form__subdivision--wizard">
+          <div className="form__row form__row--wizard">
+            <div className="form-element">
+              <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDescription.label")}</label>
+              <CKEditor width="100%" onChange={this.onDescriptionChange}>{this.props.getStore().description}</CKEditor>
+            </div>
+          </div>
         </div>
       </div>
-      {copyMaterials}
-      
-
+      <fieldset>
+        <legend className="form__fieldset-header">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceOtherSettings.label")}</legend>
+        <div className="form__row form__row--wizard">
+          <div className="form-element form-element--checkbox-radiobutton">
+            <input type="checkbox" id="copy-materials" onChange={this.toggleCopyMaterials} checked={this.props.getStore().copyMaterials !== "NO"}/>
+            <label htmlFor="copy-materials">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.label")}</label>
+          </div>
+          <div className="form-element form-element--checkbox-radiobutton">
+            <input type="checkbox" id="copy-background" onChange={this.toggleCopyBackgroundPicture} checked={this.props.getStore().copyBackgroundPicture}/>
+            <label htmlFor="copy-background">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceFiles.label")}</label>
+          </div>
+          <div className="form-element form-element--checkbox-radiobutton">
+            <input type="checkbox" id="copy-discussion" onChange={this.toggleCopyDiscussionAreas} checked={this.props.getStore().copyDiscussionAreas}/>
+            <label htmlFor="copy-discussion">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDiscussionsAreas.label")}</label>
+          </div>
+        </div>
+        {copyMaterials}
+      </fieldset>
     </div>;
   }
 }
