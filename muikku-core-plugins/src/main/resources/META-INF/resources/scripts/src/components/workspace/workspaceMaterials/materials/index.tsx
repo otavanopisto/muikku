@@ -5,7 +5,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType, MaterialCompositeRepliesListType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
-import MaterialLoader from "~/components/base/material-loader";
 import equals = require("deep-equal");
 
 import WorkspaceMaterial from './material';
