@@ -230,8 +230,10 @@ export class LicenseSelector extends React.Component<LicenseSelectorProps, Licen
          </div>)
         }
       </div> : null}
-      {!currentLicense.value  ? <input type="text" className={`form-element__input ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""} ${this.state.valid ? "" : "form-element--invalid"}`}
-          value={this.state.text} onChange={this.onChangeText}/> : null}
+      {!currentLicense.value  ? <div className="license-selector__options-container">
+          <label className="license-selector__options-title" htmlFor="workspace-license-link-or-text">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.license.textOrLink")}</label>
+          <input id="workspace-license-link-or-text" type="text" className={`form-element__input ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""} ${this.state.valid ? "" : "form-element--invalid"}`}
+          value={this.state.text} onChange={this.onChangeText}/></div> : null}
     </div>
   }
 }

@@ -118,11 +118,17 @@
     color: #333;
   }
   
+  .footer-buttons {
+    align: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    padding: 20px;
+  }
 }
 
-
 .wizard__summary-row {
-  font-size: 1.1rem;
+  font-size: 1rem;
   padding: 15px 0;
   
   ul {

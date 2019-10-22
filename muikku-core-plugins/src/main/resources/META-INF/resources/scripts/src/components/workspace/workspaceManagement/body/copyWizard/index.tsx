@@ -153,9 +153,10 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
             steps={steps}
             showSteps={false}
             preventEnterSubmission={true}
+            prevBtnOnLastStep={true}
             nextTextOnFinalActionStep={this.props.i18n.text.get("plugin.workspace.management.copyWorkspace")}
-            nextButtonCls="button button--primary-function-content"
-            backButtonCls="button button--primary-function-content"
+            nextButtonCls="button button--wizard"
+            backButtonCls="button button--wizard"
             nextButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.next")}
             backButtonText={this.props.i18n.text.get("plugin.workspace.management.wizard.button.last")}
             onStepChange={this.checkLastStep.bind(this, steps)}

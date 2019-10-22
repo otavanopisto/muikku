@@ -17,6 +17,7 @@
   font-family: $button-font-family;
   font-size: $button-mobile-font-size;
   justify-content: center;
+  outline: none;
   overflow: hidden;
   padding: 5px 10px;
   text-decoration: none;
@@ -1348,5 +1349,16 @@
     position: absolute;
     top: auto;
     width: 1.25rem;
+  }
+}
+
+.button--wizard {
+  background-color: $color-button-wizard-background;
+  color: $color-button-wizard-text;
+  display: inline-flex;
+  border: none;
+
+  &:not(:first-child) {
+    margin-left: 10px;
   }
 }

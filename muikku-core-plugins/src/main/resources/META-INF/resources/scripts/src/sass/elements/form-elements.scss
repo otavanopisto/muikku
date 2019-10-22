@@ -105,6 +105,18 @@
   }
 }
 
+.form-element__copy-workspace-start-date,
+.form-element__copy-workspace-end-date {
+
+  .react-datepicker-wrapper {
+    display: block;
+  }
+
+  .react-datepicker__input-container {
+    display: block;
+  }
+}
+
 .form-element--main-action {
   @include form-element-toolbar;
 }
@@ -161,6 +173,11 @@
     font-size: $text-desktop-font-size;
     height: 2.5rem;
   }
+}
+
+.form-element__input--workspace-management {
+  margin: 0 0 5px 0;
+  width: 100%;
 }
 
 .form-element__input--forgotpassword {
