@@ -32,6 +32,7 @@
     display: flex;
     height: 1rem;
     justify-content: center;
+    margin-right: 5px;
     width: 1rem;
   }
 
@@ -62,8 +63,46 @@
   }
 }
 
+.form-element--checkbox-radiobutton {
+  align-items: center;
+  background-color: transparent;
+  border-radius: 0;
+  display: flex;
+  margin: 2px 5px 2px 0;
+  padding: 4px 8px 4px 0;
+  width: auto;
+
+  label {
+    padding: 0;
+  }
+}
+
 .form-element--workspace-management {
   width: auto;
+}
+
+.form-element__copy-workspace-start-date {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    padding: 0 10px 0 0;
+  }
+}
+
+.form-element__copy-workspace-end-date {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+    padding: 0 0 0 10px;
+  }
 }
 
 .form-element--main-action {
@@ -98,7 +137,7 @@
 }
 
 .form-element--wizard {
-  padding: 10px;
+  
 }
 
 .form-element--workspace-name,

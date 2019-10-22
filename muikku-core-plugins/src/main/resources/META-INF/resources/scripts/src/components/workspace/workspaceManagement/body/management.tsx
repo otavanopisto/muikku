@@ -117,7 +117,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: nextProps.workspace ? nextProps.workspace.materialDefaultLicense : "",
       workspaceDescription: nextProps.workspace ? nextProps.workspace.description || "" : "",
       workspaceHasCustomImage: nextProps.workspace ? nextProps.workspace.hasCustomImage : false,
-          
     });
 
   }
@@ -428,13 +427,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               <fieldset>
                 <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity")}</legend>
                 <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
-                  <span className="form-element">
+                  <span className="form-element form-element--checkbox-radiobutton">
                     <input id="publish" name="publish" type="radio"
                      checked={this.state.workspacePublished === true}
                      onChange={this.setWorkspacePublishedTo.bind(this, true)}/>
                     <label htmlFor="publish">{this.props.i18n.text.get("plugin.workspace.management.settings.publicity.publish")}</label>
                   </span>
-                  <span className="form-element">
+                  <span className="form-element form-element--checkbox-radiobutton">
                     <input id="unpublish" name="unpublish" type="radio"
                      checked={this.state.workspacePublished === false}
                      onChange={this.setWorkspacePublishedTo.bind(this, false)}/>
@@ -447,19 +446,19 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               <fieldset>
                 <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.access")}</legend>
                 <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
-                  <span className="form-element">
+                  <span className="form-element form-element--checkbox-radiobutton">
                     <input id="access-members" name="access-members" type="radio"
                      checked={this.state.workspaceAccess === "MEMBERS_ONLY"}
                      onChange={this.setWorkspaceAccessTo.bind(this, "MEMBERS_ONLY")}/>
                     <label htmlFor="access-members">{this.props.i18n.text.get("plugin.workspace.management.settings.access.membersOnly")}</label>
                   </span>
-                  <span className="form-element">
+                  <span className="form-element form-element--checkbox-radiobutton">
                     <input id="access-loggedin" name="access-loggedin" type="radio"
                      checked={this.state.workspaceAccess === "LOGGED_IN"}
                      onChange={this.setWorkspaceAccessTo.bind(this, "LOGGED_IN")}/>
                     <label htmlFor="access-loggedin">{this.props.i18n.text.get("plugin.workspace.management.settings.access.loggedIn")}</label>
                   </span>
-                  <span className="form-element">
+                  <span className="form-element form-element--checkbox-radiobutton">
                     <input id="access-anyone" name="access-anyone" type="radio"
                      checked={this.state.workspaceAccess === "ANYONE"}
                      onChange={this.setWorkspaceAccessTo.bind(this, "ANYONE")}/>

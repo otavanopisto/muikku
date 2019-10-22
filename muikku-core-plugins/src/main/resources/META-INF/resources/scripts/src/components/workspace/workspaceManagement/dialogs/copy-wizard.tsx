@@ -26,7 +26,6 @@ class CopyWizardDialog extends React.Component<CopyWizardDialogProps, CopyWizard
     </div>;
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        
       </div>
     }
     return <Dialog disableScroll={true} title={this.props.i18n.text.get('plugin.workspace.management.copyWorkspace')}

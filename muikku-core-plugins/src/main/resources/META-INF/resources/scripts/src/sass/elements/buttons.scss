@@ -412,16 +412,6 @@
   background-color: $color-button-primary-save-background;
   color: $color-button-primary-save-text;
   display: inline-flex;
-
-  &:hover,
-  &.hover {
-    background-color: darken($color-button-primary-save-background, 10%);
-  }
-
-  &:active,
-  &.active {
-    background-color: darken($color-button-primary-save-background, 20%);
-  }
 }
 
 .button--guider-share-label {
@@ -1237,13 +1227,13 @@
 }
 
 .button-pill--material-editor-publish-page {
-  background: $color-success;
-  border-color: $color-success;
-  color: $color-default;
+  background: $color-button-success-background;
+  border-color: $color-button-success-background;
+  color: $color-button-success-text;
 
   &:hover {
-    background: $color-success;
-    border-color: $color-success;
+    background: $color-button-success-background;
+    border-color: $color-button-success-background;
   }
 }
 

@@ -174,8 +174,8 @@ $color-button-default-text: $color-default-contrast;
 $color-button-primary-background: $color-primary;
 $color-button-primary-text: $color-primary-contrast;
 
-$color-button-primary-save-background: $color-success;
-$color-button-primary-save-text: $color-primary-contrast;
+$color-button-primary-save-background: $color-execute;
+$color-button-primary-save-text: $color-execute-contrast;
 
 $color-button-warn-background: $color-warn;
 $color-button-warn-text: $color-warn-contrast;
@@ -311,6 +311,8 @@ $color-dialog-mobile-background: $color-default;
 $color-dialog-desktop-background: $color-primary;
 $color-dialog-default-title-text: #000;
 $color-dialog-default-shadow: rgba(0, 0, 0, 0.6);
+$color-dialog-wizard-desktop-text: $color-inverse;
+$color-dialog-wizard-desktop-background: $color-default;
 
 // Background
 $color-background-container-default-background: #f5f5f5;
