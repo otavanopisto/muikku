@@ -10,6 +10,7 @@ import { displayNotification, DisplayNotificationTriggerType } from '~/actions/b
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import { bindActionCreators } from 'redux';
+import LoginButton from '../../base/login-button';
 
 interface ReturnCredentialsProps {
   secret: string,
@@ -120,26 +121,29 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
         <label>{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.password1")}</label>
         <input  className="form-element__input" type="password" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")}/>
       </div>
-     </div>
-     <div className="form-row">
+    </div>
+    <div className="form-row">
       <div className="form-element form-element--forgot-password">
         <label>{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.password2")}</label>
         <input className="form-element__input" type="password" value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")} />
       </div>
-     </div>
-     <div className="form-row">
-       <div className="form-element form-element--button-container">
+    </div>
+    <div className="form-row">
+      <div className="form-element form-element--button-container">
         <Button onClick={this.handleNewCredentials.bind(this)} buttonModifiers="reset-password" >{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.button")}</Button>
       </div>
     </div>
-  </div> : <div>Login</div>; 
+  </div> : <div className="credentials__changed">
+             <div className="credentials__changed-message">{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.success.loginFromCredentials")}</div>
+             <div className="credentials__changed-action">
+               <LoginButton />
+             </div>
+           </div>;
       
       
     return (
       <Panel>
-        <div className="form form--forgot-password">
-          {credentialsContent}
-        </div>
+        {credentialsContent}
       </Panel>);
   }
 }
