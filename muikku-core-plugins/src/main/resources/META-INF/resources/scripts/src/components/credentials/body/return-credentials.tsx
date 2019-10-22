@@ -47,7 +47,7 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
     } catch (err){
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed", err), "error");
       if (!(err instanceof MApiError)){
-        this.props.displayNotification(err, "error");
+        this.props.displayNotification(err.message, "error");
       }
 
     }
