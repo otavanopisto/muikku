@@ -88,7 +88,7 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
          locked: false
        });
        if (err) {
-          this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.resetCreateFailed", err.message),"error");  
+          this.props.displayNotification(err.message, "error");  
        } else {
          this.setState({
            username: "",

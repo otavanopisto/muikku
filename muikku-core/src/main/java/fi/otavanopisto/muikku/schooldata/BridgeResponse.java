@@ -11,10 +11,10 @@ public class BridgeResponse<T> {
     this.entity = entity;
   }
 
-  public BridgeResponse(int statusCode, T entity, BridgeError error) {
+  public BridgeResponse(int statusCode, T entity, String message) {
     this.statusCode = statusCode;
     this.entity = entity;
-    this.error = error;
+    this.message = message;
   }
 
   public int getStatusCode() {
@@ -33,12 +33,12 @@ public class BridgeResponse<T> {
     this.entity = entity;
   }
 
-  public BridgeError getError() {
-    return error;
+  public String getMessage() {
+    return message;
   }
 
-  public void setError(BridgeError error) {
-    this.error = error;
+  public void setMessage(String message) {
+    this.message = message;
   }
   
   public boolean ok() {
@@ -47,6 +47,6 @@ public class BridgeResponse<T> {
   
   private int statusCode;
   private T entity;
-  private BridgeError error;
+  private String message;
 
 }
