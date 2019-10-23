@@ -4,6 +4,3 @@ import runApp from '~/run';
 
 
 let store = runApp(reducer, App);
-
-
-
