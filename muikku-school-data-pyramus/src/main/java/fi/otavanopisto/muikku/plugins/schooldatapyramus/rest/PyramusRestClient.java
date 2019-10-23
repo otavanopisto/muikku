@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.otavanopisto.muikku.schooldata.BridgeError;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
@@ -236,17 +235,17 @@ class PyramusRestClient implements Serializable {
   @SuppressWarnings("unchecked")
   private <T> BridgeResponse<T> createBridgeResponse(Response response, String path, Class<T> type) {
     int statusCode = response.getStatus();
-    String json = response.hasEntity() ? response.readEntity(String.class) : null; // note: response now closed
+    String responseContent = response.hasEntity() ? response.readEntity(String.class) : null; // note: response now closed
     T entity = null;
-    BridgeError error = null;
+    String message = null;
     
-    if (json != null && statusCode >= 200 && statusCode < 300) {
+    if (responseContent != null && statusCode >= 200 && statusCode < 300) {
       // ok response with entity 
       try {
-        entity = new ObjectMapper().readValue(json, type);
+        entity = new ObjectMapper().readValue(responseContent, type);
       }
       catch (Exception e) {
-        logger.severe(String.format("Failed to deserialize path %s entity %s from %s", path, type.getSimpleName(), json));
+        logger.severe(String.format("Failed to deserialize path %s entity %s from %s", path, type.getSimpleName(), responseContent));
         statusCode = 500;
       }
     }
@@ -254,16 +253,11 @@ class PyramusRestClient implements Serializable {
       // no content response for arrays (empty array)
       entity = (T) Array.newInstance(type.getComponentType(), 0);
     }
-    else if (json != null) {
-      // error response (assume BridgeError with String fallback)
-      try {
-        error = new ObjectMapper().readValue(json, BridgeError.class);
-      }
-      catch (Exception e) {
-        error = new BridgeError(json);
-      }
+    else if (responseContent != null) {
+      // error response, assume content to be message
+      message = responseContent;
     }
-    return new BridgeResponse<T>(statusCode, entity, error);
+    return new BridgeResponse<T>(statusCode, entity, message);
   }
   
   private String url;

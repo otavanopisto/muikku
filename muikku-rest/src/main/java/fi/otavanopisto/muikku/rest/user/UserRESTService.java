@@ -1316,7 +1316,7 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
     else {
-      return Response.status(response.getStatusCode()).entity(response.getError()).build();
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
     }
   }
 

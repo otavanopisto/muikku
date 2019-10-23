@@ -153,7 +153,7 @@ public class ForgotPasswordRESTService extends PluginRESTService {
         return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
       }
       else {
-        return Response.status(response.getStatusCode()).entity(response.getError()).build();
+        return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
       }
     }
     finally {
@@ -202,7 +202,7 @@ public class ForgotPasswordRESTService extends PluginRESTService {
         return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
       }
       else {
-        return Response.status(response.getStatusCode()).entity(response.getError()).build();
+        return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
       }
     }
     finally {
