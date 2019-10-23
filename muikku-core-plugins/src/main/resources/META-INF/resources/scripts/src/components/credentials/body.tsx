@@ -12,7 +12,6 @@ interface CredentialsBodyProps {
 }
 
 interface CredentialsBodyState {
-  
 }
 
 class CredentialsBody extends React.Component<CredentialsBodyProps, CredentialsBodyState> {
