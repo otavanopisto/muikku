@@ -341,10 +341,12 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   //When we mount we need to register the websocket event for the answer saved
   componentWillMount(){
     this.props.websocket.websocket.addEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
+    this.props.websocket.websocket.addEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
   }
   //and we unregister that on unmount and of course unmount all the will be orphaned react components in the dom
   componentWillUnmount(){
     this.props.websocket.websocket.removeEventCallback("workspace:field-answer-saved", this.onAnswerSavedAtServer);
+    this.props.websocket.websocket.removeEventCallback("workspace:field-answer-error", this.onAnswerSavedAtServer);
     this.unmountEverything();
   }
   //when an answer is saved from the server, as in the websocket calls this
@@ -362,6 +364,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       
       //if we have an error
       if (actualData.error){
+        console.error && console.error(actualData.error);
         //we get the context and check whether it's synced
         this.nameContextRegistry[actualData.fieldName].setState({synced: false, syncError: actualData.error});
         return;
