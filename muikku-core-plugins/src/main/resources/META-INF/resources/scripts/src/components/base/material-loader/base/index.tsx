@@ -208,6 +208,13 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       return;
     }
     
+    // TODO make this more efficient, no need to update anything if nothing has changed
+    // but it calls it every time, the fields nevertheless are smart and won't trigger an
+    // update but the whole component tries to update, because the entire material activity
+    // changes when one answer changes state, all the components recieve new props
+    // two options, either create one task to refresh only the activity, or
+    // make this more efficient by checking every prop, search for: updateWorkspaceActivity function
+    // in a tsx file
     this.updateEverything(nextProps);
   }
   
@@ -337,6 +344,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         statice.node
       );
     });
+    
+    processMathInPage();
   }
   //When we mount we need to register the websocket event for the answer saved
   componentWillMount(){
