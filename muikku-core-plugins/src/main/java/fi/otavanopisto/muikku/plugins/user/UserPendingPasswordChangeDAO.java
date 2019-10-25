@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -62,6 +63,21 @@ public class UserPendingPasswordChangeDAO extends CorePluginsDAO<UserPendingPass
   public UserPendingPasswordChange updateExpires(UserPendingPasswordChange passwordChange, Date expires) {
     passwordChange.setExpires(expires);
     return persist(passwordChange);
+  }
+
+  public int deleteExpired() {
+    Date expiryDate = new Date();
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaDelete<UserPendingPasswordChange> criteria = criteriaBuilder.createCriteriaDelete(UserPendingPasswordChange.class);
+    Root<UserPendingPasswordChange> root = criteria.from(UserPendingPasswordChange.class);
+
+    criteria.where(
+        criteriaBuilder.lessThan(root.get(UserPendingPasswordChange_.expires), expiryDate)
+    );
+    
+    return entityManager.createQuery(criteria).executeUpdate();
   }
 
 }
