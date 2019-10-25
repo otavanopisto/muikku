@@ -2,10 +2,8 @@ package fi.otavanopisto.muikku.plugins.matriculation;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -21,32 +19,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.matriculation.persistence.dao.SavedMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.matriculation.persistence.dao.SentMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.matriculation.persistence.model.SavedMatriculationEnrollment;
 import fi.otavanopisto.muikku.matriculation.persistence.model.SentMatriculationEnrollment;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
-import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 
 @Path("/matriculation")
@@ -62,9 +52,6 @@ public class MatriculationRESTService {
   private MatriculationSchoolDataController matriculationController;
   
   @Inject
-  private UserSchoolDataController userSchoolDataController;
-  
-  @Inject
   private UserController userController;
   
   @Inject
@@ -72,9 +59,6 @@ public class MatriculationRESTService {
   
   @Inject
   private UserEmailEntityController userEmailEntityController;
-  
-  @Inject
-  private UserGroupEntityController userGroupEntityController; 
   
   @Inject
   private SessionController sessionController;
@@ -88,62 +72,19 @@ public class MatriculationRESTService {
   @Inject
   private MatriculationNotificationController matriculationNotificationController;
   
-  @Inject
-  private PluginSettingsController pluginSettingsController;
-  
   @GET
-  @RESTPermit(MatriculationPermissions.MATRICULATION_GET_EXAM)
-  @Path("/currentExam")
-  public Response fetchCurrentExam() {
-    MatriculationExam exam = matriculationController.getMatriculationExam();
-    boolean eligible = false;
-    
-    if (sessionController.isLoggedIn() && exam != null) {
-      String eligibleGroupIdentifiers = pluginSettingsController.getPluginSetting("matriculation", "eligibleGroupIdentifiers");
-      if (StringUtils.isBlank(eligibleGroupIdentifiers)) {
-        // If no groups are set, default to everyone
-        eligible = true;
-      } else {
-        String[] identifierStrings = StringUtils.split(eligibleGroupIdentifiers, ',');
-        Set<SchoolDataIdentifier> eligibleUserGroupIdentifiers = Arrays.stream(identifierStrings)
-          .map(identifierString -> SchoolDataIdentifier.fromId(identifierString))
-          .filter(Objects::nonNull)
-          .collect(Collectors.toSet());
-        
-        List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserEntity(sessionController.getLoggedUserEntity());
-        Set<SchoolDataIdentifier> usersUserGroupEntityIdentifiers = userGroupEntities.stream()
-          .map(userGroupEntity -> new SchoolDataIdentifier(userGroupEntity.getIdentifier(), userGroupEntity.getSchoolDataSource().getIdentifier()))
-          .filter(Objects::nonNull)
-          .collect(Collectors.toSet());
-        
-        eligible = CollectionUtils.containsAny(eligibleUserGroupIdentifiers, usersUserGroupEntityIdentifiers);
-      }
-      
-      User user = userController.findUserByIdentifier(sessionController.getLoggedUser());
-      if (user != null) {
-        UserProperty property = userSchoolDataController.getUserProperty(user, "matriculation.examEnrollmentExpiryDate");
-        if (property != null) {
-          try {
-            long matriculationExamEnrollmentExpiryDate = Long.parseLong(property.getValue());
-            
-            final long startDate = exam.getStarts();
-            final long endDate = Math.max(exam.getEnds(), matriculationExamEnrollmentExpiryDate);
-                        
-            return Response.ok(new MatriculationCurrentExam(startDate, endDate, eligible)).build();
-          } catch (NumberFormatException nfe) {
-            logger.warning(String.format("User Property was expected to include a date in long format but parsing it failed (%s)", sessionController.getLoggedUserIdentifier()));
-          }
-        }
-      }
-    }
-    
-    return Response.ok(new MatriculationCurrentExam(exam.getStarts(), exam.getEnds(), eligible)).build();
+  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @Path("/exams")
+  public Response listAvailableExams() {
+    List<MatriculationExam> exams = matriculationController.listMatriculationExams(true);
+    List<MatriculationCurrentExam> examRestModels = exams.stream().map(exam -> restModel(exam)).collect(Collectors.toList());
+    return Response.ok(examRestModels).build();
   }
   
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_LOAD_DRAFT)
-  @Path("/savedEnrollments/{USERID}")
-  public Response fetchSavedEnrollment(@PathParam("USERID") String userId) {
+  @Path("/exams/{EXAMID}/savedEnrollments/{USERID}")
+  public Response fetchSavedEnrollment(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId) {
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
@@ -152,7 +93,7 @@ public class MatriculationRESTService {
     if (!identifier.equals(loggedUserIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
-    SavedMatriculationEnrollment savedEnrollment = savedMatriculationEnrollmentDAO.findByUser(identifier);
+    SavedMatriculationEnrollment savedEnrollment = savedMatriculationEnrollmentDAO.findByUser(examId, identifier);
     if (savedEnrollment != null) {
       return Response.ok(savedEnrollment.getSavedEnrollmentJson()).build();
     }
@@ -161,8 +102,8 @@ public class MatriculationRESTService {
 
   @PUT
   @RESTPermit(MatriculationPermissions.MATRICULATION_SAVE_DRAFT)
-  @Path("/savedEnrollments/{USERID}")
-  public Response saveEnrollment(@PathParam("USERID") String userId, String body) {
+  @Path("/exams/{EXAMID}/savedEnrollments/{USERID}")
+  public Response saveEnrollment(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId, String body) {
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
@@ -171,19 +112,19 @@ public class MatriculationRESTService {
     if (!identifier.equals(loggedUserIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
-    SavedMatriculationEnrollment savedEnrollment = savedMatriculationEnrollmentDAO.findByUser(identifier);
+    SavedMatriculationEnrollment savedEnrollment = savedMatriculationEnrollmentDAO.findByUser(examId, identifier);
     if (savedEnrollment != null) {
       savedMatriculationEnrollmentDAO.updateSavedEnrollmentJson(savedEnrollment, body);
     } else {
-      savedEnrollment = savedMatriculationEnrollmentDAO.create(identifier, body);
+      savedEnrollment = savedMatriculationEnrollmentDAO.create(examId, identifier, body);
     }
     return Response.ok(savedEnrollment).build();
   }
   
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_GET_INITIALDATA)
-  @Path("/initialData/{USERID}")
-  public Response fetchInitialData(@PathParam("USERID") String userId) {
+  @Path("/exams/{EXAMID}/initialData/{USERID}")
+  public Response fetchInitialData(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId) {
     MatriculationExamInitialData result = new MatriculationExamInitialData();
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
     if (identifier == null) {
@@ -197,7 +138,7 @@ public class MatriculationRESTService {
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
-    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(identifier);
+    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(examId, identifier);
     if (sentEnrollment != null) {
       result.setEnrollmentSent(true);
     }
@@ -247,8 +188,8 @@ public class MatriculationRESTService {
   
   @POST
   @RESTPermit(MatriculationPermissions.MATRICULATION_SEND_ENROLLMENT)
-  @Path("/enrollments")
-  public Response sendEnrollment(MatriculationExamEnrollment enrollment) {
+  @Path("/exams/{EXAMID}/enrollments")
+  public Response sendEnrollment(@PathParam("EXAMID") Long examId, MatriculationExamEnrollment enrollment) {
     fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment 
       schoolDataEntity = matriculationController.createMatriculationExamEnrollment();
 
@@ -261,12 +202,17 @@ public class MatriculationRESTService {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     Long studentId = getStudentIdFromIdentifier(userIdentifier);
-    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(userIdentifier);
+    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(examId, userIdentifier);
     if (sentEnrollment != null) {
       return Response.status(Status.BAD_REQUEST).entity("Enrollment already sent").build();
     }
     
+    if (!Objects.equals(examId, enrollment.getExamId()) && examId != null) {
+      return Response.status(Status.BAD_REQUEST).entity("Exam ids do not match").build();
+    }
+    
     schoolDataEntity.setId(null);
+    schoolDataEntity.setExamId(enrollment.getExamId());
     schoolDataEntity.setName(enrollment.getName());
     schoolDataEntity.setSsn(enrollment.getSsn());
     schoolDataEntity.setEmail(enrollment.getEmail());
@@ -299,8 +245,8 @@ public class MatriculationRESTService {
       attendances.add(resultAttendance);
     }
     schoolDataEntity.setAttendances(attendances);
-    matriculationController.submitMatriculationExamEnrollment(schoolDataEntity);
-    sentMatriculationEnrollmentDAO.create(userIdentifier);
+    matriculationController.submitMatriculationExamEnrollment(examId, schoolDataEntity);
+    sentMatriculationEnrollmentDAO.create(examId, userIdentifier);
     
     try {
       matriculationNotificationController.sendEnrollmentNotification(enrollment);
@@ -311,4 +257,7 @@ public class MatriculationRESTService {
     return Response.ok().build();
   }
 
+  private MatriculationCurrentExam restModel(MatriculationExam exam) {
+    return new MatriculationCurrentExam(exam.getId(), exam.getStarts(), exam.getEnds(), exam.isEligible(), exam.isEnrolled());
+  }
 }

@@ -1,5 +1,8 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,10 +31,10 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
   }
 
   @Override
-  public MatriculationExam getMatriculationExam() {
-    MatriculationExam exam = pyramusClient.get(
-      "/matriculation/currentExam", PyramusMatriculationExam.class);
-    return exam;
+  public List<MatriculationExam> listMatriculationExams(boolean onlyEligible) {
+    PyramusMatriculationExam[] exams = pyramusClient.get(
+        String.format("/matriculation/exams?onlyEligible=%s", onlyEligible), PyramusMatriculationExam[].class);
+    return Arrays.asList(exams);
   }
 
   @Override
@@ -40,9 +43,9 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
   }
 
   @Override
-  public void submitMatriculationExamEnrollment(
+  public void submitMatriculationExamEnrollment(Long examId,
       MatriculationExamEnrollment enrollment) {
-    pyramusClient.post("/matriculation/enrollments", enrollment);
+    pyramusClient.post(String.format("/matriculation/exams/%d/enrollments", examId), enrollment);
   }
 
   @Override

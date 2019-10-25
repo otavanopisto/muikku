@@ -80,72 +80,79 @@
 
   function confirmEvaluationRequest() {
     var workspaceEntityId = $('.workspaceEntityId').val();
-    mApi().workspace.workspaces.feeInfo.read(workspaceEntityId).callback($.proxy(function (err, data) {
+    mApi().workspace.workspaces.feeInfo.read(workspaceEntityId).callback($.proxy(function (err, feeData) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
       }
       else {
-        renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', data, $.proxy(function (text) {
-          var dialog = $(text);
-          $(text).dialog({
-            modal: true, 
-            minHeight: 200,
-            resizable: false,
-            width: 560,
-            dialogClass: "workspace-evaluation-confirm-dialog",
-            beforeClose: function(event, ui) {
-              $(this).dialog().remove(); 
-            },
-            buttons: [{
-              'text': dialog.data('button-request-text'),
-              'class': 'save-evaluation-button',
-              'click': function() {
-                $('.save-evaluation-button').prop('disabled', true);
-                var workspaceEntityId = $('.workspaceEntityId').val();
-                var message = $('#evaluationRequestAdditionalMessage').val();
+        mApi().workspace.workspaces.students.assessmentstate.read(workspaceEntityId, MUIKKU_LOGGED_USER).callback($.proxy(function(err, evaluationData) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', $.extend(feeData, evaluationData), $.proxy(function (text) {
+              var dialog = $(text);
+              $(text).dialog({
+                modal: true, 
+                minHeight: 200,
+                resizable: false,
+                width: 560,
+                dialogClass: "workspace-evaluation-confirm-dialog",
+                beforeClose: function(event, ui) {
+                  $(this).dialog().remove(); 
+                },
+                buttons: [{
+                  'text': dialog.data('button-request-text'),
+                  'class': 'save-evaluation-button',
+                  'click': function() {
+                    $('.save-evaluation-button').prop('disabled', true);
+                    var workspaceEntityId = $('.workspaceEntityId').val();
+                    var message = $('#evaluationRequestAdditionalMessage').val();
 
-                mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
-                  'requestText': message
-                }).callback(function(err) {
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                    mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
+                      'requestText': message
+                    }).callback(function(err) {
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                      }
+                      else {
+                        var evalButton = $('.workspace-dock-navi-button-evaluation');
+                        var state = evalButton.attr('data-state');
+                        if (state == 'unassessed') {
+                          state = 'pending';
+                        }
+                        else if (state == 'pass') {
+                          state = 'pending_pass';
+                        }
+                        else if (state == 'fail') {
+                          state = 'pending_fail';
+                        }
+                        evalButton
+                          .attr('data-state', state)
+                          .children('a')
+                            .attr('class', '')
+                            .attr('title', getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
+                            .addClass('icon-assessment-pending tooltip')
+                            .children('span')
+                              .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
+                        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+                      }
+                    });
+                    
+                    $(this).dialog("destroy");
+                    
                   }
-                  else {
-                    var evalButton = $('.workspace-dock-navi-button-evaluation');
-                    var state = evalButton.attr('data-state');
-                    if (state == 'unassessed') {
-                      state = 'pending';
-                    }
-                    else if (state == 'pass') {
-                      state = 'pending_pass';
-                    }
-                    else if (state == 'fail') {
-                      state = 'pending_fail';
-                    }
-                    evalButton
-                      .attr('data-state', state)
-                      .children('a')
-                        .attr('class', '')
-                        .attr('title', getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
-                        .addClass('icon-assessment-pending tooltip')
-                        .children('span')
-                          .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+                }, {
+                  'text': dialog.data('button-cancel-text'),
+                  'class': 'cancel-button',
+                  'click': function() {
+                    $(this).dialog("destroy");
                   }
-                });
-                
-                $(this).dialog("destroy");
-                
-              }
-            }, {
-              'text': dialog.data('button-cancel-text'),
-              'class': 'cancel-button',
-              'click': function() {
-                $(this).dialog("destroy");
-              }
-            }]
-          });
-        }, this))
+                }]
+              });
+            }, this))
+          }
+        }, this));
       }
     }, this));
   }

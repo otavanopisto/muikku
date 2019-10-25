@@ -292,7 +292,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteEnrolledAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -345,7 +345,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-5">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}}  class="pure-button" onClick={() => {props.deleteFinishedAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -385,7 +385,7 @@ const Page2 = (props) => (
           />
         </div>
         <div className="pure-u-1-4">
-          <button style={{marginTop: i==0 ? "1.7rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
+          <button style={{marginTop: i==0 ? "2.05rem" : "0.3rem"}} class="pure-button" onClick={() => {props.deletePlannedAttendance(i);}}>
             Poista
           </button>
         </div>
@@ -595,7 +595,7 @@ class DraftListener extends React.Component {
       matriculationForm[field] = this.props[field];
     });
     
-    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
+    fetch(`/rest/matriculation/exams/${this.props.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
@@ -627,6 +627,7 @@ class App extends React.Component {
     const date = new Date();
     // Use strings for boolean choices because they work well with <select>s
     this.state = {
+      examId: MATRICULATION_EXAM_ID,
       page: 1,
       saveState: "PENDING",
       name: "",
@@ -662,7 +663,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/rest/matriculation/initialData/${MUIKKU_LOGGED_USER}`)
+    fetch(`/rest/matriculation/exams/${this.state.examId}/initialData/${MUIKKU_LOGGED_USER}`)
       .then((response) => {
         return response.json();
       })
@@ -673,7 +674,7 @@ class App extends React.Component {
   }
 
   fetchSavedEnrollment() {
-    fetch(`/rest/matriculation/savedEnrollments/${MUIKKU_LOGGED_USER}`)
+    fetch(`/rest/matriculation/exams/${this.state.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`)
       .then((response) => {
         if (response.status == 404) {
           return "{}";
@@ -1039,13 +1040,14 @@ class App extends React.Component {
         + "\n\n"
         + this.state.message;
     }
-    fetch("/rest/matriculation/enrollments", {
+    fetch(`/rest/matriculation/exams/${this.state.examId}/enrollments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
       },
       body: JSON.stringify(
         {
+          examId: this.state.examId,
           name: this.state.name,
           ssn: this.state.ssn,
           email: this.state.email,
@@ -1100,7 +1102,7 @@ class App extends React.Component {
         <DraftListener {...this.state}
           onError={(errorMsg) => {this.setState({error: errorMsg})}}/>
         {this.state.error
-          ? <div class="error">{this.state.error}</div>
+          ? <div className="error-wrapper"><div className="error-overlay"></div><div className="error">{this.state.error} <div><a href="/" className="back-to-frontpage">Muikun etusivulle</a></div></div></div>
           : null}
         <form className="pure-form pure-form-stacked matriculation-form" onSubmit={(e) => {e.preventDefault();}}>
           {/* Page 1 of the wizard contains an introductory text */}
