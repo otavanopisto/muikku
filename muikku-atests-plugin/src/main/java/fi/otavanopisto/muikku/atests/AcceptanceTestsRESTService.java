@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.atests;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.dao.users.FlagDAO;
@@ -792,7 +794,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
      
       String confirmationHash = "testtesttest";
-      userPendingPasswordChangeDAO.create(userEntity, confirmationHash);
+      userPendingPasswordChangeDAO.create(userEntity, confirmationHash, DateUtils.addHours(new Date(), 2));
       return Response.noContent().build();
   }
   

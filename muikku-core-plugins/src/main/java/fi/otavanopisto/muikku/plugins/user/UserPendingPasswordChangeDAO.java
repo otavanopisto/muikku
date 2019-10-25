@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.user;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -12,11 +14,12 @@ public class UserPendingPasswordChangeDAO extends CorePluginsDAO<UserPendingPass
 
   private static final long serialVersionUID = 5503016597955204959L;
 
-  public UserPendingPasswordChange create(UserEntity userEntity, String confirmationHash) {
+  public UserPendingPasswordChange create(UserEntity userEntity, String confirmationHash, Date expires) {
     UserPendingPasswordChange userPendingPasswordChange = new UserPendingPasswordChange();
     
     userPendingPasswordChange.setConfirmationHash(confirmationHash);
     userPendingPasswordChange.setUserEntity(userEntity.getId());
+    userPendingPasswordChange.setExpires(expires);
     
     getEntityManager().persist(userPendingPasswordChange);
     
@@ -53,10 +56,12 @@ public class UserPendingPasswordChangeDAO extends CorePluginsDAO<UserPendingPass
 
   public UserPendingPasswordChange updateHash(UserPendingPasswordChange passwordChange, String confirmationHash) {
     passwordChange.setConfirmationHash(confirmationHash);
-    
-    getEntityManager().persist(passwordChange);
-    
-    return passwordChange;
+    return persist(passwordChange);
+  }
+
+  public UserPendingPasswordChange updateExpires(UserPendingPasswordChange passwordChange, Date expires) {
+    passwordChange.setExpires(expires);
+    return persist(passwordChange);
   }
 
 }
