@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { connect, Dispatch} from 'react-redux';
-import mApi, { MApiError } from '~/lib/mApi';
-import promisify from '~/util/promisify';
 import Panel from '~/components/general/panel';
 import Button from '~/components/general/button';
 import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
+import {updateCredentials, UpdateCredentialsTriggerType} from '~/actions/base/credentials';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import { bindActionCreators } from 'redux';
 import LoginButton from '../../base/login-button';
 
 interface ReturnCredentialsProps {
-  secret: string,
   displayNotification: DisplayNotificationTriggerType,
+  updateCredentials: UpdateCredentialsTriggerType,
+  secret?: string,
   i18n: i18nType,
 }
 
@@ -37,27 +37,17 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
        handled: false
     }
   }
-  async componentDidMount() {
-    try {
-    const data:any = await (promisify(mApi().forgotpassword.credentialReset.read(this.props.secret), 'callback')());
-      if (data.username != null) {
-        this.setState({username: data.username});
-      } 
-
-    } catch (err){
-      this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed", err.message), "error");
-      if (!(err instanceof MApiError)){
-        this.props.displayNotification(err.message, "error");
-      }
-
-    }
-  }
   
   handleNewCredentials() {
+
     let newPassword1 = this.state.newPassword;
     let newPassword2 = this.state.newPasswordConfirm;
     let userName = this.state.username;
-    
+    let newUserCredentials = {
+      username: this.state.username,
+      password: this.state.newPassword,
+      secret: this.props.secret
+    }
     if(userName == "") {
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.empty.username"), "error");
       return;
@@ -77,29 +67,7 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
       locked: true
     });
     
-    let values = {
-        secret : this.props.secret,
-        password : newPassword1,
-        username : userName
-    };
-    
-     mApi().forgotpassword.credentialReset.create(values).callback((err: any, result: any)=>{
-       this.setState({
-         locked: false
-       });
-       if (err) {
-          this.props.displayNotification(err.message, "error");  
-       } else {
-         this.setState({
-           username: "",
-           newPassword: "",
-           newPasswordConfirm: "",
-           handled: true
-         });
-         this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"),"success");
-       }
-     });
-    
+    this.props.updateCredentials(newUserCredentials)
   } 
  
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>){
@@ -154,8 +122,9 @@ function mapStateToProps(state: StateType){
   }
 };
 
+
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({displayNotification}, dispatch);
+  return bindActionCreators({displayNotification, updateCredentials}, dispatch);
 };
 
 export default connect(

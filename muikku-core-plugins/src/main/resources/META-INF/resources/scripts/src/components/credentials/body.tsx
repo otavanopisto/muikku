@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
+import {CredentialsType} from '~/reducers/base/credentials';
 import $ from '~/lib/jquery';
 import ReturnCredentials from './body/return-credentials';
 import CredentialsContainer from './body/credentials-container';
@@ -8,22 +9,19 @@ import CredentialsHero from './body/credentials-hero';
 import {StateType} from '~/reducers';
 
 interface CredentialsBodyProps {
-  i18n: i18nType
+  i18n: i18nType,
+  user?: CredentialsType
 }
 
 interface CredentialsBodyState {
 }
 
 class CredentialsBody extends React.Component<CredentialsBodyProps, CredentialsBodyState> {
-  private param = new URLSearchParams(location.search);
   render(){
-    
-    let hash:string = this.param.get("h");
-  
     return (<div className="credentials">
         <CredentialsHero i18n={this.props.i18n}/>
         <CredentialsContainer i18n={this.props.i18n}>
-          <ReturnCredentials secret={hash} />
+          <ReturnCredentials secret={this.props.user.secret}/>
         </CredentialsContainer>
     </div>);
   }

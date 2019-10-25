@@ -15,22 +15,11 @@ interface CredentialsContainerState {
 
 export default class CredentialsContainer extends React.Component<CredentialsContainerProps, CredentialsContainerState> {
 
-  private param = new URLSearchParams(location.search);
-
   constructor(props: CredentialsContainerProps){
     super(props);
-    this.state = {
-        hash: this.param.get("h")
-    }
   }
-
+  
   render(){
-    
-    let credentialChange = async ()=>{
-      let hash = this.state.hash;      
-      return await (promisify(mApi().forgotpassword.credentialReset.read(hash), 'callback')());
-    }
-
     return (
       <div className="credentials__container">
         <div className="credentials__header">{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.title")}</div>
