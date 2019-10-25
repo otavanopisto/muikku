@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -17,9 +18,9 @@ import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @Dependent
@@ -133,6 +134,18 @@ public class WorkspaceEntityController {
     workspaceEntityDAO.delete(workspaceEntity);
   }
 
+  public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceUserEntitiesByUserIdentifier(userIdentifier);
+    return workspaceUserEntities.stream()
+        .map(workspaceUserEntity -> workspaceUserEntity.getWorkspaceEntity())
+        .collect(Collectors.toList());
+  }
+  
+  /**
+   * Deprecated as this would potentially include workspaces from past UserSchoolDataIdentifiers too, which 
+   * is prone to errors.
+   */
+  @Deprecated
   public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
     List<WorkspaceEntity> result = new ArrayList<>();
     

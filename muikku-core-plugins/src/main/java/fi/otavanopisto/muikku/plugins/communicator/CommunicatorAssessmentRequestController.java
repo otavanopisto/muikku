@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.communicator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -87,11 +89,22 @@ public class CommunicatorAssessmentRequestController {
     return getText("plugin.communicator.assessmentrequest.title.cancelled", userName, workspaceName);
   }
   
-  private String assessmentRequestBody(Workspace workspace, User user, String message) {
+  private String assessmentRequestBody(Workspace workspace, User user, WorkspaceAssessmentState assessmentState, String message) {
     String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
-    
-    return getText("plugin.communicator.assessmentrequest.body", userName, workspaceName, message);
+    String body;
+    if (assessmentState != null && assessmentState.getDate() != null && assessmentState.getGrade() != null) {
+      body = getText("plugin.communicator.assessmentrequest.existingGrade.body",
+          userName,
+          workspaceName,
+          new SimpleDateFormat("d.M.yyyy").format(assessmentState.getGradeDate()),
+          assessmentState.getGrade(),
+          message);
+    }
+    else {
+      body = getText("plugin.communicator.assessmentrequest.body", userName, workspaceName, message); 
+    }
+    return body; 
   }
   
   private String assessmentCancelledBody(Workspace workspace, User user) {
@@ -165,9 +178,11 @@ public class CommunicatorAssessmentRequestController {
         return null;
       }
       
+      WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+      
       String messageCategory = getText("plugin.communicator.assessmentrequest.category");
       String messageTitle = assessmentRequestTitle(workspace, student);
-      String messageBody = assessmentRequestBody(workspace, student, assessmentRequest.getRequestText());
+      String messageBody = assessmentRequestBody(workspace, student, assessmentState, StringUtils.replace(assessmentRequest.getRequestText(), "\n", "<br/>"));
       
       List<String> teacherEmails = new ArrayList<>(teachers.size());
       for (UserEntity teacher : teachers){

@@ -34,7 +34,7 @@
     var HOPS_ENABLED = #{sessionBackingBean.getUserPropertyAsBoolean('hops.enabled')};
 
     var MUIKKU_PERMISSIONS = {
-      FORUM_ACCESSENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_ACCESSENVIRONMENTFORUM')},
+      FORUM_ACCESSENVIRONMENTFORUM: #{sessionBackingBean.canAccessEnvironmentForum},
       GUIDER_VIEW: #{sessionBackingBean.hasEnvironmentPermission('GUIDER_VIEW')},
       TRANSCRIPT_OF_RECORDS_VIEW: #{sessionBackingBean.hasEnvironmentPermission('TRANSCRIPT_OF_RECORDS_VIEW')},
       EVALUATION_VIEW_INDEX: #{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')},
