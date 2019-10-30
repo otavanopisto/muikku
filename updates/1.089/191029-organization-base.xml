@@ -93,7 +93,7 @@
   </sql>
 
   <sql>
-    alter table UserPendingPasswordChange add column expires datetime not null;
+    alter table UserPendingPasswordChange add column expires datetime not null default '1970-01-01 00:00:00';
   </sql>
   
   <sql>
