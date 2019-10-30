@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.forgotpassword;
 
+import java.util.Date;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -11,6 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.commons.lang3.time.DateUtils;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
@@ -86,17 +90,19 @@ public class ForgotPasswordRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByUserEntity(userEntity);
-      
     schoolDataBridgeSessionController.startSystemSession();
     try {
       String confirmationHash = userSchoolDataController.requestCredentialReset(userEntity.getDefaultSchoolDataSource(), email);
+      // Expires in 2 hours
+      Date expires = DateUtils.addHours(new Date(), 2);
 
+      UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByUserEntity(userEntity);
       if (passwordChange != null) {
         passwordChange = userPendingPasswordChangeDAO.updateHash(passwordChange, confirmationHash);
+        passwordChange = userPendingPasswordChangeDAO.updateExpires(passwordChange, expires);
       }
       else {
-        passwordChange = userPendingPasswordChangeDAO.create(userEntity, confirmationHash);
+        passwordChange = userPendingPasswordChangeDAO.create(userEntity, confirmationHash, expires);
       }
 
       // TODO Email could be added to the reset link for added security (email+hash rather than just hash)
@@ -136,7 +142,7 @@ public class ForgotPasswordRESTService extends PluginRESTService {
     // Validate active credential change request
     
     UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByConfirmationHash(hash);
-    if (passwordChange == null) {
+    if (passwordChange == null || isExpired(passwordChange)) {
       return Response.status(Status.NOT_FOUND).build(); 
     }
     UserEntity userEntity = userEntityController.findUserEntityById(passwordChange.getUserEntity());
@@ -185,7 +191,7 @@ public class ForgotPasswordRESTService extends PluginRESTService {
     // Validate active credential change request
     
     UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByConfirmationHash(payload.getSecret());
-    if (passwordChange == null) {
+    if (passwordChange == null || isExpired(passwordChange)) {
       return Response.status(Status.NOT_FOUND).build(); 
     }
     UserEntity userEntity = userEntityController.findUserEntityById(passwordChange.getUserEntity());
@@ -210,4 +216,8 @@ public class ForgotPasswordRESTService extends PluginRESTService {
     }
   }
   
+  private boolean isExpired(UserPendingPasswordChange passwordChange) {
+    return passwordChange == null || passwordChange.getExpires() == null || new Date().after(passwordChange.getExpires());
+  }
+
 }

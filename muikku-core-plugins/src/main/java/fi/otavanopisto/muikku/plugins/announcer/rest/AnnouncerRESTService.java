@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -33,8 +34,11 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
@@ -47,10 +51,12 @@ import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -74,6 +80,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -122,9 +131,13 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create workspace announcement").build();
       }
     }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
     
     Announcement announcement = announcementController.createAnnouncement(
         userEntity,
+        organizationEntity,
         restModel.getCaption(),
         restModel.getContent(),
         restModel.getStartDate(),
@@ -163,8 +176,6 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Path("/announcements/{ID}")
   @RESTPermit(handling = Handling.INLINE)
   public Response updateAnnouncement(@PathParam("ID") Long announcementId, AnnouncementRESTModel restModel) {
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    
     if (announcementId == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
@@ -176,8 +187,9 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     
     // Check that the user has permission to update the old announcement
-    if (!canEdit(oldAnnouncement, userEntity))
+    if (!canEdit(oldAnnouncement, sessionController.getLoggedUser())) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update this announcement.").build();
+    }
     
     List<Long> workspaceEntityIds = restModel.getWorkspaceEntityIds();
     if (workspaceEntityIds == null) {
@@ -258,8 +270,15 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyArchived") @DefaultValue("false") boolean onlyArchived,
       @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame
   ) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.noContent().build();
+    }
+    
     UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-    if (currentUserEntity == null) {
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
+    OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
+    if (organizationEntity == null) {
       return Response.noContent().build();
     }
     
@@ -273,8 +292,8 @@ public class AnnouncerRESTService extends PluginRESTService {
     if (workspaceEntityId == null) {
       boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
-      announcements = announcementController.listAnnouncements(
-          includeGroups, includeWorkspaces, environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
+      announcements = announcementController.listAnnouncements(loggedUser, organizationEntity,
+          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
     }
     else {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -286,18 +305,18 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to list workspace announcements").build();
       }
       
-      announcements = announcementController.listWorkspaceAnnouncements(
-          Arrays.asList(workspaceEntity), environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
+      announcements = announcementController.listWorkspaceAnnouncements(organizationEntity,
+          Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
-      if (onlyEditable && !canEdit(announcement, currentUserEntity)) {
+      if (onlyEditable && !canEdit(announcement, sessionController.getLoggedUser())) {
         continue;
       }
       
       List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
-      List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, currentUserEntity);
+      List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
           
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
       restModels.add(restModel);
@@ -310,35 +329,41 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Path("/announcements/{ID}")
   @RESTPermit(handling = Handling.INLINE)
   public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
     
     Announcement announcement = announcementController.findById(announcementId);
     if (announcement == null) {
       return Response.status(Status.NOT_FOUND).entity("Announcement not found").build();
     }
     
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    
     // Permission checks - either global permission to access all announcements or permission via groups etc
     if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.FIND_ANNOUNCEMENT)) {
-      if (!canSeeAnnouncement(announcement, userEntity)) {
+      if (!canSeeAnnouncement(announcement, loggedUser)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
     
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
     
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
   }
 
-  private boolean canSeeAnnouncement(Announcement announcement, UserEntity userEntity) {
+  private boolean canSeeAnnouncement(Announcement announcement, SchoolDataIdentifier userIdentifier) {
     /**
      * This is not very efficient, but things needed to be checked are
      * - Is the user in a group the announcement is published for
      * - Is the user member of a workspace the announcement is for
      * - Is the announcement public
      */
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    if (!hasOrganizationAccess(announcement, userSchoolDataIdentifier)) {
+      return false;
+    }
     
-    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
     Set<Long> userGroupIds = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
     
     List<AnnouncementUserGroup> announcementGroups = announcementController.listAnnouncementUserGroups(announcement);
@@ -348,7 +373,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       return true;
     }
     
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userIdentifier);
     if (CollectionUtils.isNotEmpty(announcementWorkspaces)) {
       /**
        * If announcement is tied to any workspace, the user needs to have access to a workspace to find
@@ -372,6 +397,31 @@ public class AnnouncerRESTService extends PluginRESTService {
     
     // No common groups nor workspaces, return false
     return false;
+  }
+
+  private boolean hasOrganizationAccess(Announcement announcement, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    Long announcementOrganizationId = announcement.getOrganizationEntityId();
+    Long userOrganizationId = userSchoolDataIdentifier.getOrganization() != null ? userSchoolDataIdentifier.getOrganization().getId() : null;
+    EnvironmentRoleArchetype role = userSchoolDataIdentifier.getRole() != null ? userSchoolDataIdentifier.getRole().getArchetype() : null;
+
+    if (announcementOrganizationId != null) {
+      if (userOrganizationId != null && !Objects.equals(announcementOrganizationId, userOrganizationId)) {
+        // Both ids present but don't match
+        return false;
+      }
+      
+      if (userOrganizationId == null && role != EnvironmentRoleArchetype.ADMINISTRATOR) {
+        // User has no organization, but we give a pass for administrators
+        return false;
+      }
+    } else {
+      // Announcements without organization can only be found by administrators
+      if (role != EnvironmentRoleArchetype.ADMINISTRATOR) {
+        return false;
+      }
+    }
+    
+    return true;
   }
 
   private AnnouncementRESTModel createRESTModel(Announcement announcement, List<AnnouncementUserGroup> announcementUserGroups, List<AnnouncementWorkspace> announcementWorkspaces) {
@@ -418,10 +468,17 @@ public class AnnouncerRESTService extends PluginRESTService {
     return restModel;
   }
 
-  private boolean canEdit(Announcement announcement, List<AnnouncementWorkspace> announcementWorkspaces, UserEntity userEntity) {
+  private boolean canEdit(Announcement announcement, List<AnnouncementWorkspace> announcementWorkspaces, SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    if (!hasOrganizationAccess(announcement, userSchoolDataIdentifier)) {
+      return false;
+    }
+    
     // You can edit your own announcements
-    if (announcement.getPublisherUserEntityId() == userEntity.getId())
+    UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
+    if (announcement.getPublisherUserEntityId() == userEntity.getId()) {
       return true;
+    }
     
     if (CollectionUtils.isEmpty(announcementWorkspaces)) {
       // Environment announcement
@@ -439,9 +496,9 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
   }
   
-  private boolean canEdit(Announcement announcement, UserEntity userEntity) {
+  private boolean canEdit(Announcement announcement, SchoolDataIdentifier userIdentifier) {
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
-    return canEdit(announcement, announcementWorkspaces, userEntity);
+    return canEdit(announcement, announcementWorkspaces, userIdentifier);
   }
 
   @DELETE
@@ -453,6 +510,11 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    if (!hasOrganizationAccess(announcement, userSchoolDataIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
 
     if (announcementWorkspaces.isEmpty() && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.DELETE_ANNOUNCEMENT)) {
