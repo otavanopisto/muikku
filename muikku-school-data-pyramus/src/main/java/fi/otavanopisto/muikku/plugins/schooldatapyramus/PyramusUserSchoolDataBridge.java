@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +25,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGrou
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -37,6 +40,8 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.pyramus.rest.model.Address;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
@@ -53,7 +58,6 @@ import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
-import fi.otavanopisto.pyramus.rest.model.UserCredentialReset;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -78,6 +82,15 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+  }
+
+  @Override
+  public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember) {
+    BridgeResponse<StaffMemberPayload> response = pyramusClient.responsePost("/muikku/users", Entity.entity(staffMember, MediaType.APPLICATION_JSON), StaffMemberPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
+      response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
+    }
+    return response;
   }
 
   @Override
@@ -713,8 +726,31 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public String requestPasswordResetByEmail(String email) {
-    return pyramusClient.get("/persons/resetpasswordbyemail?email=" + email, String.class);
+  public String requestCredentialReset(String email) {
+    return pyramusClient.get("/muikku/requestCredentialReset?email=" + email, String.class);
+  }
+
+  @Override
+  public BridgeResponse<CredentialResetPayload> getCredentialReset(String hash) {
+    String clientApplicationSecret = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientSecret");
+    String secret = DigestUtils.md5Hex(hash + clientApplicationSecret);
+    BridgeResponse<CredentialResetPayload> response = pyramusClient.responseGet(String.format("/muikku/resetCredentials/%s", secret), CredentialResetPayload.class);
+    if (response.getEntity() != null) {
+      response.getEntity().setSecret(hash); // restore Muikku hash
+    }
+    return response;
+  }
+  
+  @Override
+  public BridgeResponse<CredentialResetPayload> resetCredentials(CredentialResetPayload payload) {
+    String clientApplicationSecret = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientSecret");
+    String hash = payload.getSecret();
+    payload.setSecret(DigestUtils.md5Hex(hash + clientApplicationSecret));
+    BridgeResponse<CredentialResetPayload> response = pyramusClient.responsePost("/muikku/resetCredentials", Entity.entity(payload, MediaType.APPLICATION_JSON), CredentialResetPayload.class);
+    if (response.getEntity() != null) {
+      response.getEntity().setSecret(hash); // restore Muikku hash
+    }
+    return response;
   }
 
   @Override
@@ -784,23 +820,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
     
     return result;
-  }
-
-  @Override
-  public boolean confirmResetPassword(String resetCode, String newPassword) {
-    String clientApplicationSecret = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientSecret");
-    
-    String secret = DigestUtils.md5Hex(resetCode + clientApplicationSecret);
-    
-    UserCredentialReset reset = new UserCredentialReset(secret, newPassword);
-    
-    try {
-      pyramusClient.post("/persons/resetpasswordbyemail", reset);
-      
-      return true;
-    } catch (Exception ex) {
-      return false;
-    }
   }
 
   @Override

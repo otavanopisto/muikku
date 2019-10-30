@@ -17,7 +17,7 @@
 
 .ordered-container__error-title {
   align-items: center;
-  background-color: $color-panel-background;
+  background-color: $color-panel-background-color;
   color: $color-index-text-for-panels-title;
   display: flex;
   flex-flow: row nowrap;
@@ -83,7 +83,7 @@
 
 .ordered-container__item-header {
   align-items: center;
-  background-color: $color-panel-background;
+  background-color: $color-panel-background-color;
   color: $color-index-text-for-panels-title;
   display: flex;
   flex-flow: row nowrap;
