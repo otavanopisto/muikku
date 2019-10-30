@@ -23,7 +23,7 @@ export interface StateType {
   locales: LocaleListType,
   status: StatusType,
   title: string,
-  credentials: CredentialsType,
+  credentials?: CredentialsType,
   websocket?: WebsocketStateType,
   announcements?: AnnouncementsType,
   hops?: HOPSType,
