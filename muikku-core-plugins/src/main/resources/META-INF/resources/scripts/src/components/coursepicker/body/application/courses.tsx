@@ -49,7 +49,8 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
       return <div className="empty"><span>{"ERROR"}</span></div>
     } else if (this.props.workspaces.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
-    }    
+    }
+    
     return (<ApplicationList>
       {this.props.workspaces.map((workspace: WorkspaceType)=>{
         return <Course key={workspace.id} workspace={workspace}/>

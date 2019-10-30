@@ -61,6 +61,11 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
 }
 
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
+  // this shouldn't come to this, but just in case
+  if (transferCredit === null) {
+    return <div className="application-list__header-secondary"/>
+  }
+
   return <div className="application-list__header-secondary">
     <span>{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
     <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
@@ -88,9 +93,9 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
       <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
         className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
-      {status[0].toLocaleUpperCase()}
+        {status[0].toLocaleUpperCase()}
+      </span>
     </span>
-  </span>
   } else {
     return null;
   }

@@ -1219,8 +1219,8 @@ let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType =
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       let mimeTypeRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
-      let mimeTypeOriginal = data.originalB64.match(mimeTypeRegex)[1];
-      let mimeTypeCropped = data.croppedB64.match(mimeTypeRegex)[1];
+      let mimeTypeOriginal = data.originalB64 && data.originalB64.match(mimeTypeRegex)[1];
+      let mimeTypeCropped = data.croppedB64 && data.croppedB64.match(mimeTypeRegex)[1];
 
       if (data.croppedB64) {
         await promisify(mApi().workspace.workspaces.workspacefile
@@ -1228,7 +1228,22 @@ let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType =
           fileIdentifier: 'workspace-frontpage-image-cropped',
           contentType: mimeTypeCropped,
           base64Data: data.croppedB64
-        }), 'callback')()
+        }), 'callback')();
+      } else {
+        await promisify(mApi().workspace.workspaces.workspacefile
+            .del(currentWorkspace.id, 'workspace-frontpage-image-cropped'), 'callback')();
+      }
+      
+      if (data.originalB64) {
+        await promisify(mApi().workspace.workspaces.workspacefile
+        .create(currentWorkspace.id, {
+          fileIdentifier: 'workspace-frontpage-image-original',
+          contentType: mimeTypeOriginal,
+          base64Data: data.originalB64
+        }), 'callback')();
+      } else {
+        await promisify(mApi().workspace.workspaces.workspacefile
+          .del(currentWorkspace.id, 'workspace-frontpage-image-original'), 'callback')();
       }
 
       data.success && data.success();

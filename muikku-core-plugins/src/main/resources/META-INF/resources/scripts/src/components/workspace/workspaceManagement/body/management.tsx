@@ -225,7 +225,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       });
     } else if (this.props.workspace.hasCustomImage){
       this.setState({
-        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped`,
+        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
         isImageDialogOpen: true,
         newWorkspaceImageB64: null,
         newWorkspaceImageFile: null
@@ -346,6 +346,17 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         },
         fail: onDone
       })
+    } else if (!workspaceImage && this.props.workspace.hasCustomImage) {
+      totals++;
+      this.props.updateCurrentWorkspaceImagesB64({
+        originalB64: null,
+        croppedB64: null,
+        success: ()=>{
+          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
+          onDone();
+        },
+        fail: onDone
+      });
     }
     
     onDone();
