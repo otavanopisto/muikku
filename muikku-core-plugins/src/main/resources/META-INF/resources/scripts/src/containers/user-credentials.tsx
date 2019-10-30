@@ -1,7 +1,6 @@
 import Notifications from '../components/base/notifications';
 import { StateType } from '~/reducers';
 import { Store } from 'react-redux';
-import {CredentialsType} from '~/reducers/base/credentials';
 import { LoadCredentials } from '~/actions/base/credentials';
 import {Action} from 'redux';
 import Body from '../components/credentials/body';
@@ -15,13 +14,12 @@ interface UserCredentialsProps {
 export default class UserCredentials extends React.Component<UserCredentialsProps,{}> {
 
   componentDidMount() {
-    let param = new URLSearchParams(location.search);
-    let hash:string = param.get("h");
-    this.props.store.dispatch(LoadCredentials(hash) as Action);
-  };
-  
+      let param = new URLSearchParams(location.search);
+      let hash:string = param.get("h");
+      this.props.store.dispatch(LoadCredentials(hash) as Action);
+  }
+
   render(){
-    
     return (<div id="root">
       <Notifications></Notifications>
       <Body></Body>

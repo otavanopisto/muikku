@@ -10,7 +10,7 @@ import {StateType} from '~/reducers';
 
 interface CredentialsBodyProps {
   i18n: i18nType,
-  user?: CredentialsType
+  credentials: CredentialsType
 }
 
 interface CredentialsBodyState {
@@ -21,7 +21,7 @@ class CredentialsBody extends React.Component<CredentialsBodyProps, CredentialsB
     return (<div className="credentials">
         <CredentialsHero i18n={this.props.i18n}/>
         <CredentialsContainer i18n={this.props.i18n}>
-          <ReturnCredentials secret={this.props.user.secret}/>
+          <ReturnCredentials credentials={this.props.credentials}/>
         </CredentialsContainer>
     </div>);
   }
@@ -29,7 +29,8 @@ class CredentialsBody extends React.Component<CredentialsBodyProps, CredentialsB
 
 function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    credentials: state.credentials
   }
 };
 

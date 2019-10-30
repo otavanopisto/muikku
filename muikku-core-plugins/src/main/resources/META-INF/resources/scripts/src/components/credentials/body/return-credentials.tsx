@@ -6,6 +6,7 @@ import "~/sass/elements/form-elements.scss";
 import "~/sass/elements/form.scss";
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import {updateCredentials, UpdateCredentialsTriggerType} from '~/actions/base/credentials';
+import {CredentialsType} from '~/reducers/base/credentials';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import { bindActionCreators } from 'redux';
@@ -14,7 +15,7 @@ import LoginButton from '../../base/login-button';
 interface ReturnCredentialsProps {
   displayNotification: DisplayNotificationTriggerType,
   updateCredentials: UpdateCredentialsTriggerType,
-  secret?: string,
+  credentials: CredentialsType,
   i18n: i18nType,
 }
 
@@ -22,8 +23,7 @@ interface ReturnCredentialsState {
   username: string,
   newPassword: string,
   newPasswordConfirm: string,
-  locked: boolean,
-  handled: boolean
+  locked: boolean
 }
 
 class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCredentialsState> {
@@ -33,20 +33,23 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
        username: "",
        newPassword: "",
        newPasswordConfirm:"",
-       locked: false,
-       handled: false
+       locked: false
     }
   }
   
+  componentWillReceiveProps() {
+    this.setState({
+      username: this.props.credentials.username
+    });
+  }
   handleNewCredentials() {
-
     let newPassword1 = this.state.newPassword;
     let newPassword2 = this.state.newPasswordConfirm;
     let userName = this.state.username;
     let newUserCredentials = {
       username: this.state.username,
       password: this.state.newPassword,
-      secret: this.props.secret
+      secret: this.props.credentials.secret,
     }
     if(userName == "") {
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.empty.username"), "error");
@@ -57,7 +60,7 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.passwordsDontMatch"), "error");
       return;
     }
-    
+      
     if (newPassword1 == "" || newPassword2 == "") {
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.empty.passwords"), "error");
       return;
@@ -77,7 +80,7 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
   }
   
   render(){
-    const credentialsContent =  this.state.handled == false ? <div className="form form--forgot-password">
+    const credentialsContent =  this.props.credentials.state == "READY" ? <div className="form form--forgot-password">
     <div className="form-row">
       <div className="form-element form-element--forgot-password">
         <label>{this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.input.name")}</label>
@@ -118,7 +121,7 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
 
 function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n,
+    i18n: state.i18n
   }
 };
 
