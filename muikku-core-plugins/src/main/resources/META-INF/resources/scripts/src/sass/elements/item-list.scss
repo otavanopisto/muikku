@@ -92,6 +92,7 @@
 
 // Item-list items in main-function's aside panel
 .item-list--aside-navigation .item-list__item {
+  align-items: center;
   background-color: $color-item-list-item-aside-background;
   border-radius: 2px;
   margin: 0 0 5px;
@@ -115,7 +116,7 @@
 }
 
 .item-list--aside-navigation .item-list__text-body {
-  line-height: $item-list-item-min-size;
+  //line-height: $item-list-item-min-size;
 }
 
 .item-list--aside-navigation .item-list__icon {
@@ -147,12 +148,14 @@
 
 // List item icons
 .item-list__icon {
+  align-items: center;
   color: $color-item-list-icon-font-color;
   display: flex;
-  flex-basis: auto;
+  flex-basis: 16px;
   flex-grow: 0;
   flex-shrink: 0;
   font-size: $item-list-icon-font-size;
+  justify-content: center;
   padding: 3px 0 0;
 }
 

@@ -125,14 +125,14 @@
         right: 0;
         top: 0;
         width: 40px;
-        
+
         @include breakpoint($breakpoint-pad) {
           width: 50px;
         }
-        
+
         &::before {
           color: $color-default;
-          content: "\e903";
+          content: "\e905";
           font-family: "muikku";
           font-size: 14px;
           line-height: 14px;

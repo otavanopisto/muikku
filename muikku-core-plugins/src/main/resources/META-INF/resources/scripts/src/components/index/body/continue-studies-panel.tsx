@@ -31,7 +31,7 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
     }
     return (<div className="panel panel--continue-studies">
       <div className="panel__header">
-        <div className="panel__header-icon panel__header-icon--continue-studies icon-revert"></div>
+        <div className="panel__header-icon panel__header-icon--continue-studies icon-forward"></div>
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</div>
       </div>
       <div className="panel__body">

@@ -119,7 +119,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                     value: staff
                   }]} initialSubject={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace)}
                     initialMessage={getWorkspaceMessage(this.props.i18n, this.props.status, this.props.workspace, true)}>
-                    <IconButton buttonModifiers="workspace-users-contact" icon="message-unread"/>
+                    <IconButton buttonModifiers="workspace-users-contact" icon="envelope"/>
                   </CommunicatorNewMessage>
                 </div>
               </div>
@@ -132,7 +132,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               <div className="form-element form-element--workspace-toolbar">
                 <input type="text" className="form-element__input form-element__input--subpanel-search"
                   value={this.state.currentSearch} onChange={this.updateSearch}/>
-                <div className="form-element__input-decoration--subpanel-search icon-search"></div>
+                <div className="form-element__input-decoration form-element__input-decoration--subpanel-search icon-search"></div>
               </div>
               <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[
                 {

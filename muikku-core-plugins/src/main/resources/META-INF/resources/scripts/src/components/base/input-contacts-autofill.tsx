@@ -216,7 +216,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       } else if (item.type === "usergroup"){
         return {
           node: <span className="autocomplete__selected-item">
-            <span className="glyph glyph--selected-recipient icon-members"/>{item.value.name}
+            <span className="glyph glyph--selected-recipient icon-users"/>{item.value.name}
           </span>,
           value: item
         };
@@ -242,7 +242,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
         </div>;
       } else if (item.type === "usergroup"){
         node = <div className="autocomplete__recipient">
-          <span className="glyph glyph--autocomplete-recipient icon-members"></span>
+          <span className="glyph glyph--autocomplete-recipient icon-users"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
       } else if (item.type === "workspace"){

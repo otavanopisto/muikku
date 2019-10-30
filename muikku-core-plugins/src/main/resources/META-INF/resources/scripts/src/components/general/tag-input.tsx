@@ -83,7 +83,7 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
           {this.props.tags.map((tag, index)=>{
             return <span key={index} className="env-dialog__selected-item">
               <span className="env-dialog__selected-item-label">{tag.node}</span>
-              <span className="env-dialog__selected-item-action icon-close" onClick={this.onDeleteTag.bind(this, tag)}></span>
+              <span className="env-dialog__selected-item-action icon-cross" onClick={this.onDeleteTag.bind(this, tag)}></span>
             </span>
           })}
         </div>

@@ -166,7 +166,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       trail: "help",
       text: 'plugin.workspace.dock.guides',
       href: "/workspace/" + this.props.workspaceUrl + "/help",
-      icon: "explanation",
+      icon: "question",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_GUIDES_VISIBLE
     }, {
@@ -174,7 +174,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       trail: "materials",
       text: 'plugin.workspace.dock.materials',
       href: "/workspace/" + this.props.workspaceUrl + "/materials",
-      icon: "materials",
+      icon: "leanpub",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE
     }, {
@@ -182,7 +182,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       trail: "workspace-discussions",
       text: 'plugin.workspace.dock.discussions',
       href: "/workspace/" + this.props.workspaceUrl + "/discussions",
-      icon: "discussion",
+      icon: "bubbles",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE
     }, {
@@ -190,7 +190,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       trail: "users",
       text: 'plugin.workspace.dock.members',
       href: "/workspace/" + this.props.workspaceUrl + "/users",
-      icon: "members",
+      icon: "users",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_USERS_VISIBLE
     }, {
@@ -198,7 +198,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       trail: "journal",
       text: 'plugin.workspace.dock.journal',
       href: "/workspace/" + this.props.workspaceUrl + "/journal",
-      icon: "journal",
+      icon: "book",
       to: true,
       condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE
     },{
@@ -241,7 +241,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     to?: boolean
   }> = [
     {
-      icon: "settings",
+      icon: "cogs",
       modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/workspace-management",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-edit"),
@@ -250,7 +250,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       to: true
     },
     {
-      icon: "announcer",
+      icon: "paper-plane",
       modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/announcer",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-announcements"),
@@ -259,7 +259,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
       to: true
     },
     {
-      icon: "permissions",
+      icon: "key",
       modifier: "navigation",
       href: "/workspace/" + this.props.workspaceUrl + "/permissions",
       text: this.props.i18n.text.get("plugin.workspace.dock.workspace-permissions"),

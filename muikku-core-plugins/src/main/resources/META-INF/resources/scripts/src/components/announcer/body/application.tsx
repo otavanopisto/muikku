@@ -34,7 +34,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
 //          </Link>
 //        ]}>
 //          <Link className="button-pill button-pill--settings">
-//            <span className="button-pill__icon icon-settings"></span>
+//            <span className="button-pill__icon icon-cog"></span>
 //          </Link>
 //        </Dropdown>
         let primaryOption = <NewEditAnnouncement><Link className="button button--primary-function">
@@ -48,7 +48,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
             <Announcements/>
             <AnnouncementView/>
           </ApplicationPanel>
-          <NewEditAnnouncement><HoverButton icon="edit" modifier="new-announcement"/></NewEditAnnouncement>
+          <NewEditAnnouncement><HoverButton icon="pencil" modifier="new-announcement"/></NewEditAnnouncement>
         </div>);
   }
 }

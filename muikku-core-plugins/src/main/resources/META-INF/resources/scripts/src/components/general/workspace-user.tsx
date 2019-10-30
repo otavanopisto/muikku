@@ -23,7 +23,7 @@ interface workspaceUserProps {
 
 export default function WorkspaceUser(props: workspaceUserProps){
   
-  let actionButtons = props.student.active ? <ApplicationListItemContentActions><IconButton buttonModifiers="workspace-users-contact" icon="message-unread" onClick={props.onSendMessage}/><IconButton icon="delete" onClick={props.onSetToggleStatus}/></ApplicationListItemContentActions>: <IconButton icon="goback" onClick={props.onSetToggleStatus}/>;
+  let actionButtons = props.student.active ? <ApplicationListItemContentActions><IconButton buttonModifiers="workspace-users-contact" icon="envelope" onClick={props.onSendMessage}/><IconButton buttonModifiers="workspace-users-archive" icon="trash" onClick={props.onSetToggleStatus}/></ApplicationListItemContentActions>: <IconButton buttonModifiers="workspace-users-unarchive" icon="back" onClick={props.onSetToggleStatus}/>;
   
   return <ApplicationListItemContentWrapper modifiers="workspace-users" mainModifiers="workspace-users" aside={<LazyLoader className="avatar-container">
     <div className="item-list__profile-picture">

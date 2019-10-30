@@ -27,7 +27,7 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
         this.props.status.permissions.WORKSPACE_LIST_WORKSPACE_ANNOUNCEMENTS){
       return <div className="panel panel--workspace-announcements">
         <div className="panel__header">
-          <div className="panel__header-icon panel__header-icon--workspace-announcements icon-announcer"></div>
+          <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
           <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.index.announcementsTitle')}</div>
         </div>
         {this.props.announcements.length && this.props.workspace ? (
@@ -35,7 +35,7 @@ class WorkspaceAnnouncements extends React.Component<WorkspaceAnnouncementsProps
             <div className="item-list item-list--panel-announcements">
               {this.props.announcements.map(a=><Link to={this.props.status.contextPath + "/workspace/" + this.props.workspace.urlName + "/announcements#" + a.id}
                 key={a.id} as="div" className="item-list__item item-list__item--announcements item-list__item--has-workspaces">
-                <span className="item-list__icon item-list__icon--announcements icon-announcer"></span>
+                <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
                 <span className="item-list__text-body item-list__text-body--multiline">
                   <span className="item-list__announcement-caption">
                     {a.caption}

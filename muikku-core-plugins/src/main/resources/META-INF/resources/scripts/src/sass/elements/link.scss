@@ -257,6 +257,13 @@
     background-color: $color-environment-dropdown-link-hover-background;
     color: $color-default-contrast;
   }
+
+  .link__icon {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-width: 16px;
+  }
 }
 
 .link--material-management-dropdown {

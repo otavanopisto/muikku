@@ -171,7 +171,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
           )}
           {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
              <Dropdown modifier="material-page-field-explanation" content={this.props.content.explanation}>
-               <span className="material-page__field-explanation-button icon-explanation"/>
+               <span className="material-page__field-explanation-button icon-question"/>
              </Dropdown>
            </span> : null}
         </span>;

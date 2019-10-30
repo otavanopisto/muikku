@@ -88,7 +88,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     {announcement.userGroupEntityIds.map((userGroupId)=>{
                       if (this.props.userIndex.groups[userGroupId]){
                           return <span className="label" key={userGroupId}>
-                          <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
+                          <span className="label__icon label__icon--announcement-usergroup icon-users"></span>
                           <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
                         </span>
                       }

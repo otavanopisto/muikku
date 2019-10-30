@@ -146,7 +146,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
           <div className="menu__logo">
             <a href="/"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="157" height="56" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></a>
           </div>
-          <Link className={`menu__button-close menu__button-close--${this.props.modifier} icon-arrow-left-thin`}></Link>
+          <Link className={`menu__button-close menu__button-close--${this.props.modifier} icon-arrow-left`}></Link>
         </div>
         <div className="menu__body">
           {this.props.navigation ? (this.props.navigation instanceof Array ? 
@@ -172,19 +172,19 @@ class Menu extends React.Component<MenuProps, MenuState> {
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
               <Link className="link link--full link--menu link--menu-instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
-                <span className="link__icon icon-forgotpassword"/>
+                <span className="link__icon icon-question"/>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
               </Link>
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
               <Link className="link link--full link--menu link--menu-helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
-                <span className="link__icon icon-helpdesk"></span>
+                <span className="link__icon icon-support"></span>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
               </Link>
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
               <Link className="link link--full link--menu link--menu-logout" onClick={this.props.logout}>
-                <span className="link__icon icon-signout"></span>
+                <span className="link__icon icon-sign-out"></span>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
               </Link>
             </li> : null}

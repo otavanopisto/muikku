@@ -70,7 +70,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       trail: "discussion",
       text: 'plugin.forum.forum',
       href: "/discussion",
-      icon: "bubble",
+      icon: "bubbles",
       to: true,
       condition: this.props.status.isActiveUser && this.props.status.loggedIn && this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM
     }, {
@@ -78,7 +78,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       trail: "guider",
       text: 'plugin.guider.guider',
       href: "/guider",
-      icon: "members",
+      icon: "users",
       to: true,
       condition: this.props.status.permissions.GUIDER_VIEW
     }, {
@@ -104,7 +104,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       trail: "announcer",
       text: 'plugin.announcer.announcer',
       href: "/announcer",
-      icon: "announcer",
+      icon: "paper-plane",
       to: true,
       condition: this.props.status.permissions.ANNOUNCER_TOOL
     }];

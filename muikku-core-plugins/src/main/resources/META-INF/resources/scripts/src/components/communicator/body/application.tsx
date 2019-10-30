@@ -56,7 +56,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
         <span>{this.props.i18n.text.get("plugin.communicator.settings.signature")}</span>
       </Link>
     ]}>
-      <ButtonPill buttonModifiers="settings" icon="settings"/>
+      <ButtonPill buttonModifiers="settings" icon="cog"/>
     </Dropdown>
     let primaryOption = <NewMessage><Button buttonModifiers="primary-function">
       {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
@@ -70,7 +70,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
         <MessageView/>
       </ApplicationPanel>
       <SignatureUpdateDialog isOpen={this.state.updateSignatureDialogOpened} onClose={this.closeDialogSignature}/>
-      <NewMessage><HoverButton icon="edit" modifier="new-message"/></NewMessage>
+      <NewMessage><HoverButton icon="pencil" modifier="new-message"/></NewMessage>
     </div>);
   }
 }

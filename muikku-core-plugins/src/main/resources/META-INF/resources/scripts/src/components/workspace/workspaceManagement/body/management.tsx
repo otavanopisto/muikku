@@ -401,11 +401,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                 {this.state.workspaceHasCustomImage ?
                 <div className="change-image__actions">
                   <Button buttonModifiers="change-image-edit button--change-image-workspace" onClick={this.editCurrentImage}>
-                    <span className="icon icon-edit"/>
+                    <span className="icon icon-pencil"/>
                     {this.props.i18n.text.get("plugin.profile.editImage")}
                   </Button>
                    <Button buttonModifiers="change-image-delete button--change-image-workspace" onClick={this.removeCustomImage}>
-                    <span className="icon icon-delete"/>
+                    <span className="icon icon-trash"/>
                     {this.props.i18n.text.get("plugin.profile.deleteImage")}
                 </Button> 
                 </div>: <div className="change-image__default-content">{this.props.i18n.text.get("plugin.workspace.management.changeImage.defaultImageInfo")}</div>}
