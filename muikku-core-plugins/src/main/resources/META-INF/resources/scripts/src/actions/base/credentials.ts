@@ -1,6 +1,7 @@
 import {AnyActionType, SpecificActionType} from '~/actions';
 import { StateType } from '~/reducers';
 import {CredentialsType, CredentialsStateType} from '~/reducers/base/credentials';
+import notificationActions from '~/actions/base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 export interface LOAD_CREDENTIALS extends SpecificActionType<"LOAD_CREDENTIALS", CredentialsType>{}
@@ -29,11 +30,10 @@ let LoadCredentials:LoadCrendentialsTriggerType = function loadCredentials(secre
         })
         
       } catch (err){
-//        this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed", err.message), "error");
         if (!(err instanceof MApiError)){
-//          this.props.displayNotification(err.message, "error");
+          return dispatch(notificationActions.displayNotification(err.message, 'error'));
         }
-  
+        return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed", err.message), 'error'));  
       }
   }
 }
@@ -41,23 +41,22 @@ let LoadCredentials:LoadCrendentialsTriggerType = function loadCredentials(secre
 let updateCredentials:UpdateCredentialsTriggerType = function updateCredentials(credentials){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-        mApi().forgotpassword.credentialReset.create(credentials).callback((err: any, result: any)=>{
+       mApi().forgotpassword.credentialReset.create(credentials).callback((err: any, result: any)=>{
         });
-        dispatch( {
+       dispatch( {
           type: 'UPDATE_CREDENTIALS',
           payload: credentials
-        })
-        dispatch( {
+       })
+       dispatch( {
           type: 'CREDENTIALS_STATE',
           payload: <CredentialsStateType>"CHANGED"
-        })
-      } catch (err) {
-        if (err) { 
-  //        this.props.displayNotification(err.message, "error");  
-       } else {
-  //       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"),"success");
-       }
+       })
+       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"), 'success'));
+    } catch (err) {
+       if (err) { 
+         return dispatch(notificationActions.displayNotification(err.message, 'error'));  
       }
+    }
   }
 }
 
