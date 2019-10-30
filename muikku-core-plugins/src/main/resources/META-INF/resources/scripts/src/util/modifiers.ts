@@ -168,6 +168,9 @@ export function getUserImageUrl(user: UserType | number, type?: number | string,
 }
 
 export function shortenGrade(grade: string){
+  if (grade === null) {
+    return "";
+  }
   if ("" + parseInt(grade) === grade){
     return grade;
   }
@@ -175,8 +178,11 @@ export function shortenGrade(grade: string){
 }
 
 export function getShortenGradeExtension(grade: string){
+  if (grade === null) {
+    return "";
+  }
   if ("" + parseInt(grade) === grade){
-    return ""
+    return "";
   }
   return " - " + grade;
 }
