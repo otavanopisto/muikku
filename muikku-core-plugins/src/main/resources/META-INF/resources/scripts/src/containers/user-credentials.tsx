@@ -1,7 +1,7 @@
 import Notifications from '../components/base/notifications';
 import { StateType } from '~/reducers';
 import { Store } from 'react-redux';
-import { LoadCredentials } from '~/actions/base/credentials';
+import { loadCredentials } from '~/actions/base/credentials';
 import {Action} from 'redux';
 import Body from '../components/credentials/body';
 import * as React from 'react';
@@ -16,7 +16,7 @@ export default class UserCredentials extends React.Component<UserCredentialsProp
   componentDidMount() {
       let param = new URLSearchParams(location.search);
       let hash:string = param.get("h");
-      this.props.store.dispatch(LoadCredentials(hash) as Action);
+      this.props.store.dispatch(loadCredentials(hash) as Action);
   }
 
   render(){

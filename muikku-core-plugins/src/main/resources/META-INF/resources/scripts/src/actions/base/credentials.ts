@@ -16,7 +16,7 @@ export interface LoadCrendentialsTriggerType {
   (secret:string): AnyActionType
 }
 
-let LoadCredentials:LoadCrendentialsTriggerType = function loadCredentials(secret){
+let loadCredentials:LoadCrendentialsTriggerType = function loadCredentials(secret){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let data:any = await (promisify(mApi().forgotpassword.credentialReset.read(secret), 'callback')());
@@ -59,5 +59,5 @@ let updateCredentials:UpdateCredentialsTriggerType = function updateCredentials(
   }
 }
 
-export default {LoadCredentials};
-export {LoadCredentials, updateCredentials};
+export default {loadCredentials};
+export {loadCredentials, updateCredentials};
