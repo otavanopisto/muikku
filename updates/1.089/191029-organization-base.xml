@@ -19,6 +19,10 @@
   <sql>
     alter table OrganizationEntity add constraint UKe9lw5qpvj0jci4ed8tvt5ln2o unique (dataSource_id, identifier);
   </sql>
+  
+  <sql>
+    insert into OrganizationEntity (id,identifier,name,archived,dataSource_id) values (1,1,'Default',false,(select id from SchoolDataSource where identifier='PYRAMUS'));
+  </sql>
 
   <sql>
     alter table UserSchoolDataIdentifier add column organization_id bigint;
@@ -35,8 +39,10 @@
   <sql>
     alter table UserSchoolDataIdentifier add constraint FK66x1cvhwsknh6authq49660qs foreign key (role_id) references EnvironmentRoleEntity (id);
   </sql>
-    
-  <!-- TODO: Remove EnvironmentUser (move role to defaultidentifier), EnvironmentUserPermissionOverride -->  
+
+  <sql>
+    update UserSchoolDataIdentifier set organization_id=1;
+  </sql>
   
   <sql>
     update 
@@ -57,6 +63,10 @@
   
   <sql>
     alter table WorkspaceEntity add constraint FKkhciievukpels39xnq7ej7qyo foreign key (organizationEntity_id) references OrganizationEntity (id);
+  </sql>
+
+  <sql>
+    update WorkspaceEntity set organizationEntity_id=1;
   </sql>
 
   <sql>
@@ -85,8 +95,9 @@
   <sql>
     alter table UserPendingPasswordChange add column expires datetime not null;
   </sql>
+  
   <sql>
     update UserPendingPasswordChange set expires = date_add(now(), interval 2 hour);
   </sql>
-
+  
 </update>
