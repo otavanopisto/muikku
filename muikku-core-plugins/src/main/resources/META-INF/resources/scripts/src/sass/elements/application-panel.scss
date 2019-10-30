@@ -198,6 +198,7 @@
 // Main containers
 .application-panel__main-container {
   overflow-x: hidden;
+  overflow-y: visible;
   width: 100%;
   flex-basis: auto;
   flex-grow: 1;
