@@ -19,7 +19,7 @@ export interface LoadCrendentialsTriggerType {
 let LoadCredentials:LoadCrendentialsTriggerType = function loadCredentials(secret){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-       let data:any = await (promisify(mApi().forgotpassword.credentialReset.read(secret), 'callback')());
+      let data:any = await (promisify(mApi().forgotpassword.credentialReset.read(secret), 'callback')());
         dispatch( {
           type: 'LOAD_CREDENTIALS',
           payload: data
@@ -28,7 +28,6 @@ let LoadCredentials:LoadCrendentialsTriggerType = function loadCredentials(secre
           type: 'CREDENTIALS_STATE',
           payload: <CredentialsStateType>"READY"
         })
-        
       } catch (err){
         if (!(err instanceof MApiError)){
           return dispatch(notificationActions.displayNotification(err.message, 'error'));
