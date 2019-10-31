@@ -349,8 +349,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     } else if (!workspaceImage && this.props.workspace.hasCustomImage) {
       totals++;
       this.props.updateCurrentWorkspaceImagesB64({
-        originalB64: null,
-        croppedB64: null,
+        delete: true,
         success: ()=>{
           this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
           onDone();
