@@ -87,8 +87,9 @@
 
   @include breakpoint($breakpoint-pad) {
     background: $color-default;
-    border-bottom-right-radius: 2px;
-    border-top-right-radius: 2px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    box-shadow: 15px 0 10px $color-workspace-hero-shadow;
     display: flex;
     font-size: 1.5rem;
     font-weight: 300;
@@ -106,8 +107,9 @@
 
 .hero__workspace-name-extension {
   background: $color-hero-workspace-name-extension-background;
-  border-bottom-right-radius: 2px;
-  border-top-right-radius: 2px;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  box-shadow: 15px 0 10px $color-workspace-hero-shadow;
   font-size: 1rem;
   font-weight: 400;
   padding: 5px 10px 5px 5px;
