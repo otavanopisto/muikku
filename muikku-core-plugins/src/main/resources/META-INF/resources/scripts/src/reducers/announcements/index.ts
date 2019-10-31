@@ -15,25 +15,25 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
   {
     location: "active",
     id: "active",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.active")}
   },
   {
     location: "past",
     id: "past",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.past")}
   },
   {
     location: "mine",
     id: "mine",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.mine")}
   },
   {
     location: "archived",
     id: "archived",
-    icon: "new-section",
+    icon: "trash-alt",
     text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.archived")}
   }
 ]

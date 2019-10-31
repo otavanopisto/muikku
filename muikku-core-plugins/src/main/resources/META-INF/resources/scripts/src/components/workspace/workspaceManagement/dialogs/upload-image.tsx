@@ -90,7 +90,7 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
             min={100}
             onChange={this.onChangeScale}/>
         </div>
-        <ButtonPill icon="loading" onClick={this.rotate}/>
+        <ButtonPill icon="spinner" onClick={this.rotate}/>
       </div>
     </div>;
     let footer = (closeDialog: ()=>any)=>{

@@ -1,7 +1,11 @@
+fail_on_violations: true
+
 javascript:
   enabled: false
 eslint:
   enabled: true
+  version: 6.3.0
   config_file: .eslintrc.json
 scss:
+  version: 0.57.1
   config_file: .scss-style.yml

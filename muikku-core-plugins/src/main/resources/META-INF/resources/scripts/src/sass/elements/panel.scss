@@ -201,17 +201,17 @@
 
 // PANEL HEADER ICONS
 .panel__header-icon {
+  align-items: center;
   border: 2px solid $color-default;
   border-radius: 100%;
-  display: inline-block;
+  display: flex;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   font-size: 1rem;
   height: 34px;
+  justify-content: center;
   padding: 7px;
-  text-align: center;
-  vertical-align: middle;
   width: 34px;
 
   @include breakpoint($breakpoint-pad) {

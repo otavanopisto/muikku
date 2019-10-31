@@ -29,7 +29,7 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
             {this.props.lastThreads.map((thread)=>{
               return (<Link key={thread.id} className={`item-list__item item-list__item--latest-messages ${thread.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
                       to={`/communicator#inbox/${thread.communicatorMessageId}?f`}>
-                <span className={`item-list__icon item-list__icon--latest-messages icon-envelope${thread.unreadMessagesInThread ? "-alt" : ""}`}></span>
+                <span className={`item-list__icon item-list__icon--latest-messages icon-${thread.unreadMessagesInThread ? "envelope-alt" : "envelope-open"}`}></span>
                 <span className="item-list__text-body item-list__text-body--multiline">
                   <span className="item-list__latest-message-caption">
                     {thread.caption}

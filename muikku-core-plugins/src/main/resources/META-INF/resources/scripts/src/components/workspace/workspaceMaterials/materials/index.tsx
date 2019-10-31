@@ -88,17 +88,17 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       nextSection: MaterialContentNodeType, nextSibling: MaterialContentNodeType, includesSection: boolean) {
     const materialManagementItemsOptions: Array<any> = [
       {
-        icon: "add",
+        icon: "plus",
         text: 'plugin.workspace.materialsManagement.createChapterTooltip',
         onClick: this.createSection.bind( this, nextSection )
       },
       {
-        icon: "add",
+        icon: "plus",
         text: 'plugin.workspace.materialsManagement.createPageTooltip',
         onClick: this.createPage.bind( this, section, nextSibling)
       },
       {
-        icon: "content_paste",
+        icon: "paste",
         text: 'plugin.workspace.materialsManagement.pastePageTooltip',
         onClick: this.pastePage.bind( this, section, nextSibling)
       },
@@ -263,7 +263,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     const createSectionElementWhenEmpty = this.props.materials.length === 0 && isEditable ? (
       <div className="material-admin-panel material-admin-panel--master-functions">
         <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
-          <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createSection.bind(this, null)}/>
+          <ButtonPill buttonModifiers="material-management-master" icon="plus" onClick={this.createSection.bind(this, null)}/>
         </Dropdown>
       </div>
     ) : null;
@@ -274,7 +274,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       if (index === 0 && isEditable) {
         results.push(<div key={"sectionfunctions-" + section.workspaceMaterialId} className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
-            <ButtonPill buttonModifiers="material-management-master" icon="add" onClick={this.createSection.bind(this, section)}/>
+            <ButtonPill buttonModifiers="material-management-master" icon="plus" onClick={this.createSection.bind(this, section)}/>
           </Dropdown>
         </div>);
       }
@@ -291,7 +291,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
                  <span>{this.props.i18n.text.get(item.text)}</span>
                </Link>}
              })}>
-            <ButtonPill buttonModifiers="material-management-master" icon="add"/>
+            <ButtonPill buttonModifiers="material-management-master" icon="plus"/>
           </Dropdown>
         </div>
       ) : null;
@@ -311,7 +311,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
                    <span>{this.props.i18n.text.get(item.text)}</span>
                  </Link>}
               })}>
-              <ButtonPill buttonModifiers="material-management-master" icon="add"/>
+              <ButtonPill buttonModifiers="material-management-master" icon="plus"/>
             </Dropdown>
           </div>);
         }
@@ -337,7 +337,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           {isEditable ? 
             <div className="material-admin-panel material-admin-panel--chapter-functions">
               <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>
-                <ButtonPill buttonModifiers="material-management-chapter" icon="edit" onClick={this.startupEditor.bind(this, section)}/>
+                <ButtonPill buttonModifiers="material-management-chapter" icon="pencil" onClick={this.startupEditor.bind(this, section)}/>
               </Dropdown>
             </div>
           : null}

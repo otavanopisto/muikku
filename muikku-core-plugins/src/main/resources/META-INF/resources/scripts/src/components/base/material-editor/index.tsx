@@ -358,35 +358,35 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       let editorButtonSet = <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
           {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
-            <ButtonPill buttonModifiers={hideShowButtonModifiers} onClick={this.toggleHiddenStatus} icon="show"/>
+            <ButtonPill buttonModifiers={hideShowButtonModifiers} onClick={this.toggleHiddenStatus} icon="eye"/>
           </Dropdown> : null}
           {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={isViewRestricted ? this.props.i18n.text.get("plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip")}>
-            <ButtonPill buttonModifiers={viewRestrictionButtonModifiers} icon="closed-material" onClick={this.toggleViewRestrictionStatus}/>
+            <ButtonPill buttonModifiers={viewRestrictionButtonModifiers} icon="restriction" onClick={this.toggleViewRestrictionStatus}/>
           </Dropdown> : null}
           {this.props.editorState.canChangePageType ? <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.changeAssesmentTypePageTooltip")}>
-            <ButtonPill buttonModifiers={["material-editor-change-page-type","material-editor", assignmentPageType]} icon="assignment" onClick={this.cycleAssignmentType}/>
+            <ButtonPill buttonModifiers={["material-editor-change-page-type","material-editor", assignmentPageType]} icon="puzzle" onClick={this.cycleAssignmentType}/>
           </Dropdown> : null}
 
           {this.props.editorState.canChangeExerciseType && this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? <Dropdown openByHover modifier="material-management-tooltip" content={correctAnswersTooltips}>
-            <ButtonPill buttonModifiers={correctAnswersModifiers} icon="correct-answers" onClick={this.cycleCorrectAnswers}/>
+            <ButtonPill buttonModifiers={correctAnswersModifiers} icon="lightbulb" onClick={this.cycleCorrectAnswers}/>
           </Dropdown> : null}
 
         </div>
         <div className="material-editor__buttonset-secondary">
           {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip"
               content={this.props.i18n.text.get("plugin.workspace.materialsManagement.publishPageTooltip")}>
-            <ButtonPill buttonModifiers={publishModifiers} onClick={canPublish ? this.publish : null} icon="publish"/>
+            <ButtonPill buttonModifiers={publishModifiers} onClick={canPublish ? this.publish : null} icon="leanpub"/>
           </Dropdown> : null}
           {this.props.editorState.canPublish ? <Dropdown openByHover modifier="material-management-tooltip"
               content={this.props.i18n.text.get("plugin.workspace.materialsManagement.revertToPublishedPageTooltip")}>
-            <ButtonPill buttonModifiers={revertModifiers} onClick={canPublish ? this.revert : null} icon="revert"/>
+            <ButtonPill buttonModifiers={revertModifiers} onClick={canPublish ? this.revert : null} icon="undo"/>
           </Dropdown> : null}
           {this.props.editorState.canDelete ? <DeleteWorkspaceMaterialDialog
               isSection={this.props.editorState.section}
               material={this.props.editorState.currentDraftNodeValue}
               onDeleteSuccess={this.close}>
             <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.deletePageTooltip")}>
-              <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="delete"/>
+              <ButtonPill buttonModifiers={["material-editor-delete-page","material-editor"]} icon="trash"/>
             </Dropdown>
           </DeleteWorkspaceMaterialDialog> : null}
         </div>
@@ -471,7 +471,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
       return <div className={`material-editor ${this.props.editorState.opened ? "material-editor--visible" : ""}`}>
         <Tabs modifier="material-editor" activeTab={this.state.tab} onTabChange={this.changeTab} tabs={allTabs}>
-          <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="arrow-left-thin"/>
+          <ButtonPill buttonModifiers="material-page-close-editor" onClick={this.close} icon="arrow-left"/>
         </Tabs>
         <ConfirmPublishPageWithAnswersDialog/>
         <ConfirmRemovePageWithAnswersDialog onDeleteSuccess={this.close}/>

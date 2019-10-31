@@ -52,15 +52,15 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
       switch (this.props.compositeReplies.state){
         case "INCOMPLETE":
           evalStateClassName = "material-page__assignment-assessment--incomplete";
-          evalStateIcon = "icon-thumb-down-alt";
+          evalStateIcon = "icon-thumb-down";
           break;
         case "FAILED":
           evalStateClassName = "material-page__assignment-assessment--failed";
-          evalStateIcon = "icon-thumb-down-alt";
+          evalStateIcon = "icon-thumb-down";
           break;
         case "PASSED":
           evalStateClassName = "material-page__assignment-assessment--passed";
-          evalStateIcon = "icon-thumb-up-alt";
+          evalStateIcon = "icon-thumb-up";
           break;
         case "WITHDRAWN":
           evalStateClassName = "material-page__assignment-assessment--withdrawn";

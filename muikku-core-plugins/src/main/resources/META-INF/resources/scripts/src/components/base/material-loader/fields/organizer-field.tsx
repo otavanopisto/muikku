@@ -380,8 +380,8 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
 
                 return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}>
                   <span className="material-page__organizerfield-term-label">{this.state.terms[termId]}</span>
-                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-close"></span> 
-                    : <span className="material-page__organizerfield-term-icon icon-close"></span>}
+                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-cross"></span> 
+                    : <span className="material-page__organizerfield-term-icon icon-cross"></span>}
                 </div>
               })}{itemCorrectAnswerMissingTerms}</div>
             </Droppable>

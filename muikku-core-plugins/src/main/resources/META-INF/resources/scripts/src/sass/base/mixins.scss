@@ -83,11 +83,13 @@
 @mixin form-element-input-search-decoration {
   align-items: center;
   display: flex;
+  font-size: 1rem;
   height: 2.25rem;
   justify-content: center;
   width: 2.25rem;
 
   @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
     height: 2.5rem;
     width: 2.5rem;
   }
@@ -96,11 +98,13 @@
 @mixin form-element-input-add-producers-decoration {
   align-items: center;
   display: flex;
+  font-size: 1rem;
   height: 2.25rem;
   justify-content: center;
   width: 2.25rem;
 
   @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
     height: 2.5rem;
     width: 2.5rem;
   }
