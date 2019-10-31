@@ -152,4 +152,52 @@ public class CourseUsersTestsBase extends AbstractUITest {
     }
   }
   
+  @Test
+  public void courseUsersListSendMessageToStudentTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(3l, 3l, "Student", "Tester", "teststuerdenert@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
+      MockCourseStudent mcs = new MockCourseStudent(1l, course1.getId(), student.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        navigate(String.format("/workspace/%s/users", workspace1.getUrlName()), false);
+        waitAndClick(".application-list__item-content-wrapper--workspace-users .application-list__item-content-actions .icon-message-unread");
+        waitForPresentAndVisible(".env-dialog--new-message.visible .env-dialog__selected-item .autocomplete__selected-item");
+        assertText(".env-dialog--new-message.visible .env-dialog__selected-item .autocomplete__selected-item", "Student Tester");
+        
+        waitForPresentAndVisible(".button--dialog-execute");
+        waitAndClick(".button--dialog-execute");
+        waitForNotVisible(".env-dialog--new-message.visible");
+        
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        
+        navigate("/communicator", false);
+        waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
+        assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin Person");
+        waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Test (test extension)");
+      } finally {
+        deleteWorkspace(workspace1.getId());
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }  
+  
 }
