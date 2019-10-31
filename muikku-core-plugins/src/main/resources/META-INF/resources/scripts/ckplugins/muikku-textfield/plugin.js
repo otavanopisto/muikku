@@ -174,7 +174,7 @@
         optionsContainer.append(optionContainer);
 
         var deleteLink = new CKEDITOR.dom.element('a');
-        deleteLink.addClass('icon-delete');
+        deleteLink.addClass('icon-trash');
         deleteLink.on('click', (function() {
           var _optionContainer = optionContainer;
           return (function() {

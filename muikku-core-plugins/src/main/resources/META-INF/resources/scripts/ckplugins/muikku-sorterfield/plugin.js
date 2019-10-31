@@ -114,7 +114,7 @@
           // Deletion
           var deleteLink = new CKEDITOR.dom.element('a');
           var _this = this;
-          deleteLink.addClass('icon-delete');
+          deleteLink.addClass('icon-trash');
           deleteLink.on('click', function() {
             this.getParent().remove();
           });

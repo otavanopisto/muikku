@@ -803,7 +803,7 @@
         if (existingTerm.length == 0) {
           var categoryTerm = $(ui.draggable).clone();
           categoryTerm.addClass('term-in-use');
-          var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
+          var removeLink = $('<span>').addClass('icon-trash').on('click', $.proxy(function(event) {
             var term = $(event.target).closest('.muikku-term');
             var termId = $(term).attr('data-term-id'); 
             $(term).remove();
@@ -884,7 +884,7 @@
                   if (term != null) {
                     var categoryTerm = $(term).clone();
                     $(categoryTerm).addClass('term-in-use');
-                    var removeLink = $('<span>').addClass('icon-delete').on('click', $.proxy(function(event) {
+                    var removeLink = $('<span>').addClass('icon-trash').on('click', $.proxy(function(event) {
                       var term = $(event.target).closest('.muikku-term');
                       var category = $(term).closest('.muikku-category');
                       var termId = $(term).attr('data-term-id'); 
