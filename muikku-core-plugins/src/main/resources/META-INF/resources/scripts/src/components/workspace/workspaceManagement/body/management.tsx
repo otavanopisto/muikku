@@ -403,7 +403,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           </div>
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
-          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings application-sub-panel__header--workspace-image-settings">{this.props.i18n.text.get("plugin.workspace.management.imageSectionTitle")}</h2>
           <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
             <div className="change-image">
               <div className="change-image__container change-image__container--workspace"  style={{backgroundImage: `url("${actualBackgroundSRC}")`, backgroundSize:`cover` }}>
@@ -419,9 +419,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                     {this.props.i18n.text.get("plugin.profile.deleteImage")}
                 </Button> 
                 </div>: <div className="change-image__default-content">{this.props.i18n.text.get("plugin.workspace.management.changeImage.defaultImageInfo")}</div>}
-              </div>
-              <div className="application-sub-panel__item-actions">
-                {this.state.workspaceHasCustomImage ? <Button className="link link--workspace-management" onClick={this.removeCustomImage}/> : null}
               </div>
               <UploadImageDialog isOpen={this.state.isImageDialogOpen}
                b64={this.state.newWorkspaceImageB64} file={this.state.newWorkspaceImageFile}

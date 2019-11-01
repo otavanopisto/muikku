@@ -6,7 +6,7 @@
 
 .change-image {
   align-items: center;
-  display: flex;
+  display: block;
   justify-content: center;
   margin: 10px 0;
   min-width: 250px;
@@ -41,7 +41,7 @@
 }
 
 .change-image__container--workspace {
-  
+
   @include breakpoint($breakpoint-pad) {
     background-position: center center;
     background-size: cover;
@@ -50,8 +50,16 @@
     width: 100%;
   }
 
+  @include breakpoint($breakpoint-pad) {
+    min-height: 196px;
+  }
+
   @include breakpoint($breakpoint-desktop) {
     min-height: 250px;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    min-height: 270px;
   }
 }
 
