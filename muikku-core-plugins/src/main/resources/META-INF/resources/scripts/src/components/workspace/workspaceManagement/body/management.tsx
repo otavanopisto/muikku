@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProducerType, WorkspaceUpdateType, WorkspaceDetailsType } from "~/reducers/workspaces";
+import { WorkspaceType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProducerType, WorkspaceUpdateType, WorkspaceDetailsType, WorkspacePermissionsType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button, { ButtonPill } from "~/components/general/button";
@@ -21,9 +21,13 @@ import AddProducer from '~/components/general/add-producer';
 import { updateWorkspace, UpdateWorkspaceTriggerType,
   updateWorkspaceProducersForCurrentWorkspace, UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType,
-  updateWorkspaceDetailsForCurrentWorkspace, UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType} from "~/actions/workspaces";
+  updateWorkspaceDetailsForCurrentWorkspace, UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
+  UpdateCurrentWorkspaceUserGroupPermissionTriggerType, updateCurrentWorkspaceUserGroupPermission} from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { filterMatch, filterHighlight } from "~/util/modifiers";
+
+const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
 interface ManagementPanelProps {
   status: StatusType,
@@ -35,6 +39,7 @@ interface ManagementPanelProps {
   updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType,
   updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
+  updateCurrentWorkspaceUserGroupPermission: UpdateCurrentWorkspaceUserGroupPermissionTriggerType,
   displayNotification: DisplayNotificationTriggerType
 }
 
@@ -50,7 +55,9 @@ interface ManagementPanelState {
   workspaceDescription: string,
   workspaceLicense: string,
   workspaceHasCustomImage: boolean,
+  workspacePermissions: Array<WorkspacePermissionsType>,
   
+  workspaceUsergroupNameFilter: string,
   currentWorkspaceProducerInputValue: string,
   newWorkspaceImageSrc?: string,
   newWorkspaceImageFile?: File,
@@ -80,6 +87,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceDescription: props.workspace ? props.workspace.description || "" : "",
       workspaceLicense: props.workspace ? props.workspace.materialDefaultLicense : "",
       workspaceHasCustomImage: props.workspace ? props.workspace.hasCustomImage : false,
+      workspacePermissions: props.workspace && props.workspace.permissions ? props.workspace.permissions : [],
+      workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
       isImageDialogOpen: false,
       locked: false
@@ -102,6 +111,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.addProducer = this.addProducer.bind(this);
     this.removeProducer = this.removeProducer.bind(this);
     this.checkIfEnterKeyIsPressedAndAddProducer = this.checkIfEnterKeyIsPressedAndAddProducer.bind(this);
+    this.togglePermissionIn = this.togglePermissionIn.bind(this);
+    this.updateWorkspaceUsergroupNameFilter = this.updateWorkspaceUsergroupNameFilter.bind(this);
     this.save = this.save.bind(this);
   }
   componentWillReceiveProps(nextProps: ManagementPanelProps){
@@ -117,6 +128,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: nextProps.workspace ? nextProps.workspace.materialDefaultLicense : "",
       workspaceDescription: nextProps.workspace ? nextProps.workspace.description || "" : "",
       workspaceHasCustomImage: nextProps.workspace ? nextProps.workspace.hasCustomImage : false,
+      workspacePermissions: nextProps.workspace && nextProps.workspace.permissions ? nextProps.workspace.permissions : [],
     });
 
   }
@@ -158,6 +170,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
   updateCurrentWorkspaceProducerInputValue(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({
       currentWorkspaceProducerInputValue: e.target.value
+    });
+  }
+  updateWorkspaceUsergroupNameFilter(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({
+      workspaceUsergroupNameFilter: e.target.value
     });
   }
   
@@ -240,6 +257,20 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         originalB64,
         croppedB64
       }
+    });
+  }
+  togglePermissionIn(permission: WorkspacePermissionsType, valueToToggle: string) {
+    this.setState({
+      workspacePermissions: this.state.workspacePermissions.map((pte) => {
+        if (pte.userGroupEntityId === permission.userGroupEntityId) {
+          const newPermission = {...permission};
+          newPermission.permissions = newPermission.permissions.includes(valueToToggle) ?
+              newPermission.permissions.filter(v => v !== valueToToggle) :
+              [valueToToggle].concat(newPermission.permissions);
+          return newPermission;
+        }
+        return pte;
+      })
     });
   }
   save(){
@@ -355,6 +386,25 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           onDone();
         },
         fail: onDone
+      });
+    }
+    
+    if (!equals(this.props.workspace.permissions, this.state.workspacePermissions)) {
+      this.state.workspacePermissions.forEach((permission) => {
+        const originalPermission = this.props.workspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
+        if (!equals(originalPermission, permission)) {
+          totals++;
+          this.props.updateCurrentWorkspaceUserGroupPermission({
+            original: originalPermission,
+            update: permission,
+            success: ()=>{
+              // Make this a notification that displays the user group name, there's one notification per group updated as they are independent
+              this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.permissions", permission.userGroupName), "success");
+              onDone();
+            },
+            fail: onDone
+          });
+        }
       });
     }
     
@@ -522,11 +572,35 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               <AddProducer removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.state.workspaceProducers} i18n={this.props.i18n}/>
             </div>
           : null}
+         </section>
+         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+          <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.permissions.viewTitle")}</h2>
+          <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+            <input type="text" value={this.state.workspaceUsergroupNameFilter} onChange={this.updateWorkspaceUsergroupNameFilter}/>
+            <div>
+              <div>{this.props.i18n.text.get("plugin.workspace.permissions.usergroupsColumn.label")}</div>
+              {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
+                <div key={pte}>{this.props.i18n.text.get("plugin.workspace.permissions.label." + pte)}</div>
+              )}
+            </div>
+            {this.state.workspacePermissions
+              .filter((permission) => filterMatch(permission.userGroupName, this.state.workspaceUsergroupNameFilter)).map((permission) => {
+              return <div key={permission.userGroupEntityId}>
+                <div>{filterHighlight(permission.userGroupName, this.state.workspaceUsergroupNameFilter)}</div>
+                {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
+                  <div key={pte}>
+                    <input className="form-element" type="checkbox" checked={permission.permissions.includes(pte)}
+                      onChange={this.togglePermissionIn.bind(this, permission, pte)}/>
+                  </div>
+                )}
+              </div>
+            })}
+          </div>
           <div className="application-sub-pane__button-container">
             <Button className="button--execute" disabled={this.state.locked} 
           onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
           </div>
-         </section>
+        </section>
       </div>
       <div className="panel__footer"></div>
     </div>);
@@ -544,7 +618,8 @@ function mapStateToProps(state: StateType){
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({updateWorkspace, updateWorkspaceProducersForCurrentWorkspace,
-    updateCurrentWorkspaceImagesB64, updateWorkspaceDetailsForCurrentWorkspace, displayNotification}, dispatch);
+    updateCurrentWorkspaceImagesB64, updateWorkspaceDetailsForCurrentWorkspace, displayNotification,
+    updateCurrentWorkspaceUserGroupPermission}, dispatch);
 };
 
 export default connect(

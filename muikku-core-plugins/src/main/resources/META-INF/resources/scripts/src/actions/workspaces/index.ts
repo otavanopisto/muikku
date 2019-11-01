@@ -145,7 +145,12 @@ export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
 }
 
 export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
-  (permissions: WorkspacePermissionsType, toggleValue: string):AnyActionType
+  (data?: {
+    original: WorkspacePermissionsType,
+    update: WorkspacePermissionsType,
+    success?: ()=>any,
+    fail?: ()=>any,
+  }):AnyActionType
 }
 
 export interface SetWorkspaceMaterialEditorStateTriggerType {
@@ -1290,7 +1295,7 @@ let loadCurrentWorkspaceUserGroupPermissions:LoadCurrentWorkspaceUserGroupPermis
   }
 }
 
-let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPermissionTriggerType = function updateCurrentWorkspaceUserGroupPermission(permissions, toggleValue) {
+let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPermissionTriggerType = function updateCurrentWorkspaceUserGroupPermission(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let currentPermissions;
     try {
@@ -1298,23 +1303,14 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       currentPermissions = currentWorkspace.permissions;
 
-      let newSpecificGroupPermission = {...permissions};
-      newSpecificGroupPermission.permissions = [...newSpecificGroupPermission.permissions];
-      let indexFound = newSpecificGroupPermission.permissions.indexOf(toggleValue);
-      if (indexFound !== -1) {
-        newSpecificGroupPermission.permissions.splice(indexFound, 1);
-      } else {
-        newSpecificGroupPermission.permissions.push(toggleValue);
-      }
-
       dispatch({
         type: "UPDATE_WORKSPACE",
         payload: {
           original: currentWorkspace,
           update: {
             permissions: currentPermissions.map((permissionValue) => {
-              if (permissionValue.userGroupEntityId === permissions.userGroupEntityId) {
-                return newSpecificGroupPermission;
+              if (permissionValue.userGroupEntityId === data.update.userGroupEntityId) {
+                return data.update;
               }
 
               return permissionValue;
@@ -1324,12 +1320,16 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
       });
 
       await promisify(mApi().permission.workspaceSettings.userGroups
-          .update(currentWorkspace.id, permissions.userGroupEntityId, newSpecificGroupPermission), 'callback')()
+          .update(currentWorkspace.id, data.original.userGroupEntityId, data.update), 'callback')();
+      
+      data.success && data.success();
 
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
+      
+      data.fail && data.fail();
 
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
