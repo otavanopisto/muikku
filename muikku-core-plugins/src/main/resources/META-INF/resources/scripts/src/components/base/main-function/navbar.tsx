@@ -90,7 +90,15 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       icon: "profile",
       to: true,
       condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW
-    }, {
+    },{
+      modifier: "announcer",
+      trail: "announcer",
+      text: 'plugin.announcer.announcer',
+      href: "/announcer",
+      icon: "paper-plane",
+      to: true,
+      condition: this.props.status.permissions.ANNOUNCER_TOOL
+    },{
       //Evaluation is also an external
       modifier: "evaluation",
       trail: "evaluation",
@@ -99,14 +107,6 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       icon: "evaluate",
       condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
       openInNewTab: "_blank"
-    }, {
-      modifier: "announcer",
-      trail: "announcer",
-      text: 'plugin.announcer.announcer',
-      href: "/announcer",
-      icon: "paper-plane",
-      to: true,
-      condition: this.props.status.permissions.ANNOUNCER_TOOL
     }];
 
     return <Navbar mobileTitle={this.props.title}
