@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Link from '~/components/general/link';
 import {StateType} from '~/reducers';
-
+import ApplicationPanel from '~/components/general/application-panel';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
@@ -22,10 +22,11 @@ interface OrganizationManagementApplicationState {
 
 class OrganizationManagementApplication extends React.Component<OrganizationManagementApplicationProps, OrganizationManagementApplicationState>{
   render(){
-        let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.announcements.pageTitle')}</h2>
+        let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>
         return (<div>
-
-        </div>);        
+            <ApplicationPanel modifier="organization" title={title} asideBefore={this.props.aside}>
+          </ApplicationPanel>
+        </div>);
   }
 }
 

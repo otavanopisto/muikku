@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-
 import ApplicationPanel from '~/components/general/application-panel';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';

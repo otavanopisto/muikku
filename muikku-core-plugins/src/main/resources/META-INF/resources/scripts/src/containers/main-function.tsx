@@ -221,9 +221,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
   renderOrganizationAdministrationBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.communicator.pageTitle')));
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
     }
-    
     return <OrganizationAdministrationBody/>
   }
   renderCommunicatorBody(){
@@ -340,6 +339,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
       <Route exact path="/" render={this.renderIndexBody}/>
+      <Route path="/organization" render={this.renderOrganizationAdministrationBody}/>
       <Route path="/coursepicker" render={this.renderCoursePickerBody}/>
       <Route path="/communicator" render={this.renderCommunicatorBody}/>
       <Route path="/discussion" render={this.renderDiscussionBody}/>
