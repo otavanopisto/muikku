@@ -19,9 +19,7 @@ export default function credentials(state: CredentialsType = {
   
   if (action.type === "LOAD_CREDENTIALS"){
     return Object.assign({}, state, action.payload);
-   }else if (action.type === "UPDATE_CREDENTIALS"){
-    return  action.payload;
-  } else if (action.type === "CREDENTIALS_STATE") {
+   }else if (action.type === "CREDENTIALS_STATE") {
     let newState: CredentialsStateType = action.payload;
     return Object.assign({}, state, {state: newState});
   }

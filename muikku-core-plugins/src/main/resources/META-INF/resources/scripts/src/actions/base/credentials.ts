@@ -6,7 +6,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 export interface LOAD_CREDENTIALS extends SpecificActionType<"LOAD_CREDENTIALS", CredentialsType>{}
 export interface CREDENTIALS_STATE extends SpecificActionType<"CREDENTIALS_STATE", CredentialsStateType>{}
-export interface UPDATE_CREDENTIALS extends SpecificActionType<"UPDATE_CREDENTIALS", CredentialsType>{}
+
 
 export interface UpdateCredentialsTriggerType {
   (data: CredentialsType):AnyActionType
@@ -42,10 +42,6 @@ let updateCredentials:UpdateCredentialsTriggerType = function updateCredentials(
     try {
        mApi().forgotpassword.credentialReset.create(credentials).callback((err: any, result: any)=>{
         });
-       dispatch( {
-          type: 'UPDATE_CREDENTIALS',
-          payload: credentials
-       })
        dispatch( {
           type: 'CREDENTIALS_STATE',
           payload: <CredentialsStateType>"CHANGED"
