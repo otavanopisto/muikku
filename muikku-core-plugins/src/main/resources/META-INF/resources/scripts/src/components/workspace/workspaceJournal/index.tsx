@@ -28,9 +28,7 @@ export default class WorkspaceJournalBody extends React.Component<WorkspaceJourn
     let aside = <Aside />
     return (<div>
       <WorkspaceNavbar activeTrail="journal" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="workspace-journal">
-        <Application aside={aside}/>
-      </ScreenContainer>
+      <Application aside={aside}/>
     </div>);
   }
 }

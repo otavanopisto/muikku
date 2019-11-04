@@ -83,7 +83,7 @@
       addCategoryContainer.addClass('organizer-add-category-container');
       
       var addCategoryLink = new CKEDITOR.dom.element('div');
-      addCategoryLink.addClass('icon-add');
+      addCategoryLink.addClass('icon-plus');
       addCategoryContainer.append(addCategoryLink);
       
       addCategoryLink.on('click', CKEDITOR.tools.bind(function() {

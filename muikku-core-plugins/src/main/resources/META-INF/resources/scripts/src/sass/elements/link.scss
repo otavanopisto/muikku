@@ -227,6 +227,7 @@
   @include breakpoint($breakpoint-pad) {
 
     &:hover, &.hover {
+      background-color: $color-environment-link-icon-border-top-color-active;
       color: $color-environment-link-icon-color-hover;
     }
 
