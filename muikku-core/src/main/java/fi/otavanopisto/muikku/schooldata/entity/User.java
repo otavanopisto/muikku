@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.time.OffsetDateTime;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.search.annotations.IndexField;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
@@ -76,7 +78,8 @@ public interface User extends SchoolDataEntity {
   
   public String getCurriculumIdentifier();
   
-  public String getOrganizationIdentifier();
+  @IndexField (toId = true)
+  public SchoolDataIdentifier getOrganizationIdentifier();
   
   public void setNickName(String nickName);
 

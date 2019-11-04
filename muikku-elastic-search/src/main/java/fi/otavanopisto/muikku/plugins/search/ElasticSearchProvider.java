@@ -214,7 +214,6 @@ public class ElasticSearchProvider implements SearchProvider {
         query.must(termsQuery("archetype", archetypeNames.toArray(new String[0]))); 
       }
       
-      // TODO: force to have at least one organization?
       Set<String> organizationIdentifiers = organizations
           .stream()
           .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))
@@ -628,7 +627,6 @@ public class ElasticSearchProvider implements SearchProvider {
         boolQuery.must(prefixQuery("name", query));
       }
 
-      // TODO: force to have at least one organization?
       Set<String> organizationIdentifiers = organizations
           .stream()
           .filter(Objects::nonNull).map(organization -> String.format("%s-%s", organization.getDataSource().getIdentifier(), organization.getIdentifier()))

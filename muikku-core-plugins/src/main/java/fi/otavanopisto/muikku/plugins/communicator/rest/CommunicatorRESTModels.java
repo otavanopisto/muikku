@@ -92,7 +92,7 @@ public class CommunicatorRESTModels {
           hasPicture,
           user.hasEvaluationFees(),
           user.getCurriculumIdentifier(),
-          user.getOrganizationIdentifier());
+          user.getOrganizationIdentifier().toId());
 
       return result;
     } finally {

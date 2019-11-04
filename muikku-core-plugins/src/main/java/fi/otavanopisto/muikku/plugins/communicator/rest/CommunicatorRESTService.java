@@ -654,7 +654,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           hasPicture,
           user.hasEvaluationFees(),
           user.getCurriculumIdentifier(),
-          user.getOrganizationIdentifier());
+          user.getOrganizationIdentifier().toId());
       
       return Response.ok(
         result

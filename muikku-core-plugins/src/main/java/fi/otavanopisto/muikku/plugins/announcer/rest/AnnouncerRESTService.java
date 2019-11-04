@@ -311,7 +311,7 @@ public class AnnouncerRESTService extends PluginRESTService {
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
-      if (onlyEditable && !canEdit(announcement, sessionController.getLoggedUser())) {
+      if (onlyEditable && !canEdit(announcement, loggedUser)) {
         continue;
       }
       
