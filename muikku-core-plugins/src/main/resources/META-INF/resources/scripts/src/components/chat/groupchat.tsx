@@ -1,12 +1,16 @@
-/*global converse */
+  /*global converse */
 import * as React from 'react'
+import ReactDOM from "react-dom";
 import './index.scss';
 import converse from '~/lib/converse';
 
 interface Iprops{
   chat?: any,
   converse?: any,
-  orderNumber?: any
+  orderNumber?: any,
+  showChatbox?: any,
+  chatObject?: any,
+  onOpenChat?: any
 }
 
 interface Istate {
@@ -36,7 +40,10 @@ interface Istate {
   settingsInformBox:string,
   showRoomInfo: boolean,
   roomAlign: string,
-  minimized: boolean
+  minimized: boolean,
+  minimizedChats: any,
+  minimizedClass: string,
+  isWorkspaceChat: string
 }
 
 declare namespace JSX {
@@ -58,6 +65,8 @@ declare global {
 export class Groupchat extends React.Component<Iprops, Istate> {
   
   private myRef: any;
+  private messagesEnd: any;
+  private messageFormRef: any;
   
   constructor(props: any){
     super(props);
@@ -88,7 +97,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       settingsInformBox: "settingsInform-none",
       showRoomInfo: false,
       roomAlign: "",
-      minimized: false
+      minimized: false,
+      minimizedChats: [],
+      minimizedClass: "",
+      isWorkspaceChat: ""
     }
     this.myRef = null;
     this.sendMessage = this.sendMessage.bind(this);
@@ -102,28 +114,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   
   openMucConversation (room: string) {
     
-    if (this.state.showChatbox === true){
-        
-      
-      
-      const result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
-
-      const filteredChats = result.filter(function(item:any) {
-        return item.jid !== room;
-      })
-      
-      window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
-      
-      this.setState({
-        showChatbox: false
-      }); 
-
-      
-      return;
-      
-    } else{
-  
-      let data = {
+    let data = {
         jid: room,
         nick: window.PROFILE_DATA.displayName
       };
@@ -134,35 +125,17 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
       let list = [];
       
-      const result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
-      const newNumber = result.length + 1;
-      let roomData = {jid: "", orderNumber: 0};
-
-      const resultItem = result.map((item:any) => item.jid);
-
-      if (!resultItem.includes(room)){
-
-        const found = resultItem.some((el: any) => el.orderNumber === newNumber);
-
-        if (found){
-          roomData = {jid: room, orderNumber: newNumber + 1};
-
-        } else {roomData = {jid: room, orderNumber: newNumber};}
-        
-
-        result.push(roomData);
+      let result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
 
 
+      if (!result.includes(room)){
+        result.push(room);
       }
 
-      let alignNumber:any;
-
-      alignNumber = 260 + (roomData.orderNumber - 1) * 350;
+      
 
       reactComponent.setState({
-        showChatbox: true,
-        nick: window.PROFILE_DATA.displayName,
-        openRoomNumber: alignNumber
+        nick: window.PROFILE_DATA.displayName
         
       });
 
@@ -221,7 +194,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
           
         });
-      }
+      
     }
     
     //------- HANDLING INCOMING GROUPCHAT MESSAGES
@@ -242,7 +215,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           senderClass = "sender-me";
 
         }else{
-          senderClass = "sender-others";
+          if (this.state.roomJid.startsWith("workspace-")){
+            senderClass = "sender-others-workspace";
+          } else {
+            senderClass = "sender-others";
+          }
         }
         let groupMessage: any = {from: from, content: message, senderClass: senderClass};
         
@@ -293,7 +270,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       } else {
         message = chat.messages.create(attrs);
       }
+      event.target.chatMessage.value = '';
       reactComponent.state.converse.api.send(chat.createMessageStanza(message));
+
+      
     }
     
 
@@ -465,17 +445,77 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
 
     minimizeChats (roomJid:any){
+
+      let minimizedRoomList = this.state.minimizedChats;
+
       if (this.state.minimized === false){
         this.setState({
-          minimized: true
+          minimized: true,
+          minimizedClass: "order-minimized"
         });
+
+        if (!minimizedRoomList.includes(roomJid)){
+          minimizedRoomList.push(roomJid);
+
+          this.setState({minimizedChats: minimizedRoomList})
+          window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedRoomList));
+        }
       } else{
+
+        if (minimizedRoomList.includes(roomJid)){
+          const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJid)
+          this.setState({minimizedChats: filteredRooms})
+
+          var result = JSON.parse(window.sessionStorage.getItem('minimizedChats')) || [];
+
+          const filteredChats = result.filter(function(item:any) {
+          return item !== roomJid;
+          })
+      
+          window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredChats));
+
+          return;
+        }
+
         this.setState({
-          minimized: false
+          minimized: false, 
+          minimizedClass:"" 
         });
+      }
+
+    }
+
+    scrollToBottom = () => {
+      if (this.messagesEnd){
+        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
       }
     }
     
+    onEnterPress= (e: any) => {
+      if(e.keyCode == 13 && e.shiftKey == false) {
+        e.preventDefault();
+
+        return false;
+
+        
+      }
+    }
+
+    isWorkspaceChatRoom (jid: any){
+      if (jid.startsWith("workspace-")){
+        this.setState({
+          isWorkspaceChat: "#25a98c"
+        })
+
+        return;
+      } else {
+        this.setState({
+          isWorkspaceChat: "#007bb0"
+        })
+        return;
+      }
+    }
+
     componentDidMount (){
       
       let reactComponent = this;
@@ -490,7 +530,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
       
       let chat = this.props.chat;
-      let orderNumber = this.props.orderNumber;
+      let chatObject = this.props.chatObject;
       
       if (chat){
         this.setState({
@@ -498,78 +538,53 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           roomJid: chat.jid,
           isStudent: window.MUIKKU_IS_STUDENT
         });
+
+        this.openMucConversation(chat.jid);
+        this.scrollToBottom();
+        this.isWorkspaceChatRoom(chat.jid);
+
       }
-      
-      
-      let chatBoxState1 = JSON.parse(window.sessionStorage.getItem("openChats"));
-      
-      
-      if (chatBoxState1){
-
-        const chatBoxState = chatBoxState1.map((item:any) => item.jid);
-        const orderNumb = chatBoxState1.map((item:any) => item.orderNumber);
 
 
-        if (chatBoxState.includes(chat.jid)){
-          reactComponent.setState({
-            showChatbox: true
-          });
+      let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats"));
 
-
-          let alignNumber:any;
-          let k:any;
-          orderNumb.map((el: any) => {
-           
-            k = el
-            
-          });
-
-          alignNumber = 260 + (k - 1) * 350;
-          reactComponent.setState({
-              openRoomNumber: alignNumber
-          });
-
-
-          
-
-
-          
-        } else {
-          reactComponent.setState({
-            showChatbox: false
-          });
-        }
-      } else {
+      if (minimizedChatsFromSessionStorage){
         reactComponent.setState({
-          showChatbox: false
+          minimizedChats: minimizedChatsFromSessionStorage
         });
+
+        minimizedChatsFromSessionStorage.map((item: any) => {
+          if (item === chat.jid){
+            this.setState({
+              minimized: true,
+              minimizedClass: "order-minimized"
+            });
+          }
+        })
       }
-      
     }
     
+    componentDidUpdate() {
+      this.scrollToBottom();
+    }
     
     render() {
       
       return  (
-        <div>
-          <div className="chatBox-body">
-            <span className="toggle-info icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></span>
-            <div className="rooms-list-room-name" onClick={() => this.openMucConversation(this.state.roomJid)}>
-              {this.state.roomName}
-            </div>
-            { (this.state.showRoomInfo === true) && <div className="room-info"><p>plaaplaa</p></div> }
-          </div>
+        <div className={"chat-body " + this.state.minimizedClass}>
 
-          { (this.state.showChatbox === true) && <div style={{'right' :this.state.openRoomNumber + "px" }}  className="chat-discussion-container">
-            { (this.state.minimized === true) && <div onClick={() => this.minimizeChats(this.state.roomJid)} className="minimized-chat">{this.state.roomName} <span className="icon-close"></span></div>}
+         
+            { (this.state.minimized === true) && <div  
+            onClick={() => this.minimizeChats(this.state.roomJid)} 
+            className="minimized-chat">{this.state.roomName} <span onClick={() => this.props.onOpenChat(this.state.roomJid)} className="close icon-close"></span></div>}
   
-            { (this.state.showChatbox === true && this.state.minimized === false) && <div id={this.props.orderNumber} className="chat">
+            { (this.state.minimized === false) && <div id={this.props.orderNumber} className="chat">
 
-            <div className="roomSettings">
+            <div style={{"background-color": this.state.isWorkspaceChat }} className="roomSettings">
               <div className="chatbox-room-name">{this.state.roomName}</div>
               <span onClick={() => this.minimizeChats(this.state.roomJid)} className="icon-remove"></span>
               <span onClick={() => this.openChatSettings()} className="icon-cogs room-settings-icon"></span>
-              <span onClick={() => this.openMucConversation(this.state.roomJid)} className="icon-close"></span>
+              <span onClick={() => this.props.onOpenChat(this.state.roomJid)} className="icon-close"></span>
             </div>
               
             
@@ -592,22 +607,24 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               </div>
             </div> }
             
-            <form onSubmit={this.sendMessage}>                                                  
+            <form ref={el => this.messageFormRef = el}  onSubmit={(e)=>this.sendMessage(e)}>                                                  
               <div className="chatMessages" ref={ (ref) => this.myRef=ref }>
                 {this.state.groupMessages.map((message: any, i: number) => 
                 <div className={message.senderClass + " message-item"} key={i}>
                   <b className={message.senderClass + " message-item-sender"}>{message.from} </b>
                   <p className={message.senderClass + " message-item-content"}>{message.content}</p>
                 </div>)}
+                <div style={{ float:"left", clear: "both" }}
+                ref={(el) => { this.messagesEnd = el; }}></div>
               </div>
 
               <input name="chatRecipient" className="chatRecipient" value={this.state.roomJid} readOnly/>
-              <textarea className="chatMessage" placeholder="..Kirjoita jotakin" name="chatMessage"></textarea>
+              <textarea className="chatMessage" onKeyDown={this.onEnterPress} placeholder="..Kirjoita jotakin" name="chatMessage"></textarea>
               <button className="sendMessage" type="submit" value=""><span className="icon-announcer"></span></button>
             </form>
           </div>}
 
-          </div>}
+          
       </div>
       );
     }

@@ -3,10 +3,13 @@ import * as React from 'react'
 import ReactDOM from 'react-dom';
 import './index.scss';
 import {Groupchat} from './groupchat';
+import {RoomsList} from './roomslist';
 import converse from '~/lib/converse';
 
 interface Iprops{
-  chat?: any
+  chat?: any,
+  onOpenChat?:any,
+  showChatbox?: any
 }
 
 interface Istate {
@@ -26,12 +29,16 @@ interface Istate {
   groupMessages: Object[],
   groupMessageRecipient?: String,
   receivedMUCMessages: Object[],
-  availableMucRooms: Object[],
+  availableMucRooms: any,
   chatBox:null,
   showChatButton: boolean,
   showControlBox: boolean,
   showNewRoomForm: boolean,
-  isStudent?: Boolean
+  isStudent?: Boolean,
+  showChatbox: boolean,
+  nick?: string,
+  openRoomNumber: number,
+  openRooms?: Object[]
 }
 
 declare namespace JSX {
@@ -73,8 +80,12 @@ export class Chat extends React.Component<Iprops, Istate> {
       chatBox:null,
       showChatButton: null,
       showControlBox: null,
+      showChatbox: null,
       showNewRoomForm: false,
-      isStudent: false
+      isStudent: false,
+      openRoomNumber:null,
+      nick: window.PROFILE_DATA.displayName,
+      openRooms: []
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.joinRoom= this.joinRoom.bind(this);
@@ -82,6 +93,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.sendMessage = this.sendMessage.bind(this);
     this.openControlBox = this.openControlBox.bind(this);
     this.openNewRoomForm = this.openNewRoomForm.bind(this);
+    this.onOpenChat = this.onOpenChat.bind(this);
   }
   
   handleSubmit(event: any) { // login
@@ -174,6 +186,11 @@ export class Chat extends React.Component<Iprops, Istate> {
     event.preventDefault();
     
     const data = this.parseRoomDataFromEvent(event.target);
+
+    if (data.jid.toString().startsWith("workspace-")){
+      alert("EI KÄY!!!");
+      return;
+    }
     
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
     
@@ -197,6 +214,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     
     let roomJidAndNick = jid + (data.nick !== null ? `/${data.nick}` : "");
     
+
     const stanza = $pres({
       'from': this.state.converse.connection.jid,
       'to': roomJidAndNick
@@ -250,7 +268,7 @@ export class Chat extends React.Component<Iprops, Istate> {
   }
   
   // ----- ROOMS LIST-----ä
-  onRoomsFound (iq: any) {
+  async onRoomsFound (iq: any) {
     //    /* Handle the IQ stanza returned from the server, containing
     //     * all its public groupchats.
     //     */¨
@@ -260,17 +278,35 @@ export class Chat extends React.Component<Iprops, Istate> {
 
     if (rooms.length) {
       const nodesArray = [].slice.call(rooms);
-      this.setState({
-        availableMucRooms: nodesArray.map((room: any) => ({
-          name: room.attributes.name.nodeValue,
-          jid: room.attributes.jid.value,
-          chatObject: "",
-          desc:  this.state.converse.api.disco.info(room.attributes.jid.value, null)
-          .then((stanza:any) =>_.get(_.head(sizzle('field[var="muc#roominfo_occupants"] value', stanza)), 'textContent'))
-        })).filter((room: any) => room.name !== undefined)
-        
-        
-      })
+      let name;
+      let jid;
+      let description: any;
+
+      
+      
+        var i;
+        for (i = 0; i < nodesArray.length; i++) {
+          name = nodesArray[i].attributes.name.nodeValue;
+          jid = nodesArray[i].attributes.jid.value;
+          
+          const fields = await this.state.converse.api.disco.getFields(jid);
+
+          description = _.get(fields.findWhere({'var': "muc#roominfo_description"}), 'attributes.value');
+
+          let roomsList = this.state.availableMucRooms;
+
+          let addRoomToList = {
+            name: name,
+            jid: jid,
+            roomDesc: description
+          }
+
+          roomsList.push(addRoomToList);
+
+          this.setState({availableMucRooms: roomsList});
+            
+        }
+      
       
       return;
     } else {
@@ -351,9 +387,74 @@ export class Chat extends React.Component<Iprops, Istate> {
           });
         }
   }
-  
-  
-  componentDidMount() {
+  onOpenChat (room: string) {
+
+    let openRoomsList = this.state.openRooms;
+
+    if (openRoomsList.includes(room)){
+      const filteredRooms = openRoomsList.filter(item => item !== room)
+      this.setState({openRooms: filteredRooms})
+
+      var result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
+
+      const filteredChats = result.filter(function(item:any) {
+        return item !== room;
+      })
+      
+      window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
+
+      return;
+
+    } else {
+      openRoomsList.push(room);
+
+      this.setState({openRooms: openRoomsList})
+    }
+
+      
+    }
+  getMUCMessages (stanza: any) {
+    
+      const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
+      
+      
+      if (stanza && stanza.attributes.type.nodeValue === "groupchat"){
+        let message = stanza.textContent;
+        let from = stanza.attributes.from.value;
+        let senderClass ="";
+
+        from = from.split("/").pop();
+        
+        if (from === this.state.nick){
+          senderClass = "sender-me";
+
+        }else{
+          senderClass = "sender-others";
+        }
+        let groupMessage: any = {from: from, content: message, senderClass: senderClass};
+        
+        if (message !== ""){
+          
+          let groupMessages = this.state.groupMessages;
+          
+          groupMessages.push(groupMessage);
+
+          
+          
+          this.setState({groupMessages: groupMessages});
+          
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+
+    getWorkspaceMucRooms() { return this.state.availableMucRooms.filter((room:any) => room.jid.startsWith("workspace-")); }
+    
+    getNotWorkspaceMucRooms() { return this.state.availableMucRooms.filter((room:any) => !room.jid.startsWith("workspace-")); }
+
+    componentDidMount() {
     
     var reactComponent = this;
     
@@ -426,6 +527,14 @@ export class Chat extends React.Component<Iprops, Istate> {
               showChatButton: true
             });
           }
+
+          let openChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("openChats"));
+
+          if (openChatsFromSessionStorage){
+            reactComponent.setState({
+              openRooms: openChatsFromSessionStorage
+            });
+          }
         });
         
       }, 
@@ -448,7 +557,7 @@ export class Chat extends React.Component<Iprops, Istate> {
           <div className="chatControlBox-body">
             <div className="chatHeader">
               <span onClick={() => this.openNewRoomForm()} className="header-items-add icon-add"></span>
-              <span onClick={() => this.openControlBox()} className="icon-close close-controlbox"></span>
+              <span onClick={() => this.openControlBox()} className="icon-close close"></span>
             </div>
 
             { (this.state.isConnectionOk === false) && <div>
@@ -484,12 +593,11 @@ export class Chat extends React.Component<Iprops, Istate> {
             
             <h4 className="control-panel">Kurssikohtaiset huoneet: </h4>
             
-            <div className="rooms-list">  
-              {this.state.availableMucRooms.map((chat, i) => <Groupchat key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)}
-            </div>
-            
+            {this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)}
+
             <h4 className="control-panel">Muut huoneet:</h4>
-           
+            {this.getNotWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)}
+
                 
             { (this.state.showNewRoomForm === true) && <div className="newRoom">
             <span onClick={() => this.openNewRoomForm()} className="close-new-room-form icon-close-small"></span>
@@ -511,6 +619,11 @@ export class Chat extends React.Component<Iprops, Istate> {
             
           }
         </div>
+        
+      <div className="chatboxes">  
+        {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openRooms.includes(chat.jid) ? <Groupchat key={i} onOpenChat={this.onOpenChat} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>:null)}
+
+      </div>
       </div>}
     </div>
     
