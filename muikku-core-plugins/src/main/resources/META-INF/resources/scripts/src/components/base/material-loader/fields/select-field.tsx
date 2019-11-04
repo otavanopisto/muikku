@@ -3,6 +3,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import uuid from "uuid/v4";
+import { processMathInPage } from '~/lib/mathjax';
 
 interface SelectFieldProps {
   type: string,
@@ -170,7 +171,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
             <span key={index} className="material-page__field-answer-example">{answer.text}</span>
           )}
           {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
-             <Dropdown modifier="material-page-field-explanation" content={this.props.content.explanation}>
+             <Dropdown onOpen={processMathInPage} modifier="material-page-field-explanation" content={this.props.content.explanation}>
                <span className="material-page__field-explanation-button icon-question"/>
              </Dropdown>
            </span> : null}
