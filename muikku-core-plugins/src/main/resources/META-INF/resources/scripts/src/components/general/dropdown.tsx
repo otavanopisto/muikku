@@ -14,6 +14,7 @@ interface DropdownProps {
   content?: any,
   openByHover?: boolean,
   persistent?:boolean,
+  onOpen?: ()=>any,
   onClose?: ()=>any,
   onClick?: ()=>any
 }
@@ -91,7 +92,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       reverseArrow = true;
     }
     
-    this.setState({top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, visible: true});
+    this.setState({top, left, arrowLeft, arrowRight, arrowTop, reverseArrow, visible: true}, this.props.onOpen);
   }
   beforeClose(DOMNode : HTMLElement, removeFromDOM: Function){
     this.setState({
