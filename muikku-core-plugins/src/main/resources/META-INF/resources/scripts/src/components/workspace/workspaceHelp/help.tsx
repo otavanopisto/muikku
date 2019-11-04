@@ -24,24 +24,28 @@ interface HelpPanelState {
 
 class HelpPanel extends React.Component<HelpPanelProps, HelpPanelState> {
   render(){
-    return (<div className="panel panel--workspace-help">
-      <div className="panel__header">
-        <div className="panel__header-title">{this.props.i18n.text.get("plugin.workspace.helpPage.title")}</div>
-      </div>
-      <div className="panel__body">
-        {this.props.workspace && <MaterialLoader editable={this.props.workspaceEditMode.active}
-          modifiers="workspace-help" material={this.props.workspace.help} workspace={this.props.workspace}
-          canDelete={false} canHide={false} disablePlugins
-          readOnly>
-            {(props, state, stateConfiguration) => {
-              return <div>
-                <MaterialLoaderEditorButtonSet {...props} {...state}/>
-                <MaterialLoaderTitle {...props} {...state}/>
-                <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
-                <MaterialLoaderProducersLicense {...props} {...state}/>
-              </div>
-            }}
-          </MaterialLoader>}
+    return (<div className="application-panel-wrapper">
+      <div className="application-panel application-panel--workspace-guide">
+        <div className="application-panel__container">
+          <div className="application-panel__header"> 
+            <h2 className="application-panel__header-title">{this.props.i18n.text.get("plugin.workspace.helpPage.title")}</h2>
+          </div>
+          <div className="application-panel__body">
+            {this.props.workspace && <MaterialLoader editable={this.props.workspaceEditMode.active}
+              modifiers="workspace-help" material={this.props.workspace.help} workspace={this.props.workspace}
+              canDelete={false} canHide={false} disablePlugins
+              readOnly>
+                {(props, state, stateConfiguration) => {
+                  return <div>
+                    <MaterialLoaderEditorButtonSet {...props} {...state}/>
+                    <MaterialLoaderTitle {...props} {...state}/>
+                    <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
+                    <MaterialLoaderProducersLicense {...props} {...state}/>
+                  </div>
+                }}
+              </MaterialLoader>}
+          </div>
+        </div>
       </div>
     </div>);
   }

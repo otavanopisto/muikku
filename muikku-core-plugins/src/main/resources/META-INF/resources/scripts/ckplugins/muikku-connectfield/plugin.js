@@ -99,7 +99,7 @@
 
                   var _this = this;
                   var addLink = new CKEDITOR.dom.element('a');
-                  addLink.addClass('icon-add');
+                  addLink.addClass('icon-plus');
                   addLink.on('click', function() {
                     _this.addPair('', '');
                   });

@@ -25,10 +25,8 @@ export default class WorkspaceHelpBody extends React.Component<WorkspaceHelpBody
   render(){
     return (<div>
       <WorkspaceNavbar activeTrail="help" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="workspace">
-        <MaterialEditor/>
-        <HelpPanel/>
-      </ScreenContainer>
+      <MaterialEditor/>
+      <HelpPanel/>
     </div>);
   }
 }

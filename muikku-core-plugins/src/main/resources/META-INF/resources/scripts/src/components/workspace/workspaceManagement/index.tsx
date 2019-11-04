@@ -16,9 +16,7 @@ export default class WorkspaceManagementBody extends React.Component<WorkspaceMa
   render(){
     return (<div>
       <WorkspaceNavbar activeTrail="workspace-management" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="workspace">
-        <ManagementPanel/>
-      </ScreenContainer>
+      <ManagementPanel/>
     </div>);
   }
 }
