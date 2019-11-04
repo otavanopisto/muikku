@@ -3,7 +3,6 @@ import {ActionType} from "~/actions";
 export interface CredentialsType {
   secret: string,
   username: string,
-  password: string,
   state?: CredentialsStateType
 }
 
@@ -15,7 +14,6 @@ export type CredentialsStateType = "LOADING" | "READY" | "CHANGED";
 export default function credentials(state: CredentialsType = {
   secret: "",
   username: "",
-  password: "",
   state: "LOADING"
 } , action: ActionType): CredentialsType {
   
