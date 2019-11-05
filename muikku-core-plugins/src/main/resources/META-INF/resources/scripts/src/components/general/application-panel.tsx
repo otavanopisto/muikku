@@ -162,14 +162,12 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
         this.calculateSides();
       }
     }
-    
     this.setRemainingHeight(isSticky);
   }
   render(){
-    return (        
+    return (
     <div className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
-      <div className="application-panel__container">                
-        
+      <div className="application-panel__container">
         <div className="application-panel__header">
         {this.props.title ? 
           <div className="application-panel__header-title-container">{this.props.title}</div>
