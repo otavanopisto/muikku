@@ -263,6 +263,13 @@
   flex: 0;
 }
 
+.application-sub-panel__item--workspace-permissions {
+
+  &:not(:last-child) {
+    border: 0;
+  }
+}
+
 .application-sub-pane__button-container {
   display: flex;
 }
