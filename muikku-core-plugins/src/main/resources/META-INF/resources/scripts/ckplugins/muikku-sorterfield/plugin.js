@@ -65,7 +65,7 @@
               
               var _this = this;
               var addLink = new CKEDITOR.dom.element('a');
-              addLink.addClass('icon-add');
+              addLink.addClass('icon-plus');
               addLink.on('click', function() {
                 _this.addItem(_this.getUniqueItemId());
               });
@@ -114,7 +114,7 @@
           // Deletion
           var deleteLink = new CKEDITOR.dom.element('a');
           var _this = this;
-          deleteLink.addClass('icon-delete');
+          deleteLink.addClass('icon-trash');
           deleteLink.on('click', function() {
             this.getParent().remove();
           });

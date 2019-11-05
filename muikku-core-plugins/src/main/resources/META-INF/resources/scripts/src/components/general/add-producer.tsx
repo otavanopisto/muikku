@@ -57,12 +57,12 @@ export default class AddProducer extends React.Component<AddProducerProps, AddPr
       <div className="add-producer__functionality-container">
         <div className={`form-element form-element--add-producer ${this.props.modifier ? "form-element--" + this.props.modifier : ""}`}>
           <input name="add-producer" className={`form-element__input form-element__input--add-producer ${this.props.modifier ? "form-element__input--" + this.props.modifier : ""}`} value={this.state.currentInputValue} onKeyUp={this.checkIfEnterKeyIsPressedAndAddProducer} onChange={this.updateInputValue} placeholder={this.props.i18n.text.get('plugin.workspace.materialsManagement.editorView.addProducers.placeHolder')}  type="text" />
-          <div  className={`form-element__input-decoratioin form-element__input-decoration--add-producer ${this.props.modifier ? "form-element__input-decoration--" + this.props.modifier : ""} icon-add`} onClick={this.addProducerByClick}></div>
+          <div  className={`form-element__input-decoration form-element__input-decoration--add-producer ${this.props.modifier ? "form-element__input-decoration--" + this.props.modifier : ""} icon-plus`} onClick={this.addProducerByClick}></div>
         </div>
       </div>
       <div className="add-producer__list-container">
         {this.props.producers.map((p:any, index:number) => {
-          return <div className="add-producer__producer-list-item" key={'producer-'+ index}>{p.name}<span className="add-producer__remove-producer icon-close" onClick={this.removeProducerByClick.bind(this, index)}></span></div>
+          return <div className="add-producer__producer-list-item" key={'producer-'+ index}>{p.name}<span className="add-producer__remove-producer icon-cross" onClick={this.removeProducerByClick.bind(this, index)}></span></div>
         })}
       </div>
     </div>

@@ -68,7 +68,7 @@
               
               var _this = this;
               var addLink = new CKEDITOR.dom.element('a');
-              addLink.addClass('icon-add');
+              addLink.addClass('icon-plus');
               addLink.on('click', function() {
                 _this.addOption();
               });
@@ -78,7 +78,7 @@
               addLink.append(addLinkTooltip);
               
               var correctLabel = new CKEDITOR.dom.element('label');
-              correctLabel.addClass('icon-checkmark');
+              correctLabel.addClass('icon-check');
               titleContainer.append(correctLabel);
               var correctTooltip = new CKEDITOR.dom.element('span');
               correctTooltip.setText(editor.lang['muikku-selection'].propertiesDialogCorrectTooltip);
@@ -140,7 +140,7 @@
           // Deletion
           var deleteLink = new CKEDITOR.dom.element('a');
           var _this = this;
-          deleteLink.addClass('icon-delete');
+          deleteLink.addClass('icon-trash');
           deleteLink.on('click', function() {
             // TODO how do you find a parent with class name in CKEditor?!
             var option = this.getParent(); 

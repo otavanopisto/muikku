@@ -132,8 +132,9 @@ export interface SetCurrentWorkspaceTriggerType {
 
 export interface UpdateCurrentWorkspaceImagesB64TriggerType {
   (data?: {
-    originalB64: string,
-    croppedB64: string,
+    delete?: boolean,
+    originalB64?: string,
+    croppedB64?: string,
     success?: ()=>any,
     fail?: ()=>any
   }):AnyActionType
@@ -144,7 +145,12 @@ export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
 }
 
 export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
-  (permissions: WorkspacePermissionsType, toggleValue: string):AnyActionType
+  (data?: {
+    original: WorkspacePermissionsType,
+    update: WorkspacePermissionsType,
+    success?: ()=>any,
+    fail?: ()=>any,
+  }):AnyActionType
 }
 
 export interface SetWorkspaceMaterialEditorStateTriggerType {
@@ -1222,28 +1228,28 @@ let updateCurrentWorkspaceImagesB64:UpdateCurrentWorkspaceImagesB64TriggerType =
       let mimeTypeOriginal = data.originalB64 && data.originalB64.match(mimeTypeRegex)[1];
       let mimeTypeCropped = data.croppedB64 && data.croppedB64.match(mimeTypeRegex)[1];
 
-      if (data.croppedB64) {
+      if (data.delete){
+        await promisify(mApi().workspace.workspaces.workspacefile
+            .del(currentWorkspace.id, 'workspace-frontpage-image-cropped'), 'callback')();
+      } else if (data.croppedB64) {
         await promisify(mApi().workspace.workspaces.workspacefile
         .create(currentWorkspace.id, {
           fileIdentifier: 'workspace-frontpage-image-cropped',
           contentType: mimeTypeCropped,
           base64Data: data.croppedB64
         }), 'callback')();
-      } else {
-        await promisify(mApi().workspace.workspaces.workspacefile
-            .del(currentWorkspace.id, 'workspace-frontpage-image-cropped'), 'callback')();
       }
       
-      if (data.originalB64) {
+      if (data.delete) {
+        await promisify(mApi().workspace.workspaces.workspacefile
+          .del(currentWorkspace.id, 'workspace-frontpage-image-original'), 'callback')();
+      } else if (data.originalB64) {
         await promisify(mApi().workspace.workspaces.workspacefile
         .create(currentWorkspace.id, {
           fileIdentifier: 'workspace-frontpage-image-original',
           contentType: mimeTypeOriginal,
           base64Data: data.originalB64
         }), 'callback')();
-      } else {
-        await promisify(mApi().workspace.workspaces.workspacefile
-          .del(currentWorkspace.id, 'workspace-frontpage-image-original'), 'callback')();
       }
 
       data.success && data.success();
@@ -1289,7 +1295,7 @@ let loadCurrentWorkspaceUserGroupPermissions:LoadCurrentWorkspaceUserGroupPermis
   }
 }
 
-let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPermissionTriggerType = function updateCurrentWorkspaceUserGroupPermission(permissions, toggleValue) {
+let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPermissionTriggerType = function updateCurrentWorkspaceUserGroupPermission(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let currentPermissions;
     try {
@@ -1297,23 +1303,14 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       currentPermissions = currentWorkspace.permissions;
 
-      let newSpecificGroupPermission = {...permissions};
-      newSpecificGroupPermission.permissions = [...newSpecificGroupPermission.permissions];
-      let indexFound = newSpecificGroupPermission.permissions.indexOf(toggleValue);
-      if (indexFound !== -1) {
-        newSpecificGroupPermission.permissions.splice(indexFound, 1);
-      } else {
-        newSpecificGroupPermission.permissions.push(toggleValue);
-      }
-
       dispatch({
         type: "UPDATE_WORKSPACE",
         payload: {
           original: currentWorkspace,
           update: {
             permissions: currentPermissions.map((permissionValue) => {
-              if (permissionValue.userGroupEntityId === permissions.userGroupEntityId) {
-                return newSpecificGroupPermission;
+              if (permissionValue.userGroupEntityId === data.update.userGroupEntityId) {
+                return data.update;
               }
 
               return permissionValue;
@@ -1323,12 +1320,16 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
       });
 
       await promisify(mApi().permission.workspaceSettings.userGroups
-          .update(currentWorkspace.id, permissions.userGroupEntityId, newSpecificGroupPermission), 'callback')()
+          .update(currentWorkspace.id, data.original.userGroupEntityId, data.update), 'callback')();
+      
+      data.success && data.success();
 
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
+      
+      data.fail && data.fail();
 
       let state:StateType = getState();
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;

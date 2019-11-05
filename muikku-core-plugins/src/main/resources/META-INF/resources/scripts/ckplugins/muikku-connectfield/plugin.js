@@ -99,7 +99,7 @@
 
                   var _this = this;
                   var addLink = new CKEDITOR.dom.element('a');
-                  addLink.addClass('icon-add');
+                  addLink.addClass('icon-plus');
                   addLink.on('click', function() {
                     _this.addPair('', '');
                   });
@@ -140,7 +140,7 @@
 
               var deleteLink = new CKEDITOR.dom.element('a');
               var _this = this;
-              deleteLink.addClass('icon-delete');
+              deleteLink.addClass('icon-trash');
               deleteLink.on('click', (function() {
                 var _optionContainer = optionContainer;
 

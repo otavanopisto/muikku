@@ -80,8 +80,12 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
       )    
     }
     let content = (closeDialog: ()=>any)=>{
-      return <CKEditor width="100%" height="210" configuration={CKEDITOR_CONFIG}
-      onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
+      return <div className="env-dialog__row">
+        <div className="env-dialog__form-element-container">
+          <CKEditor width="100%" height="210" configuration={CKEDITOR_CONFIG}
+            onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
+          </div>
+        </div>
     }
     return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature" 
      title={this.props.i18n.text.get("plugin.communicator.settings.signature")}

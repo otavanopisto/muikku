@@ -215,7 +215,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                   }
                 <Link className="file-uploader__item-download-icon icon-download"/>
                 {this.props.readOnly ? null : 
-                  <Link className="file-uploader__item-delete-icon icon-delete"/>
+                  <Link className="file-uploader__item-delete-icon icon-trash"/>
                 }
                 {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
               </div>
@@ -245,7 +245,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                 }
               <Link href={url} openInNewTab={file[this.props.fileNameKey]} className="file-uploader__item-download-icon icon-download" title={this.props.downloadFileText ? this.props.downloadFileText : ""}/>
               {this.props.readOnly ? null : <DialogDeleteElement file={file} {...this.props.deleteDialogElementProps}>
-                <Link disablePropagation className="file-uploader__item-delete-icon icon-delete" title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-trash" title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
               </DialogDeleteElement>}
               {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
             </div>
@@ -258,7 +258,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                     {uploadingFile.name}
                   </span>
                 </span>
-                <Link disablePropagation className="file-uploader__item-delete-icon icon-delete"
+                <Link disablePropagation className="file-uploader__item-delete-icon icon-trash"
                   onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
               </div>
             }

@@ -227,6 +227,7 @@
   @include breakpoint($breakpoint-pad) {
 
     &:hover, &.hover {
+      background-color: $color-environment-link-icon-border-top-color-active;
       color: $color-environment-link-icon-color-hover;
     }
 
@@ -256,6 +257,13 @@
   &.active {
     background-color: $color-environment-dropdown-link-hover-background;
     color: $color-default-contrast;
+  }
+
+  .link__icon {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-width: 16px;
   }
 }
 

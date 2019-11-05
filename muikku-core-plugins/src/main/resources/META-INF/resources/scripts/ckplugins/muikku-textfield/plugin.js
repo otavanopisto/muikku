@@ -120,7 +120,7 @@
 
           var _this = this;
           var addLink = new CKEDITOR.dom.element('a');
-          addLink.addClass('icon-add');
+          addLink.addClass('icon-plus');
           addLink.on('click', function() {
             _this.addAnswer('', false);
           });
@@ -130,7 +130,7 @@
           addLink.append(addLinkTooltip);
 
           var correctLabel = new CKEDITOR.dom.element('label');
-          correctLabel.addClass('icon-checkmark');
+          correctLabel.addClass('icon-check');
           titleContainer.append(correctLabel);
           var correctTooltip = new CKEDITOR.dom.element('span');
           correctTooltip.setText(this.correctTooltip);
@@ -174,7 +174,7 @@
         optionsContainer.append(optionContainer);
 
         var deleteLink = new CKEDITOR.dom.element('a');
-        deleteLink.addClass('icon-delete');
+        deleteLink.addClass('icon-trash');
         deleteLink.on('click', (function() {
           var _optionContainer = optionContainer;
           return (function() {

@@ -83,7 +83,7 @@
       addCategoryContainer.addClass('organizer-add-category-container');
       
       var addCategoryLink = new CKEDITOR.dom.element('div');
-      addCategoryLink.addClass('icon-add');
+      addCategoryLink.addClass('icon-plus');
       addCategoryContainer.append(addCategoryLink);
       
       addCategoryLink.on('click', CKEDITOR.tools.bind(function() {
@@ -110,7 +110,7 @@
       categoryContainer.append(categoryFieldContainer);
       // Delete category button
       var deleteCategoryLink = new CKEDITOR.dom.element('a');
-      deleteCategoryLink.addClass('icon-delete');
+      deleteCategoryLink.addClass('icon-trash');
       categoryFieldContainer.append(deleteCategoryLink);
       deleteCategoryLink.on('click', CKEDITOR.tools.bind(function(evt) {
         var categoryContainer = evt.sender.getParent();
@@ -239,7 +239,7 @@
       termContainer.append(term);
       
       var deleteTermLink = new CKEDITOR.dom.element('a');
-      deleteTermLink.addClass('icon-delete');
+      deleteTermLink.addClass('icon-trash');
       termContainer.append(deleteTermLink);
       deleteTermLink.on('click', CKEDITOR.tools.bind(function(evt) {
         var termContainer = evt.sender.getParent();

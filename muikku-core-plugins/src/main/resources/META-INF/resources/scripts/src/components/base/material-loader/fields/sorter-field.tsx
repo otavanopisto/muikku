@@ -126,7 +126,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       //element had to be in that specific index
       let answer = this.props.content.items[index];
       //if the ids are equal then the answer was correct
-      let isAnswerProper = answer.id === item.id;
+      let isAnswerProper = answer.id === item.id || item.name.toLocaleLowerCase() === answer.name.toLocaleLowerCase();
       return isAnswerProper ? "PASS" : "FAIL";
     });
     

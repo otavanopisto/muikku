@@ -167,16 +167,16 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           showFullNames={!this.props.status.isStudent}/>),
       (
        <div className="env-dialog__row" key="2">
-        <div className="env-dialog__form-element-container">  
+        <div className="env-dialog__form-element-container">
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
-          <input type="text" className="env-dialog__input env-dialog__input--new-message-title"         
+          <input type="text" className="env-dialog__input env-dialog__input--new-message-title"
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
-        </div> 
         </div>
-        ),        
+        </div>
+        ),
       (
-      <div className="env-dialog__row" key="3">     
-        <div className="env-dialog__form-element-container">  
+      <div className="env-dialog__row" key="3">
+        <div className="env-dialog__form-element-container">
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>
           <CKEditor width="100%" height="210"
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
@@ -192,7 +192,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       </div> : null)
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
          <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}

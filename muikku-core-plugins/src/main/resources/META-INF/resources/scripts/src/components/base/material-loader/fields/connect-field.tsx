@@ -160,12 +160,27 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     
     //so now we got to assess each change
     let newanswerState:Array<"PASS" | "FAIL"> = this.state.fields.map((field, index)=>{
-      //ge thte counterpart from the same index
+      //get the counterpart from the same index
       let counterpart = this.state.counterparts[index];
       //check whether the connection matches
       let connection = this.props.content.connections.find(connection=>connection.field === field.name);
       //and return pass or fail
-      return connection && connection.counterpart === counterpart.name ? "PASS" : "FAIL";
+      
+      if (!connection) {
+        return "FAIL";
+      } else if (connection && connection.counterpart === counterpart.name) {
+        return "PASS";
+      }
+      
+      // We try to find all the fields that share the same written text as our field
+      const allFieldsWithTheSameValue = this.state.fields.filter((f2) => f2.text.toLocaleLowerCase() === field.text.toLocaleLowerCase());
+      // now we find all the connections for each one of those fields
+      const allConnectionsForTheSameFieldName = allFieldsWithTheSameValue.map((f2) => {
+        return this.props.content.connections.find(c2=>c2.field === f2.name);
+      }).filter(c2 => !!c2);
+      // we check if the counterpart we have matches one of those connections
+      const counterpartIsOneOfThoseConnections = allConnectionsForTheSameFieldName.some(c2 => c2.counterpart === counterpart.name);
+      return counterpartIsOneOfThoseConnections ? "PASS" : "FAIL";
     });
     
     //if the new state does not equal the current set the state
@@ -240,7 +255,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
   pickField(field: FieldType, isCounterpart: boolean, index: number){
     //if by the time this function runs there is no selected field
     //then we just set the state that this one is the first selected
-    //And we got no bizness to do
+    //And we got no business to do
     if (!this.state.selectedField){
       this.setState({
         selectedField: field,

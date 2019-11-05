@@ -191,32 +191,32 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             if (compositeReplies){
               switch (compositeReplies.state){
                 case "ANSWERED":
-                  icon = "checkmark"
+                  icon = "check"
                   className = "toc__item--answered"
                   iconTitle = this.props.i18n.text.get("plugin.workspace.materials.exerciseDoneTooltip");
                   break;
                 case "SUBMITTED":
-                  icon = "checkmark"
+                  icon = "check"
                   className = "toc__item--submitted"
                   iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentDoneTooltip");
                   break;
                 case "WITHDRAWN":
-                  icon = "checkmark"
+                  icon = "check"
                   className = "toc__item--withdrawn"
                   iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentWithdrawnTooltip");
                   break;
                 case "INCOMPLETE":
-                  icon = "thumb-down-alt"
+                  icon = "thumb-down"
                   className = "toc__item--incomplete"
                   iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentIncompleteTooltip");
                   break;
                 case "FAILED":
-                  icon = "thumb-down-alt"
+                  icon = "thumb-down"
                   className = "toc__item--failed"
                   iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentFailedTooltip");
                   break;
                 case "PASSED":
-                  icon = "thumb-up-alt"
+                  icon = "thumb-up"
                   className = "toc__item--passed"
                   iconTitle = this.props.i18n.text.get("plugin.workspace.materials.assignmentPassedTooltip");
                   break;

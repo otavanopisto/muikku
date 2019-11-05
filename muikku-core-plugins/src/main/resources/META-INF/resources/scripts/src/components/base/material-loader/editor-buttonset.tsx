@@ -71,15 +71,15 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
   
   return (<div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
     <Dropdown openByHover modifier="material-management-tooltip" content={props.i18n.text.get("plugin.workspace.materialsManagement.editPageTooltip")}>
-      <ButtonPill buttonModifiers="material-management-page" icon="edit" onClick={startupEditor.bind(this, props)}/>
+      <ButtonPill buttonModifiers="material-management-page" icon="pencil" onClick={startupEditor.bind(this, props)}/>
     </Dropdown>
     {props.canCopy ? <Dropdown openByHover modifier="material-management-tooltip" content={props.i18n.text.get("plugin.workspace.materialsManagement.copyPageTooltip")}>
-      <ButtonPill buttonModifiers="material-management-page" icon="content_copy" onClick={copyPage.bind(this, props)}/>
+      <ButtonPill buttonModifiers="material-management-page" icon="copy" onClick={copyPage.bind(this, props)}/>
     </Dropdown> : null}
     {props.canHide ? <Dropdown openByHover modifier="material-management-tooltip"
         content={props.material.hidden ? props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") :
         props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
-      <ButtonPill buttonModifiers="material-management-page" icon="show" onClick={toggleVisiblePageStatus.bind(this, props)}/>
+      <ButtonPill buttonModifiers="material-management-page" icon="eye" onClick={toggleVisiblePageStatus.bind(this, props)}/>
     </Dropdown> : null}
   </div>);
 }

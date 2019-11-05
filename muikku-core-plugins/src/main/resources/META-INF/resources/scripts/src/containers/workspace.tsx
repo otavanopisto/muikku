@@ -403,6 +403,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.store.dispatch(setCurrentWorkspace({
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace)=>{
+          this.props.store.dispatch(loadCurrentWorkspaceUserGroupPermissions() as Action);
           if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
             this.props.store.dispatch(loadWorkspaceDetailsInCurrentWorkspace() as Action);
           }

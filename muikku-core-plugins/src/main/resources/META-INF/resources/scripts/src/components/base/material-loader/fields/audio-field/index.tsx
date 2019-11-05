@@ -347,11 +347,11 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
                 title={this.props.i18n.text.get('plugin.workspace.audioField.downloadLink')} href={value.url} openInNewTab={value.name}/> : null }
 
             {!this.props.readOnly ? <ConfirmRemoveDialog onConfirm={this.removeClipAt.bind(this, index)}>
-                <Link className="material-page__audiofield-remove-file-button icon-delete"
+                <Link className="material-page__audiofield-remove-file-button icon-trash"
                   title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
                 />
               </ConfirmRemoveDialog> : 
-              <Link className="material-page__audiofield-remove-file-button icon-delete"
+              <Link className="material-page__audiofield-remove-file-button icon-trash"
                 title={this.props.i18n.text.get('plugin.workspace.audioField.removeLinkDisabled')}/>}
           </div>;
         } else if (value.failed) {

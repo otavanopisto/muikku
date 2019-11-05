@@ -134,28 +134,28 @@ const defaultNavigation: MessagesNavigationItemListType = [
     location: "inbox",
     type: "folder",
     id: "inbox",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.inbox")}
   },
   {
     location: "unread",
     type: "folder",
     id: "unread",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.unread")}
   },
   {
     location: "sent",
     type: "folder",
     id: "sent",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.sent")}
   },
   {
     location: "trash",
     type: "folder",
     id: "trash",
-    icon: "new-section",
+    icon: "trash-alt",
     text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.trash")}
   }
 ]

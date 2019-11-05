@@ -147,7 +147,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
       return (
-        <div style={{opacity: this.state.removed ? 0.5 : null}}>
+        <div className="dialog__content-row dialog__content-row--label" style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
             <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
               <span className={`glyph icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
@@ -157,9 +157,10 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
               {sliderPicker}
             </div> : null}
           </div>
-          <div className="dialog__container dialog__container--form">
-            <div className="form-element">
-              <input placeholder={this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')} value={this.state.name}
+          <div className="dialog__container dialog__container--label-form">
+            <div className="form-element form-element--edit-label">
+              <label htmlFor="communicator-label-name">{this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')}</label>
+              <input id="communicator-label-name" placeholder={this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')} value={this.state.name}
                 className="form-element__input form-element__input--communicator-label-name"
                 disabled={this.state.removed}
                 onChange={this.onNameChange}/>

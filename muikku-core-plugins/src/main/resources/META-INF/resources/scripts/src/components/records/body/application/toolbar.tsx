@@ -51,7 +51,7 @@ class StudiesToolbar extends React.Component<StudiesToolbarProps, StudiesToolbar
         <div className="application-panel__toolbar">
           <div className="application-panel__toolbar-actions-main">
             {this.props.records.current ? <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
-              <span className="button-pill__icon icon-goback"></span>
+              <span className="button-pill__icon icon-back"></span>
             </Link> : null} 
           </div>
         </div>

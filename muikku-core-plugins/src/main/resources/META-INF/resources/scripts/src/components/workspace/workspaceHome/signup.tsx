@@ -25,7 +25,7 @@ class SignUpPanel extends React.Component<SignUpPanelProps, SignUpPanelState> {
     }
     return (<div className="panel panel--workspace-signup">
       <div className="panel__header">
-        <div className="panel__header-icon panel__header-icon--workspace-signup icon-book"></div>
+        <div className="panel__header-icon panel__header-icon--workspace-signup icon-sign-in"></div>
         <div className="panel__header-title">{this.props.i18n.text.get('plugin.workspace.logInGuidingTitle')}</div>
       </div>
       <div className="panel__body">

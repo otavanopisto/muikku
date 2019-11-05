@@ -266,7 +266,7 @@
 
     &::before {
       font-size: 18px;
-      content: "\e903";
+      content: "\e905";
       color: #fff;
       font-family: 'muikku';
       speak: none;
@@ -307,7 +307,7 @@
   }
 
   /* Add new item */
-  .icon-add {
+  .icon-plus {
     align-items: center;
     background-color: $color-button-info-background;
     border-radius: 100%;
@@ -335,7 +335,7 @@
   }
 
   /* Mark correct answer */
-  .icon-checkmark {
+  .icon-check {
     align-items: center;
     cursor: default;
     display: flex;
@@ -354,7 +354,7 @@
   }
 
   /* Delete item */
-  .icon-delete {
+  .icon-trash {
     align-items: center;
     border-radius: 100%;
     color: $color-button-fatal-background;
@@ -585,7 +585,7 @@
     flex-shrink: 1;
     position: relative;
 
-    .icon-delete {
+    .icon-trash {
       margin: 0;
       position:absolute;
       right: 4px;
@@ -625,7 +625,7 @@
     margin: 0 0 4px;
     position: relative;
 
-    .icon-delete {
+    .icon-trash {
       margin: 0;
       position:absolute;
       right: 0;
@@ -660,7 +660,7 @@
     text-align: center;
     vertical-align: top;
 
-    .icon-add {
+    .icon-plus {
       flex-basis: 4rem;
       font-size: 2rem;
       height: 4rem;

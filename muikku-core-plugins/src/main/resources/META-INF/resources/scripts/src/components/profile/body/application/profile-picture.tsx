@@ -88,11 +88,11 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
             <input name="file" type="file" accept="image/*" onChange={this.readFile}/>
             <div className="change-image__actions">
             <Button buttonModifiers="change-image-edit" onClick={this.editCurrentImage}>
-              <span className="icon icon-edit"/>
+              <span className="icon icon-pencil"/>
               {this.props.i18n.text.get("plugin.profile.editImage")}
              </Button>
              <Button buttonModifiers="change-image-delete" onClick={this.deleteCurrentImage}>
-               <span className="icon icon-delete"/>
+               <span className="icon icon-trash"/>
                {this.props.i18n.text.get("plugin.profile.deleteImage")}
              </Button>
              </div>

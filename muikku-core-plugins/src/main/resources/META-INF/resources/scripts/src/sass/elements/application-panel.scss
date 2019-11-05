@@ -15,9 +15,9 @@
   justify-content: center;
   padding: $navbar-mobile-height 0 10px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
-    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
+    padding: calc(#{$navbar-desktop-height} * 1.25) 0 10px;
   }
 }
 
@@ -43,7 +43,7 @@
 
 .application-panel__header {
   display: none;
-  
+
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     background-color: $color-default-body;
@@ -68,7 +68,7 @@
   height: $panel-header-title-height-mobile;
   line-height: 1;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: $panel-header-title-height-desktop;
   }
@@ -87,7 +87,7 @@
   right: 0;
   top: $navbar-mobile-height;
   z-index: 998;
-  
+
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     display: flex;
@@ -101,7 +101,7 @@
     top: 0;
   }
 }
-  
+
 .application-panel__toolbar {
   align-items: center;
   display: flex;
@@ -121,19 +121,19 @@
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
-  
+
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
 }
- 
+
 .application-panel__tool-icon {
   font-size: 1rem;
   height: auto;
   padding: 0 5px 0 0;
   width: 22px;
 }
- 
+
 .application-panel__tool-title {
   display: inline-block;
   font-size: 1rem;
@@ -165,7 +165,7 @@
 
 .application-panel__content {
   padding: $navbar-mobile-height 0 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     display: flex;
     flex-direction: row;
@@ -197,8 +197,6 @@
 
 // Main containers
 .application-panel__main-container {
-  overflow-x: hidden;
-  overflow-y: visible;
   width: 100%;
   flex-basis: auto;
   flex-grow: 1;

@@ -27,7 +27,7 @@ class PermissionsByUsergroups extends React.Component<PermissionsByUsergroupsPro
     this.togglePermissionIn = this.togglePermissionIn.bind(this);
   }
   togglePermissionIn(permission: WorkspacePermissionsType, valueToToggle: string) {
-    this.props.updateCurrentWorkspaceUserGroupPermission(permission, valueToToggle);
+    //this.props.updateCurrentWorkspaceUserGroupPermission(permission, valueToToggle);
   }
   render(){
     return <ContentPanel modifier="permissions-by-usergroup"

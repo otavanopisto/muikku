@@ -81,6 +81,11 @@
   width: auto;
 }
 
+.form-element--edit-label {
+  margin: 0 0 10px;
+  width: 100%;
+}
+
 .form-element__copy-workspace-start-date {
   flex-basis: 100%;
   flex-grow: 1;
@@ -244,7 +249,6 @@
   background-color: $color-material-page-admin-panel-main-color;
 }
 
-
 .form-element__input--subpanel-search {
   background-color: $color-default;
   border: 2px solid $color-subpanel-search-border;
@@ -314,7 +318,6 @@
   margin-right: 20px;
   max-width: 200px;
   padding: 5px 25px 5px 10px;
-  text-transform: uppercase;
   vertical-align: top;
   width: 100%;
 
@@ -338,6 +341,10 @@
   @include breakpoint($breakpoint-desktop) {
     font-size: $text-desktop-font-size;
   }
+}
+
+.form-element__textarea--edit-label {
+  margin: 0;
 }
 
 .form-element__radio-option-container {

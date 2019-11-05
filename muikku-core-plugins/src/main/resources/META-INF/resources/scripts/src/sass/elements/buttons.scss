@@ -464,7 +464,7 @@
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
   background-color: transparent;
-  color:$color-icon-button-text;  
+  color:$color-icon-button-text;
   cursor: pointer;
   display: inline-flex;
   font-size: $button-pill-mobile-font-size;
@@ -501,13 +501,25 @@
     color: $color-button-pill-text-disabled;
     cursor: default;
   }
- 
+
   input {
     position: absolute;
     width: 100%;
     height: 100%;
     opacity: 0;
   }
+}
+
+.button-icon--workspace-users-contact {
+  color: $color-info;
+}
+
+.button-icon--workspace-users-archive {
+  color: $color-fatal;
+}
+
+.button-icon--workspace-users-unarchive {
+  color: $color-info;
 }
 
 .button-pill {
@@ -645,7 +657,7 @@
 
     .button-pill__icon {
       color: $color-environment-button-pill-icon-user;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
     }
   }
 }
@@ -948,10 +960,10 @@
     color: $color-main-function-button-pill-navigation-edit-label-text;
     display: block;
     font-size: 1rem;
-    height: 1rem;
+    height: 1.125rem;
     line-height: 1;
     margin: 0 0 0 5px;
-    width: 1rem;
+    width: 1.125rem;
 
     &:hover,
     &.hover {
@@ -1316,21 +1328,23 @@
   align-items: center;
   appearance: none;
   background: $color-default;
+  border: 2px solid $color-default;
   border-radius: 15px;
   display: flex;
   justify-content: center;
   margin-right: 15px;
   position: relative;
-  width: 1.5rem;
+  width: calc(#{$generic-switch-size} + #{$generic-switch-container-border-size} * 2);
 
   &::after {
-    background: $color-info;
+    background: lighten($color-disabled,10%);
     border-radius: 100%;
     content: " ";
-    height: 1.25rem;
+    height: $generic-switch-size;
     position: absolute;
-    top: 2px;
-    width: 1.25rem;
+    top: 0;
+    transition: 0.3s;
+    width: $generic-switch-size;
   }
 
   &:hover {
@@ -1341,14 +1355,14 @@
 .button-pill--editing-master-switch-active {
 
   &::after {
-    background: $color-fatal;
+    background: lighten($color-success,10%);
     border-radius: 100%;
-    bottom: 2px;
     content: " ";
-    height: 1.25rem;
+    height: $generic-switch-size;
     position: absolute;
-    top: auto;
-    width: 1.25rem;
+    transform: translateY(100%);
+    top: calc(100% - #{$generic-switch-size} * 2);
+    width: $generic-switch-size;
   }
 }
 

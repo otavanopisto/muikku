@@ -28,11 +28,11 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
     let navigationComponent = <TableOfContentsComponent ref="content"/>;
     return (<div>
       <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
-      <ScreenContainer viewModifiers="materials">
+      
         <MaterialEditor/>
         <Materials onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
-      </ScreenContainer>
+      
     </div>);
   }
 }

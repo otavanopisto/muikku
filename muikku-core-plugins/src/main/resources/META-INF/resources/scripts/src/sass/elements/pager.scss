@@ -5,11 +5,10 @@
 .pager {
   border-top: 1px solid $color-default-separator-border;
   margin: 10px 0 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     margin: 0;
   }
-  
 }
 
 .pager__body {
@@ -17,7 +16,7 @@
   display:flex;
   justify-content: center;
   padding: 12px 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 24px 0 12px;
   }
@@ -37,22 +36,22 @@
 
 .pager__less {
   display: inline-block;
-  
+
   &::before {
-    content: "<";
+    content: "\f104";
     display: block;
   }
 }
 
 .pager__more {
   display: inline-block;
-  
+
   &::before {
-    content: ">";
+    content: "\f105";
     display: block;
   }
 }
-  
+
 .pager__number {
   align-items: center;
   border-radius: 10px;
@@ -61,7 +60,7 @@
   height: 34px;
   justify-content: center;
   cursor: pointer;
-  margin-left: 10px;     
+  margin-left: 10px;
   width: 34px;
 }
 
