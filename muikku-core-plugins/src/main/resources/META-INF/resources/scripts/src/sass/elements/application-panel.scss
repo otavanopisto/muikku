@@ -17,7 +17,7 @@
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    padding: calc(#{$navbar-desktop-height} * 1.25) 0 10px;
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
   }
 }
 

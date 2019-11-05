@@ -10,11 +10,11 @@
 }
 
 .reading-panel {
-  @include text;
   align-items: center;
   display: flex;
   justify-content: center;
   padding: $navbar-mobile-height 0 10px;
+  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
@@ -22,11 +22,11 @@
 }
 
 .reading-panel__container {
+  @include text;
   display: flex;
   flex-direction: column;
   max-width: $breakpoint-max-usable-screen;
-  overflow: visible;
-  width:100%;
+  width: 100%;
 }
 
 .reading-panel__body {
