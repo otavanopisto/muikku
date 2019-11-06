@@ -127,12 +127,12 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
               })}
               </div>
             </div>
-            <div className="application-sub-panel application-sub-panel--workspace-users">  
+            <div className="application-sub-panel application-sub-panel--workspace-users">
               <h2 className="application-sub-panel__header application-sub-panel__header--workspace-users">{this.props.i18n.text.get('plugin.workspace.users.students.title')}</h2>
               <div className="application-sub-panel__body application-sub-panel__body--workspace-students">
                 <div className="form-element form-element--workspace-toolbar">
                   <input type="text" className="form-element__input form-element__input--subpanel-search"
-                    value={this.state.currentSearch} onChange={this.updateSearch}/>
+                    value={this.state.currentSearch} onChange={this.updateSearch} placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')}/>
                   <div className="form-element__input-decoration form-element__input-decoration--subpanel-search icon-search"></div>
                 </div>
                 <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={[

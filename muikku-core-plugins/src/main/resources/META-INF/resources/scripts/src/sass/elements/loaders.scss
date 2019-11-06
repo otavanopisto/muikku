@@ -1,29 +1,27 @@
 @import "../base/colors";
 @import "../base/mixins";
-
-$loader-size: 50;
-$loader-border-width: 10;
+@import "../base/vars";
+@import "../base/breakpoints";
 
 .loader-empty:empty {
   min-height: #{$loader-size + $loader-size/2}px;
   min-width: #{$loader-size + $loader-size/2}px;
   position: relative;
-  
+
   &::after {
-    position: absolute;
-    width: #{$loader-size}px;
+    animation: spin 2s linear infinite;
+    border: #{$loader-border-width}px solid $color-loader-empty-ring;
+    border-radius: 50%;
+    border-top: #{$loader-border-width}px solid $color-loader-empty-rotating-piece;
+    content: " ";
     height: #{$loader-size}px;
-    top: 50%;
     left: 50%;
     margin-left: -#{$loader-size/2}px;
     margin-top: -#{$loader-size/2}px;
-    content: " ";
-    
-    border: #{$loader-border-width}px solid $color-loader-empty-ring;
-    border-top: #{$loader-border-width}px solid $color-loader-empty-rotating-piece;
-    border-radius: 50%;
-    animation: spin 2s linear infinite;
-    
+    position: absolute;
+    top: 50%;
+    width: #{$loader-size}px;
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -32,5 +30,14 @@ $loader-border-width: 10;
 }
 
 .loaded-empty {
-  padding: 20px;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  min-height: calc(100vh - 155px);
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    min-height: 100%;
+  }
 }
