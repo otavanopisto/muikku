@@ -214,7 +214,7 @@ export interface WorkspaceType {
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
   permissions?: WorkspacePermissionsType[],
-      
+
   //Fancy stuff in here
   journals?: WorkspaceJournalsType
 }
@@ -742,7 +742,7 @@ export default function workspaces(state: WorkspacesType={
     } else {
       targetArray.push(insertedContentNode);
     }
-    
+
     return {...state, currentMaterials: repairContentNodes(newCurrentMaterials)}
   } else if (action.type === "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES") {
     return {...state, currentMaterials: repairContentNodes(state.currentMaterials, action.payload.newPath, action.payload.material.workspaceMaterialId)}
