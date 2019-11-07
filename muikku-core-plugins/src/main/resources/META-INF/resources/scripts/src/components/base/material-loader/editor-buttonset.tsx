@@ -26,7 +26,6 @@ function startupEditor(props: EditorButtonSetProps){
   props.setWorkspaceMaterialEditorState({
     currentNodeWorkspace: props.workspace,
     currentNodeValue: props.material,
-    currentDraftNodeValue: {...props.material},
     parentNodeValue: props.folder,
     section: false,
     opened: true,
@@ -45,7 +44,7 @@ function startupEditor(props: EditorButtonSetProps){
     canEditContent: typeof props.canAddAttachments === "undefined" ? true : props.canAddAttachments,
     showRemoveAnswersDialogForPublish: false,
     showRemoveAnswersDialogForDelete: false,
-  });
+  }, true);
 }
 
 function copyPage(props: EditorButtonSetProps) {

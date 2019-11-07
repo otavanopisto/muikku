@@ -154,7 +154,7 @@ export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
 }
 
 export interface SetWorkspaceMaterialEditorStateTriggerType {
-  (newState: WorkspaceMaterialEditorType):AnyActionType
+  (newState: WorkspaceMaterialEditorType, loadCurrentDraftNodeValue?: boolean):AnyActionType
 }
 
 export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
@@ -1347,12 +1347,24 @@ let updateCurrentWorkspaceUserGroupPermission:UpdateCurrentWorkspaceUserGroupPer
   }
 }
 
-let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType = function setWorkspaceMaterialEditorState(newState){
-  return {
-    type: "UPDATE_WORKSPACES_ALL_PROPS",
-    payload: {
-      materialEditor: newState
+let setWorkspaceMaterialEditorState:SetWorkspaceMaterialEditorStateTriggerType = function setWorkspaceMaterialEditorState(newState: WorkspaceMaterialEditorType, loadCurrentDraftNodeValue){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    const currentNodeValue = newState.currentNodeValue;
+    // TODO do mApi stuff
+    let currentDraftNodeValue;
+    const currentDraftNodeValueByStorage =
+      localStorage.getItem("TEMPORARY_LOCAL_DRAFT_" + currentNodeValue.workspaceMaterialId + "_" + newState.currentNodeWorkspace.id);
+    if (!currentDraftNodeValueByStorage) {
+      newState.currentDraftNodeValue = {...currentNodeValue}
+    } else {
+      newState.currentDraftNodeValue = JSON.parse(currentDraftNodeValueByStorage);
     }
+    dispatch({
+      type: "UPDATE_WORKSPACES_ALL_PROPS",
+      payload: {
+        materialEditor: newState
+      }
+    });
   };
 }
 
@@ -1501,6 +1513,15 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       } else {
         // Trying to update the draft
         // TODO
+        
+        // TODO do mApi stuff
+        localStorage.setItem(
+          "TEMPORARY_LOCAL_DRAFT_" + data.material.workspaceMaterialId + "_" + data.workspace.id,
+          JSON.stringify({
+            ...data.material,
+            ...data.update,
+          }),
+        );
       }
 
       data.success && data.success();
