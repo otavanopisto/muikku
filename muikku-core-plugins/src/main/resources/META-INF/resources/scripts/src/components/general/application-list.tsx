@@ -134,15 +134,14 @@ export class ApplicationListItemContentWrapper extends React.Component<Applicati
     let asideModifiers = this.props.asideModifiers && this.props.asideModifiers instanceof Array ? this.props.asideModifiers : [this.props.asideModifiers];
     let mainModifiers = this.props.mainModifiers && this.props.mainModifiers instanceof Array ? this.props.mainModifiers : [this.props.mainModifiers];
     let actionModifiers = this.props.actionModifiers && this.props.actionModifiers instanceof Array ? this.props.actionModifiers : [this.props.actionModifiers];
-    
+
     delete (newProps as any)["modifiers"];
     delete (newProps as any)["asideModifiers"];
     delete (newProps as any)["mainModifiers"];
     delete (newProps as any)["aside"];
     delete (newProps as any)["actionModifiers"];
     delete (newProps as any)["actions"];
-    
-    
+
     return <div {...newProps} className={`application-list__item-content-wrapper ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map( m => `application-list__item-content-wrapper--${m}` ).join( " " ) : ""}`}>
       <div className={`application-list__item-content-aside ${this.props.asideModifiers ? asideModifiers.map( m => `application-list__item-content-aside--${m}` ).join( " " ) : ""}`}>
         {this.props.aside}

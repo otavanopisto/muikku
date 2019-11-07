@@ -17,7 +17,7 @@
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    padding: calc(#{$navbar-desktop-height} * 1.25) 0 10px;
+    padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
   }
 }
 
@@ -56,7 +56,7 @@
   height: $panel-header-title-height-mobile;
   line-height: 1;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: $panel-header-title-height-desktop;
   }

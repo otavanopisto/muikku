@@ -48,7 +48,7 @@ class DeactivateReactivateUserDialog extends React.Component<DeactivateReactivat
       </div>;
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Button buttonModifiers={["fatal","standard-ok"]} onClick={this.toggleActiveStatus.bind(this, closeDialog)}>
+        <Button buttonModifiers={this.props.user.active ? ["fatal","standard-ok"] : ["execute","standard-ok"]} onClick={this.toggleActiveStatus.bind(this, closeDialog)}>
           {this.props.i18n.text.get(this.props.user.active ? 
               'plugin.workspace.users.student.archiveDialog.archiveButton' :
               'plugin.workspace.users.student.unarchiveDialog.archiveButton')}

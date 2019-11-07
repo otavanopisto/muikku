@@ -575,29 +575,42 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
              <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
               <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.permissions.viewTitle")}</h2>
               <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-                <input type="text" value={this.state.workspaceUsergroupNameFilter} onChange={this.updateWorkspaceUsergroupNameFilter}/>
-                <div>
-                  <div>{this.props.i18n.text.get("plugin.workspace.permissions.usergroupsColumn.label")}</div>
-                  {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
-                    <div key={pte}>{this.props.i18n.text.get("plugin.workspace.permissions.label." + pte)}</div>
-                  )}
+
+                <div className="form-element form-element--workspace-toolbar application-sub-panel__item application-sub-panel__item--workspace-permissions">
+                  <input placeholder={this.props.i18n.text.get("plugin.workspace.permissions.searchUsergroups")} type="text" className="form-element__input form-element__input--subpanel-search" value={this.state.workspaceUsergroupNameFilter} onChange={this.updateWorkspaceUsergroupNameFilter}/>
+                  <div className="form-element__input-decoration form-element__input-decoration--subpanel-search icon-search"></div>
                 </div>
-                {this.state.workspacePermissions
-                  .filter((permission) => filterMatch(permission.userGroupName, this.state.workspaceUsergroupNameFilter)).map((permission) => {
-                  return <div key={permission.userGroupEntityId}>
-                    <div>{filterHighlight(permission.userGroupName, this.state.workspaceUsergroupNameFilter)}</div>
-                    {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
-                      <div key={pte}>
-                        <input className="form-element" type="checkbox" checked={permission.permissions.includes(pte)}
-                          onChange={this.togglePermissionIn.bind(this, permission, pte)}/>
-                      </div>
-                    )}
-                  </div>
-                })}
+
+                <div className="application-sub-panel__item application-sub-panel__item--workspace-management">
+                  <fieldset>
+                    <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.permissions.usergroupsColumn.label")}</legend>
+
+                    {/*
+                    If we ever have multiple permissions to set then we need to use the following code. 
+                    Also input and label elements needs to have htmlFor and id attributes removed if there are more than one checkboxes
+
+                     {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
+                      <div className="what" key={pte}>{this.props.i18n.text.get("plugin.workspace.permissions.label." + pte)}</div>
+                     )} 
+                    */}
+
+                    {this.state.workspacePermissions
+                      .filter((permission) => filterMatch(permission.userGroupName, this.state.workspaceUsergroupNameFilter)).map((permission) => {
+                      return <span className="form-element form-element--checkbox-radiobutton" key={permission.userGroupEntityId}>
+                        {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
+                          <input id={`usergroup${permission.userGroupEntityId}`} key={pte} type="checkbox" checked={permission.permissions.includes(pte)}
+                            onChange={this.togglePermissionIn.bind(this, permission, pte)}/>
+                        )}
+                        <label htmlFor={`usergroup${permission.userGroupEntityId}`}>{filterHighlight(permission.userGroupName, this.state.workspaceUsergroupNameFilter)}</label>
+                      </span>
+                    })}
+                  </fieldset>
+                </div>
               </div>
+            </section>
+            <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
               <div className="application-sub-pane__button-container">
-                <Button className="button--execute" disabled={this.state.locked} 
-              onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
+                <Button className="button--execute" disabled={this.state.locked} onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
               </div>
             </section>
           </div>

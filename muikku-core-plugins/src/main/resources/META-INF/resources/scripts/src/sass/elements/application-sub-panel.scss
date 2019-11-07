@@ -37,7 +37,12 @@
 }
 
 .application-sub-panel--workspace-users {
-  border-bottom: 1px solid $color-subpanel-border;
+  padding: 10px;
+  margin: 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 20px;
+  }
 }
 
 // Subpanel header
@@ -76,8 +81,7 @@
 }
 
 .application-sub-panel__header--workspace-users {
-  @include workspace-subpanel-title;
-  padding: 10px 10px 0;
+  padding: 0;
 }
 
 .application-sub-panel__header-main-container {
@@ -155,7 +159,7 @@
 }
 
 .application-sub-panel__body--workspace-settings {
-  padding: 0;  
+  padding: 0;
 
   @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
@@ -164,8 +168,12 @@
   }
 }
 
+.application-sub-panel__body--workspace-staff-members {
+  padding: 0;
+}
+
 .application-sub-panel__body--workspace-students {
-  padding: 10px;
+  padding: 10px 0 0;
 }
 
 // Subpanel Item Split Container
@@ -261,6 +269,13 @@
 
 .application-sub-panel__item--workspace-end-date {
   flex: 0;
+}
+
+.application-sub-panel__item--workspace-permissions {
+
+  &:not(:last-child) {
+    border: 0;
+  }
 }
 
 .application-sub-pane__button-container {

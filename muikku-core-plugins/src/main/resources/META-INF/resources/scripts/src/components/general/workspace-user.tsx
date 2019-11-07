@@ -8,7 +8,7 @@ import { getUserImageUrl } from "~/util/modifiers";
 import LazyLoader from "~/components/general/lazy-loader";
 import {IconButton, ButtonPill} from '~/components/general/button';
 import { getName, filterHighlight } from "~/util/modifiers";
-import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItemContentActions } from '~/components/general/application-list';
+import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemContentActions } from '~/components/general/application-list';
 
 interface workspaceUserProps {
   student: ShortWorkspaceUserWithActiveStatusType,
@@ -20,17 +20,18 @@ interface workspaceUserProps {
   onSetToggleStatus: ()=>any
 }
 
-
 export default function WorkspaceUser(props: workspaceUserProps){
-  
+
   let actionButtons = props.student.active ? <ApplicationListItemContentActions><IconButton buttonModifiers="workspace-users-contact" icon="envelope" onClick={props.onSendMessage}/><IconButton buttonModifiers="workspace-users-archive" icon="trash" onClick={props.onSetToggleStatus}/></ApplicationListItemContentActions>: <IconButton buttonModifiers="workspace-users-unarchive" icon="back" onClick={props.onSetToggleStatus}/>;
-  
-  return <ApplicationListItemContentWrapper modifiers="workspace-users" mainModifiers="workspace-users" aside={<LazyLoader className="avatar-container">
-    <div className="item-list__profile-picture">
-      <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
-    </div>
-   </LazyLoader>} actions={actionButtons}>
-    <div className="application-list__item-content-primary-data">{filterHighlight(getName(props.student, true), props.highlight)}</div>
-    <div className="application-list__item-content-secondary-data">{props.student.studyProgrammeName ? " (" + props.student.studyProgrammeName + ")" : ""}</div>
-</ApplicationListItemContentWrapper>
+
+  return <ApplicationListItem modifiers="workspace-user">
+    <ApplicationListItemContentWrapper modifiers="workspace-user" mainModifiers="workspace-user" asideModifiers="workspace-user" aside={<LazyLoader className="avatar-container">
+      <div className="item-list__profile-picture">
+        <Avatar id={props.student.userEntityId} firstName={props.student.firstName} hasImage={props.student.hasImage}/>
+      </div>
+     </LazyLoader>} actions={actionButtons}>
+      <div className="application-list__item-content-primary-data">{filterHighlight(getName(props.student, true), props.highlight)}</div>
+      <div className="application-list__item-content-secondary-data">{props.student.studyProgrammeName ? " (" + props.student.studyProgrammeName + ")" : ""}</div>
+    </ApplicationListItemContentWrapper>
+  </ApplicationListItem>
 }
