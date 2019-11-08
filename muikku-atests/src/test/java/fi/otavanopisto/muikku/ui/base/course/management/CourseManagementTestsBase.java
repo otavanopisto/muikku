@@ -68,15 +68,17 @@ public class CourseManagementTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitAndClick("input[name=\"wokspace-name\"]");
         clearElement("input[name=\"wokspace-name\"]");
-        sendKeys(".application-sub-panel__body--workspace-description input", "Testing course");
+        sendKeys("input[name=\"wokspace-name\"]", "Testing course");
 
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).setSerializationInclusion(Include.NON_NULL);
 
         OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-      
-        waitAndClick(".panel__footer .button");
+
+        waitForClickable(".application-sub-pane__button-container .button");
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
         waitForPresentAndVisible(".notification-queue__items");
         
         Course course = new Course(course1.getId(), "Testing course", created, created, "<p>test course for testing</p>\n", false, 1, 
@@ -144,7 +146,9 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
         scrollIntoView(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
         waitAndClick(".application-sub-panel__item-data--workspace-management input[name=\"unpublish\"]");
-        waitAndClick(".panel__footer .button");
+        waitForClickable(".application-sub-pane__button-container .button");
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
         waitForPresentAndVisible(".notification-queue__items");
         sleep(500);
         navigate("/coursepicker", false);
@@ -191,7 +195,9 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick("input[name=\"name-extension\"]");
         clearElement("input[name=\"name-extension\"]");
         sendKeys("input[name=\"name-extension\"]", "For Test");
-        waitAndClick(".panel__footer .button");
+        waitForClickable(".application-sub-pane__button-container .button");
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
         waitForPresentAndVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
@@ -264,7 +270,9 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent("select[name=\"workspace-type\"]");
         scrollIntoView("select[name=\"workspace-type\"]");
         selectOption("select[name=\"workspace-type\"]", "PYRAMUS-2");
-        waitAndClick(".panel__footer .button");
+        waitForClickable(".application-sub-pane__button-container .button");
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
         waitForPresentAndVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
@@ -337,15 +345,16 @@ public class CourseManagementTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent(".license-selector select");
         scrollIntoView(".license-selector select");
-        selectOption(".license-selector select", "cc-3.0");
-        waitAndClick(".panel__footer .button");
+        selectOption(".license-selector select", "CC3");
+        waitForClickable(".application-sub-pane__button-container .button");
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
         waitForPresentAndVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-//        TODO: Can not see this anywhere
-//        waitForPresent(".workspace-footer-license-wrapper .workspace-material-license");
-//        assertTextIgnoreCase(".workspace-footer-license-wrapper .workspace-material-license", "https://creativecommons.org/licenses/by-sa/3.0");
+        waitForPresent(".footer--workspace .license__link");
+        assertTextIgnoreCase(".footer--workspace .license__link", "https://creativecommons.org/licenses/by/3.0");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -383,12 +392,15 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .build();
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+        reloadCurrentPage();
         waitForPresent("input[name=\"add-producer\"]");
         scrollIntoView("input[name=\"add-producer\"]");
         selectAllAndClear("input[name=\"add-producer\"]");
         sendKeys("input[name=\"add-producer\"]", "Mr. Tester");
         findElementByCssSelector("input[name=\"add-producer\"]").sendKeys(Keys.RETURN);
-        waitAndClick(".panel__footer .button");
+        waitForClickable(".application-sub-pane__button-container .button");
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
         waitForPresentAndVisible(".notification-queue__items");
         waitForNotVisible(".loading");
         
