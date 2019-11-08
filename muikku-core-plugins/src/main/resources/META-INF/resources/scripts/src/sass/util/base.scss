@@ -36,10 +36,6 @@ a {
   text-decoration: none;
 }
 
-dl {
-
-}
-
 dt {
   font-weight: 600;
   margin: 5px 0 0;
@@ -50,7 +46,7 @@ dd {
 }
 
 // Webkit (Chrome, Opera, Safari)
-::-webkit-input-placeholder { 
+::-webkit-input-placeholder {
   font-style: italic;
 }
 
@@ -64,12 +60,7 @@ dd {
   font-style: italic;
 }
 
-// < FF18-
-:-moz-placeholder {
-  font-style: italic;
-}
-
 // Standard
-::placeholder { 
+::placeholder {
   font-style: italic;
 }

@@ -44,11 +44,6 @@
   overflow: visible;
 }
 
-// Wrapper for FRONT PAGE view
-.screen-container__wrapper--frontpage {
-  
-}
-
 // Wrapper for ERROR view
 .screen-container__wrapper--error {
   margin: calc(#{$navbar-mobile-height} * 1.35) 0 10px;

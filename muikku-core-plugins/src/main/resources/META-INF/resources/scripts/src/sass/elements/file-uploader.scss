@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .file-uploader {
-  @include text
+  @include text;
   border: 2px solid $color-tertiary;
 }
 
@@ -77,7 +77,7 @@
 }
 
 .uploaded-files {
-  @include text
+  @include text;
   padding: 0 10px;
 }
 
@@ -121,10 +121,6 @@
     flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
-  }
-
-  .file-uploader__item-title {
-  
   }
 
   .file-uploader__item-url {

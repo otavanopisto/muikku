@@ -33,16 +33,6 @@
   display: flex;
   padding: 10px;
   position: relative;
-
-  &:hover,
-  &.hover {
-    // background-color: $color-item-list-item-background-hover;
-  }
-
-  &:active,
-  &.active {
-    // background-color: $color-item-list-item-background-active;
-  }
 }
 
 .item-list--settings {
@@ -113,10 +103,6 @@
       color: $color-item-list-item-font-color-active;
     }
   }
-}
-
-.item-list--aside-navigation .item-list__text-body {
-  //line-height: $item-list-item-min-size;
 }
 
 .item-list--aside-navigation .item-list__icon {
@@ -209,10 +195,6 @@
 .item-list__user-email *,
 .item-list__user-phone * {
   margin: 0 5px 0 0;
-}
-
-.item-list__user-vacation-period {
-
 }
 
 // List item texts

@@ -300,10 +300,6 @@
   padding: 0 10px 0 0;
 }
 
-.material-page__correct-answers-data {
-  
-}
-
 // WORD AND CHARACTER COUNTER
 .material-page__counter-wrapper {
   align-items: center;
@@ -711,16 +707,6 @@
   }
 }
 
-// MathJax Formula
-.material-page__math-formula {
-  
-}
-
-// Audio field
-.material-page__audiofield-wrapper {
-
-}
-
 .material-page__audiofield {
   @include taskfield-text;
   @include taskfield-defaults;
@@ -1011,10 +997,6 @@
   }
 }
 
-.material-page__organizerfield-terms { // Wrapper for terms
-  // Not empty
-}
-
 .material-page__organizerfield-terms-title { // Title of draggable terms
   font-weight: 600;
   padding: 0 4px;
@@ -1022,10 +1004,6 @@
   @include breakpoint($breakpoint-pad) {
     font-weight: 400;
   }
-}
-
-.material-page__organizerfield-terms-container { // Container for draggable terms
-  // Not empty
 }
 
 .material-page__organizerfield-term { // Single draggable term
@@ -1163,11 +1141,6 @@
 .material-page__organizerfield-category-terms-container { // Container of single category where terms can be dragged
   min-height: 100px;
   padding: 5px;
-}
-
-// Connect field
-.material-page__connectfield-wrapper {
-  // Not empty
 }
 
 .material-page__connectfield {
@@ -1500,22 +1473,6 @@
   margin: 2px 0;
 }
 
-.material-page__mathfield {
-  
-}
-
-.material-page__mathfield-formula {
-  
-}
-
-.material-page__mathfield-editor {
-  
-}
-
-.material-page__mathfield-toolbar {
-  
-}
-
 // Assignment assessment 
 .material-page__assignment-assessment {
   border-top: 1px solid $color-default-item-separator-border;
@@ -1647,10 +1604,6 @@
 .material-page__assignment-assessment-date-label {
   font-weight: bold;
   padding: 0 10px 0 0;
-}
-
-.material-page__assignment-assessment-date-data {
-
 }
 
 // MATERIAL PAGE CUSTOM BOX STYLES

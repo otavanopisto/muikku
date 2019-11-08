@@ -217,16 +217,6 @@
   background-color: $color-application-list-item-background;
   position: relative;
 
-  &.hover,
-  &:hover {
-  // background-color: $color-application-list-item-background-hover;
-  }
-
-  &.active,
-  &:active {
-  // background-color: $color-application-list-item-background-active;
-  }
-
   &.selected {
     background-color: $color-application-list-item-background-selected;
 

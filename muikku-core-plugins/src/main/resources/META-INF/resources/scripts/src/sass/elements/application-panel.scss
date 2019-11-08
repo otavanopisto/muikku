@@ -53,8 +53,8 @@
     flex-shrink: 0;
     justify-content: center;
     margin: 10px;
-    position: relative;
     max-width: calc($breakpoint-max-usable-screen - 20px);
+    position: relative;
     width: calc(100% - 20px);
   }
 }
