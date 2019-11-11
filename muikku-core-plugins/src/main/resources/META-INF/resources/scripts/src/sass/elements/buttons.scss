@@ -482,7 +482,7 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $button-pill-desktop-font-size;
     height: $button-pill-desktop-size;
-    width: $button-pill-desktop-size;  
+    width: $button-pill-desktop-size;
   }
 
   &:hover,
@@ -526,7 +526,7 @@
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
-  background-color: $color-button-pill-background;  
+  background-color: $color-button-pill-background;
   color: $color-button-pill-text;
   cursor: pointer;
   border-radius: 100%;
@@ -546,7 +546,7 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $button-pill-desktop-font-size;
     height: $button-pill-desktop-size;
-    width: $button-pill-desktop-size;  
+    width: $button-pill-desktop-size;
   }
 
   &:hover,
@@ -566,7 +566,7 @@
     color: $color-button-pill-text-disabled;
     cursor: default;
   }
- 
+
   input {
   	position: absolute;
   	width: 100%;
@@ -673,7 +673,7 @@
   background-color: $color-main-function-button-pill-settings-background;
   color: $color-main-function-button-pill-settings-text;
   font-size: $button-pill-settings-font-size;
-  height: auto; 
+  height: auto;
   vertical-align: top;
 
   &:hover,
@@ -1088,7 +1088,7 @@
   color: $color-default;
   font-size: $text-mobile-font-size;
   margin: 5px;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -1138,7 +1138,7 @@
 .button-pill--material-management-chapter {
   @include prefix(transition, moz o ms webkit, all 0.15s);
   background: $color-default;
-  border: 0px;
+  border: 0;
   border-radius: 10px;
   color: $color-material-page-admin-panel-main-color;
   font-size: 1rem;
@@ -1171,7 +1171,7 @@
     background: transparent;
   }
 
-  @include breakpoint($breakpoint-pad) { 
+  @include breakpoint($breakpoint-pad) {
     font-size: 1.5rem;
     height: 2.5rem;
     top: 0;

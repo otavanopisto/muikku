@@ -7,30 +7,30 @@
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
   padding: 0 10px; // Top and bottom paddings are added in application-list__item-header--course so clickable area is bigger when only header acts as cickable object
-  
+
   &:first-child {
     border-color: transparent;
   }
-  
+
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
   }
-  
+
   &.course--open {
     background: $color-default;
     border-color: transparent;
     box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
     z-index: 10;
-  }   
+  }
 }
 
 .course--studies {
-	
+
 	&:hover,
   &.hover,
   &:active,
   &.active {
-  
+
     svg {
       opacity: 0.9;
     }
@@ -39,14 +39,14 @@
 
 .course--credits {
   cursor: auto;
-  
+
   .application-list__item-header--course {
     cursor: auto;
   }
 }
 
 .course--open .text--list-item-title {
-  font-weight: 600;  
+  font-weight: 600;
 }
 
 .course__content {
@@ -55,5 +55,5 @@
 }
 
 .course__title {
-  padding-left: 5px;   
+  padding-left: 5px;
 }

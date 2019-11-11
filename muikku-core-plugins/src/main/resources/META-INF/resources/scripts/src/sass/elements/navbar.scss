@@ -189,7 +189,7 @@
   flex-shrink: 0;
   height: $navbar-mobile-height;
   justify-content: flex-end;
-  
+
   @include breakpoint($breakpoint-mobile-xl) {
     flex-grow: 1;
   }

@@ -39,71 +39,71 @@
     font-weight: 400;
     margin: 10px 0;
   }
-  
+
   h1 {
     font-size: 1.3rem;
   }
-  
+
   h2 {
     font-size: 1.25rem;
   }
-  
+
   h3 {
     font-size: 1.125rem;
   }
-  
+
   h4 {
     font-size: 1rem;
   }
-  
+
   h5 {
     font-size: 0.9375rem;
   }
-  
+
   h6 {
     font-size: 0.825rem;
   }
-  
+
   b,
   strong {
     font-weight: 600;
   }
-  
+
   i {
     font-style: italc;
   }
-  
+
   a {
     color: $color-text-link;
     text-decoration: underline;
   }
-  
+
   img {
     border: 0;
     max-width: 100%;
   }
-  
+
   blockquote {
     background: $color-signature-background;
     border-left: 5px solid $color-signature-border;
     margin: 10px;
     padding: 0.01em 10px;
   }
-  
+
   ul,
   ol {
     display: block;
     margin: 10px 0;
     padding: 0 0 0 30px;
   }
-  
+
   ul ul,
   ol ol,
   ul ol,
   ol ul {
     margin: 0;
   }
-  
+
   ul {
     list-style-type: disc;
 
@@ -111,15 +111,15 @@
       list-style-type: circle;
     }
   }
-  
+
   ol {
     list-style-type: decimal;
   }
-  
+
   li {
     display: list-item;
   }
-  
+
   table {
     font-size: $text-desktop-font-size;
     margin: initial;
@@ -155,7 +155,7 @@
     vertical-align: top;
     width: auto;
   }
-  
+
   // Communicator signature
   .mf-signature {
     background: $color-signature-background;
@@ -164,12 +164,12 @@
     font-style: italic;
     margin: 20px 0 10px;
     padding: 10px 15px;
-    
+
     p {
       margin: 0;
     }
   }
-  
+
   // Communicator message from workspace
   .message-from-workspace {
     background: $color-message-from-workspace-background;

@@ -8,7 +8,7 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-desktop) {
     min-height: 0;
   }

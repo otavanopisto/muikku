@@ -53,14 +53,14 @@
   font-family: $text-font-family;
   height: 100%;
   overflow: auto;
-  width: 100%; 
+  width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
     max-width: 760px;
     overflow: initial;
   }
 
-  @include breakpoint($breakpoint-desktop-xl) { 
+  @include breakpoint($breakpoint-desktop-xl) {
     max-width: 830px;
   }
 }
@@ -212,7 +212,7 @@
 .env-dialog__selected-item {
   align-items: center;
   background-color: $color-form-element-selected-item-background;
-  border-radius: 4px; 
+  border-radius: 4px;
   color: $color-form-element-selected-item-text;
   display: inline-flex;
   font-weight: 300;

@@ -23,7 +23,7 @@
   margin: -10px -10px 20px;
   padding: 10px 0;
   text-align: left;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 0 0 10px;
   }

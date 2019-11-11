@@ -141,7 +141,7 @@
     max-width: 50%;
   }
 
-  @include breakpoint($breakpoint-desktop) { 
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: 100%;
     max-width: 100%;
   }
@@ -342,11 +342,11 @@
 .panel__body-title {
   font-size: 1rem;
   font-weight: 300;
-  padding: 10px 10px 0; // Bottom padding is omitted as panel__body-content has top padding 
+  padding: 10px 10px 0; // Bottom padding is omitted as panel__body-content has top padding
 }
 
 .panel__body-content {
-  padding: 10px; // Top and bottom padding is needed to create spacing between panel__body-title and panel__body-footer elements 
+  padding: 10px; // Top and bottom padding is needed to create spacing between panel__body-title and panel__body-footer elements
 }
 
 .panel__body-content--signup {
@@ -361,5 +361,5 @@
 
 .panel__body-footer {
   line-height: 1;
-  padding: 0 10px 10px; // Top padding is omitted as panel__body-content has bottom padding 
+  padding: 0 10px 10px; // Top padding is omitted as panel__body-content has bottom padding
 }

@@ -18,7 +18,7 @@
   z-index: 1000;
 
   @include breakpoint($breakpoint-pad) {
-    box-shadow: 0 0 50px $color-material-edit-panel-shadow;
+    box-shadow: 0 0 200px $color-material-edit-panel-shadow;
     max-width: 730px;
     min-width: 680px;
   }
@@ -496,7 +496,7 @@
     display: flex;
 
     input.cke_dialog_ui_checkbox_input {
-      margin: 0 5px 0 0; // Checkbox has same classname so we need to override margins as we render checkboxes in different places 
+      margin: 0 5px 0 0; // Checkbox has same classname so we need to override margins as we render checkboxes in different places
     }
   }
 
@@ -523,7 +523,7 @@
   .connectfield-element-container {
     align-items: center;
     display: flex;
-    flex-flow: row nowrap; 
+    flex-flow: row nowrap;
     padding: 4px 0;
 
     input.cke_dialog_ui_input_text {

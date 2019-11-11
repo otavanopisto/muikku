@@ -39,7 +39,7 @@
 .application-sub-panel--workspace-users {
   padding: 10px;
   margin: 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 20px;
   }
@@ -457,7 +457,7 @@
 
 .application-sub-panel__text--task-evaluation {
   background: $color-task-evaluation;
-  border-radius: 3px; 
+  border-radius: 3px;
 }
 
 .application-sub-panel__text--course-evaluation {

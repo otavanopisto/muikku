@@ -12,7 +12,7 @@
 
   &.material-page--hidden {
     opacity: 0.3;
-  } 
+  }
 
   @include breakpoint($breakpoint-pad) {
     padding: 0 20px;
@@ -453,11 +453,11 @@
   @include taskfield-defaults;
   margin: 4px;
   padding: 4px 6px;
-  
+
   &.correct-answer {
     border-color: $color-correct-answer;
   }
-  
+
   &.incorrect-answer {
     border-color: $color-incorrect-answer;
   }
@@ -479,11 +479,11 @@
   @include taskfield-defaults;
   margin: 4px;
   padding: 3px;
-  
+
   &.correct-answer {
     border-color: $color-correct-answer;
   }
-  
+
   &.incorrect-answer {
     border-color: $color-incorrect-answer;
   }
@@ -617,7 +617,7 @@
   align-items: center;
   display: inline-flex;
   margin: 0 2px;
-  padding: 2px; 
+  padding: 2px;
 }
 
 .material-page__checkbox {
@@ -838,7 +838,7 @@
     text-transform: uppercase;
   }
 
-  // We set the record/stop buttons colors here 
+  // We set the record/stop buttons colors here
   .material-page__audiofield-start-record-button {
     border: 1px solid $color-recording;
     color: $color-recording;
@@ -969,7 +969,7 @@
   line-height: 1; // This prevents text misalignment in mobile views
   padding: 6px 6px 6px 0;
   max-width: calc(100% - 25px);
-  
+
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
     max-width: calc(100% - 28px);
@@ -1031,8 +1031,8 @@
   background: lighten($taskfield-border-color,25%);
 }
 
-// Selected needs to be defined after edited unless we want to create more complex scss inception 
-// as edited and selected modifiers can be present at the same time and we need to show visually if 
+// Selected needs to be defined after edited unless we want to create more complex scss inception
+// as edited and selected modifiers can be present at the same time and we need to show visually if
 // edited item is selected
 .material-page__organizerfield-term--selected { // Single draggable term in SELEDTED state
   background: $taskfield-border-color;
@@ -1051,7 +1051,7 @@
     @include rotate-icon-on-hover;
     cursor: pointer;
     padding: 6px;
-    
+
   }
 
   .material-page__organizerfield-term-label {
@@ -1068,7 +1068,7 @@
   line-height: 1; // This prevents text misalignment in mobile views
   opacity: 0.6;
   padding: 4px 6px;
-  
+
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
   }
@@ -1261,8 +1261,8 @@
   background: lighten($taskfield-border-color,25%);
 }
 
-// Selected needs to be defined after edited unless we want to create more complex scss inception 
-// as edited and selected modifiers can be present at the same time and we need to show visually if 
+// Selected needs to be defined after edited unless we want to create more complex scss inception
+// as edited and selected modifiers can be present at the same time and we need to show visually if
 // edited item is selected
 .material-page__connectfield-term--selected {
   background: $taskfield-border-color;
@@ -1389,10 +1389,10 @@
   background: lighten($taskfield-border-color,25%);
 }
 
-// Selected needs to be defined after edited unless we want to create more complex scss inception 
-// as edited and selected modifiers can be present at the same time and we need to show visually if 
+// Selected needs to be defined after edited unless we want to create more complex scss inception
+// as edited and selected modifiers can be present at the same time and we need to show visually if
 // edited item is selected
-.material-page__connectfield-counterpart--selected { 
+.material-page__connectfield-counterpart--selected {
   background: $taskfield-border-color;
   color: $color-default;
 
@@ -1401,7 +1401,7 @@
   }
 }
 
-// Hover effect rules for terms and counterparts when textual content 
+// Hover effect rules for terms and counterparts when textual content
 // is larger than what can be fitted in 1 row
 .material-page__connectfield-term--edited,
 .material-page__connectfield-counterpart--edited {
@@ -1445,7 +1445,7 @@
     left: -2px;
     padding: 2px 0;
     position: absolute;
-    top: 0px;
+    top: 0;
     width: calc(100% + 4px);
     z-index: 99;
 
@@ -1473,7 +1473,7 @@
   margin: 2px 0;
 }
 
-// Assignment assessment 
+// Assignment assessment
 .material-page__assignment-assessment {
   border-top: 1px solid $color-default-item-separator-border;
   border-left-style: solid;
@@ -1492,7 +1492,7 @@
   .material-page__assignment-assessment-grade-data {
     background: $color-incomplete;
   }
-  
+
   .material-page__assignment-assessment-icon {
     color: $color-incomplete;
   }
@@ -1769,7 +1769,7 @@
 }
 
 // MATERIAL TEXT STYLES
-.material-styles-text { 
+.material-styles-text {
   max-width: 920px;
   margin: 20px auto;
   min-height: 14px;
@@ -1805,7 +1805,7 @@
   display: inline-block;
   font-size: 20px;
   line-height: 35px;
-  padding: 15px 20px; 
+  padding: 15px 20px;
 }
 
 // CITATION TEXT
@@ -1860,7 +1860,6 @@
   font-style: normal;
 
   &::before {
-    position: absolute;
     content: open-quote;
     font-family: arial;
     font-size: 55px;
