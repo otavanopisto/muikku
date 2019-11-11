@@ -209,19 +209,68 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let from = stanza.attributes.from.value;
         let senderClass ="";
 
-        from = from.split("/").pop();
+        var sXML = new XMLSerializer().serializeToString(stanza.ownerDocument);
         
-        if (from === this.state.nick){
-          senderClass = "sender-me";
+        //var node = new DOMParser().parseFromString(sXML, "text/xml");
+        
+        //const astamp = node.evaluate("/*[local-name()='delay']/@stamp", node, null, XPathResult.STRING_TYPE, null ).stringValue;
 
-        }else{
-          if (this.state.roomJid.startsWith("workspace-")){
-            senderClass = "sender-others-workspace";
-          } else {
-            senderClass = "sender-others";
+        
+        var stamp = null; 
+        var list = stanza.childNodes;
+        
+        for(var node of list) { 
+            if (node.nodeName == 'delay') { 
+                stamp = node.attributes.stamp.nodeValue 
+              };
           }
-        }
-        let groupMessage: any = {from: from, content: message, senderClass: senderClass};
+        let days = "";
+        let months = "";
+        let datetime = "";
+        let d;
+        
+        if (stamp){
+          d = new Date(stamp);
+        }else {
+          d = new Date();
+          
+        } 
+          let dd = d.getDate(); 
+          let mm = d.getMonth() + 1; 
+          var yyyy = d.getFullYear(); 
+        
+          if (dd < 10) { 
+            
+            days = '0' + dd.toString(); 
+          } else {
+            days = dd.toString();
+          }
+          if (mm < 10) { 
+            months = '0' + mm; 
+          } else {
+            months = mm.toString();
+          }
+          
+          var time = d.toLocaleTimeString();
+        
+          var date = days + '/' + months + '/' + yyyy; 
+        
+          datetime = date + " " + time;
+
+          from = from.split("/").pop();
+        
+          if (from === this.state.nick){
+            senderClass = "sender-me";
+
+          }else{
+            if (this.state.roomJid.startsWith("workspace-")){
+              senderClass = "sender-others-workspace";
+            } else {
+              senderClass = "sender-others";
+            }
+          }
+        
+        let groupMessage: any = {from: from, content: message, senderClass: senderClass, timeStamp: datetime};
         
         if (message !== ""){
           
@@ -580,7 +629,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   
             { (this.state.minimized === false) && <div id={this.props.orderNumber} className="chat">
 
-            <div style={{"background-color": this.state.isWorkspaceChat }} className="roomSettings">
+            <div style={{"backgroundColor": this.state.isWorkspaceChat }} className="roomSettings">
               <div className="chatbox-room-name">{this.state.roomName}</div>
               <span onClick={() => this.minimizeChats(this.state.roomJid)} className="icon-remove"></span>
               <span onClick={() => this.openChatSettings()} className="icon-cogs room-settings-icon"></span>
@@ -611,7 +660,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               <div className="chatMessages" ref={ (ref) => this.myRef=ref }>
                 {this.state.groupMessages.map((message: any, i: number) => 
                 <div className={message.senderClass + " message-item"} key={i}>
+                  <p className={message.senderClass + " timestamp"}>
                   <b className={message.senderClass + " message-item-sender"}>{message.from} </b>
+                  {message.timeStamp}</p>
                   <p className={message.senderClass + " message-item-content"}>{message.content}</p>
                 </div>)}
                 <div style={{ float:"left", clear: "both" }}

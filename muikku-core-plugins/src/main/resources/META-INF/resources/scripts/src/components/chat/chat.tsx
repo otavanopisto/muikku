@@ -38,7 +38,9 @@ interface Istate {
   showChatbox: boolean,
   nick?: string,
   openRoomNumber: number,
-  openRooms?: Object[]
+  openRooms?: Object[],
+  userStatusColor: string,
+  selectedState: string
 }
 
 declare namespace JSX {
@@ -85,7 +87,9 @@ export class Chat extends React.Component<Iprops, Istate> {
       isStudent: false,
       openRoomNumber:null,
       nick: window.PROFILE_DATA.displayName,
-      openRooms: []
+      openRooms: [],
+      userStatusColor: null,
+      selectedState: ""
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.joinRoom= this.joinRoom.bind(this);
@@ -94,6 +98,8 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.openControlBox = this.openControlBox.bind(this);
     this.openNewRoomForm = this.openNewRoomForm.bind(this);
     this.onOpenChat = this.onOpenChat.bind(this);
+    this.userAvailability = this.userAvailability.bind(this);
+    this.changeUserAvailability = this.changeUserAvailability.bind(this);
   }
   
   handleSubmit(event: any) { // login
@@ -453,6 +459,37 @@ export class Chat extends React.Component<Iprops, Istate> {
     getWorkspaceMucRooms() { return this.state.availableMucRooms.filter((room:any) => room.jid.startsWith("workspace-")); }
     
     getNotWorkspaceMucRooms() { return this.state.availableMucRooms.filter((room:any) => !room.jid.startsWith("workspace-")); }
+    
+    changeUserAvailability (e:any){
+      let newStatus = e.target.value;
+      
+      this.state.converse.api.user.status.set(newStatus);
+      
+      this.userAvailability();
+    }
+    
+    userAvailability (){
+      
+      let userStatus = this.state.converse.api.user.status.get();
+
+      
+      if (userStatus === "online"){
+        this.setState({
+          userStatusColor: "green",
+          selectedState: userStatus
+        });
+      } else if (userStatus === "away"){
+        this.setState({
+          userStatusColor: "orange",
+          selectedState: userStatus
+        });
+      } else{
+        this.setState({
+          userStatusColor: "grey",
+          selectedState: userStatus
+        });
+      }
+    }
 
     componentDidMount() {
     
@@ -535,6 +572,13 @@ export class Chat extends React.Component<Iprops, Istate> {
               openRooms: openChatsFromSessionStorage
             });
           }
+          let userStatus = reactComponent.state.converse.api.user.status.get();
+          
+          reactComponent.setState({
+            selectedState: userStatus
+          });
+          
+          reactComponent.userAvailability();
         });
         
       }, 
@@ -584,11 +628,10 @@ export class Chat extends React.Component<Iprops, Istate> {
                 <input className="sendPrivateMessage" type="submit" value="Lähetä"/>
               </form>
             </div>
-            
-            <select className="user-status">
-              <option value="volvo"><span className="icon-radio-unchecked"></span>Paikalla</option>
-              <option value="saab">Poissa</option>
-              <option value="fiat">Palaan pian</option>
+            <select value={this.state.selectedState} style={{"borderColor": this.state.userStatusColor, "boxShadow": "0 0 3px " + this.state.userStatusColor }} onChange={this.changeUserAvailability} className="user-status">
+              <option value="online">Paikalla</option>
+              <option value="offline">Poissa</option>
+              <option value="away">Palaan pian</option>
             </select>
             
             <h4 className="control-panel">Kurssikohtaiset huoneet: </h4>
