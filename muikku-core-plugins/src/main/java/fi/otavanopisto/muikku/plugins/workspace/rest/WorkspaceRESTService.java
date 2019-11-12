@@ -593,7 +593,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     try {
       List<ContentNode> helpPages = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
-      return Response.ok(createRestModel(helpPages.toArray(new WorkspaceMaterial[0]))).build();
+      return Response.ok(helpPages).build();
     }
     catch (WorkspaceMaterialException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
