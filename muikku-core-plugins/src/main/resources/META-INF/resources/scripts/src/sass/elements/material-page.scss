@@ -213,20 +213,20 @@
 .material-page__textfield[readonly],
 .material-page__selectfield[disabled],
 .material-page__memofield[readonly],
-.material-page__ckeditor-replacement--readonly {
-  border-color: $color-disabled-taskfield-border !important;
-  cursor: text !important;
+.material-page__ckeditor-replacement.material-page__ckeditor-replacement--readonly {
+  border-color: $color-disabled-taskfield-border;
+  cursor: text;
 }
 
 .material-page__checkbox[disabled],
 .material-page__radiobutton[disabled] {
-  border-color: darken($color-disabled-taskfield-border, 10%) !important;
-  cursor: default !important;
+  border-color: darken($color-disabled-taskfield-border, 10%);
+  cursor: default;
 
   &[checked],
   &:checked {
-    background-color: darken($color-disabled-taskfield-border, 20%) !important;
-    border-color: darken($color-disabled-taskfield-border, 20%) !important;
+    background-color: darken($color-disabled-taskfield-border, 20%);
+    border-color: darken($color-disabled-taskfield-border, 20%);
   }
 }
 
@@ -241,26 +241,33 @@
   .material-page__connectfield-term-number,
   .material-page__connectfield-counterpart,
   .material-page__connectfield-counterpart-number {
-    border-color: $color-disabled-taskfield-border !important;
-    cursor: text !important;
+    border-color: $color-disabled-taskfield-border;
+    cursor: text;
   }
 
   &.material-page__sorterfield {
-    border-color: $color-disabled-taskfield-border !important;
+    border-color: $color-disabled-taskfield-border;
   }
 
   .material-page__organizerfield-term--in-use,
   .material-page__organizerfield-term--no-dragging {
-    background: $color-disabled-taskfield-background !important;
+    background: $color-disabled-taskfield-background;
   }
 
   .material-page__organizerfield-term-icon,
   .material-page__sorterfield-item-icon,
   .material-page__connectfield-counterpart-icon {
-    color: $color-disabled-taskfield-icon !important;
-    cursor: default !important;
-    transform: none !important;
-    transition: none !important;
+    color: $color-disabled-taskfield-icon;
+    cursor: default;
+    transform: none;
+    transition: none;
+  }
+
+  .material-page__connectfield-term-data-container:hover,
+  .material-page__connectfield-counterpart-data-container:hover {
+    border-bottom: 2px solid $color-disabled-taskfield-border;
+    border-left: 2px solid $color-disabled-taskfield-border;
+    border-right: 2px solid $color-disabled-taskfield-border;
   }
 }
 
