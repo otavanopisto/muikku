@@ -22,7 +22,7 @@
     <!-- Jackson -->
 
     <jackson.version>2.8.11</jackson.version>
-    <jackson-databind.version>2.8.11.3</jackson-databind.version>
+    <jackson-databind.version>2.9.10.1</jackson-databind.version>
 
     <!-- Scribe -->
 
