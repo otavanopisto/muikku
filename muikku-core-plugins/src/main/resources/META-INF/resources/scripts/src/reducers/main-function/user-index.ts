@@ -134,6 +134,11 @@ export interface StudentUserAddressType {
   defaultAddress: boolean
 }
 
+export interface StudentUserProfileChatType {
+  userIdentifier: string,
+  visibility: any
+}
+
 export interface LastLoginStudentDataType {
   userIdentifier: string,
   authenticationProvder: string,

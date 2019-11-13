@@ -2,7 +2,7 @@ import promisify, { promisifyNewConstructor } from '~/util/promisify';
 import actions from '../base/notifications';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
-import {UserType, StudentUserAddressType, UserWithSchoolDataType} from '~/reducers/main-function/user-index';
+import {UserType, StudentUserAddressType,StudentUserProfileChatType, UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 import $ from '~/lib/jquery';
 import { resize } from '~/util/modifiers';
@@ -36,6 +36,15 @@ export interface UpdateProfileAddressTriggerType {
   }):AnyActionType
 }
 
+export interface UpdateProfileChatVisibilityTriggerType {
+    (data: {
+      visibility: string,
+      userIdentifier: any
+      success: ()=>any,
+      fail: ()=>any
+    }):AnyActionType
+  }
+
 export interface UploadProfileImageTriggerType {
   (data: {
     croppedB64: string,
@@ -58,6 +67,7 @@ export interface SET_PROFILE_USER_PROPERTY extends SpecificActionType<"SET_PROFI
 export interface SET_PROFILE_USERNAME extends SpecificActionType<"SET_PROFILE_USERNAME", string>{}
 export interface SET_PROFILE_ADDRESSES extends SpecificActionType<"SET_PROFILE_ADDRESSES", Array<StudentUserAddressType>>{}
 export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STUDENT", UserWithSchoolDataType>{}
+export interface SET_PROFILE_CHAT_VISIBILITY extends SpecificActionType<"SET_PROFILE_CHAT_VISIBILITY", UserWithSchoolDataType>{}
 
 let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loadProfilePropertiesSet() { 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -215,6 +225,28 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
   }
 }
 
+let updateProfileChatVisibility: UpdateProfileChatVisibilityTriggerType = function updateProfileChatVisibility(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+    
+    try {
+      
+      
+      
+      mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data});
+      
+      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.visibilityChange'), 'success'));
+      
+      data.success && data.success();
+          
+    } catch(err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+    } 
+  }
+}
+
 const imageSizes = [96, 256];
 
 let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileImage(data){
@@ -287,4 +319,4 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
   }
 }
 
-export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, uploadProfileImage, deleteProfileImage};
+export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, updateProfileChatVisibility, uploadProfileImage, deleteProfileImage};
