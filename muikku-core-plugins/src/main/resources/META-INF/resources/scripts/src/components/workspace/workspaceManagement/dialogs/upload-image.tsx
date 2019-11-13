@@ -22,7 +22,7 @@ interface UploadImageDialogProps {
   b64?: string,
   file?: File,
   src?: string,
-  
+
   isOpen: boolean,
   onClose: ()=>any
 }
@@ -36,13 +36,13 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   private retriever: ImageEditorRetrieverType;
   constructor(props: UploadImageDialogProps){
     super(props);
-    
+
     this.acceptImage = this.acceptImage.bind(this);
     this.showLoadError = this.showLoadError.bind(this);
     this.rotate = this.rotate.bind(this);
     this.onChangeScale = this.onChangeScale.bind(this);
     this.getRetriever = this.getRetriever.bind(this);
-    
+
     this.state = {
       scale: 100,
       angle: 0
@@ -50,7 +50,7 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   }
   acceptImage(closeDialog: ()=>any){
     closeDialog();
-    
+
     this.props.onImageChange(
       this.retriever.getAsDataURL(),
       !this.props.src ? this.props.b64 : null,
@@ -62,7 +62,7 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
     if (nAngle === 360){
       nAngle = 0;
     }
-    
+
     this.setState({angle: nAngle})
   }
   showLoadError(){
@@ -78,7 +78,7 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-      <ImageEditor className="image-editor--profile" onInitializedGetRetriever={this.getRetriever}
+      <ImageEditor className="image-editor image-editor--workspace" onInitializedGetRetriever={this.getRetriever}
        dataURL={this.props.src || this.props.b64} onLoadError={this.showLoadError} ratio={4}
        scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={parseInt(window.innerWidth*0.8 as any)}/>
       <div className="dialog__image-tools">
@@ -95,15 +95,15 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
     </div>;
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Button buttonModifiers={["success","standard-ok"]} onClick={this.acceptImage.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.profile.changeImage.dialog.saveButton.label')}
+        <Button buttonModifiers={["execute","standard-ok"]} onClick={this.acceptImage.bind(this, closeDialog)}>
+          {this.props.i18n.text.get('plugin.workspace.management.changeImage.dialog.saveButton.label')}
         </Button>
         <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog}>
-          {this.props.i18n.text.get('plugin.profile.changeImage.dialog.cancelButton.label')}
+          {this.props.i18n.text.get('plugin.workspace.management.changeImage.dialog.cancelButton.label')}
         </Button>
       </div>
     }
-    return <Dialog isOpen={this.props.isOpen} title={this.props.i18n.text.get('plugin.profile.changeImage.dialog.title')}
+    return <Dialog isOpen={this.props.isOpen} title={this.props.i18n.text.get('plugin.workspace.management.changeImage.dialog.title')}
       content={content} footer={footer} modifier="upload-header-image" onClose={this.props.onClose}/>
   }
 }

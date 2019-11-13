@@ -7,11 +7,11 @@
   border-top: 3px solid $color-message-border;
   cursor: pointer;
   padding: 10px;
-  
+
   &:first-child {
     border-color: transparent;
   }
-  
+
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
     padding: 15px 0;
@@ -25,7 +25,7 @@
 }
 
 .user--guider {
-  
+
   &:first-child {
     border: 0;
   }

@@ -1,5 +1,5 @@
 @import "../../node_modules/sass-autoprefixer/scss/prefixes";
-	
+
 @mixin prefix($property, $prefixes, $values...) {
   @each $prefix in $prefixes {
     #{"-" + $prefix + "-" + $property}: $values;
@@ -12,8 +12,9 @@
   overflow: -moz-scrollbars-none;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  &::-webkit-scrollbar { 
-    width: 0 !important;
+
+  &::-webkit-scrollbar {
+    width: 0;
   }
 }
 
@@ -61,7 +62,7 @@
 }
 
 @mixin rotate-icon-on-hover {
-  transition: transform .3s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 
   &:hover {
     transform: rotate(180deg);
@@ -112,5 +113,5 @@
 
 @mixin workspace-image-button {
   background-color: $color-button-profile-image-edit-delete-background;
-  color: white;
+  color: $color-default;
 }

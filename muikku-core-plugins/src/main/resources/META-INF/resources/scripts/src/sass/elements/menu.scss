@@ -16,11 +16,6 @@
   top: 0;
   z-index: 9999;
 
-  @include breakpoint($breakpoint-desktop) {
-    left: -$menu-width-pad;
-    width: $menu-width-pad;
-  }
-
   &.displayed {
     display: block;
   }
@@ -39,6 +34,11 @@
     .menu__container {
       transition: none;
     }
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    left: -$menu-width-pad;
+    width: $menu-width-pad;
   }
 }
 
@@ -68,10 +68,10 @@
 }
 
 .menu__extras {
-  padding: 0 10px 10px;
-  width: 100%;
   border-bottom: solid 5px $color-default-separator-border;
   margin: 0 0 20px;
+  padding: 0 10px 10px;
+  width: 100%;
 
   &:empty {
     display: none;
@@ -102,13 +102,14 @@
   padding-right: 5px;
   position: absolute;
   right: 0;
-  text-align: center;  
+  text-align: center;
   top: 0;
-  transition: background-color .3s;
+  transition: background-color 0.3s;
   vertical-align: middle;
   width: 45px;
 
-  &:active, &.active {
+  &:active,
+  &.active {
     background-color: $color-menu-default-header-button-close-background-active;
   }
 }
@@ -131,7 +132,7 @@
   padding: 0;
   width: 100%;
 }
- 
+
 .menu__item {
   display: block;
   height: 50px;

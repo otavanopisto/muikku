@@ -2,7 +2,9 @@
 @import "../base/mixins";
 @import "../base/vars";
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -14,30 +16,24 @@ html {
 }
 
 body {
+  background-color: $color-default-body;
   overflow-y: auto;
 }
 
-body {
-  background-color: $color-default-body;
-}
-
-ul, ol {
-  padding: 0;
+ul,
+ol {
   list-style-type: none;
+  padding: 0;
 }
 
 li {
-  padding: 0;
   display: inline-block;
+  padding: 0;
 }
 
 a {
   color: $color-link-default-text;
   text-decoration: none;
-}
-
-dl {
-
 }
 
 dt {
@@ -50,12 +46,7 @@ dd {
 }
 
 // Webkit (Chrome, Opera, Safari)
-::-webkit-input-placeholder { 
-  font-style: italic;
-}
-
-// > FF19
-::-moz-placeholder {
+::-webkit-input-placeholder {
   font-style: italic;
 }
 
@@ -64,12 +55,7 @@ dd {
   font-style: italic;
 }
 
-// < FF18-
-:-moz-placeholder {
-  font-style: italic;
-}
-
 // Standard
-::placeholder { 
+::placeholder {
   font-style: italic;
 }

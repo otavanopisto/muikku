@@ -18,7 +18,7 @@ interface NavigationProps {
 }
 
 interface NavigationState {
-  
+
 }
 
 class NavigationAside extends React.Component<NavigationProps, NavigationState> {
@@ -26,7 +26,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.folders.title")}>
         {this.props.messages.navigation.map((item)=>{
-          return <NavigationElement iconColor={item.color} icon={item.icon} key={item.id}
+          return <NavigationElement modifier="aside-navigation" iconColor={item.color} icon={item.icon} key={item.id}
             isActive={this.props.messages.location === item.location} hash={item.location}
             editableWrapper={LabelUpdateDialog} editableWrapperArgs={item.type === "label" ? {label:item} : null}
             isEditable={item.type === "label"}>{item.text(this.props.i18n)}</NavigationElement>

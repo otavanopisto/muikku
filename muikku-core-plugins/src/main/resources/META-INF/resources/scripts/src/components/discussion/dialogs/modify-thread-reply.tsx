@@ -30,12 +30,12 @@ interface ModifyThreadReplyState {
 class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, ModifyThreadReplyState> {
   constructor(props: ModifyThreadReplyProps){
     super(props, "discussion-modify-thread-reply");
-    
+
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.modifyReply = this.modifyReply.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-    
+
     this.state = this.getRecoverStoredState({
       locked: false,
       text: props.reply.message
@@ -84,7 +84,7 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-    <div className="env-dialog_row" key="3">     
+    <div className="env-dialog__row" key="3">
       <div className="env-dialog__form-element-container">
         <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
         <CKEditor autofocus key="1" width="100%" height="210"
@@ -93,8 +93,8 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
     </div>
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
-         <div className="env-dialog__actions">       
+      return (
+         <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.modifyReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
@@ -103,11 +103,11 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
           </Button>
           {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
               {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
-            </Button> : null}              
+            </Button> : null}
         </div>
       )
     }
-    
+
     return <JumboDialog modifier="modify-reply-thread"
       title={this.props.reply ? this.props.i18n.text.get('plugin.discussion.reply.edit.topic') : this.props.i18n.text.get('plugin.discussion.reply.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>

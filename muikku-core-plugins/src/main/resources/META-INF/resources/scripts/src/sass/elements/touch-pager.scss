@@ -8,13 +8,14 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-desktop) {
     min-height: 0;
   }
 }
 
-.touch-pager__prev-page, .touch-pager__next-page {
+.touch-pager__prev-page,
+.touch-pager__next-page {
   background-color: $color-panel-background;
   border-left: solid 1px $color-panel-border;
   border-right: solid 1px $color-panel-border;

@@ -53,8 +53,8 @@
     flex-shrink: 0;
     justify-content: center;
     margin: 10px;
-    position: relative;
     max-width: calc($breakpoint-max-usable-screen - 20px);
+    position: relative;
     width: calc(100% - 20px);
   }
 }
@@ -107,9 +107,9 @@
   display: flex;
   overflow: hidden;
   width: 100%;
-}  
-  
-  
+}
+
+
 .application-panel__tool--current-folder {
   align-items: center;
   display: flex;
@@ -137,7 +137,7 @@
 .application-panel__tool-title {
   display: inline-block;
   font-size: 1rem;
-  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths 
+  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -152,10 +152,10 @@
 }
 
 .application-panel__tools-container {
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  display: flex;
 }
 
 .application-panel__toolbar-actions-aside {
@@ -179,10 +179,10 @@
 
   @include breakpoint($breakpoint-pad) {
     @include no-scrollbars;
+    display: flex;
     flex-basis: 220px;
     flex-grow: 0;
     flex-shrink: 0;
-    display: flex;
     margin: 0;
     overscroll-behavior: contain;
     padding: 12px;
@@ -197,14 +197,14 @@
 
 // Main containers
 .application-panel__main-container {
-  width: 100%;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  margin: 0;
   padding: 0;
   position: relative;
-  margin: 0;
-  
+  width: 100%;
+
   @include breakpoint($breakpoint-pad) {
     padding: 12px;
   }
@@ -212,11 +212,11 @@
 
 .application-panel__main-container--actions {
   background: $color-default;
-  border-bottom: 2px solid $color-main-function-application-panel-actions-border; 
+  border-bottom: 2px solid $color-main-function-application-panel-actions-border;
   flex-direction: row;
   height: $navbar-mobile-height;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     background: transparent;
     border-width: 1px;
@@ -234,7 +234,7 @@
   @include breakpoint($breakpoint-pad) {
     padding-left: 0;
   }
-} 
+}
 
 
 // Profile
@@ -242,14 +242,14 @@
 
   .application-panel__helper-container {
     display: block;
-    
+
     @include breakpoint($breakpoint-pad) {
       display: flex;
-      justify-content: center;
       flex-basis: 294px;
+      justify-content: center;
     }
   }
-  
+
   .application-panel__content {
     padding: 10px 0 0;
   }

@@ -4,11 +4,11 @@ import $ from '~/lib/jquery';
 import '~/sass/elements/carousel.scss';
 
 interface CarouselProps {
-  
+
 }
 
 interface CarouselState {
-  
+
 }
 
 //HAX
@@ -29,7 +29,7 @@ $.getScript("//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.min.js", function(data
 export default class Carousel extends React.Component<CarouselProps, CarouselState> {
   constructor(props: CarouselProps){
     super(props);
-    
+
     this.configure = this.configure.bind(this);
     this.showCarouselItems = this.showCarouselItems.bind(this);
   }
@@ -70,7 +70,7 @@ export default class Carousel extends React.Component<CarouselProps, CarouselSta
       ]
     });
   }
-  
+
   render(){
     return <div ref="carouselBaseRef">
       <div className="carousel">
@@ -89,6 +89,6 @@ export class CarouselItem extends React.Component<{}, {}> {
 
 export class CarouselVideoItem extends React.Component<{}, {}> {
   render(){
-    return <div className="carousel__item" style={{display:"none"}}><div className="carousel__item__video">{this.props.children}</div></div>
+    return <div className="carousel__item" style={{display:"none"}}><div className="carousel__item-video">{this.props.children}</div></div>
   }
 }

@@ -81,9 +81,9 @@
 
 .content-panel__navigation {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-  background-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
   bottom: 0;
-  display: block;
+  display: none;
   overflow-y: auto;
   position: fixed;
   right: 0;
@@ -91,18 +91,27 @@
   width: 100%;
   z-index: 1000;
 
+  .content-panel__navigation-content {
+    right: -90%;
+  }
+
+  &.displayed {
+    display: block;
+  }
+
   &.visible {
-    background-color: rgba(0, 0, 0, 0.25);
-  }
-
-  &:not(.displayed) {
-    display: none;
-  }
-
-  &:not(.visible) {
+    background-color: $color-toc-overlay-mobile-background;
 
     .content-panel__navigation-content {
-      right: -90%;
+      right: 0;
+    }
+  }
+
+  &.dragging {
+    transition: none;
+
+    .content-panel__navigation-content {
+      transition: none;
     }
   }
 
@@ -121,23 +130,12 @@
       background: $color-default;
     }
 
-    &:not(.displayed) {
-      display: block;
+    &.displayed {
+      display: flex;
     }
-
-    &:not(.visible) {
-
-      .content-panel__navigation-content {
-        right: 0;
-      }
-    }
-  }
-
-  &.dragging {
-    transition: none;
 
     .content-panel__navigation-content {
-      transition: none;
+      right: 0;
     }
   }
 }
@@ -145,15 +143,15 @@
 .content-panel__navigation-content {
   @include no-scrollbars;
   @include prefix(transition, webkit moz o ms, right 0.3s);
-  box-shadow: 0 2px 3px $color-panel-shadow;
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
   bottom: 0;
+  box-shadow: 0 2px 3px $color-panel-shadow;
   overflow-y: auto;
   overscroll-behavior: contain;
   position: absolute;
-  top: 0;
   right: 0;
+  top: 0;
   width: 90%;
 
   @include breakpoint($breakpoint-pad) {
@@ -188,7 +186,7 @@
 }
 
 .content-panel__chapter {
-  margin: 20px 0 0 0;
+  margin: 20px 0 0;
 
   &:first-child {
     margin: 0;
@@ -228,10 +226,6 @@
 
   @include breakpoint($breakpoint-pad) {
     margin: 0 0 30px;
-
-    &:last-child {
-      margin: 0;
-    }
   }
 }
 

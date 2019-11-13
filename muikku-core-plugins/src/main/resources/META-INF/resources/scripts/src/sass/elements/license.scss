@@ -11,25 +11,21 @@
   flex-flow: row wrap;
   padding: 10px;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     padding: 20px;
   }
-}
-
-.license__icons {
-
 }
 
 .license__icon {
   font-size: 20px;
   padding: 0 5px 0 0;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     font-size: 30px;
     padding: 0 10px 0 0;
   }
 
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     font-size: 40px;
   }
 }

@@ -36,7 +36,7 @@ interface DicussionNewThreadState {
 class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, DicussionNewThreadState> {
   constructor(props: DicussionNewThreadProps){
     super(props, "discussion-new-thread");
-    
+
     this.state = this.getRecoverStoredState({
       text: "",
       title: "",
@@ -45,7 +45,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
       threadLocked: false,
       selectedAreaId: props.discussion.areaId || (props.discussion.areas[0] && props.discussion.areas[0].id)
     }, props.discussion.areaId || (props.discussion.areas[0] && props.discussion.areas[0].id));
-    
+
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
@@ -54,7 +54,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
   }
-  checkAgainstStoredState(){  
+  checkAgainstStoredState(){
     this.checkStoredAgainstThisState({
       text: "",
       title: "",
@@ -136,14 +136,14 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-       <div key="1" className="env-dialog__row env-dialog__row---new-discussion-options">
-         <div className="env-dialog__form-element-container">  
-           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>       
-           <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" 
-           value={this.state.title} onChange={this.onTitleChange} autoFocus/>
+       <div key="1" className="env-dialog__row env-dialog__row--new-discussion-options">
+         <div className="env-dialog__form-element-container">
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>
+           <input className="env-dialog__input env-dialog__input--new-discussion-thread-title"
+             value={this.state.title} onChange={this.onTitleChange} autoFocus/>
          </div>
-         <div className="env-dialog__form-element-container">  
-           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.area')}</div>       
+         <div className="env-dialog__form-element-container">
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.area')}</div>
            <select className="env-dialog__select" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
             {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
               {area.name}
@@ -152,10 +152,14 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
          </div>
        </div>,
        (this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? <div key="2" className="env-dialog__row  env-dialog__row--new-discussion-thread-states">
-         <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
-         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
-         <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
-         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
+         <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
+           <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+           <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
+         </div>
+         <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
+           <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+           <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
+         </div>
        </div> : <div key="2" className="env-dialog__row env-dialog__row--new-discussion-thread-states"/>),
        <div className="env-dialog__row" key="3">
          <div className="env-dialog__form-element-container">
@@ -179,7 +183,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
           </Button> : null}
         </div>
       )
-    }    
+    }
     return <JumboDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>

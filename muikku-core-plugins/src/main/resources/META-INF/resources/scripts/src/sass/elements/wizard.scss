@@ -14,7 +14,6 @@
   margin-bottom: 14px;
 }
 
-
 .wizard {
 
   .cke {
@@ -24,100 +23,104 @@
   // These override the stepzilla plugin styles
   ol.progtrckr {
     display: flex;
-    padding: 5px 0 25px 0;
-  }
+    padding: 5px 0 25px;
 
-  ol.progtrckr li {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    flex-basis: auto;
-    flex-grow: 1;
-    justify-content: center;
-    line-height: normal;
-    position: relative;
-  }
-
-  ol.progtrckr li span {
-    padding: 0;
-    display: none;
-    @include step-title;
-    @include breakpoint($breakpoint-mobile-xl) {
+    li {
+      align-items: center;
+      cursor: pointer;
       display: flex;
+      flex-basis: auto;
+      flex-grow: 1;
+      justify-content: center;
+      line-height: normal;
+      position: relative;
+
+      // scss-lint:disable NestingDepth, SelectorDepth
+      span {
+        @include step-title;
+        display: none;
+        padding: 0;
+
+        @include breakpoint($breakpoint-mobile-xl) {
+          display: flex;
+        }
+      }
+      // scss-lint:enable NestingDepth, SelectorDepth
+    }
+
+    .progtrckr-todo {
+      border-bottom: 4px solid $color-wizard-todo;
+      color: $color-wizard-todo;
+
+      &:hover::before {
+        border: 2px solid $color-wizard-todo;
+      }
+
+      &::before {
+        @include step-indicator;
+        background-color: $color-wizard-todo;
+        color: $color-wizard-todo;
+        content: "";
+        line-height: normal;
+      }
+    }
+
+    .progtrckr-doing {
+      border-bottom: 4px solid $color-wizard-doing;
+      color: $color-wizard-doing;
+
+      &:hover::before {
+        color: $color-wizard-doing;
+      }
+
+      &::before {
+        @include step-indicator;
+        background-color: $color-wizard-doing;
+        content: "";
+        line-height: normal;
+      }
+    }
+
+    .progtrckr-done {
+      border-bottom: 4px solid $color-wizard-done;
+      color: $color-wizard-done;
+
+      &:hover::before {
+        color: $color-wizard-done;
+      }
+
+      &::before {
+        @include step-indicator;
+        background-color: $color-wizard-done;
+        content: "";
+        line-height: normal;
+      }
+    }
+
+    li::before {
+      bottom: -12px;
+      left: calc(50% - 10px);
+      position: absolute;
+    }
+
+    li::after {
+      content: "";
     }
   }
 
   .progtrckr em {
-    padding: 0;
+    @include step-title;
     display: flex;
     font-weight: 700;
-    @include step-title;
-    @include breakpoint($breakpoint-mobile-xl)  {
+    padding: 0;
+
+    @include breakpoint($breakpoint-mobile-xl) {
       display: none;
     }
   }
 
-  ol.progtrckr li.progtrckr-todo {
-    border-bottom: 4px solid $color-wizard-todo;
-    color: silver;
-  }
-
-  ol.progtrckr li.progtrckr-doing {
-    border-bottom: 4px solid $color-wizard-todo;
-    color: black;
-  }
-
-  ol.progtrckr li.progtrckr-done {
-    border-bottom: 4px solid $color-wizard-todo;
-    color: black;
-  }
-
-  ol.progtrckr li:after {
-    content: "";
-  }
-
-  ol.progtrckr li:before {
-    bottom: -12px;
-    left: calc(50% - 10px);
-    position: absolute;
-  }
-
-  ol.progtrckr li.progtrckr-todo:before {
-    @include step-indicator;
-    background-color: $color-wizard-todo;
-    color: $color-wizard-todo;
-    content: "";
-    line-height: normal;
-  }
-
-  ol.progtrckr li.progtrckr-todo:hover:before {
-    border: 2px solid #CCCCCC;
-  }
-
-  ol.progtrckr li.progtrckr-doing:before {
-    @include step-indicator;
-    background-color: $color-wizard-doing;
-    content: "";
-    line-height: normal;
-  }
-
-  ol.progtrckr li.progtrckr-doing:hover:before {
-    color: #ff4500;
-  }
-
-  ol.progtrckr li.progtrckr-done:before {
-    @include step-indicator;
-    background-color: $color-wizard-done;
-    content: "";
-    line-height: normal;
-  }
-
-  ol.progtrckr li.progtrckr-done:hover:before {
-    color: #333;
-  }
-
   .footer-buttons {
-    align: center;
+    align-items: center;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
@@ -134,6 +137,6 @@
   }
 
   li {
-   display: block;
+    display: block;
   }
 }

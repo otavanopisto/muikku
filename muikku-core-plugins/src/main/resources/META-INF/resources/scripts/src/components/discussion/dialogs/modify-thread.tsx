@@ -37,7 +37,7 @@ interface ModifyThreadState {
 class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThreadState> {
   constructor(props: ModifyThreadProps){
     super(props, "discussion-modify-thread-dialog");
-    
+
     this.state = this.getRecoverStoredState({
       text: props.thread.message,
       title: props.thread.title,
@@ -45,7 +45,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
       threadPinned: props.thread.sticky,
       threadLocked: props.thread.locked
     }, props.thread.id);
-    
+
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
@@ -78,7 +78,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
       return;
     }
     this.setState({locked: true});
-    
+
     this.props.modifyDiscussionThread({
       thread: this.props.thread,
       title: this.state.title,
@@ -117,16 +117,23 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="env-dialog__row env-dialog__row--new-discussion-options">
-         <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
-           value={this.state.title} onChange={this.onTitleChange} autoFocus/>
-       </div>, 
+         <div className="env-dialog__form-element-container">
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>
+           <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
+             value={this.state.title} onChange={this.onTitleChange} autoFocus/>
+         </div>
+       </div>,
        (this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? <div key="2" className="env-dialog__row  env-dialog__row--new-discussion-thread-states">
-         <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
-         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
-         <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
-         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
+         <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
+           <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+           <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
+         </div>
+         <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
+           <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+           <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
+        </div>
        </div> : null),
-       <div className="env-dialog__row" key="3">     
+       <div className="env-dialog__row" key="3">
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
            <CKEditor key="3" width="100%" height="210"
@@ -135,11 +142,11 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
        </div>
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.modifyThread.bind(this, closeDialog)} disabled={this.state.locked}>
            {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
-          </Button>          
+          </Button>
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
@@ -149,7 +156,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
       	</div>
       )
     }
-    
+
     return <JumboDialog modifier="modify-message"
       title={this.props.i18n.text.get('plugin.discussion.editmessage.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>

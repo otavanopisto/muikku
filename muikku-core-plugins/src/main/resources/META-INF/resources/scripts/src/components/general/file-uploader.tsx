@@ -16,7 +16,7 @@ interface FileUploaderProps {
   formDataGenerator?: (file: File, formData: FormData) => any,
   uploadingTextProcesser?: (i: number) => string,
   url?: string,
-  
+
   // taking control from it
   onFileInputChange?: (e: React.ChangeEvent<HTMLInputElement>)=>any,
   modifier?: string,
@@ -36,9 +36,9 @@ interface FileUploaderProps {
   displayNotificationOnError?: boolean,
   displayNotificationOnSuccess?: boolean,
   notificationOfSuccessText?: string,
-  
+
   invisible?: boolean,
-      
+
   displayNotification: DisplayNotificationTriggerType,
 }
 
@@ -57,11 +57,11 @@ const MAX_BYTES = 10000000;
 class FileUploader extends React.Component<FileUploaderProps, FileUploaderState> {
   constructor(props: FileUploaderProps){
     super(props);
-    
+
     this.state = {
       uploadingValues: [],
     }
-    
+
     this.onFileInputChange = this.onFileInputChange.bind(this);
     this.processFileAt = this.processFileAt.bind(this);
     this.removeFailedFileAt = this.removeFailedFileAt.bind(this);
@@ -69,7 +69,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
   removeFailedFileAt(index: number) {
     let newValues = [...this.state.uploadingValues];
     newValues.splice(index, 1);
-    
+
     //and call set state
     this.setState({
       uploadingValues: newValues
@@ -81,7 +81,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
     //get the file from that index
     let file:File = this.state.uploadingValues[index].file;
     //we append it in the way the server expects
-    
+
     if (file.size >= MAX_BYTES) {
       //on error we do similarly that on success
       let newValues = [...this.state.uploadingValues];
@@ -92,14 +92,14 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
       this.setState({
         uploadingValues: newValues
       });
-      
+
       this.props.displayNotificationOnError && this.props.displayNotification(this.props.fileTooLargeErrorText, "error");
       this.props.onFileError && this.props.onFileError(file, new Error(this.props.fileTooLargeErrorText));
       return;
     }
-    
+
     this.props.formDataGenerator(file, formData);
-    
+
     //we make the ajax request to the temp file upload servlet
     $.ajax({
       url: this.props.url,
@@ -114,7 +114,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
         let newValues = [...this.state.uploadingValues];
         const successIndex = newValues.findIndex(f => f.file === file);
         newValues.splice(successIndex, 1);
-        
+
         //and call set state
         this.setState({
           uploadingValues: newValues
@@ -132,7 +132,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
         this.setState({
           uploadingValues: newValues
         });
-        
+
         this.props.displayNotificationOnError && this.props.displayNotification(err.message, "error");
         this.props.onFileError && this.props.onFileError(file, err);
       },
@@ -168,7 +168,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
     if (this.props.onFileInputChange) {
       return this.props.onFileInputChange(e);
     }
-    
+
     let newValues = Array.from(e.target.files).map((file)=>{
       return {
         name: file.name,
@@ -208,24 +208,24 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                 {this.props.showURL ? <span className="file-uploader__item-title-container">
                   <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
                   <span className="file-uploader__item-url">{url}</span></span>
-                  : 
+                  :
                   <span className="file-uploader__item-title-container">
                     <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
                   </span>
                   }
                 <Link className="file-uploader__item-download-icon icon-download"/>
-                {this.props.readOnly ? null : 
+                {this.props.readOnly ? null :
                   <Link className="file-uploader__item-delete-icon icon-trash"/>
                 }
                 {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
               </div>
             })}
-          </div> : this.props.emptyText && this.props.readOnly ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : 
+          </div> : this.props.emptyText && this.props.readOnly ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> :
             this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
         )}
       </div>
     }
-    
+
     const DialogDeleteElement = this.props.deleteDialogElement;
     let dataNode = null;
     if (this.props.files) {
@@ -238,7 +238,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
               {this.props.showURL ? <span className="file-uploader__item-title-container">
                 <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
                 <span className="file-uploader__item-url">{url}</span></span>
-                : 
+                :
                 <span className="file-uploader__item-title-container">
                   <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
                 </span>
@@ -252,7 +252,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
           })}
           {this.state.uploadingValues.map((uploadingFile, index) => {
             if (uploadingFile.failed) {
-              return <div className="file-uploader__item file-uploader__item--FAILED-TO-UPLOAD" key={index}>
+              return <div className="file-uploader__item file-uploader__item--failed-to-upload" key={index}>
                 <span className="file-uploader__item-title-container">
                   <span className="file-uploader__item-title">
                     {uploadingFile.name}
@@ -262,7 +262,7 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                   onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
               </div>
             }
-  
+
             return <div className="file-uploader__item" key={index}>
                 <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
                   strokeWidth: 1,

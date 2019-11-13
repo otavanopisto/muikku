@@ -76,12 +76,12 @@
   font-weight: 400;
   line-height: 1.375rem;
 
-  @include breakpoint($breakpoint-pad) {
-    font-size: $text-desktop-font-size;
-  }
-
   p {
     margin: 0 0 1.15rem;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
   }
 }
 
@@ -154,8 +154,8 @@
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
-    padding: 0 $ordered-container-item-gutter 0 0;
     order: 1;
+    padding: 0 $ordered-container-item-gutter 0 0;
   }
 
   // News card
@@ -163,8 +163,8 @@
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
-    padding: 0 0 0 $ordered-container-item-gutter;
     order: 2;
+    padding: 0 0 0 $ordered-container-item-gutter;
   }
 
   // Images card
@@ -173,9 +173,9 @@
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
-    padding: 0 $ordered-container-item-gutter 0 0;
     order: 3;
     overflow: hidden; // This prevents slick carousel to reserve 100% fill entire container some reason!
+    padding: 0 $ordered-container-item-gutter 0 0;
   }
 
   // Blogs card
@@ -183,8 +183,8 @@
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
-    padding: 0 0 0 $ordered-container-item-gutter;
     order: 4;
+    padding: 0 0 0 $ordered-container-item-gutter;
   }
 }
 
@@ -279,23 +279,23 @@
 .ordered-container__item--studies {
   display: flex;
   flex-basis: auto;
+  flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
-  flex-flow: column nowrap;
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: 100%;
+    flex-flow: row nowrap;
     flex-grow: 1;
     flex-shrink: 1;
-    flex-flow: row nowrap;
     padding: 0;
   }
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(33% - 20px);
+    flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
-    flex-flow: column nowrap;
     max-width: calc(33% - 20px);
     padding: 0 10px 0 0;
   }
@@ -307,17 +307,17 @@
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: calc(50% - 20px);
+    flex-flow: row nowrap;
     flex-grow: 1;
     flex-shrink: 1;
-    flex-flow: row nowrap;
     padding: 0 10px;
   }
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(100% - 20px);
+    flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
-    flex-flow: column nowrap;
     padding: 0;
   }
 }
@@ -328,17 +328,17 @@
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: calc(50% - 20px);
+    flex-flow: row nowrap;
     flex-grow: 1;
     flex-shrink: 1;
-    flex-flow: row nowrap;
     padding: 0 10px;
   }
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: calc(100% - 20px);
+    flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
-    flex-flow: column nowrap;
     padding: 0;
   }
 }
@@ -364,11 +364,6 @@
   }
 }
 
-// Index panels - Latest Messages
-.ordered-container__item--latest-messages {
-  // Reserved for the future enhancements (Perhaps separate latest messages and important messages)
-}
-
 // Index panels - Announcements
 .ordered-container__item--announcements {
   flex-basis: auto;
@@ -388,18 +383,6 @@
     flex-shrink: 1;
     padding: 0 0 0 10px;
   }
-}
-
-// Index panels - Basic Announcements
-.ordered-container__item--basic-announcements {
-  // Reserved for the future enhancements.
-  // We need a feature to separate normal and important announcements
-}
-
-// Index panels - Important Announcements
-.ordered-container__item--important-announcements {
-  // Reserved for the future enhancements.
-  // We need a feature to separate normal and important announcements
 }
 
 // Index panels - Container for all 5 panels to adjust bottom maregin
