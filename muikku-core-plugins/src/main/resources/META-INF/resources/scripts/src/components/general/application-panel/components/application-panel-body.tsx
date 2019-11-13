@@ -1,19 +1,7 @@
 import * as React from 'react';
-import Tabs, {TabType} from '~/components/general/tabs';
-import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/loaders.scss';
 
-
-// This is the deprecated application panel
-
-interface ApplicationPanelProps {
-  modifier: string,
-  title?: React.ReactElement<any> | string,
-  icon?: React.ReactElement<any> | string,
-  panelTabs?: Array<TabType>
-//  tabs? : Array<TabType>,
-  onTabChange?:(id: string)=>any,
-  activeTab? : string;
+interface ApplicationPanelBodyProps {
+  modifier? : string,
   primaryOption?: React.ReactElement<any>,
   toolbar?: React.ReactElement<any>,
   asideBefore?: React.ReactElement<any>,   
@@ -22,7 +10,7 @@ interface ApplicationPanelProps {
   disableStickyScrolling?: boolean
 }
 
-interface ApplicationPanelState {
+interface ApplicationPanelBodyState {
   sticky: boolean,
   remainingHeight: number,
   stickyHeight: number,
@@ -32,8 +20,7 @@ interface ApplicationPanelState {
   asideBeforeWidth: number
 }
 
-
-export default class ApplicationPanel extends React.Component<ApplicationPanelProps, ApplicationPanelState> {
+export default class ApplicationPanelBody extends React.Component<ApplicationPanelBodyProps, ApplicationPanelBodyState> {
   private offsetElementAgainstTop:number;
   private offsetStickyElementTop: number;
   private offsetBorderAgainstBottom: number;
@@ -43,8 +30,8 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
   private asideBeforeWidth: number;
   private borderWidth: number;
   private disabled: boolean;
-  
-  constructor(props: ApplicationPanelProps){
+
+  constructor(props: ApplicationPanelBodyProps){
     super(props);
     
     this.state = {
@@ -57,19 +44,8 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       asideBeforeWidth: null
     }
     
-    this.onScroll = this.onScroll.bind(this);
-    this.calculate = this.calculate.bind(this);
-    this.calculateSides = this.calculateSides.bind(this);
   }
-
-  componentDidMount(){
-    this.calculate();
-    if (!this.disabled){
-      window.addEventListener("scroll", this.onScroll);
-      window.addEventListener("resize", this.calculateSides);
-    }
-  }
-
+  
   calculateSides(){
     this.extraPaddingLeft = (this.refs["body"] as HTMLElement).getBoundingClientRect().left + this.borderWidth;
     
@@ -82,24 +58,28 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       extraPaddingRight: this.extraPaddingRight
     });
   }
-
+  
   calculate(){
     this.disabled = this.props.disableStickyScrolling;
     if (this.disabled){
       return;
     }
+    
     let computedStyle = document.defaultView.getComputedStyle(this.refs["sticky"] as HTMLElement);
     if (computedStyle.getPropertyValue("position") === "fixed"){
       this.disabled = true;
       return;
     }
+    
     //Sticky height represents the height of the sticky thing on top
     this.stickyHeight = parseInt(computedStyle.getPropertyValue("height"));
     this.setState({
       stickyHeight: this.stickyHeight
     });
+    
     //offset top represents the amount of offset that the sticky has to the top of the screen
     this.offsetStickyElementTop = (this.refs["sticky"] as HTMLElement).offsetTop;
+    
     //We take the element that is supposed to stick to
     let element:Element = document.querySelector("#stick");
     if (!element){
@@ -109,6 +89,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       //this one represents the navbar basically the amount of pixels to the bottom
       this.offsetElementAgainstTop = parseInt(stickyElementComputedStyle.getPropertyValue("height"));
     }
+    
     //So we save that here
     this.setState({
       offsetElementAgainstTop: this.offsetElementAgainstTop
@@ -130,14 +111,22 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     this.calculateSides();
     this.setRemainingHeight(false);
   }
-
+  
+  componentDidMount(){
+    this.calculate();
+    
+    if (!this.disabled){
+      window.addEventListener("scroll", this.onScroll);
+      window.addEventListener("resize", this.calculateSides);
+    }
+  }
+  
   componentWillUnmount(){
     if (!this.disabled){
       window.removeEventListener("scroll", this.onScroll);
       window.removeEventListener("resize", this.calculateSides);
     }
   }
-
   setRemainingHeight(isSticky: boolean){
     if (!this.props.asideBefore){
      return;
@@ -171,104 +160,33 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     }
     this.setRemainingHeight(isSticky);
   }
+  
   render(){
-    let panelBody = <div className="application-panel__body" ref="body">
-      <div style={{display: this.state.sticky ? "block" : "none", height: this.state.stickyHeight}}></div>
-      <div className="application-panel__actions" ref="sticky" style={this.state.sticky ? {
-           position: "fixed",
-           top: this.state.offsetElementAgainstTop,
-           left: this.state.extraPaddingLeft,
-           right: this.state.extraPaddingRight
-         } : null}>
-        {this.props.primaryOption ? <div className="application-panel__helper-container application-panel__helper-container--main-action">{this.props.primaryOption}</div> : null}
-        {this.props.toolbar ? <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div> : null}
-      </div>
-      <div className="application-panel__content" style={this.state.sticky ? {paddingLeft: this.state.asideBeforeWidth} : null}>
-        {this.props.asideBefore ? <div className="application-panel__helper-container" ref="asideBefore" style={{
-           position: this.state.sticky ? "fixed" : null,
-           top: this.state.sticky ? this.state.offsetElementAgainstTop + this.state.stickyHeight : null,
-           left: this.state.sticky ? this.state.extraPaddingLeft : null,
-           height: this.state.remainingHeight,
-           width: this.state.sticky ? this.state.asideBeforeWidth : null,
-           overflowY: "auto"
-         }}>{this.props.asideBefore}</div> : null}
-        <div className={`application-panel__main-container loader-empty`}>{this.props.children}</div>
-        {this.props.asideAfter ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.asideAfter}</div> : null}
-      </div>
-    </div>
-
     return (
-      <div className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
-        <div className="application-panel__container">
-          <div className="application-panel__header">
-          {this.props.title ? 
-            <div className="application-panel__header-title-container">{this.props.title}</div>
-          : null}
-          {this.props.icon ? 
-            <div className="application-panel__header-actions">{this.props.icon}</div>
-          : null}
-          </div>
-          {this.props.panelTabs ? <Tabs tabs={this.props.panelTabs} onTabChange={this.props.onTabChange} activeTab={this.props.activeTab} /> : 
-            {panelBody}
-          }
+      <div className={`application-panel__body ${this.props.modifier ? "application-panel__body--" + this.props.modifier : ""}`} ref="body">
+        <div style={{display: this.state.sticky ? "block" : "none", height: this.state.stickyHeight}}></div>
+        <div className="application-panel__actions" ref="sticky" style={this.state.sticky ? {
+             position: "fixed",
+             top: this.state.offsetElementAgainstTop,
+             left: this.state.extraPaddingLeft,
+             right: this.state.extraPaddingRight
+           } : null}>
+          {this.props.primaryOption ? <div className="application-panel__helper-container application-panel__helper-container--main-action">{this.props.primaryOption}</div> : null}
+          {this.props.toolbar ? <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div> : null}
+        </div>
+        <div className="application-panel__content" style={this.state.sticky ? {paddingLeft: this.state.asideBeforeWidth} : null}>
+          {this.props.asideBefore ? <div className="application-panel__helper-container" ref="asideBefore" style={{
+             position: this.state.sticky ? "fixed" : null,
+             top: this.state.sticky ? this.state.offsetElementAgainstTop + this.state.stickyHeight : null,
+             left: this.state.sticky ? this.state.extraPaddingLeft : null,
+             height: this.state.remainingHeight,
+             width: this.state.sticky ? this.state.asideBeforeWidth : null,
+             overflowY: "auto"
+           }}>{this.props.asideBefore}</div> : null}
+          <div className={`application-panel__main-container loader-empty`}>{this.props.children}</div>
+          {this.props.asideAfter ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.asideAfter}</div> : null}
         </div>
       </div>
-    );
-  }
-}
-
-interface ApplicationPanelToolbarProps {
-  
-}
-
-interface ApplicationPanelToolbarState {
-  
-}
-
-export class ApplicationPanelToolbar extends React.Component<ApplicationPanelToolbarProps, ApplicationPanelToolbarState> {
-  render(){
-    return <div className="application-panel__toolbar">{this.props.children}</div>
-  }
-}
-
-interface ApplicationPanelToolbarActionsMainProps {
-  
-}
-
-interface ApplicationPanelToolbarActionsMainState {
-  
-}
-
-export class ApplicationPanelToolbarActionsMain extends React.Component<ApplicationPanelToolbarActionsMainProps, ApplicationPanelToolbarActionsMainState> {
-  render(){
-    return <div className="application-panel__toolbar-actions-main">{this.props.children}</div>
-  }
-}
-
-interface ApplicationPanelToolbarActionsAsideProps {
-  
-}
-
-interface ApplicationPanelToolbarActionsAsideState {
-  
-}
-
-export class ApplicationPanelToolbarActionsAside extends React.Component<ApplicationPanelToolbarActionsAsideProps, ApplicationPanelToolbarActionsAsideState> {
-  render(){
-    return <div className="application-panel__toolbar-actions-aside">{this.props.children}</div>
-  }
-}
-
-interface ApplicationPanelToolsContainerProps {
-  
-}
-
-interface ApplicationPanelToolsContainerState {
-  
-}
-
-export class ApplicationPanelToolsContainer extends React.Component<ApplicationPanelToolsContainerProps, ApplicationPanelToolsContainerState>{
-  render(){
-    return <div className="application-panel__tools-container">{this.props.children}</div>
-  }
+    ) 
+  };
 }
