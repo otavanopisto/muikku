@@ -3,11 +3,13 @@ import ScreenContainer from '~/components/general/screen-container';
 
 import * as React from 'react';
 
-import HelpPanel from './help';
+import Help from './help';
 import MaterialEditor from '~/components/base/material-editor';
+import TableOfContentsComponent from './content';
 
 interface WorkspaceHelpBodyProps {
-  workspaceUrl: string
+  workspaceUrl: string,
+  onActiveNodeIdChange: (newId: number)=>any,
 }
 
 interface WorkspaceHelpBodyState {
@@ -23,10 +25,12 @@ export default class WorkspaceHelpBody extends React.Component<WorkspaceHelpBody
     (this.refs.content as any).getWrappedInstance().refresh();
   }
   render(){
+    let navigationComponent = <TableOfContentsComponent ref="content"/>;
     return (<div>
       <WorkspaceNavbar activeTrail="help" workspaceUrl={this.props.workspaceUrl}/>
       <MaterialEditor/>
-      <HelpPanel/>
+      <Help onOpenNavigation={this.onOpenNavigation}
+        navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
     </div>);
   }
 }

@@ -42,6 +42,7 @@ export type UPDATE_WORKSPACE =
   update: WorkspaceUpdateType
 }>
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>;
+export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_HELP", MaterialContentNodeListType>;
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>;
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES", MaterialCompositeRepliesListType>;
 export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER
@@ -250,7 +251,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let journals:WorkspaceJournalsType;
       let details:WorkspaceDetailsType;
       let status = getState().status;
-      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, help, isCourseMember, journals, details] = await Promise.all([
+      [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, isCourseMember, journals, details] = await Promise.all([
                                                  reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
@@ -278,9 +279,6 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                  
                                                  reuseExistantValue(true, workspace && workspace.producers,
                                                      ()=>promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
-                                                 
-                                                 reuseExistantValue(true, workspace && workspace.help,
-                                                     ()=>promisify(mApi().workspace.workspaces.help.cacheClear().read(data.workspaceId), 'callback')()),
                                                      
                                                  reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
                                                      ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()),
@@ -299,7 +297,6 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       workspace.additionalInfo = additionalInfo;
       workspace.contentDescription = contentDescription;
       workspace.producers = producers;
-      workspace.help = help;
       workspace.isCourseMember = isCourseMember;
       workspace.journals = journals;
       workspace.details = details;
@@ -429,6 +426,9 @@ export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
   ():AnyActionType
 }
 export interface LoadWholeWorkspaceMaterialsTriggerType {
+  (workspaceId: number, includeHidden: boolean, callback?:(nodes: Array<MaterialContentNodeType>)=>any):AnyActionType
+}
+export interface LoadWholeWorkspaceHelpTriggerType {
   (workspaceId: number, includeHidden: boolean, callback?:(nodes: Array<MaterialContentNodeType>)=>any):AnyActionType
 }
 export interface SetWholeWorkspaceMaterialsTriggerType {
@@ -565,7 +565,6 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
     delete actualOriginal["students"];
     delete actualOriginal["details"];
     delete actualOriginal["producers"];
-    delete actualOriginal["help"];
     delete actualOriginal["contentDescription"];
     delete actualOriginal["isCourseMember"];
     delete actualOriginal["journals"];
@@ -721,6 +720,25 @@ let loadWholeWorkspaceMaterials:LoadWholeWorkspaceMaterialsTriggerType = functio
         throw err;
       }
       dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load materials'), 'error'));
+    }
+  }
+}
+
+let loadWholeWorkspaceHelp:LoadWholeWorkspaceHelpTriggerType = function loadWholeWorkspaceMaterials(workspaceId, includeHidden, callback){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let contentNodes:Array<MaterialContentNodeType> = <Array<MaterialContentNodeType>>(await promisify(mApi().workspace.workspaces.help
+          .cacheClear().read(workspaceId, {includeHidden}), 'callback')()) || [];
+      dispatch({
+        type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
+        payload: contentNodes
+      });
+      callback && callback(contentNodes);
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to load help'), 'error'));
     }
   }
 }
@@ -1787,4 +1805,4 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState}
+  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState, loadWholeWorkspaceHelp}

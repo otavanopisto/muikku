@@ -30,7 +30,8 @@ import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMat
   loadCurrentWorkspaceJournalsFromServer,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
-  loadCurrentWorkspaceUserGroupPermissions } from '~/actions/workspaces';
+  loadCurrentWorkspaceUserGroupPermissions, 
+  loadWholeWorkspaceHelp} from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
@@ -71,6 +72,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.loadWorkspaceAnnouncementsData = this.loadWorkspaceAnnouncementsData.bind(this);
     this.loadWorkspaceAnnouncerData = this.loadWorkspaceAnnouncerData.bind(this);
     this.loadWorkspaceMaterialsData = this.loadWorkspaceMaterialsData.bind(this);
+    this.loadWorkspaceHelpData = this.loadWorkspaceHelpData.bind(this);
     
     this.onWorkspaceMaterialsBodyActiveNodeIdChange = this.onWorkspaceMaterialsBodyActiveNodeIdChange.bind(this);
     
@@ -100,6 +102,14 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
           this.props.store.getState().workspaces.currentMaterials[0] &&
           this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
         this.loadWorkspaceMaterialsData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+      }
+    } else if (window.location.pathname.includes("/help")){
+      if (window.location.hash.replace("#", "")){
+        this.loadWorkspaceHelpData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
+      } else if (this.props.store.getState().workspaces.currentMaterials &&
+          this.props.store.getState().workspaces.currentMaterials[0] &&
+          this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
+        this.loadWorkspaceHelpData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
       }
     }
   }
@@ -156,6 +166,33 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       }
     }
   }
+  onWorkspaceHelpBodyActiveNodeIdChange(newId: number){
+    let state:StateType = this.props.store.getState();
+  
+    if (!newId){
+      history.pushState(null, null, '#');
+      if (state.workspaces.currentHelp &&
+          state.workspaces.currentHelp[0] &&
+          state.workspaces.currentHelp[0].children[0]) {
+        this.loadWorkspaceHelpData(state.workspaces.currentHelp[0].children[0].workspaceMaterialId);
+      }
+    } else {
+      const newHash = '#p-' + newId;
+      // defusing the new id
+      if (newHash !== location.hash) {
+        const element = document.querySelector(newHash);
+        if (element) {
+          element.id = ""
+        }
+        history.pushState(null, null, newHash);
+        if (element) {
+          element.id = 'p-' + newId;
+        }
+      }
+      
+      this.loadWorkspaceHelpData(newId);
+    }
+  }
   renderWorkspaceHome(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -199,9 +236,17 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
       this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId}) as Action);
+      this.props.store.dispatch(loadWholeWorkspaceHelp(state.status.currentWorkspaceId, state.status.permissions.WORKSPACE_MANAGE_WORKSPACE, (result)=>{
+        if (!window.location.hash.replace("#", "") && result[0]){
+          this.loadWorkspaceHelpData(result[0].workspaceMaterialId);
+        } else if (window.location.hash.replace("#", "")){
+          this.loadWorkspaceHelpData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
+        }
+      }) as Action);
     }
     
-    return <WorkspaceHelpBody workspaceUrl={props.match.params["workspaceUrl"]}/>
+    return <WorkspaceHelpBody workspaceUrl={props.match.params["workspaceUrl"]}
+      onActiveNodeIdChange={this.onWorkspaceHelpBodyActiveNodeIdChange}/>
   }
   renderWorkspaceDiscussions(props: RouteComponentProps<any>){
     this.updateFirstTime();
@@ -303,6 +348,11 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     }
   }
   loadWorkspaceMaterialsData(id: number): void {
+    if (id){
+      this.props.store.dispatch(setCurrentWorkspaceMaterialsActiveNodeId(id) as Action);
+    }
+  }
+  loadWorkspaceHelpData(id: number): void {
     if (id){
       this.props.store.dispatch(setCurrentWorkspaceMaterialsActiveNodeId(id) as Action);
     }
