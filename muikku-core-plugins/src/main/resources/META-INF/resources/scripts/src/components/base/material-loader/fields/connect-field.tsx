@@ -383,7 +383,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
             //they are simple things
             return <div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
               <div className={`material-page__connectfield-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
-                  "material-page__connectfield-term--selected" : ""} ${this.state.editedIds.has(field.name) && (!itemAnswer || !itemStateAfterCheck) ? "material-page__connectfield-term--edited" : ""}
+                  "material-page__connectfield-term--selected" : ""} ${this.state.editedIds.has(field.name) && !itemAnswer ? "material-page__connectfield-term--edited" : ""}
                   ${itemStateAfterCheck}`}>
                 <div className="material-page__connectfield-term-data-container">
                   <span className="material-page__connectfield-term-number">{index + 1}</span>
@@ -403,7 +403,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
 
            //the basic class name
            let className = `material-page__connectfield-counterpart ${this.state.selectedField && this.state.selectedField.name === field.name ?
-             "material-page__connectfield-counterpart--selected" : ""} ${this.state.editedIds.has(field.name) && (!itemAnswer || !itemStateAfterCheck) ? "material-page__connectfield-counterpart--edited" : ""} ${itemStateAfterCheck}`;
+             "material-page__connectfield-counterpart--selected" : ""} ${this.state.editedIds.has(field.name) && !itemAnswer ? "material-page__connectfield-counterpart--edited" : ""} ${itemStateAfterCheck}`;
 
            //if readonly we just add the classname in there
            if (this.props.readOnly){
