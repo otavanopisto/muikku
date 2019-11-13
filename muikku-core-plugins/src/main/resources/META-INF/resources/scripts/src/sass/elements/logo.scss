@@ -5,19 +5,19 @@
 
 .logo {
   display: block;
-  position: relative;
   overflow: hidden;
+  position: relative;
 }
 
 .logo--muikku {
-  height: $logo-mobile-size;
-  box-shadow: 0 15px 15px $color-frontpage-logo-muikku-verkko-box-shadow;
   border-radius: 100%;
+  box-shadow: 0 15px 15px $color-frontpage-logo-muikku-verkko-box-shadow;
+  height: $logo-mobile-size;
   margin: 0 1rem 0 0;
   text-align: center;
   width: $logo-mobile-size;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     height: $logo-desktop-size;
     margin: 0 0 1rem;
     width: $logo-desktop-size;

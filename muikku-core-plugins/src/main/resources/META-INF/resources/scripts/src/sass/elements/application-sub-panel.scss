@@ -14,13 +14,12 @@
 }
 
 .application-sub-panel--workspace-settings {
+  margin: 0;
+  padding: 10px;
 
   .cke {
     border: 2px solid $color-form-element-border;
   }
-
-  padding: 10px;
-  margin: 0;
 
   @include breakpoint($breakpoint-pad) {
     padding: 20px;
@@ -37,9 +36,9 @@
 }
 
 .application-sub-panel--workspace-users {
-  padding: 10px;
   margin: 0;
-  
+  padding: 10px;
+
   @include breakpoint($breakpoint-pad) {
     padding: 20px;
   }
@@ -225,9 +224,9 @@
 .application-sub-panel__item--workspace-management {
   border: 0;
   display: block;
+  flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
-  flex-basis: 100%;
   padding: 0;
 
   &:not(:last-child) {
@@ -419,14 +418,14 @@
 
 .application-sub-panel__header--studies-hops,
 .application-sub-panel__header--studies-vops {
-  padding: 10px;
   font-size: 1.1875rem;
+  padding: 10px;
   text-transform: uppercase;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 0;
     font-size: 1.375rem;
+    padding: 0;
   }
 }
 
@@ -440,11 +439,10 @@
 
 // Guider
 
-
 .application-sub-panel--guider-student-header {
   border: 0;
-  padding: 10px 0 0;
   margin: 0;
+  padding: 10px 0 0;
 
   @include breakpoint($breakpoint-pad) {
     padding: 0;
@@ -457,20 +455,20 @@
 
 .application-sub-panel__text--task-evaluation {
   background: $color-task-evaluation;
-  border-radius: 3px; 
+  border-radius: 3px;
 }
 
 .application-sub-panel__text--course-evaluation {
 
-  &.state-PASSED {
+  &.state-passed {
     border-left: 3px solid $color-grade-passed;
   }
 
-  &.state-FAILED {
+  &.state-failed {
     border-left: 3px solid $color-grade-failed;
   }
 
-  &.state-INCOMPLETE {
+  &.state-incomplete {
     border-left: 3px solid $color-grade-incomplete;
   }
 }
@@ -487,9 +485,7 @@
   display: flex;
   flex-basis: auto;
   flex-shrink: 1;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-right: 10px;
+  margin: 5px 10px 5px 0;
 }
 
 .application-sub-panel__item--course-activity {

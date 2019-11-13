@@ -62,7 +62,7 @@ $color-label-mobile-selected-background: #97e1ef;
 
 // Workspace
 $color-workspace: #2fd4af;
-$color-workspace-hero-shadow: rgba(0,0,0,0.1);
+$color-workspace-hero-shadow: rgba(0, 0, 0, 0.1);
 
 // Meta
 $color-meta-workspace-background: $color-default;
@@ -77,7 +77,7 @@ $color-license-options-background: #f8f8f8;
 $color-message-from-workspace-background: #f5f5f5;
 
 // Evaluation
-$color-evaluation-request: $color-primary; 
+$color-evaluation-request: $color-primary;
 $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
 $color-grade-passed: #2ed31c;
@@ -112,7 +112,7 @@ $color-taskfield-hint-background: #ffffe1;
 $color-mobile-toc-default-shadow: rgba(0, 0, 0, 0.2);
 
 // Material management
-$color-material-edit-panel-shadow: rgba(0, 0, 0, 0.7);
+$color-material-edit-panel-shadow: rgba(0, 0, 0, 0.95);
 $color-material-page-admin-panel-main-color: #5db5c5;
 $color-material-page-admin-panel-main-hover-color: darken(#5db5c5, 10%);
 $color-material-page-admin-panel-section-color: #c0eaf2;
@@ -127,7 +127,7 @@ $color-assessment-pending: #009fe3;
 $color-assessment-failed: #de3211;
 $color-assessment-incomplete: #ea7503;
 $color-assessment-passed: #24c118;
-$color-assessment-box-shadow: 0 0 5px rgba(255,255,255,0.8);
+$color-assessment-box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 
 // General
 $color-default-body: #f5f5f5;
@@ -167,6 +167,8 @@ $color-notification-queue-item-secondary-text: $color-secondary-contrast;
 
 $color-notification-queue-item-inverse-background: $color-inverse;
 $color-notification-queue-item-inverse-text: $color-inverse-contrast;
+
+$color-notification-queue-item-close-background: rgba(255, 255, 255, 0.2);
 
 // Button
 $color-button-default-background: $color-default;
@@ -218,6 +220,8 @@ $color-workspace-signup-readmore-button-background: #ff008d;
 $color-button-wizard-background: $color-primary;
 $color-button-wizard-text: $color-primary-contrast;
 
+$color-button-floating-shadow: rgba(0, 0, 0, 0.25);
+
 // Profile image button
 $color-button-profile-image-edit-delete-background: rgba(0, 0, 0, 0.5);
 $color-button-profile-image-edit-delete-hover-background: rgba(0, 0, 0, 0.9);
@@ -259,6 +263,8 @@ $color-text-link-selected: $color-default;
 $color-toc-item-link-background: $color-default;
 $color-toc-item-link-selected-background: #29b0c4;
 
+$color-toc-overlay-mobile-background: rgba(0, 0, 0, 0.25);
+
 // Separator
 $color-separator-background: $color-inverse;
 
@@ -274,7 +280,7 @@ $color-link-active-background: rgba(0, 0, 0, 0.1);
 $color-link-inverse-background: invisible;
 $color-link-application-item-footer: $color-primary;
 
-// dropdown
+// Dropdown
 $color-dropdown-default-background: $color-default;
 $color-dropdown-default-text: $color-default-contrast;
 $color-dropdown-default-shadow: rgba(0, 0, 0, 0.3);
@@ -283,7 +289,7 @@ $color-workspace-dropdown-management-background: #494949;
 $color-workspace-dropdown-management-text: $color-default;
 $color-workspace-dropdown-management-shadow: rgba(0, 0, 0, 0.3);
 
-// bubble
+// Bubble
 $color-bubble-default-title: $color-primary;
 $color-bubble-default-content: $color-inverse;
 $color-bubble-default-border: #02a0e3;
@@ -291,7 +297,7 @@ $color-bubble-default-highlight-border: $color-warn;
 $color-bubble-default-background: $color-default;
 $color-bubble-default-shadow: rgba(0, 0, 0, 0.15);
 
-// footer
+// Footer
 $color-footer-default-background: #454545;
 $color-footer-default-text: $color-default;
 $color-footer-plagscan-background: #2c2c2c;
@@ -301,12 +307,12 @@ $color-workspace-footer-default-background: $color-default;
 // License
 $color-workspace-license-default-background: #98c807;
 
-// card
+// Card
 $color-card-default-background: $color-default;
 $color-card-default-border: #e2e3e3;
 $color-card-default-text: $color-inverse;
 
-// dialog
+// Dialog
 $color-dialog-default-background: $color-default;
 $color-dialog-mobile-text: $color-inverse;
 $color-dialog-desktop-text: $color-default;
@@ -321,37 +327,37 @@ $color-dialog-wizard-desktop-background: $color-default;
 $color-background-container-default-background: #f5f5f5;
 $color-background-container-default-text: $color-inverse;
 
-// social button
+// Social button
 $color-button-social-default-background: #454545;
 $color-button-social-default-text: $color-default;
 $color-button-social-highlight-background: $color-primary;
 $color-button-social-highlight-text: $color-default;
 
-// feed
+// Feed
 $color-feed-default-text: $color-inverse;
 $color-feed-default-date: #8c8c8c;
 $color-feed-item-description-active: $color-primary;
 
-// carousel
+// Carousel
 $color-carousel-default-dot-background: #afafaf;
 $color-carousel-default-dot-border: $color-default;
 $color-carousel-default-dot-active-background: $color-warn;
 
-// hero
+// Hero
 $color-hero-default-background: #0089c6;
 $color-hero-workspace-background: $color-default;
 $color-hero-workspace-name-extension-background: $color-default;
 
-// logo
+// Logo
 $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
 
 // panel
 $color-panel-background: $color-default;
 $color-panel-border: #e2e2e2;
-$color-panel-shadow: rgba(0,0,0,0.05);
+$color-panel-shadow: rgba(0, 0, 0, 0.05);
 $color-panel-workspace-signup-background: #ff008d;
 
-// item list
+// Item list
 $color-item-list-item-font-color-active: #fff;
 $color-item-list-item-background: #fff;
 $color-item-list-item-background-hover: $color-list-hover-background;
@@ -361,22 +367,22 @@ $color-item-list-item-aside-background-hover: rgba(208, 255, 249, 0.5);
 $color-item-list-item-aside-background-active: rgb(98, 174, 193);
 $color-item-list-icon-font-color: #4c4c4c;
 
-// indicator
+// Indicator
 $color-indicator-background: $color-fatal;
 $color-indicator-text: $color-fatal-contrast;
 
-// application panel
+// Application panel
 $color-application-panel-box-background: $color-default;
 $color-application-panel-box-border: $color-panel-border;
 
-// reading panel
+// Reading panel
 $color-reading-panel-box-background: $color-default;
 $color-reading-panel-box-border: $color-panel-border;
 
-// toc
+// Toc
 $color-toc-box-border: $color-panel-border;
 
-// application list
+// Application list
 $color-application-list-item-background: #fff;
 $color-application-list-item-fade-background: rgba(255, 255, 255, 0);
 $color-application-list-item-background-hover: $color-list-hover-background;
@@ -385,16 +391,18 @@ $color-application-list-item-background-selected: $color-list-selected-backgroun
 $color-application-list-item-checkmark-selected: #fff;
 $color-application-list-item-course-border-selected: #29b0c4;
 
-// loader
+// Loader
 $color-loader-empty-ring: #f3f3f3;
 $color-loader-empty-rotating-piece: #3498db;
 
-// form fields
+// Form fields
 $color-form-element-border: #62c3eb;
 $color-form-element-selected: #29b0c4;
 
+$color-form-element-autocomplete-highlight: #ffc200;
 
-// form field input tag
+
+// Form field input tag
 $color-form-element-selected-item-background:  $color-label-background;
 $color-form-element-tag-input-tag-border: #b1e8fe;
 $color-form-element-selected-item-text: $color-default-contrast;
@@ -403,12 +411,72 @@ $color-form-element-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);
 // Environment dialog form elements
 $color-env-dialog-form-element-border: #f8a1ce;
 
-// autocomplete
+// Autocomplete
 $color-autocomplete-list-border: #dcdcdc;
 $color-autocomplete-list-background-color: $color-default;
 $color-autocomplete-list-item-hover: #eee;
 $color-autocomplete-list-item-active: #ddd;
-$color-autocomplete-list-item-selected: #29B0C4;
+$color-autocomplete-list-item-selected: #29b0c4;
+
+// Rangeslider
+$color-rangeslider-background: #e6e6e6;
+$color-rangeslider-handle-border: #ccc;
+$color-rangeslider-handle-shadow: rgba(0, 0, 0, 0.4);
+$color-rangeslider-fill-shadow: rgba(0, 0, 0, 0.4);
+$color-rangeslider-handle-tooltip-border: rgba(0, 0, 0, 0.8);
+$color-rangeslider-handle-tooltip-background: rgba(0, 0, 0, 0.8);
+$color-rangeslider-handle-background: #f2f2f2;
+
+// Materials specific and extended
+$color-material-citation-background: #f8f8f8;
+$color-material-citation-quote: #bbb;
+
+$color-material-highlight-text-background: #f8f8f8;
+$color-material-highlight-text-border: #12cbcb;
+
+$color-material-file-box-background: #c8e9ff;
+$color-material-file-box-border: #9dccec;
+
+$color-material-audio-box-background: #c8e9ff;
+$color-material-audio-box-border: #9dccec;
+
+$color-material-link-box-background: #c8e9ff;
+$color-material-link-box-border: #9dccec;
+
+$color-material-instruction-box-background: #bcfbc2;
+$color-material-instruction-box-border: #8ce994;
+
+$color-material-recap-box-background: #fff6ae;
+$color-material-recap-box-border: #eadf87;
+
+$color-material-info-box-background: #bae3ff;
+$color-material-info-box-border: #9dccec;
+
+$color-material-objective-box-background: #c1f9e6;
+$color-material-objective-box-border: #72ddb9;
+
+$color-material-thinking-box-background: #fff089;
+$color-material-thinking-box-border: #e9d650;
+
+$color-material-grammar-box-background: #fff7e0;
+$color-material-grammar-box-border: #cab883;
+
+$color-material-basic-box-background: #b8f1f6;
+$color-material-basic-box-border: #76ccd4;
+
+// Math
+$color-math-editor-background: #fff;
+$color-math-editor-border: #ddd;
+
+$color-math-editor-focus-shadow: rgba(81, 203, 238, 1);
+$color-math-editor-forus-border: rgba(81, 203, 238, 1);
+
+$color-math-exercise-toolbar-default-background: #fff;
+$color-math-exercise-toolbar-default-shadow: rgba(0, 0, 0, 0.25);
+$color-math-exercise-toolbar-default-border: #ccc;
+
+// Task fields
+$taskfield-border-color: #5ed2ff;
 
 // Transferred from main-functions.scss
 
@@ -416,7 +484,7 @@ $color-autocomplete-list-item-selected: #29B0C4;
 $color-default-navbar-background: #f5f5f5;
 $color-default-navbar-text: $color-inverse;
 $color-default-navbar-shadow: rgba(0, 0, 0, 0.2);
-$color-environment-navbar-background: #009FE3;
+$color-environment-navbar-background: #009fe3;
 $color-environment-navbar-title: $color-default;
 $color-environment-navbar-item-menu-button: $color-default;
 $color-workspace-navbar-background: $color-workspace;
@@ -443,7 +511,7 @@ $color-environment-button-pill-language-background: $color-inverse;
 $color-environment-button-pill-language-text: $color-inverse-contrast;
 
 $color-environment-button-pill-icon-search: $color-environment-navbar-background;
-$color-environment-button-pill-icon-user: #1FE00A;
+$color-environment-button-pill-icon-user: #1fe00a;
 
 // MENU
 $color-environment-menu-header-background: $color-environment-navbar-background;
@@ -451,7 +519,7 @@ $color-environment-link-menu-icon-background: $color-environment-navbar-backgrou
 $color-environment-link-menu-icon-color: $color-default;
 $color-environment-link-menu-profile-icon-background: $color-environment-button-pill-icon-user;
 $color-environment-link-menu-profile-icon-color: $color-environment-link-menu-icon-color;
-$color-environment-link-menu-instructions-icon-background: #E3005B;
+$color-environment-link-menu-instructions-icon-background: #e3005b;
 $color-environment-link-menu-instructions-icon-color: $color-default;
 $color-environment-link-menu-heldesk-icon-background: $color-environment-link-menu-instructions-icon-background;
 $color-environment-link-menu-helpdesk-icon-color: $color-environment-link-menu-instructions-icon-color;
@@ -469,12 +537,10 @@ $color-menu-default-header-button-close-background-active: rgba(255, 255, 255, 0
 $color-menu-default-header-button-close: $color-info;
 
 // SUBPANEL
-
 $color-subpanel-search-icon: $color-default;
 $color-subpanel-search-border: #e0e0e0;
 $color-subpanel-search-icon-background: #e0e0e0;
 $color-subpanel-border: #e0e0e0;
-
 
 // TAB
 $color-tab-blur-background: #f5f5f5;
@@ -483,9 +549,8 @@ $color-tab-focus-background: $color-default;
 $color-tab-focus-font: $color-text-default;
 $color-tab-border: #5db5c5;
 
-
 //  CATEGORIES
-$color-category-1: #0099ff; 
+$color-category-1: #0099ff;
 $color-category-2: #ff9900;
 $color-category-3: #ff008d;
 $color-category-4: #0bf0f2;
@@ -507,4 +572,3 @@ $color-cagtegory-11: #000;
 @import "colors/announcement";
 @import "colors/pager";
 @import "colors/profile";
-@import "colors/taskfields";

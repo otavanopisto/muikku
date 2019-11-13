@@ -1,7 +1,7 @@
 import * as React from "react";
 import MathField from './better-math-field';
 import { i18nType } from "~/reducers/base/i18n";
-import '~/sass/elements/fields/math-field.scss';
+import '~/sass/elements/math-field.scss';
 import equals = require("deep-equal");
 import FieldBase from "./base";
 
@@ -11,7 +11,7 @@ interface MathFieldProps {
     name: string
   },
   i18n: i18nType,
-  
+
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any
@@ -19,7 +19,7 @@ interface MathFieldProps {
 
 interface MathFieldState {
   value: string,
-  
+
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
   //We only set them up in the initial state
@@ -31,16 +31,16 @@ interface MathFieldState {
 export default class TextField extends FieldBase<MathFieldProps, MathFieldState> {
   constructor(props: MathFieldProps){
     super(props);
-    
+
     this.state = {
       value: props.initialValue || '',
-      
+
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null
     }
-    
+
     this.setValue = this.setValue.bind(this);
   }
   shouldComponentUpdate(nextProps: MathFieldProps, nextState: MathFieldState){

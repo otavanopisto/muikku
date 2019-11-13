@@ -4,33 +4,33 @@
 @import "../base/breakpoints";
 
 .indicator {
-  display: block;
-  position: absolute;
-  right: 0;
-  top: 0;
-  color: $color-indicator-text;
   background-color: $color-indicator-background;
+  border-radius: 100%;
+  color: $color-indicator-text;
+  display: block;
+  font-family: $indicator-font-family;
   font-size: #{$indicator-font-size}px;
   height: auto;
   line-height: #{$indicator-font-size}px;
   max-width: 30px;
+  min-width: #{$indicator-font-size + $indicator-padding * 2}px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  font-family: $indicator-font-family;
-  border-radius: 100%;
-  text-align: center;
-  min-width: #{$indicator-font-size + $indicator-padding*2}px;
   padding: #{$indicator-padding}px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  text-overflow: ellipsis;
+  top: 0;
 
   &.indicator--main-function {
-    top: 15px;
     right: 14px;
+    top: 15px;
   }
 
   .menu &.indicator--main-function {
-    top: 50%;
     margin-top: -7px;
     right: 14px;
+    top: 50%;
   }
 }
 

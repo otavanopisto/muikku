@@ -13,7 +13,7 @@
 
 .pager__body {
   align-items: center;
-  display:flex;
+  display: flex;
   justify-content: center;
   padding: 12px 0;
 
@@ -56,10 +56,10 @@
   align-items: center;
   border-radius: 10px;
   color: $color-pager-page-index-font;
+
   display: flex;
   height: 34px;
   justify-content: center;
-  cursor: pointer;
   margin-left: 10px;
   width: 34px;
 }

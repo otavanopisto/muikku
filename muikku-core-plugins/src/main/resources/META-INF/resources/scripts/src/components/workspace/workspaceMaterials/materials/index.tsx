@@ -61,7 +61,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.createPage = this.createPage.bind(this);
     this.createSection = this.createSection.bind(this);
     this.pastePage = this.pastePage.bind(this);
-    this.attachFile = this.attachFile.bind(this);
     this.createPageFromBinary = this.createPageFromBinary.bind(this);
     
     this.getFlattenedMaterials(props);
@@ -181,9 +180,6 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         copyWorkspaceId: parseInt(workspaceCopiedId),
       })
     }
-  }
-  attachFile(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
-    
   }
   getFlattenedMaterials(props: WorkspaceMaterialsProps = this.props){
     this.flattenedMaterial = [];

@@ -173,7 +173,7 @@ export interface WorkspacePermissionsType {
 
 export interface WorkspaceType {
   archived: boolean,
-  description: string,
+  description: string ,
   hasCustomImage: boolean,
   id: number,
   lastVisit: string,
@@ -209,7 +209,6 @@ export interface WorkspaceType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
-  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
@@ -249,7 +248,6 @@ export interface WorkspaceUpdateType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
-  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
@@ -347,6 +345,7 @@ export interface WorkspacesType {
   hasMore: boolean,
   toolbarLock: boolean,
   currentMaterials: MaterialContentNodeListType,
+  currentHelp: MaterialContentNodeListType,
   currentMaterialsActiveNodeId: number,
   currentMaterialsReplies: MaterialCompositeRepliesListType,
   editMode: WorkspaceEditModeStateType,
@@ -503,6 +502,7 @@ export default function workspaces(state: WorkspacesType={
   lastWorkspace: null,
   currentWorkspace: null,
   currentMaterials: null,
+  currentHelp: null,
   currentMaterialsReplies: null,
   avaliableFilters: {
     educationTypes: [],
@@ -611,6 +611,8 @@ export default function workspaces(state: WorkspacesType={
     })
   } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS"){
     return {...state, currentMaterials: action.payload};
+  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_HELP"){
+    return {...state, currentHelp: action.payload};
   } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID"){
     return {...state, currentMaterialsActiveNodeId: action.payload};
   } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES"){
@@ -631,11 +633,6 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let newCurrentWorkspace = state.currentWorkspace;
-    if (!action.payload.isDraft && newCurrentWorkspace.help.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
-      found = true;
-      newCurrentWorkspace = {...newCurrentWorkspace};
-      newCurrentWorkspace.help = {...newCurrentWorkspace.help, ...action.payload.update};
-    }
     if (!action.payload.isDraft && !found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
       newCurrentWorkspace = {...newCurrentWorkspace};

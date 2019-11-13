@@ -8,8 +8,8 @@
   align-items: flex-start;
   display: flex;
   flex-basis: 100%;
-  flex-grow: 1;
   flex-flow: row wrap;
+  flex-grow: 1;
   flex-shrink: 1;
 }
 
@@ -57,8 +57,8 @@
   box-shadow: 0 2px 3px $color-panel-shadow;
   display: flex;
   flex-basis: 100%;
-  flex-grow: 1;
   flex-flow: row wrap;
+  flex-grow: 1;
   flex-shrink: 1;
   margin: 0 0 10px;
   max-width: 100%;
@@ -127,7 +127,7 @@
     max-width: 100%;
   }
 
-  @include breakpoint($breakpoint-desktop) { // This remains here as we are gonna add another panel in future so breakpoint-pad needs to be set to 50%
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: 100%;
     max-width: 100%;
   }
@@ -141,7 +141,7 @@
     max-width: 50%;
   }
 
-  @include breakpoint($breakpoint-desktop) { 
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: 100%;
     max-width: 100%;
   }
@@ -178,9 +178,9 @@
   align-items: center;
   display: flex;
   flex-basis: auto;
+  flex-flow: row nowrap;
   flex-grow: 1;
   flex-shrink: 0;
-  flex-flow: row nowrap;
   justify-content: flex-start;
   margin: 0;
   padding: 5px;
@@ -195,7 +195,7 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
-   display: flex;
+    display: flex;
   }
 }
 
@@ -217,7 +217,7 @@
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
     height: 38px;
-    Width: 38px;
+    width: 38px;
   }
 }
 
@@ -297,7 +297,7 @@
 .panel__body {
   @include text;
   background-color: $color-panel-background;
-  border: none;
+  border: 0;
   border-radius: $panel-border-radius;
   flex-basis: 100%;
   flex-grow: 1;
@@ -342,11 +342,11 @@
 .panel__body-title {
   font-size: 1rem;
   font-weight: 300;
-  padding: 10px 10px 0; // Bottom padding is omitted as panel__body-content has top padding 
+  padding: 10px 10px 0; // Bottom padding is omitted as panel__body-content has top padding
 }
 
 .panel__body-content {
-  padding: 10px; // Top and bottom padding is needed to create spacing between panel__body-title and panel__body-footer elements 
+  padding: 10px; // Top and bottom padding is needed to create spacing between panel__body-title and panel__body-footer elements
 }
 
 .panel__body-content--signup {
@@ -361,5 +361,5 @@
 
 .panel__body-footer {
   line-height: 1;
-  padding: 0 10px 10px; // Top padding is omitted as panel__body-content has bottom padding 
+  padding: 0 10px 10px; // Top padding is omitted as panel__body-content has bottom padding
 }

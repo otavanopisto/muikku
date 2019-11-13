@@ -27,9 +27,9 @@ interface MaterialState {
 export default class Material extends React.Component<MaterialProps, MaterialState> {
   constructor(props: MaterialProps){
     super(props);
-    
+
     this.toggleOpened = this.toggleOpened.bind(this);
-    
+
     this.state = {
       opened: false
     }
@@ -46,13 +46,13 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
   }
   render(){
     let evaluation = this.props.material.evaluation;
-    return <div className={`application-list__item assignment ${this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"}`}>
+    return <div className={`application-list__item assignment ${this.props.material.evaluation ? "" : "state-no-assessment"}`}>
       <div className="application-list__item-content application-list__item-content--main">
         <div className="application-list__item-header application-list__item-header--studies-assignment" onClick={this.props.material.evaluation ? this.toggleOpened : null}>
           {evaluation ?
             <span title={evaluation.gradingScale + getShortenGradeExtension(evaluation.grade)}
-              className={`application-list__indicator-badge application-list__indicator-badge--task ${evaluation.passed ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
-            : <span className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}>N</span>}
+              className={`application-list__indicator-badge application-list__indicator-badge--task ${evaluation.passed ? "state-passed" : "state-failed"}`}>{shortenGrade(evaluation.grade)}</span>
+            : <span className={`application-list__indicator-badge application-list__indicator-badge--task state-no-assessment`}>N</span>}
           <span className="application-list__header-primary">{this.props.material.assignment.title}</span>
         </div>
         {this.state.opened ? <div className="application-list__item-body text">

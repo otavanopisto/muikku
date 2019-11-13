@@ -61,7 +61,7 @@
   height: $panel-header-title-height-mobile;
   line-height: 1;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: $panel-header-title-height-desktop;
   }
@@ -163,15 +163,14 @@
   -ms-overflow-style: -ms-autohiding-scrollbar;
   padding: 10px 20px;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 66%;
     border: solid 1px $color-reading-panel-box-border;
     flex-basis: 60%;
     margin: 0 10px 0 0;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -180,7 +179,7 @@
 }
 
 .reading-panel__main-container--actions {
-  border-bottom: 1px solid $color-main-function-application-panel-actions-border; 
+  border-bottom: 1px solid $color-main-function-application-panel-actions-border;
   flex-direction: row;
   margin: 0;
   padding: 10px;
@@ -189,7 +188,7 @@
   @include breakpoint($breakpoint-pad) {
     margin: 0 12px;
     padding: 12px 0;
-  } 
+  }
 }
 
 .reading-panel__main-container--header {
@@ -201,4 +200,4 @@
   @include breakpoint($breakpoint-pad) {
     padding-left: 0;
   }
-} 
+}

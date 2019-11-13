@@ -43,7 +43,7 @@ $dialog-title-mobile-font-size: 1rem;
 $dialog-title-desktop-font-size: 1.1rem;
 
 // Environment Dialog
-$env-dialog-box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+$env-dialog-box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
 
 // Basic Paragraph Text
 $text-mobile-font-size: 0.8125rem;
@@ -92,9 +92,9 @@ $card-font-family: "Exo 2", Arial, sans-serif;
 // Label
 $label-font-family: "Exo 2", Arial, sans-serif;
 $label-small-height: 1.3125rem;
-$label-small-font-size: .75rem;
+$label-small-font-size: 0.75rem;
 $label-medium-height: 1.6875rem;
-$label-medium-font-size: .9375rem;
+$label-medium-font-size: 0.9375rem;
 $label-large-height: 2.0625rem;
 $label-large-font-size: 1.0625rem;
 
@@ -108,20 +108,18 @@ $avatar-desktop-font-size: 1.5rem;
 $avatar-desktop-size: 2.875rem;
 
 // Item lists
-$item-list-icon-font-size: .925rem;
+$item-list-icon-font-size: 0.925rem;
 $item-list-item-min-size: 1rem;
 
 // Vops
 $vops-title-font-size: 1.5rem;
-$vops-legend-header-arrow-size: .875rem;
-$vops-legend-header-size: .875rem;
-$vops-legend-item-text-font-size: .875rem;
-$vops-data-text-font-size: .875rem;
-$vops-row-item-font-size: .875rem;
+$vops-legend-header-arrow-size: 0.875rem;
+$vops-legend-header-size: 0.875rem;
+$vops-legend-item-text-font-size: 0.875rem;
+$vops-data-text-font-size: 0.875rem;
+$vops-row-item-font-size: 0.875rem;
 
 // Content, application and reading Panels
 $panel-header-title-height-desktop: 24px;
 $panel-header-title-height-mobile: 20px;
 $panel-header-title-margin: 10px;
-
- 

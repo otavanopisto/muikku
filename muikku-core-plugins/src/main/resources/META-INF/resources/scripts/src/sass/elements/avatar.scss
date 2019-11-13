@@ -12,7 +12,7 @@
   height: $avatar-mobile-size;
   justify-content: center;
   width: $avatar-mobile-size;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $avatar-desktop-font-size;
     height: $avatar-desktop-size;
@@ -29,7 +29,7 @@
   height: $avatar-mobile-size;
   justify-content: center;
   width: $avatar-mobile-size;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: $avatar-desktop-size;
     width: $avatar-desktop-size;
