@@ -15,7 +15,7 @@ import CKEditor from '~/components/general/ckeditor';
 import { StatusType } from '~/reducers/base/status';
 import { LocaleListType } from '~/reducers/base/locales';
 import DeleteWorkspaceMaterialDialog from "./delete-dialog";
-import Dropdown from "~/components/general/dropdown"; 
+import Dropdown from "~/components/general/dropdown";
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
@@ -312,7 +312,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
       const materialPageType = this.props.editorState.currentDraftNodeValue.assignmentType ? (this.props.editorState.currentDraftNodeValue.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
       const assignmentPageType = "material-editor-" + materialPageType;
 
-      const comparerPoints = ["assignmentType", "hidden", "html", "license", "path", "producers", "title", "type", "viewRestrict"];
+      const comparerPoints = ["assignmentType", "correctAnswers", "hidden", "html", "license", "path", "producers", "title", "type", "viewRestrict"];
       let canPublish = false;
       for (let point of comparerPoints) {
         if (!equals((this.props.editorState.currentNodeValue as any)[point],
@@ -350,8 +350,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? "on-request" : "never-show");
 
       const correctAnswersModifiers = ["material-editor-change-answer-reveal-type", "material-editor", "material-editor-" + exerciseRevealType];
-      const correctAnswersTooltips =  !this.props.editorState.currentDraftNodeValue.correctAnswers || this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ? 
-          this.props.i18n.text.get("plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip") : 
+      const correctAnswersTooltips =  !this.props.editorState.currentDraftNodeValue.correctAnswers || this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS" ?
+          this.props.i18n.text.get("plugin.workspace.materialsManagement.showAlwaysCorrectAnswersPageTooltip") :
             (this.props.editorState.currentDraftNodeValue.correctAnswers === "ON_REQUEST" ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showOnRequestCorrectAnswersPageTooltip") :
               this.props.i18n.text.get("plugin.workspace.materialsManagement.showNeverCorrectAnswersPageTooltip"));
 
@@ -391,7 +391,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           </DeleteWorkspaceMaterialDialog> : null}
         </div>
       </div>;
-            
+
       const allTabs = [{
         id: "content",
         type: "material-editor",
@@ -401,7 +401,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
           <div className="material-editor__title-container">
             <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
-          </div> 
+          </div>
           {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
             <CKEditor height={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
@@ -424,7 +424,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
-            {this.props.editorState.canSetLicense ? 
+            {this.props.editorState.canSetLicense ?
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.license")}</h3>
                 <div className="material-editor__add-license-container">
