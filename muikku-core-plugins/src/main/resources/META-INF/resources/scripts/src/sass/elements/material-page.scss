@@ -264,9 +264,7 @@
 
   .material-page__connectfield-term-data-container:hover,
   .material-page__connectfield-counterpart-data-container:hover {
-    border-bottom: 2px solid $color-disabled-taskfield-border;
-    border-left: 2px solid $color-disabled-taskfield-border;
-    border-right: 2px solid $color-disabled-taskfield-border;
+    border: 2px solid $color-disabled-taskfield-border;
   }
 }
 
@@ -1191,9 +1189,7 @@
     }
 
     .material-page__connectfield-term-data-container:hover { // We need to place this rule here so in case of long text in term on hover event we don't render wrong colored border if answer is correct
-      border-bottom: 2px solid $color-correct-answer;
-      border-left: 2px solid $color-correct-answer;
-      border-right: 2px solid $color-correct-answer;
+      border: 2px solid $color-correct-answer;
     }
   }
 
@@ -1211,9 +1207,7 @@
     }
 
     .material-page__connectfield-term-data-container:hover { // We need to place this rule here so in case of long text in term on hover event we don't render wrong colored border if answer is incorrect
-      border-bottom: 2px solid $color-incorrect-answer;
-      border-left: 2px solid $color-incorrect-answer;
-      border-right: 2px solid $color-incorrect-answer;
+      border: 2px solid $color-incorrect-answer;
     }
   }
 
@@ -1311,9 +1305,7 @@
     }
 
     .material-page__connectfield-counterpart-data-container:hover { // We need to place this rule here so in case of long text in counterpart on hover event we don't render wrong colored border if answer is correct
-      border-bottom: 2px solid $color-correct-answer;
-      border-left: 2px solid $color-correct-answer;
-      border-right: 2px solid $color-correct-answer;
+      border: 2px solid $color-correct-answer;
     }
   }
 
@@ -1331,9 +1323,7 @@
     }
 
     .material-page__connectfield-counterpart-data-container:hover { // We need to place this rule here so in case of long text in counterpart on hover event we don't render wrong colored border if answer is incorrect
-      border-bottom: 2px solid $color-incorrect-answer;
-      border-left: 2px solid $color-incorrect-answer;
-      border-right: 2px solid $color-incorrect-answer;
+      border: 2px solid $color-incorrect-answer;
     }
   }
 
@@ -1435,14 +1425,13 @@
   &:hover {
     align-items: flex-start;
     background: $color-default;
-    border-bottom: 2px solid $taskfield-border-color;
-    border-left: 2px solid $taskfield-border-color;
-    border-right: 2px solid $taskfield-border-color;
+    border: 2px solid $taskfield-border-color;
     height: auto;
     left: -2px;
+    min-height: 2.5rem;
     padding: 2px 0;
     position: absolute;
-    top: 0;
+    top: -2px;
     width: calc(100% + 4px);
     z-index: 99;
 
