@@ -24,7 +24,7 @@
 }
 
 .discussion-category--category-5 {
-   border-left: 5px solid $color-message-area-category-5;
+  border-left: 5px solid $color-message-area-category-5;
 }
 
 .discussion-category--category-6 {
@@ -57,6 +57,6 @@
 
   @include breakpoint($breakpoint-pad) {
     align-self: center;
-	  padding: 8px 10px 8px 0;
+    padding: 8px 10px 8px 0;
   }
 }

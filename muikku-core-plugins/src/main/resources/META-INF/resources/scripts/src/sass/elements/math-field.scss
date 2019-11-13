@@ -1,0 +1,177 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.muikku-math-exercise-toolbar {
+  background-color: $color-math-exercise-toolbar-default-background;
+  border-bottom: $color-math-exercise-toolbar-default-border;
+  box-shadow: 0 2px 4px $color-math-exercise-toolbar-default-shadow;
+  height: 30%;
+  left: 0;
+  overflow-y: auto;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+
+  .muikku-math-exercise-toolbar--symbols,
+  .muikku-math-exercise-toolbar--math.muikku-math-exercise-toolbar--math-expanded {
+    align-content: flex-start;
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    padding: 0 30px 10px 10px;
+    position: relative;
+  }
+
+  .muikku-math-exercise-toolbar--math.muikku-math-exercise-toolbar--math-expanded {
+    padding-top: 10px;
+  }
+
+  .muikku-math-exercise-toolbar--symbols-expand {
+    bottom: 10px;
+    height: 25px;
+    position: absolute;
+    right: 5px;
+    top: 20px;
+    width: 25px;
+  }
+
+  .muikku-math-exercise-toolbar--symbol-group-label,
+  .muikku-math-exercise-toolbar--math-label {
+    display: none;
+    font-size: 12px;
+    height: 20px;
+    padding-bottom: 5px;
+    width: 100%;
+  }
+
+  .muikku-math-exercise-toolbar--symbol-group {
+    margin-right: 10px;
+    padding: 20px 20px 0 0;
+    position: relative;
+  }
+
+  .muikku-math-exercise-toolbar--symbol,
+  .muikku-math-exercise-toolbar--math-operation {
+    align-items: center;
+    display: inline-flex;
+    height: 30px;
+    justify-content: center;
+    position: relative;
+    vertical-align: top;
+    width: 30px;
+
+    .muikku-math-exercise-toolbar--symbol-latex-tooltip,
+    .muikku-math-exercise-toolbar--math-operation-tooltip {
+      background-color: $color-default-contrast;
+      color: $color-default;
+      display: block;
+      position: absolute;
+      top: 100%;
+      z-index: 99;
+    }
+
+    img {
+      max-height: 25px;
+      max-width: 24px;
+    }
+  }
+
+  &.muikku-math-exercise-toolbar--expanded {
+
+    @include breakpoint($breakpoint-pad) {
+
+      .muikku-math-exercise-toolbar--symbols-expand {
+        bottom: auto;
+        top: 40px;
+      }
+
+      .muikku-math-exercise-toolbar--symbol-group-label,
+      .muikku-math-exercise-toolbar--math-label {
+        display: block;
+      }
+    }
+  }
+
+  .muikku-math-exercise-toolbar--more-math-expand {
+    height: 30px;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: auto;
+    top: $navbar-desktop-height;
+  }
+}
+
+.muikku-math-exercise-field-editor {
+  background-color: $color-math-editor-background;
+  border: solid 1px $color-math-editor-border;
+  border-radius: 3px;
+  min-height: 50px;
+  outline: none;
+  padding: 10px;
+  position: relative;
+  transition: box-shadow 0.3s ease-in-out, border 0.3s ease-in-out;
+  width: 100%;
+
+  &.focused,
+  &:focus {
+    border: 1px solid $color-math-editor-forus-border;
+    box-shadow: 0 0 5px $color-math-editor-focus-shadow;
+
+    @media screen and (max-width: $breakpoint-pad) {
+      border-radius: 0;
+      height: 30%;
+      left: 0;
+      overflow-y: auto;
+      position: fixed;
+      right: 0;
+      top: 30%;
+      z-index: 99;
+    }
+  }
+
+  img[src^="data:image/svg+xml"] {
+    border: 1px solid transparent;
+    cursor: pointer;
+    margin: 4px;
+    padding: 3px 10px;
+    vertical-align: middle;
+  }
+
+  img {
+    max-height: 1000px;
+    max-width: 100%;
+  }
+}
+
+.muikku-math-exercise-editor {
+  border: 1px solid $color-default-separator-border;
+  box-shadow: 0 2px 5px $color-default-separator-border;
+  display: block;
+  margin: 30px;
+  position: relative;
+}
+
+.muikku-math-exercise-editor--formula-container {
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 99;
+
+  .mq-editable-field {
+    border: 0;
+    padding: 5px 10px;
+    width: 100%;
+  }
+}
+
+.muikku-math-exercise-editor--formula-text-editor {
+  min-height: 100px;
+  position: relative;
+}

@@ -12,14 +12,15 @@
   display: flex;
   flex-flow: column nowrap;
   font-family: $bubble-font;
-  font-size: .875rem;
+  font-size: 0.875rem;
   justify-content: flex-start;
-  padding: .625rem;
+  padding: 0.625rem;
   position: relative;
   text-align: center;
   width: 100%;
 
-  &:hover, &.hover {
+  &:hover,
+  &.hover {
     border-color: $color-bubble-default-highlight-border;
   }
 
@@ -51,20 +52,20 @@
   @include breakpoint($breakpoint-pad) {
     font-size: 1.3rem;
     line-height: 1.3rem;
-    padding: .2rem .5rem 0;
+    padding: 0.2rem 0.5rem 0;
   }
 
   @include breakpoint($breakpoint-desktop) {
     font-size: 1.5rem;
     line-height: 1.5rem;
-    padding: .2rem .5rem 0;
+    padding: 0.2rem 0.5rem 0;
   }
 }
 
 .bubble__content {
   color: $color-bubble-default-content;
   font-weight: 400;
-  padding-top: .5rem;
+  padding-top: 9.5rem;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
@@ -77,7 +78,7 @@
 .bubble__button-container {
   display: inline-block;
   font-weight: 600;
-  padding: .875rem 0 0;
+  padding: 0.875rem 0 0;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {

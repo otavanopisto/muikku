@@ -18,11 +18,11 @@
     border-top: solid 1px $color-application-list-item-course-border-selected;
   }
 
-  &.state-NO-ASSESSMENT {
+  &.state-no-assessment {
     cursor: auto;
   }
 
-  &.assignment---open:hover {
+  &.assignment--open:hover {
     background: $color-default;
   }
 }

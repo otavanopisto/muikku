@@ -11,7 +11,7 @@
   background: url("/gfx/oo-branded-site-header-background-mobile.jpg") no-repeat center center $color-hero-default-background;
   background-size: cover;
   margin-top: $navbar-mobile-height;
-  order:1;
+  order: 1;
 
   @include breakpoint($breakpoint-pad) {
     background-image: url("/gfx/oo-branded-site-header-background.png");
@@ -48,11 +48,11 @@
 
   @include breakpoint($breakpoint-pad) {
     flex-flow: row nowrap;
-    padding: 2.5rem .5rem;
+    padding: 2.5rem 0.5rem;
   }
 
   @include breakpoint($breakpoint-desktop) {
-    padding: 4.5rem .5rem;
+    padding: 4.5rem 0.5rem;
   }
 }
 
@@ -61,8 +61,8 @@
   background-position: center center;
   background-size: cover;
   flex-basis: 100%;
-  flex-grow: 1;
   flex-flow: column nowrap;
+  flex-grow: 1;
   flex-shrink: 1;
   justify-content: center;
   max-width: 100%;
@@ -131,19 +131,19 @@
   padding: 0 1.5rem 1.5rem;
   width: 100%;
 
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: 33%;
-    flex-grow: 1;
-    flex-shrink: 1;
-    padding: 0;
-  }
-
   &:nth-child(2) {
     order: -1;
 
     @include breakpoint($breakpoint-pad) {
       order: initial;
     }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
   }
 }
 

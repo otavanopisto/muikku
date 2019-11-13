@@ -6,7 +6,7 @@
 .producers {
   padding: 10px;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     padding: 20px;
   }
 }

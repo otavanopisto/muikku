@@ -93,11 +93,11 @@
   border-top: 1px solid $color-application-panel-box-border;
   font-size: 0.825rem;
   font-weight: 300;
-  margin: 15px -10px 0 -10px;
+  margin: 15px -10px 0;
   padding: 5px 10px;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 20px -20px 0 -20px;
+    margin: 20px -20px 0;
     padding: 10px 20px;
   }
 }
@@ -111,12 +111,12 @@
 }
 
 .material-page__producers-label {
-  color: lighten($color-default-contrast,15%);
+  color: $color-default-contrast;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  text-transform: uppercase;
   margin: 0 5px 0 0;
+  text-transform: uppercase;
 }
 
 .material-page__producers-item {
@@ -134,12 +134,12 @@
 }
 
 .material-page__license-label {
-  color: lighten($color-default-contrast,15%);
+  color: $color-default-contrast;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  text-transform: uppercase;
   margin: 0 5px 0 0;
+  text-transform: uppercase;
 }
 
 .material-page__license-item {
@@ -150,12 +150,12 @@
 
 // IMAGE as FIGURE
 .image {
+  display: inline-block;
   line-height: 1;
   position: relative;
-  display: inline-block;
 
   figcaption {
-    background: lighten($color-workspace,45%);
+    background: lighten($color-workspace, 45%);
     color: $color-text-default;
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;
@@ -163,8 +163,8 @@
   }
 
   .image__details {
-    position: absolute;
     left: auto;
+    position: absolute;
     right: 0;
     top: 0;
 
@@ -174,10 +174,12 @@
       color: $color-default;
       cursor: help;
       font-size: 1.625rem;
-      float: right;
       line-height: 1;
-      margin: 5px 5px;
+      margin: 5px;
       padding: 1px;
+      position: absolute;
+      right: 0;
+      top: 0;
     }
   }
 
@@ -218,13 +220,13 @@
 
 .material-page__checkbox[disabled],
 .material-page__radiobutton[disabled] {
-  border-color: darken($color-disabled-taskfield-border,10%) !important;
+  border-color: darken($color-disabled-taskfield-border, 10%) !important;
   cursor: default !important;
 
   &[checked],
   &:checked {
-    background-color: darken($color-disabled-taskfield-border,20%) !important;
-    border-color: darken($color-disabled-taskfield-border,20%) !important;
+    background-color: darken($color-disabled-taskfield-border, 20%) !important;
+    border-color: darken($color-disabled-taskfield-border, 20%) !important;
   }
 }
 
@@ -265,18 +267,12 @@
 // DISABLED AUDIO AND FILE FIELDS
 .material-page__filefield.material-page__taskfield-disabled,
 .material-page__audiofield.material-page__taskfield-disabled {
-  border-color: $color-disabled-taskfield-border !important;
-  cursor: text !important;
+  border-color: $color-disabled-taskfield-border;
+  cursor: text;
 
   .material-page__audiofield-files-container,
-  .material-page__filefield-files-container {
-    border: none !important;
-  }
-
-  .material-page__filefield-remove-file-button,
-  .material-page__audiofield-remove-file-button {
-    color: darken($color-disabled-taskfield-icon, 20%) !important;
-    cursor: default !important;
+  .file-uploader__items-container {
+    border: 0;
   }
 }
 
@@ -306,18 +302,18 @@
   display: flex;
   flex-flow: row wrap;
   font-size: 85%;
-  justify-content: flex-end;
   height: 2rem;
+  justify-content: flex-end;
 }
 
 .material-page__word-count-container,
 .material-page__character-count-container {
   align-items: center;
-  background: lighten($taskfield-border-color,30%);
+  background: lighten($taskfield-border-color, 30%);
   border-bottom-left-radius: 2px;
   display: flex;
-  flex-flow: row nowrap;
   flex-basis: auto;
+  flex-flow: row nowrap;
   flex-grow: 0;
   flex-shrink: 0;
   padding: 2px 6px;
@@ -443,7 +439,7 @@
     .material-page__field-hint {
       opacity: 0;
       visibility: hidden;
-      z-index:2;
+      z-index: 2;
     }
   }
 }
@@ -489,7 +485,7 @@
   }
 }
 
-.material-page__selectfield-item-container  {
+.material-page__selectfield-item-container {
   @include taskfield-text;
   padding: 2px 4px; // This affects only select element that has size attribute set (element is list)
 }
@@ -505,7 +501,7 @@
 
 .material-page__radiobutton-items-wrapper {
   align-items: center;
-  background: lighten($taskfield-border-color,30%);
+  background: lighten($taskfield-border-color, 30%);
   border-radius: 2px;
   display: inline-flex;
   padding: 4px;
@@ -551,9 +547,9 @@
 }
 
 .material-page__radiobutton {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
   border: solid 2px $taskfield-border-color;
   border-radius: 100%;
@@ -571,7 +567,7 @@
     color: $color-default;
     content: "\e639";
     font-family: muikku;
-    font-size: .875rem;
+    font-size: 0.875rem;
   }
 }
 
@@ -586,7 +582,7 @@
 
 .material-page__checkbox-items-wrapper {
   align-items: center;
-  background: lighten($taskfield-border-color,30%);
+  background: lighten($taskfield-border-color, 30%);
   border-radius: 2px;
   display: inline-flex;
   padding: 4px;
@@ -621,9 +617,9 @@
 }
 
 .material-page__checkbox {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
   border: solid 2px $taskfield-border-color;
   border-radius: 2px;
@@ -641,7 +637,7 @@
     color: $color-default;
     content: "\e639";
     font-family: muikku;
-    font-size: .875rem;
+    font-size: 0.875rem;
   }
 
   &.correct-answer {
@@ -716,7 +712,7 @@
 }
 
 .material-page__audiofield-files-container {
-  border-top: 3px dotted lighten($taskfield-border-color,20%);
+  border-top: 3px dotted lighten($taskfield-border-color, 20%);
 }
 
 .material-page__audiofield-files-container--empty {
@@ -732,10 +728,9 @@
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
+  height: 28px;
   margin: 10px 5px;
   padding: 0 5px;
-  transition: all 0.3s ease-in-out;
-  height: 28px;
 
   // These links needs to be nested here as rich-text css rules overrides them if not
   .material-page__audiofield-remove-file-button {
@@ -827,8 +822,8 @@
     border-radius: 20px;
     cursor: pointer;
     display: flex;
-    flex-flow: row nowrap;
     flex-basis: auto;
+    flex-flow: row nowrap;
     flex-grow: 0;
     flex-shrink: 0;
     font-weight: 300;
@@ -911,14 +906,14 @@
 
 .material-page__sorterfield--vertical {
   align-items: flex-start;
-  border-left: 1px solid lighten($taskfield-border-color,10%);
+  border-left: 1px solid lighten($taskfield-border-color, 10%);
   flex-flow: column nowrap;
   padding: 0 0 0 5px;
 }
 
 .material-page__sorterfield--horizontal {
   align-items: center;
-  border-bottom: 1px solid lighten($taskfield-border-color,10%);
+  border-bottom: 1px solid lighten($taskfield-border-color, 10%);
   display: inline-flex;
   flex-flow: row wrap;
   justify-content: flex-start;
@@ -967,8 +962,8 @@
   flex-grow: 0;
   flex-shrink: 0;
   line-height: 1; // This prevents text misalignment in mobile views
-  padding: 6px 6px 6px 0;
   max-width: calc(100% - 25px);
+  padding: 6px 6px 6px 0;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
@@ -988,11 +983,11 @@
 
     .material-page__organizerfield-category { // If the whole taskfield is correct we then mark taskfield's category and items as correct . This class inception is needed so we don't add styles to terms that are only available
       border-color: $color-correct-answer;
+    }
 
-      .material-page__organizerfield-term {
-        background: $color-default;
-        border-color: $color-correct-answer;
-      }
+    .material-page__organizerfield-term {
+      background: $color-default;
+      border-color: $color-correct-answer;
     }
   }
 }
@@ -1028,7 +1023,7 @@
 }
 
 .material-page__organizerfield-term--in-use { // Single draggable term in IN USE state
-  background: lighten($taskfield-border-color,25%);
+  background: lighten($taskfield-border-color, 25%);
 }
 
 // Selected needs to be defined after edited unless we want to create more complex scss inception
@@ -1044,7 +1039,7 @@
 }
 
 .material-page__organizerfield-term--no-dragging { // Single term in NO DRAGGING state a.k.a term is placed in target container
-  background: lighten($taskfield-border-color,25%);
+  background: lighten($taskfield-border-color, 25%);
   cursor: default;
 
   .material-page__organizerfield-term-icon {
@@ -1115,10 +1110,6 @@
   flex-shrink: 1;
   margin: 4px;
 
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: calc(50% - 8px);
-  }
-
   &.correct-answer {
     border-color: $color-correct-answer;
   }
@@ -1126,10 +1117,14 @@
   &.incorrect-answer {
     border-color: $color-incorrect-answer;
   }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 8px);
+  }
 }
 
 .material-page__organizerfield-category-title { // Title of single category
-  border-bottom: 3px dotted lighten($taskfield-border-color,20%);
+  border-bottom: 3px dotted lighten($taskfield-border-color, 20%);
   font-weight: 600;
   padding: 4px 6px;
 
@@ -1176,10 +1171,6 @@
   position: relative;
   user-select: none;
 
-  @include breakpoint($breakpoint-pad) {
-    height: 2.5rem;
-  }
-
   &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
     background: $color-default;
     border-color: $color-correct-answer;
@@ -1219,6 +1210,10 @@
       border-right: 2px solid $color-incorrect-answer;
     }
   }
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+  }
 }
 
 .material-page__connectfield-term-number {
@@ -1249,8 +1244,8 @@
   overflow: hidden;
   padding: 6px;
   text-overflow: ellipsis;
-  width: 100px;
   white-space: nowrap;
+  width: 100px;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
@@ -1258,7 +1253,7 @@
 }
 
 .material-page__connectfield-term--edited {
-  background: lighten($taskfield-border-color,25%);
+  background: lighten($taskfield-border-color, 25%);
 }
 
 // Selected needs to be defined after edited unless we want to create more complex scss inception
@@ -1295,10 +1290,6 @@
   margin: 8px 4px;
   position: relative;
   user-select: none;
-
-  @include breakpoint($breakpoint-pad) {
-    height: 2.5rem;
-  }
 
   &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
     background: $color-default;
@@ -1339,6 +1330,10 @@
       border-right: 2px solid $color-incorrect-answer;
     }
   }
+
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+  }
 }
 
 .material-page__connectfield-counterpart-number {
@@ -1377,8 +1372,8 @@
   overflow: hidden;
   padding: 6px 6px 6px 0;
   text-overflow: ellipsis;
-  width: 100px;
   white-space: nowrap;
+  width: 100px;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
@@ -1386,7 +1381,7 @@
 }
 
 .material-page__connectfield-counterpart--edited {
-  background: lighten($taskfield-border-color,25%);
+  background: lighten($taskfield-border-color, 25%);
 }
 
 // Selected needs to be defined after edited unless we want to create more complex scss inception
@@ -1408,7 +1403,7 @@
 
   .material-page__connectfield-term-data-container:hover,
   .material-page__connectfield-counterpart-data-container:hover {
-    background: lighten($taskfield-border-color,25%);
+    background: lighten($taskfield-border-color, 25%);
   }
 }
 
@@ -1430,10 +1425,6 @@
   height: 2rem;
   position: relative;
   width: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    height: 2.5rem;
-  }
 
   &:hover {
     align-items: flex-start;
@@ -1465,8 +1456,11 @@
       white-space: normal;
     }
   }
-}
 
+  @include breakpoint($breakpoint-pad) {
+    height: 2.5rem;
+  }
+}
 
 // Math field
 .material-page__mathfield-wrapper {
@@ -1475,9 +1469,9 @@
 
 // Assignment assessment
 .material-page__assignment-assessment {
-  border-top: 1px solid $color-default-item-separator-border;
   border-left-style: solid;
   border-left-width: 5px;
+  border-top: 1px solid $color-default-item-separator-border;
   display: flex;
   flex-flow: column nowrap;
   margin: 20px -20px 0;
@@ -1610,49 +1604,48 @@
 // These classNames cannot be changed as they a part of material page html and already saved to DB
 .material-styles-block {
   border-radius: 10px;
-  padding: 10px 15px 10px 85px;
+  font-size: inherit;
   margin: 20px 0;
   min-height: 64px;
-  font-size: inherit;
+  padding: 10px 15px 10px 85px;
   position: relative;
 
   p:first-child,
   ul:first-child,
   ol:first-child,
   blockquote:first-child {
-    margin-top: 0 !important;
+    margin-top: 0;
   }
 
   p:last-child,
   ul:last-child,
   ol:last-child,
   blockquote:last-child {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 
   &::after {
-    width: 64px;
-    height: 64px;
-    content: "";
-    position: absolute;
-    z-index: 9;
-    top: 10px;
-    left: 10px;
     background-repeat: no-repeat;
+    content: "";
+    height: 64px;
+    left: 10px;
+    position: absolute;
+    top: 10px;
+    width: 64px;
+    z-index: 9;
   }
 
   a {
-    color: #006a96;
+    color: $color-info;
     text-decoration: underline;
   }
-
 }
 
 // BASIC BOX
 .material-basicbox {
-  background-color: #b8f1f6;
-  border-top: 2px solid #76ccd4;
-  color: #000;
+  background-color: $color-material-basic-box-background;
+  border-top: 2px solid $color-material-basic-box-border;
+  color: $color-default-contrast;
   padding: 12px 20px;
 
   &::after {
@@ -1662,9 +1655,9 @@
 
 // GRAMMAR BOX
 .material-grammarbox {
-  background-color: #fff7e0;
-  border-top: 2px solid #cab883;
-  color: #000;
+  background-color: $color-material-grammar-box-background;
+  border-top: 2px solid $color-material-grammar-box-border;
+  color: $color-default-contrast;
   padding: 12px 20px;
 
   &::after {
@@ -1674,10 +1667,10 @@
 
 // PONDERING BOX
 .material-thinkingbox {
-  background-color: #fff089;
-  border-top: 2px solid #e9d650;
-  text-shadow:- 1px 1px 15px rgba(255,255,255,1), 1px -1px 15px rgba(255,255,255,1);
-  color: #000;
+  background-color: $color-material-thinking-box-background;
+  border-top: 2px solid $color-material-thinking-box-border;
+  color: $color-default-contrast;
+  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
 
   &::after {
     background-image: url("/gfx/icons/64x64/pondering-icon.png");
@@ -1686,10 +1679,10 @@
 
 // OBJECTIVE BOX
 .material-objectivebox {
-  background-color: #c1f9e6;
-  border-top: 2px solid #72ddb9;
-  text-shadow: -1px 1px 10px rgba(255,255,255,1), 1px -1px 10px rgba(255,255,255,1);
-  color: #000;
+  background-color: $color-material-objective-box-background;
+  border-top: 2px solid $color-material-objective-box-border;
+  color: $color-default-contrast;
+  text-shadow: -1px 1px 10px $color-default, 1px -1px 10px $color-default;
 
   &::after {
     background-image: url("/gfx/icons/64x64/objective-icon.png");
@@ -1698,10 +1691,10 @@
 
 // INFORMATION BOX
 .material-infobox {
-  background-color: #bae3ff;
-  border-top: 2px solid #9dccec;
-  text-shadow: -1px 1px 20px rgba(255,255,255,1), 1px -1px 20px rgba(255,255,255,1);
-  color: #000;
+  background-color: $color-material-info-box-background;
+  border-top: 2px solid $color-material-info-box-border;
+  color: $color-default-contrast;
+  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
 
   &::after {
     background-image: url("/gfx/icons/64x64/info-icon.png");
@@ -1710,10 +1703,10 @@
 
 // RECAP BOX
 .material-recapbox {
-  background-color: #fff6ae;
-  border-top: 2px solid #eadf87;
-  text-shadow: -1px 1px 15px rgba(255,255,255,1), 1px -1px 15px rgba(255,255,255,1);
-  color: #000;
+  background-color: $color-material-recap-box-background;
+  border-top: 2px solid $color-material-recap-box-border;
+  color: $color-default-contrast;
+  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
 
   &::after {
     background-image: url("/gfx/icons/64x64/recap-icon.png");
@@ -1722,10 +1715,10 @@
 
 // INSTRUCTION BOX
 .material-instructionbox {
-  background-color: #bcfbc2;
-  border-top: 2px solid #8ce994;
-  text-shadow: -1px 1px 15px rgba(255,255,255,1), 1px -1px 15px rgba(255,255,255,1);
-  color: #000;
+  background-color: $color-material-instruction-box-background;
+  border-top: 2px solid $color-material-instruction-box-border;
+  color: $color-default-contrast;
+  text-shadow: -1px 1px 15px $color-default, 1px -1px 15px $color-default;
 
   &::after {
     background-image: url("/gfx/icons/64x64/instruction-icon.png");
@@ -1734,10 +1727,10 @@
 
 // LINK BOX
 .material-linkbox {
-  background-color: #c8e9ff;
-  border-top: 2px solid #9dccec;
-  text-shadow: -1px 1px 20px rgba(255,255,255,1), 1px -1px 20px rgba(255,255,255,1);
-  color: #000;
+  background-color: $color-material-link-box-background;
+  border-top: 2px solid $color-material-link-box-border;
+  color: $color-default-contrast;
+  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
 
   &::after {
     background-image: url("/gfx/icons/64x64/link-icon.png");
@@ -1746,10 +1739,11 @@
 
 // AUDIO BOX
 .material-audiobox {
-  background-color: #c8e9ff;
-  border-top:2 px solid #9dccec;
-  text-shadow: -1px 1px 20px rgba(255,255,255,1), 1px -1px 20px rgba(255,255,255,1);
-  color: #000;
+  background-color: $color-material-audio-box-background;
+  border-top: 2 px solid $color-material-audio-box-border;
+  color: $color-default-contrast;
+  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
+
 
   &::after {
     background-image: url("/gfx/icons/64x64/sound-icon.png");
@@ -1758,10 +1752,10 @@
 
 // FILE BOX
 .material-filebox {
-  background-color: #c8e9ff;
-  border-top: 2px solid #9dccec;
-  text-shadow: -1px 1px 20px rgba(255,255,255,1), 1px -1px 20px rgba(255,255,255,1);
-  color: #000;
+  background-color: $color-material-file-box-background;
+  border-top: 2px solid $color-material-file-box-border;
+  color: $color-default-contrast;
+  text-shadow: -1px 1px 20px $color-default, 1px -1px 20px $color-default;
 
   &::after {
     background-image: url("/gfx/icons/64x64/file-icon.png");
@@ -1770,38 +1764,38 @@
 
 // MATERIAL TEXT STYLES
 .material-styles-text {
-  max-width: 920px;
-  margin: 20px auto;
-  min-height: 14px;
   background-repeat: no-repeat;
+  margin: 20px auto;
+  max-width: 920px;
+  min-height: 14px;
   position: relative;
 
   p:first-child,
   ul:first-child,
   ol:first-child,
   blockquote:first-child {
-    margin-top: 0 !important;
+    margin-top: 0;
   }
 
   p:last-child,
   ul:last-child,
   ol:last-child,
   blockquote:last-child {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 
   a {
-    color: #006a96;
+    color: $color-info;
     text-decoration: underline;
   }
 }
 
 // HIGHLIGTH TEXT
 .material-text-highlight {
-  background: #f8f8f8;
-  border-left: 3px solid #12cbcb;
+  background: $color-material-highlight-text-background;
+  border-left: 3px solid $color-material-highlight-text-border;
   border-radius: 0;
-  color: #000;
+  color: $color-default-contrast;
   display: inline-block;
   font-size: 20px;
   line-height: 35px;
@@ -1810,7 +1804,7 @@
 
 // CITATION TEXT
 .material-citation-basic {
-  color: #000;
+  color: $color-default-contrast;
   display: inline-block;
   font-size: 20px;
   font-style: italic;
@@ -1819,7 +1813,7 @@
   quotes: "\201C""\201D";
 
   &::before {
-    color: #ccc;
+    color: $color-material-citation-quote;
     content: open-quote;
     display: inline-block;
     font-family: arial;
@@ -1833,7 +1827,7 @@
   }
 
   &::after {
-    color: #ccc;
+    color: $color-material-citation-quote;
     content: close-quote;
     display: inline-block;
     font-family: arial;
@@ -1850,33 +1844,32 @@
 
 // LONG CITATION TEXT
 .material-citation-long {
-  padding: 5px 10px 5px 40px;
-  color: #000;
-  quotes: "\201C""\201D";
+  background: $color-material-citation-background;
   box-shadow: none;
-  text-shadow: none;
-  position: relative;
-  background: #f8f8f8;
+  color: $color-default-contrast;
   font-style: normal;
+  padding: 5px 10px 5px 40px;
+  position: relative;
+  quotes: "\201C""\201D";
+  text-shadow: none;
 
   &::before {
+    color: $color-material-citation-quote;
     content: open-quote;
     font-family: arial;
     font-size: 55px;
     left: 10px;
     position: absolute;
     top: 20px;
-    color: #bbb;
   }
 }
 
 // EXAMPLE TEXT
 .material-example {
-  padding: 0 10px 4px 15px;
-  color: #000;
-  border-left: 3px solid #11a0ff;
+  border-left: 3px solid $color-info;
   border-radius: 0;
   box-shadow: none;
+  color: $color-default-contrast;
+  padding: 0 10px 4px 15px;
   text-shadow: none;
 }
-

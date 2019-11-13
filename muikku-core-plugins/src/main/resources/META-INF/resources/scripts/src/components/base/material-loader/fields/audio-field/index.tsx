@@ -25,11 +25,11 @@ interface AudioFieldProps {
   },
   i18n: i18nType,
   status: StatusType,
-  
+
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
-      
+
   invisible?: boolean,
 }
 
@@ -42,18 +42,18 @@ interface AudioFieldState {
     contentType: string,
     uploading?: boolean,
     failed?: boolean,
-    
+
     //only has a value while uploading
     progress?: number,
     file?: File,
     blob?: Blob,
-        
+
     //utility
     url?: string
   }>,
   supportsMediaAPI: ()=>boolean,
   time: number,
-  
+
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
   //We only set them up in the initial state
@@ -71,9 +71,9 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
   private stream:MediaStream;
   constructor(props: AudioFieldProps){
     super(props);
-    
+
     this.getSupportsMediaAPI = this.getSupportsMediaAPI.bind(this);
-    
+
     this.state = {
       recording: false,
       time: 0,
@@ -83,16 +83,16 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
           url: `/rest/workspace/audioanswer/${a.id}`,
         }
       }),
-      
+
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
-      
-      //so even 
+
+      //so even
       supportsMediaAPI: this.getSupportsMediaAPI
     }
-    
+
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
     this.removeClipAt = this.removeClipAt.bind(this);
@@ -110,7 +110,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
       //by the render
       //its a hack but well
       setTimeout(this.forceUpdate, 500);
-      
+
       //lets assume true
       //after all a fast browser that got into here
       //likely supports it
@@ -118,7 +118,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     }
     return !(window as any).MediaRecorder.notSupported
   }
-  
+
   //so here we start the stream
   async start(){
     //we create it
@@ -132,12 +132,12 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     }
     //start the recorder
     this.recorder = new (window as any).MediaRecorder(this.stream);
-    
+
     //and add a event listener on dataavaliable
     this.recorder.addEventListener('dataavailable', (e: Event)=>{
       //where we take the blob generated
       let blob = (e as any).data as Blob;
-      
+
       //set the state as that blob, with the given local blob url
       //the content type and the fact that is uploading
       //with all the values concatted
@@ -154,7 +154,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
         this.processFileAt(this.state.values.length - 1);
       })
     });
-    
+
     //we start the recorder
     this.recorder.start();
     //and set the time
@@ -180,11 +180,11 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     clearInterval(this.interval);
     //stop the recorder, this should trigger the dataavailable event
     this.recorder.stop();
-    
+
     //delet stuff
     delete this["recorder"];
     delete this["stream"];
-    
+
     //and stop the fact it is recording
     this.setState({
       recording: false
@@ -246,7 +246,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
         newValues[index].contentType = data.fileContentType || file.type;
         //if user didn't provide a name we will give one, this happens when recording in place, such is the default behaviour
         newValues[index].name = newValues[index].name || data.fileId; //NO extension, we don't need it
-        
+
         this.setState({
           values: newValues
         }, this.checkDoneAndRunOnChange)
@@ -292,7 +292,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     if (!this.props.onChange){
       return;
     }
-    
+
     //get the result
     let result = JSON.stringify(this.state.values.filter((value)=>{
       return !value.failed;
@@ -306,7 +306,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
         id, name, contentType
       }
     }));
-    
+
     //and trigger onchange
     this.props.onChange(this, this.props.content.name, result);
   }
@@ -343,16 +343,14 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
           //if the value is not uploading, we set it as static
           return <div className="material-page__audiofield-file-container" key={index}>
             <audio className="material-page__audiofield-file" controls src={value.url}/>
-            {!this.props.readOnly ? <Link className="material-page__audiofield-download-file-button icon-download"
-                title={this.props.i18n.text.get('plugin.workspace.audioField.downloadLink')} href={value.url} openInNewTab={value.name}/> : null }
+            <Link className="material-page__audiofield-download-file-button icon-download"
+                title={this.props.i18n.text.get('plugin.workspace.audioField.downloadLink')} href={value.url} openInNewTab={value.name}/>
 
             {!this.props.readOnly ? <ConfirmRemoveDialog onConfirm={this.removeClipAt.bind(this, index)}>
                 <Link className="material-page__audiofield-remove-file-button icon-trash"
                   title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
                 />
-              </ConfirmRemoveDialog> : 
-              <Link className="material-page__audiofield-remove-file-button icon-trash"
-                title={this.props.i18n.text.get('plugin.workspace.audioField.removeLinkDisabled')}/>}
+              </ConfirmRemoveDialog> : null }
           </div>;
         } else if (value.failed) {
           //if the value failed we add a message, you can get the value name there so use it to say which file
@@ -389,7 +387,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
       });
     }
 
-    {this.state.recording ? 
+    {this.state.recording ?
       recordingInContainer = <div className="material-page__audiofield-file-container material-page__audiofield-file-container--recording">
         <div className="material-page__audiofield-file material-page__audiofield-file--recording">
         <ProgressBarLine containerClassName="material-page__audiofield-file-record-progressbar" options={{
@@ -437,7 +435,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
           {dataInContainer}
           {recordingInContainer}
         </div>: null}
-        {this.props.readOnly && this.state.values.length == 0 ? 
+        {this.props.readOnly && this.state.values.length == 0 ?
           <div className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">{this.props.i18n.text.get("plugin.workspace.audioField.noFiles")}</div> : null}
       </div>
     </div>

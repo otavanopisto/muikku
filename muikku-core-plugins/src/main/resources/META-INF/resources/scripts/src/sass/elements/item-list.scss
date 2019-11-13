@@ -8,8 +8,12 @@
 }
 
 .item-list--aside-navigation {
-  padding: 0 0 10px 0;
+  padding: 0 0 10px;
   width: 100%;
+
+  .item-list__icon {
+    padding: 0;
+  }
 }
 
 .item-list__title {
@@ -25,7 +29,6 @@
 
 // Item-list items BASE
 .item-list__item {
-  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   align-items: flex-start;
   background-color: $color-item-list-item-background;
   color: $color-text-default;
@@ -35,7 +38,32 @@
   position: relative;
 }
 
+// Main functions use this modifier
+.item-list__item--aside-navigation {
+  align-items: center;
+  background-color: $color-item-list-item-aside-background;
+  border-radius: 2px;
+  margin: 0 0 5px;
+  padding: 8px;
+
+  &:hover,
+  &.hover {
+    background-color: $color-item-list-item-aside-background-hover;
+  }
+
+  &.active {
+    background-color: $color-item-list-item-aside-background-active;
+    color: $color-item-list-item-font-color-active;
+
+    .text,
+    .item-list__icon {
+      color: $color-item-list-item-font-color-active;
+    }
+  }
+}
+
 .item-list--settings {
+
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
@@ -51,12 +79,22 @@
 }
 
 // Item-list items in lastest messages panel
-.item-list--panel-latest-messages .item-list__item {
-  align-items: flex-start;
-  border-top: solid 1px $color-default-item-separator-border;
+.item-list--panel-latest-messages {
 
-  &:first-child {
-    border: 0;
+  .item-list__item {
+    align-items: flex-start;
+    border-top: solid 1px $color-default-item-separator-border;
+
+    &:first-child {
+      border: 0;
+    }
+  }
+
+  .item-list__item--unread {
+
+    .item-list__icon {
+      color: $color-index-item-list-item-panel-latest-messages-unread-icon;
+    }
   }
 }
 
@@ -71,61 +109,27 @@
 }
 
 // Item-list items in announcements
-.item-list--panel-announcements .item-list__item {
-  align-items: flex-start;
-  border-top: solid 1px $color-default-item-separator-border;
+.item-list--panel-announcements {
 
-  &:first-child {
-    border: 0;
-  }
-}
+  .item-list__item {
+    align-items: flex-start;
+    border-top: solid 1px $color-default-item-separator-border;
 
-// Item-list items in main-function's aside panel
-.item-list--aside-navigation .item-list__item {
-  align-items: center;
-  background-color: $color-item-list-item-aside-background;
-  border-radius: 2px;
-  margin: 0 0 5px;
-  padding: 8px;
-
-  &:hover,
-  &.hover {
-    background-color: $color-item-list-item-aside-background-hover;
+    &:first-child {
+      border: 0;
+    }
   }
 
-  &:active,
-  &.active {
-    background-color: $color-item-list-item-aside-background-active;
-    color: $color-item-list-item-font-color-active;
+  .item-list__item--unread {
 
-    .text,
     .item-list__icon {
-      color: $color-item-list-item-font-color-active;
+      color: $color-index-item-list-item-panel-announcements-unread-icon;
     }
   }
 }
 
-.item-list--aside-navigation .item-list__icon {
-  padding: 0;
-}
-
 .item-list__item--bordered {
   border-left: solid 4px;
-}
-
-// Unread list items in index page (icons and texts)
-.item-list--panel-latest-messages {
-
-  .item-list__item--unread .item-list__icon {
-    color: $color-index-item-list-item-panel-latest-messages-unread-icon;
-  }
-}
-
-.item-list--panel-announcements {
-
-  .item-list__item--unread .item-list__icon {
-    color: $color-index-item-list-item-panel-announcements-unread-icon;
-  }
 }
 
 .item-list__item--unread .item-list__text-body {
@@ -153,7 +157,7 @@
   color: $color-index-item-list-item-panel-latest-messages-icon;
 }
 
-.item-list__icon---announcements {
+.item-list__icon--announcements {
   color: $color-index-item-list-item-panel-announcements-icon;
 }
 
@@ -216,8 +220,6 @@
   flex-flow: column wrap;
   white-space: initial;
 }
-
-
 
 // List item dates
 .item-list__latest-message-date,

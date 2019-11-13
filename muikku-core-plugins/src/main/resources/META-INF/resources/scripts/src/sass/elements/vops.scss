@@ -96,10 +96,6 @@
   padding: 10px;
   width: 100%;
 
-  @include breakpoint($breakpoint-pad) {
-    padding: 10px 0;
-  }
-
   > span {
     display: block;
     font-size: $text-mobile-font-size;
@@ -117,6 +113,10 @@
     @include breakpoint($breakpoint-pad) {
       margin: 0 0 0 15px;
     }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
   }
 }
 

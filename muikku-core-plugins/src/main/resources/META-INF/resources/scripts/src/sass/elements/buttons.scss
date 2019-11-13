@@ -11,8 +11,8 @@
   align-items: center;
   background-color: $color-button-default-background;
   border-radius: 2px;
-  cursor: pointer;
   color: $color-button-default-text;
+  cursor: pointer;
   display: flex;
   font-family: $button-font-family;
   font-size: $button-mobile-font-size;
@@ -23,9 +23,8 @@
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase;
+  user-select: none;
   white-space: nowrap;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $button-desktop-font-size;
@@ -327,7 +326,7 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-    margin: 0 .6rem 0 0;
+    margin: 0 0.6rem 0 0;
   }
 }
 
@@ -348,7 +347,7 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-    margin: 0 0 0 0;
+    margin: 0;
   }
 }
 
@@ -357,8 +356,8 @@
   height: auto;
   letter-spacing: 1px;
   overflow-wrap: break-word;
-  padding-top: 5px;
   padding-bottom: 5px;
+  padding-top: 5px;
   white-space: normal;
   width: 100%;
 }
@@ -389,9 +388,9 @@
 
 .button--primary-function-content {
   background-color: $color-button-primary-background;
+  border: 0;
   color: $color-button-primary-text;
   display: inline-flex;
-  border: none;
 
   &:not(:first-child) {
     margin-left: 10px;
@@ -427,14 +426,14 @@
 .button--guider-remove-label {
   order: 1;
 
-  @include breakpoint($breakpoint-desktop) {
-    order: 4;
-  }
-
   &.disabled,
   &.disabled:hover {
     background-color: $color-button-disabled-background;
     cursor: default;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    order: 4;
   }
 }
 
@@ -464,7 +463,7 @@
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
   background-color: transparent;
-  color:$color-icon-button-text;
+  color: $color-icon-button-text;
   cursor: pointer;
   display: inline-flex;
   font-size: $button-pill-mobile-font-size;
@@ -475,15 +474,8 @@
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
+  user-select: none;
   width: $button-pill-mobile-size;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: $button-pill-desktop-font-size;
-    height: $button-pill-desktop-size;
-    width: $button-pill-desktop-size;
-  }
 
   &:hover,
   &.hover {
@@ -503,10 +495,16 @@
   }
 
   input {
-    position: absolute;
-    width: 100%;
     height: 100%;
     opacity: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-pill-desktop-font-size;
+    height: $button-pill-desktop-size;
+    width: $button-pill-desktop-size;
   }
 }
 
@@ -527,9 +525,9 @@
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
   background-color: $color-button-pill-background;
+  border-radius: 100%;
   color: $color-button-pill-text;
   cursor: pointer;
-  border-radius: 100%;
   display: inline-flex;
   font-size: $button-pill-mobile-font-size;
   height: $button-pill-mobile-size;
@@ -539,15 +537,8 @@
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
+  user-select: none;
   width: $button-pill-mobile-size;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: $button-pill-desktop-font-size;
-    height: $button-pill-desktop-size;
-    width: $button-pill-desktop-size;
-  }
 
   &:hover,
   &.hover {
@@ -568,17 +559,23 @@
   }
 
   input {
-  	position: absolute;
-  	width: 100%;
-  	height: 100%;
-  	opacity: 0;
     cursor: pointer;
+    height: 100%;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-pill-desktop-font-size;
+    height: $button-pill-desktop-size;
+    width: $button-pill-desktop-size;
   }
 }
 
 .button-pill--workspace-users-contact {
   background-color: transparent;
-  color: #0fa5e4;
+  color: $color-icon-button-text;
 
   &:hover,
   &.hover {
@@ -590,7 +587,7 @@
 .button-pill--floating {
   background-color: $color-primary;
   bottom: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,.25);
+  box-shadow: 0 4px 8px $color-button-floating-shadow;
   color: $color-default;
   font-size: $button-pill-floating-font-size;
   height: $button-pill-floating-size;
@@ -599,7 +596,7 @@
   width: $button-pill-floating-size;
 
   &:active {
-    box-shadow: 0 0 0 rgba(0,0,0,.25);
+    box-shadow: 0 0 0 $color-button-floating-shadow;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -728,9 +725,9 @@
 .button-pill--discussion-toolbar {
   background-color: $color-main-function-button-pill-edit-background;
   color: $color-main-function-button-pill-edit-text;
+  flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  flex-basis: auto;
   margin-right: 10px;
   vertical-align: top;
 
@@ -902,15 +899,15 @@
 
   @include breakpoint($breakpoint-pad) {
     background-color: $color-main-function-button-pill-next-page-background;
+    border-radius: 10px;
     color: $color-main-function-button-pill-next-page-text;
     display: inline-flex;
     margin-left: 10px;
-    border-radius: 10px;
     vertical-align: top;
 
     &:hover,
     &.hover {
-    background-color: darken($color-main-function-button-pill-next-page-background, 10%);
+      background-color: darken($color-main-function-button-pill-next-page-background, 10%);
     }
 
     &:active,
@@ -1029,13 +1026,12 @@
   font-variant: normal;
   height: $button-social-size;
   line-height: $button-social-size;
-  speak: none;
+  margin: 0 0.3rem;
   text-align: center;
   text-decoration: none;
   text-transform: none;
   vertical-align: middle;
   width: $button-social-size;
-  margin: 0 .3rem;
 
   &:hover,
   &.hover,
@@ -1048,11 +1044,11 @@
   @include breakpoint($breakpoint-desktop) {
 
     &:first-of-type {
-      margin: 0 .3rem 0 0;
+      margin: 0 0.3rem 0 0;
     }
 
     &:last-of-type {
-      margin: 0 0 0 .3rem;
+      margin: 0 0 0 0.3rem;
     }
   }
 }
@@ -1061,8 +1057,9 @@
 .button--change-image-delete {
   @include workspace-image-button;
   flex-grow: 1;
-  transition: background-color 0.3s ease-in-out;
   padding: 10px 20px;
+  transition: background-color 0.3s ease-in-out;
+
   &:hover,
   &:active {
     background-color: $color-button-profile-image-edit-delete-hover-background;
@@ -1074,10 +1071,9 @@
 }
 
 .button--change-image-workspace {
-  flex-grow: 0;
   flex-basis: 20%;
+  flex-grow: 0;
 }
-
 
 // Buttons used in Material pages
 .button--muikku-check-exercises,
@@ -1107,7 +1103,7 @@
 }
 
 .button--muikku-withdraw-assignment {
-  background: darken($color-assignment,10%);
+  background: darken($color-assignment, 10%);
 }
 
 .button--muikku-update-assignment {
@@ -1183,8 +1179,8 @@
   @include prefix(transition, moz o ms webkit, all 0.15s);
   background: $color-material-page-admin-panel-main-color;
   border: 1px solid $color-material-page-admin-panel-main-color;
-  color: $color-default;
   border-radius: 10px;
+  color: $color-default;
   font-size: 1rem;
   height: 1.75rem;
   margin: 0 5px;
@@ -1323,9 +1319,9 @@
 }
 
 .button-pill--editing-master-switch {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
   background: $color-default;
   border: 2px solid $color-default;
@@ -1337,7 +1333,7 @@
   width: calc(#{$generic-switch-size} + #{$generic-switch-container-border-size} * 2);
 
   &::after {
-    background: lighten($color-disabled,10%);
+    background: lighten($color-disabled, 10%);
     border-radius: 100%;
     content: " ";
     height: $generic-switch-size;
@@ -1355,22 +1351,22 @@
 .button-pill--editing-master-switch-active {
 
   &::after {
-    background: lighten($color-success,10%);
+    background: lighten($color-success, 10%);
     border-radius: 100%;
     content: " ";
     height: $generic-switch-size;
     position: absolute;
-    transform: translateY(100%);
     top: calc(100% - #{$generic-switch-size} * 2);
+    transform: translateY(100%);
     width: $generic-switch-size;
   }
 }
 
 .button--wizard {
   background-color: $color-button-wizard-background;
+  border: 0;
   color: $color-button-wizard-text;
   display: inline-flex;
-  border: none;
 
   &:not(:first-child) {
     margin-left: 10px;

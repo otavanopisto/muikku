@@ -152,10 +152,10 @@
 }
 
 .application-panel__tools-container {
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  display: flex;
 }
 
 .application-panel__toolbar-actions-aside {
@@ -179,10 +179,10 @@
 
   @include breakpoint($breakpoint-pad) {
     @include no-scrollbars;
+    display: flex;
     flex-basis: 220px;
     flex-grow: 0;
     flex-shrink: 0;
-    display: flex;
     margin: 0;
     overscroll-behavior: contain;
     padding: 12px;
@@ -197,13 +197,13 @@
 
 // Main containers
 .application-panel__main-container {
-  width: 100%;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  margin: 0;
   padding: 0;
   position: relative;
-  margin: 0;
+  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     padding: 12px;
@@ -245,8 +245,8 @@
 
     @include breakpoint($breakpoint-pad) {
       display: flex;
-      justify-content: center;
       flex-basis: 294px;
+      justify-content: center;
     }
   }
 

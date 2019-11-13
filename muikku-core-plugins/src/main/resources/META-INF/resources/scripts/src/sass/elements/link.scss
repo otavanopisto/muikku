@@ -12,15 +12,11 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
-  vertical-align: middle;
   position: relative;
   text-align: center;
   text-decoration: none;
+  vertical-align: middle;
   white-space: nowrap;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: $text-desktop-font-size;
-  }
 
   .link__icon {
     display: inline-block;
@@ -30,19 +26,14 @@
     margin-right: 10px;
   }
 
-  &:hover,
-  &.hover {
-    color: darken($color-link-default-text, 20%);
-  }
-
-  &:active,
-  &.active {
-    color: darken($color-link-default-text, 20%);
-  }
-
-  &.disabled, &:disabled {
+  &.disabled,
+  &:disabled {
     cursor: default;
     opacity: 0.5;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
   }
 }
 
@@ -50,6 +41,10 @@
   color: $color-link-frontpage-text;
   font-size: 0.9375rem;
   text-transform: uppercase;
+
+  .link__icon {
+    color: $color-environment-link-menu-navicon-icon-color;
+  }
 
   &:hover,
   &.hover,
@@ -71,6 +66,10 @@
   white-space: normal;
   word-spacing: 75px;
 
+  &.link--forgot-password-main-function {
+    color: $color-main-function-label-forgot-password;
+  }
+
   @include breakpoint($breakpoint-mobile-xl) {
     flex-basis: auto;
   }
@@ -82,10 +81,6 @@
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
   }
-
-  &.link--forgot-password-main-function {
-  	color: $color-main-function-label-forgot-password;
-  }
 }
 
 .link--privacy-policy {
@@ -94,13 +89,13 @@
   text-transform: uppercase;
   white-space: normal;
 
-  @include breakpoint($breakpoint-pad) {
-    text-align: left;
-  }
-
   &:hover,
   &:active {
     color: $color-default;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    text-align: left;
   }
 }
 
@@ -118,14 +113,37 @@
 }
 
 .link--icon {
-  @include prefix(font-smoothing, webkit moz o ms, antialiased);
+  color: $color-environment-link-icon-color;
   font-family: muikku;
   font-size: $link-icon-font-size;
   font-style: normal;
   font-variant: none;
   font-weight: normal;
-  speak: none;
   text-transform: none;
+
+  @include breakpoint($breakpoint-pad) {
+
+    &:hover,
+    &.hover {
+      background-color: $color-environment-link-icon-border-top-color-active;
+      color: $color-environment-link-icon-color-hover;
+    }
+
+    &:active,
+    &.active {
+      color: $color-environment-link-icon-color-active;
+
+      &::before {
+        background-color: $color-environment-link-icon-border-top-color-active;
+        content: " ";
+        height: $main-function-link-icon-active-border-size;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+    }
+  }
 }
 
 .link--highlight {
@@ -161,9 +179,6 @@
 
 .link--menu {
   justify-content: flex-start;
-}
-
-.link--menu {
   overflow: hidden;
 
   &.active,
@@ -175,14 +190,14 @@
 
   .link__icon {
     background-color: $color-environment-link-menu-icon-background;
-    color: $color-environment-link-menu-icon-color;
-    width: 35px;
-    height: 35px;
     border-radius: 100%;
+    color: $color-environment-link-menu-icon-color;
     font-size: 20px;
+    height: 35px;
     line-height: 35px;
-    vertical-align: middle;
     text-align: center;
+    vertical-align: middle;
+    width: 35px;
   }
 }
 
@@ -207,43 +222,11 @@
   }
 }
 
-.link--frontpage {
-  .link__icon {
-    color: $color-environment-link-menu-navicon-icon-color;
-  }
-}
-
 .link--menu-logout {
 
   .link__icon {
     background: $color-environment-link-menu-logout-icon-background;
     color: $color-environment-link-menu-logout-icon-color;
-  }
-}
-
-.link--icon {
-  color: $color-environment-link-icon-color;
-
-  @include breakpoint($breakpoint-pad) {
-
-    &:hover, &.hover {
-      background-color: $color-environment-link-icon-border-top-color-active;
-      color: $color-environment-link-icon-color-hover;
-    }
-
-    &:active, &.active {
-      color: $color-environment-link-icon-color-active;
-
-      &::before {
-        content: " ";
-        height: $main-function-link-icon-active-border-size;
-        background-color: $color-environment-link-icon-border-top-color-active;
-        position: absolute;
-        top: 0;
-        width: 100%;
-        left: 0;
-      }
-    }
   }
 }
 
@@ -318,10 +301,10 @@
   }
 
   &.semi-selected {
-     background-color: lighten($color-main-function-label-link-selected-background, 20%);
+    background-color: lighten($color-main-function-label-link-selected-background, 20%);
 
     .link__text {
-       color: $color-text-link-selected;
+      color: $color-text-link-selected;
       font-weight: 600;
     }
   }

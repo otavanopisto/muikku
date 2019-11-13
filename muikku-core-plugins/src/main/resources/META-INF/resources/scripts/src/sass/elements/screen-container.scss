@@ -7,8 +7,8 @@
   align-items: center;
   display: flex;
   justify-content: center;
-  width: 100%;
   overflow: visible;
+  width: 100%;
 }
 
 .screen-container__header {
@@ -40,15 +40,15 @@
   height: 100%;
   justify-content: flex-start;
   max-width: $breakpoint-max-usable-screen;
-  width: 100%;
   overflow: visible;
+  width: 100%;
 }
 
 // Wrapper for ERROR view
 .screen-container__wrapper--error {
   margin: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     margin: calc(#{$navbar-desktop-height} * 1.25) auto 10px;
   }
 }
@@ -57,7 +57,7 @@
 .screen-container__wrapper--index {
   margin: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     margin: calc(#{$navbar-desktop-height} * 1.25) auto 10px;
   }
 }
@@ -66,12 +66,8 @@
 .screen-container__wrapper--workspace {
   margin: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     margin: calc(#{$navbar-desktop-height} * 1.25) auto 10px;
-  }
-
-  @include breakpoint($breakpoint-desktop){
-
   }
 }
 

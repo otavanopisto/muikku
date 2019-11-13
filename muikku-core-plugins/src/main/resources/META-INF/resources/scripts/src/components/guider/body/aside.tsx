@@ -17,7 +17,7 @@ interface NavigationProps {
 }
 
 interface NavigationState {
-  
+
 }
 
 class NavigationAside extends React.Component<NavigationProps, NavigationState> {
@@ -27,10 +27,10 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
       {this.props.guider.availableFilters.labels.length !== 0 ? <NavigationTopic name={this.props.i18n.text.get("plugin.guider.filters.flags")}>
         {this.props.guider.availableFilters.labels.map((label: GuiderUserLabelType)=>{
           let isActive = this.props.guider.activeFilters.labelFilters.includes(label.id);
-          let hash = isActive ? 
+          let hash = isActive ?
             queryString.stringify(Object.assign({}, locationData, {c: "", l: (locationData.l || []).filter((i:string)=>parseInt(i)!==label.id)}), {arrayFormat: 'bracket'}) :
             queryString.stringify(Object.assign({}, locationData, {c: "", l: (locationData.l || []).concat(label.id)}), {arrayFormat: 'bracket'});
-          return <NavigationElement key={label.id} icon="flag" iconColor={label.color} isActive={isActive} hash={"?" + hash}
+          return <NavigationElement modifier="aside-navigation" key={label.id} icon="flag" iconColor={label.color} isActive={isActive} hash={"?" + hash}
           editableWrapper={LabelUpdateDialog} editableWrapperArgs={{label: label}} isEditable>{label.name}</NavigationElement>
         })}
       </NavigationTopic>: null}
@@ -40,7 +40,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
           let hash = isActive ?
             queryString.stringify(Object.assign({}, locationData, {c: "", w: (locationData.w || []).filter((w:string)=>parseInt(w)!==workspace.id)}), {arrayFormat: 'bracket'}) :
             queryString.stringify(Object.assign({}, locationData, {c: "", w: (locationData.w || []).concat(workspace.id)}), {arrayFormat: 'bracket'});
-          return <NavigationElement key={workspace.id} isActive={isActive} hash={"?" + hash}>
+          return <NavigationElement modifier="aside-navigation" key={workspace.id} isActive={isActive} hash={"?" + hash}>
             {workspace.name + (workspace.nameExtension ? " (" + workspace.nameExtension + ")" : "")}
           </NavigationElement>
         })}

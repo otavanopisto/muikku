@@ -8,12 +8,12 @@
   margin: 0 0 1px;
   padding: 0 10px; // Top and bottom paddings are added in application-list__item-header--course so clickable area is bigger when only header acts as cickable object
 
-  &:first-child {
-    border-color: transparent;
-  }
-
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
+  }
+
+  &:first-child {
+    border-color: transparent;
   }
 
   &.course--open {
@@ -26,7 +26,7 @@
 
 .course--studies {
 
-	&:hover,
+  &:hover,
   &.hover,
   &:active,
   &.active {

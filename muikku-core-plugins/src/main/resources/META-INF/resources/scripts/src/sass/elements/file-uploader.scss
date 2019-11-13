@@ -15,8 +15,8 @@
 
   // DISABLED FILE FIELD
   &.file-uploader--readonly {
-    border-color: $color-disabled-taskfield-border !important;
-    cursor: text !important;
+    border-color: $color-disabled-taskfield-border;
+    cursor: text;
 
     .file-uploader__field-container--taskfield {
       display: none;
@@ -33,18 +33,13 @@
     }
 
     .file-uploader__items--taskfield {
-      border: none !important;
-    }
-
-    .file-uploader__item-delete-icon {
-      color: darken($color-disabled-taskfield-icon, 20%) !important;
-      cursor: default !important;
+      border: 0;
     }
   }
 }
 
 .file-uploader--material-editor {
-  border: solid 2px lighten($color-material-page-admin-panel-main-color,20%);
+  border: solid 2px lighten($color-material-page-admin-panel-main-color, 20%);
 }
 
 .file-uploader__field-container {
@@ -71,8 +66,9 @@
   display: flex;
   justify-content: center;
 }
+
 .file-uploader__items-container {
-  border-top: 3px dotted lighten($taskfield-border-color,20%);
+  border-top: 3px dotted lighten($taskfield-border-color, 20%);
   position: relative;
 }
 
@@ -91,9 +87,8 @@
   flex-flow: row nowrap;
   margin: 5px;
   padding: 0 5px;
-  transition: all 0.3s ease-in-out;
 
-  &.file-uploader__item--FAILED-TO-UPLOAD {
+  &.file-uploader__item--failed-to-upload {
 
     .file-uploader__item-title {
       color: $color-fatal;
@@ -157,7 +152,7 @@
   align-items: flex-start;
 
   .file-uploader__item-attachment-icon {
-    padding: 2px 0 0 0;
+    padding: 2px 0 0;
   }
 }
 

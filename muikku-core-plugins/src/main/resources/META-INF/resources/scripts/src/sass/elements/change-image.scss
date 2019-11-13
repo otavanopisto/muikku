@@ -24,11 +24,6 @@
   position: relative;
   width: 180px;
 
-  @include breakpoint($breakpoint-pad) {
-    height: 250px;
-    width: 250px;
-  }
-
   input {
     cursor: pointer;
     height: 100%;
@@ -37,6 +32,11 @@
     position: absolute;
     top: 0;
     width: 100%;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    height: 250px;
+    width: 250px;
   }
 }
 
@@ -48,10 +48,6 @@
     height: auto;
     min-height: 196px;
     width: 100%;
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    min-height: 196px;
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -81,10 +77,8 @@
 .change-image__container--empty {
 
   &::before {
-    content: "\e114";
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     color: $color-default;
+    content: "\e114";
     font-family: "muikku";
     font-size: 65px;
     font-style: normal;
@@ -92,7 +86,6 @@
     font-weight: normal;
     height: 65px;
     line-height: 1;
-    speak: none;
     text-transform: none;
     width: 65px;
   }

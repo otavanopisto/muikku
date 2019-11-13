@@ -28,12 +28,12 @@
   flex-flow: row nowrap;
   justify-content: flex-start;
 
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 10px 0 0;
-  }
-
   &:last-child {
     margin: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
   }
 }
 

@@ -6,8 +6,8 @@
 .application-list {
   @include text;
   height: 100%;
-  width: 100%;
   overflow: visible;
+  width: 100%;
 
   &::-webkit-scrollbar {
     display: none;
@@ -26,14 +26,14 @@
 }
 
 .application-list--workspace-staff-members {
-  display:flex;
+  display: flex;
   flex-wrap: wrap;
   height: auto;
   padding: 0;
 }
 
 .application-list--workspace-users {
-  display:flex;
+  display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   padding: 0;
@@ -128,19 +128,19 @@
   text-align: center;
   width: 1.875rem;
 
-  &.state-PASSED {
+  &.state-passed {
     background: $color-grade-passed;
   }
 
-  &.state-FAILED {
+  &.state-failed {
     background: $color-grade-failed;
   }
 
-  &.state-INCOMPLETE {
+  &.state-incomplete {
     background: $color-grade-incomplete;
   }
 
-  &.state-NO-ASSESSMENT {
+  &.state-no-assessment {
     background: $color-grade-not-assessed;
   }
 }
@@ -333,9 +333,9 @@
   display: none;
 
   input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     align-items: center;
+    -moz-appearance: none;
+    -webkit-appearance: none;
     appearance: none;
     border: solid 2px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
@@ -354,7 +354,7 @@
     color: $color-main-function-application-list-item-checkbox-checked-mark;
     content: "\e639";
     font-family: muikku;
-    font-size: .875rem;
+    font-size: 0.875rem;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -391,7 +391,7 @@
 .application-list__item-content-avatar {
   align-items: center;
   border-radius: 100%;
-  color: #fff;
+  color: $color-default;
   display: flex;
   font-size: 1.25rem;
   height: 46px;
@@ -576,30 +576,19 @@
 .application-list__item-header-aside {
   align-items: center;
   display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   justify-content: flex-end;
 }
 
 .application-list--open {
-  -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
     display: none;
   }
-}
-
-.application-list__item-header-aside {
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  justify-content: right;
-}
-
-.application-list__item-header-main {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
 }
 
 // Journal
@@ -731,12 +720,12 @@
 .application-list__item--environment-announcement {
   padding: 10px 0;
 
-  @include breakpoint($breakpoint-pad) {
-    padding: 15px 0;
-  }
-
   .glyph::before {
     color: $color-announcement-workspace-icon;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
   }
 }
 
@@ -769,12 +758,12 @@
   border-bottom: 5px solid $color-message-border;
   padding: 10px 0;
 
-  @include breakpoint($breakpoint-pad) {
-    padding: 15px 0;
-  }
-
   &:last-child {
     border: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
   }
 }
 
@@ -831,8 +820,8 @@
 
 // Studies
 .application-list__header--studies-detailed-info {
-  padding: 10px 0;
   font-size: 1.125rem;
+  padding: 10px 0;
 
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0;

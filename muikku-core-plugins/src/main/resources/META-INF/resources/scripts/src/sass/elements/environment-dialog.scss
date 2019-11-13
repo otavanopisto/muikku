@@ -32,12 +32,12 @@
 .env-dialog__wrapper {
   background-color: $color-application-dialog-background-color;
   border-top: 1px solid $color-application-dialog-border-color;
+  bottom: -100%;
   box-shadow: $env-dialog-box-shadow;
   display: flex;
   justify-content: center;
-  position: absolute;
-  bottom: -100%;
   left: 0;
+  position: absolute;
   right: 0;
   top: 0;
 
@@ -88,7 +88,7 @@
 }
 
 .env-dialog__footer {
-  padding: 10px;
+  padding: 0 10px 10px;
 }
 
 .env-dialog__actions {
@@ -126,7 +126,7 @@
 }
 
 .env-dialog__row {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .env-dialog__row--communicator-signature,
@@ -137,7 +137,7 @@
   padding: 10px 0;
 }
 
-.env-dialog__row---new-discussion-options {
+.env-dialog__row--new-discussion-options {
   display: flex;
   flex-flow: column wrap;
 
@@ -186,6 +186,20 @@
   flex-grow: 0;
 
   &:not(:first-child) {
+
+    @include breakpoint($breakpoint-pad) {
+      margin-left: 0;
+    }
+  }
+}
+
+.env-dialog__form-element-container--pinned-thread,
+.env-dialog__form-element-container--locked-thread {
+  flex-grow: 0;
+  margin: 0 20px 0 0;
+
+  &:not(:first-child) {
+
     @include breakpoint($breakpoint-pad) {
       margin-left: 0;
     }
@@ -202,7 +216,7 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
-  padding: 5px 10px 5px 0;
+  padding: 0 0 5px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -247,9 +261,9 @@
 }
 
 .env-dialog__input--new-discussion-thread-area {
+  flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  flex-basis: auto;
 }
 
 label {
@@ -273,7 +287,7 @@ label {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 0;
-  margin: 0 0 0 3px;
+  margin: 0 0 0 5px;
 }
 
 .env-dialog__input-description {
@@ -286,9 +300,9 @@ label {
 }
 
 .env-dialog__input[type="checkbox"] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
   border: solid 2px $color-env-dialog-form-element-border;
   border-radius: 3px;
@@ -308,7 +322,7 @@ label {
   color: $color-default;
   content: "\e639";
   font-family: muikku;
-  font-size: .875rem;
+  font-size: 0.875rem;
 }
 
 .env-dialog__input--date-picker {

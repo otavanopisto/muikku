@@ -7,6 +7,9 @@ plugin_directories: ['.scss-linters']
 # installed)
 plugin_gems: []
 
+# Exclude third-party scss files
+exclude: 'muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src/sass/elements/datepicker/**'
+
 # Default severity of all linters.
 severity: error
 
@@ -41,7 +44,7 @@ linters:
     enabled: true
 
   DeclarationOrder:
-    enabled: true
+    enabled: false
 
   DisableLinterReason:
     enabled: false
@@ -160,7 +163,7 @@ linters:
 
   SelectorDepth:
     enabled: true
-    max_depth: 2
+    max_depth: 3
 
   SelectorFormat:
     enabled: true
@@ -180,7 +183,7 @@ linters:
   SpaceAfterComma:
     enabled: true
     style: one_space # or 'no_space', or 'at_least_one_space'
-    
+
   SpaceAfterComment:
     enabled: true
     allow_empty_comments: true

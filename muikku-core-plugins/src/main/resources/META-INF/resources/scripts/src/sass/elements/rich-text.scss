@@ -6,7 +6,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic');
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
-
+// scss-lint:disable SelectorFormat
 .rich-text,
 .cke_editable {
   color: $color-text-default;
@@ -15,16 +15,14 @@
   font-weight: 400;
   line-height: 1.25rem;
 
+  // scss-lint:enable SelectorFormat
+
   // This will adjust the editor's context area so it will resembel material page more closely
+  // scss-lint:disable SelectorFormat
   &.cke_wysiwyg_div {
     padding: 5px 20px;
   }
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: $text-desktop-richtext-font-size;
-    font-weight: 300;
-    line-height: 1.75rem;
-  }
+  // scss-lint:enable SelectorFormat
 
   p {
     margin: 10px 0;
@@ -131,7 +129,7 @@
     border-spacing: 50px;
   }
 
-  table[cellpadding] td{
+  table[cellpadding] td {
     border-collapse: separate;
     padding: 50px;
   }
@@ -148,10 +146,10 @@
 
   td {
     border-radius: 2px;
-    padding: initial;
     margin: initial;
     max-width: 100%;
     overflow-wrap: anywhere;
+    padding: initial;
     vertical-align: top;
     width: auto;
   }
@@ -178,5 +176,11 @@
     font-style: normal;
     margin: 20px 0 10px;
     padding: 2px 7px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-richtext-font-size;
+    font-weight: 300;
+    line-height: 1.75rem;
   }
 }
