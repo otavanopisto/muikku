@@ -378,7 +378,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").creatorId(admin.getId()).buildCourse();
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
@@ -391,8 +391,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
       try{
-        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
-        reloadCurrentPage();
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitAndClick(".navbar__item--settings a");
         waitForPresent("input[name=\"add-producer\"]");
         scrollIntoView("input[name=\"add-producer\"]");
         selectAllAndClear("input[name=\"add-producer\"]");
