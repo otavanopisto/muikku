@@ -586,14 +586,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{ID}/help")
   @RESTPermit (handling = Handling.INLINE)
-  public Response getWorkspaceHelpPage(@PathParam("ID") Long workspaceEntityId) {
+  public Response getWorkspaceHelpPages(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
     	return Response.status(Status.NOT_FOUND).build();
     }
     try {
-      WorkspaceMaterial helpPage = workspaceMaterialController.ensureWorkspaceHelpPageExists(workspaceEntity);
-      return Response.ok(workspaceMaterialController.createContentNode(helpPage, null)).build();
+      List<ContentNode> helpPages = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
+      return Response.ok(helpPages).build();
     }
     catch (WorkspaceMaterialException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -691,8 +691,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
     WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    WorkspaceFolder helpFolder = workspaceMaterialController.ensureWorkspaceHelpFolderExists(workspaceEntity);
+    WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
 
-    return Response.ok(new WorkspaceDetails(typeId, workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink(), rootFolder == null ? null : rootFolder.getId())).build();
+    return Response.ok(new WorkspaceDetails(typeId,
+        workspace.getBeginDate(),
+        workspace.getEndDate(),
+        workspace.getViewLink(),
+        rootFolder.getId(),
+        helpFolder.getId(),
+        frontPage.getParent().getId())).build();
   }
   
   @POST
@@ -827,7 +835,17 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
 
-    return Response.ok(new WorkspaceDetails(typeId, workspace.getBeginDate(), workspace.getEndDate(), workspace.getViewLink(), payload.getRootFolderId())).build();
+    WorkspaceFolder helpFolder = workspaceMaterialController.ensureWorkspaceHelpFolderExists(workspaceEntity);
+    WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
+
+    return Response.ok(new WorkspaceDetails(
+        typeId,
+        workspace.getBeginDate(),
+        workspace.getEndDate(),
+        workspace.getViewLink(),
+        payload.getRootFolderId(),
+        helpFolder.getId(),
+        frontPage.getParent().getId())).build();
   }
   
   private boolean isEqualDateTime(OffsetDateTime dateTime1, OffsetDateTime dateTime2) {

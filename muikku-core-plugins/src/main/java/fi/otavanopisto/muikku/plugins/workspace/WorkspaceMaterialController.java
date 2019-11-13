@@ -680,23 +680,12 @@ public class WorkspaceMaterialController {
     return frontPageMaterial;
   }
 
-  public WorkspaceMaterial ensureWorkspaceHelpPageExists(WorkspaceEntity workspace) {
+  public WorkspaceFolder ensureWorkspaceHelpFolderExists(WorkspaceEntity workspace) {
     WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspace);
     if (helpPageFolder == null) {
       helpPageFolder = createWorkspaceHelpPageFolder(workspace);
     }
-    WorkspaceMaterial helpPageMaterial = null;
-    List<WorkspaceMaterial> helpPageMaterials = listWorkspaceMaterialsByParent(helpPageFolder);
-    if (helpPageMaterials.isEmpty()) {
-      String title = localeController.getText(sessionController.getLocale(), "plugin.workspace.helpPage.title");
-      String license = null;
-      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l, license);
-      helpPageMaterial = createWorkspaceMaterial(helpPageFolder, htmlMaterial);
-    }
-    else {
-      helpPageMaterial = helpPageMaterials.get(0);
-    }
-    return helpPageMaterial;
+    return helpPageFolder;
   }
 
   public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
