@@ -163,6 +163,10 @@ public class ElasticSearchProvider implements SearchProvider {
     try {
       long now = OffsetDateTime.now().toEpochSecond();
 
+      if (CollectionUtils.isEmpty(organizations)) {
+        throw new IllegalArgumentException("Cannot search with no organizations specified.");
+      }
+      
       text = sanitizeSearchString(text);
 
       BoolQueryBuilder query = boolQuery();
@@ -613,6 +617,10 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUserGroups(String query, List<OrganizationEntity> organizations, int start, int maxResults) {
     try {
+      if (CollectionUtils.isEmpty(organizations)) {
+        throw new IllegalArgumentException("Cannot search with no organizations specified.");
+      }
+      
       query = sanitizeSearchString(query);
       
       SearchRequestBuilder requestBuilder = elasticClient
