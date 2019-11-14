@@ -68,11 +68,15 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       let userId:number = getState().status.userId;
     
       //we get the users that represent that userId
+      
       let users:Array<UserWithSchoolDataType> = await promisify(mApi().user.students.read({
-        userEntityId: userId,
-        includeInactiveStudents: true,
-        includeHidden: true
-      }), 'callback')() as Array<UserWithSchoolDataType>;
+        userEntityId: userId, 
+        includeInactiveStudents: true, 
+        includeHidden: true, 
+        maxResults: 20 
+        }), 'callback')() as Array<UserWithSchoolDataType>;
+      
+
     
       //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
       //The bigger number to be first
