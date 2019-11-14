@@ -220,7 +220,6 @@ class Help extends React.Component<HelpProps, HelpState> {
         </div>);
       }
 
-
       let material = !this.props.workspace ? null :
         <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
           <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
