@@ -5,6 +5,11 @@ import {StateType} from '~/reducers';
 import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import ApplicationPanelBody from '~/components/general/application-panel/components/application-panel-body';
 import Tabs from '~/components/general/tabs';
+import Summary from './application/summary';
+import Users from './application/users';
+import Courses from './application/courses';
+import CoursesAside from './application/courses/aside';
+import Reports from './application/reports';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
@@ -44,29 +49,29 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   render(){
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>
         return (
-            <ApplicationPanel modifier="organization" title={title} onTabChange={this.onTabChange} activeTab={this.state.activeTab} panelTabs={[
+          <ApplicationPanel modifier="organization" title={title} onTabChange={this.onTabChange} activeTab={this.state.activeTab} panelTabs={[
           {
             id: "SUMMARY",
             name: this.props.i18n.text.get('plugin.organization.tab.title.summary'),
-            component: ()=> { return <ApplicationPanelBody modifier="tabs" children={<h1>Sunmary</h1>}/>}
+            component: ()=> { return <ApplicationPanelBody modifier="tabs" children={<Summary />}/>}
             
           },
           {
             id: "USERS",
             name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
-            component: ()=> { return <ApplicationPanelBody modifier="tabs" children={<h1>Usah</h1>}/>}
+            component: ()=> { return <ApplicationPanelBody modifier="tabs" children={<Users />}/>}
             
           },
           {
             id: "COURSES",
             name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
-            component: ()=> { return <ApplicationPanelBody modifier="tabs" children={<h1>Course</h1>}/>}
+            component: ()=> { return <ApplicationPanelBody modifier="tabs" asideBefore={<CoursesAside />} children={<Courses />}/>}
             
           },
           {
             id: "REPORTS",
             name: this.props.i18n.text.get('plugin.organization.tab.title.reports'),
-            component: ()=> { return <ApplicationPanelBody  modifier="tabs" children={<h1>Rebort</h1>}/>}
+            component: ()=> { return <ApplicationPanelBody  modifier="tabs" children={<Reports />}/>}
           }
         ]} />
         );
