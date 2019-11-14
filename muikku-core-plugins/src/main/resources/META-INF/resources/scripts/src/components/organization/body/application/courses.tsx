@@ -2,7 +2,7 @@ import * as React from 'react';
 import {StateType} from '~/reducers';
 import {connect, Dispatch} from 'react-redux';
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
-
+import Course from './courses/course';
 
 interface CoursesProps {
   
@@ -37,8 +37,10 @@ class Courses extends React.Component<CoursesProps, CoursesState> {
   render(){
     return (
         <ApplicationList>
-
-          </ApplicationList>
+          {courses.map((course:any, index)=>{
+            return <Course key={course.name + index} course={course}/>
+          })}
+        </ApplicationList>
     );
   }
 }
