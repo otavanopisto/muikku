@@ -235,7 +235,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
-      this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId}) as Action);
+      this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId, loadDetails: state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS}) as Action);
       this.props.store.dispatch(loadWholeWorkspaceHelp(state.status.currentWorkspaceId, state.status.permissions.WORKSPACE_MANAGE_WORKSPACE, (result)=>{
         if (!window.location.hash.replace("#", "") && result[0]){
           this.loadWorkspaceHelpData(result[0].workspaceMaterialId);

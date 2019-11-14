@@ -188,6 +188,7 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (data: {
     parentMaterial?: MaterialContentNodeType,
+    rootParentId: number,
     nextSibling?: MaterialContentNodeType,
     copyWorkspaceId?: number,
     copyMaterialId?: number,
@@ -1628,7 +1629,7 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
 let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTriggerType = function createWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      const parentId = data.parentMaterial ? data.parentMaterial.workspaceMaterialId : data.workspace.details.rootFolderId;
+      const parentId = data.parentMaterial ? data.parentMaterial.workspaceMaterialId : data.rootParentId;
       const nextSiblingId = data.nextSibling ? data.nextSibling.workspaceMaterialId : null;
       let workspaceMaterialId: number = null;
       if (data.copyMaterialId) {
