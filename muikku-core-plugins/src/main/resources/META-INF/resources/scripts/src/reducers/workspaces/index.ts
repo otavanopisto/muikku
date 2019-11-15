@@ -153,6 +153,8 @@ export interface WorkspaceDetailsType {
   externalViewUrl: string,
   typeId: string,
   rootFolderId: number,
+  helpFolderId: number,
+  indexFolderId: number,
 }
 
 export type WorkspaceAccessType = "MEMBERS_ONLY" | "LOGGED_IN" | "ANYONE";
@@ -633,7 +635,8 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let newCurrentWorkspace = state.currentWorkspace;
-    if (!action.payload.isDraft && !found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && !found &&
+        newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
       newCurrentWorkspace = {...newCurrentWorkspace};
       newCurrentWorkspace.contentDescription = {...newCurrentWorkspace.contentDescription, ...action.payload.update};
@@ -660,13 +663,16 @@ export default function workspaces(state: WorkspacesType={
     }
     
     let newEditor = state.materialEditor;
-    if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue && newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue &&
+        newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.currentNodeValue = {...newEditor.currentNodeValue, ...action.payload.update};
-    } else if (!action.payload.isDraft && newEditor && newEditor.parentNodeValue && newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    } else if (!action.payload.isDraft && newEditor && newEditor.parentNodeValue &&
+        newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.parentNodeValue = {...newEditor.parentNodeValue, ...action.payload.update};
-    } else if (action.payload.isDraft && newEditor && newEditor.currentDraftNodeValue && newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    } else if (action.payload.isDraft && newEditor && newEditor.currentDraftNodeValue &&
+        newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       newEditor = {...newEditor};
       newEditor.currentDraftNodeValue = {...newEditor.currentDraftNodeValue, ...action.payload.update};
     }
@@ -676,6 +682,7 @@ export default function workspaces(state: WorkspacesType={
       ...state,
       currentWorkspace: newCurrentWorkspace,
       currentMaterials: state.currentMaterials ? state.currentMaterials.map(mapMaterial) : state.currentMaterials,
+      currentHelp: state.currentHelp ? state.currentHelp.map(mapMaterial) : state.currentHelp,
       materialEditor: newEditor
     }
   } else if (action.type === "DELETE_MATERIAL_CONTENT_NODE") {
@@ -722,11 +729,18 @@ export default function workspaces(state: WorkspacesType={
       newEditor.currentNodeValue = {...newEditor.currentNodeValue};
       newEditor.currentNodeValue.childrenAttachments = newEditor.currentNodeValue.childrenAttachments.filter(filterMaterial);
     }
-    return {...state, currentMaterials: state.currentMaterials.filter(filterMaterial).map(mapMaterial), materialEditor: newEditor}
+    return {
+      ...state,
+      currentMaterials: state.currentMaterials ? state.currentMaterials.filter(filterMaterial).map(mapMaterial) : state.currentMaterials,
+      currentHelp: state.currentHelp ? state.currentHelp.filter(filterMaterial).map(mapMaterial) : state.currentHelp,
+      materialEditor: newEditor,
+    }
   } else if (action.type === "INSERT_MATERIAL_CONTENT_NODE") {
     let insertedContentNode: MaterialContentNodeType = action.payload;
-    let newCurrentMaterials = [...state.currentMaterials];
-    let targetArray = newCurrentMaterials;
+    let newCurrentMaterials = state.currentMaterials ? [...state.currentMaterials] : state.currentMaterials;
+    let newHelpMaterials = state.currentHelp ? [...state.currentHelp] : state.currentHelp;
+    
+    let targetArray = insertedContentNode.parentId === state.currentWorkspace.details.helpFolderId ? newHelpMaterials : newCurrentMaterials;
     if (insertedContentNode.parentId !== state.currentWorkspace.details.rootFolderId) {
       const targetIndex = newCurrentMaterials.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.parentId);
       newCurrentMaterials[targetIndex] = {...newCurrentMaterials[targetIndex]};
@@ -740,7 +754,11 @@ export default function workspaces(state: WorkspacesType={
       targetArray.push(insertedContentNode);
     }
 
-    return {...state, currentMaterials: repairContentNodes(newCurrentMaterials)}
+    return {
+      ...state,
+      currentMaterials: newCurrentMaterials ? repairContentNodes(newCurrentMaterials) : newCurrentMaterials,
+      currentHelp: newHelpMaterials ? repairContentNodes(newHelpMaterials) : newHelpMaterials,
+    }
   } else if (action.type === "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES") {
     return {...state, currentMaterials: repairContentNodes(state.currentMaterials, action.payload.newPath, action.payload.material.workspaceMaterialId)}
   } else if (action.type === "UPDATE_WORKSPACES_EDIT_MODE_STATE") {

@@ -93,41 +93,38 @@ class Help extends React.Component<HelpProps, HelpState> {
     return materialManagementItemsOptions;
   }
   createPage(nextSibling: MaterialContentNodeType) {
-    // TODO
-//    this.props.createWorkspaceMaterialContentNode({
-//      workspace: this.props.workspace,
-//      parentMaterial: section,
-//      nextSibling,
-//      title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
-//    });
+    this.props.createWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      rootParentId: this.props.workspace.details.helpFolderId,
+      nextSibling,
+      title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
+    });
   }
   createPageFromBinary(
       nextSibling: MaterialContentNodeType,
       e: React.ChangeEvent<HTMLInputElement>
   ) {
-    // TODO
-//    this.props.createWorkspaceMaterialContentNode({
-//      workspace: this.props.workspace,
-//      parentMaterial: section,
-//      nextSibling,
-//      title: e.target.files[0].name,
-//      file: e.target.files[0],
-//    });
+    this.props.createWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      nextSibling,
+      rootParentId: this.props.workspace.details.helpFolderId,
+      title: e.target.files[0].name,
+      file: e.target.files[0],
+    });
   }
   pastePage(nextSibling: MaterialContentNodeType) {
-    // TODO
-//    const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;
-//    const workspaceCopiedId = localStorage.getItem("workspace-copied-id") || null;
-//    
-//    if (workspaceMaterialCopiedId) {
-//      this.props.createWorkspaceMaterialContentNode({
-//        workspace: this.props.workspace,
-//        parentMaterial: section,
-//        nextSibling,
-//        copyMaterialId: parseInt(workspaceMaterialCopiedId),
-//        copyWorkspaceId: parseInt(workspaceCopiedId),
-//      })
-//    }
+    const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;
+    const workspaceCopiedId = localStorage.getItem("workspace-copied-id") || null;
+    
+    if (workspaceMaterialCopiedId) {
+      this.props.createWorkspaceMaterialContentNode({
+        workspace: this.props.workspace,
+        nextSibling,
+        rootParentId: this.props.workspace.details.helpFolderId,
+        copyMaterialId: parseInt(workspaceMaterialCopiedId),
+        copyWorkspaceId: parseInt(workspaceCopiedId),
+      })
+    }
   }
   onOpenNavigation(){
     this.props.onOpenNavigation();

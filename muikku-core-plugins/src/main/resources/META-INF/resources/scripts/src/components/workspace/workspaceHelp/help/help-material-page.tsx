@@ -42,7 +42,7 @@ class HelpMaterial extends React.Component<HelpMaterialProps, HelpMaterialState>
         canDelete canRestrictView canChangePageType={!isBinary}
         canSetLicense={!isBinary} canSetProducers={!isBinary}
         canAddAttachments={!isBinary} canEditContent={!isBinary}
-        invisible={!loaded}>
+        invisible={!loaded} canPublish={!isBinary}>
           {(props, state, stateConfiguration) => {
             return <div>
               <MaterialLoaderEditorButtonSet {...props} {...state}/>
