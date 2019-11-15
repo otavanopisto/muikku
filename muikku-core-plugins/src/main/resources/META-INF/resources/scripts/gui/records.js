@@ -213,12 +213,8 @@
       this.element.addClass('loading');
       this._clear();
 
-      mApi().user.students
-        .read({userEntityId: this.options.userEntityId, includeInactiveStudents: true, includeHidden: true })
+      mApi().user.students.read({userEntityId: this.options.userEntityId, includeInactiveStudents: true, includeHidden: true, maxResults: 20 })
         .on('$', $.proxy(function (student, callback) {
-          // var curriculumIdentifier = student.curriculumIdentifier ?
-          // student.curriculumIdentifier : undefined;
-
           async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id), this._createCurriculumsLoad()], $.proxy(function (err, results) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
