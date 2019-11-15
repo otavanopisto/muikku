@@ -343,6 +343,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       beginDate: this.state.workspaceStartDate ? this.state.workspaceStartDate.toISOString() : null,
       endDate: this.state.workspaceEndDate ? this.state.workspaceEndDate.toISOString() : null,
       rootFolderId: this.props.workspace.details.rootFolderId,
+      helpFolderId: this.props.workspace.details.helpFolderId,
+      indexFolderId: this.props.workspace.details.indexFolderId,
     }
     
     let currentWorkspaceAsDetails: WorkspaceDetailsType = {
@@ -351,6 +353,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       beginDate: this.props.workspace.details.beginDate,
       endDate: this.props.workspace.details.endDate,
       rootFolderId: this.props.workspace.details.rootFolderId,
+      helpFolderId: this.props.workspace.details.helpFolderId,
+      indexFolderId: this.props.workspace.details.indexFolderId,
     }
       
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)){
