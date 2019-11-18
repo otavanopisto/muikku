@@ -8,6 +8,14 @@
   border: 2px solid $color-tertiary;
 }
 
+.file-uploader--guider {
+  margin: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0;
+  }
+}
+
 // FILE UPLOADER USED IN MATERIALS AS FILE FIELD TASK
 .file-uploader--taskfield {
   @include taskfield-text;
