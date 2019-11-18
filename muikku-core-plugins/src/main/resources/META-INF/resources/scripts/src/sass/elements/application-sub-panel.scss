@@ -45,7 +45,6 @@
 }
 
 // Subpanel header
-
 .application-sub-panel__header {
   align-items: center;
   display: flex;
@@ -55,7 +54,6 @@
   line-height: 1;
   padding: 0 10px;
   text-transform: uppercase;
-  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     margin: 0 0 10px;
@@ -68,11 +66,6 @@
   font-size: 1.1875rem;
   font-weight: 400;
   text-transform: uppercase;
-  width: 100%;
-}
-
-.application-sub-panel__header--workspace-settings {
-  padding: 0;
 }
 
 .application-sub-panel__header--workspace-image-settings {

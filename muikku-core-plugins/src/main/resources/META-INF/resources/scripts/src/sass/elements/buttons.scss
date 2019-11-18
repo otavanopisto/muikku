@@ -412,6 +412,11 @@
   background-color: $color-button-primary-save-background;
   color: $color-button-primary-save-text;
   display: inline-flex;
+  font-size: $button-mobile-primary-font-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-desktop-primary-font-size;
+  }
 }
 
 .button--guider-share-label {
