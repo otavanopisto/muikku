@@ -33,7 +33,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
         })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.settings.topic")} className="item-list--settings">
-        <NavigationElement icon="cogs" isActive={false} onClick={this.props.openSignatureDialog}>{this.props.i18n.text.get('plugin.communicator.settings.signature')}</NavigationElement>
+        <NavigationElement modifier="aside-navigation" icon="cogs" isActive={false} onClick={this.props.openSignatureDialog}>{this.props.i18n.text.get('plugin.communicator.settings.signature')}</NavigationElement>
       </NavigationTopic>
     </Navigation>
   }
