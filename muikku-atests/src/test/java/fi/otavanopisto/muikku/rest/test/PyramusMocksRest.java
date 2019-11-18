@@ -29,6 +29,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseType;
 import fi.otavanopisto.pyramus.rest.model.EducationType;
 import fi.otavanopisto.pyramus.rest.model.EducationalTimeUnit;
 import fi.otavanopisto.pyramus.rest.model.Email;
+import fi.otavanopisto.pyramus.rest.model.Organization;
 import fi.otavanopisto.pyramus.rest.model.Person;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StaffMember;
@@ -44,6 +45,7 @@ import fi.otavanopisto.pyramus.rest.model.WhoAmI;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStudentCreatePayload;
+import fi.otavanopisto.pyramus.webhooks.WebhookOrganizationCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
@@ -96,6 +98,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   public static final Long USERGROUP1_ID = 2l;
 
   public static void mockDefaults(List<String> payloads) throws JsonProcessingException {
+    mockOrganizations(payloads);
     mockCommons();
     mockRoles(payloads);
     mockStudyProgrammes(payloads);
@@ -106,6 +109,25 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     student1LoginMock();
   }
   
+  private static void mockOrganizations(List<String> payloads) throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    Organization organization = new Organization(1l, "Default Test Organization", false);
+    Organization[] organizations = { organization };
+
+    stubFor(get(urlEqualTo("/1/organizations"))
+        .willReturn(aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(objectMapper.writeValueAsString(organizations))
+          .withStatus(200)));
+    
+    stubFor(get(urlEqualTo("/1/organizations/1"))
+        .willReturn(aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(objectMapper.writeValueAsString(organization))
+          .withStatus(200)));
+    addPayload(payloads, objectMapper.writeValueAsString(new WebhookOrganizationCreatePayload(organization.getId(), organization.getName())));
+  }
+
   private static void mockStudyProgrammes(List<String> payloads) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
