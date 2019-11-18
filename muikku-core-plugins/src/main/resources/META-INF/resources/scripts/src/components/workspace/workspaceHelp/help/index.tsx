@@ -98,6 +98,7 @@ class Help extends React.Component<HelpProps, HelpState> {
       rootParentId: this.props.workspace.details.helpFolderId,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
+      makeFolder: false,
     });
   }
   createPageFromBinary(
@@ -110,6 +111,7 @@ class Help extends React.Component<HelpProps, HelpState> {
       rootParentId: this.props.workspace.details.helpFolderId,
       title: e.target.files[0].name,
       file: e.target.files[0],
+      makeFolder: false,
     });
   }
   pastePage(nextSibling: MaterialContentNodeType) {
@@ -123,6 +125,7 @@ class Help extends React.Component<HelpProps, HelpState> {
         rootParentId: this.props.workspace.details.helpFolderId,
         copyMaterialId: parseInt(workspaceMaterialCopiedId),
         copyWorkspaceId: parseInt(workspaceCopiedId),
+        makeFolder: false,
       })
     }
   }

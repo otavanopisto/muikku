@@ -188,6 +188,7 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (data: {
     parentMaterial?: MaterialContentNodeType,
+    makeFolder: boolean,
     rootParentId: number,
     nextSibling?: MaterialContentNodeType,
     copyWorkspaceId?: number,
@@ -1682,7 +1683,7 @@ let createWorkspaceMaterialContentNode:CreateWorkspaceMaterialContentNodeTrigger
           updateLinkedMaterials: true
         }), 'callback')() as any).id;
 
-      } else if (data.parentMaterial) {
+      } else if (!data.makeFolder) {
         const materialId = (await promisify(mApi().materials.html.create({
           title: data.title,
           contentType: "text/html;editor=CKEditor",

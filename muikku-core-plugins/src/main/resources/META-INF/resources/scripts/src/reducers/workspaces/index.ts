@@ -740,8 +740,14 @@ export default function workspaces(state: WorkspacesType={
     let newCurrentMaterials = state.currentMaterials ? [...state.currentMaterials] : state.currentMaterials;
     let newHelpMaterials = state.currentHelp ? [...state.currentHelp] : state.currentHelp;
     
+    // so the target depends, if it's the parent id of the help folder then the target is help
+    // however otherwise is current materials
     let targetArray = insertedContentNode.parentId === state.currentWorkspace.details.helpFolderId ? newHelpMaterials : newCurrentMaterials;
-    if (insertedContentNode.parentId !== state.currentWorkspace.details.rootFolderId) {
+    // if it's current materials, and it's not help then we got to check if we are in the root or into a folder
+    if (
+      insertedContentNode.parentId !== state.currentWorkspace.details.helpFolderId &&
+      insertedContentNode.parentId !== state.currentWorkspace.details.rootFolderId
+    ) {
       const targetIndex = newCurrentMaterials.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.parentId);
       newCurrentMaterials[targetIndex] = {...newCurrentMaterials[targetIndex]};
       newCurrentMaterials[targetIndex].children = [...newCurrentMaterials[targetIndex].children];
@@ -760,7 +766,11 @@ export default function workspaces(state: WorkspacesType={
       currentHelp: newHelpMaterials ? repairContentNodes(newHelpMaterials) : newHelpMaterials,
     }
   } else if (action.type === "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES") {
-    return {...state, currentMaterials: repairContentNodes(state.currentMaterials, action.payload.newPath, action.payload.material.workspaceMaterialId)}
+    return {
+      ...state,
+      currentMaterials: repairContentNodes(state.currentMaterials, action.payload.newPath, action.payload.material.workspaceMaterialId),
+      currentHelp: repairContentNodes(state.currentHelp, action.payload.newPath, action.payload.material.workspaceMaterialId)
+    }
   } else if (action.type === "UPDATE_WORKSPACES_EDIT_MODE_STATE") {
     return {...state, editMode: {...state.editMode, ...action.payload}}
   }
