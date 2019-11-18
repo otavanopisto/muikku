@@ -813,13 +813,15 @@ public class WorkspaceMaterialController {
   }
   
   public List<ContentNode> listWorkspaceHelpPagesAsContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
-    List<ContentNode> contentNodes = new ArrayList<>();
-    List<WorkspaceMaterial> helpPages = listHelpPages(workspaceEntity);
-    for (WorkspaceMaterial helpPage : helpPages) {
-      ContentNode node = createContentNode(helpPage, null);
-      contentNodes.add(node);
-    }
-    return contentNodes;
+	List<ContentNode> contentNodes = new ArrayList<>();
+	List<WorkspaceNode> helpPages = listHelpPages(workspaceEntity);
+	for (int i = 0; i < helpPages.size(); i++) {
+	  WorkspaceNode currentNode = helpPages.get(i);
+	  WorkspaceNode nextSibling = i + 1 < helpPages.size() ? helpPages.get(i + 1) : null;
+      ContentNode node = createContentNode(currentNode, 1, true, nextSibling);
+	  contentNodes.add(node);
+	}
+	return contentNodes;
   }
 
   public ContentNode createContentNode(WorkspaceNode rootMaterialNode, WorkspaceNode nextSibling) throws WorkspaceMaterialException {
@@ -1009,11 +1011,11 @@ public class WorkspaceMaterialController {
     return Arrays.asList();
   }
 
-  private List<WorkspaceMaterial> listHelpPages(WorkspaceEntity workspaceEntity) {
-    WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspaceEntity);
-    if (helpPageFolder != null) {
-      return listWorkspaceMaterialsByParent(helpPageFolder);
-    }
+  private List<WorkspaceNode> listHelpPages(WorkspaceEntity workspaceEntity) {
+	WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspaceEntity);
+	if (helpPageFolder != null) {
+	  return listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(helpPageFolder, WorkspaceFolderType.DEFAULT);
+	}
     return Arrays.asList();
   }
 
