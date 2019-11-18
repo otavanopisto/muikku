@@ -56,7 +56,6 @@
   @include prefix(transition, webkit moz o ms, left 0.3s);
   align-items: center;
   background-color: $color-menu-default-background;
-  border-right: solid 1px darken($color-menu-default-background, 30%);
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -69,7 +68,7 @@
 
 .menu__extras {
   border-bottom: solid 5px $color-default-separator-border;
-  margin: 0 0 20px;
+  margin: 0 0 10px;
   padding: 0 10px 10px;
   width: 100%;
 
