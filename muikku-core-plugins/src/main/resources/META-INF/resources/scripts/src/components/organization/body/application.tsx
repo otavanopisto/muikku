@@ -47,7 +47,14 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   }
   
   render(){
-        let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>
+        
+        let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
+        
+        let usersToolbar =  <div className="form-element form-element--workspace-toolbar">
+          <input type="text" className="form-element__input form-element__input--subpanel-search" placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')}/>
+          <div className="form-element__input-decoration form-element__input-decoration--subpanel-search icon-search"></div>
+        </div>;
+        
         return (
           <ApplicationPanel modifier="organization" title={title} onTabChange={this.onTabChange} activeTab={this.state.activeTab} panelTabs={[
           {
@@ -59,7 +66,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
           {
             id: "USERS",
             name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
-            component: ()=> { return <ApplicationPanelBody modifier="tabs" children={<Users />}/>}
+            component: ()=> { return <ApplicationPanelBody toolbar={usersToolbar} modifier="tabs" children={<Users />}/>}
             
           },
           {

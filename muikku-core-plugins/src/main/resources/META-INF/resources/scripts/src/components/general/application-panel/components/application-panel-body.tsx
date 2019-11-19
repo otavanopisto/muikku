@@ -7,6 +7,7 @@ interface ApplicationPanelBodyProps {
   asideBefore?: React.ReactElement<any>,   
   asideAfter?: React.ReactElement<any>,
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
+
   disableStickyScrolling?: boolean
 }
 
@@ -48,35 +49,35 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
   
   calculateSides(){
     this.extraPaddingLeft = (this.refs["body"] as HTMLElement).getBoundingClientRect().left + this.borderWidth;
-    
+
     let root:Element = document.querySelector("#root");
     this.extraPaddingRight = root.getBoundingClientRect().width - 
       ((this.refs["body"] as HTMLElement).getBoundingClientRect().width + this.extraPaddingLeft) + (this.borderWidth*2);
-    
+
     this.setState({
       extraPaddingLeft: this.extraPaddingLeft,
       extraPaddingRight: this.extraPaddingRight
     });
   }
-  
+
   calculate(){
     this.disabled = this.props.disableStickyScrolling;
     if (this.disabled){
       return;
     }
-    
+
     let computedStyle = document.defaultView.getComputedStyle(this.refs["sticky"] as HTMLElement);
     if (computedStyle.getPropertyValue("position") === "fixed"){
       this.disabled = true;
       return;
     }
-    
+
     //Sticky height represents the height of the sticky thing on top
     this.stickyHeight = parseInt(computedStyle.getPropertyValue("height"));
     this.setState({
       stickyHeight: this.stickyHeight
     });
-    
+
     //offset top represents the amount of offset that the sticky has to the top of the screen
     this.offsetStickyElementTop = (this.refs["sticky"] as HTMLElement).offsetTop;
     
@@ -89,14 +90,16 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       //this one represents the navbar basically the amount of pixels to the bottom
       this.offsetElementAgainstTop = parseInt(stickyElementComputedStyle.getPropertyValue("height"));
     }
-    
+
     //So we save that here
     this.setState({
       offsetElementAgainstTop: this.offsetElementAgainstTop
     })
     
-    let panelComputedStyle = document.defaultView.getComputedStyle(this.refs["panel"] as HTMLElement);
-    this.offsetBorderAgainstBottom = parseInt(panelComputedStyle.getPropertyValue("padding-bottom"));
+
+// offsetBorderAgainstBottom is lacking at the moment. The element where this is calculated is from parent and there was no good way to pass it for the tabs. Needs reviewing with Feli
+// this.offsetBorderAgainstBottom = null;
+    
     
     let asideBefore:HTMLElement = (this.refs["asideBefore"] as HTMLElement);
     if (asideBefore){
@@ -105,16 +108,14 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
         asideBeforeWidth: this.asideBeforeWidth
       });
     }
-    
+
     this.borderWidth = parseInt(document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement).getPropertyValue("border-left-width"));
-    
     this.calculateSides();
     this.setRemainingHeight(false);
   }
   
   componentDidMount(){
     this.calculate();
-    
     if (!this.disabled){
       window.addEventListener("scroll", this.onScroll);
       window.addEventListener("resize", this.calculateSides);

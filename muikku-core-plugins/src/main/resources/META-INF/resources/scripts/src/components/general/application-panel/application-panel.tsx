@@ -24,11 +24,12 @@ interface ApplicationPanelState {
 }
 
 
+
 export default class ApplicationPanel extends React.Component<ApplicationPanelProps, ApplicationPanelState> {  
+  private offsetBorderAgainstBottom: number;
   constructor(props: ApplicationPanelProps){
     super(props);
   }
-  
   
   
   render(){
