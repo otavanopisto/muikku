@@ -415,4 +415,63 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   }
 
+  @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.CHROME_HEADLESS,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE
+    }
+  )
+  public void workspaceSignupTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try {
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      Course course1 = new CourseBuilder().name("Test").id((long) 4).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .mockLogin(admin)
+      .addCourse(course1)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try{
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitAndClick(".navbar__item--settings a");
+        waitForPresent("input#usergroup1");
+        scrollIntoView("input#usergroup1");
+        waitAndClick("input#usergroup1");
+        waitForClickable(".application-sub-pane__button-container .button");
+        scrollIntoView(".application-sub-pane__button-container .button");
+        waitAndClick(".application-sub-pane__button-container .button");
+        waitForPresentAndVisible(".notification-queue__items");
+        waitForNotVisible(".loading");
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        logout();
+        mockBuilder.mockLogin(student);
+        login();
+        navigate("/coursepicker", false);
+        waitForPresentAndVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
+//        refresh();
+        waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitAndClick("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        waitAndClick(".button--coursepicker-course-action:nth-of-type(2)");
+        assertPresent(".dialog--workspace-signup-dialog .button--standard-ok");
+      }finally{
+        deleteWorkspace(workspace.getId());  
+      }
+    }finally{
+      mockBuilder.wiremockReset();
+    }
+  }
+
+  
 }
