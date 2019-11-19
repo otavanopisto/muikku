@@ -65,7 +65,7 @@
 .bubble__content {
   color: $color-bubble-default-content;
   font-weight: 400;
-  padding-top: 9.5rem;
+  padding-top: 0.5rem;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {

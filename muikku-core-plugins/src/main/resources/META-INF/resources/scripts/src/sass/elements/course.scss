@@ -4,13 +4,8 @@
 @import "../base/breakpoints";
 
 .course {
-  border-top: 3px solid $color-message-border;
-  margin: 0 0 1px;
+  border-top: 2px solid $color-message-border;
   padding: 0 10px; // Top and bottom paddings are added in application-list__item-header--course so clickable area is bigger when only header acts as cickable object
-
-  @include breakpoint($breakpoint-pad) {
-    border-width: 1px;
-  }
 
   &:first-child {
     border-color: transparent;
@@ -18,9 +13,19 @@
 
   &.course--open {
     background: $color-default;
-    border-color: transparent;
-    box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
-    z-index: 10;
+    border-left: 3px solid $color-application-list-item-course-border-selected;
+    margin-left: 1px;
+    padding-left: 6px; // padding - left border - left margin
+
+    @include breakpoint($breakpoint-pad) {
+      border-left-width: 2px;
+      margin-left: 0;
+      padding-left: 8px;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
   }
 }
 

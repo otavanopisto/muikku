@@ -227,6 +227,8 @@
     .glyph,
     .link,
     .application-list__header-primary,
+    .application-list__header-secondary,
+    .application-list__header-helper,
     .application-list__header-item-date,
     .application-list__header-item-body {
       color: $color-default;
@@ -270,17 +272,21 @@
 }
 
 .application-list__item--highlight {
-  background-color: $color-message-unread-background;
+  border-left: 3px solid $color-message-unread-border;
+  margin-left: 1px;
+  padding-left: 6px; // padding - left border - left margin
 
   @include breakpoint($breakpoint-pad) {
-    border-top: solid 1px $color-default;
+    border-left-width: 2px;
+    margin-left: 0;
+    padding-left: 8px;
   }
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
 
     @include breakpoint($breakpoint-pad) {
-      background-color: $color-message-unread-background;
+      background-color: transparent;
     }
   }
 }

@@ -30,10 +30,10 @@ interface CommunicatorApplicationState {
 class CommunicatorApplication extends React.Component<CommunicatorApplicationProps, CommunicatorApplicationState> {
   constructor(props: CommunicatorApplicationProps){
     super(props);
-    
+
     this.openDialogSignature = this.openDialogSignature.bind(this);
     this.closeDialogSignature = this.closeDialogSignature.bind(this);
-    
+
     this.state = {
       updateSignatureDialogOpened: false
     }
@@ -70,7 +70,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
         <MessageView/>
       </ApplicationPanel>
       <SignatureUpdateDialog isOpen={this.state.updateSignatureDialogOpened} onClose={this.closeDialogSignature}/>
-      <NewMessage><HoverButton icon="pencil" modifier="new-message"/></NewMessage>
+      <NewMessage><HoverButton icon="plus" modifier="new-message"/></NewMessage>
     </div>);
   }
 }

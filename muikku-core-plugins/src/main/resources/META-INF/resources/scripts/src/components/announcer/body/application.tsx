@@ -41,14 +41,14 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
           {this.props.i18n.text.get('plugin.announcer.button.create')}
         </Link></NewEditAnnouncement>
         let toolbar = <Toolbar />
- 
+
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
         return (<div className="application-panel-wrapper">
           <ApplicationPanel modifier="announcer" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
             <Announcements/>
             <AnnouncementView/>
           </ApplicationPanel>
-          <NewEditAnnouncement><HoverButton icon="pencil" modifier="new-announcement"/></NewEditAnnouncement>
+          <NewEditAnnouncement><HoverButton icon="plus" modifier="new-announcement"/></NewEditAnnouncement>
         </div>);
   }
 }

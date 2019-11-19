@@ -159,14 +159,13 @@
   flex-grow: 1;
   flex-shrink: 1;
   margin: 0;
-  overflow: -moz-scrollbars-none;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  padding: 10px 20px;
+  padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
     border: solid 1px $color-reading-panel-box-border;
     flex-basis: 60%;
     margin: 0 10px 0 0;
+    padding: 10px 20px;
 
     &::-webkit-scrollbar {
       display: none;

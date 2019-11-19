@@ -31,7 +31,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
     if (!this.props.announcements.current){
       return null;
     }
-    
+
     return (
       <div className="application-list application-list--open">
         <div className={`application-list__item ${this.props.announcements.current.workspaces.length ? "application-list__item--workspace-announcement" : "application-list__item--environment-announcement"}`}>
@@ -64,9 +64,9 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
               })}
             </div> : null }
           </div>
-          <div className="application-list__item-body article">
-            <header className="article__header">{this.props.announcements.current.caption}</header>
-            <section className="article__body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
+          <div className="application-list__item-body application-list__item-body--announcer-announcement">
+            <header className="application-list__item-content-header">{this.props.announcements.current.caption}</header>
+            <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>
           </div>
         </div>
       </div>
