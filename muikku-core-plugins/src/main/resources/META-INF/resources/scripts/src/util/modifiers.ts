@@ -364,6 +364,10 @@ export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scr
 }
 
 export function repairContentNodes(base: MaterialContentNodeListType, pathRepair?: string, pathRepairId?: number, parentNodeId?: number): MaterialContentNodeListType {
+  if (base === null) {
+    return null;
+  }
+
   return base.map((cn, index) => {
     const nextSibling = base[index + 1];
     const nextSiblingId = nextSibling ? nextSibling.workspaceMaterialId : null;

@@ -4,12 +4,12 @@
 @import "../base/breakpoints";
 
 .message {
-  border-top: 3px solid $color-message-border;
+  border-top: 2px solid $color-message-border;
   cursor: pointer;
   padding: 10px;
 
   &:first-child {
-    border-color: transparent;
+    border-top-color: transparent;
   }
 
   @include breakpoint($breakpoint-pad) {

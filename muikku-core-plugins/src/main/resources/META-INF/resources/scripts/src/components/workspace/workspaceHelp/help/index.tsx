@@ -9,7 +9,7 @@ import equals = require("deep-equal");
 
 import HelpMaterialPage from "./help-material-page";
 import { ButtonPill } from "~/components/general/button";
-import Dropdown from "~/components/general/dropdown"; 
+import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
@@ -24,7 +24,7 @@ interface HelpProps {
   workspaceEditMode: WorkspaceEditModeStateType,
   onActiveNodeIdChange: (activeNodeId: number)=>any,
   onOpenNavigation: ()=>any,
-  
+
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType,
 }
@@ -47,11 +47,11 @@ const DEFAULT_OFFSET = 67;
 class Help extends React.Component<HelpProps, HelpState> {
   constructor(props: HelpProps){
     super(props);
-    
+
     this.state = {
       defaultOffset: DEFAULT_OFFSET
     }
-    
+
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.createPage = this.createPage.bind(this);
@@ -65,7 +65,7 @@ class Help extends React.Component<HelpProps, HelpState> {
         defaultOffset
       })
     }
-    
+
     window.addEventListener("scroll", this.onScroll);
   }
   componentWillUnmount(){
@@ -98,6 +98,7 @@ class Help extends React.Component<HelpProps, HelpState> {
       rootParentId: this.props.workspace.details.helpFolderId,
       nextSibling,
       title: this.props.i18n.text.get("plugin.workspace.materialsManagement.newPageTitle"),
+      makeFolder: false,
     });
   }
   createPageFromBinary(
@@ -110,12 +111,13 @@ class Help extends React.Component<HelpProps, HelpState> {
       rootParentId: this.props.workspace.details.helpFolderId,
       title: e.target.files[0].name,
       file: e.target.files[0],
+      makeFolder: false,
     });
   }
   pastePage(nextSibling: MaterialContentNodeType) {
     const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;
     const workspaceCopiedId = localStorage.getItem("workspace-copied-id") || null;
-    
+
     if (workspaceMaterialCopiedId) {
       this.props.createWorkspaceMaterialContentNode({
         workspace: this.props.workspace,
@@ -123,6 +125,7 @@ class Help extends React.Component<HelpProps, HelpState> {
         rootParentId: this.props.workspace.details.helpFolderId,
         copyMaterialId: parseInt(workspaceMaterialCopiedId),
         copyWorkspaceId: parseInt(workspaceCopiedId),
+        makeFolder: false,
       })
     }
   }
@@ -138,7 +141,7 @@ class Help extends React.Component<HelpProps, HelpState> {
   getActive(){
     //gets the current active node
     let winner:number = null;
-  
+
     //when you are at the bottom the active is the last one
     let isAllTheWayToTheBottom = document.documentElement.scrollHeight - document.documentElement.scrollTop === document.documentElement.clientHeight;
     if (!isAllTheWayToTheBottom){
@@ -163,7 +166,7 @@ class Help extends React.Component<HelpProps, HelpState> {
             cropTop = 0;
           }
           const cropTotal = -cropTop-cropBottom;
-          
+
           const visibleFraction = (element.offsetHeight - cropTotal) / element.offsetHeight;
           let weight = visibleFraction;
           if (!winner || elementTop < winnerTop) {
@@ -179,7 +182,7 @@ class Help extends React.Component<HelpProps, HelpState> {
     } else {
       winner = this.props.materials[this.props.materials.length - 1].workspaceMaterialId;
     }
-  
+
     winner = winner || this.props.materials[0].workspaceMaterialId;
     return winner;
   }
@@ -189,7 +192,7 @@ class Help extends React.Component<HelpProps, HelpState> {
     }
 
     const isEditable = this.props.workspaceEditMode.active;
-   
+
     const createPageElementWhenEmpty = this.props.materials.length === 0 && isEditable ? (
       <div className="material-admin-panel material-admin-panel--master-functions">
         <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createPageTooltip")}>
@@ -197,7 +200,7 @@ class Help extends React.Component<HelpProps, HelpState> {
         </Dropdown>
       </div>
     ) : null;
-    
+
     const results: any = [];
     this.props.materials.forEach((node, index)=>{
       // this is the next sibling for the content node that is to be added, aka the current
@@ -216,8 +219,7 @@ class Help extends React.Component<HelpProps, HelpState> {
           </Dropdown>
         </div>);
       }
-      
-      
+
       let material = !this.props.workspace ? null :
         <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
           <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
@@ -230,7 +232,7 @@ class Help extends React.Component<HelpProps, HelpState> {
       results.push(material);
     });
 
-    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
+    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.helpPage.title")} ref="content-panel">
       {results}
       {createPageElementWhenEmpty}
     </ContentPanel>

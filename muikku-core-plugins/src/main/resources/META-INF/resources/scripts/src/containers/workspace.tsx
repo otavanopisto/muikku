@@ -75,6 +75,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.loadWorkspaceHelpData = this.loadWorkspaceHelpData.bind(this);
     
     this.onWorkspaceMaterialsBodyActiveNodeIdChange = this.onWorkspaceMaterialsBodyActiveNodeIdChange.bind(this);
+    this.onWorkspaceHelpBodyActiveNodeIdChange = this.onWorkspaceHelpBodyActiveNodeIdChange.bind(this);
     
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
