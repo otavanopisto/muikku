@@ -14,7 +14,7 @@ import Toc, { TocTopic, TocElement } from '~/components/general/toc';
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType,
-  setWholeWorkspaceMaterials, SetWholeWorkspaceMaterialsTriggerType } from "~/actions/workspaces";
+  setWholeWorkspaceHelp, SetWholeWorkspaceMaterialsTriggerType } from "~/actions/workspaces";
 import { repairContentNodes } from "~/util/modifiers";
 
 interface ContentProps {
@@ -23,7 +23,7 @@ interface ContentProps {
   activeNodeId: number,
   workspace: WorkspaceType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
-  setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType,
+  setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType,
   workspaceEditMode: WorkspaceEditModeStateType,
 }
 
@@ -48,10 +48,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       materials: props.materials
     };
     
-    this.hotInsertBeforeSection = this.hotInsertBeforeSection.bind(this);
-    this.hotInsertBeforeSubnode = this.hotInsertBeforeSubnode.bind(this);
-    this.onInteractionBetweenSections = this.onInteractionBetweenSections.bind(this);
-    this.onInteractionBetweenSubnodes = this.onInteractionBetweenSubnodes.bind(this);
+    this.hotInsertBefore = this.hotInsertBefore.bind(this);
+    this.onInteractionBetweenNodes = this.onInteractionBetweenNodes.bind(this);
   }
   componentDidUpdate(prevProps: ContentProps){
     if (prevProps.activeNodeId !== this.props.activeNodeId){
@@ -72,7 +70,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       }
     }
   }
-  hotInsertBeforeSection(baseIndex: number, targetBeforeIndex: number) {
+  hotInsertBefore(baseIndex: number, targetBeforeIndex: number) {
     const newMaterialState = [...this.state.materials]
     newMaterialState.splice(baseIndex, 1);
     newMaterialState.splice(targetBeforeIndex, 0, this.state.materials[baseIndex]);
@@ -92,77 +90,17 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           nextSiblingId: update.nextSiblingId,
         },
         success: () => {
-          this.props.setWholeWorkspaceMaterials(contentNodesRepaired);
-        },
-        dontTriggerReducerActions: true,
-      })
-    });
-  }
-  hotInsertBeforeSubnode(parentBaseIndex: number, baseIndex: number, parentTargetBeforeIndex: number, targetBeforeIndex: number) {
-    // TODO do the action update here for server side update
-    const newMaterialState = [...this.state.materials]
-    newMaterialState[parentBaseIndex] = {
-      ...newMaterialState[parentBaseIndex],
-      children: [...newMaterialState[parentBaseIndex].children],
-    }
-    newMaterialState[parentBaseIndex].children.splice(baseIndex, 1);
-    newMaterialState[parentTargetBeforeIndex] = {
-      ...newMaterialState[parentTargetBeforeIndex],
-      children: [...newMaterialState[parentTargetBeforeIndex].children],
-    }
-    if (targetBeforeIndex === null) {
-      newMaterialState[parentTargetBeforeIndex].children.push(this.state.materials[parentBaseIndex].children[baseIndex]);
-    } else if (parentBaseIndex === parentTargetBeforeIndex) {
-      newMaterialState[parentTargetBeforeIndex].children.splice(targetBeforeIndex, 0, this.state.materials[parentBaseIndex].children[baseIndex]);
-    } else {
-      newMaterialState[parentTargetBeforeIndex].children.splice(targetBeforeIndex, 0, this.state.materials[parentBaseIndex].children[baseIndex]);
-    }
-    
-    const repariedNodes = repairContentNodes(newMaterialState);
-    const workspaceId = this.state.materials[parentBaseIndex].children[baseIndex].workspaceMaterialId;
-    
-    const material = this.state.materials[parentBaseIndex].children[baseIndex];
-    const update = repariedNodes[parentTargetBeforeIndex].children.find((cn: MaterialContentNodeType) => cn.workspaceMaterialId === material.workspaceMaterialId);
-    
-    this.setState({
-      materials: repariedNodes,
-    }, ()=>{
-      if (parentBaseIndex !== parentTargetBeforeIndex) {
-        (this.refs[`draggable-${parentTargetBeforeIndex}-${workspaceId}`] as Draggable).onRootSelectStart(null, true);
-      }
-      
-      this.props.updateWorkspaceMaterialContentNode({
-        workspace: this.props.workspace,
-        material,
-        update: {
-          parentId: update.parentId,
-          nextSiblingId: update.nextSiblingId,
-        },
-        success: () => {
-          this.props.setWholeWorkspaceMaterials(repariedNodes);
+          this.props.setWholeWorkspaceHelp(contentNodesRepaired);
         },
         dontTriggerReducerActions: true,
       });
     });
   }
-  onInteractionBetweenSections(base: MaterialContentNodeType, target: MaterialContentNodeType) {
-    this.hotInsertBeforeSection(
+  onInteractionBetweenNodes(base: MaterialContentNodeType, target: MaterialContentNodeType) {
+    this.hotInsertBefore(
       this.state.materials.findIndex(m => m.workspaceMaterialId === base.workspaceMaterialId),
       this.state.materials.findIndex(m => m.workspaceMaterialId === target.workspaceMaterialId),
     );
-  }
-  onInteractionBetweenSubnodes(base: MaterialContentNodeType, target: MaterialContentNodeType | number) {
-    const parentBaseIndex = this.state.materials.findIndex(m => m.workspaceMaterialId === base.parentId);
-    const baseIndex = this.state.materials[parentBaseIndex].children.findIndex(m => m.workspaceMaterialId === base.workspaceMaterialId);
-    if (typeof target === "number") {
-      this.hotInsertBeforeSubnode(parentBaseIndex, baseIndex,
-        this.state.materials.findIndex(m => m.workspaceMaterialId === target), null);
-      return;
-    }
-    const parentTargetBeforeIndex = this.state.materials.findIndex(m => m.workspaceMaterialId === target.parentId);
-    const targetBeforeIndex = this.state.materials[parentTargetBeforeIndex].children.findIndex(m => m.workspaceMaterialId === target.workspaceMaterialId);
-    this.hotInsertBeforeSubnode(parentBaseIndex, baseIndex,
-      parentTargetBeforeIndex, targetBeforeIndex);
   }
   render(){
     if (!this.props.materials || !this.props.materials.length){
@@ -191,7 +129,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             key={node.workspaceMaterialId}
             className="toc__item--drag-container"
             handleSelector=".toc__item--drag-handle"
-            onInteractionWith={this.onInteractionBetweenSubnodes.bind(this, node)}
+            onInteractionWith={this.onInteractionBetweenNodes.bind(this, node)}
             ref={`draggable-${nodeIndex}-${node.workspaceMaterialId}`}
           >
             <div className="toc__item--drag-handle icon-move"></div>
@@ -214,7 +152,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateWorkspaceMaterialContentNode, setWholeWorkspaceMaterials}, dispatch);
+  return bindActionCreators({updateWorkspaceMaterialContentNode, setWholeWorkspaceHelp}, dispatch);
 };
 
 export default connect(

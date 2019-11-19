@@ -752,6 +752,13 @@ let setWholeWorkspaceMaterials:SetWholeWorkspaceMaterialsTriggerType = function 
   }
 }
 
+let setWholeWorkspaceHelp:SetWholeWorkspaceMaterialsTriggerType = function setWholeWorkspaceHelp(materials){
+  return {
+    type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
+    payload: materials
+  }
+}
+
 let setCurrentWorkspaceMaterialsActiveNodeId:SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType = function setCurrentWorkspaceMaterialsActiveNodeId(id){
   return {
     type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID",
@@ -1807,4 +1814,5 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState, loadWholeWorkspaceHelp}
+  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState, loadWholeWorkspaceHelp,
+  setWholeWorkspaceHelp}

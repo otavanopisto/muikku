@@ -76,17 +76,20 @@ class Help extends React.Component<HelpProps, HelpState> {
       {
         icon: "plus",
         text: 'plugin.workspace.materialsManagement.createPageTooltip',
-        onClick: this.createPage.bind( this, nextSibling)
+        onClick: this.createPage.bind(this, nextSibling),
+        file: false,
       },
       {
         icon: "paste",
         text: 'plugin.workspace.materialsManagement.pastePageTooltip',
-        onClick: this.pastePage.bind( this, nextSibling)
+        onClick: this.pastePage.bind(this, nextSibling),
+        file: false,
       },
       {
         icon: "attachment",
         text: 'plugin.workspace.materialsManagement.attachFileTooltip',
-        onClick: this.createPageFromBinary.bind( this, nextSibling)
+        onChange: this.createPageFromBinary.bind(this, nextSibling),
+        file: true,
       }
     ]
 
@@ -193,10 +196,24 @@ class Help extends React.Component<HelpProps, HelpState> {
 
     const isEditable = this.props.workspaceEditMode.active;
 
-    const createPageElementWhenEmpty = this.props.materials.length === 0 && isEditable ? (
+    const lastCreatePageElement = isEditable ? (
       <div className="material-admin-panel material-admin-panel--master-functions">
-        <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createPageTooltip")}>
-          <ButtonPill buttonModifiers="material-management-master" icon="plus" onClick={this.createPage.bind(this, null)}/>
+        <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(null).map((item)=>{
+          return (closeDropdown: ()=>any)=>{
+            if (item.file) {
+              return <label htmlFor="base-file-input" className={`link link--full link--material-management-dropdown`}>
+                  <input type="file" id="base-file-input" onChange={(e)=>{closeDropdown(); item.onChange && item.onChange(e)}}/>
+                  <span className={`link__icon icon-${item.icon}`}></span>
+                  <span>{this.props.i18n.text.get(item.text)}</span>
+               </label>
+            }
+            return <Link className={`link link--full link--material-management-dropdown`}
+              onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
+               <span className={`link__icon icon-${item.icon}`}></span>
+               <span>{this.props.i18n.text.get(item.text)}</span>
+             </Link>}
+          })}>
+          <ButtonPill buttonModifiers="material-management-master" icon="plus"/>
         </Dropdown>
       </div>
     ) : null;
@@ -209,6 +226,13 @@ class Help extends React.Component<HelpProps, HelpState> {
         results.push(<div key={node.workspaceMaterialId + "-dropdown"} className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(nextSibling).map((item)=>{
             return (closeDropdown: ()=>any)=>{
+              if (item.file) {
+                return <label htmlFor={node.workspaceMaterialId + "-input"} className={`link link--full link--material-management-dropdown`}>
+                    <input type="file" id={node.workspaceMaterialId + "-input"} onChange={(e)=>{closeDropdown(); item.onChange && item.onChange(e)}}/>
+                    <span className={`link__icon icon-${item.icon}`}></span>
+                    <span>{this.props.i18n.text.get(item.text)}</span>
+                 </label>
+              }
               return <Link className={`link link--full link--material-management-dropdown`}
                 onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
                  <span className={`link__icon icon-${item.icon}`}></span>
@@ -234,7 +258,7 @@ class Help extends React.Component<HelpProps, HelpState> {
 
     return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.helpPage.title")} ref="content-panel">
       {results}
-      {createPageElementWhenEmpty}
+      {lastCreatePageElement}
     </ContentPanel>
   }
 }

@@ -89,22 +89,26 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       {
         icon: "plus",
         text: 'plugin.workspace.materialsManagement.createChapterTooltip',
-        onClick: this.createSection.bind( this, nextSection )
+        onClick: this.createSection.bind( this, nextSection ),
+        file: false,
       },
       {
         icon: "plus",
         text: 'plugin.workspace.materialsManagement.createPageTooltip',
-        onClick: this.createPage.bind( this, section, nextSibling)
+        onClick: this.createPage.bind( this, section, nextSibling),
+        file: false,
       },
       {
         icon: "paste",
         text: 'plugin.workspace.materialsManagement.pastePageTooltip',
-        onClick: this.pastePage.bind( this, section, nextSibling)
+        onClick: this.pastePage.bind( this, section, nextSibling),
+        file: false,
       },
       {
         icon: "attachment",
         text: 'plugin.workspace.materialsManagement.attachFileTooltip',
-        onClick: this.createPageFromBinary.bind( this, section, nextSibling)
+        onChange: this.createPageFromBinary.bind( this, section, nextSibling),
+        file: true,
       }
     ]
 
@@ -289,6 +293,13 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, null, true).map((item)=>{
             return (closeDropdown: ()=>any)=>{
+              if (item.file) {
+                return <label htmlFor="base-file-input" className={`link link--full link--material-management-dropdown`}>
+                    <input type="file" id="base-file-input" onChange={(e)=>{closeDropdown(); item.onChange && item.onChange(e)}}/>
+                    <span className={`link__icon icon-${item.icon}`}></span>
+                    <span>{this.props.i18n.text.get(item.text)}</span>
+                 </label>
+              }
               return <Link className={`link link--full link--material-management-dropdown`}
                 onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
                  <span className={`link__icon icon-${item.icon}`}></span>
@@ -309,6 +320,13 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           sectionSpecificContentData.push(<div key={node.workspaceMaterialId + "-dropdown"} className="material-admin-panel material-admin-panel--master-functions">
             <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, nextSibling, false).map((item)=>{
               return (closeDropdown: ()=>any)=>{
+                if (item.file) {
+                  return <label htmlFor={node.workspaceMaterialId + "-input"} className={`link link--full link--material-management-dropdown`}>
+                      <input type="file" id={node.workspaceMaterialId + "-input"} onChange={(e)=>{closeDropdown(); item.onChange && item.onChange(e)}}/>
+                      <span className={`link__icon icon-${item.icon}`}></span>
+                      <span>{this.props.i18n.text.get(item.text)}</span>
+                   </label>
+                }
                 return <Link className={`link link--full link--material-management-dropdown`}
                   onClick={()=>{closeDropdown(); item.onClick && item.onClick()}}>
                    <span className={`link__icon icon-${item.icon}`}></span>
