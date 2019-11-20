@@ -30,7 +30,8 @@ export interface loadDiscussionThreadsFromServerTriggerType {
   (data:{
     areaId: number,
     page: number,
-    forceRefresh?: boolean
+    forceRefresh?: boolean,
+    notRemoveCurrent?: boolean,
   }):AnyActionType
 }
 
@@ -91,10 +92,12 @@ let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType =
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     
     //Remove the current message
-    dispatch({
-      type: "SET_CURRENT_DISCUSSION_THREAD",
-      payload: null
-    });
+    if (!data.notRemoveCurrent) {
+      dispatch({
+        type: "SET_CURRENT_DISCUSSION_THREAD",
+        payload: null
+      });
+    }
     dispatch({
       type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
       payload: <DiscussionStateType>"WAIT"
@@ -252,6 +255,13 @@ let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDi
         type: "UPDATE_DISCUSSION_THREAD",
         payload: newThread
       });
+      const discussionState = getState().discussion;
+      dispatch(loadDiscussionThreadsFromServer({
+        areaId: discussionState.areaId,
+        page: discussionState.page,
+        forceRefresh: true,
+        notRemoveCurrent: true,
+      }));
       
       data.success && data.success();
     } catch (err){
@@ -410,7 +420,7 @@ let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = fun
       dispatch(loadDiscussionThreadsFromServer({
         areaId: discussion.areaId,
         page: discussion.page,
-        forceRefresh: true
+        forceRefresh: true,
       }));
       
       //TODO same hacky method to trigger the goback event

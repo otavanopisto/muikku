@@ -138,7 +138,7 @@ export default function discussion(state: DiscussionType={
           return thread;
         }
         return action.payload;
-      })
+      }),
     });
   } else if (action.type === "UPDATE_DISCUSSION_THREAD_REPLY"){
     let newCurrent = state.current;
@@ -149,7 +149,7 @@ export default function discussion(state: DiscussionType={
         }
         return action.payload;
       })
-    });
+    })
   } else if (action.type === "UPDATE_DISCUSSION_AREAS"){
     let newAreas:DiscussionAreaListType = action.payload;
     return Object.assign({}, state, {areas: newAreas});
