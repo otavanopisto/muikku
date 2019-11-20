@@ -27,7 +27,6 @@ import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
 import Link from '~/components/general/link';
-import BinaryMaterialLoader from '~/components/base/material-loader/binary';
 
 //These represent the states assignments and exercises can be in
 const STATES = [{
