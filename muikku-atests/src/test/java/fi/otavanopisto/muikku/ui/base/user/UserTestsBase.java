@@ -30,20 +30,16 @@ public class UserTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    login();
+    
     try{
-      mockBuilder
-        .addStaffMember(admin)
-        .addStudent(student)
-        .mockLogin(admin)
-        .build();
-      
-      login();
-      
       createPasswordChange(student.getEmail());
       logout();
+      mockBuilder.clearLoginMock().mockResetCredentials("test").mockResetCredentialsPost();
       navigate("/forgotpassword/reset?h=testtesttest", false);
-      waitForPresent(".username-container");
-      assertEquals("test", getAttributeValue(".username-container input", "value"));
+      waitForPresent(".form-element--forgot-password:first-child input");
+      assertEquals("test", getAttributeValue(".form-element--forgot-password:first-child input", "value"));
     }finally {
       deletePasswordChange(student.getEmail());
       mockBuilder.wiremockReset();
