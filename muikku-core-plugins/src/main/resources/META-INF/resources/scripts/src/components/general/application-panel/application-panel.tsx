@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Tabs, {TabType} from '~/components/general/tabs';
 import ApplicationPanelBody from './components/application-panel-body';
-
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
 
@@ -30,10 +29,9 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
   constructor(props: ApplicationPanelProps){
     super(props);
   }
-  
+
   
   render(){
-
     return (
       <div className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
         <div className="application-panel__container">
@@ -46,7 +44,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
           : null}
           </div>
           {this.props.panelTabs ? <Tabs modifier="application-panel" tabs={this.props.panelTabs} onTabChange={this.props.onTabChange} activeTab={this.props.activeTab} /> : 
-            <ApplicationPanelBody primaryOption={this.props.primaryOption} asideAfter={this.props.asideAfter} asideBefore={this.props.asideBefore} disableStickyScrolling={this.props.disableStickyScrolling}>
+            <ApplicationPanelBody toolbar={this.props.toolbar} primaryOption={this.props.primaryOption} asideAfter={this.props.asideAfter} asideBefore={this.props.asideBefore} disableStickyScrolling={this.props.disableStickyScrolling}>
               {this.props.children}
             </ApplicationPanelBody>
           }

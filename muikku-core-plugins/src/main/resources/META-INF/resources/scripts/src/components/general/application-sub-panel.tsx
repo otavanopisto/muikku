@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { i18nType } from "~/reducers/base/i18n";
+import '~/sass/elements/application-sub-panel.scss';
 
 interface SubPanelProps {
   modifier?: string,

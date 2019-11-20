@@ -7,7 +7,6 @@ interface ApplicationPanelBodyProps {
   asideBefore?: React.ReactElement<any>,   
   asideAfter?: React.ReactElement<any>,
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
-
   disableStickyScrolling?: boolean
 }
 
@@ -34,7 +33,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
 
   constructor(props: ApplicationPanelBodyProps){
     super(props);
-    
     this.state = {
       sticky: false,
       remainingHeight: null,
@@ -43,10 +41,14 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       extraPaddingLeft: null,
       extraPaddingRight: null,
       asideBeforeWidth: null
+      
     }
+    this.onScroll = this.onScroll.bind(this);
+    this.calculate = this.calculate.bind(this);
+    this.calculateSides = this.calculateSides.bind(this);
     
   }
-  
+
   calculateSides(){
     this.extraPaddingLeft = (this.refs["body"] as HTMLElement).getBoundingClientRect().left + this.borderWidth;
 
@@ -79,8 +81,9 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     });
 
     //offset top represents the amount of offset that the sticky has to the top of the screen
+
     this.offsetStickyElementTop = (this.refs["sticky"] as HTMLElement).offsetTop;
-    
+
     //We take the element that is supposed to stick to
     let element:Element = document.querySelector("#stick");
     if (!element){
@@ -92,15 +95,17 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     }
 
     //So we save that here
+
     this.setState({
       offsetElementAgainstTop: this.offsetElementAgainstTop
     })
-    
 
-// offsetBorderAgainstBottom is lacking at the moment. The element where this is calculated is from parent and there was no good way to pass it for the tabs. Needs reviewing with Feli
-// this.offsetBorderAgainstBottom = null;
-    
-    
+
+    // offsetBorderAgainstBottom is lacking at the moment. before the change it used "panel" ref, I changed it to body. Maybe it works, maybe not. 
+
+     let panelComputedStyle = document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement);
+     this.offsetBorderAgainstBottom = parseInt(panelComputedStyle.getPropertyValue("padding-bottom"));
+
     let asideBefore:HTMLElement = (this.refs["asideBefore"] as HTMLElement);
     if (asideBefore){
       this.asideBeforeWidth = asideBefore.offsetWidth;
@@ -113,7 +118,7 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     this.calculateSides();
     this.setRemainingHeight(false);
   }
-  
+
   componentDidMount(){
     this.calculate();
     if (!this.disabled){
@@ -121,17 +126,20 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       window.addEventListener("resize", this.calculateSides);
     }
   }
-  
+
   componentWillUnmount(){
     if (!this.disabled){
       window.removeEventListener("scroll", this.onScroll);
       window.removeEventListener("resize", this.calculateSides);
     }
   }
+
   setRemainingHeight(isSticky: boolean){
     if (!this.props.asideBefore){
      return;
     }
+    
+  
     let top = (document.documentElement.scrollTop || document.body.scrollTop);
     let height = document.documentElement.offsetHeight;
     let scrollHeight = document.documentElement.scrollHeight;
@@ -144,24 +152,23 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       borderBottomSize = 0;
     }
     let remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
-    
-    
     this.setState({remainingHeight: remainingUsableWindow});
   }
+
   onScroll(e: Event){
+    let test = this.state.sticky;
     let top = (document.documentElement.scrollTop || document.body.scrollTop);
     let diff = this.offsetStickyElementTop - top;
     let isSticky = (diff < this.offsetElementAgainstTop);
     if (isSticky !== this.state.sticky){
       this.setState({sticky: isSticky});
-      
       if (isSticky){
         this.calculateSides();
       }
     }
     this.setRemainingHeight(isSticky);
   }
-  
+
   render(){
     return (
       <div className={`application-panel__body ${this.props.modifier ? "application-panel__body--" + this.props.modifier : ""}`} ref="body">

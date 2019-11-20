@@ -1,21 +1,13 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import Link from '~/components/general/link';
-
 import {i18nType} from '~/reducers/base/i18n';
-import { WorkspaceCourseType } from '~/reducers/main-function/courses';
-
 import '~/sass/elements/course-description.scss';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
-
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
-import Button from '~/components/general/button';
-
 
 interface CourseProps {
   i18n: i18nType,

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Link from '~/components/general/link';
 import {StateType} from '~/reducers';
-import ApplicationPanel from '~/components/general/application-panel/application-panel';
+import ApplicationPanel, {ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain } from '~/components/general/application-panel/application-panel';
 import ApplicationPanelBody from '~/components/general/application-panel/components/application-panel-body';
 import Tabs from '~/components/general/tabs';
 import Summary from './application/summary';
@@ -27,14 +27,14 @@ interface OrganizationManagementApplicationProps {
 }
 
 interface OrganizationManagementApplicationState {
-  activeTab: "SUMMARY" | "USERS" | "COURSES" | "REPORTS"
+  activeTab: "SUMMARY" | "USERS" | "COURSES" | "REPORTS",
 }
 
 class OrganizationManagementApplication extends React.Component<OrganizationManagementApplicationProps, OrganizationManagementApplicationState>{
   constructor(props: OrganizationManagementApplicationProps ){
     super(props);
     this.state = {
-      activeTab : "SUMMARY"
+      activeTab : "SUMMARY",
     }
     this.onTabChange = this.onTabChange.bind(this);
     
@@ -46,14 +46,32 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
     });
   }
   
+  onInputFocus() {
+    console.log("Focus");
+  }
+
+  onInputBlur() {
+   console.log("Blur");
+  }
+  
+  setSearchQuery() {
+    console.log("setSearchquery");
+  }
+  
   render(){
         
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
         
-        let usersToolbar =  <div className="form-element form-element--workspace-toolbar">
-          <input type="text" className="form-element__input form-element__input--subpanel-search" placeholder={this.props.i18n.text.get('plugin.workspace.users.students.searchStudents')}/>
-          <div className="form-element__input-decoration form-element__input-decoration--subpanel-search icon-search"></div>
-        </div>;
+        let usersToolbar = <ApplicationPanelToolbar>
+          <ApplicationPanelToolbarActionsMain>
+            <div className="form-element form-element--coursepicker-toolbar">
+              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}  onChange={this.setSearchQuery}/>
+              <div className="form-element__input-decoration--main-function-search icon-search"></div>
+            </div>
+          </ApplicationPanelToolbarActionsMain>
+          </ApplicationPanelToolbar>
+          
+;
         
         return (
           <ApplicationPanel modifier="organization" title={title} onTabChange={this.onTabChange} activeTab={this.state.activeTab} panelTabs={[
