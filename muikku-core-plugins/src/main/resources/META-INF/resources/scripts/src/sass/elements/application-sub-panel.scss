@@ -68,6 +68,10 @@
   text-transform: uppercase;
 }
 
+.application-sub-panel__header--workspace-settings {
+  padding: 0;
+}
+
 .application-sub-panel__header--workspace-image-settings {
   margin: 0 20px 10px;
 }
@@ -264,6 +268,8 @@
 }
 
 .application-sub-panel__item--workspace-permissions {
+  flex-flow: row nowrap;
+  padding: 10px 0 0;
 
   &:not(:last-child) {
     border: 0;

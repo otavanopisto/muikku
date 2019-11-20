@@ -221,7 +221,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     reader.addEventListener("load", ()=>{
       this.setState({
-        newWorkspaceImageB64: reader.result,
+        newWorkspaceImageB64: String(reader.result),
         newWorkspaceImageFile: file,
         isImageDialogOpen: true,
         newWorkspaceImageSrc: null

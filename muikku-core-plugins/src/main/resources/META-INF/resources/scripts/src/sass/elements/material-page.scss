@@ -21,7 +21,19 @@
 
 .material-page--workspace-description {
   border: 0;
-  padding-top: 0.01em;
+
+  .material-page__content {
+    margin: 0;
+  }
+
+  .material-admin-panel--page-functions {
+    margin: 0 -20px;
+    padding: 0 10px 10px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 15px 0;
+  }
 }
 
 .material-page__title {
@@ -70,9 +82,17 @@
 
 .material-page__content {
   margin: 15px 0;
+}
+
+.material-page__content--binary-image {
+  margin: 10px 0;
+
+  img {
+    max-width: 100%;
+  }
 
   @include breakpoint($breakpoint-pad) {
-    margin: 20px 0;
+    margin: 15px 0;
   }
 }
 
@@ -122,7 +142,7 @@
 .material-page__producers-item {
   flex-basis: auto;
   flex-grow: 0;
-  flex-shrink: 0;
+  flex-shrink: 1;
 }
 
 // LICENSE
@@ -145,7 +165,7 @@
 .material-page__license-item {
   flex-basis: auto;
   flex-grow: 0;
-  flex-shrink: 0;
+  flex-shrink: 1;
 }
 
 // IMAGE as FIGURE
@@ -1170,7 +1190,7 @@
   cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
-  height: 2rem;
+  height: 2.5rem;
   margin: 8px 4px;
   position: relative;
   user-select: none;
@@ -1209,10 +1229,6 @@
     .material-page__connectfield-term-data-container:hover { // We need to place this rule here so in case of long text in term on hover event we don't render wrong colored border if answer is incorrect
       border: 2px solid $color-incorrect-answer;
     }
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    height: 2.5rem;
   }
 }
 
@@ -1286,7 +1302,7 @@
   cursor: grab;
   display: flex;
   flex-flow: row nowrap;
-  height: 2rem;
+  height: 2.5rem;
   margin: 8px 4px;
   position: relative;
   user-select: none;
@@ -1325,10 +1341,6 @@
     .material-page__connectfield-counterpart-data-container:hover { // We need to place this rule here so in case of long text in counterpart on hover event we don't render wrong colored border if answer is incorrect
       border: 2px solid $color-incorrect-answer;
     }
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    height: 2.5rem;
   }
 }
 
@@ -1418,18 +1430,17 @@
   cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
-  height: 2rem;
+  height: 2.5rem;
   position: relative;
   width: 100%;
 
   &:hover {
-    align-items: flex-start;
     background: $color-default;
     border: 2px solid $taskfield-border-color;
     height: auto;
     left: -2px;
     min-height: 2.5rem;
-    padding: 2px 0;
+    padding: 5px 0;
     position: absolute;
     top: -2px;
     width: calc(100% + 4px);
@@ -1437,11 +1448,21 @@
 
     .material-page__connectfield-term-number,
     .material-page__connectfield-counterpart-number {
-      margin-top: 4px;
+      align-self: flex-start;
+      margin-top: 3px;
+
+      @include breakpoint($breakpoint-pad) {
+        margin-top: 4px;
+      }
     }
 
     .material-page__connectfield-counterpart-icon {
-      padding: 8px 6px 6px;
+      align-self: flex-start;
+      padding: 6px 6px 6px;
+
+      @include breakpoint($breakpoint-pad) {
+        padding: 8px 6px 6px;
+      }
     }
 
     .material-page__connectfield-term-label,
@@ -1450,10 +1471,10 @@
       text-overflow: initial;
       white-space: normal;
     }
-  }
 
-  @include breakpoint($breakpoint-pad) {
-    height: 2.5rem;
+    @include breakpoint($breakpoint-pad) {
+      padding: 2px 0;
+    }
   }
 }
 
@@ -1469,9 +1490,14 @@
   border-top: 1px solid $color-default-item-separator-border;
   display: flex;
   flex-flow: column nowrap;
-  margin: 20px -20px 0;
-  padding: 20px;
+  margin: 20px -10px 0;
+  padding: 10px;
   position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px -20px 0;
+    padding: 20px;
+  }
 }
 
 .material-page__assignment-assessment--incomplete {

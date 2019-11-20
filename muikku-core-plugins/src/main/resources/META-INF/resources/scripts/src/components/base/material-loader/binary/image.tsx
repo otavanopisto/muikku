@@ -4,5 +4,7 @@ import * as React from "react";
 export default function Image(props: {
   material: MaterialContentNodeType
 }) {
-  return <img src={`/rest/materials/binary/${props.material.materialId}/content`} width="550" height="400"/>;
+  return <div className="material-page__content material-page__content--binary-image">
+    <img src={`/rest/materials/binary/${props.material.materialId}/content`}/>
+  </div>;
 }

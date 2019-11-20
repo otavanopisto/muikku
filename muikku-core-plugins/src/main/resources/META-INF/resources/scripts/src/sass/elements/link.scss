@@ -254,6 +254,16 @@
   color: $color-default;
   justify-content: flex-start;
 
+  input[type="file"] {
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
   &:hover,
   &.hover,
   &:active,

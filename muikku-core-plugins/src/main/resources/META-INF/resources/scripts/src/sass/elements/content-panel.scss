@@ -233,17 +233,17 @@
   align-items: center;
   background: $color-info;
   border: 1px solid $color-default;
-  border-bottom-left-radius: 20px;
-  border-top-left-radius: 20px;
+  border-bottom-left-radius: 25px;
+  border-top-left-radius: 25px;
   box-shadow: -2px 0 5px $color-mobile-toc-default-shadow;
   cursor: pointer;
   display: flex;
-  height: 2.5rem;
+  height: 3rem;
   justify-content: center;
   position: fixed;
   right: -1px;
   top: 65px;
-  width: 1.75rem;
+  width: 2rem;
   z-index: 10;
 
   @include breakpoint($breakpoint-desktop) {

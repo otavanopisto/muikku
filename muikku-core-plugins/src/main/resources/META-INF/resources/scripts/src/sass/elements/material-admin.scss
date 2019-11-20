@@ -15,6 +15,11 @@
   margin: 0 -10px;
   padding: 10px 0;
   text-align: left;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 -20px;
+    padding: 10px;
+  }
 }
 
 .material-admin-panel--chapter-functions {

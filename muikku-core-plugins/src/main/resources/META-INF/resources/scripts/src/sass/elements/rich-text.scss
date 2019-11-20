@@ -28,38 +28,27 @@
     margin: 10px 0;
   }
 
-  h1,
-  h2,
+  // Only allow h3 and h4 inside ckeditor
   h3,
-  h4,
-  h5,
-  h6 {
+  h4 {
     font-weight: 400;
     margin: 10px 0;
   }
 
-  h1 {
-    font-size: 1.3rem;
-  }
-
-  h2 {
-    font-size: 1.25rem;
-  }
-
   h3 {
-    font-size: 1.125rem;
+    font-size: 1rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1.125rem;
+    }
   }
 
   h4 {
-    font-size: 1rem;
-  }
-
-  h5 {
     font-size: 0.9375rem;
-  }
 
-  h6 {
-    font-size: 0.825rem;
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1rem;
+    }
   }
 
   b,

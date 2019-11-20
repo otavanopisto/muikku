@@ -1330,26 +1330,36 @@
   appearance: none;
   background: $color-default;
   border: 2px solid $color-default;
-  border-radius: 15px;
+  border-radius: 10px; // This is half of the whole width of the switch
   display: flex;
   justify-content: center;
   margin-right: 15px;
   position: relative;
-  width: calc(#{$generic-switch-size} + #{$generic-switch-container-border-size} * 2);
+  width: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
 
   &::after {
     background: lighten($color-disabled, 10%);
     border-radius: 100%;
     content: " ";
-    height: $generic-switch-size;
+    height: $generic-mobile-switch-size;
     position: absolute;
     top: 0;
     transition: 0.3s;
-    width: $generic-switch-size;
+    width: $generic-mobile-switch-size;
   }
 
   &:hover {
     background: $color-default;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 12px; // This is half of the whole width of the switch
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+
+    &::after {
+      height: $generic-desktop-switch-size;
+      width: $generic-desktop-switch-size;
+    }
   }
 }
 
@@ -1359,11 +1369,21 @@
     background: lighten($color-success, 10%);
     border-radius: 100%;
     content: " ";
-    height: $generic-switch-size;
+    height: $generic-mobile-switch-size;
     position: absolute;
-    top: calc(100% - #{$generic-switch-size} * 2);
+    top: calc(100% - #{$generic-mobile-switch-size} * 2);
     transform: translateY(100%);
-    width: $generic-switch-size;
+    width: $generic-mobile-switch-size;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+
+    &::after {
+      height: $generic-desktop-switch-size;
+      top: calc(100% - #{$generic-desktop-switch-size} * 2);
+      width: $generic-desktop-switch-size;
+    }
   }
 }
 
