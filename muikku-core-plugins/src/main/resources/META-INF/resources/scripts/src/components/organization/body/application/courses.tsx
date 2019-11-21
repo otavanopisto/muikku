@@ -3,6 +3,7 @@ import {StateType} from '~/reducers';
 import {connect, Dispatch} from 'react-redux';
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
 import Course from './courses/course';
+import { ButtonPill} from '~/components/general/button';
 
 interface CoursesProps {
   

@@ -4,8 +4,6 @@ import {connect, Dispatch} from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import  OrganizationUserTabs from './users/usertabs';
 import { ButtonPill} from '~/components/general/button';
-import {MobileOnlyTabs} from "~/components/general/tabs";
-import ApplicationSubPanel from "~/components/general/application-sub-panel";
 
 interface OrganizationUsersProps {
   i18n: i18nType

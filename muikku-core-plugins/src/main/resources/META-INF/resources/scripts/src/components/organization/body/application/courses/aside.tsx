@@ -32,10 +32,6 @@ class CoursesAside extends React.Component<NavigationAsideProps, NavigationAside
         <NavigationElement key="23" isActive={false} hash="#juu">Diippi</NavigationElement>
         <NavigationElement key="24" isActive={false} hash="#juu">Diippi</NavigationElement>
         <NavigationElement key="25" isActive={false} hash="#juu">Diippi</NavigationElement>
-        <NavigationElement key="26" isActive={false} hash="#juu">Diippi</NavigationElement>
-        <NavigationElement key="27" isActive={false} hash="#juu">Diippi</NavigationElement>
-        <NavigationElement key="28" isActive={false} hash="#juu">Diippi</NavigationElement>
-        <NavigationElement key="29" isActive={false} hash="#juu">Diippi</NavigationElement>
       </NavigationTopic>
        <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
         <NavigationElement key="31" isActive={false} hash="#juu">Diippi</NavigationElement>
@@ -44,9 +40,7 @@ class CoursesAside extends React.Component<NavigationAsideProps, NavigationAside
         <NavigationElement key="34" isActive={false} hash="#juu">Diippi</NavigationElement>
         <NavigationElement key="35" isActive={false} hash="#juu">Diippi</NavigationElement>
         <NavigationElement key="36" isActive={false} hash="#juu">Diippi</NavigationElement>
-        <NavigationElement key="37" isActive={false} hash="#juu">Diippi</NavigationElement>
-        <NavigationElement key="38" isActive={false} hash="#juu">Diippi</NavigationElement>
-        <NavigationElement key="39" isActive={false} hash="#juu">Diippi</NavigationElement>
+
       </NavigationTopic>
      </Navigation>
   }

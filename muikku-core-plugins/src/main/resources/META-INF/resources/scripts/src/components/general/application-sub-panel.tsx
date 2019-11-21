@@ -21,3 +21,22 @@ export default class ApplicationSubPanel extends React.Component<SubPanelProps, 
     </div>
   }
 }
+
+interface SubPanelItemProps {
+  modifier?: string,
+  i18n: i18nType,
+  title: string
+}
+
+interface SubPanelItemState {
+}
+
+export  class ApplicationSubPanelItem extends React.Component<SubPanelItemProps, SubPanelItemState> {
+  render(){
+    return <div className={`application-sub-panel__item ${this.props.modifier ? `application-sub-panel__item--${this.props.modifier}` : ""}`}>
+      <div className="application-sub-panel__item-title">{this.props.title}</div>
+      <div className="application-sub-panel__item-data">{this.props.children}</div>
+    </div>
+  }
+}
+
