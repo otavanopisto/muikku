@@ -212,7 +212,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     },{
       modifier: "announcer",
       trail: "workspace-announcer",
-      text: 'plugin.workspace.dock.workspace-announcements',
+      text: 'plugin.workspace.dock.announcer',
       href: "/workspace/" + this.props.workspaceUrl + "/announcer",
       icon: "paper-plane",
       to: true,

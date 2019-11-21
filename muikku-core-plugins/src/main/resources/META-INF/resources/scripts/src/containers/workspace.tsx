@@ -277,7 +277,7 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
       this.props.websocket.restoreEventListeners();
 
       let state = this.props.store.getState();
-      this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.announcer.pageTitle')));
+      this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.announcements.pageTitle')));
 
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(loadAnnouncementsAsAClient({
