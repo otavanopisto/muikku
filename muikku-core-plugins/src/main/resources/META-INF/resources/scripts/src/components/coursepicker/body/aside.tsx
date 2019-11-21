@@ -29,7 +29,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).filter( ( i: string ) => i !== educationType.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).concat( educationType.identifier ) } ), { arrayFormat: 'bracket' } ) )
-          return <NavigationElement modifier="aside-navigation" key={educationType.identifier} isActive={isActive} hash={hash}>{educationType.name}</NavigationElement>
+          return <NavigationElement modifiers="aside-navigation" key={educationType.identifier} isActive={isActive} hash={hash}>{educationType.name}</NavigationElement>
         })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
@@ -38,7 +38,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).filter( ( c: string ) => c !== curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).concat( curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) );
-          return <NavigationElement modifier="aside-navigation" key={curriculum.identifier} isActive={isActive} hash={hash}>{curriculum.name}</NavigationElement>
+          return <NavigationElement modifiers="aside-navigation" key={curriculum.identifier} isActive={isActive} hash={hash}>{curriculum.name}</NavigationElement>
         } )}
       </NavigationTopic>
     </Navigation>

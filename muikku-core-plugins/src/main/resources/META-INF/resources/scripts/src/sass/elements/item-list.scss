@@ -43,7 +43,7 @@
   align-items: center;
   border-radius: 2px;
   margin: 0 0 5px;
-  padding: 8px;
+  padding: 5px;
 
   &:hover,
   &.hover {
@@ -60,8 +60,24 @@
     }
   }
 
+  // We decrease the font size of item-list item's when they are inside aside navigation
+  .item-list__text-body {
+    font-size: $text-mobile-font-size;
+  }
+
   @include breakpoint($breakpoint-pad) {
     background-color: $color-item-list-item-aside-background;
+    padding: 8px;
+  }
+}
+
+// Guider specific aside navigation that adjusts icon alignment as items can have text for more than one rows
+.item-list__item--aside-navigation-guider {
+
+  .item-list__icon {
+    align-self: flex-start;
+    color: $color-workspace;
+    padding: 1px 0 0;
   }
 }
 

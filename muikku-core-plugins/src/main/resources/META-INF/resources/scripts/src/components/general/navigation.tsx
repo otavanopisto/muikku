@@ -44,7 +44,7 @@ export class NavigationTopic extends React.Component<NavigationTopicProps, Navig
 interface NavigationElementProps {
   isActive: boolean,
   className?: string,
-  modifier?: string,
+  modifiers?: string | Array<string>,
   hash?: number | string,
   href?: string,
   onClick?: () => any,
@@ -71,6 +71,9 @@ interface NavigationElementState {
 export class NavigationElement extends React.Component<NavigationElementProps, NavigationElementState> {
   render() {
     let editableComponent = null;
+
+    let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
+
     if ( this.props.isEditable && this.props.editableWrapper ) {
       let EditableWrapper = this.props.editableWrapper;
       let args = this.props.editableWrapperArgs || {};
@@ -82,7 +85,7 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
         icon="pencil" onClick={this.props.editableAction} />
     }
 
-    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${this.props.modifier ? "item-list__item--" + this.props.modifier : ""}`}
+    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`item-list__item--${s}`).join(" ")}`}
       onScrollToSection={this.props.onScrollToSection}
       scrollPadding={this.props.scrollPadding} disableScroll={this.props.disableScroll}
       href={this.props.hash ? "#" + this.props.hash : null} to={this.props.href} onClick={this.props.onClick} ref="element">
