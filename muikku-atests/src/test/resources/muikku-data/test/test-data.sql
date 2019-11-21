@@ -40,6 +40,6 @@ insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/dnm'
 
 insert into PluginSettingKey (name, plugin) select 'fileUploadBasePath', 'transcriptofrecords' from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'fileUploadBasePath' having count(*) = 0;
 insert into PluginSetting (value, key_id) select '/tmp/', id from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'fileUploadBasePath';
-
+insert into OrganizationEntity (id, identifier, name, archived, dataSource_id) values (1, '1', 'Default', false, 2);
 insert into PluginSettingKey (name, plugin) select 'environmentForumOrganizations', 'forum' from PluginSettingKey where plugin = 'forum' and name = 'environmentForumOrganizations' having count(*) = 0;
 insert into PluginSetting (value, key_id) select 'PYRAMUS-1', id from PluginSettingKey where plugin = 'forum' and name = 'environmentForumOrganizations';
