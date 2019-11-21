@@ -96,7 +96,11 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   public static final Long WORKSPACE2_ID = 2l;
   
   public static final Long USERGROUP1_ID = 2l;
+  
+  private static final Long DEFAULT_ORGANIZATION_ID = 1l;
 
+  private static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+  
   public static void mockDefaults(List<String> payloads) throws JsonProcessingException {
     mockOrganizations(payloads);
     mockCommons();
@@ -110,44 +114,49 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   private static void mockOrganizations(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    Organization organization = new Organization(1l, "Default Test Organization", false);
-    Organization[] organizations = { organization };
+    Organization[] organizations = { 
+        new Organization(1l, "Default Test Organization", false),
+        new Organization(2l, "Secondary Test Organization", false)
+    };
 
     stubFor(get(urlEqualTo("/1/organizations"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(objectMapper.writeValueAsString(organizations))
           .withStatus(200)));
-    
-    stubFor(get(urlEqualTo("/1/organizations/1"))
-        .willReturn(aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(objectMapper.writeValueAsString(organization))
-          .withStatus(200)));
-    addPayload(payloads, objectMapper.writeValueAsString(new WebhookOrganizationCreatePayload(organization.getId(), organization.getName())));
+
+    for (Organization organization : organizations) {
+      stubFor(get(urlEqualTo(String.format("/1/organizations/%d", organization.getId())))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(objectMapper.writeValueAsString(organization))
+            .withStatus(200)));
+      addPayload(payloads, objectMapper.writeValueAsString(new WebhookOrganizationCreatePayload(organization.getId(), organization.getName())));
+    }
   }
 
   private static void mockStudyProgrammes(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    
-    StudyProgrammeCategory spc = new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false);
-    StudyProgramme sp = new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, false);
-    
-    StudyProgramme[] sps = { sp };
-    StudyProgrammeCategory[] spcs = { spc };
+    StudyProgramme[] sps = {
+        new StudyProgramme(1l, DEFAULT_ORGANIZATION_ID, "test", "Test Study Programme", 1l, false), 
+        new StudyProgramme(2l, 2l, "test", "Secondary Organization Study Programme", 1l, false) 
+    };
+    StudyProgrammeCategory[] spcs = {
+        new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false)
+    };
     
     stubFor(get(urlEqualTo("/1/students/studyProgrammes"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(objectMapper.writeValueAsString(sps))
           .withStatus(200)));
-    
-    stubFor(get(urlEqualTo("/1/students/studyProgrammes/1"))
-        .willReturn(aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(objectMapper.writeValueAsString(sp))
-          .withStatus(200)));
+
+    for (StudyProgramme sp : sps) {
+      stubFor(get(urlEqualTo(String.format("/1/students/studyProgrammes/%d", sp.getId())))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(objectMapper.writeValueAsString(sp))
+            .withStatus(200)));
+    }
 
     stubFor(get(urlEqualTo("/1/students/studyProgrammeCategories"))
         .willReturn(aResponse()
@@ -155,16 +164,16 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
           .withBody(objectMapper.writeValueAsString(spcs))
           .withStatus(200)));
     
-    stubFor(get(urlEqualTo("/1/students/studyProgrammeCategories/1"))
-        .willReturn(aResponse()
-          .withHeader("Content-Type", "application/json")
-          .withBody(objectMapper.writeValueAsString(spc))
-          .withStatus(200)));
+    for (StudyProgrammeCategory spc : spcs) {
+      stubFor(get(urlEqualTo(String.format("/1/students/studyProgrammeCategories/%d", spc.getId())))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(objectMapper.writeValueAsString(spc))
+            .withStatus(200)));
+    }
   }
 
   public static void mockRoles(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    
     CourseStaffMemberRole[] roles = { 
         new CourseStaffMemberRole(7l, "Opettaja"), 
         new CourseStaffMemberRole(8l, "Tutor"), 
@@ -206,8 +215,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     emails.add("testuser@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 1, "Test", "User", emails);
 
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
     stubFor(get(urlEqualTo("/1/system/whoami"))
@@ -235,8 +242,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     List<String> emails = new ArrayList<String>();
     emails.add("teacher@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 2, "Teacher", "User", emails);
-
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
@@ -266,8 +271,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     emails.add("admin@example.com");
     WhoAmI whoAmI = new WhoAmI((long) 4, "Admin", "User", emails);
 
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
     stubFor(get(urlEqualTo("/1/system/whoami"))
@@ -275,11 +278,9 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         .withHeader("Content-Type", "application/json")
         .withBody(whoAmIJson)
         .withStatus(200)));
-  }    
+  }
 
   private static Person mockPerson(Long personId, OffsetDateTime birthday, String socialSecurityNumber, Sex sex, Long defaultUserId) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    
     Person person = new Person(personId, birthday, socialSecurityNumber, sex, false, "empty", defaultUserId);
     String personJson = objectMapper.writeValueAsString(person);
     
@@ -293,8 +294,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   private static StaffMember mockStaffMember(Long personId, Long staffMemberId, Long organizationId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
     StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
         role, tags, variables);
       
@@ -330,9 +329,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     return staffMember;
   }
   
-  public static Student mockStudent(Long personId, Long studentId, String firstName, String lastName, String email, List<String> tags, Map<String, String> variables, List<String> payloads, OffsetDateTime studyStartDate, OffsetDateTime studyEndDate) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
+  public static Student mockStudent(Long personId, Long studentId, Long studyProgrammeId, String firstName, String lastName, String email, List<String> tags, Map<String, String> variables, List<String> payloads, OffsetDateTime studyStartDate, OffsetDateTime studyEndDate) throws JsonProcessingException {
     Student student = new Student(
         studentId,
         personId,
@@ -349,7 +346,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
         null,
         null,
         null,
-        (long) 1,
+        studyProgrammeId,
         null,
         null,
         null,
@@ -394,8 +391,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   public static void mockUsers(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    
     OffsetDateTime birthday = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
 
     Person person = mockPerson(1l, birthday, "345345-3453", Sex.MALE, 1l);
@@ -404,8 +399,9 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     Person staff3 = mockPerson(4l, birthday, "345345-3453", Sex.MALE, 4l);
     Person staff4 = mockPerson(5l, birthday, "345345-3453", Sex.MALE, 5l);
     Person studentPerson2 = mockPerson(6l, birthday, "345345-3453", Sex.MALE, 6l);
+    Person studentPerson3 = mockPerson(7l, birthday, "341345-3453", Sex.FEMALE, 7l);
     
-    Person[] personArray = { person, staff1, staff2, staff3, staff4, studentPerson2 };
+    Person[] personArray = { person, staff1, staff2, staff3, staff4, studentPerson2, studentPerson3 };
     String personArrayJson = objectMapper.writeValueAsString(personArray);
 
     for (Person p : personArray)
@@ -426,30 +422,28 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     Map<String, String> variables = null;
     List<String> tags = null;
     
-    Student student1 = mockStudent(1l, 1l, "Test", "User", "testuser@example.com", tags, variables, payloads, toDate(2010, 1, 1), getNextYear());
-    Student student2 = mockStudent(6l, 6l, "Hidden", "Dragon", "crouchingtiger@example.com", tags, variables, payloads, toDate(2010, 1, 1), toDate(2011, 1, 1));
+    Student student1 = mockStudent(person.getId(), 1l, 1l, "Test", "User", "testuser@example.com", tags, variables, payloads, toDate(2010, 1, 1), toDate(2070, 1, 1));
+    Student student2 = mockStudent(studentPerson2.getId(), 6l, 1l, "Hidden", "Dragon", "crouchingtiger@example.com", tags, variables, payloads, toDate(2010, 1, 1), toDate(2011, 1, 1));
+    Student student3 = mockStudent(studentPerson3.getId(), 7l, 2l, "Constipated", "Moose", "constmo@example.com", tags, variables, payloads, toDate(2010, 1, 1), toDate(2011, 1, 1));
 
-    StaffMember staffMember1 = mockStaffMember(2l, 2l, 1l, "Test", "Staff1member", "teacher@example.com", UserRole.USER, tags, variables, payloads);
-    StaffMember staffMember2 = mockStaffMember(3l, 3l, 1l, "Test", "Staff2member", "mana@example.com", UserRole.MANAGER, tags, variables, payloads);
-    StaffMember staffMember3 = mockStaffMember(4l, 4l, 1l, "Test", "Administrator", "admin@example.com", UserRole.ADMINISTRATOR, tags, variables, payloads);
-    StaffMember staffMember4 = mockStaffMember(5l, 5l, 1l, "Trusted", "System", "trusted@example.com", UserRole.TRUSTED_SYSTEM, tags, variables, payloads);
+    StaffMember staffMember1 = mockStaffMember(staff1.getId(), 2l, DEFAULT_ORGANIZATION_ID, "Test", "Staff1member", "teacher@example.com", UserRole.USER, tags, variables, payloads);
+    StaffMember staffMember2 = mockStaffMember(staff2.getId(), 3l, DEFAULT_ORGANIZATION_ID, "Test", "Staff2member", "mana@example.com", UserRole.MANAGER, tags, variables, payloads);
+    StaffMember staffMember3 = mockStaffMember(staff3.getId(), 4l, DEFAULT_ORGANIZATION_ID, "Test", "Administrator", "admin@example.com", UserRole.ADMINISTRATOR, tags, variables, payloads);
+    StaffMember staffMember4 = mockStaffMember(staff4.getId(), 5l, DEFAULT_ORGANIZATION_ID, "Trusted", "System", "trusted@example.com", UserRole.TRUSTED_SYSTEM, tags, variables, payloads);
 
-    Student[] studentArray = { student1, student2 };
+    Student[] studentArray = { student1, student2, student3 };
     StaffMember[] staffArray = { staffMember1, staffMember2, staffMember3, staffMember4 };
-
-    String studentArrayJson = objectMapper.writeValueAsString(studentArray);
-    String staffArrayJson = objectMapper.writeValueAsString(staffArray);
 
     stubFor(get(urlMatching("/1/students/students?filterArchived=false&firstResult=.*&maxResults=.*"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody(studentArrayJson)
+        .withBody(objectMapper.writeValueAsString(studentArray))
         .withStatus(200)));
 
     stubFor(get(urlEqualTo("/1/staff/members"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody(staffArrayJson)
+        .withBody(objectMapper.writeValueAsString(staffArray))
         .withStatus(200)));
     
     mockPersonStudens(studentArray);
@@ -457,24 +451,17 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
 
     ContactType contactType = new ContactType((long)1, "Koti", false, false);
     ContactType[] contactTypes = { contactType };
-    String contactTypeJson = objectMapper.writeValueAsString(contactType);
     stubFor(get(urlMatching("/1/common/contactTypes/.*"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody(contactTypeJson)
+        .withBody(objectMapper.writeValueAsString(contactType))
         .withStatus(200)));
     
-    String contactTypesJson = objectMapper.writeValueAsString(contactTypes);
     stubFor(get(urlEqualTo("/1/common/contactTypes"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody(contactTypesJson)
+        .withBody(objectMapper.writeValueAsString(contactTypes))
         .withStatus(200)));
-  }
-  
-  private static OffsetDateTime getNextYear() {
-    OffsetDateTime result = OffsetDateTime.now(ZoneOffset.UTC);
-    return result.plusYears(1);
   }
   
   private static OffsetDateTime toDate(int year, int month, int day) {
@@ -523,7 +510,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
        null,
        1L);
   
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String courseJson = objectMapper.writeValueAsString(course);
     
     stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", id)))
@@ -568,8 +554,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
 
   public static void mockCommons() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
     EducationType educationType = new EducationType((long) 1, "testEduType", "ET", false);
     String educationTypeJson = objectMapper.writeValueAsString(educationType);
     
@@ -626,8 +610,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   public static void mockUserGroups(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     Long creatorId = 1l;
     Long groupId = USERGROUP1_ID;
@@ -687,8 +669,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   public static void mockWorkspaceUsers(List<String> payloads) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
     Long courseId = 1l;
     Long teacherRoleId = 7l;
     
@@ -731,8 +711,6 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
   
   private static void addPayload(List<String> payloads, Object obj) throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
     addPayload(payloads, objectMapper.writeValueAsString(obj));
   }
   

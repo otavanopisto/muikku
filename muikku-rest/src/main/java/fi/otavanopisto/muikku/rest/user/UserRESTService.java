@@ -90,6 +90,7 @@ import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -165,6 +166,9 @@ public class UserRESTService extends AbstractRESTService {
 
   @Inject
   private UserEntityFileController userEntityFileController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
   
   @Inject
   @Any
@@ -485,11 +489,21 @@ public class UserRESTService extends AbstractRESTService {
     if (studentIdentifier == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
     }
+
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.FIND_STUDENT)) {
+      if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
     
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
     UserEntity userEntity = userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getUserEntity() : null;
     if (userSchoolDataIdentifier == null || userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
+    }
+    
+    if (!canAccessOrganization(userSchoolDataIdentifier.getOrganization())) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     // Bug fix #2966: REST endpoint should only return students
@@ -507,8 +521,6 @@ public class UserRESTService extends AbstractRESTService {
 
     CacheControl cacheControl = new CacheControl();
     cacheControl.setMustRevalidate(true);
-    
-    // TODO: There's no permission handling, this is relying on schooldatacontroller to check for permission
     
     User user = userController.findUserByIdentifier(studentIdentifier);
     if (user == null) {
@@ -553,6 +565,16 @@ public class UserRESTService extends AbstractRESTService {
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
+  }
+
+  private boolean canAccessOrganization(OrganizationEntity organization) {
+    if (organization != null) {
+      Long organizationId = organization.getId();
+      List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
+      return loggedUserOrganizations != null ? loggedUserOrganizations.stream().anyMatch(listOrganization -> Objects.equals(organizationId, listOrganization.getId())) : false;
+    } else {
+      return false;
+    }
   }
 
   @PUT
