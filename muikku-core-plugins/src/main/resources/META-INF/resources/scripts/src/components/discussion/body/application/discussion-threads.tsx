@@ -91,11 +91,11 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
                 <div className={`discussion-category discussion-category--category-${threadCategory}`}>
                   <span>{thread.title}</span>
                 </div>
-              </DiscussionThreadHeader>                                   
+              </DiscussionThreadHeader>
               {thread.sticky ?
                 <DiscussionThreadBody>
-                  <OverflowDetector as="div" classNameWhenOverflown="application-list__item-body--discussion-message-overflow"
-                    className="application-list__item-body--discussion-message rich-text" dangerouslySetInnerHTML={{ __html: thread.message }} />
+                  <OverflowDetector as="div" classNameWhenOverflown="application-list__item-text-body--discussion-message-overflow"
+                    className="application-list__item-text-body--discussion-message rich-text" dangerouslySetInnerHTML={{ __html: thread.message }} />
                 </DiscussionThreadBody> : null
               }
               <DiscussionThreadFooter>

@@ -653,7 +653,7 @@
   }
 }
 
-.application-list__item-body--discussion-message {
+.application-list__item-text-body--discussion-message {
   font-size: $text-mobile-font-size;
   font-style: italic;
   font-weight: 400;
@@ -675,7 +675,7 @@
   font-weight: 600;
 }
 
-.application-list__item-body--discussion-message-overflow::before {
+.application-list__item-text-body--discussion-message-overflow::before {
   background: linear-gradient($color-application-list-item-fade-background 1rem, $color-default);
   bottom: 0;
   content: "";
