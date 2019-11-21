@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
@@ -26,7 +27,12 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Long courseId = 1l;
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    mockBuilder
+    .addCourseStaffMember(courseId, courseStaffMember)
+    .build();
     try{
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       waitAndClick(".an-new-announcement");
@@ -59,7 +65,12 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Long courseId = 1l;
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    mockBuilder
+    .addCourseStaffMember(courseId, courseStaffMember)
+    .build();
     try{
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       waitAndClick(".an-new-announcement");

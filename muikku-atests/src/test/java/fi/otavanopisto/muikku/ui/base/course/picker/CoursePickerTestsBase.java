@@ -44,7 +44,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
 //      Course selector
-        refresh();
+//        refresh();
         waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(1)");
         waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(2)");
         waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(3)");
@@ -80,7 +80,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
-        refresh();
+//        refresh();
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         waitAndClick("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         assertText("div.application-list__item-body.application-list__item-body--course > article", "test course for testing");

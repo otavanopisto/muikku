@@ -36,9 +36,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitAndClick("div.application-panel__helper-container.application-panel__helper-container--main-action > a.button--primary-function");
         
         waitForPresent(".cke_wysiwyg_frame");
-        waitForPresent("div.env-dialog__body .env-dialog__form-element-container--datepicker:first-child .react-datepicker__input-container input");
-        selectAllAndClear("div.env-dialog__body .env-dialog__form-element-container--datepicker:first-child .react-datepicker__input-container input");
-        sendKeys("div.env-dialog__body .env-dialog__form-element-container--datepicker:first-child .react-datepicker__input-container input", "21.12.2025");
+        waitForPresent(".env-dialog__form-element-container--datepicker:nth-child(2) .react-datepicker__input-container input");
+        selectAllAndClear(".env-dialog__form-element-container--datepicker:nth-child(2) .react-datepicker__input-container input");
+        sendKeys(".env-dialog__form-element-container--datepicker:nth-child(2) .react-datepicker__input-container input", "21.12.2025");
         waitAndClick(".env-dialog__header");
         waitForNotVisible(".react-datepicker");
         sendKeys(".env-dialog__form-element-container--title input", "Test title");
