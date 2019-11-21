@@ -115,7 +115,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   
   private static void mockOrganizations(List<String> payloads) throws JsonProcessingException {
     Organization[] organizations = { 
-        new Organization(1l, "Default Test Organization", false),
+        new Organization(1l, "Default", false),
         new Organization(2l, "Secondary Test Organization", false)
     };
 
