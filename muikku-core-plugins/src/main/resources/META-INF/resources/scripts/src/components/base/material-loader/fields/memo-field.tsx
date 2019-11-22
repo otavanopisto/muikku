@@ -162,7 +162,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       //note how somehow numbers come as string...
       field = !this.props.content.richedit ? <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)}
           rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
-            <CKEditor width="100%" configuration={ckEditorConfig}
+            <CKEditor configuration={ckEditorConfig}
              onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
     }
 

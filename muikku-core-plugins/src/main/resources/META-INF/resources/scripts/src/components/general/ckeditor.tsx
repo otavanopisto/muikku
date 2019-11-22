@@ -44,11 +44,9 @@ let pluginsLoaded:any = {};
 
 interface CKEditorProps {
   configuration?: any,
-  width?: number | string,
-  height?: number | string,
   onChange(arg: string):any,
   children?: string,
-  autofocus?: boolean
+  autofocus?: boolean,
 }
 
 interface CKEditorState {
@@ -68,7 +66,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     
     this.name = "ckeditor-" + (new Date()).getTime();
     this.currentData = props.children;
-    this.resize = this.resize.bind(this);
     
     this.width = null;
     this.height = null;
@@ -76,12 +73,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     //CKeditor tends to trigger change on setup for no reason at all
     //we don't expect the user to type anything at all when ckeditor is starting up
     this.cancelChangeTrigger = true;
-  }
-  resize(width: number | string, height: number | string){
-    getCKEDITOR().instances[this.name].resize(width, height, false, true);
-    
-    this.width = width;
-    this.height = height;
   }
   componentDidMount(){
     this.setupCKEditor();
@@ -145,11 +136,11 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       let instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
       instance.setData(this.props.children);
-      if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
-        this.resize(this.props.width, this.props.height);
-      }
+      
+      const height = instance.container.$.getBoundingClientRect().height;
+      instance.resize("100%", height, false, true);
         
-      //TODO somehow, the freaking autofocus doesn't focus in the last row but in the first
+      //TODO somehow, the autofocus doesn't focus in the last row but in the first
       //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
     });
   }
@@ -182,16 +173,12 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       this.enableCancelChangeTrigger();
       getCKEDITOR().instances[this.name].setData(nextProps.children);
     }
-    
-    if (nextProps.width !== this.props.width || nextProps.height !== this.props.height){
-      this.resize(nextProps.width, nextProps.height);
-    }
   }
   shouldComponentUpdate(){
     //this element is managed from componentWillReceiveProps
     return false;
   }
   render(){
-    return <textarea ref="ckeditor" name={this.name}/>
+    return <textarea className="cke" ref="ckeditor" name={this.name}/>
   }
 }

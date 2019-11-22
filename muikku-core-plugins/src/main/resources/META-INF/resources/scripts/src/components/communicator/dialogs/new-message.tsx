@@ -175,11 +175,10 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         </div>
         ),
       (
-      <div className="env-dialog__row" key="3">
+      <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>
-          <CKEditor width="100%" height="210"
-          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+          <CKEditor onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div> 
       </div>
       ),

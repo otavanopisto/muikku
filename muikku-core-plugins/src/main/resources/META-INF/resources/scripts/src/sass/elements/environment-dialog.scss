@@ -81,6 +81,8 @@
 }
 
 .env-dialog__body {
+  display: flex;
+  flex-direction: column;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -129,6 +131,16 @@
   margin-bottom: 10px;
 }
 
+.env-dialog__row--ckeditor {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  
+  .cke {
+    flex: 1 1 210px;
+  }
+}
+
 .env-dialog__row--communicator-signature,
 .env-dialog__row--new-discussion-thread-states {
   align-items: center;
@@ -158,7 +170,7 @@
 .env-dialog__form-element-container {
   display: flex;
   flex-basis: auto;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   flex-grow: 1;
   flex-shrink: 1;
   position: relative;
@@ -210,13 +222,11 @@
   align-items: center;
   color: $color-text-default;
   display: flex;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   padding: 0 0 5px;
+  height: 1.45rem;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;

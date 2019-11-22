@@ -82,7 +82,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
     let content = (closeDialog: ()=>any)=>{
       return <div className="env-dialog__row">
         <div className="env-dialog__form-element-container">
-          <CKEditor width="100%" height="210" configuration={CKEDITOR_CONFIG}
+          <CKEditor configuration={CKEDITOR_CONFIG}
             onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
           </div>
         </div>

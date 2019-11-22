@@ -452,8 +452,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                 <div className="application-sub-panel__item-split-container">
                   <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description">
                     <label className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.title.basicInfo.description")}</label>
-                    <CKEditor width="100%" height="210"
-                      onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
+                    <CKEditor onChange={this.onDescriptionChange}>{this.state.workspaceDescription}</CKEditor>
                   </div>
                 </div>
               </div>

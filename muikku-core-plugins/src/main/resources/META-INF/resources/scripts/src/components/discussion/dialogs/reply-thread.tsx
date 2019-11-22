@@ -98,7 +98,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     <div className="env-dialog__row" key="1">
       <div className="env-dialog__form-element-container">
         <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div> 
-        <CKEditor autofocus key="1" width="100%" height="210"
+        <CKEditor autofocus key="1"
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
       </div>
     </div>

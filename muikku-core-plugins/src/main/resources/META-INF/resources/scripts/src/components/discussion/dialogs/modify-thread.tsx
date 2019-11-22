@@ -136,8 +136,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
        <div className="env-dialog__row" key="3">
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
-           <CKEditor key="3" width="100%" height="210"
-             onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+           <CKEditor key="3" onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
          </div>
        </div>
     ]

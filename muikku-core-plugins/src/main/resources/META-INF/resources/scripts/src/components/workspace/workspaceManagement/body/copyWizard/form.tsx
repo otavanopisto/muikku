@@ -128,7 +128,7 @@ export default class Step extends React.Component<StepProps, StepState> {
           <div className="form__row form__row--wizard">
             <div className="form-element">
               <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDescription.label")}</label>
-              <CKEditor width="100%" onChange={this.onDescriptionChange}>{this.props.getStore().description}</CKEditor>
+              <CKEditor onChange={this.onDescriptionChange}>{this.props.getStore().description}</CKEditor>
             </div>
           </div>
         </div>

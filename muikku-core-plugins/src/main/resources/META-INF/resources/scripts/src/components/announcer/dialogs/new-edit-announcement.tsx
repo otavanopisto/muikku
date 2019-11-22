@@ -292,10 +292,10 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       </div>
       ),
       (
-      <div className="env-dialog__row" key="4">
+      <div className="env-dialog__row env-dialog__row--ckeditor" key="4">
         <div className="env-dialog__form-element-container">
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>
-          <CKEditor width="100%" height="210" onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+          <CKEditor onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div>
       </div>
       )
