@@ -22,9 +22,12 @@
   }
 
   @include breakpoint($breakpoint-pad) {
-    box-shadow: 0 0 200px $color-material-edit-panel-shadow;
     max-width: 730px;
     min-width: 680px;
+
+    &.material-editor--visible {
+      box-shadow: 0 0 200px $color-material-edit-panel-shadow;
+    }
   }
 }
 
