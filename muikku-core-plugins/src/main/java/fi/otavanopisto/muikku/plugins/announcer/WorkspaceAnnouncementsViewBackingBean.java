@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.announcer;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -15,6 +16,8 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
@@ -22,6 +25,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 @Named
 @Stateful
@@ -47,6 +51,9 @@ public class WorkspaceAnnouncementsViewBackingBean {
   @Inject
   private AnnouncementController announcementController;
 
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
   @Inject
   @Named
   private WorkspaceBackingBean workspaceBackingBean;
@@ -86,13 +93,26 @@ public class WorkspaceAnnouncementsViewBackingBean {
     workspaceName = workspaceBackingBean.getWorkspaceName();
     workspaceNameExtension = workspaceBackingBean.getWorkspaceNameExtension();
 
-    if (announcementId != null) {
-      currentAnnouncement = announcementController.findById(announcementId);
+    if (sessionController.isLoggedIn()) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+      OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
+      
+      if (organizationEntity != null) {
+        if (announcementId != null) {
+          Announcement announcement = announcementController.findById(announcementId);
+          if (announcement != null && Objects.equals(organizationEntity.getId(), announcement.getOrganizationEntityId())) {
+            currentAnnouncement = announcement;
+          }
+        }
+        
+        activeAnnouncements = announcementController
+            .listActiveByWorkspaceEntities(organizationEntity, Collections.singletonList(workspaceEntity));
+      }
+    } else {
+      currentAnnouncement = null;
+      activeAnnouncements = Collections.emptyList();
     }
     
-    activeAnnouncements = announcementController
-        .listActiveByWorkspaceEntities(Collections.singletonList(workspaceEntity));
-
     return null;
   }
 

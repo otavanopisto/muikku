@@ -40,6 +40,9 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   private String workspaceUrlName;
 
   @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
   private WorkspaceController workspaceController;
 
   @Inject
@@ -61,9 +64,6 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   @Inject
   private WorkspaceVisitController workspaceVisitController;
   
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();

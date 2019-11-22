@@ -14,6 +14,7 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserRoleType;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class EnvironmentRoleEntityController {
   
@@ -42,6 +43,10 @@ public class EnvironmentRoleEntityController {
     roleSchoolDataIdentifierDAO.create(schoolDataSource, identifier, environmentRoleEntity);
     
     return environmentRoleEntity;
+  }
+
+  public EnvironmentRoleEntity findBy(SchoolDataIdentifier identifier) {
+    return findEnvironmentRoleEntity(identifier.getDataSource(), identifier.getIdentifier());
   }
   
   public EnvironmentRoleEntity findEnvironmentRoleEntity(String dataSource, String identifier) {

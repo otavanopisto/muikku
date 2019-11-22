@@ -233,6 +233,40 @@
   }
 }
 
+.button--reset-password {
+  background-color: $color-frontpage-button-login-background;
+  color: $color-frontpage-button-login-text;
+  display: inline-block;
+  font-size: 0.9375rem;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-frontpage-button-login-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-frontpage-button-login-background, 20%);
+  }
+
+  &.button--login-main-function {
+    background-color: $color-main-function-button-login-background;
+    color: $color-main-function-button-login-text;
+
+    &:hover,
+    &.hover {
+      background-color: darken($color-main-function-button-login-background, 10%);
+    }
+
+    &:active,
+    &.active {
+      background-color: darken($color-main-function-button-login-background, 20%);
+    }
+  }
+}
+
+
+
 .button--frontpage-upper-secondary-school-readmore {
   background-color: $color-frontpage-button-upper-secondary-school-readmore-background;
   color: $color-frontpage-button-upper-secondary-school-readmore-text;

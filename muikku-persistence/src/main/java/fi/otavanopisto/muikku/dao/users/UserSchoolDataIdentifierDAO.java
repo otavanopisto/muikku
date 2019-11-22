@@ -10,23 +10,28 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier_;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 
 public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifier> {
 
-	private static final long serialVersionUID = 6176973178652139440L;
+  private static final long serialVersionUID = 6176973178652139440L;
 
-	public UserSchoolDataIdentifier create(SchoolDataSource dataSource, String identifier, UserEntity userEntity, Boolean archived) {
-		UserSchoolDataIdentifier userSchoolDataIdentifier = new UserSchoolDataIdentifier();
+  public UserSchoolDataIdentifier create(SchoolDataSource dataSource, String identifier, UserEntity userEntity, 
+      EnvironmentRoleEntity environmentRoleEntity, OrganizationEntity organizationEntity, Boolean archived) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = new UserSchoolDataIdentifier();
 
-		userSchoolDataIdentifier.setIdentifier(identifier);
-		userSchoolDataIdentifier.setDataSource(dataSource);
-		userSchoolDataIdentifier.setUserEntity(userEntity);
-		userSchoolDataIdentifier.setArchived(archived);
-		
-		return persist(userSchoolDataIdentifier);
-	}
+    userSchoolDataIdentifier.setIdentifier(identifier);
+    userSchoolDataIdentifier.setDataSource(dataSource);
+    userSchoolDataIdentifier.setUserEntity(userEntity);
+    userSchoolDataIdentifier.setRole(environmentRoleEntity);
+    userSchoolDataIdentifier.setOrganization(organizationEntity);
+    userSchoolDataIdentifier.setArchived(archived);
+    
+    return persist(userSchoolDataIdentifier);
+  }
 
   public UserSchoolDataIdentifier findByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
     EntityManager entityManager = getEntityManager();
@@ -45,40 +50,40 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-	public UserSchoolDataIdentifier findByDataSourceAndIdentifierAndArchived(SchoolDataSource dataSource, String identifier, Boolean archived) {
-		EntityManager entityManager = getEntityManager();
+  public UserSchoolDataIdentifier findByDataSourceAndIdentifierAndArchived(SchoolDataSource dataSource, String identifier, Boolean archived) {
+    EntityManager entityManager = getEntityManager();
 
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
-		Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
-		criteria.select(root);
-		criteria.where(
-	    criteriaBuilder.and(
-	      criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.dataSource), dataSource),
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
+    Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.dataSource), dataSource),
         criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.identifier), identifier),
         criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.archived), archived)
-	    )
+      )
     );
 
-		return getSingleResult(entityManager.createQuery(criteria));
-	}
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
 
-	public List<UserSchoolDataIdentifier> listByUserEntityAndArchived(UserEntity userEntity, Boolean archived) {
-		EntityManager entityManager = getEntityManager();
+  public List<UserSchoolDataIdentifier> listByUserEntityAndArchived(UserEntity userEntity, Boolean archived) {
+    EntityManager entityManager = getEntityManager();
 
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
-		Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
-		criteria.select(root);
-		criteria.where(
-	    criteriaBuilder.and(
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
+    Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
         criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.userEntity), userEntity),
         criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.archived), archived)
-	    )
+      )
     );
 
-		return entityManager.createQuery(criteria).getResultList();
-	}
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
   public List<UserSchoolDataIdentifier> listByDataSourceAndArchived(SchoolDataSource dataSource, Boolean archived) {
     EntityManager entityManager = getEntityManager();
@@ -97,9 +102,20 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public UserSchoolDataIdentifier updateOrganization(UserSchoolDataIdentifier userSchoolDataIdentifier,
+      OrganizationEntity organizationEntity) {
+    userSchoolDataIdentifier.setOrganization(organizationEntity);
+    return persist(userSchoolDataIdentifier);
+  }
+
+  public UserSchoolDataIdentifier updateRole(UserSchoolDataIdentifier userSchoolDataIdentifier, EnvironmentRoleEntity environmentRoleEntity) {
+    userSchoolDataIdentifier.setRole(environmentRoleEntity);
+    return persist(userSchoolDataIdentifier);
+  }
+
   public UserSchoolDataIdentifier updateArchived(UserSchoolDataIdentifier userSchoolDataIdentifier, Boolean archived) {
     userSchoolDataIdentifier.setArchived(archived);
     return persist(userSchoolDataIdentifier);
   }
-  
+
 }

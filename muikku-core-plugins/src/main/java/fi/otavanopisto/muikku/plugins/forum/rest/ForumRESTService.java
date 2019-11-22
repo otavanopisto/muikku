@@ -69,6 +69,10 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areagroups")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
   public Response listForumAreaGroups() {
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
     
     if (!groups.isEmpty()) {
@@ -90,6 +94,10 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areagroups/{AREAGROUPID}")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_FIND_FORUMAREAGROUP)
   public Response findAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) {
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     ForumAreaGroup forumArea = forumController.findForumAreaGroup(areaGroupId);
     
     ForumAreaGroupRESTModel result = new ForumAreaGroupRESTModel(forumArea.getId(), forumArea.getName()); 
@@ -103,6 +111,10 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areagroups")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_CREATEFORUMAREAGROUP)
   public Response createForumAreaGroup(ForumAreaGroupRESTModel newGroup) {
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     ForumAreaGroup forumArea = forumController.createForumAreaGroup(newGroup.getName());
     
     ForumAreaGroupRESTModel result = new ForumAreaGroupRESTModel(forumArea.getId(), forumArea.getName()); 
@@ -116,6 +128,10 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areagroups/{AREAGROUPID}")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_DELETE_FORUMAREAGROUP)
   public Response archiveAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) {
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     ForumAreaGroup forumAreaGroup = forumController.findForumAreaGroup(areaGroupId);
     
     forumController.archiveAreaGroup(forumAreaGroup);
@@ -131,6 +147,10 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build(); 
     }
     
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM)) {
       return Response.status(Status.FORBIDDEN).entity("Forbidden").build(); 
     }
@@ -160,6 +180,10 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).build();
       }
       
+      if (!forumController.isEnvironmentForumActive()) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
       if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM)) {
         Long numThreads = forumController.getThreadCount(forumArea);
         
@@ -201,8 +225,11 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).build();
       }
 
+      if (!forumController.isEnvironmentForumActive()) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
       if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_UPDATEENVIRONMENTFORUM)) {
-        
         forumController.updateForumAreaName(forumArea, restModel.getName());
         forumController.updateForumAreaDescription(forumArea, restModel.getDescription());
         
@@ -231,6 +258,10 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumArea) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM)) {
       forumController.archiveArea(forumArea);
     } else {
@@ -244,6 +275,10 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
   public Response createForumArea(ForumAreaRESTModel newForum) {
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     EnvironmentForumArea forumArea = forumController.createEnvironmentForumArea(newForum.getName(), newForum.getDescription(), newForum.getGroupId());
     
     ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getDescription(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, 0l); 
@@ -267,6 +302,10 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_READ_ENVIRONMENT_MESSAGES)) {
       List<ForumThread> threads = forumController.listForumThreads(forumArea, firstResult, maxResults);
       
@@ -293,6 +332,10 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_READ_ENVIRONMENT_MESSAGES)) {
       return Response.ok(restModels.restModel(thread)).build();
     } else {
@@ -327,6 +370,10 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
       // User needs permission to change the value of these parameters
       if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLocked().equals(updThread.getLocked())) {
@@ -362,6 +409,10 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES)) {
       forumController.archiveThread(thread);
       return Response.noContent().build();
@@ -384,6 +435,10 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
    
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_WRITE_ENVIRONMENT_MESSAGES)) {
       if (Boolean.TRUE.equals(newThread.getSticky()) || Boolean.TRUE.equals(newThread.getLocked())) {
         if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
@@ -435,6 +490,10 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).build();
       }
      
+      if (!forumController.isEnvironmentForumActive()) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
       if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_READ_ENVIRONMENT_MESSAGES)) {
         if (!forumArea.getId().equals(forumThread.getForumArea().getId())) {
           return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
@@ -483,6 +542,10 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).build();
       }
       
+      if (!forumController.isEnvironmentForumActive()) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
       if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_READ_ENVIRONMENT_MESSAGES)) {
         return Response.ok(createRestModel(threadReply)).build();
       } else {
@@ -532,6 +595,10 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).build();
       }
       
+      if (!forumController.isEnvironmentForumActive()) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
       if (sessionController.hasPermission(MuikkuPermissions.OWNER, threadReply) ||
           sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
         forumController.updateForumThreadReply(threadReply, reply.getMessage());
@@ -561,6 +628,10 @@ public class ForumRESTService extends PluginRESTService {
     if (!(reply.getForumArea() instanceof EnvironmentForumArea)) {
       logger.severe(String.format("Trying to delete non environment forum thread reply (%d) from environment endpoint", reply.getId()));
       return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     if (!permanent) {
@@ -608,6 +679,10 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).build();
       }
       
+      if (!forumController.isEnvironmentForumActive()) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+
       if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_WRITE_ENVIRONMENT_MESSAGES)) {
         ForumThreadReply parentReply = null;
         
@@ -643,6 +718,10 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
+    if (!forumController.isEnvironmentForumActive()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_READ_ENVIRONMENT_MESSAGES)) {
       return Response.status(Status.FORBIDDEN).build();
     }

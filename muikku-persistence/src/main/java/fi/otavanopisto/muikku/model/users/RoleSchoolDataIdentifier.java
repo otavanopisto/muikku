@@ -22,46 +22,46 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 )
 public class RoleSchoolDataIdentifier {
 
-	public Long getId() {
-		return id;
-	}
+  public Long getId() {
+    return id;
+  }
 
-	public SchoolDataSource getDataSource() {
-		return dataSource;
-	}
+  public SchoolDataSource getDataSource() {
+    return dataSource;
+  }
 
-	public void setDataSource(SchoolDataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+  public void setDataSource(SchoolDataSource dataSource) {
+    this.dataSource = dataSource;
+  }
 
-	public RoleEntity getRoleEntity() {
-		return roleEntity;
-	}
-	
-	public void setRoleEntity(RoleEntity roleEntity) {
-		this.roleEntity = roleEntity;
-	}
-	
-	public String getIdentifier() {
-		return identifier;
-	}
+  public RoleEntity getRoleEntity() {
+    return roleEntity;
+  }
+  
+  public void setRoleEntity(RoleEntity roleEntity) {
+    this.roleEntity = roleEntity;
+  }
+  
+  public String getIdentifier() {
+    return identifier;
+  }
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-	@NotEmpty
-	@NotNull
-	@Column(nullable = false)
-	private String identifier;
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
+  private String identifier;
 
-	@ManyToOne
-	private SchoolDataSource dataSource;
+  @ManyToOne
+  private SchoolDataSource dataSource;
 
-	@ManyToOne
-	private RoleEntity roleEntity;
+  @ManyToOne
+  private RoleEntity roleEntity;
 }

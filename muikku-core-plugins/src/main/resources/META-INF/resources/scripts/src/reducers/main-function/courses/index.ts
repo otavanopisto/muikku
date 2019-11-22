@@ -14,13 +14,20 @@ export interface CourseCurriculumFilterType {
   name: string
 }
 
+export interface CourseOrganizationFilterType {
+  identifier: string,
+  name: string
+}
+
 export type CourseCurriculumFilterListType = Array<CourseCurriculumFilterType>;
+export type CourseOrganizationFilterListType = Array<CourseOrganizationFilterType>;
 
 export type CoursesBaseFilterListType = Array<CoursesBaseFilterType>;
 
 export interface CoursesAvaliableFiltersType {
   educationTypes: CourseEducationFilterListType,
   curriculums: CourseCurriculumFilterListType,
+  organizations: CourseOrganizationFilterListType,
   baseFilters: CoursesBaseFilterListType
 }
 
@@ -28,6 +35,7 @@ export type CoursesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export interface CoursesActiveFiltersType {
   educationFilters: Array<string>,
   curriculumFilters: Array<string>,
+  organizationFilters: Array<string>,
   query: string,
   baseFilter: CoursesBaseFilterType
 }
@@ -75,12 +83,14 @@ export default function coursepicker(state:CoursesType = {
   avaliableFilters: {
     educationTypes: [],
     curriculums: [],
+    organizations: [],
     baseFilters: ["ALL_COURSES", "MY_COURSES", "AS_TEACHER"]
   },
   state: "LOADING",
   activeFilters: {
     educationFilters: [],
     curriculumFilters: [],
+    organizationFilters: [],
     query: "",
     baseFilter: "ALL_COURSES"
   },
@@ -98,6 +108,12 @@ export default function coursepicker(state:CoursesType = {
     return Object.assign({}, state, {
       avaliableFilters: Object.assign({}, state.avaliableFilters, {
         curriculums: action.payload
+      })
+    });
+  } else if (action.type === "UPDATE_COURSES_AVAILABLE_FILTERS_ORGANIZATIONS"){
+    return Object.assign({}, state, {
+      avaliableFilters: Object.assign({}, state.avaliableFilters, {
+        organizations: action.payload
       })
     });
   } else if (action.type === "UPDATE_COURSES_ACTIVE_FILTERS"){

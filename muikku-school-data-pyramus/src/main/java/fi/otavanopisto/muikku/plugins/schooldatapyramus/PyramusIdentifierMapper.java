@@ -368,8 +368,16 @@ public class PyramusIdentifierMapper {
     return NumberUtils.createLong(curriculumIdentifier);
   }
 
+  public SchoolDataIdentifier getOrganizationIdentifier(Long organizationId) {
+    return organizationId == null ? null : new SchoolDataIdentifier(String.valueOf(organizationId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
+
+  public Long getPyramusOrganizationId(String organizationIdentifier) {
+    return NumberUtils.createLong(organizationIdentifier);
+  }
+
   public SchoolDataIdentifier getCreditLinkIdentifier(Long creditLinkId) {
     return creditLinkId != null ? new SchoolDataIdentifier(String.format("%s%d", CREDITLINK_PREFIX, creditLinkId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE) : null; 
   }
-  
+
 }

@@ -12,6 +12,7 @@ import javax.ws.rs.client.Entity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache.CachedEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache.SystemEntityCache;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 
 @ApplicationScoped
 @PyramusSystem
@@ -106,6 +107,39 @@ class SystemPyramusClient implements PyramusClient {
       releaseClient(client);
     }
   }
+
+  @Override
+  public <T> BridgeResponse<T> responseGet(String path, Class<T> type) {
+    Client client = obtainClient();
+    try {
+      return restClient.responseGet(client, getAccessToken(), path, type);
+    }
+    finally {
+      releaseClient(client);
+    }
+  }
+
+  @Override
+  public <T> BridgeResponse<T> responsePut(String path, Entity<?> entity, Class<T> type) {
+    Client client = obtainClient();
+    try {
+      return restClient.responsePut(client, getAccessToken(), path, entity, type);
+    }
+    finally {
+      releaseClient(client);
+    }
+  }
+
+  @Override
+  public <T> BridgeResponse<T> responsePost(String path, Entity<?> entity, Class<T> type) {
+    Client client = obtainClient();
+    try {
+      return restClient.responsePost(client, getAccessToken(), path, entity, type);
+    }
+    finally {
+      releaseClient(client);
+    }
+  }
   
   private String getAccessToken() {
     Client client = obtainClient();
@@ -123,4 +157,5 @@ class SystemPyramusClient implements PyramusClient {
   private void releaseClient(Client client) {
     clientPool.releaseClient(client);
   }
+
 }

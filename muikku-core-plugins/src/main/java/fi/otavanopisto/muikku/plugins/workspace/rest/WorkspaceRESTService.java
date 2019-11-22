@@ -57,6 +57,7 @@ import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -125,8 +126,10 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -212,7 +215,13 @@ public class WorkspaceRESTService extends PluginRESTService {
   private FileController fileController;
 
   @Inject
+  private OrganizationEntityController organizationEntityController;
+
+  @Inject
   private FileAnswerUtils fileAnswerUtils;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @GET
   @Path("/workspaceTypes")
@@ -339,6 +348,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("educationTypes") List<String> educationTypeIds,
         @QueryParam("curriculums") List<String> curriculumIds,
+        @QueryParam("organizations") List<String> organizationIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
@@ -446,8 +456,23 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
+      // TODO: Limit to organizations the logged user has access to (how though?)
+
+      List<SchoolDataIdentifier> organizations = null;
+      if (organizationIds != null) {
+        organizations = new ArrayList<>(organizationIds.size());
+        for (String organizationId : organizationIds) {
+          SchoolDataIdentifier organizationIdentifier = SchoolDataIdentifier.fromId(organizationId);
+          if (organizationIdentifier != null) {
+            organizations.add(organizationIdentifier);
+          } else {
+            return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed organization identifier", organizationId)).build();
+          }
+        }
+      }
+      
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
-          curriculums, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
+          curriculums, organizations, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -845,6 +870,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Retrieve users via Elastic
 
     SearchResult searchResult = elasticSearchProvider.searchUsers(
+        organizationEntityController.listUnarchived(),            // organizations
         null,                                                     // search string
         null,                                                     // fields
         null,                                                     // environment role
@@ -936,7 +962,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Get workspace staff members via Elastic
 
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+    List<OrganizationEntity> organizations = Arrays.asList(organization);
+    
     SearchResult searchResult = elasticSearchProvider.searchUsers(
+        organizations,                                            // organizations
         null,                                                     // search string
         null,                                                     // fields
         environmentRoleArchetypes,                                // all staff archetypes
@@ -2004,7 +2035,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
 
-    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), 
+    return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(),
+        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
         workspaceEntity.getUrlName(),
         workspaceEntity.getAccess(),
         workspaceEntity.getArchived(), 
@@ -2339,7 +2371,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // Find user from Elastic
 
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+    List<OrganizationEntity> organizations = Arrays.asList(organization);
+
     SearchResult searchResult = elasticSearchProvider.searchUsers(
+        organizations,                                            // organizations
         null,                                                     // search string
         null,                                                     // fields
         null,                                                     // environment roles
