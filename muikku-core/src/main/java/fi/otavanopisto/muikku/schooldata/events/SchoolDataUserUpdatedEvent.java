@@ -1,44 +1,52 @@
 package fi.otavanopisto.muikku.schooldata.events;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class SchoolDataUserUpdatedEvent {
 
-  public SchoolDataUserUpdatedEvent(Long userEntityId, SchoolDataIdentifier environmentRoleIdentifier, List<SchoolDataIdentifier> discoveredIdentifiers, List<SchoolDataIdentifier> updatedIdentifiers,
-      List<SchoolDataIdentifier> removedIdentifiers, SchoolDataIdentifier defaultIdentifier, Map<SchoolDataIdentifier, List<String>> emails) {
+  public SchoolDataUserUpdatedEvent(Long userEntityId, SchoolDataIdentifier defaultIdentifier) {
     super();
     this.userEntityId = userEntityId;
-    this.environmentRoleIdentifier = environmentRoleIdentifier;
-    this.discoveredIdentifiers = discoveredIdentifiers;
-    this.updatedIdentifiers = updatedIdentifiers;
-    this.removedIdentifiers = removedIdentifiers;
     this.defaultIdentifier = defaultIdentifier;
-    this.emails = emails;
   }
 
   public Long getUserEntityId() {
     return userEntityId;
   }
   
-  public SchoolDataIdentifier getEnvironmentRoleIdentifier() {
-    return environmentRoleIdentifier;
+  public SchoolDataUserEventIdentifier addDiscoveredIdentifier(SchoolDataIdentifier identifier, SchoolDataIdentifier roleIdentifier, SchoolDataIdentifier organizationIdentifier) {
+    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifier, organizationIdentifier);
+    discoveredIdentifiers.add(eventIdentifier);
+    return eventIdentifier;
   }
-
-  public List<SchoolDataIdentifier> getDiscoveredIdentifiers() {
+  
+  public List<SchoolDataUserEventIdentifier> getDiscoveredIdentifiers() {
     return discoveredIdentifiers;
   }
 
-  public List<SchoolDataIdentifier> getUpdatedIdentifiers() {
+  public SchoolDataUserEventIdentifier addUpdatedIdentifier(SchoolDataIdentifier identifier, SchoolDataIdentifier roleIdentifier, SchoolDataIdentifier organizationIdentifier) {
+    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifier, organizationIdentifier);
+    updatedIdentifiers.add(eventIdentifier);
+    return eventIdentifier;
+  }
+  
+  public List<SchoolDataUserEventIdentifier> getUpdatedIdentifiers() {
     return updatedIdentifiers;
   }
 
-  public List<SchoolDataIdentifier> getRemovedIdentifiers() {
+  public SchoolDataUserEventIdentifier addRemovedIdentifier(SchoolDataIdentifier identifier, SchoolDataIdentifier roleIdentifier, SchoolDataIdentifier organizationIdentifier) {
+    SchoolDataUserEventIdentifier eventIdentifier = new SchoolDataUserEventIdentifier(identifier, roleIdentifier, organizationIdentifier);
+    removedIdentifiers.add(eventIdentifier);
+    return eventIdentifier;
+  }
+  
+  public List<SchoolDataUserEventIdentifier> getRemovedIdentifiers() {
     return removedIdentifiers;
   }
 
@@ -46,24 +54,22 @@ public class SchoolDataUserUpdatedEvent {
     return defaultIdentifier;
   }
 
-  public Map<SchoolDataIdentifier, List<String>> getEmails() {
-    return emails;
-  }
-  
-  public Collection<String> getAllEmails() {
-    HashSet<String> result = new HashSet<>();
-    Iterator<List<String>> emailIterator = emails.values().iterator();
-    while (emailIterator.hasNext()) {
-      result.addAll(emailIterator.next());
-    }
+  public Set<String> getAllEmails() {
+    Set<String> result = new HashSet<>();
+    
+    result.addAll(discoveredIdentifiers
+        .stream().map(eventIdentifier -> eventIdentifier.getEmails()).flatMap(List::stream).collect(Collectors.toSet()));
+    result.addAll(updatedIdentifiers
+        .stream().map(eventIdentifier -> eventIdentifier.getEmails()).flatMap(List::stream).collect(Collectors.toSet()));
+    result.addAll(removedIdentifiers
+        .stream().map(eventIdentifier -> eventIdentifier.getEmails()).flatMap(List::stream).collect(Collectors.toSet()));
+    
     return result;
   }
 
   private Long userEntityId;
-  private SchoolDataIdentifier environmentRoleIdentifier;
-  private List<SchoolDataIdentifier> discoveredIdentifiers;
-  private List<SchoolDataIdentifier> updatedIdentifiers;
-  private List<SchoolDataIdentifier> removedIdentifiers;
   private SchoolDataIdentifier defaultIdentifier;
-  private Map<SchoolDataIdentifier, List<String>> emails;
+  private final List<SchoolDataUserEventIdentifier> discoveredIdentifiers = new ArrayList<>();
+  private final List<SchoolDataUserEventIdentifier> updatedIdentifiers = new ArrayList<>();
+  private final List<SchoolDataUserEventIdentifier> removedIdentifiers = new ArrayList<>();
 }

@@ -12,6 +12,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.dao.NoPassedCoursesNotificationDAO;
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesNotification;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -36,10 +37,11 @@ public class NoPassedCoursesNotificationController {
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
-  public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+  public SearchResult searchActiveStudentIds(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
     
     return searchProvider.searchUsers(
+        activeOrganizations,
         null, 
         null, 
         Collections.singleton(EnvironmentRoleArchetype.STUDENT), 

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table OrganizationEntity (
+      id bigint not null auto_increment, 
+      identifier varchar(255) not null, 
+      name varchar(255) not null,
+      archived bit(1) not null, 
+      dataSource_id bigint, 
+      primary key (id)
+    );
+  </sql>
+
+  <sql>
+    alter table OrganizationEntity add constraint FK3nbauaan3w0fprh9696bx4lj3 foreign key (dataSource_id) references SchoolDataSource (id);
+  </sql>
+
+  <sql>
+    alter table OrganizationEntity add constraint UKe9lw5qpvj0jci4ed8tvt5ln2o unique (dataSource_id, identifier);
+  </sql>
+  
+  <sql>
+    insert into OrganizationEntity (id,identifier,name,archived,dataSource_id) values (1,1,'Default',false,(select id from SchoolDataSource where identifier='PYRAMUS'));
+  </sql>
+
+  <sql>
+    alter table UserSchoolDataIdentifier add column organization_id bigint;
+  </sql>
+  
+  <sql>
+    alter table UserSchoolDataIdentifier add constraint FKk901wm5b07gl6qqp3oa2o238v foreign key (organization_id) references OrganizationEntity (id);
+  </sql>
+
+  <sql>
+    alter table UserSchoolDataIdentifier add column role_id bigint;
+  </sql>
+
+  <sql>
+    alter table UserSchoolDataIdentifier add constraint FK66x1cvhwsknh6authq49660qs foreign key (role_id) references EnvironmentRoleEntity (id);
+  </sql>
+
+  <sql>
+    update UserSchoolDataIdentifier set organization_id=1;
+  </sql>
+  
+  <sql>
+    update 
+      UserSchoolDataIdentifier usdi, 
+      EnvironmentUser eu, 
+      UserEntity ue 
+    set 
+      usdi.role_id = eu.role_id 
+    where
+      eu.user_id = ue.id and
+      usdi.identifier = ue.defaultIdentifier and
+      usdi.datasource_id = ue.defaultSchoolDataSource_id;
+  </sql>
+  
+  <sql>
+    alter table WorkspaceEntity add column organizationEntity_id bigint;
+  </sql>
+  
+  <sql>
+    alter table WorkspaceEntity add constraint FKkhciievukpels39xnq7ej7qyo foreign key (organizationEntity_id) references OrganizationEntity (id);
+  </sql>
+
+  <sql>
+    update WorkspaceEntity set organizationEntity_id=1;
+  </sql>
+
+  <sql>
+    alter table Announcement add column organizationEntity_id bigint;
+  </sql>
+  
+  <sql>
+    update Announcement set organizationEntity_id=1;
+  </sql>
+  
+  <sql>
+    insert into PluginSettingKey (plugin, name) 
+    select 'forum', 'environmentForumOrganizations'
+    from Dual
+    where not exists(select id from PluginSettingKey where plugin = 'forum' and name = 'environmentForumOrganizations');
+  </sql>
+
+  <sql>
+    insert into PluginSetting (key_id, value) 
+    select p.id, 'PYRAMUS-1'
+    from PluginSettingKey p
+    where plugin = 'forum' and name = 'environmentForumOrganizations' 
+      and not exists(select ps.id from PluginSettingKey psk join PluginSetting ps on (ps.key_id=psk.id) where psk.plugin = 'forum' and psk.name = 'environmentForumOrganizations');
+  </sql>
+
+  <sql>
+    alter table UserPendingPasswordChange add column expires datetime not null default '1970-01-01 00:00:00';
+  </sql>
+  
+  <sql>
+    update UserPendingPasswordChange set expires = date_add(now(), interval 2 hour);
+  </sql>
+  
+</update>

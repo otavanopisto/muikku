@@ -21,8 +21,8 @@
 
     <!-- Jackson -->
 
-    <jackson.version>2.8.11</jackson.version>
-    <jackson-databind.version>2.8.11.3</jackson-databind.version>
+    <jackson.version>2.9.10</jackson.version>
+    <jackson-databind.version>2.9.10.1</jackson-databind.version>
 
     <!-- Scribe -->
 
@@ -51,7 +51,7 @@
 
     <!-- Webapp-permission -->
 
-    <webapp-permission.version>1.0.2</webapp-permission.version>
+    <webapp-permission.version>1.0.3</webapp-permission.version>
 
     <!-- Mail -->
     <mail-api.version>1.5.4</mail-api.version>
@@ -59,7 +59,6 @@
     <!-- Tests -->
     <cdi-unit.version>3.1.0</cdi-unit.version>
     <rest-assured.version>2.3.4</rest-assured.version>
-
 
     <!-- JSR310 -->
     <jackson-datatype-jsr310.version>2.5.4</jackson-datatype-jsr310.version>

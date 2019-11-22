@@ -52,7 +52,7 @@ public class IndexPageTestsBase extends AbstractUITest {
 
   @Test
   public void adminLoginTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     try{
@@ -66,7 +66,7 @@ public class IndexPageTestsBase extends AbstractUITest {
   @Test
   public void loggedInIndexPageTest() throws Exception {
     Builder mockBuilder = mocker();
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     try{
       Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course, 1234").buildCourse();
       mockBuilder

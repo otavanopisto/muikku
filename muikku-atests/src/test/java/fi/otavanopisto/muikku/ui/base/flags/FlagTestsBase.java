@@ -22,11 +22,11 @@ public class FlagTestsBase extends AbstractUITest {
 
   @Test
   public void createNewFlagTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").buildCourse();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").organizationId(1l).buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").organizationId(1l).buildCourse();
     mockBuilder
       .addStaffMember(admin)
       .addStudent(student)
@@ -56,20 +56,28 @@ public class FlagTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Test flag");
     } finally {
       deleteFlags();
-      deleteWorkspaces();
+      deleteWorkspace(workspace.getId());
+      deleteWorkspace(workspace2.getId());
       mockBuilder.wiremockReset();
     }
   }
   
   @Test
   public void filterByFlagTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStudent student2 = new MockStudent(4l, 4l, "Thirdester", "User", "testsostudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "030584-5656", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").buildCourse();
-    mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).organizationId(1l).description("test course for testing").buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).organizationId(1l).description("Second test course").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .addStudent(student2)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
+    .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
@@ -95,7 +103,8 @@ public class FlagTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".application-list__item-footer .labels .label", "Test Flaggi");      
     } finally {
       deleteFlags();
-      deleteWorkspaces();
+      deleteWorkspace(workspace.getId());
+      deleteWorkspace(workspace2.getId());
       mockBuilder.wiremockReset();
     }
 
@@ -103,13 +112,20 @@ public class FlagTestsBase extends AbstractUITest {
 
   @Test
   public void editFlagTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStudent student2 = new MockStudent(4l, 4l, "Thirdester", "User", "testsostudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "030584-5656", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").buildCourse();
-    mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).organizationId(1l).description("test course for testing").buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).organizationId(1l).description("Second test course").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .addStudent(student2)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
+    .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
@@ -145,7 +161,8 @@ public class FlagTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");      
     } finally {
       deleteFlags();
-      deleteWorkspaces();
+      deleteWorkspace(workspace.getId());
+      deleteWorkspace(workspace2.getId());
       mockBuilder.wiremockReset();
     }
 
@@ -153,13 +170,20 @@ public class FlagTestsBase extends AbstractUITest {
 
   @Test
   public void unflagTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStudent student2 = new MockStudent(4l, 4l, "Thirdester", "User", "testsostudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "030584-5656", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").buildCourse();
-    mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).organizationId(1l).description("test course for testing").buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).organizationId(1l).description("Second test course").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .addStudent(student2)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
+    .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
@@ -187,22 +211,31 @@ public class FlagTestsBase extends AbstractUITest {
       assertNotPresent(".application-list__item-header--student");
     } finally {
       deleteFlags();
-      deleteWorkspaces();
+      deleteWorkspace(workspace.getId());
+      deleteWorkspace(workspace2.getId());
       mockBuilder.wiremockReset();
     }
   }
 
   @Test
   public void shareFlagTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "admin@example.com", Sex.MALE);
-    MockStaffMember testPerson = new MockStaffMember(2l, 2l, "Test", "Person", UserRole.ADMINISTRATOR, "090979-5434", "testperson@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember testPerson = new MockStaffMember(2l, 2l, 1l, "Test", "Person", UserRole.ADMINISTRATOR, "090979-5434", "testperson@example.com", Sex.MALE);
     
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStudent student2 = new MockStudent(4l, 4l, "Thirdester", "User", "testsostudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "030584-5656", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").buildCourse();
-    mockBuilder.addStaffMember(admin).addStaffMember(testPerson).addStudent(student).addStudent(student2).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).organizationId(1l).description("test course for testing").buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).organizationId(1l).description("Second test course").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStaffMember(testPerson)
+    .addStudent(student)
+    .addStudent(student2)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
+    .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
@@ -245,20 +278,28 @@ public class FlagTestsBase extends AbstractUITest {
     } finally {
       deleteFlagShares(flagId);
       deleteFlags();
-      deleteWorkspaces();
+      deleteWorkspace(workspace.getId());
+      deleteWorkspace(workspace2.getId());
       mockBuilder.wiremockReset();
     }
   }
 
   @Test
   public void deleteFlagTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStudent student2 = new MockStudent(4l, 4l, "Thirdester", "User", "testsostudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "030584-5656", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).description("test course for testing").buildCourse();
-    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).description("Second test course").buildCourse();
-    mockBuilder.addStaffMember(admin).addStudent(student).addStudent(student2).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("testcourse").id((long) 3).organizationId(1l).description("test course for testing").buildCourse();
+    Course course2 = new CourseBuilder().name("diffentscourse").id((long) 4).organizationId(1l).description("Second test course").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addStudent(student)
+    .addStudent(student2)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .addCourse(course2)
+    .build();
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     Workspace workspace2 = createWorkspace(course2, Boolean.TRUE);
@@ -286,7 +327,8 @@ public class FlagTestsBase extends AbstractUITest {
       assertNotPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
     } finally {
       deleteFlags();
-      deleteWorkspaces();
+      deleteWorkspace(workspace.getId());
+      deleteWorkspace(workspace2.getId());
       mockBuilder.wiremockReset();
     }
   }

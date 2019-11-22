@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserEventIdentifier;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupDiscoveredEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupRemovedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUpdatedEvent;
@@ -80,15 +81,17 @@ public class SchoolDataIndexListeners {
   }
 
   public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
-    List<SchoolDataIdentifier> removeIdentifiers = new ArrayList<>(event.getRemovedIdentifiers());
-    List<SchoolDataIdentifier> updatedIdentifiers = new ArrayList<>(event.getDiscoveredIdentifiers());
+    List<SchoolDataUserEventIdentifier> removeIdentifiers = new ArrayList<>(event.getRemovedIdentifiers());
+    List<SchoolDataUserEventIdentifier> updatedIdentifiers = new ArrayList<>(event.getDiscoveredIdentifiers());
     updatedIdentifiers.addAll(event.getUpdatedIdentifiers());
     
-    for (SchoolDataIdentifier identifier : updatedIdentifiers) {
+    for (SchoolDataUserEventIdentifier eventIdentifier : updatedIdentifiers) {
+      SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
       userIndexer.indexUser(identifier.getDataSource(), identifier.getIdentifier());
     }
     
-    for (SchoolDataIdentifier identifier : removeIdentifiers) {
+    for (SchoolDataUserEventIdentifier eventIdentifier : removeIdentifiers) {
+      SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
       userIndexer.removeUser(identifier.getDataSource(), identifier.getIdentifier());
     }
   }

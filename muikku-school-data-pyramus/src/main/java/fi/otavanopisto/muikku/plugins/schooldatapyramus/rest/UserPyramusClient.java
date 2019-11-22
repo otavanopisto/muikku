@@ -13,6 +13,7 @@ import javax.ws.rs.client.Entity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache.CachedEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.cache.UserEntityCache;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusUser;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 
@@ -103,6 +104,39 @@ class UserPyramusClient implements PyramusClient, Serializable {
     try {
       restClient.delete(client, getAccessToken(), path);
     } finally {
+      releaseClient(client);
+    }
+  }
+  
+  @Override
+  public <T> BridgeResponse<T> responseGet(String path, Class<T> type) {
+    Client client = obtainClient();
+    try {
+      return restClient.responseGet(client, getAccessToken(), path, type);
+    }
+    finally {
+      releaseClient(client);
+    }
+  }
+
+  @Override
+  public <T> BridgeResponse<T> responsePut(String path, Entity<?> entity, Class<T> type) {
+    Client client = obtainClient();
+    try {
+      return restClient.responsePut(client, getAccessToken(), path, entity, type);
+    }
+    finally {
+      releaseClient(client);
+    }
+  }
+
+  @Override
+  public <T> BridgeResponse<T> responsePost(String path, Entity<?> entity, Class<T> type) {
+    Client client = obtainClient();
+    try {
+      return restClient.responsePost(client, getAccessToken(), path, entity, type);
+    }
+    finally {
       releaseClient(client);
     }
   }

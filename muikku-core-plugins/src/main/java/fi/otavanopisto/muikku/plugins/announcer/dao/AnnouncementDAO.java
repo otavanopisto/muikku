@@ -15,6 +15,7 @@ import javax.persistence.criteria.Subquery;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -30,10 +31,12 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
 	
   private static final long serialVersionUID = -8721990589622544635L;
   
-  public Announcement create(Long publisherUserEntityId, String caption, String content, Date created, Date startDate, 
+  public Announcement create(Long publisherUserEntityId, OrganizationEntity organizationEntity, 
+      String caption, String content, Date created, Date startDate, 
       Date endDate, Boolean archived, Boolean publiclyVisible) {
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
+    announcement.setOrganizationEntityId(organizationEntity.getId());
     announcement.setCaption(caption);
     announcement.setContent(content);
     announcement.setCreated(created);
@@ -44,12 +47,13 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return persist(announcement);
   }
 
-  public List<Announcement> listAnnouncements(List<UserGroupEntity> userGroupEntities, 
+  public List<Announcement> listAnnouncements(OrganizationEntity organizationEntity, List<UserGroupEntity> userGroupEntities, 
       List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean archived) {
-    return listAnnouncements(userGroupEntities, workspaceEntities, environment, timeFrame, null, archived);
+    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, archived);
   }
   
   public List<Announcement> listAnnouncements(
+      OrganizationEntity organizationEntity,
       List<UserGroupEntity> userGroupEntities, 
       List<WorkspaceEntity> workspaceEntities, 
       AnnouncementEnvironmentRestriction environment, 
@@ -65,6 +69,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.select(root).distinct(true);
     
     List<Predicate> predicates = new ArrayList<Predicate>();
+    predicates.add(criteriaBuilder.equal(root.get(Announcement_.organizationEntityId), organizationEntity.getId()));
     predicates.add(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
     
     switch (timeFrame) {
