@@ -20,19 +20,20 @@ public class ChatController {
   private UserChatSettingsDAO userChatSettingsDAO;
   @Inject
   private WorkspaceChatSettingsDAO workspaceChatSettingsDAO;
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
   public UserChatSettings findUserChatSettings(SchoolDataIdentifier userIdentifier) {
     return userChatSettingsDAO.findByUser(userIdentifier);
   }
 
-  public UserChatSettings createUserChatSettings(SchoolDataIdentifier userIdentifier, UserChatVisibility visibility) {
-    return userChatSettingsDAO.create(userIdentifier.toId(), visibility);
+  public UserChatSettings createUserChatSettings(SchoolDataIdentifier userIdentifier, UserChatVisibility visibility, String nick) {
+    return userChatSettingsDAO.create(userIdentifier.toId(), visibility, nick);
   }
 
   public UserChatSettings updateUserChatSettings(UserChatSettings settings, UserChatVisibility visibility) {
     return userChatSettingsDAO.updateVisibility(settings, visibility);
+  }
+  
+  public UserChatSettings updateChatNick(UserChatSettings settings, String nick) {
+    return userChatSettingsDAO.updateNick(settings, nick);
   }
   
   public WorkspaceChatSettings findWorkspaceChatSettings(Long workspaceEntityId) {

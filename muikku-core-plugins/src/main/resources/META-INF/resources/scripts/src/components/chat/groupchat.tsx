@@ -3,6 +3,8 @@ import * as React from 'react'
 import ReactDOM from "react-dom";
 import './index.scss';
 import converse from '~/lib/converse';
+import mApi, { MApiError } from '~/lib/mApi';
+import promisify, { promisifyNewConstructor } from '~/util/promisify';
 
 interface Iprops{
   chat?: any,
@@ -10,7 +12,8 @@ interface Iprops{
   orderNumber?: any,
   showChatbox?: any,
   chatObject?: any,
-  onOpenChat?: any
+  onOpenChat?: any,
+  nick?: any
 }
 
 interface Istate {
@@ -43,7 +46,8 @@ interface Istate {
   minimized: boolean,
   minimizedChats: any,
   minimizedClass: string,
-  isWorkspaceChat: string
+  isWorkspaceChat: string,
+  showName: boolean
 }
 
 declare namespace JSX {
@@ -100,7 +104,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       minimized: false,
       minimizedChats: [],
       minimizedClass: "",
-      isWorkspaceChat: ""
+      isWorkspaceChat: "",
+      showName: false
     }
     this.myRef = null;
     this.sendMessage = this.sendMessage.bind(this);
@@ -110,13 +115,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.sendConfiguration = this.sendConfiguration.bind(this);
     this.toggleRoomInfo = this.toggleRoomInfo.bind(this);
     this.minimizeChats = this.minimizeChats.bind(this);
+    this.showRealName = this.showRealName.bind(this);
   }
   
   openMucConversation (room: string) {
     
     let data = {
         jid: room,
-        nick: window.PROFILE_DATA.displayName
+        nick: this.props.nick
       };
       
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
@@ -135,7 +141,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
 
       reactComponent.setState({
-        nick: window.PROFILE_DATA.displayName
+        nick: this.props.nick
         
       });
 
@@ -143,7 +149,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
       let nick: string;
       
-      nick = window.PROFILE_DATA.displayName;
+      nick = this.props.nick;
         
       if (!nick) {
         throw new TypeError('join: You need to provide a valid nickname');
@@ -167,7 +173,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
       if (data.nick === "") {
         // Make sure defaults apply if no nick is provided.
-        data.nick = reactComponent.state.jid;
+        data.nick = reactComponent.state.nick;
       }
       
       if (this.state.converse.locked_muc_domain || (this.state.converse.muc_domain)) {
@@ -181,7 +187,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           'jid':jid, 
           'maximize': true, 
           'auto_configure': true,
-          'nick': window.PROFILE_DATA.displayName,
+          'nick': reactComponent.state.nick,
           'publicroom': true,
         }), false).then((chat: any) => {
           
@@ -199,7 +205,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     
     //------- HANDLING INCOMING GROUPCHAT MESSAGES
     
-    getMUCMessages (stanza: any) {
+    async getMUCMessages (stanza: any) {
     
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
       
@@ -207,15 +213,38 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       if (stanza && stanza.attributes.type.nodeValue === "groupchat"){
         let message = stanza.textContent;
         let from = stanza.attributes.from.value;
+        from = from.split("/").pop();
+        from.toUpperCase();
         let senderClass ="";
-
+        let user:any;
+        let nickname: any;
         var sXML = new XMLSerializer().serializeToString(stanza.ownerDocument);
         
         //var node = new DOMParser().parseFromString(sXML, "text/xml");
         
         //const astamp = node.evaluate("/*[local-name()='delay']/@stamp", node, null, XPathResult.STRING_TYPE, null ).stringValue;
-
         
+        
+          user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
+        
+        if (from === window.MUIKKU_LOGGED_USER){
+          senderClass = "sender-me";
+        } else {
+          
+          if (this.state.roomJid.startsWith("workspace-")){
+            senderClass = "sender-others-workspace";
+          } else {
+            senderClass = "sender-others";
+          }
+        }
+        
+        nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
+        
+        let userName = user.firstName + " " + user.lastName;
+        let nick = nickname.nick; 
+        
+        console.log(mApi());
+        console.log(stanza);
         var stamp = null; 
         var list = stanza.childNodes;
         
@@ -257,20 +286,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         
           datetime = date + " " + time;
 
-          from = from.split("/").pop();
-        
-          if (from === this.state.nick){
-            senderClass = "sender-me";
-
-          }else{
-            if (this.state.roomJid.startsWith("workspace-")){
-              senderClass = "sender-others-workspace";
-            } else {
-              senderClass = "sender-others";
-            }
-          }
-        
-        let groupMessage: any = {from: from, content: message, senderClass: senderClass, timeStamp: datetime};
+        let groupMessage: any = {from: nick + " ", alt: userName, content: message, senderClass: senderClass, timeStamp: datetime};
         
         if (message !== ""){
           
@@ -286,6 +302,18 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         }
       } else {
         return;
+      }
+    }
+    
+    showRealName (){
+      if (this.state.showName === false && window.MUIKKU_IS_STUDENT === false){
+        this.setState({
+          showName: true
+        });
+      } else{
+        this.setState({
+          showName: false
+        });
       }
     }
     
@@ -306,6 +334,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
       const attrs = chat.getOutgoingMessageAttributes(text, spoiler_hint);
       
+      attrs.fullname = window.PROFILE_DATA.displayName;
+      
       let message = chat.messages.findWhere('correcting')
       
       if (message) {
@@ -314,7 +344,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           'edited': chat.moment().format(),
           'message': text,
           'references': text,
-          'fullname': reactComponent.state.converse.xmppstatus.get('fullname')
+          'fullname': window.PROFILE_DATA.displayName
         });
       } else {
         message = chat.messages.create(attrs);
@@ -660,11 +690,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               <div className="chatMessages" ref={ (ref) => this.myRef=ref }>
                 {this.state.groupMessages.map((message: any, i: number) => 
                 <div className={message.senderClass + " message-item"} key={i}>
+                  
                   <p className={message.senderClass + " timestamp"}>
-                  <b className={message.senderClass + " message-item-sender"}>{message.from} </b>
-                  {message.timeStamp}</p>
+                  <b onClick={this.showRealName} className={message.senderClass + " message-item-sender"}>{message.from} 
+                  {(this.state.showName === true) && <i>({message.alt}) </i>}
+                  </b>
+                 {message.timeStamp}</p>
                   <p className={message.senderClass + " message-item-content"}>{message.content}</p>
-                </div>)}
+       </div>)}
                 <div style={{ float:"left", clear: "both" }}
                 ref={(el) => { this.messagesEnd = el; }}></div>
               </div>

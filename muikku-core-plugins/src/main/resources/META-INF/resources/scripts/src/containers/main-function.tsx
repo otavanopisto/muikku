@@ -44,9 +44,7 @@ import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } fro
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 import {Chat} from '../components/chat/chat';
-import '../components/chat/index.css';
 
-//import {Groupchat} from '../components/chat/groupchat';
 
 interface MainFunctionProps {
   store: Store<StateType>,

@@ -198,7 +198,7 @@ public class ChatRESTService extends PluginRESTService {
     boolean chatEnabled = false;
 
     if (!enabledUsers.contains(identifier.toId())) {
-      return Response.ok(new StatusRESTModel(false, false, null)).build();
+      return Response.ok(new StatusRESTModel(false, false, null, null)).build();
     }
     
     UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
@@ -218,9 +218,9 @@ public class ChatRESTService extends PluginRESTService {
     }
 
     if (chatEnabled) {
-      return Response.ok(new StatusRESTModel(true, true, user.getDisplayName())).build();
+      return Response.ok(new StatusRESTModel(true, true, user.getDisplayName(),"")).build();
     } else {
-      return Response.ok(new StatusRESTModel(false, true, null)).build();
+      return Response.ok(new StatusRESTModel(false, true, null, null)).build();
     }
   }
 
@@ -273,7 +273,10 @@ public class ChatRESTService extends PluginRESTService {
     }
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();	  
+    
     UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
+    
+
 	  
     return Response.ok(userChatSettings).build();
   }
@@ -288,14 +291,16 @@ public class ChatRESTService extends PluginRESTService {
 
     chatSyncController.syncStudent(userIdentifier);
 
+    
     UserChatVisibility visibility = userChatSettings.getVisibility();
-    UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);
-	  
+    String nick = userChatSettings.getNick();
+    UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);	  
     if (findUserChatSettings == null) {
-      chatController.createUserChatSettings(userIdentifier, visibility);
+      chatController.createUserChatSettings(userIdentifier, visibility, nick);
 
     } else {
       chatController.updateUserChatSettings(findUserChatSettings, visibility);
+      chatController.updateChatNick(findUserChatSettings, nick);
     }
     return Response.ok(userChatSettings).build(); 
   }
@@ -304,6 +309,22 @@ public class ChatRESTService extends PluginRESTService {
     restModel.setWorkspaceEntityId(workspaceChatSettings.getWorkspaceEntityId());
     restModel.setChatStatus(workspaceChatSettings.getStatus());
     return restModel;
+  }
+  
+  @GET
+  @Path("/settings/{userIdentifier}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getNick(@PathParam("userIdentifier") String identifierString) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString);
+    
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
+    
+
+	  
+    return Response.ok(userChatSettings).build();
   }
 
   @GET

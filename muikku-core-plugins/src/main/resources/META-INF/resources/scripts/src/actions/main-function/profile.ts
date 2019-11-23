@@ -7,6 +7,7 @@ import { StateType } from '~/reducers';
 import $ from '~/lib/jquery';
 import { resize } from '~/util/modifiers';
 import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
+import converse from '~/lib/converse';
 
 export interface LoadProfilePropertiesSetTriggerType {
   ():AnyActionType
@@ -45,6 +46,14 @@ export interface UpdateProfileChatVisibilityTriggerType {
     }):AnyActionType
   }
 
+export interface UpdateProfileChatNickTriggerType {
+    (data: {
+      nick: string
+      success: ()=>any,
+      fail: ()=>any
+    }):AnyActionType
+  }
+
 export interface UploadProfileImageTriggerType {
   (data: {
     croppedB64: string,
@@ -68,6 +77,8 @@ export interface SET_PROFILE_USERNAME extends SpecificActionType<"SET_PROFILE_US
 export interface SET_PROFILE_ADDRESSES extends SpecificActionType<"SET_PROFILE_ADDRESSES", Array<StudentUserAddressType>>{}
 export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STUDENT", UserWithSchoolDataType>{}
 export interface SET_PROFILE_CHAT_VISIBILITY extends SpecificActionType<"SET_PROFILE_CHAT_VISIBILITY", UserWithSchoolDataType>{}
+export interface SET_PROFILE_CHAT_NICK extends SpecificActionType<"SET_PROFILE_CHAT_NICK", UserWithSchoolDataType>{}
+
 
 let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loadProfilePropertiesSet() { 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -231,9 +242,10 @@ let updateProfileChatVisibility: UpdateProfileChatVisibilityTriggerType = functi
     
     try {
       
+      let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
+
       
-      
-      mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data});
+      mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data, nick: chatSettings.nick});
       
       dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.visibilityChange'), 'success'));
       
@@ -246,6 +258,31 @@ let updateProfileChatVisibility: UpdateProfileChatVisibilityTriggerType = functi
     } 
   }
 }
+
+let updateProfileChatNick: UpdateProfileChatNickTriggerType = function updateProfileChatNick(data){
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+      let state = getState();
+      try {
+          
+        
+        
+        let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
+      
+      
+        mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: chatSettings.visibility, nick: data});
+
+        dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.visibilityChange'), 'success'));
+        
+        data.success && data.success();
+            
+      } catch(err){
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+      } 
+    }
+  }
+
 
 const imageSizes = [96, 256];
 
@@ -319,4 +356,4 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
   }
 }
 
-export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, updateProfileChatVisibility, uploadProfileImage, deleteProfileImage};
+export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, updateProfileChatVisibility, updateProfileChatNick, uploadProfileImage, deleteProfileImage};

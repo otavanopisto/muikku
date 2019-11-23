@@ -4,7 +4,12 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import {Groupchat} from './groupchat';
 import {RoomsList} from './roomslist';
+import {ChangeNick} from './changeNick';
 import converse from '~/lib/converse';
+import mApi, { MApiError } from '~/lib/mApi';
+import promisify, { promisifyNewConstructor } from '~/util/promisify';
+
+
 
 interface Iprops{
   chat?: any,
@@ -86,7 +91,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       showNewRoomForm: false,
       isStudent: false,
       openRoomNumber:null,
-      nick: window.PROFILE_DATA.displayName,
+      nick: "",
       openRooms: [],
       userStatusColor: null,
       selectedState: ""
@@ -100,6 +105,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.onOpenChat = this.onOpenChat.bind(this);
     this.userAvailability = this.userAvailability.bind(this);
     this.changeUserAvailability = this.changeUserAvailability.bind(this);
+    this.getChatNick = this.getChatNick.bind(this);
   }
   
   handleSubmit(event: any) { // login
@@ -173,7 +179,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     const persistentRoom = data.get('persistent');
     let nick: any;
     if (this.state.converse.locked_muc_nickname) {
-      nick =this.state.converse.getDefaultMUCNickname();
+      nick =this.state.nick;
       if (!nick) {
         throw new Error("Using locked_muc_nickname but no nickname found!");
       }
@@ -208,7 +214,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     
     if (data.nick === "") {
       // Make sure defaults apply if no nick is provided.
-      data.nick = reactComponent.state.jid;
+      data.nick = reactComponent.state.nick;
     }
     let jid;
     
@@ -273,6 +279,18 @@ export class Chat extends React.Component<Iprops, Istate> {
     alert("EI OLE MITÄÄN HUONEITA TÄÄLLÄ!!");
   }
   
+  // ------ mApi() ----------
+  
+  async getChatNick (){
+    // let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
+    
+    // let nick = chatSettings.nick;
+    
+    this.setState({
+      nick: window.MUIKKU_LOGGED_USER
+    });
+  }
+  
   // ----- ROOMS LIST-----ä
   async onRoomsFound (iq: any) {
     //    /* Handle the IQ stanza returned from the server, containing
@@ -321,7 +339,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     
     return true;
   }
-  
+
   // Send group chat messages
   
   sendMessage(event: any){ 
@@ -579,6 +597,8 @@ export class Chat extends React.Component<Iprops, Istate> {
           });
           
           reactComponent.userAvailability();
+          
+          reactComponent.getChatNick();
         });
         
       }, 
@@ -664,10 +684,11 @@ export class Chat extends React.Component<Iprops, Istate> {
         </div>
         
       <div className="chatboxes">  
-        {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openRooms.includes(chat.jid) ? <Groupchat key={i} onOpenChat={this.onOpenChat} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>:null)}
+        {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openRooms.includes(chat.jid) ? <Groupchat key={i} onOpenChat={this.onOpenChat} nick={this.state.nick} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>:null)}
 
       </div>
       </div>}
+      <ChangeNick converse={this.state.converse}/>
     </div>
     
     );

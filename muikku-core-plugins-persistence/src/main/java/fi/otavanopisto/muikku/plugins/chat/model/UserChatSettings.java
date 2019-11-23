@@ -17,10 +17,11 @@ public class UserChatSettings {
     
   }
   
-  public UserChatSettings(String userIdentifier, UserChatVisibility visibility) {
+  public UserChatSettings(String userIdentifier, UserChatVisibility visibility, String nick) {
     super();
     this.userIdentifier = userIdentifier;
     this.visibility = visibility;
+    this.nick = nick;
   }
 
   public Long getId() {
@@ -42,6 +43,14 @@ public class UserChatSettings {
   public void setVisibility(UserChatVisibility visibility) {
     this.visibility = visibility;
   }
+  
+  public String getNick() {
+    return nick;
+  }
+  
+  public void setNick(String nick) {
+    this.nick = nick;
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,4 +65,6 @@ public class UserChatSettings {
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private UserChatVisibility visibility;
+  
+  private String nick;
 }

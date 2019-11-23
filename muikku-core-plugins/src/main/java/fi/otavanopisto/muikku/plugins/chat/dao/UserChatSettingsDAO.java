@@ -18,13 +18,13 @@ public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
 	
   private static final long serialVersionUID = -7830619828801454118L;
 
-  public UserChatSettings create(String userIdentifier, UserChatVisibility userChatVisibility) {
-    UserChatSettings settings = new UserChatSettings(userIdentifier, userChatVisibility);
+  public UserChatSettings create(String userIdentifier, UserChatVisibility userChatVisibility, String nick) {
+    UserChatSettings settings = new UserChatSettings(userIdentifier, userChatVisibility, nick);
     getEntityManager().persist(settings);
     return settings;
   }
   
-  public List<UserChatSettings> listAll(String userIdentifier, UserChatVisibility userChatVisibility) {
+  public List<UserChatSettings> listAll(String userIdentifier, UserChatVisibility userChatVisibility, String nick) {
 	EntityManager entityManager = getEntityManager(); 
 	    
 	CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -58,6 +58,14 @@ public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
 
   public UserChatSettings updateVisibility(UserChatSettings settings, UserChatVisibility visibility) {
     settings.setVisibility(visibility);
+    
+    getEntityManager().persist(settings);
+    
+    return settings;
+  }
+  
+  public UserChatSettings updateNick(UserChatSettings settings, String nick) {
+    settings.setNick(nick);
     
     getEntityManager().persist(settings);
     

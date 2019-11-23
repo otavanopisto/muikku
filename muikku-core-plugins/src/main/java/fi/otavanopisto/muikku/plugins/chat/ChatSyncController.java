@@ -285,10 +285,11 @@ public class ChatSyncController {
 
     String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
     
+    String separator = "workspace-chat-";
     String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
     MUCRoomEntity chatRoomEntity = client.getChatRoom(workspace.getIdentifier());
 
-    chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
+    chatRoomEntity = new MUCRoomEntity(separator + workspace.getIdentifier(), roomName, workspace.getDescription());
     chatRoomEntity.setPersistent(true);
     chatRoomEntity.setLogEnabled(true);
     client.createChatRoom(chatRoomEntity);

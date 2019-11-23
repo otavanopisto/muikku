@@ -39,17 +39,17 @@ export default function(store: Store<StateType>){
             authentication : "prebind",
             keepalive : true,
             prebind_url : "/rest/chat/prebind",
-            whitelisted_plugins: ['myplugin','addRoom'],
+            whitelisted_plugins: ['myplugin','addRoom', 'profileChatSettings'],
             jid: state.status.userSchoolDataIdentifier,
             auto_login : true,
             muc_domain : 'conference.' + location.hostname,
-            muc_nickname : result.mucNickName,
-            muc_show_join_leave: false,
+            muc_show_join_leave: true,
             hide_muc_server : true,
+            fullname: result.mucNickName,
             ping_interval: 45,
             auto_minimize: true,
             i18n: state.locales.current,
-            hide_occupants:true,
+            hide_occupants:false,
             limit_room_controls:true
           });
         }
