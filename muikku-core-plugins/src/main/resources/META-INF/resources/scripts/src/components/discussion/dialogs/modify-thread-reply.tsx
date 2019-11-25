@@ -84,7 +84,7 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-    <div className="env-dialog__row" key="3">
+    <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
       <div className="env-dialog__form-element-container">
         <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
         <CKEditor autofocus key="1"

@@ -259,6 +259,12 @@
   flex: 0;
 }
 
+.application-sub-panel__item--workspace-description {
+  .cke {
+    height: 210px;
+  }
+}
+
 .application-sub-panel__item--workspace-start-date {
   flex: 0;
 }

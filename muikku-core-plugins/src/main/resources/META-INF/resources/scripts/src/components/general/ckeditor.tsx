@@ -137,8 +137,12 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       this.enableCancelChangeTrigger();
       instance.setData(this.props.children);
       
+      const style = window.getComputedStyle(instance.container.$, null);
+      const borderTop = parseInt(style.getPropertyValue("border-top")) || 0;
+      const borderBottom = parseInt(style.getPropertyValue("border-bottom")) || 0;
+      
       const height = instance.container.$.getBoundingClientRect().height;
-      instance.resize("100%", height, false, true);
+      instance.resize("100%", height - borderTop - borderBottom, false, true);
         
       //TODO somehow, the autofocus doesn't focus in the last row but in the first
       //Ckeditor hasn't implemented the feature, it must be hacked in, somehow

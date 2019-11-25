@@ -161,7 +161,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
            <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
          </div>
        </div> : <div key="2" className="env-dialog__row env-dialog__row--new-discussion-thread-states"/>),
-       <div className="env-dialog__row" key="3">
+       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
            <CKEditor key="3"

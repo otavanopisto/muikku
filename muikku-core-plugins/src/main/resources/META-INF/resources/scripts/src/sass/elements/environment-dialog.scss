@@ -179,11 +179,7 @@
     border: 2px solid $color-env-dialog-form-element-border;
     border-radius: 3px;
     flex-grow: 1;
-  }
-
-  textarea {
-    // This is needed for the bottom margins to work on main functions
-    min-height: 210px;
+    flex-basis: 210px;
   }
 
   &:not(:first-child) {
@@ -209,6 +205,7 @@
 .env-dialog__form-element-container--locked-thread {
   flex-grow: 0;
   margin: 0 20px 0 0;
+  flex-direction: row;
 
   &:not(:first-child) {
 

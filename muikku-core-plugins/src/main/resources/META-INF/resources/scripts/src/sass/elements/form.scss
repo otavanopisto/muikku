@@ -16,7 +16,12 @@
 
 .form__row--wizard {
   display: flex;
-  flex-wrap: wrap;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.form__row--wizard-dates {
+  flex-direction: row;
 }
 
 .form__fieldset-header {
@@ -41,6 +46,16 @@
       padding: 0 0 0 10px;
     }
   }
+}
+
+.form__subdivision--wizard {
+  flex: 0 1 auto;
+}
+
+.form__subdivision--wizard-ckeditor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .form__hidden {

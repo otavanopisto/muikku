@@ -109,7 +109,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               <input id="workspace-extension" className="form-element__input form-element__input--workspace-data" value={this.props.getStore().nameExtension || ""} onChange={this.updateNameExtension}/>
             </div>
           </div>
-          <div className="form__row form__row--wizard">
+          <div className="form__row form__row--wizard form__row--wizard-dates">
             <div className="form-element form-element__copy-workspace-start-date">
               <label htmlFor="workspace-start-date">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceStartDate.label")}</label>
               <DatePicker className="form-element__input form-element__input--workspace-data" id="workspace-start-date" onChange={this.updateStartDate}
@@ -124,9 +124,9 @@ export default class Step extends React.Component<StepProps, StepState> {
             </div>
           </div>
         </div>
-        <div className="form__subdivision form__subdivision--wizard">
+        <div className="form__subdivision form__subdivision--wizard form__subdivision--wizard-ckeditor">
           <div className="form__row form__row--wizard">
-            <div className="form-element">
+            <div className="form-element form-element__copy-workspace-ckeditor">
               <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDescription.label")}</label>
               <CKEditor onChange={this.onDescriptionChange}>{this.props.getStore().description}</CKEditor>
             </div>

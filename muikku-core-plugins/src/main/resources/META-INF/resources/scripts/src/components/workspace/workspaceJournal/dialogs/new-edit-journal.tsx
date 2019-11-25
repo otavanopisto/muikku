@@ -133,7 +133,7 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
         </div>
       ),
       (
-        <div className="env-dialog__row" key="3">
+        <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
           <div className="env-dialog__form-element-container">
             <div className="env-dialog__label">{this.props.i18n.text.get('plugin.workspace.journal.entry.content.label')}</div>
             <CKEditor onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
