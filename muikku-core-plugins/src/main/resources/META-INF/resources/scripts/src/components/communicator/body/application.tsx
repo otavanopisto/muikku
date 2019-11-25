@@ -1,12 +1,10 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-
-import ApplicationPanel from '~/components/general/application-panel';
-// import ApplicationPanel from '~/components/general/application-panel/application-panel';
+// import ApplicationPanel from '~/components/general/application-panel';
+import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
-
 import Toolbar from './application/toolbar';
 import CommunicatorMessages from './application/messages';
 import MessageView from './application/message-view';
@@ -14,8 +12,6 @@ import NewMessage from '../dialogs/new-message';
 import SignatureUpdateDialog from '../dialogs/signature-update';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
-
-
 import '~/sass/elements/link.scss';
 import Button, { ButtonPill } from '~/components/general/button';
 

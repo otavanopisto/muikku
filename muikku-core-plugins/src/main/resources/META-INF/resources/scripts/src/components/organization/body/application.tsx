@@ -11,6 +11,7 @@ import Courses from './application/courses';
 import CoursesAside from './application/courses/aside';
 import Reports from './application/reports';
 import {i18nType} from '~/reducers/base/i18n';
+import { ButtonPill} from '~/components/general/button';
 
 import '~/sass/elements/link.scss';
 
@@ -61,11 +62,22 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   render(){
         
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
+        let usersPrimaryAction = <ButtonPill buttonModifiers="organization" icon="add" />;
+        let coursesPrimaryAction = <ButtonPill buttonModifiers="organization" icon="add" />;
         
+        let coursesToolbar = <ApplicationPanelToolbar>
+          <ApplicationPanelToolbarActionsMain>
+            <div className="form-element form-element--coursepicker-toolbar">
+              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.organization.courses.search.placeholder')}  onChange={this.setSearchQuery}/>
+              <div className="form-element__input-decoration--main-function-search icon-search"></div>
+            </div>
+          </ApplicationPanelToolbarActionsMain>
+          </ApplicationPanelToolbar>
+          
         let usersToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">
-              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')}  onChange={this.setSearchQuery}/>
+              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')}  onChange={this.setSearchQuery}/>
               <div className="form-element__input-decoration--main-function-search icon-search"></div>
             </div>
           </ApplicationPanelToolbarActionsMain>
@@ -84,13 +96,13 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
           {
             id: "USERS",
             name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
-            component: ()=> { return <ApplicationPanelBody toolbar={usersToolbar} modifier="tabs" children={<Users />}/>}
+            component: ()=> { return <ApplicationPanelBody primaryOption={usersPrimaryAction} toolbar={usersToolbar} modifier="tabs" children={<Users />}/>}
             
           },
           {
             id: "COURSES",
             name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
-            component: ()=> { return <ApplicationPanelBody modifier="tabs" asideBefore={<CoursesAside />} children={<Courses />}/>}
+            component: ()=> { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<CoursesAside />} children={<Courses />}/>}
             
           },
           {
