@@ -353,7 +353,7 @@ $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
 
 // panel
 $color-panel-background-color: $color-default;
-$color-panel-border: #e2e2e2;
+$color-panel-border-color: #e2e2e2;
 $color-panel-shadow: rgba(0, 0, 0, 0.05);
 $color-panel-workspace-signup-background: #ff008d;
 
@@ -373,14 +373,14 @@ $color-indicator-text: $color-fatal-contrast;
 
 // Application panel
 $color-application-panel-box-background: $color-default;
-$color-application-panel-box-border: $color-panel-border;
+$color-application-panel-box-border: $color-panel-border-color;
 
 // Reading panel
 $color-reading-panel-box-background: $color-default;
-$color-reading-panel-box-border: $color-panel-border;
+$color-reading-panel-box-border: $color-panel-border-color;
 
 // Toc
-$color-toc-box-border: $color-panel-border;
+$color-toc-box-border: $color-panel-border-color;
 
 // Application list
 $color-application-list-item-background: #fff;

@@ -82,8 +82,8 @@
 
 .env-dialog__body {
   display: flex;
-  flex-direction: column;
   flex-basis: auto;
+  flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
   padding: 0 10px;
@@ -133,11 +133,15 @@
 
 .env-dialog__row--ckeditor {
   display: flex;
+  flex-basis: auto;
   flex-direction: column;
-  flex: 1 1 auto;
-  
+  flex-grow: 1;
+  flex-shrink: 1;
+
   .cke {
-    flex: 1 1 210px;
+    flex-basis: 210px;
+    flex-grow: 1;
+    flex-shrink: 1;
   }
 }
 
@@ -178,8 +182,9 @@
   .cke {
     border: 2px solid $color-env-dialog-form-element-border;
     border-radius: 3px;
-    flex-grow: 1;
     flex-basis: 210px;
+    flex-grow: 1;
+    flex-shrink: 1;
   }
 
   &:not(:first-child) {
@@ -203,9 +208,9 @@
 
 .env-dialog__form-element-container--pinned-thread,
 .env-dialog__form-element-container--locked-thread {
+  flex-direction: row;
   flex-grow: 0;
   margin: 0 20px 0 0;
-  flex-direction: row;
 
   &:not(:first-child) {
 
@@ -222,8 +227,8 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
-  padding: 0 0 5px;
   height: 1.45rem;
+  padding: 0 0 5px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
