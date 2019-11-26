@@ -155,6 +155,7 @@ public class SessionBackingBean {
       displayName = user.getNickName() == null ? user.getDisplayName() : String.format("%s %s (%s)", user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
         
       studyStartDate = user.getStudyStartDate();
+      studyEndDate = user.getStudyEndDate();
       studyTimeEnd = user.getStudyTimeEnd();
       studyTimeLeftStr = "";
 
@@ -425,6 +426,10 @@ public class SessionBackingBean {
     return studyStartDate != null ? Date.from(studyStartDate.toInstant()).toString() : "";
   }
 
+  public String getStudyEndDate() {
+  return studyEndDate != null ? Date.from(studyEndDate.toInstant()).toString() : "";
+  }
+
   public String getStudyTimeEnd() {
     return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()).toString() : "";
   }
@@ -442,6 +447,7 @@ public class SessionBackingBean {
   private String addresses;
   private String phoneNumbers;
   private OffsetDateTime studyStartDate;
+  private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
   private String studyTimeLeftStr;
   private boolean canAccessEnvironmentForum;
