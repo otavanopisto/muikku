@@ -4,6 +4,8 @@ import {connect, Dispatch} from 'react-redux';
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
 import Course from './courses/course';
 
+
+
 interface CoursesProps {
   
 }

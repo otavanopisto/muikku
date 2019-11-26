@@ -12,6 +12,9 @@ import CoursesAside from './application/courses/aside';
 import Reports from './application/reports';
 import {i18nType} from '~/reducers/base/i18n';
 import { ButtonPill} from '~/components/general/button';
+import AddWorkspaceDialog from '../dialogs/new-workspace';
+import AddUserDialog from '../dialogs/new-user';
+
 
 import '~/sass/elements/link.scss';
 
@@ -62,8 +65,8 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
   render(){
         
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
-        let usersPrimaryAction = <ButtonPill buttonModifiers="organization" icon="add" />;
-        let coursesPrimaryAction = <ButtonPill buttonModifiers="organization" icon="add" />;
+        let usersPrimaryAction = <AddUserDialog><ButtonPill buttonModifiers="organization" icon="add" /></AddUserDialog>;
+        let coursesPrimaryAction = <AddWorkspaceDialog><ButtonPill buttonModifiers="organization" icon="add" /></AddWorkspaceDialog>;
         
         let coursesToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
