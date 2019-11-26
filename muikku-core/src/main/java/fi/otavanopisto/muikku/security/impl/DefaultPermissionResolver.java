@@ -8,16 +8,17 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.model.security.Permission;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.security.AbstractPermissionResolver;
 import fi.otavanopisto.muikku.security.PermissionScope;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
@@ -30,9 +31,6 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   private Logger logger;
   
   @Inject
-  private EnvironmentUserController environmentUserController;
-
-  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
@@ -40,6 +38,9 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Override
   public boolean handlesPermission(String permission) {
@@ -61,22 +62,25 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     if (userEntity == null) {
       return hasEveryonePermission(permission, contextReference);
     }
+    
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    
     // Workspace access
     if (permissionEntity.getScope().equals(PermissionScope.WORKSPACE) && contextReference != null) {
       WorkspaceEntity workspaceEntity = resolveWorkspace(contextReference);
       if (workspaceEntity != null) {
-        if (hasWorkspaceAccess(workspaceEntity, userEntity, permissionEntity)) {
+        if (hasWorkspaceAccess(workspaceEntity, userIdentifier, permissionEntity)) {
           return true;
         }
       }
     }
     // Environment access
-    return hasEnvironmentAccess(userEntity, permissionEntity);
+    return hasEnvironmentAccess(userIdentifier, permissionEntity);
   }
   
-  private boolean hasWorkspaceAccess(WorkspaceEntity workspaceEntity, UserEntity userEntity, Permission permission) {
+  private boolean hasWorkspaceAccess(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier, Permission permission) {
     // Workspace access as an individual
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userIdentifier);
     if (workspaceUserEntity != null) {
       if (permissionController.hasPermission(workspaceUserEntity.getWorkspaceUserRole(), permission)) {
         // TODO Override rules for workspace users
@@ -84,7 +88,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
       }
     }
     // Workspace access as a group member
-    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
     for (UserGroupEntity userGroup : userGroups) {
       // TODO Override rules for user groups
       if (permissionController.hasPermission(workspaceEntity, userGroup, permission)) {
@@ -94,18 +98,19 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     return false;
   }
 
-  private boolean hasEnvironmentAccess(UserEntity userEntity, Permission permission) {
-    // Environment access as an individual
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity); 
-    if (environmentUser != null) {
-      if (permissionController.hasPermission(environmentUser.getRole(), permission)) {
+  private boolean hasEnvironmentAccess(SchoolDataIdentifier userIdentifier, Permission permission) {
+    EnvironmentRoleEntity defaultIdentifierRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
+    if (defaultIdentifierRole != null) {
+      // Environment access as an individual
+      if (permissionController.hasPermission(defaultIdentifierRole, permission)) {
         // TODO Override rules for environment users
         return true;
       }
     }
+    
     if (permission.getScope().equals(PermissionScope.ENVIRONMENT)) {
       // Environment access as a group member
-      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
+      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
       for (UserGroupEntity userGroup : userGroups) {
         // TODO Override rules for user groups
         if (permissionController.hasPermission(userGroup, permission)) {
@@ -113,6 +118,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
         }
       }
     }
+
     return false;
   }
 

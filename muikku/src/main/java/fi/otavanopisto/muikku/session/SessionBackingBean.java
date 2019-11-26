@@ -85,6 +85,7 @@ public class SessionBackingBean {
     bugsnagEnabled = StringUtils.isNotBlank(bugsnagApiKey);
     loggedUserId = null;
     loggedUser = null;
+    canAccessEnvironmentForum = forumController.isEnvironmentForumActive() && hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
 
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();
@@ -385,64 +386,65 @@ public class SessionBackingBean {
   }
 
   private String areaPermissions;
-	  
-	  public static class AreaPermission {
-	    
-	    public AreaPermission(Boolean editMessages, Boolean removeThread) {
-	      this.editMessages = editMessages;
-	      this.removeThread = removeThread;
-	    }
 
-	    public Boolean getRemoveThread() {
-	      return removeThread;
-	    }
-	    
-	    public Boolean getEditMessages() {
-	      return editMessages;
-	    }
+  public static class AreaPermission {
 
-	    private final Boolean editMessages;
-	    private final Boolean removeThread;
-	  }
-	  
-	  public String getDisplayName() {
-		    return displayName != null ? displayName : "";
-		  }
+    public AreaPermission(Boolean editMessages, Boolean removeThread) {
+      this.editMessages = editMessages;
+      this.removeThread = removeThread;
+    }
 
-		  public String getAddresses() {
-		    return addresses != null ? addresses : "[]";
-		  }
-		  
-		  public String getEmails() {
-		    return emails != null ? emails : "[]";
-		  }
-		  
-		  public String getPhoneNumbers() {
-		    return phoneNumbers != null ? phoneNumbers : "[]";
-		  }
-		  
-		  public String getStudyStartDate() {
-		    return studyStartDate != null ? Date.from(studyStartDate.toInstant()).toString() : "";
-		  }
+    public Boolean getRemoveThread() {
+      return removeThread;
+    }
 
-		  public String getStudyTimeEnd() {
-		    return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()).toString() : "";
-		  }
-		  
-		  public String getStudyEndDate() {
-			return studyEndDate != null ? Date.from(studyEndDate.toInstant()).toString() : "";
-		  }
+    public Boolean getEditMessages() {
+      return editMessages;
+    }
 
-		  public String getStudyTimeLeftStr() {
-		    return studyTimeLeftStr != null ? studyTimeLeftStr : "";
-		  }
-	  
-	  private String displayName;
-	  private String emails;
-	  private String addresses;
-	  private String phoneNumbers;
-	  private OffsetDateTime studyStartDate;
-	  private OffsetDateTime studyEndDate;
-	  private OffsetDateTime studyTimeEnd;
-	  private String studyTimeLeftStr;
+    private final Boolean editMessages;
+    private final Boolean removeThread;
+  }
+
+  public String getDisplayName() {
+    return displayName != null ? displayName : "";
+  }
+
+  public String getAddresses() {
+    return addresses != null ? addresses : "[]";
+  }
+
+  public String getEmails() {
+    return emails != null ? emails : "[]";
+  }
+
+  public String getPhoneNumbers() {
+    return phoneNumbers != null ? phoneNumbers : "[]";
+  }
+
+  public String getStudyStartDate() {
+    return studyStartDate != null ? Date.from(studyStartDate.toInstant()).toString() : "";
+  }
+
+  public String getStudyTimeEnd() {
+    return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()).toString() : "";
+  }
+
+  public String getStudyTimeLeftStr() {
+    return studyTimeLeftStr != null ? studyTimeLeftStr : "";
+  }
+
+  public boolean isCanAccessEnvironmentForum() {
+    return canAccessEnvironmentForum;
+  }
+
+  private String displayName;
+  private String emails;
+  private String addresses;
+  private String phoneNumbers;
+  private OffsetDateTime studyStartDate;
+  private OffsetDateTime studyTimeEnd;
+  private String studyTimeLeftStr;
+  private boolean canAccessEnvironmentForum;
+
 }

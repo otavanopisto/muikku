@@ -1,10 +1,14 @@
 package fi.otavanopisto.muikku.plugins.user;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -33,6 +37,14 @@ public class UserPendingPasswordChange {
     this.userEntity = userEntity;
   }
 
+  public Date getExpires() {
+    return expires;
+  }
+
+  public void setExpires(Date expires) {
+    this.expires = expires;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -44,4 +56,9 @@ public class UserPendingPasswordChange {
   @NotEmpty
   @Column (nullable = false)
   private String confirmationHash;
+  
+  @NotNull
+  @Column (nullable=false)
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date expires;
 }

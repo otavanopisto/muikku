@@ -9,7 +9,8 @@ import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducer
 import { MaterialContentNodeListType, MaterialCompositeRepliesListType, MaterialCompositeRepliesStateType,
   WorkspaceJournalsType, WorkspaceJournalType, WorkspaceDetailsType, WorkspaceTypeType, WorkspaceProducerType,
   WorkspacePermissionsType, WorkspaceMaterialEditorType, MaterialContentNodeProducerType, MaterialContentNodeType,
-  WorkspaceEditModeStateType } from '~/reducers/workspaces';
+  WorkspaceEditModeStateType, 
+  WorkspaceOrganizationFilterListType} from '~/reducers/workspaces';
 import equals = require("deep-equal");
 import $ from '~/lib/jquery';
 
@@ -30,6 +31,7 @@ export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<"UPDATE_WORKS
 export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<"UPDATE_WORKSPACES_EDIT_MODE_STATE", Partial<WorkspaceEditModeStateType>>;
 export type UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
 export type UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
+export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS", WorkspaceOrganizationFilterListType>
 export type UPDATE_WORKSPACES_ACTIVE_FILTERS = 
   SpecificActionType<"UPDATE_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
 export type UPDATE_WORKSPACES_ALL_PROPS = 
@@ -458,6 +460,10 @@ export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (callback?: (curriculums: WorkspaceCurriculumFilterListType)=>any):AnyActionType
 }
 
+export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
+  (callback?: (organizations: WorkspaceOrganizationFilterListType) => any):AnyActionType;
+}
+
 export interface UpdateWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType,
@@ -525,6 +531,24 @@ let loadUserWorkspaceCurriculumFiltersFromServer:LoadUserWorkspaceCurriculumFilt
         payload: curriculums
       });
       callback && callback(curriculums);
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("plugin.coursepicker.errormessage.curriculumFilters"), 'error'));
+    }
+  }
+}
+
+let loadUserWorkspaceOrganizationFiltersFromServer:LoadUserWorkspaceOrganizationFiltersFromServerTriggerType = function loadAvailableOrganizationFiltersFromServer(callback){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let organizations = <WorkspaceOrganizationFilterListType>(await promisify(mApi().coursepicker.organizations.read(), 'callback')())
+      dispatch({
+        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
+        payload: organizations
+      });
+      callback && callback(organizations);
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
@@ -1805,7 +1829,8 @@ let updateWorkspaceEditModeState:UpdateWorkspaceEditModeStateTriggerType = funct
   }
 }
 
-export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
+export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer,
+  loadUserWorkspaceOrganizationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
   updateWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,

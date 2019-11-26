@@ -43,11 +43,17 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.controller.SystemSettingsController;
+import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
+import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -57,16 +63,19 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.rest.model.StudentAddress;
 import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
@@ -75,12 +84,15 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
+import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -102,8 +114,27 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private Logger logger;
   
+  @Inject 
+  @BaseUrl
+  private String baseUrl;
+
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  private Mailer mailer;
+
+  @Inject
+  private SystemSettingsController systemSettingsController;
+  
+  @Inject
+  private SchoolDataSourceDAO schoolDataSourceDAO;
+  
   @Inject
   private UserController userController;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -137,6 +168,9 @@ public class UserRESTService extends AbstractRESTService {
 
   @Inject
   private UserEntityFileController userEntityFileController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
   
   @Inject
   @Any
@@ -347,7 +381,10 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+      
+      SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
           userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
@@ -395,6 +432,13 @@ public class UserRESTService extends AbstractRESTService {
           
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
 
+          UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+          OrganizationEntity organizationEntity = usdi.getOrganization();
+          OrganizationRESTModel organizationRESTModel = null;
+          if (organizationEntity != null) {
+            organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+          }
+
           students.add(new fi.otavanopisto.muikku.rest.model.Student(
             studentIdentifier.toId(), 
             (String) o.get("firstName"),
@@ -413,7 +457,8 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
-            restFlags
+            restFlags,
+            organizationRESTModel
           ));
         }
       }
@@ -446,12 +491,23 @@ public class UserRESTService extends AbstractRESTService {
     if (studentIdentifier == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
     }
+
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.FIND_STUDENT)) {
+      if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
     
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
     UserEntity userEntity = userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getUserEntity() : null;
     if (userSchoolDataIdentifier == null || userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
     }
+    
+    if (!canAccessOrganization(userSchoolDataIdentifier.getOrganization())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     // Bug fix #2966: REST endpoint should only return students
     EnvironmentRoleEntity userRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
     if (userRole == null || userRole.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
@@ -468,8 +524,6 @@ public class UserRESTService extends AbstractRESTService {
     CacheControl cacheControl = new CacheControl();
     cacheControl.setMustRevalidate(true);
     
-    // TODO: There's no permission handling, this is relying on schooldatacontroller to check for permission
-    
     User user = userController.findUserByIdentifier(studentIdentifier);
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
@@ -479,6 +533,12 @@ public class UserRESTService extends AbstractRESTService {
     Date studyStartDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
     Date studyEndDate = user.getStudyEndDate() != null ? Date.from(user.getStudyEndDate().toInstant()) : null;
     Date studyTimeEnd = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
+
+    OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
+    OrganizationRESTModel organizationRESTModel = null;
+    if (organizationEntity != null) {
+      organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+    }
 
     Student student = new Student(
         studentIdentifier.toId(), 
@@ -498,7 +558,8 @@ public class UserRESTService extends AbstractRESTService {
         user.getCurriculumIdentifier(),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
-        null
+        null,
+        organizationRESTModel
     );
     
     return Response
@@ -506,6 +567,16 @@ public class UserRESTService extends AbstractRESTService {
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
+  }
+
+  private boolean canAccessOrganization(OrganizationEntity organization) {
+    if (organization != null) {
+      Long organizationId = organization.getId();
+      List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
+      return loggedUserOrganizations != null ? loggedUserOrganizations.stream().anyMatch(listOrganization -> Objects.equals(organizationId, listOrganization.getId())) : false;
+    } else {
+      return false;
+    }
   }
 
   @PUT
@@ -1155,7 +1226,12 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, 
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+
+      SearchResult result = elasticSearchProvider.searchUsers(
+          Arrays.asList(organization),
+          searchString, 
           fields, 
           roleArchetype != null ? Arrays.asList(roleArchetype) : null, 
           userGroupFilters, 
@@ -1206,6 +1282,67 @@ public class UserRESTService extends AbstractRESTService {
 
     return Response.status(Status.INTERNAL_SERVER_ERROR).build();
   }
+  
+  /**
+   * POST mApi().user.staffMembers
+   * 
+   * Creates a new staff member.
+   * 
+   * Payload:
+   * {firstName: required; the first name of the staff member
+   *  lastName: required; the last name of the staff member
+   *  email: required; the email address of the staff member
+   *  role: required; TEACHER to create a teacher, MANAGER to create a manager}
+   * 
+   * Output:
+   * {identifier: identifier of the created staff member
+   *  firstName: the first name of the staff member
+   *  lastName: the last name of the staff member
+   *  email: the email address of the staff member
+   *  role: TEACHER or MANAGER}
+   * 
+   * Errors:
+   * 409 if the email address is already in use; response contains a localized error message 
+   */
+  @POST
+  @Path("/staffMembers")
+  @RESTPermit(MuikkuPermissions.CREATE_STAFF_MEMBER)
+  public Response createStaffMember(StaffMemberPayload payload) {
+    
+    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
+    }
+
+    // User creation
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    BridgeResponse<StaffMemberPayload> response = userController.createStaffMember(dataSource, payload);
+        
+    if (response.ok()) {
+      
+      // Mail about credential creation
+
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+        String confirmationHash = userSchoolDataController.requestCredentialReset(schoolDataSource, payload.getEmail());
+        String resetLink = String.format("%s/forgotpassword/reset?h=%s", baseUrl, confirmationHash);
+        String mailSubject = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailSubject");
+        String mailContent = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailContent", new String[] { resetLink });
+        mailer.sendMail(systemSettingsController.getSystemEmailSenderAddress(), payload.getEmail(), mailSubject, mailContent);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+      
+      // Success resposne
+      
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
 
   @GET
   @Path("/users/{ID}")
@@ -1252,7 +1389,7 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    UserEntity userEntity = null;
+    UserEntity userEntity;
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
     if (userIdentifier == null) {
@@ -1289,7 +1426,7 @@ public class UserRESTService extends AbstractRESTService {
 
       boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
       return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
+          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
           .cacheControl(cacheControl)
           .tag(tag)
           .build();
@@ -1330,7 +1467,7 @@ public class UserRESTService extends AbstractRESTService {
 
     boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
     return Response
-        .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
+        .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier(), user.getOrganizationIdentifier().toId()))
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
@@ -1366,7 +1503,12 @@ public class UserRESTService extends AbstractRESTService {
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
       nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, 
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+      
+      SearchResult result = elasticSearchProvider.searchUsers(
+          Arrays.asList(organization),
+          searchString, 
           fields, 
           nonStudentArchetypes, 
           userGroupFilters, 
@@ -1425,6 +1567,13 @@ public class UserRESTService extends AbstractRESTService {
               continue;
             }
           }
+
+          UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+          OrganizationEntity organizationEntity = usdi.getOrganization();
+          OrganizationRESTModel organizationRESTModel = null;
+          if (organizationEntity != null) {
+            organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+          }
           
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
@@ -1432,7 +1581,8 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
             email,
-            propertyMap));
+            propertyMap,
+            organizationRESTModel));
         }
       }
     }

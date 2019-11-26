@@ -42,6 +42,13 @@
   font-weight: 300;
   margin: 6px 4px 6px 8px;
   padding: 4px;
+  background-color: $color-panel-background-color;
+  border: solid 1px $color-toc-box-border;
+  border-radius: $panel-border-radius;
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  display: block;
+  overflow: visible;
+  padding: 1px;
   position: relative;
   user-select: none; // This is to prevent select-by-panting when drag 'n dropping toc items
 

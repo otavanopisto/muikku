@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.coursepicker;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
+
 public class CoursePickerWorkspace {
 
   public CoursePickerWorkspace() {
@@ -20,7 +22,8 @@ public class CoursePickerWorkspace {
       String educationTypeName,
       boolean canSignup,
       boolean isCourseMember, 
-      boolean hasCustomImage) {
+      boolean hasCustomImage,
+      OrganizationRESTModel organization) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -35,6 +38,7 @@ public class CoursePickerWorkspace {
     this.isCourseMember = isCourseMember;
     this.educationTypeName = educationTypeName;
     this.hasCustomImage = hasCustomImage;
+    this.organization = organization;
   }
 
   public Long getId() {
@@ -141,6 +145,14 @@ public class CoursePickerWorkspace {
     this.hasCustomImage = hasCustomImage;
   }
 
+  public OrganizationRESTModel getOrganization() {
+    return organization;
+  }
+
+  public void setOrganization(OrganizationRESTModel organization) {
+    this.organization = organization;
+  }
+
   private Long id;
   private String urlName;
   private Boolean archived;
@@ -154,4 +166,6 @@ public class CoursePickerWorkspace {
   private Boolean isCourseMember;
   private String educationTypeName;
   private boolean hasCustomImage;
+  private OrganizationRESTModel organization;
+
 }

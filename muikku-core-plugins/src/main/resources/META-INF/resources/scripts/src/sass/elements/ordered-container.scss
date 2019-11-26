@@ -13,6 +13,25 @@
   width: 100%;
 }
 
+.ordered-container__error-title {
+  align-items: center;
+  background-color: $color-panel-background-color;
+  color: $color-index-text-for-panels-title;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 1.1875rem;
+  font-weight: 400;
+  padding: 10px 0 0 5px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    background: none;
+    font-size: 1.375rem;
+    font-weight: 300;
+    padding: 0 2px 0.4rem;
+  }
+}
+
 .ordered-container--frontpage-studying,
 .ordered-container--frontpage-news-and-events {
   .ordered-container__item {
@@ -44,7 +63,7 @@
 
 .ordered-container__item-header {
   align-items: center;
-  background-color: $color-panel-background;
+  background-color: $color-panel-background-color;
   color: $color-index-text-for-panels-title;
   display: flex;
   flex-flow: row nowrap;

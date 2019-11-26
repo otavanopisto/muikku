@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
@@ -19,26 +20,28 @@ public interface SearchProvider {
   public void deinit();
   
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults);
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, List<SchoolDataIdentifier> organizationIdentifiers, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
   public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults);
   public SearchResult searchWorkspaces(String schoolDataSource, String subject, int courseNumber);
 
   public SearchResult findUser(Long userEntityId, boolean includeInactive);
-  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
       Boolean onlyDefaultUsers, int start, int maxResults);
-  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden,
       Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields);
-  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
       Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, 
       Date startedStudiesBefore);
-  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, 
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore,
       Date studyTimeEndsBefore);
+  
+  SearchResult searchUserGroups(String searchTerm, List<OrganizationEntity> organizations, int start, int maxResults);
   
   public class Sort {
     
@@ -64,5 +67,4 @@ public interface SearchProvider {
     }
   }
 
-  
 }

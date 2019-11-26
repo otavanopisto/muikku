@@ -35,6 +35,9 @@ class GradingSchoolDataController {
   private Instance<GradingSchoolDataBridge> gradingBridges;
 
   @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
   
   /* WorkspaceAssessment */
@@ -86,13 +89,19 @@ class GradingSchoolDataController {
   }
   
   public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier) {
-    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
-    if (schoolDataBridge != null) {
-      return schoolDataBridge.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
-    } else {
-      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
+      } else {
+        logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+      }
+      return Collections.emptyList();
     }
-    return Collections.emptyList();
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
@@ -334,15 +343,21 @@ class GradingSchoolDataController {
   }
 
   public WorkspaceAssessment findLatestWorkspaceAssessmentByStudent(String schoolDataSource, String studentIdentifier) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
-    if (schoolDataBridge != null) {
-      return schoolDataBridge.findLatestWorkspaceAssessmentByStudent(studentIdentifier);
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+      GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.findLatestWorkspaceAssessmentByStudent(studentIdentifier);
+      }
+      else {
+        logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
+      }
+      return null;
     }
-    else {
-      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
-    return null;
   }
 
   public List<WorkspaceAssessment> listAssessmentsByStudent(String schoolDataSource, String studentIdentifier) {

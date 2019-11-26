@@ -47,7 +47,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changeCourseNameTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
@@ -85,8 +85,8 @@ public class CourseManagementTestsBase extends AbstractUITest {
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-            null, null);
-        String courseJson = objectMapper.writeValueAsString(course);
+            null, null, 1L);
+        String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -124,7 +124,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changePublishedStateTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
@@ -173,7 +173,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changeAdditionalInfoTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
@@ -210,7 +210,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             (long) 25, begin, end, "For Test", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-            null, null);
+            null, null, 1L);
         String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -249,7 +249,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changeWorkspaceTypeTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
@@ -286,7 +286,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 2, 
-            null, null);
+            null, null, 1L);
         String courseJson = objectMapper.writeValueAsString(course);
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course1.getId())))
             .willReturn(aResponse()
@@ -325,7 +325,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void changeLicenseTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
@@ -374,7 +374,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     }
   )
   public void addWorkspaceProducerTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();

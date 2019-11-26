@@ -39,6 +39,8 @@
     border: solid 1px $color-application-panel-box-border;
     box-shadow: none;
   }
+  
+  @include panel-body;
 }
 
 .application-panel__header {

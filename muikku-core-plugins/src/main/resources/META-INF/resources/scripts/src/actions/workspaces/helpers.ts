@@ -69,6 +69,7 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
     myWorkspaces,
     educationTypes: actualFilters.educationFilters,
     curriculums: actualFilters.curriculumFilters,
+    organizations: actualFilters.organizationFilters,
     includeUnpublished
   }
   

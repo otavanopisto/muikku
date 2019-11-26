@@ -13,7 +13,6 @@ import Organization from './body/organization';
 import Footer from './body/footer';
 
 import '~/sass/elements/logo.scss';
-
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/card.scss';
 import '~/sass/elements/buttons.scss';

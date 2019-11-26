@@ -10,6 +10,7 @@ export interface UserType {
   hasImage?: boolean,
   hasEvaluationFees?: false,
   curriculumIdentifier?: string,
+  organizationIdentifier?: string,
  
   //EXTENDED VALUES, may or may not be available
   email?: string,
@@ -41,10 +42,16 @@ export interface UserWithSchoolDataType {
   userEntityId: number
 }
 
+export interface OrganizationType {
+  id: number,
+  name: string
+}
+
 export interface UserGroupType {
   id: number,
   name: string,
-  userCount: number
+  userCount: number,
+  organization?: OrganizationType
 }
 
 export interface UserStaffType {

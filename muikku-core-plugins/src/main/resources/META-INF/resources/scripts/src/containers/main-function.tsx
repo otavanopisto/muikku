@@ -19,7 +19,7 @@ import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messag
 import CousePickerBody from '../components/coursepicker/body';
 
 import { loadLoggedUser } from '~/actions/user-index';
-import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer } from '~/actions/workspaces';
+import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import { UserType } from '~/reducers/user-index';
 
@@ -168,6 +168,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     let filters:WorkspacesActiveFiltersType = {
       educationFilters: originalData.e || [],
       curriculumFilters: originalData.c || [],
+      organizationFilters: originalData.o || [],
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
     }
@@ -203,7 +204,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
-
+      this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
@@ -212,12 +213,20 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       let state:StateType = this.props.store.getState();
       if (state.status.loggedIn){
         this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
-          if (!currentLocationHasData && user.curriculumIdentifier){
-            location.hash = "#?" + queryString.stringify({
-              c: [user.curriculumIdentifier]
-            }, {arrayFormat: 'bracket'});
-          } else {
-            this.loadCoursePickerData(currentLocationData);
+          if (!currentLocationHasData) {
+            let defaultSelections : any = {};
+            if (user.curriculumIdentifier) {
+              defaultSelections["c"] = [ user.curriculumIdentifier ];
+            }
+            if (user.organizationIdentifier) {
+              defaultSelections["o"] = [ user.organizationIdentifier ];
+            }
+            
+            if (defaultSelections.c || defaultSelections.o) {
+              location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
+            } else {
+              this.loadCoursePickerData(currentLocationData);
+            }
           }
         }) as Action);
       } else {

@@ -596,6 +596,7 @@ class DraftListener extends React.Component {
     });
     
     fetch(`/rest/matriculation/exams/${this.props.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`, {
+      credentials: "include",
       method: "PUT",
       headers: {
         "Content-Type": "application/json; charset=utf-8"
@@ -663,7 +664,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`/rest/matriculation/exams/${this.state.examId}/initialData/${MUIKKU_LOGGED_USER}`)
+    fetch(`/rest/matriculation/exams/${this.state.examId}/initialData/${MUIKKU_LOGGED_USER}`, {credentials: "include"})
       .then((response) => {
         return response.json();
       })
@@ -674,7 +675,7 @@ class App extends React.Component {
   }
 
   fetchSavedEnrollment() {
-    fetch(`/rest/matriculation/exams/${this.state.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`)
+    fetch(`/rest/matriculation/exams/${this.state.examId}/savedEnrollments/${MUIKKU_LOGGED_USER}`, {credentials: "include"})
       .then((response) => {
         if (response.status == 404) {
           return "{}";
@@ -1041,6 +1042,7 @@ class App extends React.Component {
         + this.state.message;
     }
     fetch(`/rest/matriculation/exams/${this.state.examId}/enrollments`, {
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json; charset=utf-8"

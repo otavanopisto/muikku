@@ -280,13 +280,20 @@ export interface WorkspaceCurriculumFilterType {
   name: string
 }
 
+export interface WorkspaceOrganizationFilterType {
+  identifier: string,
+  name: string
+}
+
 export type WorkspaceCurriculumFilterListType = Array<WorkspaceCurriculumFilterType>;
+export type WorkspaceOrganizationFilterListType = Array<WorkspaceOrganizationFilterType>;
 
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 
 export interface WorkspacesAvaliableFiltersType {
   educationTypes: WorkspaceEducationFilterListType,
   curriculums: WorkspaceCurriculumFilterListType,
+  organizations: WorkspaceOrganizationFilterListType,
   baseFilters: WorkspaceBaseFilterListType
 }
 
@@ -294,6 +301,7 @@ export type WorkspacesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY"
 export interface WorkspacesActiveFiltersType {
   educationFilters: Array<string>,
   curriculumFilters: Array<string>,
+  organizationFilters: Array<string>,
   query: string,
   baseFilter: WorkspaceBaseFilterType
 }
@@ -509,12 +517,14 @@ export default function workspaces(state: WorkspacesType={
   avaliableFilters: {
     educationTypes: [],
     curriculums: [],
+    organizations: [],
     baseFilters: ["ALL_COURSES", "MY_COURSES", "AS_TEACHER"]
   },
   state: "LOADING",
   activeFilters: {
     educationFilters: [],
     curriculumFilters: [],
+    organizationFilters: [],
     query: "",
     baseFilter: "ALL_COURSES"
   },
@@ -579,6 +589,12 @@ export default function workspaces(state: WorkspacesType={
     return Object.assign({}, state, {
       avaliableFilters: Object.assign({}, state.avaliableFilters, {
         curriculums: action.payload
+      })
+    });
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS"){
+    return Object.assign({}, state, {
+      avaliableFilters: Object.assign({}, state.avaliableFilters, {
+        organizations: action.payload
       })
     });
   } else if (action.type === "UPDATE_WORKSPACES_ACTIVE_FILTERS"){
