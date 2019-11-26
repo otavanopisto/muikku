@@ -156,7 +156,6 @@ public class SessionBackingBean {
         
       studyStartDate = user.getStudyStartDate();
       studyTimeEnd = user.getStudyTimeEnd();
-      studyEndDate = user.getStudyEndDate();
       studyTimeLeftStr = "";
 
       if (studyTimeEnd != null) {
