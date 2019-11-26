@@ -75,7 +75,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     this.cancelChangeTrigger = true;
   }
   componentDidMount(){
-    this.setupCKEditor();
+    // this.setupCKEditor();
   }
   setupCKEditor(){
     if (!getCKEDITOR()){
