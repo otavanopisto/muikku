@@ -23,15 +23,7 @@
 }
 
 .application-panel__body {
-  background-color: $color-application-panel-box-background;
-  box-shadow: 0 2px 3px $color-panel-shadow;
-  display: flex;
-  flex-direction: column;
-  
-  @include breakpoint($breakpoint-pad) {
-    border: solid 1px $color-application-panel-box-border;
-    box-shadow: none;
-  }
+  @include panel-body;
 }
 
 .application-panel__body--tabs {

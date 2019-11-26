@@ -189,10 +189,7 @@ public class WorkspaceController {
     return workspaceEntityDAO.listByPublished(Boolean.TRUE);
   }
   
-  public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
-    return listWorkspaceEntitiesByUser(userEntity, false);
-  }
-  
+  @Deprecated
   public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity, boolean includeUnpublished) {
     List<WorkspaceEntity> result = new ArrayList<>();
     List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);

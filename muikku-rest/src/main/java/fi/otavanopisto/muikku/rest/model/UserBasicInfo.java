@@ -12,7 +12,8 @@ public class UserBasicInfo {
               String studyProgrammeName,
               boolean hasImage, 
               boolean hasEvaluationFees,
-              String curriculumIdentifier) {
+              String curriculumIdentifier,
+              String organizationIdentifier) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -22,6 +23,7 @@ public class UserBasicInfo {
     this.hasImage = hasImage;
     this.hasEvaluationFees = hasEvaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
+    this.organizationIdentifier = organizationIdentifier;
   }
 
   public Long getId() {
@@ -88,6 +90,14 @@ public class UserBasicInfo {
     this.nickName = nickName;
   }
 
+  public String getOrganizationIdentifier() {
+    return organizationIdentifier;
+  }
+
+  public void setOrganizationIdentifier(String organizationIdentifier) {
+    this.organizationIdentifier = organizationIdentifier;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
@@ -96,4 +106,5 @@ public class UserBasicInfo {
   private boolean hasImage;
   private boolean hasEvaluationFees;
   private String curriculumIdentifier;
+  private String organizationIdentifier;
 }

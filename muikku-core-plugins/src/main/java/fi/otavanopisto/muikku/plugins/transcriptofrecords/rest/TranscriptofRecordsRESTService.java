@@ -65,11 +65,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private UserEntityController userEntityController;
 
   @Inject
-  private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
+  private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
+
   @GET
   @Path("/files/{ID}/content")
   @RESTPermit(handling = Handling.INLINE)
@@ -283,7 +283,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Consumes("application/json")
   @Path("/hops")
   @RESTPermit(handling=Handling.INLINE)
-  public Response updateHops(HopsRESTModel model){
+  public Response updateHops(HopsRESTModel model) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }

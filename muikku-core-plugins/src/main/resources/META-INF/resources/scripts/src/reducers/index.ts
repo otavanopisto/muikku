@@ -1,6 +1,7 @@
 import {i18nType} from './base/i18n';
 import {LocaleListType} from './base/locales';
 import {NotificationListType} from './base/notifications';
+import {CredentialsType} from './base/credentials';
 import {StatusType} from './base/status';
 import {WebsocketStateType} from './util/websocket';
 import { AnnouncementsType } from './main-function/announcements';
@@ -22,6 +23,7 @@ export interface StateType {
   locales: LocaleListType,
   status: StatusType,
   title: string,
+  credentials?: CredentialsType,
   websocket?: WebsocketStateType,
   announcements?: AnnouncementsType,
   hops?: HOPSType,

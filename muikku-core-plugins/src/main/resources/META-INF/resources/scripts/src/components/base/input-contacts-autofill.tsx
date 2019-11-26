@@ -217,6 +217,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         return {
           node: <span className="autocomplete__selected-item">
             <span className="glyph glyph--selected-recipient icon-members"/>{item.value.name}
+                 {item.value.organization ? " (" + item.value.organization.name + ")" : ""}
           </span>,
           value: item
         };
@@ -244,6 +245,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         node = <div className="autocomplete__recipient">
           <span className="glyph glyph--autocomplete-recipient icon-members"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
+          {item.value.organization ? " (" + item.value.organization.name + ")" : ""}
         </div>;
       } else if (item.type === "workspace"){
         node = <div className="autocomplete__recipient">
