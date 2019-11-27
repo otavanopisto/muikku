@@ -18,11 +18,10 @@
   display: flex;
   flex-flow: row nowrap;
   padding: 0;
-  border-bottom: 1px solid $color-tab-border;
 }
 
 .tabs__tab-labels--mobile {
-  @include breakpoint($breakpoint-pad) { 
+  @include breakpoint($breakpoint-pad) {
     display:none;
   }
 }
@@ -88,7 +87,7 @@
 .tabs__tab-data {
   display: none;
   flex-basis: 100%;
-  
+
   &.active {
     display: block;
   }
@@ -105,12 +104,12 @@
   display: flex;
   flex-flow: row nowrap;
   padding: 0;
-  border-bottom: solid 1px $color-application-panel-box-border;;
+  border-bottom: solid 1px $color-application-panel-box-border;
 }
 
 .tabs__tab--application-panel {
   background-clip: padding-box;
-  border-bottom:  solid 1px $color-application-panel-box-border;
+  border-bottom: solid 1px $color-application-panel-box-border;
   border-top: solid 1px $color-tab-invisible-border;
   border-radius: 0;
   color: $color-tab-focus-font;
