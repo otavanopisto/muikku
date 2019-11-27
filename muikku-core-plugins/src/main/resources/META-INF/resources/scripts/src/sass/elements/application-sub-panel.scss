@@ -248,7 +248,9 @@
 }
 
 .application-sub-panel__item--workspace-name-extension {
-  flex: 1;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
 
   @include breakpoint($breakpoint-pad) {
     min-width: 400px;
@@ -256,7 +258,9 @@
 }
 
 .application-sub-panel__item--workspace-type {
-  flex: 0;
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
 }
 
 .application-sub-panel__item--workspace-description {
@@ -266,11 +270,15 @@
 }
 
 .application-sub-panel__item--workspace-start-date {
-  flex: 0;
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
 }
 
 .application-sub-panel__item--workspace-end-date {
-  flex: 0;
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
 }
 
 .application-sub-panel__item--workspace-permissions {

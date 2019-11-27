@@ -123,7 +123,7 @@
   flex-direction: column;
 
   @include breakpoint($breakpoint-pad) {
-    border: solid 1px $color-panel-border;
+    border: solid 1px $color-panel-border-color;
     box-shadow: none;
   }
 }

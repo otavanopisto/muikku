@@ -684,7 +684,7 @@
 // Memo field
 .material-page__memofield-wrapper {
 
-  .cke { // This needs to be here so we can override the ckeditor's visuals partly
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
     background: $color-default;
     border: 2px solid $taskfield-border-color;
     border-radius: 2px;
@@ -692,6 +692,10 @@
     margin: 4px 0 0;
     max-width: 100%;
     min-width: 100%;
+  }
+
+  .cke_contents {
+    min-height: 150px;
   }
 }
 
@@ -907,7 +911,11 @@
     flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 1;
-    margin: 5px 0;
+    margin: 10px 0 0;
+
+    @include breakpoint($breakpoint-pad) {
+      margin: 5px 0;
+    }
   }
 }
 
@@ -1458,7 +1466,7 @@
 
     .material-page__connectfield-counterpart-icon {
       align-self: flex-start;
-      padding: 6px 6px 6px;
+      padding: 6px;
 
       @include breakpoint($breakpoint-pad) {
         padding: 8px 6px 6px;

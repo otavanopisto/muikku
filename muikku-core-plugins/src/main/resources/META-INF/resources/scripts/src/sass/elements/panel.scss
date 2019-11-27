@@ -53,6 +53,7 @@
 // PANELS
 .panel {
   align-items: flex-start;
+  background-color: $color-panel-background-color;
   box-shadow: 0 2px 3px $color-panel-shadow;
   display: flex;
   flex-basis: 100%;
@@ -62,11 +63,6 @@
   margin: 0 0 10px;
   max-width: 100%;
   min-height: 25px;
-
-  @include panel-body;
-  border: none;
-  border-radius: $panel-border-radius;
-  display: block;
   overflow: visible;
   position: relative;
 
@@ -300,6 +296,7 @@
 
 .panel__body {
   @include text;
+  background-color: $color-panel-background-color;
   border: 0;
   border-radius: $panel-border-radius;
   flex-basis: 100%;
@@ -308,7 +305,7 @@
   min-height: 2.625rem;
 
   @include breakpoint($breakpoint-pad) {
-    border: solid 1px $color-panel-border;
+    border: solid 1px $color-panel-border-color;
     margin: 0 10px 10px;
   }
 }

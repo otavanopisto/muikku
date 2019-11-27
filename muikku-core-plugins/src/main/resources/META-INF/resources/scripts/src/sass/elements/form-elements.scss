@@ -99,13 +99,17 @@
 }
 
 .form-element__copy-workspace-ckeditor {
-  width: 100%;
   display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 100%;
+
   .cke {
-  	flex: 1 0 auto;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
   }
 }
 

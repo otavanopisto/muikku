@@ -16,7 +16,7 @@ interface StepProps {
 }
 
 interface StepState {
-  
+
 }
 
 export default class Step extends React.Component<StepProps, StepState> {
@@ -52,12 +52,12 @@ export default class Step extends React.Component<StepProps, StepState> {
     this.props.updateStore({
       endDate: newDate
     });
-  } 
+  }
   onDescriptionChange(text: string){
     this.props.updateStore({
       description: text
     });
-  }  
+  }
   toggleCopyMaterials(){
     this.props.updateStore({
       copyMaterials: this.props.getStore().copyMaterials === "NO" ? "CLONE" : "NO"
@@ -80,7 +80,7 @@ export default class Step extends React.Component<StepProps, StepState> {
   }
 
   render(){
-    const copyMaterials = this.props.getStore().copyMaterials !== "NO" ? 
+    const copyMaterials = this.props.getStore().copyMaterials !== "NO" ?
     <div className="form__row form__row--wizard">
       <div className="form-element form-element--checkbox-radiobutton">
         <input type="radio" id="copy-materials-as-clone" name="workspace-materials-clone-or-link"
@@ -88,7 +88,7 @@ export default class Step extends React.Component<StepProps, StepState> {
         <label htmlFor="copy-materials-as-clone">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label")}</label>
       </div>
       <div className="form-element form-element--checkbox-radiobutton">
-        <input type="radio" id="copy-materials-as-link" name="workspace-materials-clone-or-link" 
+        <input type="radio" id="copy-materials-as-link" name="workspace-materials-clone-or-link"
         onChange={this.switchBetweenCloneAndLink} checked={this.props.getStore().copyMaterials === "LINK"}/>
         <label htmlFor="copy-materials-as-link">{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label")}</label>
       </div>
@@ -124,7 +124,7 @@ export default class Step extends React.Component<StepProps, StepState> {
             </div>
           </div>
         </div>
-        <div className="form__subdivision form__subdivision--wizard form__subdivision--wizard-ckeditor">
+        <div className="form__subdivision form__subdivision--wizard">
           <div className="form__row form__row--wizard">
             <div className="form-element form-element__copy-workspace-ckeditor">
               <label>{this.props.i18n.text.get("plugin.workspacecopywizard.workspaceDescription.label")}</label>

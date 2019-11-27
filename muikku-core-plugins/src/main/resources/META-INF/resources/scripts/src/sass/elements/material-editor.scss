@@ -87,15 +87,17 @@
   font-size: 1.25rem;
   font-weight: 300;
   line-height: 1;
-  padding: 15px;
+  padding: 10px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.375rem;
+    padding: 15px;
   }
 }
 
 .material-editor__editor-container {
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -107,6 +109,9 @@
     border: solid 2px lighten($color-material-page-admin-panel-main-color, 20%);
     border-radius: 2px;
     box-sizing: border-box;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
     max-width: 100%;
     min-width: 100%;
   }
