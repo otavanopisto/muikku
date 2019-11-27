@@ -100,26 +100,25 @@
 
 .tabs__tab-labels--application-panel {
   align-items: center;
-  border-bottom: 0;
+  border-bottom: solid 1px $color-application-panel-box-border;
   display: flex;
   flex-flow: row nowrap;
   padding: 0;
-  border-bottom: solid 1px $color-application-panel-box-border;
 }
 
 .tabs__tab--application-panel {
   background-clip: padding-box;
   border-bottom: solid 1px $color-application-panel-box-border;
-  border-top: solid 1px $color-tab-invisible-border;
   border-radius: 0;
+  border-top: solid 1px $color-tab-invisible-border;
   color: $color-tab-focus-font;
   flex-grow: 0;
   font-size: 1rem;
   font-weight: 300;
+  margin: 0 0 -1px;
   padding: 10px 20px;
   text-align: center;
   text-transform: uppercase;
-  margin: 0 0 -1px;
 
   &.active {
     border-bottom: solid 1px $color-tab-invisible-border;
