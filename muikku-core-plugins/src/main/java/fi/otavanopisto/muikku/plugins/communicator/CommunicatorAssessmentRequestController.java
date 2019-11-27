@@ -157,8 +157,7 @@ public class CommunicatorAssessmentRequestController {
     
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), 
-          userSchoolDataIdentifier.getDataSource().getIdentifier());
+      SchoolDataIdentifier studentIdentifier = userSchoolDataIdentifier.schoolDataIdentifier();
       
       List<UserEntity> teachers = new ArrayList<UserEntity>();
       List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);

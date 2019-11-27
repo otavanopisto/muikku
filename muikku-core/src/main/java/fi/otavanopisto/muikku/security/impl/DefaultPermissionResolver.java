@@ -63,7 +63,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
       return hasEveryonePermission(permission, contextReference);
     }
     
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     
     // Workspace access
     if (permissionEntity.getScope().equals(PermissionScope.WORKSPACE) && contextReference != null) {

@@ -201,8 +201,7 @@ class WorkspaceSchoolDataController {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
     if (workspaceBridge != null) {
       try {
-        SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), 
-            workspaceEntity.getDataSource().getIdentifier());
+        SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
         
         SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getIdentifier(), 
             workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
