@@ -12,11 +12,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.util.ArchivableEntity;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.User;
 
@@ -28,6 +30,11 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
     return id;
   }
 
+  @Transient
+  public SchoolDataIdentifier defaultSchoolDataIdentifier() {
+    return new SchoolDataIdentifier(getDefaultIdentifier(), getDefaultSchoolDataSource().getIdentifier());
+  }
+  
   public Boolean getArchived() {
     return archived;
   }
