@@ -75,7 +75,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     this.cancelChangeTrigger = true;
   }
   componentDidMount(){
-    // this.setupCKEditor();
+    this.setupCKEditor();
   }
   setupCKEditor(){
     if (!getCKEDITOR()){
@@ -132,10 +132,12 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().instances[this.name].on('key', ()=>{
       this.cancelChangeTrigger = false;
     })
+    
+      
+    const height = (this.refs.ckeditor as HTMLTextAreaElement).getBoundingClientRect().height;
     getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
       let instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
-      instance.setData(this.props.children);
       
       const style = window.getComputedStyle(instance.container.$, null);
       const borderTop = parseInt(style.getPropertyValue("border-top")) || 0;
@@ -143,6 +145,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       
       const height = instance.container.$.getBoundingClientRect().height;
       instance.resize("100%", height - borderTop - borderBottom, false, true);
+      
+      instance.setData(this.props.children);
         
       //TODO somehow, the autofocus doesn't focus in the last row but in the first
       //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
