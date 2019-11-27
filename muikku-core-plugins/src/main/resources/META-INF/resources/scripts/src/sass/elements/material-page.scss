@@ -907,7 +907,11 @@
     flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 1;
-    margin: 5px 0;
+    margin: 10px 0 0;
+
+    @include breakpoint($breakpoint-pad) {
+      margin: 5px 0;
+    }
   }
 }
 

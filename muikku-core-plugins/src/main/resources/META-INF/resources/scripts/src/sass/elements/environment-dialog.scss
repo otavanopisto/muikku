@@ -137,12 +137,6 @@
   flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
-
-  .cke {
-    flex-basis: 210px;
-    flex-grow: 1;
-    flex-shrink: 1;
-  }
 }
 
 .env-dialog__row--communicator-signature,
@@ -164,7 +158,7 @@
 
 .env-dialog__row--new-announcement-options {
   display: flex;
-  flex-direction: column;
+  flex-direction: row nowrap;
 
   @include breakpoint($breakpoint-pad) {
     flex-direction: initial;
@@ -174,7 +168,7 @@
 .env-dialog__form-element-container {
   display: flex;
   flex-basis: auto;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
   position: relative;
@@ -182,9 +176,13 @@
   .cke {
     border: 2px solid $color-env-dialog-form-element-border;
     border-radius: 3px;
-    flex-basis: 210px;
+    flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
+
+    @include breakpoint($breakpoint-pad) {
+      flex-basis: 210px;
+    }
   }
 
   &:not(:first-child) {
@@ -199,9 +197,10 @@
   flex-grow: 0;
 
   &:not(:first-child) {
+    margin-left: 10px;
 
     @include breakpoint($breakpoint-pad) {
-      margin-left: 0;
+      margin-left: 20px;
     }
   }
 }
@@ -210,12 +209,12 @@
 .env-dialog__form-element-container--locked-thread {
   flex-direction: row;
   flex-grow: 0;
-  margin: 0 20px 0 0;
 
   &:not(:first-child) {
+    margin-left: 10px;
 
     @include breakpoint($breakpoint-pad) {
-      margin-left: 0;
+      margin-left: 20px;
     }
   }
 }
