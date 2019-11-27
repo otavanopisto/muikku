@@ -111,7 +111,7 @@
 .tabs__tab--application-panel {
   background-clip: padding-box;
   border-bottom:  solid 1px $color-application-panel-box-border;
-  border-top: solid 1px rgba(255,0, 0, 0);
+  border-top: solid 1px $color-tab-invisible-border;
   border-radius: 0;
   color: $color-tab-focus-font;
   flex-grow: 0;
@@ -120,15 +120,14 @@
   padding: 10px 20px;
   text-align: center;
   text-transform: uppercase;
-  margin: 0 0 -1px 0;
-  
+  margin: 0 0 -1px;
 
   &.active {
-    padding: 10px 20px;
-    border-bottom: solid 1px rgba(255,0, 0, 0);
+    border-bottom: solid 1px $color-tab-invisible-border;
     border-left: solid 1px $color-application-panel-box-border;
     border-right: solid 1px $color-application-panel-box-border;
     border-top: solid 1px $color-application-panel-box-border;
+    padding: 10px 20px;
   }
   
   &:first-child {
@@ -167,14 +166,18 @@
   &.active {
     @include breakpoint($breakpoint-pad) { 
       background: $color-default;
-      color: $color-text-default;
       border: 0;
+      color: $color-text-default;
     }
   }
 }
 
 .tabs__tab-data--workspace-students {
   padding: 0;
+
+  &.active {
+    display: flex;
+  }
 
   &:first-child {
     padding: 0 10px 0 0;
@@ -183,16 +186,17 @@
   &:last-child {
     padding: 0 0 0 10px;
   }
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 50%;
+  }
 }
 
 // Used when editing material page
 
 .tabs__tab-labels--material-editor {
   padding: 0 40px 0 2px;
-}
-
-.tabs__tab--material-editor {
-
 }
 
 .tabs__tab-data--material-editor {
@@ -207,14 +211,4 @@
   flex-basis: 50%;
 }
 
-.tabs__tab-data--workspace-students {
 
-  &.active {
-    display: flex;
-  }
-
-  @include breakpoint($breakpoint-pad) { 
-    display: flex;
-    flex-basis: 50%;
-  }
-}
