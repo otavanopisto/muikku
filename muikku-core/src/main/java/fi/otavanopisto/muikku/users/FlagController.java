@@ -215,7 +215,7 @@ public class FlagController {
   }
 
   private SchoolDataIdentifier toIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    SchoolDataIdentifier ownerIdentfier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), userSchoolDataIdentifier.getDataSource().getIdentifier());
+    SchoolDataIdentifier ownerIdentfier = userSchoolDataIdentifier.schoolDataIdentifier();
     return ownerIdentfier;
   }
 

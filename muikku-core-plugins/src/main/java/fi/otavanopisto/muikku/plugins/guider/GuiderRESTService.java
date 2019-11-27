@@ -337,7 +337,7 @@ public class GuiderRESTService extends PluginRESTService {
       
       List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
       for (UserSchoolDataIdentifier schoolDataIdentifier : schoolDataIdentifiers) {
-        userEntityIdentifiers.add(new SchoolDataIdentifier(schoolDataIdentifier.getIdentifier(), schoolDataIdentifier.getDataSource().getIdentifier()));
+        userEntityIdentifiers.add(schoolDataIdentifier.schoolDataIdentifier());
       }
       
       if (userIdentifiers == null) {
@@ -655,7 +655,7 @@ public class GuiderRESTService extends PluginRESTService {
   }
   
   private fi.otavanopisto.muikku.rest.model.StudentFlag createRestModel(FlagStudent flagStudent) {
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(flagStudent.getStudentIdentifier().getIdentifier(), flagStudent.getStudentIdentifier().getDataSource().getIdentifier());
+    SchoolDataIdentifier studentIdentifier = flagStudent.getStudentIdentifier().schoolDataIdentifier();
     return new fi.otavanopisto.muikku.rest.model.StudentFlag(
         flagStudent.getId(),
         flagStudent.getFlag().getId(),

@@ -145,7 +145,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
       List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(studentIdentifier);
       for (WorkspaceEntity workspaceEntity : workspaceEntities) {
         
-        SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+        SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
         
         // For each workspace, make sure the student hasn't been notified about it yet (i.e. don't send duplicate notifications)
         

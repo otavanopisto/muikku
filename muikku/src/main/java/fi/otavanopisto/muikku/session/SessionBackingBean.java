@@ -216,8 +216,7 @@ public class SessionBackingBean {
         this.phoneNumbers = null;
       }
 
-      SchoolDataIdentifier identifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(),
-          userEntity.getDefaultSchoolDataSource().getIdentifier());
+      SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
       List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(identifier);
       try {
         this.emails = new ObjectMapper().writeValueAsString(foundEmails);
