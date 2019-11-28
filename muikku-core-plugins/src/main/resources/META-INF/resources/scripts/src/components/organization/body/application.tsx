@@ -14,13 +14,8 @@ import {i18nType} from '~/reducers/base/i18n';
 import { ButtonPill} from '~/components/general/button';
 import AddWorkspaceDialog from '../dialogs/new-workspace';
 import AddUserDialog from '../dialogs/new-user';
-
-
 import '~/sass/elements/link.scss';
-
-{/* Reading panel's css */}
 import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/reading-panel.scss';
 import '~/sass/elements/loaders.scss';
 
 const tabNames = ["summary", "users", "courses", "reports"];
