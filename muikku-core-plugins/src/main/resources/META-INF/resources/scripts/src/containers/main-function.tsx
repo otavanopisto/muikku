@@ -224,9 +224,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
             
             if (defaultSelections.c || defaultSelections.o) {
               location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
-            } else {
-              this.loadCoursePickerData(currentLocationData);
             }
+          } else {
+            this.loadCoursePickerData(currentLocationData);
           }
         }) as Action);
       } else {

@@ -47,7 +47,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { o: ( locationData.o || [] ).filter( ( o: string ) => o !== organization.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { o: ( locationData.o || [] ).concat( organization.identifier ) } ), { arrayFormat: 'bracket' } ) );
-          return <NavigationElement key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
+          return <NavigationElement modifiers="aside-navigation" key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
         })}
       </NavigationTopic>
     </Navigation>

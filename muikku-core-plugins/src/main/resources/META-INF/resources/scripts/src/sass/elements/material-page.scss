@@ -694,9 +694,11 @@
     min-width: 100%;
   }
 
+  // scss-lint:disable SelectorFormat
   .cke_contents {
     min-height: 150px;
   }
+  // scss-lint:enable SelectorFormat
 }
 
 .material-page__memofield {
