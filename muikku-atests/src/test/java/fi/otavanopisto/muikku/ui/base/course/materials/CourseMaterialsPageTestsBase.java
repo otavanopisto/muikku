@@ -70,6 +70,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           sleep(500);
           
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresent(".file-uploader__item-title");
           assertTextIgnoreCase(".file-uploader__item-title", testFile.getName());
           
           waitForPresent(".file-uploader__item-delete-icon");
@@ -158,14 +159,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".button-pill--editing-master-switch");
         click(".button-pill--editing-master-switch");
-        waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-add");
-        click(".material-admin-panel--master-functions .button-pill__icon.icon-add");
-        waitForPresent(".material-admin-panel--chapter-functions .icon-edit");
-        click(".material-admin-panel--chapter-functions .icon-edit");
+        waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
+        click(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
+        waitForPresent(".material-admin-panel--chapter-functions .icon-pencil");
+        click(".material-admin-panel--chapter-functions .icon-pencil");
         waitForPresentAndVisible(".material-editor--visible .material-editor__title");
         clearElement(".material-editor--visible .material-editor__title");
         sendKeys(".material-editor--visible .material-editor__title", "Test title");
-        waitAndClick(".button-pill__icon.icon-publish");
+        waitAndClick(".button-pill__icon.icon-leanpub");
         waitClassPresent(".material-editor__buttonset-secondary .button-pill--material-editor-publish-page", "button-pill--disabled");
         sleep(500);
         waitAndClick(".button-pill--material-page-close-editor");
@@ -1230,9 +1231,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC0");
-          waitAndClick(".material-editor__buttonset-secondary .icon-publish");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-publish");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left-thin");
+          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
           waitForPresent(".material-page__metadata-container .material-page__license-item");
           assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/publicdomain/zero/1.0/");
         } finally {
@@ -1292,9 +1293,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC4");
-          waitAndClick(".material-editor__buttonset-secondary .icon-publish");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-publish");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left-thin");
+          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
           waitForPresent(".material-page__metadata-container .material-page__license-item");
           assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by/4.0");
         } finally {
@@ -1354,9 +1355,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC3");
-          waitAndClick(".material-editor__buttonset-secondary .icon-publish");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-publish");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left-thin");
+          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
           waitForPresent(".material-page__metadata-container .material-page__license-item");
           assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by/3.0");
         } finally {
@@ -1418,9 +1419,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "text_or_link");
           waitForPresentAndVisible(".license-selector .form-element__input--material-editor");
           sendKeys(".license-selector .form-element__input--material-editor", "www.test.com");
-          waitAndClick(".material-editor__buttonset-secondary .icon-publish");
-          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-publish");
-          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left-thin");
+          waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
+          waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
+          waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
           waitForPresent(".material-page__metadata-container .material-page__license-item");
           assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "www.test.com");
         } finally {
