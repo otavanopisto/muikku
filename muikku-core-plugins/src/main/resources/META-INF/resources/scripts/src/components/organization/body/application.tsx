@@ -44,19 +44,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
       activeTab: id
     });
   }
-  
-  onInputFocus() {
-    console.log("Focus");
-  }
-
-  onInputBlur() {
-   console.log("Blur");
-  }
-  
-  setSearchQuery() {
-    console.log("setSearchquery");
-  }
-  
+    
   render(){
         
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
@@ -66,7 +54,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
         let coursesToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">
-              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.organization.courses.search.placeholder')}  onChange={this.setSearchQuery}/>
+              <input className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.organization.courses.search.placeholder')} />
               <div className="form-element__input-decoration--main-function-search icon-search"></div>
             </div>
           </ApplicationPanelToolbarActionsMain>
@@ -75,7 +63,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
         let usersToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">
-              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')}  onChange={this.setSearchQuery}/>
+              <input className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.organization.users.search.placeholder')} />
               <div className="form-element__input-decoration--main-function-search icon-search"></div>
             </div>
           </ApplicationPanelToolbarActionsMain>
