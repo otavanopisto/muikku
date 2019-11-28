@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-// import ApplicationPanel from '~/components/general/application-panel';
 import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';

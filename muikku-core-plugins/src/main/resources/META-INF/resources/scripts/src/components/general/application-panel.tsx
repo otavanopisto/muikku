@@ -11,7 +11,6 @@ interface ApplicationPanelProps {
   title?: React.ReactElement<any> | string,
   icon?: React.ReactElement<any> | string,
   panelTabs?: Array<TabType>
-//  tabs? : Array<TabType>,
   onTabChange?:(id: string)=>any,
   activeTab? : string;
   primaryOption?: React.ReactElement<any>,

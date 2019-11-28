@@ -2,7 +2,6 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import NewThread from '../dialogs/new-thread';
-//import ApplicationPanel from '~/components/general/application-panel';
 import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Link from '~/components/general/link';

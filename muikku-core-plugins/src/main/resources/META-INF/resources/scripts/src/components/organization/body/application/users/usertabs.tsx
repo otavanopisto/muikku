@@ -24,7 +24,6 @@ export default class OrganizationUserTabs extends React.Component<OrganizationUs
   }
   
   onTabChange() {
-    alert("TAB!");
   }
   
   render() {

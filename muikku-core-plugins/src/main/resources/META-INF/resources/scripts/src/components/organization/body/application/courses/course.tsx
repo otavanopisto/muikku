@@ -13,7 +13,6 @@ interface CourseProps {
   i18n: i18nType,
   status: StatusType,
   course: any
-//  course: WorkspaceCourseType
 }
 
 interface CourseState {

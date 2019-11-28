@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-// import ApplicationPanel from '~/components/general/application-panel';
 import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import Announcements from './application/announcements';
 import AnnouncementView from './application/announcement-view';
