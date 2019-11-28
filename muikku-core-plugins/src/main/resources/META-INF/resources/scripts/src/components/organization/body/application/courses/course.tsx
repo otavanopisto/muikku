@@ -7,12 +7,13 @@ import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
+import { WorkspaceCourseType } from '~/reducers/main-function/courses';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
 
 interface CourseProps {
   i18n: i18nType,
   status: StatusType,
-  course: any
+  course: WorkspaceCourseType
 }
 
 interface CourseState {
