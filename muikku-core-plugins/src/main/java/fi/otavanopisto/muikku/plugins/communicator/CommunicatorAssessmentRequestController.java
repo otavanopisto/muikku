@@ -157,8 +157,7 @@ public class CommunicatorAssessmentRequestController {
     
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), 
-          userSchoolDataIdentifier.getDataSource().getIdentifier());
+      SchoolDataIdentifier studentIdentifier = userSchoolDataIdentifier.schoolDataIdentifier();
       
       List<UserEntity> teachers = new ArrayList<UserEntity>();
       List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
@@ -250,8 +249,7 @@ public class CommunicatorAssessmentRequestController {
         teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
       }
 
-      SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), 
-          userSchoolDataIdentifier.getDataSource().getIdentifier());
+      SchoolDataIdentifier studentIdentifier = userSchoolDataIdentifier.schoolDataIdentifier();
 
       User student = userController.findUserByIdentifier(studentIdentifier);
       if (student == null) {

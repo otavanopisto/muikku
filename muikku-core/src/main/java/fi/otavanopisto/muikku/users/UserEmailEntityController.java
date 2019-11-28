@@ -55,7 +55,7 @@ public class UserEmailEntityController {
   
   public String getUserDefaultEmailAddress(UserEntity userEntity, boolean obfuscate) {
     // TODO User default address support
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     return getUserDefaultEmailAddress(userIdentifier, obfuscate);
   }
 
