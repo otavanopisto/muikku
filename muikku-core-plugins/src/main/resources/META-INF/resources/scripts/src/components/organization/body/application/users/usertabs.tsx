@@ -21,9 +21,7 @@ export default class OrganizationUserTabs extends React.Component<OrganizationUs
       activeTab: "ACTIVE",
     }
   }
-  
 
-  
   render() {
     return(
       <ApplicationSubPanel i18n={this.props.i18n} modifier="workspace-users" bodyModifier="workspace-staff-members" title={this.props.i18n.text.get('plugin.organization.users.teachers.title')}>
