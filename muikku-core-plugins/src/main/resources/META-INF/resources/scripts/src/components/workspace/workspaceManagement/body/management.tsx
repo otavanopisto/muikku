@@ -381,7 +381,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         },
         fail: onDone
       })
-    } else if (!workspaceImage && this.props.workspace.hasCustomImage) {
+    } else if (!workspaceImage && this.props.workspace.hasCustomImage && !this.state.workspaceHasCustomImage) {
       totals++;
       this.props.updateCurrentWorkspaceImagesB64({
         delete: true,
