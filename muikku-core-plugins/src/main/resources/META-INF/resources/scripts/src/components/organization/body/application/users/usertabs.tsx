@@ -20,16 +20,13 @@ export default class OrganizationUserTabs extends React.Component<OrganizationUs
     this.state = {
       activeTab: "ACTIVE",
     }
-    this.onTabChange = this.onTabChange.bind(this);
   }
   
-  onTabChange() {
-  }
+
   
   render() {
     return(
       <ApplicationSubPanel i18n={this.props.i18n} modifier="workspace-users" bodyModifier="workspace-staff-members" title={this.props.i18n.text.get('plugin.organization.users.teachers.title')}>
-        <MobileOnlyTabs onTabChange={this.onTabChange} renderAllComponents activeTab={this.state.activeTab} tabs={this.props.users}/>
       </ApplicationSubPanel>
     )
   }
