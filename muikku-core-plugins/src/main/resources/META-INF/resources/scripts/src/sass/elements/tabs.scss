@@ -22,7 +22,7 @@
 
 .tabs__tab-labels--mobile {
   @include breakpoint($breakpoint-pad) {
-    display:none;
+    display: none;
   }
 }
 
@@ -31,7 +31,7 @@
   border: 0;
   display: none;
 
-  @include breakpoint($breakpoint-pad) { 
+  @include breakpoint($breakpoint-pad) {
     display: flex;
   }
 }
@@ -39,9 +39,9 @@
 .tabs__tab {
   background: $color-tab-blur-background;
   border-left: 1px solid $color-tab-blur-background;
+  border-radius: 5px 5px 0 0;
   border-right: 1px solid $color-tab-blur-background;
   border-top: 1px solid $color-tab-blur-background;
-  border-radius: 5px 5px 0 0;
   color: $color-tab-blur-font;
   cursor: pointer;
   flex-basis: auto;
@@ -54,10 +54,10 @@
 
   &.active {
     background: $color-tab-focus-background;
-    color: $color-tab-focus-font;
     border-left: 1px solid $color-tab-border;
     border-right: 1px solid $color-tab-border;
     border-top: 1px solid $color-tab-border;
+    color: $color-tab-focus-font;
     margin-bottom: -1px;
     padding: 9px 10px 11px;
   }
@@ -81,7 +81,7 @@
 }
 
 .tabs__tab-data-container {
-  display:flex;
+  display: flex;
 }
 
 .tabs__tab-data {
@@ -127,7 +127,7 @@
     border-top: solid 1px $color-application-panel-box-border;
     padding: 10px 20px;
   }
-  
+
   &:first-child {
     margin-left: -1px;
     padding: 10px 20px;
@@ -135,7 +135,7 @@
 
   @include breakpoint($breakpoint-pad) {
     margin: 0 2px -1px 0;
-  
+
     &.active {
       padding: 10px 20px;
     }
@@ -143,7 +143,6 @@
     &:first-child {
       margin-left: 0;
       padding: 10px 20px;
-      
     }
 
     &:last-child {
@@ -154,7 +153,7 @@
 
 .tabs__tab--mobile-only-tab {
 
-  @include breakpoint($breakpoint-pad) { 
+  @include breakpoint($breakpoint-pad) {
     background: $color-default;
     border: 0;
     color: $color-text-default;
@@ -162,7 +161,7 @@
   }
 
   &.active {
-    @include breakpoint($breakpoint-pad) { 
+    @include breakpoint($breakpoint-pad) {
       background: $color-default;
       border: 0;
       color: $color-text-default;
