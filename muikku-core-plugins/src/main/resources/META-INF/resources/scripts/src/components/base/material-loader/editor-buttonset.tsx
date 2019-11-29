@@ -42,6 +42,7 @@ function startupEditor(props: EditorButtonSetProps){
     canSetProducers: typeof props.canSetProducers === "undefined" ? false : props.canSetProducers,
     canAddAttachments: typeof props.canAddAttachments === "undefined" ? false : props.canAddAttachments,
     canEditContent: typeof props.canAddAttachments === "undefined" ? true : props.canAddAttachments,
+    canSetTitle: typeof props.canSetTitle === "undefined" ? true : props.canSetTitle,
     showRemoveAnswersDialogForPublish: false,
     showRemoveAnswersDialogForDelete: false,
   }, true);

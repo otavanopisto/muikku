@@ -147,6 +147,7 @@ export interface MaterialLoaderProps {
   canSetProducers?: boolean,
   canAddAttachments?: boolean,
   canEditContent?: boolean,
+  canSetTitle?: boolean,
   
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
