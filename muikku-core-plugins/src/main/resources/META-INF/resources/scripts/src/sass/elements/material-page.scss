@@ -1635,6 +1635,7 @@
 // These classNames cannot be changed as they a part of material page html and already saved to DB
 .material-styles-block {
   border-radius: 10px;
+  box-sizing: content-box;
   font-size: inherit;
   margin: 20px 0;
   min-height: 64px;
@@ -1796,6 +1797,7 @@
 // MATERIAL TEXT STYLES
 .material-styles-text {
   background-repeat: no-repeat;
+  box-sizing: content-box; 
   margin: 20px auto;
   max-width: 920px;
   min-height: 14px;
