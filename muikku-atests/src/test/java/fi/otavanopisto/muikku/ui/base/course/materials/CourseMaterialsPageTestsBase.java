@@ -37,12 +37,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
   )
   public void fileFieldTestAdmin() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
 
     try {
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
       .addStaffMember(admin)
+      .addStudent(student)
       .mockLogin(admin)
       .addCourse(course1)
       .build();
@@ -50,8 +52,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+      MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1.getId(), student.getId());
+      mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), mockCourseStudent)
         .build();
       File testFile = getTestFile();
       try {
@@ -62,6 +67,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "<p><object type=\"application/vnd.muikku.field.file\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-lAEveKeKFmjD5wQwcMh4SW20&quot;}\" /><input name=\"muikku-field-lAEveKeKFmjD5wQwcMh4SW20\" type=\"file\" /></p>", 1l, 
             "EXERCISE");
         try {
+          logout();
+          mockBuilder.mockLogin(student).build();
+          login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
           sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
