@@ -122,7 +122,7 @@ public class UserIndexer {
     try {
       List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
       for (UserSchoolDataIdentifier schoolDataIdentifier : identifiers) {
-        SchoolDataIdentifier identifier = new SchoolDataIdentifier(schoolDataIdentifier.getIdentifier(), schoolDataIdentifier.getDataSource().getIdentifier());
+        SchoolDataIdentifier identifier = schoolDataIdentifier.schoolDataIdentifier();
         indexUser(identifier);
       }
     } finally {

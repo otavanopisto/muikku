@@ -113,7 +113,7 @@ public class ForumController {
         if (userSchoolDataIdentifier != null) {
           OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
           if (organization != null) {
-            SchoolDataIdentifier userOrganizationIdentifier = new SchoolDataIdentifier(organization.getIdentifier(), organization.getDataSource().getIdentifier());
+            SchoolDataIdentifier userOrganizationIdentifier = organization.schoolDataIdentifier();
             return organizationIdentifiers.contains(userOrganizationIdentifier);
           }
         }

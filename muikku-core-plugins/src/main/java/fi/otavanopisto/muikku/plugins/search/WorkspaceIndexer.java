@@ -88,7 +88,7 @@ public class WorkspaceIndexer {
       
       if (workspaceEntity.getOrganizationEntity() != null) {
         OrganizationEntity organizationEntity = workspaceEntity.getOrganizationEntity();
-        SchoolDataIdentifier identifier = new SchoolDataIdentifier(organizationEntity.getIdentifier(), organizationEntity.getDataSource().getIdentifier());
+        SchoolDataIdentifier identifier = organizationEntity.schoolDataIdentifier();
         extra.put("organizationIdentifier", identifier.toId());
       }
       

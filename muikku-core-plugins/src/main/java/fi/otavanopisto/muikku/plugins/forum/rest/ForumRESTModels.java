@@ -48,7 +48,7 @@ public class ForumRESTModels {
 
   public ForumMessageUserRESTModel createUserRESTModel(Long userId) {
     UserEntity userEntity = userEntityController.findUserEntityById(userId);
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     
     schoolDataBridgeSessionController.startSystemSession();
     try {

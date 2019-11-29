@@ -184,7 +184,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       // TODO: Limit to organizations the user is part of / has access to
 
       List<CoursePickerOrganization> restOrganizations = organizations.stream().map(organization -> {
-        SchoolDataIdentifier organizationIdentifier = new SchoolDataIdentifier(organization.getIdentifier(), organization.getDataSource().getIdentifier());
+        SchoolDataIdentifier organizationIdentifier = organization.schoolDataIdentifier();
         return new CoursePickerOrganization(organizationIdentifier.toId(), organization.getName());
       }).collect(Collectors.toList());
       
