@@ -24,12 +24,12 @@ public class RolePermission {
   }
 
   public RoleEntity getRole() {
-		return role;
-	}
+    return role;
+  }
   
   public void setRole(RoleEntity role) {
-		this.role = role;
-	}
+    this.role = role;
+  }
 
   public Permission getPermission() {
     return permission;

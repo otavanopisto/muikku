@@ -109,7 +109,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
     
     // Iterate through active students who belong to pre-configured groups (read: study programs)
     
-    SearchResult searchResult = requestedAssessmentSupplementationsNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS);
+    SearchResult searchResult = requestedAssessmentSupplementationsNotificationController.searchActiveStudentIds(getActiveOrganizations(), groups, FIRST_RESULT + offset, MAX_RESULTS);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
@@ -145,7 +145,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
       List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(studentIdentifier);
       for (WorkspaceEntity workspaceEntity : workspaceEntities) {
         
-        SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+        SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
         
         // For each workspace, make sure the student hasn't been notified about it yet (i.e. don't send duplicate notifications)
         

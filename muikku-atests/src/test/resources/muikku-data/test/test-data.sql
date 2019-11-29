@@ -43,3 +43,7 @@ insert into PluginSetting (value, key_id) select '/tmp/', id from PluginSettingK
 
 insert into PluginSettingKey(name, plugin) select 'mandatoryCoursesRequiredForMatriculation', 'transcriptofrecords' from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'mandatoryCoursesRequiredForMatriculation' having count(*) = 0;
 insert into PluginSetting (value, key_id) select '10', (select id from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'mandatoryCoursesRequiredForMatriculation') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'mandatoryCoursesRequiredForMatriculation') having count(*) = 0;
+
+insert into OrganizationEntity (id, identifier, name, archived, dataSource_id) values (1, '1', 'Default', false, 2);
+insert into PluginSettingKey (name, plugin) select 'environmentForumOrganizations', 'forum' from PluginSettingKey where plugin = 'forum' and name = 'environmentForumOrganizations' having count(*) = 0;
+insert into PluginSetting (value, key_id) select 'PYRAMUS-1', id from PluginSettingKey where plugin = 'forum' and name = 'environmentForumOrganizations';

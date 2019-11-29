@@ -26,6 +26,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookCourseData;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookCourseStaffMemberData;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookCourseStudentData;
+import fi.otavanopisto.pyramus.webhooks.data.WebhookOrganizationData;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookPersonData;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookStaffMemberData;
 import fi.otavanopisto.pyramus.webhooks.data.WebhookStudentData;
@@ -98,6 +99,24 @@ public class PyramusWebhookServlet extends HttpServlet {
       logger.log(Level.INFO, String.format("Received a webhook notification of type %s", payload.getType().toString()));
       
       switch (payload.getType()) {
+        case ORGANIZATION_CREATE:
+          WebhookOrganizationData organizationData = unmarshalData(resp, payload, WebhookOrganizationData.class);
+          if (organizationData != null) {
+            pyramusUpdater.createOrganization(organizationData.getId(), organizationData.getName());
+          }
+        break;
+        case ORGANIZATION_UPDATE:
+          organizationData = unmarshalData(resp, payload, WebhookOrganizationData.class);
+          if (organizationData != null) {
+            pyramusUpdater.updateOrganization(organizationData.getId(), organizationData.getName());
+          }
+        break;
+        case ORGANIZATION_ARCHIVE:
+          organizationData = unmarshalData(resp, payload, WebhookOrganizationData.class);
+          if (organizationData != null) {
+            pyramusUpdater.archiveOrganization(organizationData.getId());
+          }
+        break;
         case COURSE_CREATE:
         case COURSE_UPDATE:
         case COURSE_ARCHIVE:

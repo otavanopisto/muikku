@@ -120,10 +120,6 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.listByUserGroupEntityAndArchived(userGroupEntity, Boolean.FALSE);
   }
 
-  public List<UserGroupEntity> listUserGroupsByUserEntity(UserEntity userEntity) {
-    return userGroupEntityDAO.listByUserEntityExcludeArchived(userEntity);
-  }
-
   public List<UserGroupEntity> listUserGroupsByUserIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
     return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
   }

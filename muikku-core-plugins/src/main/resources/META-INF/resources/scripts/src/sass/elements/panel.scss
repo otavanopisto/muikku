@@ -4,19 +4,13 @@
 @import "../base/breakpoints";
 
 .panel {
-  background-color: $color-panel-background;
+  @include panel-body;
   border: none;
   border-radius: $panel-border-radius;
-  box-shadow: 0 2px 3px $color-panel-shadow;
   display: block;
   overflow: visible;
   padding: 1px;
   position: relative;
-
-  @include breakpoint($breakpoint-pad) {
-    border: solid 1px $color-panel-border;
-    box-shadow: none;
-  }
 }
 
 .panel__header {

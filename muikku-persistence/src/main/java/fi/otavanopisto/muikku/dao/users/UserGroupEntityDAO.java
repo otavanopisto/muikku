@@ -9,14 +9,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.model.users.UserGroupEntity_;
-import fi.otavanopisto.muikku.model.users.UserGroupUserEntity_;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier_;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity_;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupUserEntity_;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 
 public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
@@ -126,29 +124,6 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(UserGroupUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier),
         criteriaBuilder.equal(groupJoin.get(UserGroupEntity_.archived), Boolean.FALSE),
-        criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
-      )
-    );
-   
-    return entityManager.createQuery(criteria).getResultList();
-  }
-
-  public List<UserGroupEntity> listByUserEntityExcludeArchived(UserEntity userEntity) {
-    EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<UserGroupEntity> criteria = criteriaBuilder.createQuery(UserGroupEntity.class);
-    Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
-    Join<UserGroupUserEntity, UserSchoolDataIdentifier> join = root.join(UserGroupUserEntity_.userSchoolDataIdentifier);
-    Join<UserGroupUserEntity, UserGroupEntity> join2 = root.join(UserGroupUserEntity_.userGroupEntity);
-    
-    criteria.select(root.get(UserGroupUserEntity_.userGroupEntity));
-
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(join.get(UserSchoolDataIdentifier_.userEntity), userEntity),
-        criteriaBuilder.equal(join.get(UserSchoolDataIdentifier_.archived), Boolean.FALSE),
-        criteriaBuilder.equal(join2.get(UserGroupEntity_.archived), Boolean.FALSE),
         criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
       )
     );

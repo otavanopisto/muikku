@@ -1,21 +1,30 @@
 package fi.otavanopisto.muikku.plugins.forum;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
 import fi.otavanopisto.muikku.model.security.ResourceRights;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
@@ -33,10 +42,12 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumMessage;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 public class ForumController {
   
@@ -77,7 +88,40 @@ public class ForumController {
   private UserController userController;
   
   @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
   private ActivityLogController activityLogController;
+
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  public boolean isEnvironmentForumActive() {
+    if (sessionController.isLoggedIn()) {
+      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {
+        return true;
+      }
+      
+      String enabledOrganizationsStr = pluginSettingsController.getPluginSetting("forum", "environmentForumOrganizations");
+      if (StringUtils.isNotBlank(enabledOrganizationsStr)) {
+        Set<SchoolDataIdentifier> organizationIdentifiers = Arrays.stream(StringUtils.split(enabledOrganizationsStr, ','))
+            .map(identifier -> SchoolDataIdentifier.fromId(identifier))
+            .collect(Collectors.toSet());
+
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+        if (userSchoolDataIdentifier != null) {
+          OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+          if (organization != null) {
+            SchoolDataIdentifier userOrganizationIdentifier = organization.schoolDataIdentifier();
+            return organizationIdentifiers.contains(userOrganizationIdentifier);
+          }
+        }
+      }
+    }
+    
+    return false;
+  }
   
   private String clean(String html) {
     Document doc = Jsoup.parse(html);

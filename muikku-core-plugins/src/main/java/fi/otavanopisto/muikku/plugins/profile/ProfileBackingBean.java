@@ -12,7 +12,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
@@ -21,10 +20,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.chat.ChatController;
-import fi.otavanopisto.muikku.plugins.chat.ChatRESTService;
-import fi.otavanopisto.muikku.plugins.chat.StatusRESTModel;
-import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -108,7 +103,7 @@ public class ProfileBackingBean {
       phoneNumbers.add(userPhoneNumber.getNumber());
     }
     
-    SchoolDataIdentifier identifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
     emails = userEmailEntityController.getUserEmailAddresses(identifier);
    
     chatEnabled = false;

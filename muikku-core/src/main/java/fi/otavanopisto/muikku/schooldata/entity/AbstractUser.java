@@ -2,12 +2,14 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.time.OffsetDateTime;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+
 public abstract class AbstractUser implements User {
   
   public AbstractUser(String identifier, String firstName, String lastName, String ssn, String nickName, String displayName,
       String studyProgrammeName, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean evaluationFees, String curriculumIdentifier) {
+      boolean evaluationFees, String curriculumIdentifier, SchoolDataIdentifier organizationIdentifier) {
     super();
     this.identifier = identifier;
     this.firstName = firstName;
@@ -26,6 +28,7 @@ public abstract class AbstractUser implements User {
     this.hidden = hidden;
     this.evaluationFees = evaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
+    this.organizationIdentifier = organizationIdentifier;
   }
 
   @Override
@@ -172,6 +175,15 @@ public abstract class AbstractUser implements User {
     this.nickName = nickName;
   }
 
+  @Override
+  public SchoolDataIdentifier getOrganizationIdentifier() {
+    return organizationIdentifier;
+  }
+
+  public void setOrganizationIdentifier(SchoolDataIdentifier organizationIdentifier) {
+    this.organizationIdentifier = organizationIdentifier;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
@@ -188,5 +200,6 @@ public abstract class AbstractUser implements User {
   private boolean hidden;
   private boolean evaluationFees;
   private String curriculumIdentifier;
+  private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
 }

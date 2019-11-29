@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
@@ -41,6 +42,8 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 
 @Dependent
 public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
@@ -51,6 +54,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	@Override
 	public String getSchoolDataSource() {
 		return LocalUserSchoolDataController.SCHOOL_DATA_SOURCE;
+	}
+
+	public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload payload) {
+	  throw new SchoolDataBridgeInternalException("Not supported");
 	}
 
 	/**
@@ -438,6 +445,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			    null,
 			    null,
 			    null,
+			    null,
 			    null);
 		}
 		
@@ -498,7 +506,19 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public String requestPasswordResetByEmail(String email) {
+  public String requestCredentialReset(String email) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public BridgeResponse<CredentialResetPayload> getCredentialReset(String hash) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public BridgeResponse<CredentialResetPayload> resetCredentials(CredentialResetPayload payload) {
     // TODO Auto-generated method stub
     return null;
   }
@@ -515,11 +535,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
   
-  public boolean confirmResetPassword(String resetCode, String newPassword) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
   @Override
   public String findUsername(String identifier) {
     // TODO Auto-generated method stub

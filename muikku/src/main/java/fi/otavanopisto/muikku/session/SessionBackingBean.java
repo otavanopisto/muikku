@@ -85,6 +85,7 @@ public class SessionBackingBean {
     bugsnagEnabled = StringUtils.isNotBlank(bugsnagApiKey);
     loggedUserId = null;
     loggedUser = null;
+    canAccessEnvironmentForum = forumController.isEnvironmentForumActive() && hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
 
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();
@@ -215,8 +216,7 @@ public class SessionBackingBean {
         this.phoneNumbers = null;
       }
 
-      SchoolDataIdentifier identifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(),
-          userEntity.getDefaultSchoolDataSource().getIdentifier());
+      SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
       List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(identifier);
       try {
         this.emails = new ObjectMapper().writeValueAsString(foundEmails);
@@ -422,6 +422,10 @@ public class SessionBackingBean {
     return studyTimeLeftStr != null ? studyTimeLeftStr : "";
   }
 
+  public boolean isCanAccessEnvironmentForum() {
+    return canAccessEnvironmentForum;
+  }
+
   private String displayName;
   private String emails;
   private String addresses;
@@ -429,4 +433,5 @@ public class SessionBackingBean {
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyTimeEnd;
   private String studyTimeLeftStr;
+  private boolean canAccessEnvironmentForum;
 }

@@ -29,6 +29,8 @@ import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 
 public class UserSchoolDataController {
 
@@ -50,8 +52,8 @@ public class UserSchoolDataController {
 
   /* User */
 
-  public User createUser(SchoolDataSource schoolDataSource, String firstName, String lastName) {
-    return getUserBridge(schoolDataSource).createUser(firstName, lastName);
+  public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {
+    return getUserBridge(dataSource).createStaffMember(staffMember);
   }
 
   public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
@@ -315,14 +317,18 @@ public class UserSchoolDataController {
   }
 
   private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
+    return getUserBridge(schoolDataSource.getIdentifier());
+  }
+
+  private UserSchoolDataBridge getUserBridge(String schoolDataSourceIdentifier) {
     Iterator<UserSchoolDataBridge> iterator = userBridges.iterator();
     while (iterator.hasNext()) {
       UserSchoolDataBridge userSchoolDataBridge = iterator.next();
-      if (userSchoolDataBridge.getSchoolDataSource().equals(schoolDataSource.getIdentifier())) {
+      if (userSchoolDataBridge.getSchoolDataSource().equals(schoolDataSourceIdentifier)) {
         return userSchoolDataBridge;
       }
     }
-    throw new SchoolDataBridgeInternalException(String.format("No UserBridge for data source %s", schoolDataSource));
+    throw new SchoolDataBridgeInternalException(String.format("No UserBridge for data source %s", schoolDataSourceIdentifier));
   }
 
   private User findUserByIdentifier(UserSchoolDataBridge userBridge, String identifier) {
@@ -356,12 +362,16 @@ public class UserSchoolDataController {
     getUserBridge(schoolDataSource).updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
 	}
 	
-  public String requestPasswordResetByEmail(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
-    return getUserBridge(schoolDataSource).requestPasswordResetByEmail(email);
+  public String requestCredentialReset(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
+    return getUserBridge(schoolDataSource).requestCredentialReset(email);
+  }
+  
+  public BridgeResponse<CredentialResetPayload> getCredentialReset(SchoolDataSource schoolDataSource, String hash) {
+    return getUserBridge(schoolDataSource).getCredentialReset(hash);
   }
 
-  public boolean confirmResetPassword(SchoolDataSource schoolDataSource, String resetCode, String newPassword) throws SchoolDataBridgeUnauthorizedException {
-    return getUserBridge(schoolDataSource).confirmResetPassword(resetCode, newPassword);
+  public BridgeResponse<CredentialResetPayload> resetCredentials(SchoolDataSource schoolDataSource, CredentialResetPayload payload) {
+    return getUserBridge(schoolDataSource).resetCredentials(payload);
   }
 
   public StudentCourseStats getStudentCourseStats(
