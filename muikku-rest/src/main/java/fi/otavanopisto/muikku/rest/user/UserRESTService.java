@@ -354,7 +354,7 @@ public class UserRESTService extends AbstractRESTService {
       
       List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
       for (UserSchoolDataIdentifier schoolDataIdentifier : schoolDataIdentifiers) {
-        userEntityIdentifiers.add(new SchoolDataIdentifier(schoolDataIdentifier.getIdentifier(), schoolDataIdentifier.getDataSource().getIdentifier()));
+        userEntityIdentifiers.add(schoolDataIdentifier.schoolDataIdentifier());
       }
       
       if (userIdentifiers == null) {
@@ -1398,7 +1398,7 @@ public class UserRESTService extends AbstractRESTService {
       }
       
       userEntity = userEntityController.findUserEntityById(NumberUtils.createLong(id));
-      userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+      userIdentifier = userEntity.defaultSchoolDataIdentifier();
     } else {
       userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
     }
@@ -1607,7 +1607,7 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   private fi.otavanopisto.muikku.rest.model.StudentFlag createRestModel(FlagStudent flagStudent) {
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(flagStudent.getStudentIdentifier().getIdentifier(), flagStudent.getStudentIdentifier().getDataSource().getIdentifier());
+    SchoolDataIdentifier studentIdentifier = flagStudent.getStudentIdentifier().schoolDataIdentifier();
     return new fi.otavanopisto.muikku.rest.model.StudentFlag(
         flagStudent.getId(),
         flagStudent.getFlag().getId(),
@@ -1628,7 +1628,7 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   private fi.otavanopisto.muikku.rest.model.FlagShare createRestModel(FlagShare flagShare) {
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(flagShare.getUserIdentifier().getIdentifier(), flagShare.getUserIdentifier().getDataSource().getIdentifier());
+    SchoolDataIdentifier userIdentifier = flagShare.getUserIdentifier().schoolDataIdentifier();
     
     StaffMemberBasicInfo staffMemberBasicInfo = createUserBasicInfoRestModel(userIdentifier);
     return new fi.otavanopisto.muikku.rest.model.FlagShare(flagShare.getId(), flagShare.getFlag().getId(), userIdentifier.toId(), staffMemberBasicInfo);
@@ -1751,7 +1751,7 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   private fi.otavanopisto.muikku.rest.model.Flag createRestModel(Flag flag) {
-    SchoolDataIdentifier ownerIdentifier = new SchoolDataIdentifier(flag.getOwnerIdentifier().getIdentifier(), flag.getOwnerIdentifier().getDataSource().getIdentifier());
+    SchoolDataIdentifier ownerIdentifier = flag.getOwnerIdentifier().schoolDataIdentifier();
     return new fi.otavanopisto.muikku.rest.model.Flag(flag.getId(), flag.getName(), flag.getColor(), flag.getDescription(), ownerIdentifier.toId());
   }
   

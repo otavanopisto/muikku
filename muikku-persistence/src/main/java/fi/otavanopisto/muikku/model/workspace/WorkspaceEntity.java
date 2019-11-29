@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -18,6 +19,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.util.ArchivableEntity;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 
 @Entity
@@ -27,6 +29,11 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   
   public Long getId() {
     return id;
+  }
+  
+  @Transient
+  public SchoolDataIdentifier schoolDataIdentifier() {
+    return new SchoolDataIdentifier(getIdentifier(), getDataSource().getIdentifier());
   }
   
   public String getIdentifier() {

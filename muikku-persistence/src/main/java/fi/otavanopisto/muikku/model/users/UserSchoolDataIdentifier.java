@@ -7,12 +7,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "dataSource_id", "identifier" }) })
@@ -22,6 +24,11 @@ public class UserSchoolDataIdentifier {
     return id;
   }
 
+  @Transient
+  public SchoolDataIdentifier schoolDataIdentifier() {
+    return new SchoolDataIdentifier(getIdentifier(), getDataSource().getIdentifier());
+  }
+  
   public SchoolDataSource getDataSource() {
     return dataSource;
   }

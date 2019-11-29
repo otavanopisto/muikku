@@ -282,7 +282,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid source workspace entity id %d", sourceWorkspaceEntityId)).build();
       }
       
-      workspaceIdentifier = new SchoolDataIdentifier(sourceWorkspaceEntity.getIdentifier(), sourceWorkspaceEntity.getDataSource().getIdentifier());
+      workspaceIdentifier = sourceWorkspaceEntity.schoolDataIdentifier();
     }
     
     if (workspaceIdentifier == null) {
@@ -1010,9 +1010,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<SchoolDataIdentifier>();
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      String identifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
-      String dataSource = workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier();
-      studentIdentifiers.add(new SchoolDataIdentifier(identifier, dataSource));
+      studentIdentifiers.add(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
     }
 
     // Retrieve users via Elastic
@@ -2636,9 +2634,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // WorkspaceUserEntity to SchoolDataIdentifier
 
-    String identifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
-    String dataSource = workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier();
-    SchoolDataIdentifier schoolDataIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+    SchoolDataIdentifier schoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier();
     
     // Find user from Elastic
 

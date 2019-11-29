@@ -599,7 +599,7 @@ public class ElasticSearchProvider implements SearchProvider {
             Long workspaceEntityId = ((Number) value).longValue();
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
             if (workspaceEntity != null) {
-              result.add(new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier()));
+              result.add(workspaceEntity.schoolDataIdentifier());
             }
           }
         }

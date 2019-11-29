@@ -229,7 +229,7 @@ public class TranscriptOfRecordsController {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(assessment.getWorkspaceUserIdentifier());
       
       WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-      SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+      SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
      
       if (!result.containsKey(workspaceIdentifier)) {
         result.put(workspaceIdentifier, assessment);

@@ -340,6 +340,7 @@ export interface WorkspaceMaterialEditorType {
   canSetProducers: boolean,
   canAddAttachments: boolean,
   canEditContent: boolean,
+  canSetTitle: boolean,
   showRemoveAnswersDialogForPublish: boolean,
   showRemoveAnswersDialogForDelete: boolean,
 }
@@ -555,6 +556,7 @@ export default function workspaces(state: WorkspacesType={
     canEditContent: true,
     showRemoveAnswersDialogForPublish: false,
     showRemoveAnswersDialogForDelete: false,
+    canSetTitle: true,
   }
 }, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){

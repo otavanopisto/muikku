@@ -266,7 +266,7 @@ public class WorkspaceUserEntityController {
   }
   
   private SchoolDataIdentifier toSchoolDataIdentifier(UserEntity userEntity) {
-    return new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    return userEntity.defaultSchoolDataIdentifier();
   }
 
   @Deprecated
