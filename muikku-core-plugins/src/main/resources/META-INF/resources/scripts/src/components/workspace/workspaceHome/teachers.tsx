@@ -7,6 +7,7 @@ import { getUserImageUrl } from "~/util/modifiers";
 import Button from "~/components/general/button";
 import CommunicatorNewMessage from '~/components/communicator/dialogs/new-message';
 import { StatusType } from "~/reducers/base/status";
+import moment from '~/lib/moment';
 
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/item-list.scss';
@@ -39,7 +40,7 @@ export function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspac
     pretext = '<p></p>';
     text = '<p><i class="message-from-workspace">' + i18n.text.get("plugin.workspace.index.newMessageCaption") + ' ' + '<a href="' + server + status.contextPath + "/workspace/" + workspace.urlName + '">' + text + "</a></i></p>";
   }
-  
+
   return pretext + text;
 }
 
@@ -59,8 +60,19 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
       {this.props.workspace && this.props.workspace.staffMembers && this.props.workspace.staffMembers.length ? (
         <div className="panel__body">
           <div className="item-list item-list--panel-teachers">
-            {this.props.workspace.staffMembers.map((teacher)=>
-              <div className="item-list__item item-list__item--teacher" key={teacher.userEntityId}>
+            {this.props.workspace.staffMembers.map((teacher)=> {
+              // by default wether we display the vacation period depends on whether the vacation starts at all
+              let displayVacationPeroid = !!teacher.properties['profile-vacation-start'];
+              // however if we have a range
+              if (teacher.properties['profile-vacation-end']) {
+                // we must check for the ending
+                const vacationEndsAt = moment(teacher.properties['profile-vacation-end']);
+                const today = moment();
+                // if it's before or it's today then we display, otherwise nope
+                displayVacationPeroid = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
+              }
+              
+              return <div className="item-list__item item-list__item--teacher" key={teacher.userEntityId}>
                 <div className="item-list__profile-picture">
                   <object data={getUserImageUrl(teacher.userEntityId)} type="image/jpeg" className="avatar-container">
                     <div className="avatar avatar--category-3">{teacher.firstName[0]}</div>
@@ -74,11 +86,11 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                       <div className="item-list__user-phone"><span className="glyph icon-phone"></span>{teacher.properties['profile-phone']}
                     </div> : null}
                   </div>
-                  {teacher.properties['profile-vacation-start'] ?
+                  {displayVacationPeroid ?
                     <div className="item-list__user-vacation-period">
                       {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
                       {this.props.i18n.time.format(teacher.properties['profile-vacation-start'])}
-                      {teacher.properties['profile-vacation-end'] ? " - " + this.props.i18n.time.format(teacher.properties['profile-vacation-end']) : null}
+                      {teacher.properties['profile-vacation-end'] ? "–" + this.props.i18n.time.format(teacher.properties['profile-vacation-end']) : null}
                     </div> : null}
                   <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
                       type: "staff",
@@ -89,7 +101,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                         {this.props.i18n.text.get("plugin.workspace.index.message.label")}
                       </Button></CommunicatorNewMessage>
                 </div>
-              </div>)}
+              </div>})}
             </div>
           </div>
           ) : (

@@ -42,9 +42,19 @@
   height: $navbar-mobile-height;
 
   @include breakpoint($breakpoint-pad) {
-    display: inline-block;
+    display: inline-flex;
     height: $navbar-desktop-height;
     width: 175px;
+  }
+}
+
+// NAVBAR LOGO LINK
+.navbar__logo-link {
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    display: flex;
+    height: $navbar-desktop-height;
   }
 }
 

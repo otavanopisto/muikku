@@ -168,8 +168,8 @@ public class Evaluation2RESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(identifier);
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), userSchoolDataIdentifier.getDataSource().getIdentifier());
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+    SchoolDataIdentifier studentIdentifier = userSchoolDataIdentifier.schoolDataIdentifier();
 
     gradingController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssessmentIdentifier);
     
@@ -276,7 +276,7 @@ public class Evaluation2RESTService {
       // More data from Pyramus (urgh)
       
       UserEntity assessorEntity = userEntityController.findUserEntityById(supplementationRequest.getUserEntityId());
-      SchoolDataIdentifier assessorIdentifier = new SchoolDataIdentifier(assessorEntity.getDefaultIdentifier(), assessorEntity.getDefaultSchoolDataSource().getIdentifier());
+      SchoolDataIdentifier assessorIdentifier = assessorEntity.defaultSchoolDataIdentifier();
       User assessor = userController.findUserByIdentifier(assessorIdentifier);
       
       RestEvaluationEvent event = new RestEvaluationEvent();
@@ -331,9 +331,9 @@ public class Evaluation2RESTService {
     }
     SchoolDataIdentifier workspaceAssessmentIdentifier = SchoolDataIdentifier.fromId(assessmentIdentifier);
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
     UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), userSchoolDataIdentifier.getDataSource().getIdentifier());
+    SchoolDataIdentifier studentIdentifier = userSchoolDataIdentifier.schoolDataIdentifier();
     
     // Workspace assessment
     
@@ -479,7 +479,7 @@ public class Evaluation2RESTService {
     
     UserEntity assessingUser = userEntityController.findUserEntityById(workspaceMaterialEvaluation.getAssessorEntityId());
     String assessmentIdentifier = workspaceMaterialEvaluation.getId().toString();
-    String assessingUserIdentifier = new SchoolDataIdentifier(assessingUser.getDefaultIdentifier(), assessingUser.getDefaultSchoolDataSource().getIdentifier()).toId();
+    String assessingUserIdentifier = assessingUser.defaultSchoolDataIdentifier().toId();
     String gradingScaleIdentifier = new SchoolDataIdentifier(workspaceMaterialEvaluation.getGradingScaleIdentifier(), workspaceMaterialEvaluation.getGradingScaleSchoolDataSource()).toId();
     String gradeIdentifier = new SchoolDataIdentifier(workspaceMaterialEvaluation.getGradeIdentifier(), workspaceMaterialEvaluation.getGradeSchoolDataSource()).toId();
 
@@ -948,7 +948,7 @@ public class Evaluation2RESTService {
     if (workspaceEntity == null || userSchoolDataIdentifier == null || workspace == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
     UserEntity studentEntity = userSchoolDataIdentifier.getUserEntity();
     
     // Assessor
@@ -1121,7 +1121,7 @@ public class Evaluation2RESTService {
       
       List<String> workspaceStudentIdentifiers = new ArrayList<String>();
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-      SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+      SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
 
       List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
       for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {

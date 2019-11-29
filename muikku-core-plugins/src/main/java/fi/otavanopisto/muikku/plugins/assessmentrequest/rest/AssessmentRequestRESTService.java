@@ -157,7 +157,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Workspace user entity not found").build();
     }
     
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
     
     SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
     

@@ -264,6 +264,7 @@
 }
 
 .application-sub-panel__item--workspace-description {
+  align-items: flex-start;
   display: flex;
   flex-flow: column nowrap;
 
