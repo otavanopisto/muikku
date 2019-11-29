@@ -426,6 +426,17 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
           component: () => <div className="material-editor__content-wrapper">
             {editorButtonSet}
 
+            {this.props.editorState.canSetProducers ?
+              <div className="material-editor__sub-section">
+                <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.producers")}</h3>
+                {this.props.editorState.currentDraftNodeValue.producers?
+                  <div className="material-editor__add-producer-container">
+                    <AddProducer modifier="add-material-producer" removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.props.editorState.currentDraftNodeValue.producers} i18n={this.props.i18n}/>
+                  </div>
+              : null}
+              </div>
+            : null}
+
             {this.props.editorState.canSetLicense ?
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.license")}</h3>
@@ -435,17 +446,6 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               </div>
             : null}
 
-            {this.props.editorState.canSetProducers ?
-              <div className="material-editor__sub-section">
-                <h3 className="material-editor__sub-title">{this.props.i18n.text.get("plugin.workspace.materialsManagement.editorView.subTitle.producers")}</h3>
-                {this.props.editorState.currentDraftNodeValue.producers?
-                  <div className="material-editor__add-producer-container">
-                    <AddProducer modifier="add-material-producer" removeProducer={this.removeProducer} addProducer={this.addProducer} producers={this.props.editorState.currentDraftNodeValue.producers} i18n={this.props.i18n}/>
-                  </div>
-              : null}
-
-              </div>
-            : null}
           </div>,
         })
       }
