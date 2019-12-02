@@ -40,7 +40,7 @@ export function getWorkspaceMessage(i18n: i18nType, status: StatusType, workspac
     pretext = '<p></p>';
     text = '<p><i class="message-from-workspace">' + i18n.text.get("plugin.workspace.index.newMessageCaption") + ' ' + '<a href="' + server + status.contextPath + "/workspace/" + workspace.urlName + '">' + text + "</a></i></p>";
   }
-  
+
   return pretext + text;
 }
 
@@ -90,7 +90,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                     <div className="item-list__user-vacation-period">
                       {this.props.i18n.text.get("plugin.workspace.index.teachersVacationPeriod.label")}&nbsp;
                       {this.props.i18n.time.format(teacher.properties['profile-vacation-start'])}
-                      {teacher.properties['profile-vacation-end'] ? " - " + this.props.i18n.time.format(teacher.properties['profile-vacation-end']) : null}
+                      {teacher.properties['profile-vacation-end'] ? "–" + this.props.i18n.time.format(teacher.properties['profile-vacation-end']) : null}
                     </div> : null}
                   <CommunicatorNewMessage extraNamespace="workspace-teachers" initialSelectedItems={[{
                       type: "staff",
