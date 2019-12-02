@@ -1,0 +1,211 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.tabs {
+  @include text;
+  margin-top: 10px;
+}
+
+.tabs--material-editor {
+  margin: 0;
+}
+
+.tabs__tab-labels {
+  align-items: center;
+  border-bottom: 1px solid $color-tab-border;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0;
+}
+
+.tabs__tab-labels--mobile {
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
+.tabs__tab-labels--desktop {
+  background: $color-default;
+  border: 0;
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
+.tabs__tab {
+  background: $color-tab-blur-background;
+  border-left: 1px solid $color-tab-blur-background;
+  border-radius: 5px 5px 0 0;
+  border-right: 1px solid $color-tab-blur-background;
+  border-top: 1px solid $color-tab-blur-background;
+  color: $color-tab-blur-font;
+  cursor: pointer;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: 1;
+  margin: 0 2px;
+  padding: 10px;
+  user-select: none;
+
+  &.active {
+    background: $color-tab-focus-background;
+    border-left: 1px solid $color-tab-border;
+    border-right: 1px solid $color-tab-border;
+    border-top: 1px solid $color-tab-border;
+    color: $color-tab-focus-font;
+    margin-bottom: -1px;
+    padding: 9px 10px 11px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    cursor: default;
+    margin: 0;
+
+    &.active {
+      padding: 10px;
+    }
+
+    &:first-child {
+      padding: 10px 10px 10px 0;
+    }
+
+    &:last-child {
+      padding: 10px 0 10px 10px;
+    }
+  }
+}
+
+.tabs__tab-data-container {
+  display: flex;
+}
+
+.tabs__tab-data {
+  display: none;
+  flex-basis: 100%;
+
+  &.active {
+    display: block;
+  }
+}
+
+
+// Holy de viera this border thing is a mess will deal with it some day
+
+// Application-panel tabs
+
+.tabs__tab-labels--application-panel {
+  align-items: center;
+  border-bottom: solid 1px $color-application-panel-box-border;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 0;
+}
+
+.tabs__tab--application-panel {
+  background-clip: padding-box;
+  border-bottom: solid 1px $color-application-panel-box-border;
+  border-radius: 0;
+  border-top: solid 1px $color-tab-invisible-border;
+  color: $color-tab-focus-font;
+  flex-grow: 0;
+  font-size: 1rem;
+  font-weight: 300;
+  margin: 0 0 -1px;
+  padding: 10px 20px;
+  text-align: center;
+  text-transform: uppercase;
+
+  &.active {
+    border-bottom: solid 1px $color-tab-invisible-border;
+    border-left: solid 1px $color-application-panel-box-border;
+    border-right: solid 1px $color-application-panel-box-border;
+    border-top: solid 1px $color-application-panel-box-border;
+    padding: 10px 20px;
+  }
+
+  &:first-child {
+    margin-left: -1px;
+    padding: 10px 20px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 2px -1px 0;
+
+    &.active {
+      padding: 10px 20px;
+    }
+
+    &:first-child {
+      margin-left: 0;
+      padding: 10px 20px;
+    }
+
+    &:last-child {
+      padding: 10px 20px;
+    }
+  }
+}
+
+.tabs__tab--mobile-only-tab {
+
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border: 0;
+    color: $color-text-default;
+    font-weight: 600;
+  }
+
+  &.active {
+    @include breakpoint($breakpoint-pad) {
+      background: $color-default;
+      border: 0;
+      color: $color-text-default;
+    }
+  }
+}
+
+.tabs__tab-data--workspace-students {
+  padding: 0;
+
+  &.active {
+    display: flex;
+  }
+
+  &:first-child {
+    padding: 0 10px 0 0;
+  }
+
+  &:last-child {
+    padding: 0 0 0 10px;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 50%;
+  }
+}
+
+// Used when editing material page
+
+.tabs__tab-labels--material-editor {
+  padding: 0 40px 0 2px;
+}
+
+.tabs__tab-data--material-editor {
+
+  &.active {
+    display: flex;
+  }
+}
+
+// Used when viewing workspace students
+.tabs__tab--workspace-students {
+  flex-basis: 50%;
+}
+
+
