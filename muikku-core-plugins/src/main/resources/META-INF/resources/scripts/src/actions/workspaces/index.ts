@@ -1800,7 +1800,7 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
         }), 'callback')();
       }));
 
-      dispatch(actions.displayNotification("TODO material attachment success", 'success'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.workspace.materialsManagement.attachment.notification.success"), 'success'));
       data.success && data.success();
     } catch (err) {
       dispatch(actions.displayNotification(err.message, 'error'))
