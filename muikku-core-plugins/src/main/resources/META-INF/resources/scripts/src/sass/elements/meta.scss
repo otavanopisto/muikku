@@ -15,6 +15,10 @@
   justify-content: flex-start;
   padding: 5px 0 0;
 
+  .meta__item {
+    padding: 2px 0;
+  }
+
   @include breakpoint($breakpoint-pad) {
     opacity: 1;
     padding: 10px 5px 5px;
