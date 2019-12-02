@@ -17,8 +17,8 @@ export function MaterialLoaderProducersLicense(props: MaterialLoaderProducersLic
       </div>
     : null}
     {props.material.license ?
-       <div className="material-page__license">
-          <div className="material-page__license-label">{props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:</div>
+      <div className="material-page__license">
+        <div className="material-page__license-label">{props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:</div>
         <div className="material-page__license-item">{props.material.license}</div>
       </div> 
     : null}
