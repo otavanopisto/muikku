@@ -300,6 +300,8 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
         });
       }
       
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.infomessage.newMessage.success"), 'success' ));
+      
     } catch ( err ) {
       if (!(err instanceof MApiError)){
         throw err;
