@@ -175,7 +175,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
       {this.state.materials.map((node, nodeIndex)=>{
-        const topic = <TocTopic name={node.title} key={node.workspaceMaterialId} className="toc__section-container">
+        const topic = <TocTopic name={node.title} isHidden={node.hidden} key={node.workspaceMaterialId} className="toc__section-container">
           {node.children.map((subnode)=>{
             let isAssignment = subnode.assignmentType === "EVALUATED";
             let isExercise = subnode.assignmentType === "EXERCISE";

@@ -27,6 +27,11 @@
   margin: 12px 10px;
   text-transform: uppercase;
   user-select: none; // This is to prevent select-by-panting when drag 'n dropping toc items
+
+  &.hidden {
+    font-style: italic;
+    opacity: 0.5;
+  }
 }
 
 .toc__item {

@@ -26,7 +26,8 @@ export default class Toc extends React.Component<TocProps, TocState> {
 interface TocTopicProps {
   name?: string,
   icon?: string,
-  className?: string
+  className?: string,
+  isHidden: boolean
 }
 
 interface TocTopicState {
@@ -36,7 +37,7 @@ interface TocTopicState {
 export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
   render(){
     return <div className={this.props.className}>
-      {this.props.name ? <div className="toc__section-title">
+      {this.props.name ? <div className={`toc__section-title ${this.props.isHidden ? "hidden" : ""}`}>
         {this.props.name}
       </div> : null}
       {this.props.children}
