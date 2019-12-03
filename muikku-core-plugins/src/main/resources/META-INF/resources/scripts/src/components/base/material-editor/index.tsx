@@ -461,7 +461,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             <FileUploader onFileInputChange={this.onFilesUpload} modifier="material-editor" displayNotificationOnError
             fileTooLargeErrorText={this.props.i18n.text.get("plugin.workspace.fileFieldUpload.fileSizeTooLarge")}
             files={this.props.editorState.currentNodeValue.childrenAttachments} fileIdKey="materialId" fileNameKey="title"
-            fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/${this.props.editorState.currentNodeValue.path}/${a.path}`}
+            fileUrlGenerator={(a)=>`/workspace/${this.props.editorState.currentNodeWorkspace.urlName}/materials/${a.path}`}
             deleteDialogElement={ConfirmRemoveAttachment}
             hintText={this.props.i18n.text.get("plugin.workspace.fileField.fieldHint")}
             deleteFileText={this.props.i18n.text.get("plugin.workspace.fileField.removeLink")}
