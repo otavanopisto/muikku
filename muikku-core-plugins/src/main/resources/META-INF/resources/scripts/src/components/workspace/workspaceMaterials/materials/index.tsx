@@ -13,7 +13,7 @@ import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
-  createWorkspaceMaterialContentNode, CreateWorkspaceMaterialContentNodeTriggerType } from "~/actions/workspaces";
+  createWorkspaceMaterialContentNode, CreateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from "~/actions/workspaces";
 
 interface WorkspaceMaterialsProps {
   i18n: i18nType,
@@ -28,6 +28,7 @@ interface WorkspaceMaterialsProps {
   
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType,
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
 }
 
 interface WorkspaceMaterialsState {
@@ -62,6 +63,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.createSection = this.createSection.bind(this);
     this.pastePage = this.pastePage.bind(this);
     this.createPageFromBinary = this.createPageFromBinary.bind(this);
+    this.toggleSectionHiddenStatus = this.toggleSectionHiddenStatus.bind(this);
     
     this.getFlattenedMaterials(props);
   }
@@ -82,6 +84,16 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     if (this.props.materials !== nextProps.materials){
       this.getFlattenedMaterials(nextProps);
     }
+  }
+  toggleSectionHiddenStatus(section: MaterialContentNodeType) {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.workspace,
+      material: section,
+      update: {
+        hidden: !section.hidden,
+      },
+      isDraft: false
+    });
   }
   getMaterialsOptionListDropdown(section: MaterialContentNodeType,
       nextSection: MaterialContentNodeType, nextSibling: MaterialContentNodeType, includesSection: boolean) {
@@ -362,6 +374,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>
                 <ButtonPill buttonModifiers="material-management-chapter" icon="pencil" onClick={this.startupEditor.bind(this, section)}/>
               </Dropdown>
+              <Dropdown openByHover modifier="material-management-tooltip" content={
+                section.hidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") :
+                this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")
+              }>
+                <ButtonPill buttonModifiers="material-management-chapter" icon="eye" onClick={this.toggleSectionHiddenStatus.bind(this, section)}/>
+              </Dropdown>
             </div>
           : null}
           {section.title}
@@ -390,7 +408,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({setWorkspaceMaterialEditorState, createWorkspaceMaterialContentNode}, dispatch);
+  return bindActionCreators({setWorkspaceMaterialEditorState, createWorkspaceMaterialContentNode, updateWorkspaceMaterialContentNode}, dispatch);
 };
 
 export default connect(
