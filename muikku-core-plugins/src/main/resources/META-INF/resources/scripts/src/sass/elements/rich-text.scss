@@ -112,6 +112,7 @@
   }
 
   table {
+    border-collapse: collapse;
     font-size: $text-desktop-font-size;
     margin: initial;
     padding: initial;
@@ -119,12 +120,10 @@
 
   table[cellspacing] {
     border-collapse: separate;
-    // border-spacing: 50px; Commented out as this does not make any sense
   }
 
   table[cellpadding] td {
     border-collapse: separate;
-    // padding: 50px; Commented out as this does not make any sense
   }
 
   @for $i from 0 through 49 {
