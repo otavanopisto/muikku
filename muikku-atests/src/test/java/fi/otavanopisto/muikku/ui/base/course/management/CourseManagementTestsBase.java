@@ -171,7 +171,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
-  public void changeAdditionalInfoTest() throws Exception {
+  public void changeNameExtensionTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
@@ -424,7 +424,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.EDGE
     }
   )
-  public void workspaceSignupTest() throws Exception {
+  public void workspaceSignupPermissionsTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
