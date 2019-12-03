@@ -51,7 +51,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
         {materialLicenseIcons.map((i)=><span className={`license__icon icon-${i}`} key={i}></span>)}
       </span>
       <span className="license__title">{this.props.i18n.text.get("plugin.workspace.index.licenseLabel")}:</span>
-      <Link className="license__link" href={this.props.workspace.materialDefaultLicense} target="_blank">{this.props.workspace.materialDefaultLicense}</Link>
+      <Link className="license__link" href={this.props.workspace.materialDefaultLicense} openInNewTab="_blank">{this.props.workspace.materialDefaultLicense}</Link>
     </div>);
   }
 }

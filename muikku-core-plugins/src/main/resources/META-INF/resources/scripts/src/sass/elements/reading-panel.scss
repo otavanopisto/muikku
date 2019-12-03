@@ -130,7 +130,7 @@
   @include breakpoint($breakpoint-pad) {
     border: solid 1px $color-toc-box-border;
     border-radius: $panel-border-radius;
-    display: flex;
+    display: block;
     flex-basis: 40%;
     flex-grow: 1;
     flex-shrink: 1;
