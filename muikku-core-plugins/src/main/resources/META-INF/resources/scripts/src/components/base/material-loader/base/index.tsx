@@ -106,15 +106,24 @@ const statics:{[componentKey:string]: any} = {
 //but hey that's the case
 function preprocessor($html: any): any{
   $html.find('img').each(function(){
-    console.log(this, $html);
     if (!$(this).parent('figure').length){
-      console.log("triggered here");
       let elem = document.createElement('figure');
       elem.className = 'image';
       
       $(this).replaceWith(elem);
+      const src = this.getAttribute("src");
+      if (src) {
+        this.dataset.original = src;
+        this.src = "";
+      }
       
       elem.appendChild(this);
+    } else {
+      const src = this.getAttribute("src");
+      if (src) {
+        this.dataset.original = src;
+        this.src = "";
+      }
     }
   });
   
