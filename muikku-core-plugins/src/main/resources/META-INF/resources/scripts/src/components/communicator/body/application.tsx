@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import ApplicationPanel from '~/components/general/application-panel';
+import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
@@ -26,10 +26,8 @@ interface CommunicatorApplicationState {
 class CommunicatorApplication extends React.Component<CommunicatorApplicationProps, CommunicatorApplicationState> {
   constructor(props: CommunicatorApplicationProps){
     super(props);
-    
     this.openDialogSignature = this.openDialogSignature.bind(this);
     this.closeDialogSignature = this.closeDialogSignature.bind(this);
-    
     this.state = {
       updateSignatureDialogOpened: false
     }
@@ -45,6 +43,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
       updateSignatureDialogOpened: false
     });
   }
+
   render(){
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
     let icon = <Dropdown modifier="communicator-settings" items={[

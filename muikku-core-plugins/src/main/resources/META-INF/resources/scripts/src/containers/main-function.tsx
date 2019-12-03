@@ -22,6 +22,9 @@ import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAva
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 import { UserType } from '~/reducers/main-function/user-index';
 
+import OrganizationAdministrationBody from '../components/organization/body';
+
+
 import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
 
@@ -61,6 +64,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderIndexBody = this.renderIndexBody.bind(this);
     this.renderCoursePickerBody = this.renderCoursePickerBody.bind(this);
     this.renderCommunicatorBody = this.renderCommunicatorBody.bind(this);
+    this.renderOrganizationAdministrationBody = this.renderOrganizationAdministrationBody.bind(this);
     this.renderDiscussionBody = this.renderDiscussionBody.bind(this);
     this.renderAnnouncementsBody = this.renderAnnouncementsBody.bind(this);
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
@@ -224,6 +228,13 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     
     return <IndexBody/>
   }
+  renderOrganizationAdministrationBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
+    }
+    return <OrganizationAdministrationBody/>
+  }
   renderCommunicatorBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -338,6 +349,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
       <Route exact path="/" render={this.renderIndexBody}/>
+      <Route path="/organization" render={this.renderOrganizationAdministrationBody}/>
       <Route path="/coursepicker" render={this.renderCoursePickerBody}/>
       <Route path="/communicator" render={this.renderCommunicatorBody}/>
       <Route path="/discussion" render={this.renderDiscussionBody}/>

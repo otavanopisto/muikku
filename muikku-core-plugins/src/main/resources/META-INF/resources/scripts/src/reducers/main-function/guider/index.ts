@@ -2,9 +2,6 @@ import { ActionType } from '~/actions';
 import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceListType, ActivityLogType} from "~/reducers/main-function/workspaces";
 
-//TODO remove or comment out, this is mocking code
-//import hops from './mock/hops';
-//import vops from './mock/vops';
 //TODO
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';

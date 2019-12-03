@@ -1,10 +1,8 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
-
 import '~/sass/elements/link.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/course.scss';
@@ -12,12 +10,10 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/workspace-activity.scss';
-
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops_readable';
 import FileDeleteDialog from '../../dialogs/file-delete';
-
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
 import MainChart from '~/components/general/graph/main-chart'
@@ -48,15 +44,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     if (this.props.guider.currentStudent === null){
       return null;
     }
-    
     //Note that some properties are not available until later, that's because it does
     //step by step loading, make sure to show this in the way this is represented, ensure to have
     //a case where the property is not available
     //You can use the cheat && after the property
     //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
-        
     let defaultEmailAddress = this.props.guider.currentStudent.emails && this.props.guider.currentStudent.emails.find((e)=>e.defaultAddress);
-    
     let studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
         <object
          className="avatar-container"
