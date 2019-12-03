@@ -375,8 +375,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
                 <ButtonPill buttonModifiers="material-management-chapter" icon="pencil" onClick={this.startupEditor.bind(this, section)}/>
               </Dropdown>
               <Dropdown openByHover modifier="material-management-tooltip" content={
-                section.hidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") :
-                this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")
+                section.hidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showChapterTooltip") :
+                this.props.i18n.text.get("plugin.workspace.materialsManagement.hideChapterTooltip")
               }>
                 <ButtonPill buttonModifiers="material-management-chapter" icon="eye" onClick={this.toggleSectionHiddenStatus.bind(this, section)}/>
               </Dropdown>
