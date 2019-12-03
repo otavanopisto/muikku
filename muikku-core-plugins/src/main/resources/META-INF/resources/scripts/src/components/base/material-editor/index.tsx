@@ -61,7 +61,7 @@ const CKEditorConfig = (
   language_list: ['fi:Suomi', 'en:Englanti', 'de:Saksa', 'fr:Ranska', 'it:Italia', 'ru:Venäjä', 'sv:Ruotsi'],
   stylesSet : 'workspace-material-styles:' + contextPath + '/scripts/ckplugins/styles/workspace-material-styles.js',
   format_tags : 'p;h3;h4',
-  baseHref: `workspace/${workspace.urlName}/${materialNode.path}/`,
+  baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
   mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG',
   mathJaxClass: 'material-page__math-formula',
   toolbarCanCollapse: true,
@@ -80,6 +80,7 @@ const CKEditorConfig = (
     { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
     { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
   ],
+  removePlugins: "image",
   extraPlugins: disablePlugins ? 'divarea,oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage' :
     "language,oembed,audio,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,uploadimage,divarea",
 });

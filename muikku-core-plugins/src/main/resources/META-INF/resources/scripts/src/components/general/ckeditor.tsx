@@ -104,7 +104,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       ],
       resize_enabled: false,
       uploadUrl: '/communicatorAttachmentUploadServlet',
-      extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea'
+      extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea',
     };
     
     let configObj = {...extraConfig, ...(this.props.configuration || {})};
@@ -116,6 +116,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
         pluginsLoaded[plugin] = true;
       }
     }
+    
+    console.log(configObj);
     
     getCKEDITOR().replace(this.name, configObj);
     getCKEDITOR().instances[this.name].on('change', ()=>{
