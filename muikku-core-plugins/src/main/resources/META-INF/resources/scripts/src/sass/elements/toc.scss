@@ -56,6 +56,11 @@
     letter-spacing: -0.026rem; // This prevents active toc item to create unnecessary line break as font weight increases
   }
 
+  &.hidden {
+    font-style: italic;
+    opacity: 0.5;
+  }
+
   @include breakpoint($breakpoint-desktop-xl) {
     padding: 4px 4px 4px 8px;
   }

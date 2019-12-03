@@ -46,6 +46,7 @@ export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
 
 interface TocElementProps {
   isActive: boolean,
+  isHidden: boolean,
   className?: string,
   modifier?: string,
   hash?: number | string,
@@ -66,15 +67,14 @@ interface TocElementState {
 
 export class TocElement extends React.Component<TocElementProps, TocElementState> {
   render(){
-    return <Link className={`toc__item ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${this.props.modifier ? "toc__item--" + this.props.modifier : ""}`}
+    return <Link className={`toc__item ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${this.props.isHidden ? "hidden" : ""} ${this.props.modifier ? "toc__item--" + this.props.modifier : ""}`}
       onScrollToSection={this.props.onScrollToSection}
       scrollPadding={this.props.scrollPadding} disableScroll={this.props.disableScroll}
       href={this.props.hash ? "#" + this.props.hash : null} to={this.props.href} onClick={this.props.onClick} ref="element">
       <span className="toc__text-body">
         {this.props.children}
       </span>
-      {this.props.iconAfter ? <span title={this.props.iconAfterTitle}
-          className={`toc__icon icon-${this.props.iconAfter}`} style={{color: this.props.iconAfterColor}}></span> : null}
+      {this.props.iconAfter ? <span title={this.props.iconAfterTitle} className={`toc__icon icon-${this.props.iconAfter}`} style={{color: this.props.iconAfterColor}}></span> : null}
     </Link>
   }
   getElement():HTMLElement {
