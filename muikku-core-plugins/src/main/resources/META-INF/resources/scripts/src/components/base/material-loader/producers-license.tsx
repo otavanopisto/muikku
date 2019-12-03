@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { MaterialLoaderProps } from '~/components/base/material-loader';
+import Link from "~/components/general/link";
 
 interface MaterialLoaderProducersLicenseProps extends MaterialLoaderProps {
 }
@@ -17,9 +18,9 @@ export function MaterialLoaderProducersLicense(props: MaterialLoaderProducersLic
       </div>
     : null}
     {props.material.license ?
-       <div className="material-page__license">
-          <div className="material-page__license-label">{props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:</div>
-        <div className="material-page__license-item">{props.material.license}</div>
+      <div className="material-page__license">
+        <div className="material-page__license-label">{props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:</div>
+        <Link className="material-page__license-item" href={props.material.license} openInNewTab="_blank">{props.material.license}</Link>
       </div> 
     : null}
   </div>);

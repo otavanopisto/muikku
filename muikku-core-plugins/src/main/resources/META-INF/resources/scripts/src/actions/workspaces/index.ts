@@ -1652,7 +1652,13 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
 
       data.fail && data.fail();
       if (!showRemoveAnswersDialogForDelete) {
-        dispatch(displayNotification(getState().i18n.text.get('TODO ERRORMSG failed to delete material'), 'error'));
+        if (data.material.children && data.material.children.length) {
+          // ERROR section has child nodes
+          dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.materialsManagement.sectionDeleteNotEmptyMessage'), 'error'));
+        } else {
+       // ERROR generic delete failure
+          dispatch(displayNotification(getState().i18n.text.get('plugin.workspace.materialsManagement.deleteFailed.notification'), 'error'));
+        }
       }
     }
   }
@@ -1800,7 +1806,7 @@ let createWorkspaceMaterialAttachment:CreateWorkspaceMaterialAttachmentTriggerTy
         }), 'callback')();
       }));
 
-      dispatch(actions.displayNotification("TODO material attachment success", 'success'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.workspace.materialsManagement.attachment.notification.success"), 'success'));
       data.success && data.success();
     } catch (err) {
       dispatch(actions.displayNotification(err.message, 'error'))

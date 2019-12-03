@@ -70,6 +70,10 @@
     max-width: 100%;
   }
 
+  iframe {
+    max-width: 100%;
+  }
+
   blockquote {
     background: $color-signature-background;
     border-left: 5px solid $color-signature-border;
@@ -115,12 +119,12 @@
 
   table[cellspacing] {
     border-collapse: separate;
-    border-spacing: 50px;
+    // border-spacing: 50px; Commented out as this does not make any sense
   }
 
   table[cellpadding] td {
     border-collapse: separate;
-    padding: 50px;
+    // padding: 50px; Commented out as this does not make any sense
   }
 
   @for $i from 0 through 49 {
