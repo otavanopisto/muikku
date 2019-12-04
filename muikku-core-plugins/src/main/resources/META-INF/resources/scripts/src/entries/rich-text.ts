@@ -1,0 +1,1 @@
+import "~/sass/elements/rich-text.scss";

@@ -16,7 +16,7 @@ const PLUGINS = {
   'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
   'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`,
   'autogrow' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/${CKEDITOR_VERSION}/`,
-  'divarea': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/${CKEDITOR_VERSION}/`,
+  // 'divarea': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/${CKEDITOR_VERSION}/`,
   'language': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/language/${CKEDITOR_VERSION}/`,
   'image2' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/${CKEDITOR_VERSION}/`,
 
@@ -93,6 +93,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       entities_greek: false,
       entities: false,
       basicEntities: false,
+      contentsCss: "/scripts/dist/rich-text.css",
       toolbar: [
         { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
         { name: 'links', items: [ 'Link' ] },
@@ -104,7 +105,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       ],
       resize_enabled: false,
       uploadUrl: '/communicatorAttachmentUploadServlet',
-      extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea',
+      // extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea',
+      extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage',
     };
     
     let configObj = {...extraConfig, ...(this.props.configuration || {})};
@@ -112,8 +114,10 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     let allPlugins = configObj.extraPlugins.split(",");
     for (let plugin of allPlugins){
       if (!pluginsLoaded[plugin]){
-        getCKEDITOR().plugins.addExternal(plugin, (PLUGINS as any)[plugin]);
-        pluginsLoaded[plugin] = true;
+        if ((PLUGINS as any)[plugin]) {
+          getCKEDITOR().plugins.addExternal(plugin, (PLUGINS as any)[plugin]);
+          pluginsLoaded[plugin] = true;
+        }
       }
     }
     
