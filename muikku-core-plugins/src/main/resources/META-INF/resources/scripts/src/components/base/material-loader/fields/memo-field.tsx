@@ -51,8 +51,7 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  extraPlugins: "widget,lineutils,autogrow,muikku-mathjax",
-//  extraPlugins: "widget,lineutils,autogrow,muikku-mathjax,divarea",
+  extraPlugins: "widget,lineutils,autogrow,muikku-mathjax,divarea",
   resize_enabled: true
 }
 

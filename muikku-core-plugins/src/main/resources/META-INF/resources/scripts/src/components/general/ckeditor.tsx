@@ -16,7 +16,7 @@ const PLUGINS = {
   'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
   'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`,
   'autogrow' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/autogrow/${CKEDITOR_VERSION}/`,
-  // 'divarea': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/${CKEDITOR_VERSION}/`,
+  'divarea': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/divarea/${CKEDITOR_VERSION}/`,
   'language': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/language/${CKEDITOR_VERSION}/`,
   'image2' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/image2/${CKEDITOR_VERSION}/`,
 
@@ -53,6 +53,28 @@ interface CKEditorState {
   
 }
 
+const extraConfig = (props: CKEditorProps) => ({
+  height: 0,
+  startupFocus: props.autofocus,
+  allowedContent: true,
+  entities_latin: false,
+  entities_greek: false,
+  entities: false,
+  basicEntities: false,
+  toolbar: [
+    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+    { name: 'links', items: [ 'Link' ] },
+    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
+    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+    { name: 'styles', items: [ 'Format' ] },
+    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+    { name: 'tools', items: [ 'Maximize' ] }
+  ],
+  resize_enabled: false,
+  uploadUrl: '/communicatorAttachmentUploadServlet',
+  extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea',
+});
+
 export default class CKEditor extends React.Component<CKEditorProps, CKEditorState> {
   private name:string;
   private currentData:string;
@@ -60,6 +82,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   private height: number | string;
   private cancelChangeTrigger: boolean;
   private timeout: NodeJS.Timer;
+  private previouslyAppliedConfig: any;
   
   constructor(props: CKEditorProps){
     super(props);
@@ -77,39 +100,16 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   componentDidMount(){
     this.setupCKEditor();
   }
-  setupCKEditor(){
+  setupCKEditor(props: CKEditorProps = this.props){
     if (!getCKEDITOR()){
       this.timeout = setTimeout(()=>{
-        this.setupCKEditor();
+        this.setupCKEditor(props);
       }, 10);
       return;
     }
     
-    let extraConfig: any = {
-      height: 0,
-      startupFocus: this.props.autofocus,
-      allowedContent: true,
-      entities_latin: false,
-      entities_greek: false,
-      entities: false,
-      basicEntities: false,
-      contentsCss: "/scripts/dist/rich-text.css",
-      toolbar: [
-        { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-        { name: 'links', items: [ 'Link' ] },
-        { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
-        { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-        { name: 'styles', items: [ 'Format' ] },
-        { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-        { name: 'tools', items: [ 'Maximize' ] }
-      ],
-      resize_enabled: false,
-      uploadUrl: '/communicatorAttachmentUploadServlet',
-      // extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea',
-      extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage',
-    };
-    
-    let configObj = {...extraConfig, ...(this.props.configuration || {})};
+    let configObj = {...extraConfig(props), ...(props.configuration || {})};
+    this.previouslyAppliedConfig = configObj;
     
     let allPlugins = configObj.extraPlugins.split(",");
     for (let plugin of allPlugins){
@@ -121,7 +121,18 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       }
     }
     
-    console.log(configObj);
+    if (configObj.baseHref) {
+      const base = document.getElementById("basehref") as HTMLBaseElement;
+      if (base) {
+        base.href = configObj.baseHref;
+      } else {
+        const newBase = document.createElement("base");
+        newBase.id = "basehref";
+        newBase.target = "_blank";
+        newBase.href = configObj.baseHref;
+        document.head.appendChild(newBase);
+      }
+    }
     
     getCKEDITOR().replace(this.name, configObj);
     getCKEDITOR().instances[this.name].on('change', ()=>{
@@ -132,7 +143,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       let data = getCKEDITOR().instances[this.name].getData();
       if (data !== this.currentData){
         this.currentData = data;
-        this.props.onChange(data);
+        props.onChange(data);
       }
     });
     getCKEDITOR().instances[this.name].on('key', ()=>{
@@ -152,7 +163,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       const height = instance.container.$.getBoundingClientRect().height;
       instance.resize("100%", height - borderTop - borderBottom, false, true);
       
-      instance.setData(this.props.children);
+      instance.setData(props.children);
         
       //TODO somehow, the autofocus doesn't focus in the last row but in the first
       //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
@@ -183,7 +194,12 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       return;
     }
     
-    if (nextProps.children !== this.currentData){
+    let configObj = {...extraConfig(nextProps), ...(nextProps.configuration || {})};
+    
+    if (!equals(configObj, this.previouslyAppliedConfig)) {
+      getCKEDITOR().instances[this.name].destroy();
+      this.setupCKEditor(nextProps);
+    } else if (nextProps.children !== this.currentData){
       this.enableCancelChangeTrigger();
       getCKEDITOR().instances[this.name].setData(nextProps.children);
     }

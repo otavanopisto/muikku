@@ -20,8 +20,7 @@ const KEYCODES = {
 }
 
 const CKEDITOR_CONFIG = {
-  //extraPlugins: "divarea"
-  extraPlugins: "",
+  extraPlugins: "divarea"
 }
 
 interface CommunicatorSignatureUpdateDialogProps {
