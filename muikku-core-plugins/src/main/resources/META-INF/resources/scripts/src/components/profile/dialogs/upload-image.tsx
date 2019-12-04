@@ -77,7 +77,7 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
     this.setState({angle: nAngle})
   }
   showLoadError(){
-    this.props.displayNotification(this.props.i18n.text.get("TODO ERRORMSG image failed to load"), 'error');
+    this.props.displayNotification(this.props.i18n.text.get("plugin.profile.errormessage.profileImage.loadFailed"), 'error');
   }
   onChangeScale(newValue: number){
     this.setState({

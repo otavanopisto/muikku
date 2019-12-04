@@ -315,7 +315,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG plugin.workspace.errormessage.workspaceLoadFailed"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.workspace.errormessage.workspaceLoadFailed"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -360,7 +360,7 @@ let requestAssessmentAtWorkspace:RequestAssessmentAtWorkspaceTriggerType = funct
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG plugin.workspace.errormessage.requestAssessmentFail"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.workspace.errormessage.requestAssessmentFail"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -375,7 +375,7 @@ let cancelAssessmentAtWorkspace:CancelAssessmentAtWorkspaceTriggerType = functio
     try {
       let assessmentRequest:WorkspaceAssessmentRequestType = data.workspace.assessmentRequests[data.workspace.assessmentRequests.length - 1];
       if (!assessmentRequest){
-        dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG plugin.workspace.errormessage.cancelAssessmentFail"), 'error'));
+        dispatch(actions.displayNotification(getState().i18n.text.get("plugin.workspace.errormessage.cancelAssessmentFail"), 'error'));
         data.fail && data.fail();
         return;
       }

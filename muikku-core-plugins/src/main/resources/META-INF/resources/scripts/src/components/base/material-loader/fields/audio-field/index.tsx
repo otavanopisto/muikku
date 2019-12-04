@@ -356,7 +356,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
           //if the value failed we add a message, you can get the value name there so use it to say which file
           return <div className="material-page__audiofield-file-container">
             <div className="material-page__audiofield-file material-page__audiofield-file--FAILED-TO-UPLOAD">
-              {this.props.i18n.text.get("TODO audio failed to upload")}
+              {this.props.i18n.text.get("plugin.workspace.audioField.uploadFailed")}
             </div>
           </div>;
         } else {
