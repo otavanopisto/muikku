@@ -1,7 +1,7 @@
 import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
-import Dropdown from "~/components/general/dropdown"; 
+import Dropdown from "~/components/general/dropdown";
 import FieldBase from "./base";
 
 interface TextFieldProps {
@@ -22,11 +22,11 @@ interface TextFieldProps {
   readOnly?: boolean,
   initialValue?: string,
   i18n: i18nType,
-      
+
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
   onAnswerChange?: (name: string, value: boolean)=>any,
-      
+
   invisible: boolean,
 }
 
@@ -34,14 +34,14 @@ const uuidv4 = require('uuid/v4');
 
 interface TextFieldState {
   value: string,
-  
+
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
   //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string,
-  
+
   //The text field might have a answer state of unknown pass or fail
   answerState: "UNKNOWN" | "PASS" | "FAIL"
 }
@@ -49,7 +49,7 @@ interface TextFieldState {
 export default class TextField extends React.Component<TextFieldProps, TextFieldState> {
   constructor(props: TextFieldProps){
     super(props);
-    
+
     this.state = {
       //Set the initial value
       value: props.initialValue || '',
@@ -57,11 +57,11 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       modified: false,
       synced: true,
       syncError: null,
-      
+
       //the intial answer state is totally unknown, not UNKNOWN but literally unknown if it's even UNKNOWN
       answerState: null
     }
-    
+
     this.onInputChange = this.onInputChange.bind(this);
   }
   shouldComponentUpdate(nextProps: TextFieldProps, nextState: TextFieldState){
@@ -82,10 +82,10 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     if (!this.props.checkAnswers){
       return;
     }
-    
+
     //Check for all the correct answers and filter which ones are set to be correct
     let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(a=>a.correct);
-    
+
     //If there's not a single one that has the flag of being the correct answer
     if (!actuallyCorrectAnswers.length){
       //the answer state is UNKNOWN
@@ -98,11 +98,11 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       }
       return;
     }
-    
+
     //Otherwise we gotta check each
     let isCorrect:boolean;
     let answer;
-    
+
     //We loop in the correct answers
     for (answer of actuallyCorrectAnswers){
       //And compare them according to the rules
@@ -116,14 +116,14 @@ export default class TextField extends React.Component<TextFieldProps, TextField
         comparerAnswer.trim().replace(/\s+/gi, " ");
         comparerValue.trim().replace(/\s+/gi, " ");
       }
-      
+
       isCorrect = comparerValue === comparerAnswer;
       //if we get a match we break
       if (isCorrect){
         break;
       }
     }
-    
+
     //Now we compare and call the rightness change function
     if (isCorrect && this.state.answerState !== "PASS"){
       this.setState({
@@ -156,25 +156,24 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(a=>a.correct);
       //answers are example is for language, this happens if we have no correct answers
       let answersAreExample = false;
-      //if we don't have answers
+      //if we don't have correct answers
       if (!actuallyCorrectAnswers.length){
         //We just set them all as right and make it be an example, this happens for example when the answer state is UNKNOWN
         answersAreExample = true;
         actuallyCorrectAnswers = this.props.content.rightAnswers;
       }
       //We create the component
-      correctAnswersummaryComponent = <span className="material-page__field-answer-examples">
+      correctAnswersummaryComponent = actuallyCorrectAnswers.length ? <span className="material-page__field-answer-examples">
         <span className="material-page__field-answer-examples-title">
-          {this.props.i18n.text.get(answersAreExample ? 
+          {this.props.i18n.text.get(answersAreExample ?
               "plugin.workspace.assigment.checkAnswers.detailsSummary.title" :
               "plugin.workspace.assigment.checkAnswers.correctSummary.title")}
         </span>
         {actuallyCorrectAnswers.map((answer, index)=>
           <span key={index} className="material-page__field-answer-example">{answer.text}</span>
         )}
-      </span>
-    }
-    
+      </span> : null }
+
     if (this.props.invisible){
       return <span ref="base" className="material-page__textfield-wrapper">
         <input readOnly className="material-page__textfield"
