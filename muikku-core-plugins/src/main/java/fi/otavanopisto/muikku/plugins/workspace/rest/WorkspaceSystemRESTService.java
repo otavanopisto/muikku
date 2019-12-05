@@ -212,9 +212,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
         if (muikkuWorkspaceStudent != null) {
           workspaceUserEntityController.unarchiveWorkspaceUserEntity(muikkuWorkspaceStudent);
           logger.info(String.format("Unarchived workspace student %s", pyramusCourseStudentId));
-          SchoolDataIdentifier muikkuStudentIdentifier = new SchoolDataIdentifier(
-              muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getIdentifier(),
-              muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+          SchoolDataIdentifier muikkuStudentIdentifier = muikkuWorkspaceStudent.getUserSchoolDataIdentifier().schoolDataIdentifier();
           ensureCorrectWorkspaceStudent(
               muikkuWorkspaceStudent,
               muikkuStudentIdentifier,
@@ -255,9 +253,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
       }
       else {
         // Workspace student found with workspace student identifier. We still need to ensure that the underlying student is the same as in Pyramus
-        SchoolDataIdentifier muikkuStudentIdentifier = new SchoolDataIdentifier(
-            muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getIdentifier(),
-            muikkuWorkspaceStudent.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+        SchoolDataIdentifier muikkuStudentIdentifier = muikkuWorkspaceStudent.getUserSchoolDataIdentifier().schoolDataIdentifier();
         ensureCorrectWorkspaceStudent(muikkuWorkspaceStudent, muikkuStudentIdentifier, pyramusCourseStudent.getUserIdentifier());
       }
     }

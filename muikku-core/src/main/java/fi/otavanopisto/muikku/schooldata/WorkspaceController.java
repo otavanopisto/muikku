@@ -286,7 +286,7 @@ public class WorkspaceController {
   }
   
   public WorkspaceUser findWorkspaceUserByWorkspaceEntityAndUser(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
     return findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
   }
   

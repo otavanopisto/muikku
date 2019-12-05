@@ -26,6 +26,17 @@
   @include panel-body;
 }
 
+.application-panel__body--tabs {
+  @include breakpoint($breakpoint-pad) {
+    border-bottom: solid 1px $color-application-panel-box-border;
+    border-left: solid 1px $color-application-panel-box-border;
+    border-right: solid 1px $color-application-panel-box-border;
+    border-top: 0;
+    box-shadow: none;
+  }
+}
+
+
 .application-panel__header {
   display: none;
   
