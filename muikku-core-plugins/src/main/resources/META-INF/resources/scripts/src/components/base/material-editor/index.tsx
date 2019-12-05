@@ -64,7 +64,6 @@ const CKEditorConfig = (
   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
   mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG',
   mathJaxClass: 'material-page__math-formula',
-  toolbarCanCollapse: true,
   toolbar: [
     { name: 'document', items : [ 'Source' ] },
     { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },

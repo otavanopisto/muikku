@@ -19,12 +19,12 @@ interface AddProducerState {
 
 export default class AddProducer extends React.Component<AddProducerProps, AddProducerState> {
   constructor(props: AddProducerProps) {
-    super(props);    
-    
+    super(props);
+
     this.state = {
       currentInputValue: ""
      }
-    
+
     this.updateInputValue = this.updateInputValue.bind(this);
     this.addProducerByClick = this.addProducerByClick.bind(this);
     this.removeProducerByClick = this.removeProducerByClick.bind(this);
@@ -39,18 +39,25 @@ export default class AddProducer extends React.Component<AddProducerProps, AddPr
     let input = this.state.currentInputValue;
     if (e.keyCode == 13 && input.length > 2) {
       this.props.addProducer(this.state.currentInputValue);
+      this.clearInputValue();
     }
   }
   addProducerByClick(){
     let input = this.state.currentInputValue;
     if (input.length > 2) {
       this.props.addProducer(this.state.currentInputValue);
+      this.clearInputValue();
     } 
   }
+  clearInputValue() {
+    this.setState({
+      currentInputValue: ""
+    });
+  }
   removeProducerByClick(index: number){
-       this.props.removeProducer(index);
+     this.props.removeProducer(index);
    }
-  
+
   render(){
     return( <div className={`add-producer ${this.props.modifier ? "add-producer--" + this.props.modifier : ""}`}>
        {this.props.title ? <h3 className="add-producer__title">{this.props.i18n.text.get(this.props.title)}</h3> : null}

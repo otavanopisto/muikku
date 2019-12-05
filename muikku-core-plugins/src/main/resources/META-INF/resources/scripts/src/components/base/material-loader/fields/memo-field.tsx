@@ -17,11 +17,11 @@ interface MemoFieldProps {
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
-  
+
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
   onAnswerChange?: (name: string, value: boolean)=>any,
-      
+
   invisible?: boolean,
 }
 
@@ -29,7 +29,7 @@ interface MemoFieldState {
   value: string,
   words: number,
   characters: number,
-  
+
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
   //We only set them up in the initial state
@@ -68,24 +68,24 @@ function wordCount(rawText: string){
 export default class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   constructor(props: MemoFieldProps){
     super(props);
-    
+
     //get the initial value
     let value = props.initialValue || '';
     //and get the raw text if it's richedit
     let rawText = this.props.content.richedit ? $(value).text() : value;
-    
+
     //set the state with the counts
     this.state = {
       value,
       words: wordCount(rawText),
       characters: characterCount(rawText),
-      
+
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null
     }
-    
+
     this.onInputChange = this.onInputChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
   }
@@ -131,24 +131,23 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
         <span className="material-page__field-answer-example">{this.props.content.example}</span>
       </span>
     }
-    
+
     if (this.props.invisible && !(!this.props.readOnly && this.props.content.richedit)){
       let unloadedField;
       if  (this.props.readOnly){
-         unloadedField = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
-           rows={parseInt(this.props.content.rows)}/> :
+         unloadedField = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" rows={parseInt(this.props.content.rows)}/> :
            <div className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
       } else {
-        unloadedField = <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)} rows={parseInt(this.props.content.rows)}/>
+        unloadedField = <textarea className="material-page__memofield" rows={parseInt(this.props.content.rows)}/>
       }
-      
+
       return <div ref="base" className="material-page__memofield-wrapper">
         {unloadedField}
         <div className="material-page__counter-wrapper"/>
         {answerExampleComponent}
       </div>
     }
-    
+
     //now we need the field
     let field;
     //if readonly
