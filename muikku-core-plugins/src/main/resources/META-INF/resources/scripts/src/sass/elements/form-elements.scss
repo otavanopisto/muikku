@@ -259,6 +259,7 @@
 .form-element__input-decoration--add-producer {
   background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
+  cursor: pointer;
 
   &::before {
     @include form-element-input-add-producers-decoration;
@@ -279,6 +280,7 @@
 .form-element__input-decoration--subpanel-search {
   background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
+  cursor: pointer;
 
   &::before {
     @include form-element-input-search-decoration;
