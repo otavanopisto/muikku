@@ -100,7 +100,7 @@ const statics:{[componentKey:string]: any} = {
   'figure[class="image"]': Image,
   'mark[data-muikku-word-definition]': WordDefinition,
   'iframe[data-url]': IFrame,
-  'a': Link,
+  'a[href]': Link,
 };
 
 //Fixes the html inconsitencies because
