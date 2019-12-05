@@ -245,7 +245,8 @@ const translations:any = {
   "width": "width",
   "class": "className",
   "src": "src",
-  "height": "height"
+  "height": "height",
+  "href": "href",
 }
 
 export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){

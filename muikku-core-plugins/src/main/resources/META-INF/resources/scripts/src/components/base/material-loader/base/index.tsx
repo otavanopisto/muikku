@@ -20,6 +20,7 @@ import { processMathInPage } from '~/lib/mathjax';
 import MathField from '../fields/math-field';
 import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } from '~/reducers/workspaces';
 import { WebsocketStateType } from '~/reducers/util/websocket';
+import Link from '~/components/base/material-loader/static/link';
 
 //These are all our supported objects as for now
 const objects: {[key: string]: any} = {
@@ -98,7 +99,8 @@ const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_R
 const statics:{[componentKey:string]: any} = {
   'figure[class="image"]': Image,
   'mark[data-muikku-word-definition]': WordDefinition,
-  'iframe[data-url]': IFrame
+  'iframe[data-url]': IFrame,
+  'a': Link,
 };
 
 //Fixes the html inconsitencies because
