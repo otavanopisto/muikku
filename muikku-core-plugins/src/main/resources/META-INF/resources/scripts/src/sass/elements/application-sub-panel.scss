@@ -7,6 +7,10 @@
   margin: 0 10px 20px;
 }
 
+.application-sub-panel--yo-status-container {
+  flex-basis: 50%;
+}
+
 .application-sub-panel__header {
   align-items: center;
   display: flex;
@@ -146,7 +150,6 @@
 
 .application-sub-panel__notification-body--yo-status-incomplete {
   align-items: center;
-  color: $color-default;
   display: flex;
 }
 
