@@ -323,7 +323,8 @@ public class FlagTestsBase extends AbstractUITest {
       
       click(".button--standard-ok");
       waitForNotVisible(".container--dialog");
-
+      waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
+      
       assertNotPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
     } finally {
       deleteFlags();
