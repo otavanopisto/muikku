@@ -45,6 +45,7 @@ let pluginsLoaded:any = {};
 interface CKEditorProps {
   configuration?: any,
   onChange(arg: string):any,
+  onDrop?():any,
   children?: string,
   autofocus?: boolean,
 }
@@ -96,9 +97,26 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     //CKeditor tends to trigger change on setup for no reason at all
     //we don't expect the user to type anything at all when ckeditor is starting up
     this.cancelChangeTrigger = true;
+    
+    this.onDataChange = this.onDataChange.bind(this);
   }
   componentDidMount(){
     this.setupCKEditor();
+  }
+  onDataChange(props: CKEditorProps = this.props) {
+    if (this.cancelChangeTrigger){
+      return;
+    }
+    
+    const instance = getCKEDITOR().instances[this.name];
+    if (!instance) {
+      return;
+    }
+    let data = instance.getData();
+    if (data !== this.currentData){
+      this.currentData = data;
+      props.onChange(data);
+    }
   }
   setupCKEditor(props: CKEditorProps = this.props){
     if (!getCKEDITOR()){
@@ -135,16 +153,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     }
     
     getCKEDITOR().replace(this.name, configObj);
-    getCKEDITOR().instances[this.name].on('change', ()=>{
-      if (this.cancelChangeTrigger){
-        return;
-      }
-       
-      let data = getCKEDITOR().instances[this.name].getData();
-      if (data !== this.currentData){
-        this.currentData = data;
-        props.onChange(data);
-      }
+    getCKEDITOR().instances[this.name].on('change', () => {
+      this.onDataChange();
     });
     getCKEDITOR().instances[this.name].on('key', ()=>{
       this.cancelChangeTrigger = false;
@@ -152,7 +162,18 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     
       
     const height = (this.refs.ckeditor as HTMLTextAreaElement).getBoundingClientRect().height;
-    getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
+    getCKEDITOR().instances[this.name].on('instanceReady', (ev: any)=>{
+      ev.editor.document.on('drop', () => {
+        this.props.onDrop && this.props.onDrop();
+        
+        // CKEditor bug, the event of dropping doesn't generate any change
+        // to the get data, so I need to wait, I can't tell
+        // how much time so, 1, 2, 3 seconds are a guess
+        // it might misbehave
+        setTimeout(this.onDataChange, 1000);
+        setTimeout(this.onDataChange, 2000);
+        setTimeout(this.onDataChange, 3000);
+      });
       let instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
       

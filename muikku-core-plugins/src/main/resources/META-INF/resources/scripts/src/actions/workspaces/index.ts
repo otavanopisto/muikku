@@ -1423,7 +1423,7 @@ let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialConte
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      const childrenAttachments:MaterialContentNodeType[] = (await promisify(mApi().workspace.workspaces.materials.read(workspace.id, {
+      const childrenAttachments:MaterialContentNodeType[] = (await promisify(mApi().workspace.workspaces.materials.cacheClear().read(workspace.id, {
         parentId: material.workspaceMaterialId,
       }), 'callback')() as MaterialContentNodeType[]) || [];
 

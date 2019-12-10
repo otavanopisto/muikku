@@ -5,7 +5,7 @@ import '~/sass/elements/material-editor.scss';
 import { bindActionCreators } from 'redux';
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
   updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType,
-  createWorkspaceMaterialAttachment, CreateWorkspaceMaterialAttachmentTriggerType } from '~/actions/workspaces';
+  createWorkspaceMaterialAttachment, CreateWorkspaceMaterialAttachmentTriggerType, RequestWorkspaceMaterialContentNodeAttachmentsTriggerType, requestWorkspaceMaterialContentNodeAttachments } from '~/actions/workspaces';
 import { connect, Dispatch } from 'react-redux';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
@@ -34,7 +34,8 @@ interface MaterialEditorProps {
   editorState: WorkspaceMaterialEditorType,
   locale: LocaleListType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
-  createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType
+  createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTriggerType,
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
 }
 
 interface MaterialEditorState {
@@ -51,7 +52,7 @@ const CKEditorConfig = (
     materialNode: MaterialContentNodeType,
     disablePlugins: boolean,
 ) => ({
-  uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/${materialNode.path}`,
+  uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
   linkShowTargetTab: true,
   allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
   entities: false,
@@ -105,6 +106,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     this.updateLicense = this.updateLicense.bind(this);
     this.onFilesUpload = this.onFilesUpload.bind(this);
     this.updateHeight = this.updateHeight.bind(this);
+    this.refreshAttachments = this.refreshAttachments.bind(this);
 
     this.state = {
       tab: "content",
@@ -116,6 +118,16 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
   updateHeight() {
     this.setState({height: window.innerHeight - 167});
+  }
+  
+  refreshAttachments() {
+    if (this.props.editorState.currentNodeValue && this.props.editorState.currentNodeWorkspace && this.props.editorState.parentNodeValue) {
+      // due to a ckeditor bug I cannot know when the image has done uploading
+      // I guess 3 seconds
+      setTimeout(() => {
+        this.props.requestWorkspaceMaterialContentNodeAttachments(this.props.editorState.currentNodeWorkspace, this.props.editorState.currentNodeValue);
+      }, 3000);
+    }
   }
 
   onFilesUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -411,7 +423,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
                 this.props.editorState.currentNodeWorkspace,
                 this.props.editorState.currentDraftNodeValue,
                 this.props.editorState.disablePlugins,
-              )} onChange={this.updateContent}>
+              )} onChange={this.updateContent} onDrop={this.refreshAttachments}>
               {this.props.editorState.currentDraftNodeValue.html}
             </CKEditor>
           </div> : null}
@@ -491,7 +503,8 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode, createWorkspaceMaterialAttachment}, dispatch);
+  return bindActionCreators({setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode,
+    createWorkspaceMaterialAttachment, requestWorkspaceMaterialContentNodeAttachments}, dispatch);
 };
 
 export default connect(
