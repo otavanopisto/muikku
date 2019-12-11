@@ -109,7 +109,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       openInNewTab: "_blank"
     }];
 
-    return <Navbar mobileTitle={this.props.title}
+    return <Navbar mobileTitle={this.props.title} isProfileContainedInThisApp={true}
       modifier="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item)=>{
       if (!item.condition){
         return null;

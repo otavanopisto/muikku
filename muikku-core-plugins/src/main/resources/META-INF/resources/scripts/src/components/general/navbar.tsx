@@ -19,7 +19,8 @@ interface NavbarProps {
   navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>,
   mobileTitle?: string,
   extraContent?: any,
-  i18n: i18nType
+  i18n: i18nType,
+  isProfileContainedInThisApp: boolean,
 }
 
 interface NavbarState {
@@ -71,7 +72,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             {this.props.mobileTitle ? <div className="navbar__mobile-title">{this.props.mobileTitle}</div> : null}
             <div className="navbar__default-options">
               {this.props.defaultOptions}
-              <ProfileItem modifier={this.props.modifier}/>
+              <ProfileItem modifier={this.props.modifier} isProfileContainedInThisApp={this.props.isProfileContainedInThisApp}/>
               <LanguagePicker />
             </div>
           </div>

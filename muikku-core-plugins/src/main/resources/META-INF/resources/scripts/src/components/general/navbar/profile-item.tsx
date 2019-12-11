@@ -17,7 +17,8 @@ interface ProfileItemProps {
   modifier: string,
   i18n: i18nType,
   status: StatusType,
-  logout: LogoutTriggerType
+  logout: LogoutTriggerType,
+  isProfileContainedInThisApp: boolean,
 }
 
 interface ProfileItemState {
@@ -34,7 +35,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         icon: "user",
         text: 'plugin.profileBadge.links.personalInfo',
         href: "/profile",
-        to: true
+        to: this.props.isProfileContainedInThisApp,
       },
       {
         icon: "question",

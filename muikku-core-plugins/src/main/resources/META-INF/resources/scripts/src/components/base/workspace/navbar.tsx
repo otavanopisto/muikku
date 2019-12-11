@@ -260,7 +260,7 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
          checked={this.props.workspaceEditMode.active}/>)
   }
 
-  return <Navbar mobileTitle={this.props.title}
+  return <Navbar mobileTitle={this.props.title} isProfileContainedInThisApp={false}
     modifier="workspace" navigation={trueNavigation} navbarItems={[
       assessmentRequestItem,
       //managementItem
