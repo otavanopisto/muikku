@@ -44,7 +44,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
   render(){
     const isAssignment = this.props.materialContentNode.assignmentType === "EVALUATED";
     const isEvaluatedAsPassed = this.props.compositeReplies && this.props.compositeReplies.state === "PASSED";
-    const hasEvaluation = this.props.compositeReplies && (this.props.compositeReplies.state === "INCOMPLETE" || this.props.compositeReplies.state === "PASSED" || this.props.compositeReplies.state === "FAILED" || this.props.compositeReplies.state === "WITHDRAWN");
+    const hasEvaluation = this.props.compositeReplies && this.props.compositeReplies.evaluationInfo && (this.props.compositeReplies.state === "INCOMPLETE" || this.props.compositeReplies.state === "PASSED" || this.props.compositeReplies.state === "FAILED" || this.props.compositeReplies.state === "WITHDRAWN");
     const isBinary = this.props.materialContentNode.type === "binary";
     let evalStateClassName:string = "";
     let evalStateIcon:string = "";
@@ -84,11 +84,11 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
               <MaterialLoaderEditorButtonSet {...props} {...state}/>
               <MaterialLoaderTitle {...props} {...state}/>
               <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
-              {!isEvaluatedAsPassed ? 
+              {!isEvaluatedAsPassed ?
                 <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
               : null}
               <MaterialLoaderCorrectAnswerCounter {...props} {...state}/>
-              {isAssignment && hasEvaluation ? 
+              {isAssignment && hasEvaluation ?
                 <div className={`material-page__assignment-assessment ${evalStateClassName}`}>
                   <div className={`material-page__assignment-assessment-icon ${evalStateIcon}`}></div>
                   <MaterialLoaderDate {...props} {...state}/>
