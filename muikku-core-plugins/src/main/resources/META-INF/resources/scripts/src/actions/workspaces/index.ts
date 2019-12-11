@@ -284,8 +284,9 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                  reuseExistantValue(true, workspace && workspace.producers,
                                                      ()=>promisify(mApi().workspace.workspaces.materialProducers.cacheClear().read(data.workspaceId), 'callback')()),
                                                      
-                                                 reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
-                                                     ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()),
+                                                 getState().status.loggedIn ?
+                                                     reuseExistantValue(true, workspace && typeof workspace.isCourseMember !== "undefined" && workspace.isCourseMember,
+                                                     ()=>promisify(mApi().workspace.workspaces.amIMember.read(data.workspaceId), 'callback')()) : false,
                                                      
                                                  reuseExistantValue(true, workspace && workspace.journals, ()=>null),
                                                  
@@ -793,6 +794,13 @@ let setCurrentWorkspaceMaterialsActiveNodeId:SetCurrentWorkspaceMaterialsActiveN
 let loadWorkspaceCompositeMaterialReplies:LoadWorkspaceCompositeMaterialReplies = function loadWorkspaceCompositeMaterialReplies(id){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
+      if (!getState().status.loggedIn) {
+        dispatch({
+          type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
+          payload: []
+        });
+        return;
+      }
       let compositeReplies:MaterialCompositeRepliesListType = <MaterialCompositeRepliesListType>(await promisify(mApi().workspace.
           workspaces.compositeReplies.read(id), 'callback')());
       dispatch({
