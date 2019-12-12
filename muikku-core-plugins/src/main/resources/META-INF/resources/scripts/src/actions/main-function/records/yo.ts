@@ -16,43 +16,29 @@ export interface UPDATE_STUDIES_YO_ELIGIBILITY extends SpecificActionType<"UPDAT
 export interface UPDATE_STUDIES_YO_SUBJECTS extends SpecificActionType<"UPDATE_STUDIES_YO_SUBJECTS", YOMatriculationSubjectType> {}
 export interface UPDATE_STUDIES_YO_STATUS extends SpecificActionType<"UPDATE_STUDIES_YO_STATUS", YOStatusType>{}
 
-
 export interface updateYOTriggerType {
   ():AnyActionType
 }
 
 let updateYO:updateYOTriggerType = function updateYO() {
 
-   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
 
-//    let examAvailableDate:any = await promisify(mApi().matriculation.currentExam.read({
-//    }), 'callback')();
-
-
-    let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
-    
-    
-    let now: Number = new Date().getTime();
-    
-//    let examAvailable = examAvailableDate && examAvailableDate.starts <= now && examAvailableDate.ends >= now ? true : false;
-//    starts : new Date(examAvailableDate.starts).toLocaleDateString("fi-FI"),
-//    ends : new Date(examAvailableDate.ends).toLocaleDateString("fi-FI")
-    
-    
-    let matriculationExamData:any = await promisify (mApi().matriculation.exams.read({}), 'callback')();
+      let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
+      let now: Number = new Date().getTime();
+      let matriculationExamData:any = await promisify (mApi().matriculation.exams.read({}), 'callback')();
 
       dispatch({
         type: 'UPDATE_STUDIES_YO',
         payload: matriculationExamData
       });
-      
+
       dispatch({
         type: 'UPDATE_STUDIES_YO_STATUS',
         payload: <YOStatusType>"LOADING"
       });
-      
-      
+
       let subjects:YOMatriculationSubjectType = await promisify(mApi().records.matriculationSubjects.read({
           matriculationSubjectsLoaded: true
       }), 'callback')() as YOMatriculationSubjectType;
@@ -61,26 +47,26 @@ let updateYO:updateYOTriggerType = function updateYO() {
         type: 'UPDATE_STUDIES_YO_SUBJECTS',
         payload: subjects
       });
-    
+
       let eligibility:any = await promisify( mApi().records.studentMatriculationEligibility
-              .read((window as any).MUIKKU_LOGGED_USER), 'callback')();
+        .read((window as any).MUIKKU_LOGGED_USER), 'callback')();
       let eligibilityStatus = eligibility.status;
-      let eligibilityData = {
-              coursesCompleted: eligibility.coursesCompleted,
-              coursesRequired: eligibility.coursesRequired,
-              enrollmentDate: eligibility.enrollmentDate,
-              examDate: eligibility.examDate
-            }
-      
+      let eligibilityData:YOEligibilityType = {
+        coursesCompleted: eligibility.coursesCompleted,
+        coursesRequired: eligibility.coursesRequired,
+        enrollmentDate: eligibility.enrollmentDate,
+        examDate: eligibility.examDate
+      }
+
       dispatch({
-          type: 'UPDATE_STUDIES_YO_ELIGIBILITY_STATUS',
-          payload: eligibilityStatus
-        });
-      
+        type: 'UPDATE_STUDIES_YO_ELIGIBILITY_STATUS',
+        payload: eligibilityStatus
+      });
+
       dispatch({
-          type: 'UPDATE_STUDIES_YO_ELIGIBILITY',
-          payload: eligibilityData
-       });
+        type: 'UPDATE_STUDIES_YO_ELIGIBILITY',
+        payload: eligibilityData
+      });
 
       dispatch({
         type: 'UPDATE_STUDIES_YO_STATUS',
@@ -94,7 +80,7 @@ let updateYO:updateYOTriggerType = function updateYO() {
       dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.yo.errormessage.yoUpdateFailed"), 'error'));
     }
   }
-} 
+}
 
 export default {updateYO};
 export {updateYO};

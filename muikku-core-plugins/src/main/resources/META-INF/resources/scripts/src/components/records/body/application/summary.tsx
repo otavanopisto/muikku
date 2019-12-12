@@ -19,8 +19,6 @@ import MainChart from '~/components/general/graph/main-chart';
 import '~/sass/elements/application-sub-panel.scss';
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 
-
-
 interface SummaryProps {
   i18n: i18nType,
   records: RecordsType,
@@ -34,32 +32,32 @@ interface SummaryState {
 class Summary extends React.Component<SummaryProps, SummaryState> {
   constructor(props: SummaryProps){
     super(props);
-  }    
-  
-  render(){        
+  }
+
+  render(){
       if (this.props.records.location !== "summary" || this.props.summary.status !== "READY" ) {
-        return null;        
+        return null;
       } else {
-        
+
       let studentBasicInfo = <div className="application-sub-panel">
         <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.studyInfo")}</div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-summary-dates">
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
             <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-start-date">
-              <span>{this.props.records.studyStartDate ? 
-                  this.props.i18n.time.format(this.props.records.studyStartDate) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span>          
+              <span>{this.props.records.studyStartDate ?
+                  this.props.i18n.time.format(this.props.records.studyStartDate) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span>
             </div>
           </div>
           <div className="application-sub-panel__item">
             <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.records.studyEndDate ? "plugin.records.studyEndDateLabel" :
             "plugin.records.studyTimeEndLabel")}</div>
-            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>{this.props.records.studyEndDate || this.props.records.studyTimeEnd ? 
+            <div className="application-sub-panel__item-data application-sub-panel__item-data--summary-end-date"><span>{this.props.records.studyEndDate || this.props.records.studyTimeEnd ?
                 this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : this.props.i18n.text.get("plugin.records.summary.studyTime.empty")}</span></div>
           </div>
         </div>
       </div>
-            
+
       let studyStatus = this.props.hops.value.goalMatriculationExam === "yes" ?
          <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
            <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">{this.props.i18n.text.get("plugin.records.summary.card.workspaces.title")}</div>
@@ -86,7 +84,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.activity.stat.pre")}</div>
                 <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-activity">{this.props.summary.summary.activity}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.activity.stat.post")}</div>
-              </div>                
+              </div>
               <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-returned">
                 <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-returned">{this.props.i18n.text.get("plugin.records.summary.card.tasks.title")}</div>
                 <div className="application-sub-panel__card-body">{this.props.i18n.text.get("plugin.records.summary.card.tasks.stat.pre")}</div>
@@ -97,56 +95,16 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </div>
           <div className="application-sub-panel">
             <div className="application-sub-panel__header application-sub-panel__header--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
-              {this.props.summary.summary.graphData.activity && this.props.summary.summary.graphData.workspaces ? <MainChart workspaces={this.props.summary.summary.graphData.workspaces} activityLogs={this.props.summary.summary.graphData.activity}/> : null}            
-           </div>
-        {/* Waits for summary notifications
-            <div className="application-sub-panel">
-              <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.summary.notifications.title")}</div>
-              <div className="application-sub-panel__body application-list">
-                <div className="application-list__item application-list__item--notification">
-                  <div className="application-list__item-header">
-                    <span className="application-list__header-icon application-list__header-icon--notification-1 icon-bell"></span>                        
-                    <span className="application-list__header-primary">
-                      <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus convallis non tortor vitae dictum. Maecenas pharetra felis ut lectus pharetra pellentesque.</span>
-                    </span>
-                  </div>
-                  <div className="application-list__item-footer">
-                    <span>dd/mm/yyyy </span>
-                 </div>
-                </div>
-                <div className="application-list__item application-list__item--notification">
-                  <div className="application-list__item-header">
-                     <span className="application-list__header-icon application-list__header-icon--notification-2 icon-bell"></span>                        
-                     <span className="application-list__header-primary">
-                       <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus convallis non tortor vitae dictum. Maecenas pharetra felis ut lectus pharetra pellentesque.</span>
-                     </span>
-                   </div>
-                   <div className="application-list__item-footer">
-                     <span>dd/mm/yyyy </span>
-                  </div>
-                </div>
-                <div className="application-list__item application-list__item--notification">
-                    <div className="application-list__item-header">
-                      <span className="application-list__header-icon application-list__header-icon--notification-3 icon-bell"></span>                        
-                      <span className="application-list__header-primary">
-                        <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-                      </span>
-                    </div>
-                    <div className="application-list__item-footer">
-                      <span>dd/mm/yyyy </span>
-                   </div>
-                 </div>
-              </div>
-            </div>
-         */}
+              {this.props.summary.summary.graphData.activity && this.props.summary.summary.graphData.workspaces ? <MainChart workspaces={this.props.summary.summary.graphData.workspaces} activityLogs={this.props.summary.summary.graphData.activity}/> : null}
           </div>
+        </div>
         )
       }
   }
 }
 
 function mapStateToProps(state: StateType){
-  return {    
+  return {
     i18n: state.i18n,
     records: state.records,
     summary: state.summary,
