@@ -289,6 +289,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       </div>
     ) : null;
     
+    const emptyMessage = this.props.materials.length === 0 ? (
+      <div className="material-admin-panel">{this.props.i18n.text.get("plugin.workspace.materialsManagement.empty")}</div>
+    ) : null;
+    
     const results: any = [];
     this.props.materials.forEach((section, index)=>{
       
@@ -391,6 +395,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
 
     return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
       {results}
+      {emptyMessage}
       {createSectionElementWhenEmpty}
     </ContentPanel>
   }

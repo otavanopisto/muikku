@@ -217,6 +217,10 @@ class Help extends React.Component<HelpProps, HelpState> {
         </Dropdown>
       </div>
     ) : null;
+    
+    const emptyMessage = this.props.materials.length === 0 ? (
+      <div className="material-admin-panel">{this.props.i18n.text.get("plugin.workspace.helpPage.empty")}</div>
+    ) : null;
 
     const results: any = [];
     this.props.materials.forEach((node, index)=>{
@@ -258,6 +262,7 @@ class Help extends React.Component<HelpProps, HelpState> {
 
     return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.helpPage.title")} ref="content-panel">
       {results}
+      {emptyMessage}
       {lastCreatePageElement}
     </ContentPanel>
   }
