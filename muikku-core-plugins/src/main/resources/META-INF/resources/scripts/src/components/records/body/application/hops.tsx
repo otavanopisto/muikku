@@ -27,7 +27,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   timeout: number;
   constructor(props: HopsProps){
     super(props);
-    
+
     this.setHopsToWithDelay = this.setHopsToWithDelay.bind(this);
   }
   setHopsToWithDelay(hops: HOPSDataType){
@@ -44,8 +44,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
     } else if (this.props.hops.status !== "READY"){
       return null;
     }
-    
-    return <HopsGraph onHopsChange={this.setHopsToWithDelay}/>
+
+    return (<div>
+      <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.hops.title")}</div>
+        <HopsGraph onHopsChange={this.setHopsToWithDelay}/>
+      </div>)
   }
 }
 
