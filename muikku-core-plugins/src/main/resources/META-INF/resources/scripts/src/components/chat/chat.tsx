@@ -4,17 +4,18 @@ import ReactDOM from 'react-dom';
 import './index.scss';
 import {Groupchat} from './groupchat';
 import {RoomsList} from './roomslist';
-import {ChangeNick} from './changeNick';
 import converse from '~/lib/converse';
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify, { promisifyNewConstructor } from '~/util/promisify';
+import {PrivateMessages} from './privatemessages';
 
 
 
 interface Iprops{
   chat?: any,
   onOpenChat?:any,
-  showChatbox?: any
+  showChatbox?: any,
+  privateChats?: any
 }
 
 interface Istate {
@@ -45,7 +46,8 @@ interface Istate {
   openRoomNumber: number,
   openRooms?: Object[],
   userStatusColor: string,
-  selectedState: string
+  selectedState: string,
+  privateChats?: any
 }
 
 declare namespace JSX {
@@ -94,7 +96,8 @@ export class Chat extends React.Component<Iprops, Istate> {
       nick: "",
       openRooms: [],
       userStatusColor: null,
-      selectedState: ""
+      selectedState: "",
+      privateChats: []
     }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.joinRoom= this.joinRoom.bind(this);
@@ -103,6 +106,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.openControlBox = this.openControlBox.bind(this);
     this.openNewRoomForm = this.openNewRoomForm.bind(this);
     this.onOpenChat = this.onOpenChat.bind(this);
+    this.onOpenPrivateChat = this.onOpenPrivateChat.bind(this);
     this.userAvailability = this.userAvailability.bind(this);
     this.changeUserAvailability = this.changeUserAvailability.bind(this);
     this.getChatNick = this.getChatNick.bind(this);
@@ -124,6 +128,44 @@ export class Chat extends React.Component<Iprops, Istate> {
     });
   }
   // --------------- PRIVATE MESSAGES ----------------------
+  
+  onOpenPrivateChat(occupant: any) {
+    if (occupant.id === window.MUIKKU_LOGGED_USER){
+        return;
+      }
+    
+    else if (occupant.id.startsWith("PYRAMUS-STAFF-") || window.MUIKKU_IS_STUDENT === false){
+      let jid = occupant.id.toLowerCase() + "@dev.muikkuverkko.fi";
+    
+      let privateChats = this.state.privateChats;
+      
+      var isExists = privateChats.some(function(curr :any) {
+        if (curr.jid === jid) {
+          return true;
+        } 
+      });
+    
+      if (isExists === true){
+        const filteredRooms = privateChats.filter((item: any) => item.jid !== jid)
+        this.setState({privateChats: filteredRooms})
+
+        var result = JSON.parse(window.sessionStorage.getItem('openPrivateChats')) || [];
+
+        const filteredChats = result.filter(function(item:any) {
+          return item.jid !== jid;
+        })
+        
+        window.sessionStorage.setItem("openPrivateChats", JSON.stringify(filteredChats));
+
+        return;
+      } else {
+        privateChats.push({jid: jid, info: occupant});
+        
+        this.setState({privateChats: privateChats})
+      }
+
+    }
+  }
   
   sendPrivateMessage(event:any){ 
     
@@ -436,7 +478,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     }
 
       
-    }
+  }
   getMUCMessages (stanza: any) {
     
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
@@ -590,6 +632,14 @@ export class Chat extends React.Component<Iprops, Istate> {
               openRooms: openChatsFromSessionStorage
             });
           }
+          
+          let openPrivateChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("openPrivateChats"));
+
+          if (openPrivateChatsFromSessionStorage){
+            reactComponent.setState({
+              privateChats: openPrivateChatsFromSessionStorage
+            });
+          }
           let userStatus = reactComponent.state.converse.api.user.status.get();
           
           reactComponent.setState({
@@ -684,11 +734,10 @@ export class Chat extends React.Component<Iprops, Istate> {
         </div>
         
       <div className="chatboxes">  
-        {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openRooms.includes(chat.jid) ? <Groupchat key={i} onOpenChat={this.onOpenChat} nick={this.state.nick} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>:null)}
-
+        {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openRooms.includes(chat.jid) ? <Groupchat key={i} onOpenPrivateChat={this.onOpenPrivateChat.bind(this)} onOpenChat={this.onOpenChat} nick={this.state.nick} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>:null)}
+        {this.state.privateChats.map((chat: any, i:any) => <PrivateMessages key={i} onOpenPrivateChat={this.onOpenPrivateChat} info={chat} converse={this.state.converse}/>)}
       </div>
       </div>}
-      <ChangeNick converse={this.state.converse}/>
     </div>
     
     );

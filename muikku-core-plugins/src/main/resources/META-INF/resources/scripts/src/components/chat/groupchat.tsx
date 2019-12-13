@@ -5,6 +5,7 @@ import './index.scss';
 import converse from '~/lib/converse';
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify, { promisifyNewConstructor } from '~/util/promisify';
+import {ChatMessage} from './chatMessage';
 
 interface Iprops{
   chat?: any,
@@ -13,7 +14,10 @@ interface Iprops{
   showChatbox?: any,
   chatObject?: any,
   onOpenChat?: any,
-  nick?: any
+  nick?: any,
+  privateChats?: any,
+  onOpenPrivateChat?: any,
+  removeMessage?: any
 }
 
 interface Istate {
@@ -47,7 +51,13 @@ interface Istate {
   minimizedChats: any,
   minimizedClass: string,
   isWorkspaceChat: string,
-  showName: boolean
+  showName: boolean,
+  chatRoomOccupants: any,
+  occupants?: any,
+  showOccupantsList?: boolean,
+  messageAreaWidth?: number,
+  occupantsListOpened?: any,
+  privateChats?: any
 }
 
 declare namespace JSX {
@@ -105,7 +115,13 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       minimizedChats: [],
       minimizedClass: "",
       isWorkspaceChat: "",
-      showName: false
+      showName: false,
+      chatRoomOccupants: [],
+      occupants: [],
+      showOccupantsList: null,
+      messageAreaWidth: 100,
+      occupantsListOpened: [],
+      privateChats: []
     }
     this.myRef = null;
     this.sendMessage = this.sendMessage.bind(this);
@@ -115,8 +131,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.sendConfiguration = this.sendConfiguration.bind(this);
     this.toggleRoomInfo = this.toggleRoomInfo.bind(this);
     this.minimizeChats = this.minimizeChats.bind(this);
-    this.showRealName = this.showRealName.bind(this);
+    this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
+    this.getOccupants = this.getOccupants.bind(this);
+    
   }
+  
   
   openMucConversation (room: string) {
     
@@ -193,11 +212,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           
           reactComponent.setState({
             chatBox: chat,
-            groupMessages: []
+            groupMessages: [],
+            chatRoomOccupants: chat.occupants
           });
           
           
-            chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
+          chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
+          
+          
           
         });
       
@@ -211,6 +233,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
       
       if (stanza && stanza.attributes.type.nodeValue === "groupchat"){
+        
+          console.log(stanza);
         let message = stanza.textContent;
         let from = stanza.attributes.from.value;
         from = from.split("/").pop();
@@ -218,14 +242,28 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let senderClass ="";
         let user:any;
         let nickname: any;
-        var sXML = new XMLSerializer().serializeToString(stanza.ownerDocument);
+        let messageId: any;
+        let deleteId: any;
+        let nick: any;
+        let userName: any;
         
-        //var node = new DOMParser().parseFromString(sXML, "text/xml");
+        if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")){
+          user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')()); 
+          nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
+          userName = user.firstName + " " + user.lastName;
+          nick = nickname.nick; 
+        } else {
+          userName = from;
+          nick = from;
+          
+        }
         
-        //const astamp = node.evaluate("/*[local-name()='delay']/@stamp", node, null, XPathResult.STRING_TYPE, null ).stringValue;
+        if (message !== ""){
+          messageId = stanza.attributes.id.value;
+        } else {
+          messageId = "null";
+        }
         
-        
-          user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
         
         if (from === window.MUIKKU_LOGGED_USER){
           senderClass = "sender-me";
@@ -234,70 +272,52 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           if (this.state.roomJid.startsWith("workspace-")){
             senderClass = "sender-others-workspace";
           } else {
-            senderClass = "sender-others";
+            senderClass = "sender-them";
           }
         }
         
-        nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
-        
-        let userName = user.firstName + " " + user.lastName;
-        let nick = nickname.nick; 
-        
-        console.log(mApi());
-        console.log(stanza);
         var stamp = null; 
         var list = stanza.childNodes;
         
         for(var node of list) { 
             if (node.nodeName == 'delay') { 
                 stamp = node.attributes.stamp.nodeValue 
-              };
+              } else {
+                stamp = new Date().toString()
+              }
           }
-        let days = "";
-        let months = "";
-        let datetime = "";
-        let d;
-        
-        if (stamp){
-          d = new Date(stamp);
-        }else {
-          d = new Date();
-          
-        } 
-          let dd = d.getDate(); 
-          let mm = d.getMonth() + 1; 
-          var yyyy = d.getFullYear(); 
-        
-          if (dd < 10) { 
-            
-            days = '0' + dd.toString(); 
-          } else {
-            days = dd.toString();
-          }
-          if (mm < 10) { 
-            months = '0' + mm; 
-          } else {
-            months = mm.toString();
-          }
-          
-          var time = d.toLocaleTimeString();
-        
-          var date = days + '/' + months + '/' + yyyy; 
-        
-          datetime = date + " " + time;
 
-        let groupMessage: any = {from: nick + " ", alt: userName, content: message, senderClass: senderClass, timeStamp: datetime};
+        let groupMessage: any = {from: nick + " ", alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
         
         if (message !== ""){
           
           let groupMessages = this.state.groupMessages;
           
-          groupMessages.push(groupMessage);
-
+          if (!message.startsWith("messageID=")){
+           groupMessages.push(groupMessage);
+          } else{
+            let arr= new Array();
           
+            arr.push(message);
+            deleteId = message.split("=").pop();
+            
+          }
+          
+          var i:any;
+          for (i = 0; i < groupMessages.length; i++) {
+            var groupMessageId = groupMessages[i].messageId;
+            if (deleteId && groupMessageId === deleteId){
+              groupMessages[i] = {...groupMessages[i], deleted: true}
+              
+            }
+          }
+          groupMessages.sort((a: any, b: any) => (a.timeStamp > b.timeStamp) ? 1 : -1)
           
           this.setState({groupMessages: groupMessages});
           
+          if (this.state.showOccupantsList === true){
+              this.getOccupants();
+          }
           return;
         }
       } else {
@@ -305,17 +325,33 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
     }
     
-    showRealName (){
-      if (this.state.showName === false && window.MUIKKU_IS_STUDENT === false){
-        this.setState({
-          showName: true
+    removeMessage(data: any) {
+      let reactComponent = this;
+      let text = data;
+      let chat = this.state.chatBox;
+        
+      var spoiler_hint = undefined;
+        
+      const attrs = chat.getOutgoingMessageAttributes("messageID=" + text.messageId, spoiler_hint);
+        
+      let message = chat.messages.findWhere('correcting')
+        
+      if (message) {
+        message.save({
+          'correcting': false,
+          'edited': chat.moment().format(),
+          'message': text,
+          'references': text,
+          'fullname': window.PROFILE_DATA.displayName
         });
-      } else{
-        this.setState({
-          showName: false
-        });
+      } else {
+        message = chat.messages.create(attrs);
       }
+      
+      reactComponent.state.converse.api.send(chat.createMessageStanza(message));
     }
+    
+    
     
     sendMessage(event: any){ 
       
@@ -563,10 +599,101 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
 
     }
+    
+    async toggleOccupantsList (){
+      
+      let room = this.state.converse.api.rooms.get(this.state.roomJid);
+      let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
+      
+      
+      if (this.state.showOccupantsList === true){
+        this.setState({
+          messageAreaWidth: 100,
+          showOccupantsList: false
+        })
+        
+        const filteredRooms = roomsWithOpenOccupantsList.filter((item: any) => item !== room.attributes.jid)
+          this.setState({occupantsListOpened: filteredRooms})
+          var result = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
+          
+          const filteredChats = result.filter(function(item:any) {
+            return item !== room.attributes.jid;
+          })
+          
+          window.sessionStorage.setItem("showOccupantsList", JSON.stringify(filteredChats));
+          
+        
+        return;
+      } else {
+          
+        if (!roomsWithOpenOccupantsList.includes(room.attributes.jid)){
+          roomsWithOpenOccupantsList.push(room.attributes.jid);
+          this.setState({
+            occupantsListOpened: roomsWithOpenOccupantsList,
+            messageAreaWidth: 75 ,
+            showOccupantsList: true
+          })
+          this.getOccupants();
+          window.sessionStorage.setItem("showOccupantsList", JSON.stringify(roomsWithOpenOccupantsList));
+        } else {
+          
+          
+          return;
+        } 
+        
+        console.log(this.state.chatRoomOccupants);
+      }
+        
+      
+    }
+    
+    async getOccupants (){
+      let room = this.state.converse.api.rooms.get(this.state.roomJid);
+      if (room.occupants.models){
+          let occupantsList = this.state.occupants;
+          let user: any;
+          let userData: any;
+          let nickname: any;
+          
+          
+          for (const item of room.occupants.models) {
+            if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")){
+              nickname = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
+              user = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick,{}), 'callback')());
+              
+              userData = {id: item.attributes.nick, nick: nickname.nick, status: item.attributes.show, firstName: user.firstName, lastName: user.lastName};
+
+            } else {
+              user = item.attributes.nick;
+              nickname = item.attributes.nick;
+              
+              userData = {id: item.attributes.nick, nick: nickname, status: item.attributes.show, firstName: "", lastName: ""};
+            }
+            
+            var isExists = occupantsList.some(function(curr :any) {
+                if (curr.id === userData.id) {   
+                    return true;
+                } 
+            });
+            
+            if (isExists !== true){
+              occupantsList.push(userData);
+            }
+          }
+            
+            
+          this.setState({
+            occupants: occupantsList
+          });
+          
+          console.log(occupantsList);
+      }
+      
+    }
 
     scrollToBottom = () => {
       if (this.messagesEnd){
-        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+        this.messagesEnd.scrollIntoView({ behavior: "smooth", block: "end" });
       }
     }
     
@@ -617,6 +744,20 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           roomJid: chat.jid,
           isStudent: window.MUIKKU_IS_STUDENT
         });
+        
+        var roomOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
+        
+        if (roomOccupantsFromSessionStorage){
+          
+          roomOccupantsFromSessionStorage.map((item: any) => {
+            if (item === chat.jid){
+              this.setState({
+                showOccupantsList: true,
+                messageAreaWidth: 75
+              });
+            }
+          })
+        }  
 
         this.openMucConversation(chat.jid);
         this.scrollToBottom();
@@ -641,6 +782,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           }
         })
       }
+      
     }
     
     componentDidUpdate() {
@@ -661,6 +803,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
             <div style={{"backgroundColor": this.state.isWorkspaceChat }} className="roomSettings">
               <div className="chatbox-room-name">{this.state.roomName}</div>
+              <span onClick={() => this.toggleOccupantsList()} className="icon-profile"></span>
               <span onClick={() => this.minimizeChats(this.state.roomJid)} className="icon-remove"></span>
               <span onClick={() => this.openChatSettings()} className="icon-cogs room-settings-icon"></span>
               <span onClick={() => this.props.onOpenChat(this.state.roomJid)} className="icon-close"></span>
@@ -686,26 +829,24 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               </div>
             </div> }
             
-            <form ref={el => this.messageFormRef = el}  onSubmit={(e)=>this.sendMessage(e)}>                                                  
-              <div className="chatMessages" ref={ (ref) => this.myRef=ref }>
-                {this.state.groupMessages.map((message: any, i: number) => 
-                <div className={message.senderClass + " message-item"} key={i}>
-                  
-                  <p className={message.senderClass + " timestamp"}>
-                  <b onClick={this.showRealName} className={message.senderClass + " message-item-sender"}>{message.from} 
-                  {(this.state.showName === true) && <i>({message.alt}) </i>}
-                  </b>
-                 {message.timeStamp}</p>
-                  <p className={message.senderClass + " message-item-content"}>{message.content}</p>
-       </div>)}
-                <div style={{ float:"left", clear: "both" }}
-                ref={(el) => { this.messagesEnd = el; }}></div>
+            
+            
+            <form onSubmit={(e)=>this.sendMessage(e)}>  
+              <div style={{float: "none"}}>
+              <div style={{width: this.state.messageAreaWidth + '%'}} className="chatMessages" ref={ (ref) => this.myRef=ref }>
+                {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
+                <div style={{ float:"left", clear: "both"}} ref={(el) => { this.messagesEnd = el; }}></div>
               </div>
-
+              {this.state.showOccupantsList && <div className="chat-room-occupants">
+                <ul>
+                  {this.state.occupants.map((occupant: any, i: any) => <li onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</li>)}
+                </ul>
+              </div>}
               <input name="chatRecipient" className="chatRecipient" value={this.state.roomJid} readOnly/>
               <textarea className="chatMessage" onKeyDown={this.onEnterPress} placeholder="..Kirjoita jotakin" name="chatMessage"></textarea>
               <button className="sendMessage" type="submit" value=""><span className="icon-announcer"></span></button>
-            </form>
+              </div>
+              </form>
           </div>}
 
           

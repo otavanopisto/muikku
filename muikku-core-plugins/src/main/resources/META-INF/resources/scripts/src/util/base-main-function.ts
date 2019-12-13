@@ -44,6 +44,7 @@ export default function(store: Store<StateType>){
             auto_login : true,
             muc_domain : 'conference.' + location.hostname,
             muc_show_join_leave: true,
+            message_archiving: 'always',
             hide_muc_server : true,
             fullname: result.mucNickName,
             ping_interval: 45,

@@ -7,7 +7,8 @@ interface Iprops{
   chat?: any,
   converse?: any,
   orderNumber?: any,
-  onOpenChat?:any
+  onOpenChat?:any,
+  chatObject?:any
 }
 
 interface Istate {
@@ -100,130 +101,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
     
 
   }
-  
-  onOspenChat (room: string) {
-    
-    if (this.state.showChatbox === true){
-        
-      
-      
-      const result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
-
-      const filteredChats = result.filter(function(item:any) {
-        return item.jid !== room;
-      })
-      
-      window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
-      
-      this.setState({
-        showChatbox: false
-      }); 
-
-      
-      return;
-      
-    } else{
-  
-      let data = {
-        jid: room,
-        nick: window.PROFILE_DATA.displayName
-      };
-      
-      const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-      
-      var reactComponent = this;
-      
-      let list = [];
-      
-      const result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
-      const newNumber = result.length + 1;
-      let roomData = {jid: "", orderNumber: 0};
-
-      const resultItem = result.map((item:any) => item.jid);
-
-      if (!resultItem.includes(room)){
-
-        const found = resultItem.some((el: any) => el.orderNumber === newNumber);
-
-        if (found){
-          roomData = {jid: room, orderNumber: newNumber + 1};
-
-        } else {roomData = {jid: room, orderNumber: newNumber};}
-        
-
-        result.push(roomData);
-
-
-      }
-
-      let alignNumber:any;
-
-      alignNumber = 260 + (roomData.orderNumber - 1) * 350;
-
-      reactComponent.setState({
-        showChatbox: true,
-        nick: window.PROFILE_DATA.displayName,
-        openRoomNumber: alignNumber
-        
-      });
-
-      window.sessionStorage.setItem("openChats", JSON.stringify(result));
-      
-      let nick: string;
-      
-      nick = window.PROFILE_DATA.displayName;
-        
-      if (!nick) {
-        throw new TypeError('join: You need to provide a valid nickname');
-      }
-      
-      let jid = Strophe.getBareJidFromJid(data.jid);
-      let roomJidAndNick = jid + (nick !== null ? `/${nick}` : "");
-  
-      const stanza = $pres({
-        'from': reactComponent.state.converse.connection.jid,
-        'to': roomJidAndNick
-      }).c("x", {'xmlns': Strophe.NS.MUC})
-      .c("history", {'maxstanzas': reactComponent.state.converse.muc_history_max_stanzas}).up();
-
-      // TODO: Password protected rooms  
-      /* if (password) {
-      stanza.cnode(Strophe.xmlElement("password", [], password));
-      } */
-      //this.save('connection_status', converse.ROOMSTATUS.CONNECTING);
-      reactComponent.state.converse.api.send(stanza);
-      
-      if (data.nick === "") {
-        // Make sure defaults apply if no nick is provided.
-        data.nick = reactComponent.state.jid;
-      }
-      
-      if (this.state.converse.locked_muc_domain || (this.state.converse.muc_domain)) {
-        jid = `${Strophe.escapeNode(data.jid)}@${this.state.converse.muc_domain}`;
-      } else {
-        jid = data.jid;
-      }
-      
-      reactComponent.state.converse.api.rooms.open(jid, _.extend(data, 
-        {
-          'jid':jid, 
-          'maximize': true, 
-          'auto_configure': true,
-          'nick': window.PROFILE_DATA.displayName,
-          'publicroom': true,
-        }), false).then((chat: any) => {
-          
-          reactComponent.setState({
-            chatBox: chat,
-            groupMessages: []
-          });
-          
-          
-            chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
-          
-        });
-      }
-    }
 
      getMUCMessages (stanza: any) {
     

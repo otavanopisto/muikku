@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -160,17 +161,24 @@ public class ChatSyncController {
               
               String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
               
-              chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
+              List<String> broadcastPresenceRolesList = new ArrayList<String>();
+              broadcastPresenceRolesList.add("moderator");
+              broadcastPresenceRolesList.add("participant");
+              broadcastPresenceRolesList.add("visitor");
+
+              
+              chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName, workspace.getDescription());
               chatRoomEntity.setPersistent(true);
               chatRoomEntity.setLogEnabled(true);
+              chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
               client.createChatRoom(chatRoomEntity);
             }  
 
             EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
             if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-              client.addAdmin(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+              client.addAdmin("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
             } else {
-              client.addMember(workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+              client.addMember("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
             }
           } 
         }
@@ -288,10 +296,16 @@ public class ChatSyncController {
     String separator = "workspace-chat-";
     String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
     MUCRoomEntity chatRoomEntity = client.getChatRoom(workspace.getIdentifier());
+    
+    List<String> broadcastPresenceRolesList = new ArrayList<String>();
+    broadcastPresenceRolesList.add("moderator");
+    broadcastPresenceRolesList.add("participant");
+    broadcastPresenceRolesList.add("visitor");
 
     chatRoomEntity = new MUCRoomEntity(separator + workspace.getIdentifier(), roomName, workspace.getDescription());
     chatRoomEntity.setPersistent(true);
     chatRoomEntity.setLogEnabled(true);
+    chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
     client.createChatRoom(chatRoomEntity);
     
     workspaceChatSettingsEnabledEvent.fire(new WorkspaceChatSettingsEnabledEvent(workspace.getSchoolDataSource(), workspace.getIdentifier(), true));
@@ -324,9 +338,9 @@ public class ChatSyncController {
 
     EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
     if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-      client.addAdmin(workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
+      client.addAdmin("workspace-chat-" + workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
     } else {
-      client.addMember(workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
+      client.addMember("workspace-chat-" + workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
    }
    
  }

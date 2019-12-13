@@ -1,3 +1,7 @@
+$muikku-blue: #009fe3;
+$workspace-blue: #2fd2ae;
+$the-grey: #eaeaea;
+
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
@@ -9,8 +13,10 @@ ol, ul {
 }
 
 .container{
-  display: flex;
-  flex-direction: row;
+  position: fixed;
+  bottom: 0;
+  right:0;
+  z-index:20;
 }
 
 .board-row:after {
@@ -61,50 +67,140 @@ ol, ul {
   border: 3px solid #3392FF;
   z-index: -1;
   overflow: hidden;
+	display:none;
+}
+
+.chatboxes{
+  display:flex;
+  margin-right: 260px;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.chat-discussion-container{
+  
+  position: relative;
+  
 }
 
 .chat {
-  width: 100%;
-  height: 100%;
-  border: 3px solid #3392FF;
-  z-index: -1;
-  position: absolute;
-  right: 105%;
-  float:left;
-  top:0;
   background-color: #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px 10px 0 0;
+  width: 400px;
+  height:350px;
+}
+
+.chat-body {
+  justify-self: flex-end;
+  margin-left: 10px;
 }
 
 .chatMessages{
-  height: 320px;
+  height: 245px;
   margin-top:0;
   overflow-y: scroll;
   border-bottom:1px solid #999;
+  padding: 5px;
+  float: left;
+  width: 100%;
+}
+
+.chat-room-occupants{
+  height: 245px;
+  background-color: #eaeaea;
+  color: $muikku-blue;
+  width: 25%;
+  float: left;
+  padding: 10px;
+  font-size: 10px;
 }
 
 .chatMessage{
-  width:83%;
-  height:10%;
+  width: 90%;
+  height: 74px;
+  padding: 10px;
+  resize: none;
+  border: 0;
 }
 
+
+
 .chatRecipient{
-  width:74%;
-  height:4%;
+  display: none;
+}
+
+.message-item{
+  display: flex;
+  margin-bottom: 10px;
+  flex-flow: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.message-item-content{
+  background-color: $the-grey;
+  padding: 6px;
+  width: auto;
+  border-radius: 10px;
+  font-size: 13px;
+  float:left;
+}
+
+.sender-me{
+  align-self: flex-end;
+
+  b{
+    color: #777878;
+    font-size: 12px;
+  }
+}
+
+.timestamp{
+  font-size: 11px;
+}
+  
+.sender-them{
+  align-self: flex-start;
+   b{
+     color: $muikku-blue;
+     font-size: 12px;
+   }
+}
+
+.sender-others-workspace{
+  align-self: flex-start;
+   b{
+     color: $workspace-blue;
+     font-size: 12px;
+   }
 }
 
 .sendMessage{
   height:12%;
-  border-radius: 5%;
+  border-radius: 5px;
+  border: 5px solid #3392FF;
   background-color: #3392FF;
   color: #fff;
+  vertical-align: top;
+  margin: 22px 4px 2px 4px;
+}
+
+.message-remove-button{
+  float: left;
+  padding: 7px;
 }
 
 .roomSettings{
-  background-color: #3392FF;
+  background-color: darken($workspace-blue, 10%);
   color:#fff;
   text-align: right;
-  height: 20px;
+  font-size: 13px;
+  height: 28px;
   width:100%;
+  padding: 5px;
+  border-radius: 10px 10px 0px 0px;
+
 }
 
 .roomSettingsForm{
@@ -115,86 +211,181 @@ ol, ul {
   padding:10px;
 }
 
+.room-settings-icon{
+  padding: 5px;
+}
+
 button.saveSettings{
   align-content:right;
   margin: 255px 0px 0px 300px
 }
 
 .chatButton{
+  background-color: #00afcd;
   border-radius: 100%;
-  height: 80px;
-  line-height: 80px;
-  width: 80px;
-  background-color: #3392FF;
+  border: 2px solid #fff;
   color: #fff;
-  border: 3px solid #f3f3f3;
+  height: 54px;
+  padding: 11px 10px 7px 10px;
+  width: 54px;
+  text-align: center;
+  font-size: 30px;
+  margin: -30px 10px 0 5px;
+  box-shadow: 0 -2px 9px rgba(0,0,0,.3);
   position: fixed;
   bottom: 0;
   right: 0;
-  text-align: center;
   z-index:50000;
 }
 
 .chatHeader{
-  background-color: #3392FF;
+  background-color: darken($muikku-blue, 10%);
   color: #fff;
   width: 100%;
   text-align: right;
   height:30px;
+  border-radius: 10px 10px 0 0;
+  padding: 3%;
+  font-size: 17px;
+}
+
+.header-items-add{
+  float:left;
+}
+
+.toggle-info{
+  float: left;
+  padding: 6px;
+  color: #3392FF;
+}
+
+.room-info{
+  width: 100%;
+  background-color: #f6f6f6;
+  padding: 6px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  border-radius: 10px;
 }
 
 .chatControlBox-body{
   position: fixed;
   bottom: 0;
   right:0;
-  width:300px;
-  height:500px;
+  width:250px;
+  height:350px;
   border:1px solid gainsboro;
   background-color: #fff;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+
 }
 
 .chatControlBox-container{
   overflow-y: scroll;
   height:500px;
+  padding:5px;
 }
 
-.chatBox-roomName{
-  width: 100%;
-  padding-right: 10%;
+.order-minimized{
+  order: -1;
 }
 
-.roomSettings-info{
+.minimized-chat{
+  display: block;
+  width: 160px;
+  height: 30px;
+  z-index: 7;
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px 10px 0 0;
+  text-align: center;
+  padding-top: 8px;
+}
+.close{
+  font-size: 13px;
+  float: right;
+  margin-right: 10px;
+}
+
+.rooms-list-room-name{
   width: 100%;
-  margin-top: 10%;
+  padding: 3%;
+  font-weight: normal;
+  
+}
+
+.chatbox-room-name{
+  float: left;
+  
+}
+
+.settingsInform{
+  display: block;
+  width: 100%;
   border:1px solid #d2d2d2;
-  background-color: forestgreen;
+  margin-top:10%;
   color:#fff;
   padding:15px;
   text-align: center;
 }
-
-.settingsInform-none{
-  dislpay: none;
-}
-
-.settingsInform-success {
-  display: block;
-  width: 100%;
-  margin-top: 10%;
-  border:1px solid #d2d2d2;
-  background-color: forestgreen;
-  color:#fff;
-  padding:15px;
-  text-align: center;
-}
-
-.settingsInform-failed {
-  display: block;
-  width: 100%;
-  margin-top: 10%;
-  border:1px solid #d2d2d2;
+.--none{
+    display: none;
+  }
+  
+.--success {
+    background-color: forestgreen;
+  }
+  
+.--failed {
   background-color: teal;
-  color:#fff;
-  padding:15px;
-  text-align: center;
 }
+
+.newRoom{
+  position: absolute;
+  top: 30px;
+  width: 100%;
+  height: 100%;
+  padding: 10px 20px 6px 10px;
+  background-color: #fff;
+
+}
+
+.close-new-room-form{
+  float:right;
+  font-size: 17px;
+}
+
+.settings-input{
+  width: 100%;
+  border-radius: 5px;
+  border: 2px solid #009fe3;
+  margin-bottom: 10px;
+  padding: 3px;
+  font-size: 13px;
+}
+
+.control-panel{
+  color: #626363;
+  
+}
+
+.user-status{
+  width: 80%;
+  height: 30px;
+  margin: 6% 11%;
+  padding: 4px;
+  border-radius: 30px;
+}
+
+.join-button{
+  width: 63%;
+  height: 40px;
+  margin: 20%;
+  background-color: #2fd2ae;
+  color: #fff;
+  border: 1px solid #2fd2ae;
+  border-radius: 9px;
+  text-transform: uppercase;
+}
+
