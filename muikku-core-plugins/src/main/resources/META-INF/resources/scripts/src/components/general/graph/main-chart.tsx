@@ -63,7 +63,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       amChartsLoaded: (window as any).AmCharts != null,
       filteredWorkspaces: [],
       filteredCompletedWorkspaces: [],
-      filteredGraphs: [Graph.FORUM_NEWMESSAGE]
+      filteredGraphs: [] // Graph.FORUM_NEWMESSAGE
     };
 
     if (!this.state.amChartsLoaded)
@@ -183,22 +183,22 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
             entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
             break;
           case "FORUM_NEWMESSAGE":
-            entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
+            entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1 || 1;
             break;
           case "FORUM_NEWTHREAD":
-            entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
+            entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1 || 1;
             break;
           case "NOTIFICATION_ASSESMENTREQUEST":
-            entry.NOTIFICATION_ASSESMENTREQUEST = entry.NOTIFICATION_ASSESMENTREQUEST + 1|| 1;
+            entry.NOTIFICATION_ASSESMENTREQUEST = entry.NOTIFICATION_ASSESMENTREQUEST + 1 || 1;
             break;
           case "NOTIFICATION_NOPASSEDCOURSES":
-            entry.NOTIFICATION_NOPASSEDCOURSES = entry.NOTIFICATION_NOPASSEDCOURSES + 1|| 1;
+            entry.NOTIFICATION_NOPASSEDCOURSES = entry.NOTIFICATION_NOPASSEDCOURSES + 1 || 1;
             break;
           case "NOTIFICATION_SUPPLEMENTATIONREQUEST":
-            entry.NOTIFICATION_SUPPLEMENTATIONREQUEST = entry.NOTIFICATION_SUPPLEMENTATIONREQUEST + 1|| 1;
+            entry.NOTIFICATION_SUPPLEMENTATIONREQUEST = entry.NOTIFICATION_SUPPLEMENTATIONREQUEST + 1 || 1;
             break;
           case "NOTIFICATION_STUDYTIME":
-            entry.NOTIFICATION_STUDYTIME = entry.NOTIFICATION_STUDYTIME + 1|| 1;
+            entry.NOTIFICATION_STUDYTIME = entry.NOTIFICATION_STUDYTIME + 1 || 1;
             break;
           default:
             break;
@@ -223,19 +223,19 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
               entry.EVALUATION_GOTINCOMPLETED = entry.EVALUATION_GOTINCOMPLETED + 1|| 1;
               break;
             case "EVALUATION_GOTFAILED":
-              entry.EVALUATION_GOTFAILED = entry.EVALUATION_GOTFAILED + 1|| 1;
+              entry.EVALUATION_GOTFAILED = entry.EVALUATION_GOTFAILED + 1 || 1;
               break;
             case "EVALUATION_GOTPASSED":
-              entry.EVALUATION_GOTPASSED = entry.EVALUATION_GOTPASSED + 1|| 1;
+              entry.EVALUATION_GOTPASSED = entry.EVALUATION_GOTPASSED + 1 || 1;
               break;
             case "WORKSPACE_VISIT":
-              entry.WORKSPACE_VISIT = entry.WORKSPACE_VISIT + 1|| 1;
+              entry.WORKSPACE_VISIT = entry.WORKSPACE_VISIT + 1 || 1;
               break;
             case "MATERIAL_EXERCISEDONE":
-              entry.MATERIAL_EXERCISEDONE = entry.MATERIAL_EXERCISEDONE + 1|| 1;
+              entry.MATERIAL_EXERCISEDONE = entry.MATERIAL_EXERCISEDONE + 1 || 1;
               break;
             case "MATERIAL_ASSIGNMENTDONE":
-              entry.MATERIAL_ASSIGNMENTDONE = entry.MATERIAL_ASSIGNMENTDONE + 1|| 1;
+              entry.MATERIAL_ASSIGNMENTDONE = entry.MATERIAL_ASSIGNMENTDONE + 1 || 1;
               break;
             default:
               break;
