@@ -47,9 +47,9 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    } else if (this.props.coursepickerCoursesState.length === 0){
-      return <div className="empty"><span>{this.props.i18n.text.get("TODO it's empty")}</span></div>
-    }    
+    } else if (this.props.coursepickerCoursesCourses.length === 0){
+      return <div className="empty"><span>{this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
+    }
     return (<ApplicationList>
       {this.props.coursepickerCoursesCourses.map((course: WorkspaceCourseType)=>{
         return <Course key={course.id} course={course}/>

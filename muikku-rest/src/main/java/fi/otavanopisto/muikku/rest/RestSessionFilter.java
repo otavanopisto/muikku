@@ -66,7 +66,7 @@ public class RestSessionFilter implements javax.ws.rs.container.ContainerRequest
   public void filter(ContainerRequestContext requestContext) throws IOException {
     localSessionRestAuthentication.setActiveUser(localSessionController.getLoggedUserSchoolDataSource(), localSessionController.getLoggedUserIdentifier(), localSessionController.isActiveUser());
     restSessionController.setAuthentication(localSessionRestAuthentication);
-    restSessionController.setLocale(request.getLocale());
+    restSessionController.setLocale(localSessionController.getLocale());
     sessionControllerDelegate.setImplementation(restSessionController);
     
     ResourceMethodInvoker methodInvoker = (ResourceMethodInvoker) requestContext.getProperty("org.jboss.resteasy.core.ResourceMethodInvoker");

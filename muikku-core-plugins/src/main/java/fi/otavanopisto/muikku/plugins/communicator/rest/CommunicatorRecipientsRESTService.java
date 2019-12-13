@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
@@ -45,6 +46,7 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
@@ -68,6 +70,9 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private OrganizationEntityController organizationEntityController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -152,8 +157,11 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
       Boolean onlyDefaultUsers = true;
-      
-      SearchResult result = searchProvider.searchUsers(searchString, 
+      List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
+
+      SearchResult result = searchProvider.searchUsers(
+          organizations,
+          searchString, 
           fields, 
           roleArchetypeFilter, 
           userGroupFilters, 
@@ -244,8 +252,11 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       boolean includeUnpublished = false;
       List<Sort> sorts = null;
       
+      List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
+      List<SchoolDataIdentifier> organizationIdentifiers = organizations.stream().map(org -> new SchoolDataIdentifier(org.getIdentifier(), org.getDataSource().getIdentifier())).collect(Collectors.toList());
+      
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
-          curriculumIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
+          curriculumIdentifiers, organizationIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {

@@ -21,7 +21,6 @@ interface LoginButtonState {
 class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
   constructor(props: LoginButtonProps){
     super(props);
-    
     this.login = this.login.bind(this);
   }
   login(){

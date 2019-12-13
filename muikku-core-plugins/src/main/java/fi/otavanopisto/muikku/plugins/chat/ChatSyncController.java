@@ -51,14 +51,14 @@ public class ChatSyncController {
 
   @Inject
   private CourseMetaController courseMetaController;
-    
+
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
 
   @Inject
   private UserController userController;
-  
+
   @Inject
   private UserEntityController userEntityController;
   
@@ -71,7 +71,7 @@ public class ChatSyncController {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
-  public void syncStudent(SchoolDataIdentifier studentIdentifier){
+  public void syncStudent(SchoolDataIdentifier studentIdentifier) {
 
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
@@ -97,21 +97,23 @@ public class ChatSyncController {
 
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
-    
+
     SecureRandom random = new SecureRandom();
-    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier()); 
+    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(),
+        studentIdentifier.getIdentifier());
 
     String userSchoolDataSource = user.getSchoolDataSource();
     String userIdentifier = user.getIdentifier();
-    
+
     try {
-      // Checking before creating is subject to a race condition, but in the worst case
+      // Checking before creating is subject to a race condition, but in the worst
+      // case
       // the creation just fails, resulting in a log entry
       UserEntity userEntity = client.getUser(studentIdentifier.toId());
       if (userEntity == null) {
-        logger.log(Level.INFO, "Syncing chat user " + userSchoolDataSource+ "/" + userIdentifier);
+        logger.log(Level.INFO, "Syncing chat user " + userSchoolDataSource + "/" + userIdentifier);
         // Can't leave the password empty, so next best thing is random passwords
-        
+
         // The passwords are not actually used
         byte[] passwordBytes = new byte[20];
         random.nextBytes(passwordBytes);
@@ -121,10 +123,11 @@ public class ChatSyncController {
         client.createUser(userEntity);
 
         if (userSchoolDataSource == null || userIdentifier == null) {
-          logger.log(Level.WARNING, "No user entity found for identifier " + studentIdentifier.getIdentifier() + ", skipping...");
+          logger.log(Level.WARNING,
+              "No user entity found for identifier " + studentIdentifier.getIdentifier() + ", skipping...");
         }
       }
-        
+
       List<WorkspaceEntity> usersWorkspaces = workspaceController.listWorkspaceEntitiesByUser(userEntityController.findUserEntityByUser(user), false);
 
       for (WorkspaceEntity usersWorkspace : usersWorkspaces) {
@@ -132,19 +135,19 @@ public class ChatSyncController {
         Workspace workspace = workspaceController.findWorkspace(usersWorkspace);
         Set<SchoolDataIdentifier> curriculumIdentifiers = workspace.getCurriculumIdentifiers();
         boolean hasCorrectCurriculums = true;
-          
+
         for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
-          
+
           Curriculum curriculum = courseMetaController.findCurriculum(curriculumIdentifier);
-            
+
           String curriculumName = curriculum.getName();
-            
+
           if (curriculumName.equals("OPS2005")) {
             hasCorrectCurriculums = false;
             break;
-          } 
-             
+          }
         }
+
         WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(usersWorkspace.getId());
        
         if (workspaceChatSettings != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
@@ -183,9 +186,10 @@ public class ChatSyncController {
           } 
         }
       }
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       logger.log(Level.INFO, "Exception when syncing user " + studentIdentifier.getIdentifier(), e);
-    } 
+    }
   }
   
   public void removeChatRoomMembership(SchoolDataIdentifier studentIdentifier, WorkspaceEntity workspaceEntity) {
@@ -343,6 +347,5 @@ public class ChatSyncController {
       client.addMember("workspace-chat-" + workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
    }
    
- }
+  }
 }
-

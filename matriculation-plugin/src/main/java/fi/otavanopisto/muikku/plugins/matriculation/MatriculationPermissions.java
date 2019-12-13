@@ -21,6 +21,10 @@ public class MatriculationPermissions extends AbstractMuikkuPermissionCollection
   public static final String MATRICULATION_GET_EXAM = "MATRICULATION_GET_EXAM";
 
   @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultPermissionRoles ( EVERYONE )
+  public static final String MATRICULATION_LIST_EXAMS = "MATRICULATION_LIST_EXAMS";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.STUDENT } )
   public static final String MATRICULATION_GET_INITIALDATA = "MATRICULATION_GET_INITIALDATA";
 

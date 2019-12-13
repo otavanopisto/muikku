@@ -79,6 +79,16 @@
   margin: 10px 0 0;
 }
 
+.form-element--forgot-password {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 0;
+
+  label {
+    padding: 10px 0 5px;
+  }
+}
+
 .form-element__input {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
   -webkit-appearance: none;  
@@ -105,6 +115,8 @@
   font-size: $text-forgotpassword-font-size;
   width: 100%;
 }
+
+
 
 .form-element__input--profile {
   width: 100%;
@@ -240,3 +252,9 @@
   margin-right: 10px;
   padding: 10px;
 }
+
+
+.form-element--button-container {
+  padding: 10px 0;
+}
+

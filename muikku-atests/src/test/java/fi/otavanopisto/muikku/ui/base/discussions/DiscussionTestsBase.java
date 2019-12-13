@@ -37,7 +37,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionSendMessageTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();
@@ -77,7 +77,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionAdminCreateAreaTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();
@@ -109,7 +109,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionReplyTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();
@@ -149,7 +149,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionDeleteThreadTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();
@@ -234,7 +234,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionQuoteTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();
@@ -278,7 +278,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionEditTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     login();

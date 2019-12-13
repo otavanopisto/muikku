@@ -211,7 +211,18 @@ public class PyramusMatriculationExamEnrollment
     this.degreeType = degreeType;
   }
   
+  @Override
+  public Long getExamId() {
+    return examId;
+  }
+
+  @Override
+  public void setExamId(Long examId) {
+    this.examId = examId;
+  }
+  
   public Long id;
+  public Long examId;
   public String name;
   public String ssn;
   public String email;

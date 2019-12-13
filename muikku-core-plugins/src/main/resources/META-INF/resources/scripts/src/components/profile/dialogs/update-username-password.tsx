@@ -19,7 +19,6 @@ interface UpdateUsernamePasswordDialogProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
   profile: ProfileType,
-
   displayNotification: DisplayNotificationTriggerType,
   loadProfileUsername: LoadProfileUsernameTriggerType
 }
@@ -109,11 +108,13 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
       }
     });
   }
+  
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>){
     let nField:any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
+  
   render(){
     let content = (closeDialog: ()=>any)=><div>
         <p>{this.props.i18n.text.get('plugin.profile.changePassword.dialog.desription')}</p>

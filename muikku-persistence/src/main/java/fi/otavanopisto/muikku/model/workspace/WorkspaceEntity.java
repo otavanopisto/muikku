@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -16,7 +17,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.util.ArchivableEntity;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.security.ContextReference;
 
 @Entity
@@ -28,13 +31,18 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
     return id;
   }
   
+  @Transient
+  public SchoolDataIdentifier schoolDataIdentifier() {
+    return new SchoolDataIdentifier(getIdentifier(), getDataSource().getIdentifier());
+  }
+  
   public String getIdentifier() {
-		return identifier;
-	}
+    return identifier;
+  }
   
   public void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
+    this.identifier = identifier;
+  }
 
   public SchoolDataSource getDataSource() {
     return dataSource;
@@ -45,12 +53,12 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   }
   
   public String getUrlName() {
-		return urlName;
-	}
+    return urlName;
+  }
   
   public void setUrlName(String urlName) {
-		this.urlName = urlName;
-	}
+    this.urlName = urlName;
+  }
   
   public Boolean getPublished() {
     return published;
@@ -84,31 +92,42 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
     this.defaultMaterialLicense = defaultMaterialLicense;
   }
 
+  public OrganizationEntity getOrganizationEntity() {
+    return organizationEntity;
+  }
+
+  public void setOrganizationEntity(OrganizationEntity organizationEntity) {
+    this.organizationEntity = organizationEntity;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
 
-	@NotEmpty
-	@NotNull
-	@Column(nullable = false)
-	private String identifier;
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
+  private String identifier;
 
-	@ManyToOne
+  @ManyToOne
   private SchoolDataSource dataSource;
 
-	@NotEmpty
-	@NotNull
-	@Column(nullable = false, unique = true)
-	private String urlName;
+  @ManyToOne
+  private OrganizationEntity organizationEntity;
 
-	@NotNull
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false, unique = true)
+  private String urlName;
+
+  @NotNull
   @Column(nullable = false)
   private Boolean published;
-	
-	@NotNull
+  
+  @NotNull
   @Column(nullable = false)
   @Enumerated (EnumType.STRING)
-	private WorkspaceAccess access;
+  private WorkspaceAccess access;
   
   @NotNull
   @Column(nullable = false)

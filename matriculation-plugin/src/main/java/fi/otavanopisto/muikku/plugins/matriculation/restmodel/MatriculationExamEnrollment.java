@@ -156,6 +156,15 @@ public class MatriculationExamEnrollment {
     this.degreeType = degreeType;
   }
 
+  public Long getExamId() {
+    return examId;
+  }
+
+  public void setExamId(Long examId) {
+    this.examId = examId;
+  }
+
+  private Long examId;
   private String name;
   private String ssn;
   private String email;

@@ -210,7 +210,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(studentArrayJson)
         .withStatus(200)));
 
-    StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, null, "Test", "Staff1member", null, 
+    StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, (long) 1, null, "Test", "Staff1member", null, 
       fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables);
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
@@ -230,7 +230,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(staffMemberArrayJson)
         .withStatus(200)));
     
-    StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, null, "Test", "Staff2member", null, 
+    StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, (long) 1, null, "Test", "Staff2member", null, 
       fi.otavanopisto.pyramus.rest.model.UserRole.MANAGER, tags, variables);
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember2);
@@ -249,7 +249,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(staffMemberArrayJson)
         .withStatus(200)));
     
-    StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Administrator", null, 
+    StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
       fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     
     staffMemberJson = objectMapper.writeValueAsString(staffMember3);
@@ -496,10 +496,10 @@ public class PyramusMocks extends AbstractPyramusMocks {
   }
   
   @SuppressWarnings("unused")
-  private static StaffMember mockStaffMember(Long personId, Long staffMemberId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
+  private static StaffMember mockStaffMember(Long personId, Long staffMemberId, Long organizationId, String firstName, String lastName, String email, UserRole role, List<String> tags, Map<String, String> variables, List<String> payloads) throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-    StaffMember staffMember = new StaffMember(staffMemberId, personId, null, firstName, lastName, null, 
+    StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
         role, tags, variables);
       
     String staffMemberJson = objectMapper.writeValueAsString(staffMember);
@@ -538,7 +538,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     StudyProgrammeCategory spc = new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false);
-    StudyProgramme sp = new StudyProgramme(1l, "test", "Test Study Programme", 1l, false);
+    StudyProgramme sp = new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, false);
     
     StudyProgramme[] sps = { sp };
     StudyProgrammeCategory[] spcs = { spc };
@@ -582,7 +582,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
       (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
       (double) 15, (double) 45, (double) 45, end, (long) 1,
       (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-      null, null);
+      null, null, 1L);
   
     String courseJson = objectMapper.writeValueAsString(course);
     
@@ -625,8 +625,8 @@ public class PyramusMocks extends AbstractPyramusMocks {
     OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime lastmodified = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-    StudentGroup studentGroupStudents = new StudentGroup((long) 1, "Opiskelijat", "Spring 2015 Students", begin, (long) 1, created, (long) 1, lastmodified, null, false, false);
-    StudentGroup studentGroupAnother = new StudentGroup((long) 2, "Opiskelijat 2", "Spring 2015 Students 2", begin, (long) 1, created, (long) 1, lastmodified, null, false, false);
+    StudentGroup studentGroupStudents = new StudentGroup((long) 1, "Opiskelijat", "Spring 2015 Students", begin, (long) 1, created, (long) 1, lastmodified, null, false, 1l, false);
+    StudentGroup studentGroupAnother = new StudentGroup((long) 2, "Opiskelijat 2", "Spring 2015 Students 2", begin, (long) 1, created, (long) 1, lastmodified, null, false, 1l, false);
     StudentGroup[] studentGroupArray = {studentGroupStudents, studentGroupAnother};
     String studentGroupsJson = objectMapper.writeValueAsString(studentGroupArray);
     stubFor(get(urlMatching("/1/students/studentGroups"))
@@ -661,7 +661,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(personArrayJson)
         .withStatus(200)));
         
-    StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Administrator", null, 
+    StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, (long) 1, null, "Test", "Administrator", null, 
       fi.otavanopisto.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     
     String staffMemberJson = objectMapper.writeValueAsString(staffMember3);

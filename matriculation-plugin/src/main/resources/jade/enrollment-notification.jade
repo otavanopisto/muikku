@@ -131,13 +131,11 @@ mixin signatureSection()
 +header("Perustiedot")
 
 +basicBlock("Nimi", enrollment.name)
-+basicBlock("Henkilötunnus", enrollment.ssn)
 +basicBlock("Sähköpostiosoite", enrollment.email)
 +basicBlock("Puhelinnumero", enrollment.phone)
 +basicBlock("Osoite", enrollment.address)
 +basicBlock("Postinumero", enrollment.postalCode)
 +basicBlock("Postitoimipaikka", enrollment.city)
-+basicBlock("Jos tietosi ovat muuttuneet&#44; ilmoita siitä tässä", enrollment.changedContactInfo)
 
 +header("Opiskelijatiedot")
 +basicBlock("Ohjaaja", enrollment.guider)
@@ -154,7 +152,7 @@ if enrollment.restartExam
 else
   +basicBlock("Aloitan tutkinnon suorittamisen uudelleen", "En")
 
-+enrolledTable("Ilmoittaudun suorittamaan kokeen seuraavissa aineissa syksyllä 2019", enrollment.attendances)
++enrolledTable("Ilmoittaudun suorittamaan kokeen seuraavissa aineissa", enrollment.attendances)
 +finishedTable("Olen jo suorittanut seuraavat ylioppilaskokeet", enrollment.attendances)
 +plannedTable("Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa", enrollment.attendances)
 

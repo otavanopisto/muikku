@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import ApplicationPanel from '~/components/general/application-panel';
+import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
@@ -8,7 +8,6 @@ import Toolbar from './application/toolbar';
 import CoursepickerWorkspaces from './application/courses';
 import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
-
 import '~/sass/elements/link.scss';
 import {StateType} from '~/reducers';
 import { CoursesType, CoursesBaseFilterType } from '~/reducers/main-function/courses';

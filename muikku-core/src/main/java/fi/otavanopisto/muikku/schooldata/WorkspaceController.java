@@ -189,10 +189,7 @@ public class WorkspaceController {
     return workspaceEntityDAO.listByPublished(Boolean.TRUE);
   }
   
-  public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
-    return listWorkspaceEntitiesByUser(userEntity, false);
-  }
-  
+  @Deprecated
   public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity, boolean includeUnpublished) {
     List<WorkspaceEntity> result = new ArrayList<>();
     List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
@@ -289,7 +286,7 @@ public class WorkspaceController {
   }
   
   public WorkspaceUser findWorkspaceUserByWorkspaceEntityAndUser(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
     return findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
   }
   

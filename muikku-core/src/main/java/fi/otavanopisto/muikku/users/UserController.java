@@ -6,20 +6,22 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
 
 public class UserController {
   
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
-  public User createUser(SchoolDataSource schoolDataSource, String firstName, String lastName) {
-    return userSchoolDataController.createUser(schoolDataSource, firstName, lastName);
+  public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {
+    return userSchoolDataController.createStaffMember(dataSource, staffMember);
   }
 
   public User findUserByDataSourceAndIdentifier(String schoolDataSource, String userIdentifier) {

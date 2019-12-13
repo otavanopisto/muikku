@@ -18,9 +18,12 @@ import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messag
 
 import CousePickerBody from '../components/coursepicker/body';
 import { loadLoggedUser } from '~/actions/main-function/user-index';
-import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
+import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer, loadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 import { UserType } from '~/reducers/main-function/user-index';
+
+import OrganizationAdministrationBody from '../components/organization/body';
+
 
 import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
@@ -64,6 +67,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderIndexBody = this.renderIndexBody.bind(this);
     this.renderCoursePickerBody = this.renderCoursePickerBody.bind(this);
     this.renderCommunicatorBody = this.renderCommunicatorBody.bind(this);
+    this.renderOrganizationAdministrationBody = this.renderOrganizationAdministrationBody.bind(this);
     this.renderDiscussionBody = this.renderDiscussionBody.bind(this);
     this.renderAnnouncementsBody = this.renderAnnouncementsBody.bind(this);
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
@@ -159,6 +163,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     let filters:CoursesActiveFiltersType = {
       educationFilters: originalData.e || [],
       curriculumFilters: originalData.c || [],
+      organizationFilters: originalData.o || [],
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
     }
@@ -178,6 +183,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       
       this.props.store.dispatch(loadAvaliableEducationFiltersFromServer() as Action);
       this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(loadAvailableOrganizationFiltersFromServer() as Action);
       
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
       
@@ -187,12 +193,20 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       let state:StateType = this.props.store.getState();
       if (state.status.loggedIn){
         this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
-          if (!currentLocationHasData && user.curriculumIdentifier){
-            location.hash = "#?" + queryString.stringify({
-              c: [user.curriculumIdentifier]
-            }, {arrayFormat: 'bracket'});
-          } else {
-            this.loadCoursePickerData(currentLocationData);
+          if (!currentLocationHasData) {
+            let defaultSelections : any = {};
+            if (user.curriculumIdentifier) {
+              defaultSelections["c"] = [ user.curriculumIdentifier ];
+            }
+            if (user.organizationIdentifier) {
+              defaultSelections["o"] = [ user.organizationIdentifier ];
+            }
+            
+            if (defaultSelections.c || defaultSelections.o) {
+              location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
+            } else {
+              this.loadCoursePickerData(currentLocationData);
+            }
           }
         }) as Action);
       } else {
@@ -215,6 +229,13 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
     
     return <IndexBody/>
+  }
+  renderOrganizationAdministrationBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
+    }
+    return <OrganizationAdministrationBody/>
   }
   renderCommunicatorBody(){
     this.updateFirstTime();
@@ -332,6 +353,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
       <Route exact path="/" render={this.renderIndexBody}/>
+      <Route path="/organization" render={this.renderOrganizationAdministrationBody}/>
       <Route path="/coursepicker" render={this.renderCoursePickerBody}/>
       <Route path="/communicator" render={this.renderCommunicatorBody}/>
       <Route path="/discussion" render={this.renderDiscussionBody}/>
