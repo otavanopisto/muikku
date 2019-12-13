@@ -65,13 +65,13 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       filteredCompletedWorkspaces: [],
       filteredGraphs: [Graph.FORUM_NEWMESSAGE]
     };
-    
+
     if (!this.state.amChartsLoaded)
       this.loadAmCharts();
     else
       AmCharts = require("@amcharts/amcharts3-react");
   }
-  
+
   loadAmCharts(){
     let amcharts = document.createElement('script');
     amcharts.src = "https://www.amcharts.com/lib/3/amcharts.js";
@@ -88,7 +88,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     };
     document.head.appendChild(amcharts);
   }
-  
+
   workspaceFilterHandler(workspaceId?: number){
     let filteredWorkspaces: number[] = [];
     if (workspaceId){
@@ -107,7 +107,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
     this.setState({filteredWorkspaces: filteredWorkspaces});
   }
-  
+
   completedWorkspaceFilterHandler(workspaceId?: number){
     let filteredCompletedWorkspaces: number[] = [];
     if (workspaceId){
@@ -127,7 +127,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
     this.setState({filteredCompletedWorkspaces: filteredCompletedWorkspaces});
   }
-  
+
   GraphFilterHandler(graph: Graph){
     const filteredGraphs = this.state.filteredGraphs.slice();
     var index = filteredGraphs.indexOf(graph);
@@ -145,7 +145,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
   ignoreZoomed = false;
   }
-  
+
   zoomApplyHandler(e:any){
     if (zoomStartDate != null && zoomEndDate != null)
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
@@ -159,7 +159,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       e.chart.zoomToDates(prior, today);
     }
   }
-  
+
   render(){
     if (!this.state.amChartsLoaded){
       return null;
@@ -285,7 +285,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.FORUM_NEWMESSAGE)){
       graphs.push({
         "id": "FORUM_NEWMESSAGE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.forumMessagesTitle") + " <b>[[FORUM_NEWMESSAGE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.discussionMessagesTitle") + " <b>[[FORUM_NEWMESSAGE]]</b>",
         "fillAlphas": 1,
         "lineAlpha": 0.2,
         "lineColor": "#62c3eb",
@@ -381,7 +381,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "autoGridCount": true,
         "color": "#AAAAAA"
       },
-      "chartCursor": { 
+      "chartCursor": {
         "categoryBalloonDateFormat": "YYYY-MM-DD",
         "categoryBalloonColor": "#009FE3",
         "cursorColor": "#000"
@@ -408,8 +408,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler}/>
     <WorkspaceFilter workspaces={workspaces} filteredWorkspaces={this.state.filteredWorkspaces} workspaceHandler={this.workspaceFilterHandler}
     completedWorkspaces={completedWorkspaces} filteredCompletedWorkspaces={this.state.filteredCompletedWorkspaces} completedWorkspaceHandler={this.completedWorkspaceFilterHandler}/>
-     </div>    
-      <AmCharts.React className="chart chart--main-chart" options={config}/>  
+     </div>
+      <AmCharts.React className="chart chart--main-chart" options={config}/>
     </div>
   }
 }

@@ -38,8 +38,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
     if (this.props.records.location !== "hops"){
       return null;
     } else if (this.props.hops.status === "ERROR"){
-      //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
-      //message but here we got to put something
+      // TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
+      // message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
     } else if (this.props.hops.status !== "READY"){
       return null;
