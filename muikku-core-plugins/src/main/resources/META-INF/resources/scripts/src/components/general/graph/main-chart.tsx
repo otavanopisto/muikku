@@ -81,8 +81,14 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       serial.src = "https://www.amcharts.com/lib/3/serial.js";
       serial.async = true;
       serial.onload = ()=>{
-        AmCharts = require("@amcharts/amcharts3-react");
-        this.setState({amChartsLoaded: true});
+        let language = document.createElement('script');
+        language.src = "https://www.amcharts.com/lib/3/lang/fi.js";
+        language.async = true;
+        language.onload = ()=>{
+          AmCharts = require("@amcharts/amcharts3-react");
+          this.setState({amChartsLoaded: true});
+        }
+        document.head.appendChild(language);
       };
       document.head.appendChild(serial);
     };
@@ -350,6 +356,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     let config = {
       "theme": "none",
       "type": "serial",
+      "language" : "fi",
       "minMarginLeft": 50,
       "plotAreaFillAlphas": 0.1,
       "mouseWheelZoomEnabled": true,
