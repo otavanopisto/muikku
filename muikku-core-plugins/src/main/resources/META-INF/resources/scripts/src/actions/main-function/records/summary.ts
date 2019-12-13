@@ -43,7 +43,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       /* Getting past the object with keys */
       let activityArrays:any = Object.keys(activityLogs).map(key => activityLogs[key]);
 
-      /* picking the done exercises and evaluated courses from the objects */
+      /* Picking the done exercises and evaluated courses from the objects */
       activityArrays.forEach(function(element:any) {
         element.find(function(param:any) {
           param["type"] == "MATERIAL_ASSIGNMENTDONE" ? assignmentsDone.push(param["type"]) : param["type"] == "EVALUATION_GOTPASSED" ? coursesDone.push(param["type"]) : null;

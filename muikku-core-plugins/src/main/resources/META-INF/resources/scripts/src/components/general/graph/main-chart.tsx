@@ -356,7 +356,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "fontFamily" : "Open Sans",
       "minSelectedTime": 604800000,
       "maxSelectedTime": 31556952000,
-      "dataDateFormat": "YYYY-MM-DD",
+      "dataDateFormat": "DD-MM-YYYY",
       "categoryField": "date",
       "categoryAxis": {
         "parseDates": true,
