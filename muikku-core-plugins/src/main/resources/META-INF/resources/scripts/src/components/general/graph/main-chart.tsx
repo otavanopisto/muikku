@@ -356,7 +356,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "fontFamily" : "Open Sans",
       "minSelectedTime": 604800000,
       "maxSelectedTime": 31556952000,
-      "dataDateFormat": "DD-MM-YYYY",
+      "dataDateFormat": "YYYY-MM-DD",
       "categoryField": "date",
       "categoryAxis": {
         "parseDates": true,
@@ -382,7 +382,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "color": "#AAAAAA"
       },
       "chartCursor": {
-        "categoryBalloonDateFormat": "YYYY-MM-DD",
+        "categoryBalloonDateFormat": "DD.MM.YYYY",
         "categoryBalloonColor": "#009FE3",
         "cursorColor": "#000"
      },
