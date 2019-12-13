@@ -53,9 +53,7 @@ let updateYO:updateYOTriggerType = function updateYO() {
       let eligibilityStatus = eligibility.status;
       let eligibilityData:YOEligibilityType = {
         coursesCompleted: eligibility.coursesCompleted,
-        coursesRequired: eligibility.coursesRequired,
-        enrollmentDate: eligibility.enrollmentDate,
-        examDate: eligibility.examDate
+        coursesRequired: eligibility.coursesRequired
       }
 
       dispatch({
