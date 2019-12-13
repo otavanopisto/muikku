@@ -77,15 +77,20 @@ class YO extends React.Component<YOProps, YOState> {
            (this.props.yo.enrollment).filter((exam) => exam.eligible == true).map((exam) => {
              return (
                exam.enrolled ?
-                 <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup" disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp.hasAssigned")}</Button>
+                 <div>
+                   <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
+                   <span className="application-sub-panel__notification-content">{new Date(exam.enrollmentDate).toLocaleDateString("fi-Fi")}</span>
+                   <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup" disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp.hasAssigned")}</Button>
+                 </div>
                :
-                 <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
+                 <div>
+                   <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
+                 </div>
            );
          }) : null;
       return (
           // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components. 
           // Github issue: #4840
-          
           
         <div>
           <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.yo.title")}</div>
@@ -116,16 +121,7 @@ class YO extends React.Component<YOProps, YOState> {
                       </div>
                     </div>
                   </div> :
-                  <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
-                   <div className="application-sub-panel__notification-body">
-                     <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
-                     <span className="application-sub-panel__notification-content">{moment(this.props.yo.eligibility.enrollmentDate).format("D.M.YYYY")}</span>
-                   </div>
-                   <div className="application-sub-panel__notification-body">
-                     <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.examDate")}</span>
-                     <span className="application-sub-panel__notification-content">{moment(this.props.yo.eligibility.examDate).format("D.M.YYYY")}</span>
-                   </div>
-                 </div>
+                  null
               : null}
             </div>
             <div className="application-sub-panel  application-sub-panel--yo-status-container">

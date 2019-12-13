@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,10 +20,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
-import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
-import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentMatriculationEligibility;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentMatriculationEligibility;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
@@ -52,7 +50,6 @@ import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.Email;
 import fi.otavanopisto.pyramus.rest.model.Language;
-import fi.otavanopisto.pyramus.rest.model.MatriculationExamEnrollment;
 import fi.otavanopisto.pyramus.rest.model.Municipality;
 import fi.otavanopisto.pyramus.rest.model.Nationality;
 import fi.otavanopisto.pyramus.rest.model.Person;
@@ -920,26 +917,4 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses());
   }
   
-  @Override
-  public fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment getLatestEnrollmentForStudent(
-      SchoolDataIdentifier studentIdentifier
-  ) {
-    logger.severe("getLatestEnrollmentForStudent unimplemented");
-    return null;
-    /*
-    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
-    MatriculationExamEnrollment enrollment = pyramusClient.get(
-        String.format("/matriculation/enrollments/latest/%d", studentId),
-        MatriculationExamEnrollment.class);
-    if (enrollment != null) {
-      PyramusMatriculationExamEnrollment result = new PyramusMatriculationExamEnrollment(
-            LocalDate.parse(enrollment.getEnrollmentDate())
-      );
-      return result;
-    } else {
-      return null;
-    }
-    */
-  }
-
 }

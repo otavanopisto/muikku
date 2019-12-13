@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -441,15 +440,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
-    LocalDate latestEnrollmentDate = transcriptOfRecordsController.getMatriculationExamEnrollmentDate(identifier);
     int coursesCompleted = transcriptOfRecordsController.countMandatoryCoursesForStudent(identifier);
     int coursesRequired = transcriptOfRecordsController.getMandatoryCoursesRequiredForMatriculation();
 
-    if (latestEnrollmentDate != null) {
-      result.setStatus(MatriculationExamEligibilityStatus.ENROLLED);
-      result.setEnrollmentDate(latestEnrollmentDate.toString());
-      result.setExamDate(transcriptOfRecordsController.getMatriculationExamDate().toString());
-    } else if (coursesCompleted >= coursesRequired) {
+    if (coursesCompleted >= coursesRequired) {
       result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
     } else {
       result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);

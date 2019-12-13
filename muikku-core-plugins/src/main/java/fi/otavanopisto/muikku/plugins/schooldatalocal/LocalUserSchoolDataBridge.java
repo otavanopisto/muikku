@@ -579,10 +579,4 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
 
-  @Override
-  public fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment getLatestEnrollmentForStudent(SchoolDataIdentifier studentIdentifier) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 }

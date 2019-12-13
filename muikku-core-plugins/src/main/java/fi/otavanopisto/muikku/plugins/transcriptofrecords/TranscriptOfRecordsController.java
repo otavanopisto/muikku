@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -380,22 +379,10 @@ public class TranscriptOfRecordsController {
     String resultString = pluginSettingsController.getPluginSetting(
         "transcriptofrecords",
         "mandatoryCoursesRequiredForMatriculation");
-    int result = Integer.parseInt(resultString);
-    return result;
+    // Default is 20
+    return StringUtils.isNotBlank(resultString) ? Integer.parseInt(resultString) : 20;
   }
   
-  public LocalDate getMatriculationExamEnrollmentDate(SchoolDataIdentifier studentIdentifier) {
-    return userSchoolDataController.getLatestStudentEnrollmentDate(studentIdentifier);
-  }
-  
-  public LocalDate getMatriculationExamDate() {
-    String resultString = pluginSettingsController.getPluginSetting(
-        "transcriptofrecords",
-        "matriculationExamDate");
-    LocalDate result = LocalDate.parse(resultString);
-    return result;
-  }
-
   private SearchProvider getProvider(String name) {
     for (SearchProvider searchProvider : searchProviders) {
       if (name.equals(searchProvider.getName())) {

@@ -48,9 +48,19 @@ public class PyramusMatriculationExam implements MatriculationExam {
     this.enrolled = enrolled;
   }
 
+  @Override
+  public long getEnrollmentDate() {
+    return enrollmentDate;
+  }
+
+  public void setEnrollmentDate(long enrollmentDate) {
+    this.enrollmentDate = enrollmentDate;
+  }
+
   private long id;
   private long startTime;
   private long endTime;
   private boolean eligible; 
   private boolean enrolled; 
+  private long enrollmentDate;
 }

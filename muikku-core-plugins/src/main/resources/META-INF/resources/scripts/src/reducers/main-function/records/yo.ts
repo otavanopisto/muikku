@@ -6,6 +6,7 @@ export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 export interface YOEnrollmentType{
  id: number,
  enrolled: boolean,
+ enrollmentDate: string,
  eligible: boolean,
  starts: string,
  ends: string,
@@ -13,9 +14,7 @@ export interface YOEnrollmentType{
 
 export interface YOEligibilityType {
     coursesCompleted: number,
-    coursesRequired: number,
-    enrollmentDate: String,
-    examDate: String
+    coursesRequired: number
 }
 
 export interface YOType {
