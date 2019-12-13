@@ -43,29 +43,27 @@ class YO extends React.Component<YOProps, YOState> {
 
   /**
    * Finds a subject code for matriculation subject
-   * 
+   *
    * @param code matriculation subject code
    * @returns subject code or null if not found
    */
   getSubjectCodeForCode = (code: string) => {
-    
+
     const result = this.props.yo.subjects.find((matriculationSubject) => {
       return matriculationSubject.code === code;
     });
 
     return result ? result.subjectCode : null;
   }
-  
 
-  
-  render() {      
+  render() {
     let i18n = this.props.i18n;
-    
+
     if (this.props.records.location !== "yo" || this.props.yo.status != "READY") {
       return null;
     } else {
       const loaded = this.props.hops.status === "READY" && !!this.props.hops.value;
-      const selectedMatriculationSubjects = loaded ? 
+      const selectedMatriculationSubjects = loaded ?
         this.props.hops.value.studentMatriculationSubjects.length > 0 ?
           (this.props.hops.value.studentMatriculationSubjects || []).map((code: string, index: number) => {
             return (
@@ -89,9 +87,8 @@ class YO extends React.Component<YOProps, YOState> {
            );
          }) : null;
       return (
-          // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components. 
+          // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components.
           // Github issue: #4840
-          
         <div>
           <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.yo.title")}</div>
           <div className="application-panel__content">
@@ -157,7 +154,7 @@ class YO extends React.Component<YOProps, YOState> {
           </div>
       */}
             </div>
- 
+
       );
     }
   }

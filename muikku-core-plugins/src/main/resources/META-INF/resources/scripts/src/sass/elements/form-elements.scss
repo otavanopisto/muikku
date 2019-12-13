@@ -5,23 +5,23 @@
 
 .form-element {
   width: 100%;
-  
+
   label {
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;
     font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
-    
+
     @include breakpoint($breakpoint-pad) {
       font-size: $text-desktop-font-size;
     }
-    
+
     &:first-child {
       margin-right: 5px;
     }
   }
-  
+
   input[type="checkbox"] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -34,7 +34,7 @@
     justify-content: center;
     width: 1rem;
   }
-  
+
   input[type="radio"] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -66,14 +66,14 @@
 }
 
 .form-element--guider-toolbar {
-  display: flex;  
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
 }
 
 .form-element--coursepicker-toolbar {
-  display: flex;  
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -95,7 +95,7 @@
 
 .form-element__input {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
-  -webkit-appearance: none;  
+  -webkit-appearance: none;
   border: solid 2px $color-form-element-border;
   border-radius: 3px;
   font-family: $text-font-family;
@@ -104,7 +104,7 @@
   outline: none;
   padding: 3px 10px;
   resize: none;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -119,8 +119,6 @@
   font-size: $text-forgotpassword-font-size;
   width: 100%;
 }
-
-
 
 .form-element__input--profile {
   width: 100%;
@@ -139,21 +137,20 @@
   border: 2px solid $color-main-function-input-field-border;
   border-radius: 2px;
   border-right: 0;
-  font-size: 0.925rem;  
+  font-size: 0.925rem;
   height: 35px;
   padding: 5px 10px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: 40px;
   }
 }
 
-
 .form-element__input-decoration--main-function-search {
   background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
-  
+
   &::before {
     align-items: center;
     color: $color-main-function-search-icon;
@@ -161,7 +158,7 @@
     height: 35px;
     justify-content: center;
     width: 35px;
-    
+
     @include breakpoint($breakpoint-pad) {
       height: 40px;
       width: 40px;
@@ -169,7 +166,7 @@
   }
 }
 
-.form-element__select {    
+.form-element__select {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -180,7 +177,7 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   padding: 2px 25px 2px 2px;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
@@ -235,10 +232,10 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   padding: 6px;
-  margin-top: 10px;  
+  margin-top: 10px;
   min-height: 150px;
   width: 100%;
-  
+
   @include breakpoint($breakpoint-desktop) {
     font-size: $text-desktop-font-size;
   }
@@ -246,19 +243,17 @@
 
 .form-element__dropdown-selection-container {
   padding: 3px 0 3px 10px;
-  
 }
 
 .form-element__button-container {
   padding: 10px;
-  
 }
 
 .form-element__radio-option-container {
   align-items: center;
   display: flex;
   padding: 10px;
-  
+
   input {
     margin-right: 5px;
   }
@@ -267,12 +262,13 @@
 .form-element__check-option-container {
   align-items: center;
   display: flex;
-  margin-right: 10px;
   padding: 10px;
-}
 
+  input {
+    margin-right: 5px;
+  }
+}
 
 .form-element--button-container {
   padding: 10px 0;
 }
-

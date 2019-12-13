@@ -382,7 +382,7 @@ public class TranscriptOfRecordsController {
     // Default is 20
     return StringUtils.isNotBlank(resultString) ? Integer.parseInt(resultString) : 20;
   }
-  
+
   private SearchProvider getProvider(String name) {
     for (SearchProvider searchProvider : searchProviders) {
       if (name.equals(searchProvider.getName())) {
@@ -395,22 +395,22 @@ public class TranscriptOfRecordsController {
   public VopsLister.Result listVopsCourses(String studentIdentifierString,
       SchoolDataIdentifier studentIdentifier) throws EducationTypeMappingNotSetException {
     User student = userController.findUserByIdentifier(studentIdentifier);
-    
+
     if (!shouldShowStudies(student)) {
       return VopsLister.notOptedInResult();
     }
-    
+
     List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
 
     List<Subject> subjects = courseMetaController.listSubjects();
     Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = listStudentAssessments(studentIdentifier);
-    
+
     String curriculum = pluginSettingsController.getPluginSetting("transcriptofrecords", "curriculum");
     SchoolDataIdentifier curriculumIdentifier = null;
     if (curriculum != null) {
       curriculumIdentifier = SchoolDataIdentifier.fromId(curriculum);
     }
-    
+
     final List<String> subjectList = new ArrayList<String>();
     String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
     if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {

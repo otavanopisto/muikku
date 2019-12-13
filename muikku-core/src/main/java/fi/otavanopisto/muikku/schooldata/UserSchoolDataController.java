@@ -170,7 +170,7 @@ public class UserSchoolDataController {
   public UserEmail findUserEmail(SchoolDataSource schoolDataSource, String identifier) {
     return getUserBridge(schoolDataSource).findUserEmail(identifier);
   }
-  
+
   /* User properties */
 
   public List<UserProperty> listUserProperties(User user) {
@@ -180,7 +180,7 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).listUserPropertiesByUser(user.getIdentifier());
   }
-  
+
   public UserProperty getUserProperty(User user, String key) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
     if (schoolDataSource == null) {
@@ -236,7 +236,7 @@ public class UserSchoolDataController {
   public GroupUser findGroupUser(SchoolDataSource schoolDataSource, String groupIdentifier, String identifier) {
     return getUserBridge(schoolDataSource).findGroupUser(groupIdentifier, identifier);
   }
-  
+
   public List<GroupUser> listGroupUsersByGroup(UserGroup userGroup){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userGroup.getSchoolDataSource());
     if (schoolDataSource == null) {
@@ -252,7 +252,7 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).listGroupUsersByGroupAndType(userGroup.getIdentifier(), type);
   }
-  
+
   public List<UserAddress> listUserAddressses(SchoolDataIdentifier userIdentifier){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
     if (schoolDataSource == null) {
@@ -260,7 +260,7 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).listUserAddresses(userIdentifier);
   }
-  
+
   public void updateUser(User user) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
     if (schoolDataSource == null) {
@@ -268,14 +268,14 @@ public class UserSchoolDataController {
     }
     getUserBridge(schoolDataSource).updateUser(user);
   }
-  
+
   public void updateUserAddress(
-      SchoolDataIdentifier studentIdentifier,
-      SchoolDataIdentifier addressIdentifier,
-      String street,
-      String postalCode,
-      String city,
-      String country
+    SchoolDataIdentifier studentIdentifier,
+    SchoolDataIdentifier addressIdentifier,
+    String street,
+    String postalCode,
+    String city,
+    String country
   ) throws SchoolDataBridgeUnauthorizedException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(addressIdentifier.getDataSource());
     if (schoolDataSource == null) {
@@ -289,7 +289,7 @@ public class UserSchoolDataController {
       city,
       country);
   }
-  
+
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
     if (schoolDataSource == null) {
@@ -297,7 +297,7 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).listUserPhoneNumbers(userIdentifier);
   }
-  
+
   /**
    * Returns student eligibility to participate matriculation exams
    * 
@@ -310,7 +310,7 @@ public class UserSchoolDataController {
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
     }
-    
+
     return getUserBridge(schoolDataSource).getStudentMatriculationEligibility(studentIdentifier, subjectCode);
   }
 
@@ -351,7 +351,7 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).findUsername(user.getIdentifier());
   }
-  
+
   public void updateUserCredentials(User user, String oldPassword, String newUsername, String newPassword) throws SchoolDataBridgeUnauthorizedException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
     if (schoolDataSource == null) {
@@ -359,11 +359,11 @@ public class UserSchoolDataController {
     }
     getUserBridge(schoolDataSource).updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
   }
-  
+
   public String requestCredentialReset(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
     return getUserBridge(schoolDataSource).requestCredentialReset(email);
   }
-  
+
   public BridgeResponse<CredentialResetPayload> getCredentialReset(SchoolDataSource schoolDataSource, String hash) {
     return getUserBridge(schoolDataSource).getCredentialReset(hash);
   }
@@ -385,5 +385,5 @@ public class UserSchoolDataController {
         "pakollinen"
     );
   }
-
+  
 }
