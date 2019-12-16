@@ -5,7 +5,7 @@ import { i18nType } from '~/reducers/base/i18n';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records/records';
+import { TranscriptOfRecordLocationType, RecordsType } from '~/reducers/main-function/records/records';
 import {StateType} from '~/reducers';
 
 import NavigationMenu, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
@@ -14,7 +14,8 @@ import { HOPSType } from '~/reducers/main-function/hops';
 interface NavigationProps {
   i18n: i18nType,
   location: TranscriptOfRecordLocationType,
-  hops: HOPSType
+  hops: HOPSType,
+  records: RecordsType
 }
 
 interface NavigationState {
@@ -36,16 +37,18 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
     switch (hash) {
       case "vops":
       case "yo":
-        const yoVisibleValues = ["yes", "maybe"]; 
-        return this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1;
+        const yoVisibleValues = ["yes", "maybe"];
+        return this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1 && !this.props.records.studyEndDate;
+      case "hops":
+        // Lets hide HOPS if student's studies has ended
+        return !this.props.records.studyEndDate;
     }
 
     return true;
   }
-  
+
   render() {
-    
-    let sections = [                    
+    let sections = [
         {
           name: this.props.i18n.text.get("plugin.records.category.summary"),
           hash: "summary"
@@ -58,25 +61,13 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
           name: this.props.i18n.text.get("plugin.records.category.hops"),
           hash: "hops"
         },
-        /* Waiting for the future        
-        {
-          name: this.props.i18n.text.get("plugin.records.category.vops"),
-          hash: "vops"
-        },
-        */
         {
           name: this.props.i18n.text.get("plugin.records.category.yo"),
           hash: "yo"
         }
-/* Waiting for the future
-        {
-          name: this.props.i18n.text.get("plugin.records.category.statistics"),
-          hash: "statistics"
-        },
-*/
-        ]        
-    
-    return ( 
+        ]
+
+    return (
       <NavigationMenu>
           {sections.filter(section => this.isVisible(section.hash)).map((item, index)=>{
             return <NavigationElement isActive={this.props.location === item.hash} hash={item.hash} key={index}
@@ -92,7 +83,8 @@ function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     location: state.records.location,
-    hops: state.hops
+    hops: state.hops,
+    records: state.records
   }
 };
 

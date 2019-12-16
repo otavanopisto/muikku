@@ -16,6 +16,7 @@ $progress-units: 100;
 .activity-badge__item {
   align-items: flex-end;
   background-color: $color-default;
+  border-radius: 3px;
   display: flex;
   height: 100%;
   width: 10px;
