@@ -1569,6 +1569,9 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
             }
           });
         }
+        localStorage.removeItem(
+          "TEMPORARY_LOCAL_DRAFT_" + data.material.workspaceMaterialId + "_" + data.workspace.id,
+        );
       } else {
         // Trying to update the draft
         // TODO
