@@ -84,6 +84,14 @@
   margin: 15px 0;
 }
 
+.material-page__content--binary-pdf {
+  object {
+  	width: 100%;
+  	/* Yes height should be specific, any unit works, %, rem, flex, etc... */
+  	height: 400px;
+  }
+}
+
 .material-page__content--binary-image {
   margin: 10px 0;
 

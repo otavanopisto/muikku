@@ -8,9 +8,9 @@ export default function Pdf(props: {
   i18n: i18nType,
 }) {
   return <div className="material-page__content material-page__content--binary-pdf">
-    <object type="application/pdf" data="file_with_actions.pdf">
+    <object type="application/pdf" data={`/rest/materials/binary/${props.material.materialId}/content`}>
       <Link href={`/rest/materials/binary/${props.material.materialId}/content`} openInNewTab={props.material.title}>
-        {props.i18n.text.get("Donwnload")}
+        {props.i18n.text.get("TODO Donwnload")}
       </Link>
     </object>
   </div>;
