@@ -231,6 +231,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>;
 
             if (!isEditable) {
+              if (subnode.hidden) {
+                return null;
+              }
               return pageElement;
             } else {
               return <Draggable
@@ -253,6 +256,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         </TocTopic>
 
         if (!isEditable) {
+          if (node.hidden) {
+            return null;
+          }
           return topic;
         } else {
           return <Draggable 

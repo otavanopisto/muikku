@@ -121,6 +121,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           hash={"p-" + node.workspaceMaterialId}>{node.title}</TocElement>;
 
         if (!isEditable) {
+          if (node.hidden) {
+            return null;
+          }
           return pageElement;
         } else {
           return <Draggable

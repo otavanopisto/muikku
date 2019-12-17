@@ -1575,15 +1575,23 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       } else {
         // Trying to update the draft
         // TODO
+        const newDraftValue = {
+          ...data.material,
+          ...data.update,
+        };
         
-        // TODO do mApi stuff
-        localStorage.setItem(
-          "TEMPORARY_LOCAL_DRAFT_" + data.material.workspaceMaterialId + "_" + data.workspace.id,
-          JSON.stringify({
-            ...data.material,
-            ...data.update,
-          }),
-        );
+        // if the new draft is the same as the state, we basically have reverted
+        // we can safely remove the draft
+        if (equals(newDraftValue, getState().workspaces.materialEditor.currentNodeValue)) {
+          localStorage.removeItem(
+            "TEMPORARY_LOCAL_DRAFT_" + data.material.workspaceMaterialId + "_" + data.workspace.id,
+          );
+        } else {
+          localStorage.setItem(
+            "TEMPORARY_LOCAL_DRAFT_" + data.material.workspaceMaterialId + "_" + data.workspace.id,
+            JSON.stringify(newDraftValue),
+          );
+        }
       }
 
       data.success && data.success();

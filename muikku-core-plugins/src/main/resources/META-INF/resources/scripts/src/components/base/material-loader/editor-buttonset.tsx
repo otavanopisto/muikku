@@ -76,10 +76,10 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
     {props.canCopy ? <Dropdown openByHover modifier="material-management-tooltip" content={props.i18n.text.get("plugin.workspace.materialsManagement.copyPageTooltip")}>
       <ButtonPill buttonModifiers="material-management-page" icon="copy" onClick={copyPage.bind(this, props)}/>
     </Dropdown> : null}
-    {props.canHide ? <Dropdown openByHover modifier="material-management-tooltip"
-        content={props.material.hidden ? props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") :
-        props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
-      <ButtonPill buttonModifiers="material-management-page" icon="eye" onClick={toggleVisiblePageStatus.bind(this, props)}/>
+    {props.canHide && (!props.folder || !props.folder.hidden) ? <Dropdown openByHover modifier="material-management-tooltip"
+      content={props.material.hidden ? props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") :
+      props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
+    <ButtonPill buttonModifiers="material-management-page" icon="eye" onClick={toggleVisiblePageStatus.bind(this, props)}/>
     </Dropdown> : null}
   </div>);
 }

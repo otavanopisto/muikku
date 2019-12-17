@@ -356,7 +356,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         }
       
         let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
-        let material = !this.props.workspace || !this.props.materialReplies  ? null :
+        let material = !this.props.workspace || !this.props.materialReplies || (!isEditable && node.hidden) ? null :
           <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
             <div id={"p-" + node.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
             {/*TOP OF THE PAGE*/}
@@ -369,6 +369,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           </ContentPanelItem>;
         sectionSpecificContentData.push(material);
       });
+      
+      if (!isEditable && section.hidden) {
+        return;
+      }
 
       results.push(<section key={"section-" + section.workspaceMaterialId} className="content-panel__chapter" id={"section-" + section.workspaceMaterialId}>
         {/*TOP OF THE CHAPTER*/}

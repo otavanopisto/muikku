@@ -341,7 +341,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         revertModifiers.push("disabled");
       }
 
-      const isHidden = this.props.editorState.currentDraftNodeValue.hidden;
+      const isHidden = this.props.editorState.currentDraftNodeValue.hidden || (
+        this.props.editorState.parentNodeValue && this.props.editorState.parentNodeValue.hidden
+      );
       const hideShowButtonModifiers = ["material-editor-show-hide-page","material-editor"];
       if (isHidden) {
         hideShowButtonModifiers.push("material-editor-disabled");
@@ -369,7 +371,8 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
 
       let editorButtonSet = <div className="material-editor__buttonset">
         <div className="material-editor__buttonset-primary">
-          {this.props.editorState.canHide ? <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
+          {this.props.editorState.canHide && (!this.props.editorState.parentNodeValue || !this.props.editorState.parentNodeValue.hidden) ?
+          <Dropdown openByHover modifier="material-management-tooltip" content={isHidden ? this.props.i18n.text.get("plugin.workspace.materialsManagement.showPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.hidePageTooltip")}>
             <ButtonPill buttonModifiers={hideShowButtonModifiers} onClick={this.toggleHiddenStatus} icon="eye"/>
           </Dropdown> : null}
           {this.props.editorState.canRestrictView ? <Dropdown openByHover modifier="material-management-tooltip" content={isViewRestricted ? this.props.i18n.text.get("plugin.workspace.materialsManagement.disableViewRestrictionPageTooltip") : this.props.i18n.text.get("plugin.workspace.materialsManagement.enableViewRestrictionPageTooltip")}>

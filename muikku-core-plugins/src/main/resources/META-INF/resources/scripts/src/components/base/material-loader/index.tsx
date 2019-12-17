@@ -415,7 +415,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
 
     //Setting this up
-    let isHidden = this.props.material.hidden;
+    let isHidden = this.props.material.hidden || (this.props.folder && this.props.folder.hidden);
     
     const materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     let className = `material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`;

@@ -256,6 +256,10 @@ class Help extends React.Component<HelpProps, HelpState> {
             workspace={this.props.workspace}
            />
         </ContentPanelItem>;
+      
+      if (node.hidden && !isEditable) {
+        return;
+      }
 
       results.push(material);
     });
