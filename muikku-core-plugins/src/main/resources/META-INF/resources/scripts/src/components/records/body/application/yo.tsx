@@ -67,7 +67,7 @@ class YO extends React.Component<YOProps, YOState> {
         this.props.hops.value.studentMatriculationSubjects.length > 0 ?
           (this.props.hops.value.studentMatriculationSubjects || []).map((code: string, index: number) => {
             return (
-              <MatriculationEligibilityRow key={index} code={code} subjectCode={this.getSubjectCodeForCode(code)}/>
+              <MatriculationEligibilityRow key={code+index} code={code} subjectCode={this.getSubjectCodeForCode(code)}/>
             );
           }) : <div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
         : (<div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div>);
@@ -75,13 +75,13 @@ class YO extends React.Component<YOProps, YOState> {
          (this.props.yo.enrollment).filter((exam) => exam.eligible == true).map((exam) => {
            return (
              exam.enrolled ?
-               <div>
+               <div key={exam.id}>
                  <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
                  <span className="application-sub-panel__notification-content">{new Date(exam.enrollmentDate).toLocaleDateString("fi-Fi")}</span>
                  <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup" disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp.hasAssigned")}</Button>
                </div>
              :
-               <div>
+               <div key={exam.id}>
                  <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
                </div>
            );
