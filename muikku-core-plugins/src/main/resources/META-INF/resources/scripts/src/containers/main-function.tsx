@@ -234,18 +234,14 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
       this.props.websocket.restoreEventListeners();
-      
       this.props.store.dispatch(loadAvaliableEducationFiltersFromServer() as Action);
       this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
-      
+
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
-      
       let state:StateType = this.props.store.getState();
-
-    
-     this.props.store.dispatch(loadUsers() as Action);
       
+      this.props.store.dispatch(loadUsers() as Action);
       
       this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
         if (!currentLocationHasData) {

@@ -1,9 +1,6 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/main-function/workspaces";
 
-
-export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
-
 export interface UserType {
   id: number,
   firstName: string,
@@ -24,6 +21,7 @@ export interface UserType {
   studyStartDate?: string,
   studyTimeEnd?: string
 }
+
 
 export interface UserWithSchoolDataType {
   curriculumIdentifier?: string,
@@ -102,7 +100,6 @@ export interface UsersBySchoolDataType {
   [index: string]: UserType
 }
 
-
 export interface UserIndexType {
   users: UserBaseIndexType,
   groups: UserGroupBaseIndexType,
@@ -170,5 +167,6 @@ export default function userIndex(state:UserIndexType={
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop)});
   }
+  
   return state;
 }
