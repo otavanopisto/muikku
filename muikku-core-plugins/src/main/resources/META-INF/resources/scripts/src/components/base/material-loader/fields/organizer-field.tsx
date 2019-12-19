@@ -3,6 +3,7 @@ import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
+import Syncer from "./base/syncer";
 
 interface FieldType {
   name: string,
@@ -131,7 +132,8 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
   }
   shouldComponentUpdate(nextProps: OrganizerFieldProps, nextState: OrganizerFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
-    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
   checkAnswers(){
     //if we are allowed
@@ -318,6 +320,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         
     //we add that class name in our component
     return <div className="material-page__organizerfield-wrapper">
+      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <div className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
         <div className="material-page__organizerfield-terms">
           <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>

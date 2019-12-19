@@ -4,6 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import uuid from "uuid/v4";
 import { processMathInPage } from '~/lib/mathjax';
+import Syncer from "./base/syncer";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -66,7 +67,8 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
   }
   shouldComponentUpdate(nextProps: MultiSelectFieldProps, nextState: MultiSelectFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) 
-    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
   checkAnswers(){
     //if we are not allowed we return
@@ -212,27 +214,28 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
 
     //and we render
     return <span className="material-page__checkbox-wrapper">
-    <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
-      {this.props.content.options.map((o, index)=>{
-        //if we are told to mark correct answers
-        let itemStateAfterCheck = "";
-        if (markcorrectAnswers){
-          if (o.correct){
-            itemStateAfterCheck = "correct-answer";
-          } else {
-            itemStateAfterCheck = "incorrect-answer";
+      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+      <span className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
+        {this.props.content.options.map((o, index)=>{
+          //if we are told to mark correct answers
+          let itemStateAfterCheck = "";
+          if (markcorrectAnswers){
+            if (o.correct){
+              itemStateAfterCheck = "correct-answer";
+            } else {
+              itemStateAfterCheck = "incorrect-answer";
+            }
           }
-        }
-        //lets generate unique id for labels and checkboxes
-        const uuidv4 = require('uuid/v4');
-        let uniqueElementID = "cb-" + uuidv4();
-        return <span key={o.name} className="material-page__checkbox-item-container">
-          <input id={uniqueElementID} className={`material-page__checkbox ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
-          <label htmlFor={uniqueElementID} className="material-page__checkable-label">{o.text}</label>
+          //lets generate unique id for labels and checkboxes
+          const uuidv4 = require('uuid/v4');
+          let uniqueElementID = "cb-" + uuidv4();
+          return <span key={o.name} className="material-page__checkbox-item-container">
+            <input id={uniqueElementID} className={`material-page__checkbox ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
+            <label htmlFor={uniqueElementID} className="material-page__checkable-label">{o.text}</label>
+          </span>
+        })}
         </span>
-      })}
+        {correctAnswersummaryComponent}
       </span>
-      {correctAnswersummaryComponent}
-    </span>
   }
 }

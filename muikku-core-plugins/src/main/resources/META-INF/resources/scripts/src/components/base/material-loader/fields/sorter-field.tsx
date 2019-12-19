@@ -3,6 +3,7 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
+import Syncer from "./base/syncer";
 
 interface SorterFieldItemType {
   id: string,
@@ -88,7 +89,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
   }
   shouldComponentUpdate(nextProps: SorterFieldProps, nextState: SorterFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
-    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
   //Swaps two items
   swap(itemA: SorterFieldItemType, itemB: SorterFieldItemType){
@@ -227,6 +229,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
 
     //we use that element and the class to create the field
     return <Element className="material-page__sorterfield-wrapper">
+      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <Element className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
        {this.state.items.map((item, index)=>{
          //We get the text

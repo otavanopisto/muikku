@@ -49,7 +49,7 @@ const parentObjects: {[key: string]: any} = {
   "application/vnd.muikku.field.mathexercise": "div"
 }
 
-//Wheteher the object can check or not for an answer
+// Wheteher the object can check or not for an answer
 const answerCheckables: {[key: string]: (params:any)=>boolean} = {
   "application/vnd.muikku.field.text": (params: any)=>{
     return params.content.rightAnswers.filter((option:any)=>option.correct).lenght;
@@ -92,7 +92,7 @@ interface BaseState {
 //The typing of the user will stack until the user stops typing for this amount of milliseconds
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT = 600;
 //The client will wait this amount of milliseconds and otherwise it will consider the answer unsynced 
-const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_REPLY = 2000;
+const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY = 2000;
 
 //The handlers that do more to html static items
 //That are somehow brokeeeen
@@ -170,7 +170,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   //once a change is emitted to the server we set a timeout to consider the field unsynced (Say if lost connection)
   //which would unsync the specific field, the timeout is triggered if it is not cancelled within the
   //TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_REPLY
-  private timeoutUnsyncRegistry: {
+  private timeoutConnectionFailedRegistry: {
     [name: string]: NodeJS.Timer
   }
     
@@ -191,7 +191,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     this.fieldRegistry = [];
     this.staticRegistry = [];
     this.timeoutChangeRegistry = {};
-    this.timeoutUnsyncRegistry = {};
+    this.timeoutConnectionFailedRegistry = {};
     this.nameContextRegistry = {};
     
     //And prepare this one too
@@ -379,8 +379,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (actualData.materialId === this.props.material.materialId && actualData.workspaceMaterialId === this.props.material.workspaceMaterialId &&
         actualData.workspaceEntityId === this.props.workspace.id){
       //We clear the timeout that would mark the field as unsynced given the time had passed
-      clearTimeout(this.timeoutUnsyncRegistry[actualData.fieldName]);
-      delete this.timeoutUnsyncRegistry[actualData.fieldName];
+      clearTimeout(this.timeoutConnectionFailedRegistry[actualData.fieldName]);
+      delete this.timeoutConnectionFailedRegistry[actualData.fieldName];
       
       //if we have an error
       if (actualData.error){
@@ -393,12 +393,17 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       //The answer has been modified so we bubble this event
       this.props.onConfirmedAndSyncedModification();
       
-      //we check the name context registry to see if it had been synced, said if you lost connection to the server
-      //the field got unsynced, regained the connection and the answer got saved, so the thing above did nothing
-      //as the field had been unsynced already
-      if (!this.nameContextRegistry[actualData.fieldName].state.synced){
-        //we make it synced then and the user is happy can keep typing
-        this.nameContextRegistry[actualData.fieldName].setState({synced: true, syncError: null});
+      if (this.nameContextRegistry[actualData.fieldName]) {
+        //we check the name context registry to see if it had been synced, said if you lost connection to the server
+        //the field got unsynced, regained the connection and the answer got saved, so the thing above did nothing
+        //as the field had been unsynced already
+        if (
+          !this.nameContextRegistry[actualData.fieldName].state.synced ||
+          this.nameContextRegistry[actualData.fieldName].state.syncError
+        ){
+          //we make it synced then and the user is happy can keep typing
+          this.nameContextRegistry[actualData.fieldName].setState({synced: true, syncError: null});
+        }
       }
     }
   }
@@ -467,6 +472,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (!context.state.modified){
       context.setState({modified: true});
     }
+    context.setState({synced: false});
     
     this.props.onModification && this.props.onModification();
     
@@ -501,10 +507,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       
       //And we wait the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_REPLY
       //for considering the answer unsynced if the server does not reply
-      this.timeoutUnsyncRegistry[name] = setTimeout(()=>{
-        context.setState({synced: false});
-      }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_UNSYNCED_IF_SERVER_DOES_NOT_REPLY);
-    }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT)
+      this.timeoutConnectionFailedRegistry[name] = setTimeout(()=>{
+        context.setState({syncError: "server does not reply"});
+      }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY);
+    }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY)
   }
   render(){
     //This is all there is we just glue the HTML in there

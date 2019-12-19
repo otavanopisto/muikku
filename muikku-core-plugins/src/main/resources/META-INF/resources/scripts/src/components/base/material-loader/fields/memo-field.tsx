@@ -3,6 +3,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import CKEditor from '~/components/general/ckeditor';
 import $ from '~/lib/jquery';
 import equals = require("deep-equal");
+import Syncer from "./base/syncer";
 
 interface MemoFieldProps {
   type: string,
@@ -91,7 +92,8 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
   }
   shouldComponentUpdate(nextProps: MemoFieldProps, nextState: MemoFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
-    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
   //very simple this one is for only when raw input from the textarea changes
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>){
@@ -167,6 +169,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
 
     //and here the element itself
     return <div className="material-page__memofield-wrapper">
+      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       {field}
       <div className="material-page__counter-wrapper">
         <div className="material-page__word-count-container">

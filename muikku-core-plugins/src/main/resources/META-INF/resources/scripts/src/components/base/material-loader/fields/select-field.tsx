@@ -4,6 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import uuid from "uuid/v4";
 import { processMathInPage } from '~/lib/mathjax';
+import Syncer from "./base/syncer";
 
 interface SelectFieldProps {
   type: string,
@@ -69,7 +70,8 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
   }
   shouldComponentUpdate(nextProps: SelectFieldProps, nextState: SelectFieldState){
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) 
-    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
   checkAnswers(){
     //if we are allowed to check answers
@@ -195,6 +197,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
       let selectFieldType = this.props.content.listType === "list" ? "list" : "dropdown";
       return <span className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType}`}>
+        <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
         <select className={`material-page__selectfield ${fieldStateAfterCheck}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
@@ -208,6 +211,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
 
     //this is for the standard
     return <span className="material-page__radiobutton-wrapper">
+      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map(o=>{
           //lets generate unique id for labels and radio buttons

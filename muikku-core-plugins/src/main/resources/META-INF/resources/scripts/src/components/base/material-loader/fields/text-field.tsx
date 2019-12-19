@@ -2,7 +2,7 @@ import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
-import FieldBase from "./base";
+import Syncer from "./base/syncer";
 
 interface TextFieldProps {
   type: string,
@@ -67,7 +67,8 @@ export default class TextField extends React.Component<TextFieldProps, TextField
   shouldComponentUpdate(nextProps: TextFieldProps, nextState: TextFieldState){
     //So we only update if these props change and any of the state
     return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
-    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers;
+    || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
+    || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
   //when the input change
   onInputChange(e: React.ChangeEvent<HTMLInputElement>){
@@ -197,6 +198,7 @@ export default class TextField extends React.Component<TextFieldProps, TextField
 
     //Standard modifiable version
     return <span className="material-page__textfield-wrapper">
+      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       {this.props.content.hint ? <Dropdown modifier="material-page-field-hint" content={this.props.content.hint}>
           <input className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
           size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>

@@ -1,23 +1,23 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
-import FieldBase from '../fields/base';
 
 interface WordDefinitionProps {
   element: HTMLElement,
   dataset: {
     muikkuWordDefinition: string
   },
-  i18n: i18nType
+  i18n: i18nType;
+  invisible?: boolean;
 }
 
-export default class WordDefinition extends FieldBase<WordDefinitionProps, {}>{
+export default class WordDefinition extends React.Component<WordDefinitionProps, {}>{
   constructor(props: WordDefinitionProps){
     super(props);
   }
   render(){
     //TODO remove the data-muikku-word-definition thing, it's basically used for styling alone
-    if (!this.loaded){
+    if (this.props.invisible){
       return <mark data-muikku-word-definition={this.props.dataset.muikkuWordDefinition}>{this.props.element.textContent}</mark>
     }
     return <Dropdown openByHover modifier="word-definition" content={this.props.dataset.muikkuWordDefinition}>

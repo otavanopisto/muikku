@@ -1,7 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { HTMLtoReactComponent } from "~/util/modifiers";
-import FieldBase from '../fields/base';
 
 interface LinkProps {
   element: HTMLElement,
@@ -13,7 +12,7 @@ interface LinkProps {
   i18n: i18nType
 }
 
-export default class Link extends FieldBase<LinkProps, {}>{
+export default class Link extends React.Component<LinkProps, {}>{
   constructor(props: LinkProps){
     super(props);
   }

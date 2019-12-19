@@ -1,7 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { HTMLtoReactComponent } from "~/util/modifiers";
-import FieldBase from '../fields/base';
 
 interface IframeProps {
   element: HTMLElement,
@@ -11,15 +10,16 @@ interface IframeProps {
     url?: string
   },
   i18n: i18nType
+  invisible?: boolean,
 }
 
-export default class Iframe extends FieldBase<IframeProps, {}>{
+export default class Iframe extends React.Component<IframeProps, {}>{
   constructor(props: IframeProps){
     super(props);
   }
   render (){
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-      if (Tag === "iframe" && !this.loaded){
+      if (Tag === "iframe" && this.props.invisible){
         return <div style={{height: elementProps.height}}/>
       }
       
