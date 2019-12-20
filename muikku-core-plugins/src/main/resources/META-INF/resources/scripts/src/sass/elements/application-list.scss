@@ -133,6 +133,7 @@
   align-items: center;
   border-radius: 2px;
   color: $color-default;
+  cursor: help;
   display: flex;
   font-size: 1rem;
   height: 1.875rem;
@@ -201,7 +202,9 @@
 
 .application-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+  align-items: center;
   background-color: $color-application-list-item-background;
+  display: flex;
   position: relative;
 
   &.hover,
@@ -284,7 +287,7 @@
     border-color: transparent;
     box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
     z-index: 10;
-  }   
+  }
 }
 
 .application-list__item--highlight {
@@ -444,7 +447,10 @@
 .application-list__item-header {
   align-items: center;
   display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
   flex-flow: row wrap;
+  flex-shrink: 1;
 }
 
 .application-list__item-content-header {
@@ -566,7 +572,7 @@
   overflow-y: auto;
 
   &::-webkit-scrollbar {
-    display: none; 
+    display: none;
   }
 }
 
@@ -583,7 +589,7 @@
   flex-shrink: 1;
 }
 
-// Discussion 
+// Discussion
 
 .application-list__header-container--discussion {
   padding: 10px;
@@ -727,7 +733,7 @@
 }
 
 .application-list__item-body--communicator-message {
-  margin: 5px 0; 
+  margin: 5px 0;
 }
 
 .application-list__item-footer--communicator-message-thread-actions {
