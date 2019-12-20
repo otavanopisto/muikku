@@ -14,7 +14,7 @@ interface MatriculationEligibilityRowProps {
   code: string,
   subjectCode: string,
   i18n: i18nType,
-  updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityTriggerType
+  updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibilityTriggerType
 }
 
 interface MatriculationEligibilityRowState {
@@ -24,7 +24,9 @@ interface MatriculationEligibilityRowState {
 class MatriculationEligibilityRow extends React.Component<MatriculationEligibilityRowProps, MatriculationEligibilityRowState> {
   constructor(props: MatriculationEligibilityRowProps){
     super(props);
-    this.state = {loading : true};
+    this.state = {
+      loading: true
+    };
   }
 
   componentWillMount () {
@@ -77,11 +79,6 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
    * Returns item tooltip for student matriculation eligibility
    *
    * @returns item tooltip for student matriculation eligibility
-   *
-   *
-   *
-   * , this.state.acceptedCount, this.state.requiredCount
-   *
    */
 
   getEligibleTooltip(): string {

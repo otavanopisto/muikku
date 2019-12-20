@@ -1,17 +1,15 @@
 import { ActionType } from "actions";
 
-
 /**
  * Enum describing matriculation eligibility
  * 
- * @author Antti Leppä <antti.leppa@metatavu.fi>
  */
 
 export type EligibleStatusType = "ELIGIBLE" | "NOT_ELIGIBLE";
 
 
 /**
- * Interface representing matriculation eligibility REST model 
+ * Interface representing matriculation eligibility REST model
  * 
  */
 
@@ -23,7 +21,7 @@ export interface SubjectEligibilityType {
 }
 
 export default function subjectEligibility(state:SubjectEligibilityType={
-  eligibility: <EligibleStatusType>"NOT_ELIGIBLE",  
+  eligibility: <EligibleStatusType>"NOT_ELIGIBLE",
   requiredCount: 0,
   acceptedCount: 0,
   loading: true

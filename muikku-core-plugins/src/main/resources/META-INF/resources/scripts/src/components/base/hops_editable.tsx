@@ -114,8 +114,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
             {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears1" )}
               <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.vocationalYears || ""} onChange={this.setFromEventValue.bind( this, "vocationalYears" )}>
                 <option disabled value="">{this.props.i18n.text.get( "plugin.records.hops.selectAnOption" )}</option>
-                {["1", "2", "2,5", "3", "4", "5", "6", "7", "8", "9", "10"].map( ( numba ) => {
-                  return <option key={numba} value={numba}>{numba}</option>
+                {["1", "2", "2,5", "3", "4", "5", "6", "7", "8", "9", "10"].map( ( n ) => {
+                  return <option key={n} value={n}>{n}</option>
                 } )}
               </select>
             {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears2" )}
@@ -136,8 +136,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
             {this.props.i18n.text.get( "plugin.records.hops.goals.justTransferCredits1" )}
               <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.transferCreditYears || ""} onChange={this.setFromEventValue.bind( this, "transferCreditYears" )}>
                 <option disabled value="">{this.props.i18n.text.get( "plugin.records.hops.selectAnOption" )}</option>
-                {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map( ( numba ) => {
-                  return <option key={numba} value={numba}>{numba}</option>
+                {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map( ( n ) => {
+                  return <option key={n} value={n}>{n}</option>
                 } )}
               </select>
             {this.props.i18n.text.get( "plugin.records.hops.goals.justTransferCredits2" )}
@@ -158,8 +158,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
             {this.props.i18n.text.get( "plugin.records.hops.goals.completionYears1" )}
               <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.completionYears || ""} onChange={this.setFromEventValue.bind( this, "completionYears" )}>
                 <option disabled value="">{this.props.i18n.text.get( "plugin.records.hops.selectAnOption" )}</option>
-                {["1", "2", "3", "4"].map( ( numba ) => {
-                  return <option key={numba} value={numba}>{numba}</option>
+                {["1", "2", "3", "4"].map( ( n ) => {
+                  return <option key={n} value={n}>{n}</option>
                 } )}
               </select>
             {this.props.i18n.text.get( "plugin.records.hops.goals.completionYears2" )}
