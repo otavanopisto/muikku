@@ -1,6 +1,6 @@
 /*global converse */
 import * as React from 'react'
-import './index.scss';
+import './chat.scss';
 import converse from '~/lib/converse';
 
 interface Iprops{
@@ -96,17 +96,17 @@ export class PrivateMessage extends React.Component<Iprops, Istate> {
     render() {
       
       return  (
-              <div className={this.state.senderClass + " message-item"}>
+              <div className={this.state.senderClass + " chat__message-item"}>
                 
-                <p className={this.state.senderClass + " timestamp"}>
-                <b onClick={this.showRealName} className={this.state.senderClass + " message-item-sender"}>{this.state.from} 
+                <p className={this.state.senderClass + " chat__message-item--timestamp"}>
+                <b onClick={this.showRealName} className={this.state.senderClass}>{this.state.from} 
                 {(this.state.showName === true) && <i>({this.state.realName}) </i>}
                 </b>{new Intl.DateTimeFormat('en-GB', { 
                     year: 'numeric', month: 'numeric', day: 'numeric',
                     hour: 'numeric', minute: 'numeric', second: 'numeric',
                     hour12: false
                 }).format(this.state.timeStamp)}</p>
-                <p className={this.state.senderClass + " message-item-content"}>{this.state.message}</p>
+                <p className={this.state.senderClass + " chat__message-item--text"}>{this.state.message}</p>
               
             </div>
 

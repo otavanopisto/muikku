@@ -1,6 +1,6 @@
 /*global converse */
 import * as React from 'react'
-import './index.scss';
+import './chat.scss';
 import converse from '~/lib/converse';
 
 interface Iprops{
@@ -222,11 +222,11 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       
       return  (
         <div>
-            <span className="toggle-info icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></span>
-            <div className="rooms-list-room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
+            <span className="chat__rooms-list--toggle-info icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></span>
+            <div className="chat__rooms-list--room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
               {this.state.roomName}
             </div>
-            { (this.state.showRoomInfo === true) && <div className="room-info"><p>{this.state.roomDesc}</p></div> }
+            { (this.state.showRoomInfo === true) && <div className="chat__rooms-list--room-info"><p>{this.state.roomDesc}</p></div> }
         </div>
 
       

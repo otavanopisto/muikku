@@ -1,6 +1,6 @@
 /*global converse */
 import * as React from 'react'
-import './index.scss';
+import './chat.scss';
 import converse from '~/lib/converse';
 
 interface Iprops{
@@ -110,8 +110,6 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
         
       });
       
-      console.log(groupMessage.content + " / " + groupMessage.deleted);
-      
     }
     
     componentDidUpdate (){
@@ -123,10 +121,10 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       
       return  (
               <div>
-              {<div className={this.state.senderClass + " message-item"}>
+              {<div className={this.state.senderClass + " chat__message-item"}>
                 
-                <p className={this.state.senderClass + " timestamp"}>
-                <b onClick={this.showRealName} className={this.state.senderClass + " message-item-sender"}>{this.state.from} 
+                <p className={this.state.senderClass + " chat__message-item--timestamp"}>
+                <b onClick={this.showRealName} className={this.state.senderClass}>{this.state.from} 
                 {(this.state.showName === true) && <i>({this.state.realName}) </i>}
                 </b>
                {new Intl.DateTimeFormat('en-GB', { 
@@ -135,8 +133,8 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
                    hour12: false
                }).format(this.state.timeStamp)}</p>
                <div className={this.state.senderClass}>
-                {(this.state.showRemoveButton === true) && <div onClick={() => this.props.removeMessage(this.state.groupMessage)} className={this.state.senderClass + " message-remove-button"}><span className="icon-delete"></span></div>}
-                <p onClick={this.showRemoveButton} className={this.state.senderClass + " message-item-content"}>{this.props.groupMessage.deleted ? <i>Viesti poistettu</i> : this.props.groupMessage.content}</p>
+                {(this.state.showRemoveButton === true) && <div onClick={() => this.props.removeMessage(this.state.groupMessage)} className={this.state.senderClass + " chat__message-item--remove-button"}><span className="icon-delete"></span></div>}
+                <p onClick={this.showRemoveButton} className={this.state.senderClass + " chat__message-item--text"}>{this.props.groupMessage.deleted ? <i>Viesti poistettu</i> : this.props.groupMessage.content}</p>
               </div>
             </div>}
             </div>

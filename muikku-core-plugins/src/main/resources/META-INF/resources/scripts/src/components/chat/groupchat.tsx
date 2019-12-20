@@ -1,7 +1,7 @@
   /*global converse */
 import * as React from 'react'
 import ReactDOM from "react-dom";
-import './index.scss';
+import './chat.scss';
 import converse from '~/lib/converse';
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify, { promisifyNewConstructor } from '~/util/promisify';
@@ -22,19 +22,12 @@ interface Iprops{
 
 interface Istate {
   jid?: string,
-  password?: string,
-  hostname?: string,
   converse?: any,
   roomJid?: string,
-  roomsList?: Object,
   roomName?: string,
   roomConfig?: any,
-  to?: string,
   messages?: Object,
-  groupchats?: Object,
   groupMessages?: any,
-  groupMessageRecipient?: string,
-  receivedMUCMessages?: Object,
   availableMucRooms?: Object,
   chatBox?: any,
   chat?: any,
@@ -86,19 +79,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     super(props);
     this.state = {
       jid: window.MUIKKU_LOGGED_USER + "@dev.muikkuverkko.fi".toLowerCase(),
-      password: "",
-      hostname: "",
       converse: this.props.converse,
       roomJid: "",
-      roomsList: [],
       roomName: "",
       roomConfig: [],
-      to: "",
       messages: [],
-      groupchats: [],
       groupMessages: [],
-      groupMessageRecipient: "",
-      receivedMUCMessages: [],
       availableMucRooms: [],
       chatBox:null,
       chat: null,
@@ -218,9 +204,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           
           
           chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
-          
-          
-          
         });
       
     }
@@ -234,7 +217,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
       if (stanza && stanza.attributes.type.nodeValue === "groupchat"){
         
-          console.log(stanza);
         let message = stanza.textContent;
         let from = stanza.attributes.from.value;
         from = from.split("/").pop();
@@ -358,8 +340,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       event.preventDefault(); 
       
       let text = event.target.chatMessage.value;
-      console.log("ChatMessage Value:");
-      console.log(event.target.chatMessage.value);
       let jid = this.state.roomJid;
       
       var reactComponent = this;
@@ -386,8 +366,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         message = chat.messages.create(attrs);
       }
       event.target.chatMessage.value = '';
-      reactComponent.state.converse.api.send(chat.createMessageStanza(message));
-
+      
+      if (text !== null || text !== ""){
+        reactComponent.state.converse.api.send(chat.createMessageStanza(message));
+      }
       
     }
     
@@ -455,9 +437,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           enablelogging: 1,
           reservednick: 0,
           changenick: 0,
-          registration: 0,
-          roomadmins: "pyramus-staff-1@dev.muikkuverkko.fi",
-          roomowners: "pyramus-staff-1@dev.muikkuverkko.fi"
+          registration: 0
+          //roomadmins: "pyramus-staff-1@dev.muikkuverkko.fi",
+          //roomowners: "pyramus-staff-1@dev.muikkuverkko.fi"
         }
       });
       
@@ -636,12 +618,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           this.getOccupants();
           window.sessionStorage.setItem("showOccupantsList", JSON.stringify(roomsWithOpenOccupantsList));
         } else {
-          
-          
           return;
         } 
-        
-        console.log(this.state.chatRoomOccupants);
       }
         
       
@@ -680,13 +658,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               occupantsList.push(userData);
             }
           }
-            
-            
           this.setState({
             occupants: occupantsList
           });
           
-          console.log(occupantsList);
       }
       
     }
@@ -732,11 +707,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           converse: converse
         });
       }
-      
-      
-      
       let chat = this.props.chat;
-      let chatObject = this.props.chatObject;
       
       if (chat){
         this.setState({
@@ -792,20 +763,20 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     render() {
       
       return  (
-        <div className={"chat-body " + this.state.minimizedClass}>
+        <div className={"chat__muc--body " + this.state.minimizedClass}>
 
          
             { (this.state.minimized === true) && <div  
             onClick={() => this.minimizeChats(this.state.roomJid)} 
-            className="minimized-chat">{this.state.roomName} <span onClick={() => this.props.onOpenChat(this.state.roomJid)} className="close icon-close"></span></div>}
+            className="chat__minimized-chat">{this.state.roomName} <span onClick={() => this.props.onOpenChat(this.state.roomJid)} className="close icon-close"></span></div>}
   
-            { (this.state.minimized === false) && <div id={this.props.orderNumber} className="chat">
+            { (this.state.minimized === false) && <div id={this.props.orderNumber} className="chat__muc--container">
 
-            <div style={{"backgroundColor": this.state.isWorkspaceChat }} className="roomSettings">
-              <div className="chatbox-room-name">{this.state.roomName}</div>
+            <div style={{"backgroundColor": this.state.isWorkspaceChat }} className="chat__muc--header">
+              <div className="chat__chatbox--room-name">{this.state.roomName}</div>
               <span onClick={() => this.toggleOccupantsList()} className="icon-profile"></span>
               <span onClick={() => this.minimizeChats(this.state.roomJid)} className="icon-remove"></span>
-              <span onClick={() => this.openChatSettings()} className="icon-cogs room-settings-icon"></span>
+              <span onClick={() => this.openChatSettings()} className="icon-cogs chat__chatbox--room-settings-icon"></span>
               <span onClick={() => this.props.onOpenChat(this.state.roomJid)} className="icon-close"></span>
             </div>
               
@@ -813,15 +784,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               
               
               
-            {(this.state.openChatSettings === true) && <div className="roomSettingsForm">
-              <span onClick={() => this.openChatSettings()} className="close-new-room-form icon-close-small"></span>
+            {(this.state.openChatSettings === true) && <div className="chat__muc--room-settings">
+              <span onClick={() => this.openChatSettings()} className="chat__muc--close-chatbox icon-close-small"></span>
               <form onSubmit={this.saveRoomFeatures}>
-                <label className="control-panel">Huoneen nimi: </label><input className="settings-input" name="newRoomName" defaultValue={this.state.roomName} type="text"></input>
-                <label className="control-panel">Huoneen kuvaus: </label><input className="settings-input" name="newRoomDescription" type="text"></input>
+                <label className="control-panel">Huoneen nimi: </label><input className="chat__muc--settings-input" name="newRoomName" defaultValue={this.state.roomName} type="text"></input>
+                <label className="control-panel">Huoneen kuvaus: </label><input className="chat__muc--settings-input" name="newRoomDescription" type="text"></input>
                 {(!this.state.isStudent) && <div>
                   <label className="control-panel">Pysyvä huone: </label><input type="checkbox" name="persistent"></input><br />
                 </div>}
-                <input className="join-button" type="submit" value="Tallenna"></input>
+                <input className="chat__muc--save-button" type="submit" value="Tallenna"></input>
               </form>
 
               <div className={this.state.settingsInformBox}>
@@ -832,20 +803,21 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             
             
             <form onSubmit={(e)=>this.sendMessage(e)}>  
-              <div style={{float: "none"}}>
-              <div style={{width: this.state.messageAreaWidth + '%'}} className="chatMessages" ref={ (ref) => this.myRef=ref }>
-                {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
-                <div style={{ float:"left", clear: "both"}} ref={(el) => { this.messagesEnd = el; }}></div>
+              <div className="chat__muc--message-wrapper">
+                <div style={{width: this.state.messageAreaWidth + '%'}} className="chat__muc--messages" ref={ (ref) => this.myRef=ref }>
+                  {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
+                  <div style={{ float:"left", clear: "both"}} ref={(el) => { this.messagesEnd = el; }}></div>
+                </div>
+                {this.state.showOccupantsList && <div className="chat__muc--occupants-list">
+                  <ul>
+                    {this.state.occupants.map((occupant: any, i: any) => <li onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</li>)}
+                  </ul>
+                </div>}
               </div>
-              {this.state.showOccupantsList && <div className="chat-room-occupants">
-                <ul>
-                  {this.state.occupants.map((occupant: any, i: any) => <li onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</li>)}
-                </ul>
-              </div>}
-              <input name="chatRecipient" className="chatRecipient" value={this.state.roomJid} readOnly/>
-              <textarea className="chatMessage" onKeyDown={this.onEnterPress} placeholder="..Kirjoita jotakin" name="chatMessage"></textarea>
-              <button className="sendMessage" type="submit" value=""><span className="icon-announcer"></span></button>
-              </div>
+              <input name="chatRecipient" className="chat__muc--recipient" value={this.state.roomJid} readOnly/>
+              <textarea className="chat__muc--message-area" onKeyDown={this.onEnterPress} placeholder="..Kirjoita jotakin" name="chatMessage"></textarea>
+              <button className="chat__muc--send-message" type="submit" value=""><span className="icon-announcer"></span></button>
+              
               </form>
           </div>}
 
