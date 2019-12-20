@@ -2,7 +2,7 @@ import actions from '../base/notifications';
 import promisify from '~/util/promisify';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
-import { HOPSDataType, HOPSStatusType } from '~/reducers/main-function/hops';
+import { HOPSDataType, HOPSStatusType, HOPSEligibilityType } from '~/reducers/main-function/hops';
 import { StateType } from '~/reducers';
 
 export interface UpdateHopsTriggerType {
@@ -14,6 +14,7 @@ export interface SetHopsToTriggerType {
 }
 
 export interface UPDATE_HOPS extends SpecificActionType<"UPDATE_HOPS", HOPSDataType>{}
+export interface UPDATE_HOPS_ELIGIBILITY extends SpecificActionType<"UPDATE_HOPS_ELIGIBILITY", HOPSEligibilityType>{}
 export interface UPDATE_HOPS_STATUS extends SpecificActionType<"UPDATE_HOPS_STATUS", HOPSStatusType>{}
 
 let updateHops:UpdateHopsTriggerType = function updateHops() {
@@ -25,6 +26,10 @@ let updateHops:UpdateHopsTriggerType = function updateHops() {
       dispatch({
         type: 'UPDATE_HOPS_STATUS',
         payload: <HOPSStatusType>"LOADING"
+      });
+      dispatch({
+        type: 'UPDATE_HOPS_ELIGIBILITY',
+        payload: <HOPSEligibilityType>(await promisify(mApi().records.hopseligibility.read(), 'callback')())
       });
       dispatch({
         type: 'UPDATE_HOPS',

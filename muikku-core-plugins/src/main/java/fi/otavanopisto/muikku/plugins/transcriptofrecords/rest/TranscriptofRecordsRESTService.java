@@ -46,9 +46,11 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCours
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -116,6 +118,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
+  
+  @Inject
+  private MatriculationSchoolDataController matriculationSchoolDataController;
 
   @GET
   @Path("/files/{ID}/content")
@@ -286,6 +291,18 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     return new HopsRESTModel();
   }
   
+  @GET
+  @Path("/hopseligibility")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response retrieveHopsEligibility(){
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+
+    MatriculationEligibilities eligibilities = matriculationSchoolDataController.listEligibilities();
+    return Response.ok(eligibilities).build();
+  }
+
   @GET
   @Path("/hops")
   @RESTPermit(handling=Handling.INLINE)

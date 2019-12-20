@@ -25,13 +25,19 @@ export interface HOPSDataType {
   optedIn: boolean
 }
 
+export interface HOPSEligibilityType {
+  upperSecondarySchoolCurriculum: boolean
+}
+
 export interface HOPSType {
+  eligibility: HOPSEligibilityType,
   status: HOPSStatusType,
   value: HOPSDataType
 }
 
 export default function vops(state:HOPSType={
   status: "WAIT",
+  eligibility: null,
   value: null
 }, action: ActionType):HOPSType{
   if (action.type === "UPDATE_HOPS_STATUS"){
@@ -41,6 +47,10 @@ export default function vops(state:HOPSType={
   } else if (action.type === "UPDATE_HOPS"){
     return Object.assign({}, state, {
       value: action.payload
+    });
+  } else if (action.type === "UPDATE_HOPS_ELIGIBILITY") {
+    return Object.assign({}, state, {
+      eligibility: action.payload
     });
   }
   return state;

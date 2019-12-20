@@ -12,6 +12,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
@@ -60,6 +61,11 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
     }
     String identifier = studentIdentifier.getIdentifier();
     return pyramusIdentifierMapper.getPyramusStudentId(identifier);
+  }
+
+  @Override
+  public MatriculationEligibilities listEligibilities() {
+    return pyramusClient.get("/matriculation/eligibility", MatriculationEligibilities.class);
   }
 
 }
