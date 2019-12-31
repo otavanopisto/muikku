@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.ws.rs.RedirectionException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -88,7 +89,7 @@ public class FeedSynchronizer {
               feed);
         }
       }
-      catch (IOException | IllegalArgumentException | FeedException e) {
+      catch (IOException | IllegalArgumentException | FeedException | RedirectionException e) {
         logger.warning(String.format("Error while synchronizing feeds: %s", e.getMessage()));
         
         ejbContext.setRollbackOnly();
