@@ -7,9 +7,13 @@ import Materials from './materials';
 import MaterialEditor from '~/components/base/material-editor';
 import TableOfContentsComponent from './content';
 
+import EnrollmentDialog from "../enrollment-dialog";
+
 interface WorkspaceMaterialsBodyProps {
   workspaceUrl: string,
-  onActiveNodeIdChange: (newId: number)=>any
+  onActiveNodeIdChange: (newId: number)=>any;
+  enrollmentDialogOpen: boolean;
+  onCloseEnrollmentDialog: () => void;
 }
 
 interface WorkspaceMaterialsBodyState {
@@ -28,9 +32,11 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
     let navigationComponent = <TableOfContentsComponent ref="content"/>;
     return (<div>
       <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
-        <MaterialEditor/>
-        <Materials onOpenNavigation={this.onOpenNavigation}
-          navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
+      <EnrollmentDialog
+        isOpen={this.props.enrollmentDialogOpen} onClose={this.props.onCloseEnrollmentDialog}/>
+      <MaterialEditor/>
+      <Materials onOpenNavigation={this.onOpenNavigation}
+        navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>
     </div>);
   }
 }

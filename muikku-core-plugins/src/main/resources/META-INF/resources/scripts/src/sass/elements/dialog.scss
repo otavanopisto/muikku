@@ -251,3 +251,18 @@
     }
   }
 }
+
+.dialog--enrollment {
+  background: transparent;
+  bottom: auto;
+  
+  .dialog__content-column {
+  	width: 50%;
+  	flex-grow: 1;
+  	padding-left: 24px;
+  }
+ 
+  .dialog__window {
+  	border-radius: 3px;
+  }
+}

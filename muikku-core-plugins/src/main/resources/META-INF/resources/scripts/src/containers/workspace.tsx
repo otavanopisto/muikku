@@ -42,9 +42,13 @@ interface WorkspaceProps {
   websocket: Websocket
 }
 
+interface WorkspaceState {
+  enrollmentDialogOpen: boolean;
+}
+
 (window as any).USES_HISTORY_API = true;
 
-export default class Workspace extends React.Component<WorkspaceProps,{}> {
+export default class Workspace extends React.Component<WorkspaceProps, WorkspaceState> {
   private prevPathName:string;
   private itsFirstTime:boolean;
   private loadedLibs:Array<string>;
@@ -73,11 +77,21 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     this.loadWorkspaceAnnouncerData = this.loadWorkspaceAnnouncerData.bind(this);
     this.loadWorkspaceMaterialsData = this.loadWorkspaceMaterialsData.bind(this);
     this.loadWorkspaceHelpData = this.loadWorkspaceHelpData.bind(this);
+    this.closeEnrollmentDialog = this.closeEnrollmentDialog.bind(this);
 
     this.onWorkspaceMaterialsBodyActiveNodeIdChange = this.onWorkspaceMaterialsBodyActiveNodeIdChange.bind(this);
     this.onWorkspaceHelpBodyActiveNodeIdChange = this.onWorkspaceHelpBodyActiveNodeIdChange.bind(this);
 
     window.addEventListener("hashchange", this.onHashChange.bind(this));
+    
+    this.state = {
+      enrollmentDialogOpen: !props.store.getState().status.loggedIn,
+    }
+  }
+  closeEnrollmentDialog() {
+    this.setState({
+      enrollmentDialogOpen: false,
+    });
   }
   loadlib(url: string){
     if (this.loadedLibs.indexOf(url) !== -1){
@@ -381,7 +395,9 @@ export default class Workspace extends React.Component<WorkspaceProps,{}> {
     }
 
     return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}
-      onActiveNodeIdChange={this.onWorkspaceMaterialsBodyActiveNodeIdChange}/>
+      onActiveNodeIdChange={this.onWorkspaceMaterialsBodyActiveNodeIdChange}
+      enrollmentDialogOpen={this.state.enrollmentDialogOpen}
+      onCloseEnrollmentDialog={this.closeEnrollmentDialog}/>
   }
   renderWorkspaceUsers(props: RouteComponentProps<any>){
     this.updateFirstTime();
