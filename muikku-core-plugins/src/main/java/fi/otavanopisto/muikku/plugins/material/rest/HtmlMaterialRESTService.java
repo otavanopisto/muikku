@@ -37,6 +37,7 @@ import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -59,6 +60,9 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @Inject
   private MaterialController materialController;
+
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
   private LocaleController localeController;
@@ -158,7 +162,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), false, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
     }
     catch (WorkspaceMaterialContainsAnswersExeption e) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && materialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
         logger.log(Level.WARNING, String.format("Publish material %d by user %d denied due to material containing answers", id, sessionController.getLoggedUserEntity().getId()));
         return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
       }
@@ -206,7 +210,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), true, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
     }
     catch (WorkspaceMaterialContainsAnswersExeption e) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && materialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
         logger.log(Level.WARNING, String.format("Revert material %d by user %d denied due to material containing answers", id, sessionController.getLoggedUserEntity().getId()));
         return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
       }

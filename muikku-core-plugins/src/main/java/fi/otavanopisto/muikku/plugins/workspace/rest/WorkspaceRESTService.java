@@ -2122,7 +2122,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
         Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
-        if (material != null && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && materialController.isUsedInPublishedWorkspaces(material)) {
+        if (material != null && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(material)) {
           logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d denied due to material containing answers", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
           return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
         }
