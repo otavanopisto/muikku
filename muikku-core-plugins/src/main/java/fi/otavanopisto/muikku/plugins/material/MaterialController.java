@@ -10,6 +10,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialMetaDAO;
 import fi.otavanopisto.muikku.plugins.material.dao.MaterialMetaKeyDAO;
@@ -20,6 +21,9 @@ import fi.otavanopisto.muikku.plugins.material.model.MaterialMetaKey;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.material.operations.MaterialCloneOperation;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 
 @Dependent
 public class MaterialController {
@@ -27,6 +31,12 @@ public class MaterialController {
   @Inject
   @Any
   private Instance<MaterialCloneOperation<?>> cloneOperations;
+  
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
 	@Inject
 	private MaterialDAO materialDAO;
@@ -69,7 +79,7 @@ public class MaterialController {
     
     return null;
 	}
-
+  
   public Material updateMaterialLicense(Material material, String license) {
     return materialDAO.updateLicense(material, license);
   }
@@ -118,6 +128,17 @@ public class MaterialController {
   
   public void deleteMaterialProducer(MaterialProducer materialProducer) {
     materialProducerDAO.delete(materialProducer);
+  }
+
+  public boolean isUsedInPublishedWorkspaces(Material material) {
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(material);
+    for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial));
+      if (workspaceEntity != null && workspaceEntity.getPublished()) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

@@ -55,6 +55,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
+import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
@@ -151,6 +152,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private LocaleController localeController;
 
   @Inject
   private CourseMetaController courseMetaController;
@@ -2076,6 +2080,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
     }
     
+    if (removeAnswers) {
+      logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d with forced answer removal", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
+    }
+    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
@@ -2113,7 +2121,14 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.noContent().build();
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
-        return Response.status(Status.CONFLICT).entity(new WorkspaceMaterialDeleteError(WorkspaceMaterialDeleteError.Reason.CONTAINS_ANSWERS)).build();
+        Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+        if (material != null && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && materialController.isUsedInPublishedWorkspaces(material)) {
+          logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d denied due to material containing answers", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
+          return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
+        }
+        else {
+          return Response.status(Status.CONFLICT).entity(new WorkspaceMaterialDeleteError(WorkspaceMaterialDeleteError.Reason.CONTAINS_ANSWERS)).build();
+        }
       }
       catch (Exception e) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).build();
