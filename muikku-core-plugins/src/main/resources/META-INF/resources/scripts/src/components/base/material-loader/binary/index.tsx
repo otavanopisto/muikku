@@ -4,12 +4,14 @@ import Any from "./any";
 import Pdf from "./pdf";
 import Flash from "./flash";
 import Image from "./image";
+import Audio from "./audio";
 import * as React from "react";
 
 const registry = {
   "^image/": Image,
   "pdf$": Pdf,
   "x-shockwave-flash$": Flash,
+  "^audio/": Audio,
 }
 
 export default function BinaryMaterialLoader(props: {
