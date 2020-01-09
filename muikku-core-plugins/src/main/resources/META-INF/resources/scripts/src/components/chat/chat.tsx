@@ -146,6 +146,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       });
     
       if (isExists === true){
+          
         const filteredRooms = privateChats.filter((item: any) => item.jid !== jid)
         this.setState({privateChats: filteredRooms})
 
