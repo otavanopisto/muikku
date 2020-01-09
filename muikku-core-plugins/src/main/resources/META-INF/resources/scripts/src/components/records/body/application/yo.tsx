@@ -11,7 +11,7 @@ import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 import { HOPSType } from "~/reducers/main-function/hops";
 import mApi from '~/lib/mApi';
-import { YOType, YOEligibilityType, YOEligibilityStatusType } from '~/reducers/main-function/records/yo';
+import { YOType, YOEligibilityType, YOEligibilityStatusType, SubjectEligibilitySubjectsType } from '~/reducers/main-function/records/yo';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/course.scss';
@@ -19,15 +19,16 @@ import '~/sass/elements/application-sub-panel.scss';
 import moment from '~/lib/moment';
 import '~/sass/elements/buttons.scss';
 import MatriculationEligibilityRow from './matriculation-eligibility-row/matriculation-eligibility-row';
-import {updateMatriculationSubjectEligibility, UpdateMatriculationSubjectEligibilityTriggerType} from '~/actions/main-function/records/subject_eligibility';
+
 import promisify from "~/util/promisify";
+
 
 interface YOProps {
   i18n: i18nType,
   records: RecordsType,
   hops: HOPSType,
-  yo: YOType
-  updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityTriggerType
+  yo: YOType,
+  eligibilitySubjects: SubjectEligibilitySubjectsType
 }
 
 interface YOState {
@@ -47,8 +48,8 @@ class YO extends React.Component<YOProps, YOState> {
    * @param code matriculation subject code
    * @returns subject code or null if not found
    */
+  
   getSubjectCodeForCode = (code: string) => {
-    
     const result = this.props.yo.subjects.find((matriculationSubject) => {
       return matriculationSubject.code === code;
     });
@@ -56,23 +57,37 @@ class YO extends React.Component<YOProps, YOState> {
     return result ? result.subjectCode : null;
   }
   
-
+  setSubjectEligibilities () {
+    let matriculationSubjects = this.props.eligibilitySubjects;
+  }
   
+  componentDidMount() {
+    if( this.props.hops.status === "READY" && !!this.props.hops.value) {
+      this.setSubjectEligibilities();
+    }
+  }
+  
+// <div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
+// <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div>
   render() {      
+    console.log(this.props);
     let i18n = this.props.i18n;
+
+    
     
     if (this.props.records.location !== "yo" || this.props.yo.status != "READY") {
       return null;
     } else {
-      const loaded = this.props.hops.status === "READY" && !!this.props.hops.value;
-      const selectedMatriculationSubjects = loaded ? 
-        this.props.hops.value.studentMatriculationSubjects.length > 0 ?
-          (this.props.hops.value.studentMatriculationSubjects || []).map((code: string, index: number) => {
-            return (
-              <MatriculationEligibilityRow key={index} code={code} subjectCode={this.getSubjectCodeForCode(code)}/>
-            );
-          }) : <div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
-        : (<div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div>);
+      
+      const selectedMatriculationSubjects = this.props.eligibilitySubjects.status == "READY" ? this.props.eligibilitySubjects.subjects.map((subject) => {
+        return (
+          <MatriculationEligibilityRow subject={subject} />
+        );
+      }) : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> ; 
+     
+     
+//  <div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
+      
        const enrollmentLink = this.props.yo.enrollment != null ?
            (this.props.yo.enrollment).filter((exam) => exam.eligible == true).map((exam) => {
              return (
@@ -85,7 +100,6 @@ class YO extends React.Component<YOProps, YOState> {
       return (
           // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components. 
           // Github issue: #4840
-          
           
         <div>
           <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.yo.title")}</div>
@@ -172,12 +186,13 @@ function mapStateToProps(state: StateType) {
     i18n: state.i18n,
     records: state.records,
     hops: state.hops,
-    yo: state.yo
+    yo: state.yo,
+    eligibilitySubjects: state.eligibilitySubjects
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-    return bindActionCreators({updateMatriculationSubjectEligibility}, dispatch);
+    return bindActionCreators({}, dispatch);
 };
 
 

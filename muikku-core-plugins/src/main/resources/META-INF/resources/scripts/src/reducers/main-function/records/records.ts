@@ -97,6 +97,7 @@ export interface MaterialEvaluationType {
   passed: boolean
 }
 
+
 export type MaterialListType = Array<MaterialType>;
 
 export interface CurrentRecordType {

@@ -15,10 +15,11 @@ import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records/records';
 import { SummaryType } from './main-function/records/summary';
-import { YOType } from './main-function/records/yo';
-import { SubjectEligibilityType } from './main-function/records/subject_eligibility';
+import { YOType, SubjectEligibilitySubjectsType } from './main-function/records/yo';
 import { ErrorType } from './base/error';
 import { ProfileType } from './main-function/profile';
+
+
 
 export interface StateType {
   notifications: NotificationListType,
@@ -26,9 +27,9 @@ export interface StateType {
   locales: LocaleListType,
   status: StatusType,
   title: string,
-  websocket?: WebsocketStateType,          
+  websocket?: WebsocketStateType,
   yo?: YOType,
-  subjectEligibility?: SubjectEligibilityType
+  eligibilitySubjects?: SubjectEligibilitySubjectsType,
   credentials?: CredentialsType,
   announcements?: AnnouncementsType,
   hops?: HOPSType,

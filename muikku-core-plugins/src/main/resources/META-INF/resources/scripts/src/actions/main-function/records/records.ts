@@ -211,6 +211,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
           //to filter, sometimes there might be no record at all eg, the user curriculum identifier has no workspace or
           //transfer credit with that id; or it might be empty, eg, as the default record hold no records at all,
           //we want to filter those cases out
+
           resultingData[index].records = workspaceOrder.map((curriculumIdentifier: string)=>{
             return recordById[curriculumIdentifier];
           }).concat([defaultRecords]).filter((record: RecordGroupType)=>(record && record.workspaces.length + record.transferCredits.length));

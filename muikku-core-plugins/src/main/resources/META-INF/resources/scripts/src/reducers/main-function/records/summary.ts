@@ -17,7 +17,7 @@ export interface SummaryDataType {
 }
 
 export interface SummaryType {
-  summary: SummaryDataType
+  summary: SummaryDataType,
   status: SummaryStatusType
 }
 

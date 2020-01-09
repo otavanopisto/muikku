@@ -3,33 +3,104 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
-import { YOEnrollmentType, YOStatusType, YOMatriculationSubjectType, YOEligibilityStatusType, YOEligibilityType } from '~/reducers/main-function/records/yo';
-import { SubjectEligibilityType } from '~/reducers/main-function/records/subject_eligibility';
-
-import { updateMatriculationSubjectEligibility } from '~/actions/main-function/records/subject_eligibility';
-
+import { YOEnrollmentType, YOStatusType, YOMatriculationSubjectType, YOEligibilityStatusType, YOEligibilityType, SubjectEligibilityType, SubjectEligibilityListType, SubjectEligibilityStatusType, EligibleStatusType} from '~/reducers/main-function/records/yo';
+import { HOPSDataType, HOPSStatusType } from '~/reducers/main-function/hops';
 import { StateType } from '~/reducers';
-
 export interface UPDATE_STUDIES_YO extends SpecificActionType<"UPDATE_STUDIES_YO", YOEnrollmentType> {}
 export interface UPDATE_STUDIES_YO_ELIGIBILITY_STATUS extends SpecificActionType<"UPDATE_STUDIES_YO_ELIGIBILITY_STATUS", YOEligibilityStatusType> {}
 export interface UPDATE_STUDIES_YO_ELIGIBILITY extends SpecificActionType<"UPDATE_STUDIES_YO_ELIGIBILITY", YOEligibilityType> {}
 export interface UPDATE_STUDIES_YO_SUBJECTS extends SpecificActionType<"UPDATE_STUDIES_YO_SUBJECTS", YOMatriculationSubjectType> {}
 export interface UPDATE_STUDIES_YO_STATUS extends SpecificActionType<"UPDATE_STUDIES_YO_STATUS", YOStatusType>{}
-
+export interface UPDATE_STUDIES_SUBJECT_ELIGIBILITY extends SpecificActionType<"UPDATE_STUDIES_SUBJECT_ELIGIBILITY", SubjectEligibilityListType> {}
+export interface UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS extends SpecificActionType<"UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS", SubjectEligibilityStatusType> {}
 
 export interface updateYOTriggerType {
   ():AnyActionType
 }
+export interface UpdateMatriculationSubjectEligibilityTriggerType {
+  ():AnyActionType
+}
+
+let updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityTriggerType = function updateMatriculationSubjectEligibility() {
+
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+   try {
+     
+     dispatch({
+       type: 'UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS',
+       payload: <SubjectEligibilityStatusType>"LOADING"
+      });
+     
+     let state = getState();
+     let selectedSubjects = state.hops.value.studentMatriculationSubjects;
+     
+     
+     
+     let subjects: Array<YOMatriculationSubjectType> = await promisify(mApi().records.matriculationSubjects.read(), 'callback')() as Array<YOMatriculationSubjectType>;     
+     let subjectCodes: Array<string> = [];
+     
+     selectedSubjects.map((subject) => {
+       let match = subjects.find((sub) => {         
+          return sub.code === subject;
+       });
+       
+       subjectCodes.push(match ? match.subjectCode : null);
+         
+     });
+     
+     let subjectEligibilityDataArray : Array<SubjectEligibilityType> = [];
+     
+     await Promise.all(subjectCodes.map(async (subjectCode) => {
+       try {
+       let subjectEligibility:any = await promisify(mApi().records.matriculationEligibility.read({"subjectCode" : subjectCode}), "callback")();
+       let subjectEligibilityData = {
+         subjectName: subjectCode,
+         eligibility: subjectEligibility.eligible ? <EligibleStatusType>"ELIGIBLE" : <EligibleStatusType>"NOT_ELIGIBLE",
+         requiredCount: subjectEligibility.requirePassingGrades,
+         acceptedCount: subjectEligibility.acceptedCourseCount + subjectEligibility.acceptedTransferCreditCount,
+         loading: false
+       }
+       subjectEligibilityDataArray.push(subjectEligibilityData);
+       } catch(err) {
+         if (!(err instanceof MApiError)){
+           throw err.message;
+         }
+         dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.yo.errormessage.eligibilityUpdateFailedOnSubject", subjectCode), 'error'));
+         
+       }
+     }));
+
+     dispatch({
+       type: 'UPDATE_STUDIES_SUBJECT_ELIGIBILITY',
+       payload: subjectEligibilityDataArray
+     })
+     
+     dispatch({
+       type: 'UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS',
+       payload: <SubjectEligibilityStatusType>"READY"
+      });
+
+     
+   }
+   catch(err) {
+     if (!(err instanceof MApiError)){
+       throw err;
+     }
+     dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.yo.errormessage.eligibilityUpdateFailed"), 'error'));
+   }
+ }
+} 
+
 
 let updateYO:updateYOTriggerType = function updateYO() {
 
+  
+  
    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-
 //    let examAvailableDate:any = await promisify(mApi().matriculation.currentExam.read({
 //    }), 'callback')();
-
-
+      
     let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
     
     
@@ -52,15 +123,10 @@ let updateYO:updateYOTriggerType = function updateYO() {
         payload: <YOStatusType>"LOADING"
       });
       
-      
-      let subjects:YOMatriculationSubjectType = await promisify(mApi().records.matriculationSubjects.read({
-          matriculationSubjectsLoaded: true
-      }), 'callback')() as YOMatriculationSubjectType;
-
-      dispatch({
-        type: 'UPDATE_STUDIES_YO_SUBJECTS',
-        payload: subjects
-      });
+//      dispatch({
+//        type: 'UPDATE_STUDIES_YO_SUBJECTS',
+//        payload: subjects
+//      });
     
       let eligibility:any = await promisify( mApi().records.studentMatriculationEligibility
               .read((window as any).MUIKKU_LOGGED_USER), 'callback')();
@@ -96,5 +162,5 @@ let updateYO:updateYOTriggerType = function updateYO() {
   }
 } 
 
-export default {updateYO};
-export {updateYO};
+export default {updateYO, updateMatriculationSubjectEligibility};
+export {updateYO, updateMatriculationSubjectEligibility};

@@ -13,7 +13,7 @@ import { loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-functio
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
 import { updateStatistics } from '~/actions/main-function/records/statistics';
-import { updateYO } from '~/actions/main-function/records/yo';
+import { updateYO, updateMatriculationSubjectEligibility } from '~/actions/main-function/records/yo';
 import { updateSummary } from '~/actions/main-function/records/summary';
 
 
@@ -42,7 +42,10 @@ function loadCurrentLocation(){
     store.dispatch(<Action>setLocationToHopsInTranscriptOfRecords());
   } else if (givenLocation === "yo"){
     store.dispatch(<Action>setLocationToYoInTranscriptOfRecords());
-    store.dispatch(<Action>updateYO());
+    store.dispatch(<Action>updateHops(() => {
+      store.dispatch(<Action>updateYO());
+      store.dispatch(<Action>updateMatriculationSubjectEligibility());
+    }));
   } else if (givenLocation === "summary"){
     store.dispatch(<Action>setLocationToSummaryInTranscriptOfRecords());
     store.dispatch(<Action>updateSummary());
