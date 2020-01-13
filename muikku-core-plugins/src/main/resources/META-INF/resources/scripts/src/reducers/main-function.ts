@@ -30,13 +30,10 @@ export default combineReducers({
   status,
   websocket,
   title,
-  
   userIndex,
-  
   records,
   vops,
   hops,
-  
   announcements,
   workspaces,
   messages,

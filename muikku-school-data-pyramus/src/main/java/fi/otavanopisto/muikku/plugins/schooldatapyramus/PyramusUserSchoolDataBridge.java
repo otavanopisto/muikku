@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.pyramus.rest.model.Address;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
@@ -93,6 +94,26 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return response;
   }
 
+  @Override
+  public BridgeResponse<StudentPayload> createStudent(StudentPayload student) {
+    
+    // Convert Muikku study programme identifier to Pyramus study programme id
+    
+    String studyProgrammeIdentifier = student.getStudyProgrammeIdentifier();
+    Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(studyProgrammeIdentifier);
+    student.setStudyProgrammeIdentifier(String.valueOf(studyProgrammeId));
+    
+    // Create student
+    
+    BridgeResponse<StudentPayload> response = pyramusClient.responsePost("/muikku/students", Entity.entity(student, MediaType.APPLICATION_JSON), StudentPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
+      response.getEntity().setIdentifier(identifierMapper.getStudentIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
+      response.getEntity().setStudyProgrammeIdentifier(studyProgrammeIdentifier); // restore original study programme identifier
+    }
+    return response;
+  }
+
+  
   @Override
   public User createUser(String firstName, String lastName) {
     return null;

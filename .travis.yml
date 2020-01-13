@@ -1,12 +1,12 @@
 sudo: required
-dist: trusty
+dist: xenial
 language: java
 branches:
   only:
     - master
     - devel
 jdk:
-- oraclejdk8
+- openjdk8
 cache:
   directories:
   - $HOME/.m2

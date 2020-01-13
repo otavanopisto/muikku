@@ -2,21 +2,17 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import NewThread from '../dialogs/new-thread';
-import ApplicationPanel from '~/components/general/application-panel';
+import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
 import {DiscussionType} from '~/reducers/discussion';
 import {StateType} from '~/reducers';
-
 import DiscussionThreads from './application/discussion-threads';
 import CurrentThread from './application/current-thread';
-
-
 import '~/sass/elements/link.scss';
 
 interface DiscussionApplicationState {
-  
 }
 
 interface DiscussionApplicationProps {

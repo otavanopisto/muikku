@@ -2,6 +2,9 @@ package fi.otavanopisto.muikku.rest.model;
 
 public class OrganizationRESTModel {
   
+  public OrganizationRESTModel() {
+  }
+  
   public OrganizationRESTModel(Long id, String name) {
     this.id = id;
     this.name = name;
