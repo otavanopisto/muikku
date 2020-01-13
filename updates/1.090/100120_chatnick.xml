@@ -3,5 +3,4 @@
   <sql>
     alter table userchatsettings add nick varchar(40) null
   </sql>
-  <sql>
 </update>
