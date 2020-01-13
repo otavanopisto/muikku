@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -47,9 +46,11 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCours
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -117,6 +118,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
+  
+  @Inject
+  private MatriculationSchoolDataController matriculationSchoolDataController;
 
   @GET
   @Path("/files/{ID}/content")
@@ -288,6 +292,18 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
   
   @GET
+  @Path("/hopseligibility")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response retrieveHopsEligibility(){
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+
+    MatriculationEligibilities eligibilities = matriculationSchoolDataController.listEligibilities();
+    return Response.ok(eligibilities).build();
+  }
+
+  @GET
   @Path("/hops")
   @RESTPermit(handling=Handling.INLINE)
   public Response retrieveHops(){
@@ -441,15 +457,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
-    LocalDate latestEnrollmentDate = transcriptOfRecordsController.getMatriculationExamEnrollmentDate(identifier);
     int coursesCompleted = transcriptOfRecordsController.countMandatoryCoursesForStudent(identifier);
     int coursesRequired = transcriptOfRecordsController.getMandatoryCoursesRequiredForMatriculation();
 
-    if (latestEnrollmentDate != null) {
-      result.setStatus(MatriculationExamEligibilityStatus.ENROLLED);
-      result.setEnrollmentDate(latestEnrollmentDate.toString());
-      result.setExamDate(transcriptOfRecordsController.getMatriculationExamDate().toString());
-    } else if (coursesCompleted >= coursesRequired) {
+    if (coursesCompleted >= coursesRequired) {
       result.setStatus(MatriculationExamEligibilityStatus.ELIGIBLE);
     } else {
       result.setStatus(MatriculationExamEligibilityStatus.NOT_ELIGIBLE);

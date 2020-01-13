@@ -261,6 +261,4 @@ public interface UserSchoolDataBridge {
       String educationTypeCode,
       String educationSubtypeCode);
 
-  fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment getLatestEnrollmentForStudent(SchoolDataIdentifier studentIdentifier);
-
 }

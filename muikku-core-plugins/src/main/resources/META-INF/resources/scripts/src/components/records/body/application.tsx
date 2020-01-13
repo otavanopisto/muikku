@@ -7,7 +7,6 @@ import CurrentRecord from './application/current-record';
 // import Vops from './application/vops';
 import Hops from './application/hops';
 import Summary from './application/summary';
-import Statistics from './application/statistics';
 import YO from './application/yo';
 import {StateType} from '~/reducers';
 import Toolbar from './application/toolbar';
@@ -25,7 +24,7 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
     super(props);
   }
 
-  
+
   render(){
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.records.pageTitle')}</h2>
     return (<div>
@@ -35,7 +34,6 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
         {/* Removed until it works <Vops/> */}
         <Hops/>
         <Summary/>
-        <Statistics/>
         <YO/>
         </ApplicationPanel>
     </div>);

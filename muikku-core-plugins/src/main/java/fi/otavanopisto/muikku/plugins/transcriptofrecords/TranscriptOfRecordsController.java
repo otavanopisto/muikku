@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -380,20 +379,8 @@ public class TranscriptOfRecordsController {
     String resultString = pluginSettingsController.getPluginSetting(
         "transcriptofrecords",
         "mandatoryCoursesRequiredForMatriculation");
-    int result = Integer.parseInt(resultString);
-    return result;
-  }
-  
-  public LocalDate getMatriculationExamEnrollmentDate(SchoolDataIdentifier studentIdentifier) {
-    return userSchoolDataController.getLatestStudentEnrollmentDate(studentIdentifier);
-  }
-  
-  public LocalDate getMatriculationExamDate() {
-    String resultString = pluginSettingsController.getPluginSetting(
-        "transcriptofrecords",
-        "matriculationExamDate");
-    LocalDate result = LocalDate.parse(resultString);
-    return result;
+    // Default is 20
+    return StringUtils.isNotBlank(resultString) ? Integer.parseInt(resultString) : 20;
   }
 
   private SearchProvider getProvider(String name) {
@@ -408,22 +395,22 @@ public class TranscriptOfRecordsController {
   public VopsLister.Result listVopsCourses(String studentIdentifierString,
       SchoolDataIdentifier studentIdentifier) throws EducationTypeMappingNotSetException {
     User student = userController.findUserByIdentifier(studentIdentifier);
-    
+
     if (!shouldShowStudies(student)) {
       return VopsLister.notOptedInResult();
     }
-    
+
     List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
 
     List<Subject> subjects = courseMetaController.listSubjects();
     Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = listStudentAssessments(studentIdentifier);
-    
+
     String curriculum = pluginSettingsController.getPluginSetting("transcriptofrecords", "curriculum");
     SchoolDataIdentifier curriculumIdentifier = null;
     if (curriculum != null) {
       curriculumIdentifier = SchoolDataIdentifier.fromId(curriculum);
     }
-    
+
     final List<String> subjectList = new ArrayList<String>();
     String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
     if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {

@@ -34,7 +34,7 @@ export default function summary(state:SummaryType={
     return Object.assign({}, state, {
       status: action.payload
     });
-  } else if (action.type === "UPDATE_STUDIES_SUMMARY"){    
+  } else if (action.type === "UPDATE_STUDIES_SUMMARY"){
     return Object.assign({}, state, {
       summary: action.payload
     });

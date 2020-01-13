@@ -112,9 +112,9 @@ export type CurrentStudentUserAndWorkspaceStatusType = "WAIT" | "LOADING" | "REA
 export interface RecordsType {
   userData: AllStudentUsersDataType,
   userDataStatus: AllStudentUsersDataStatusType,
-  studyStartDate: string,
-  studyTimeEnd: string,
-  studyEndDate: string,
+  studyStartDate: string, // Date of when studies have started
+  studyTimeEnd: string, // Date of when right to study ends 
+  studyEndDate: string, // Date of when studies have ended
   grades: RecordsGradesType,
   files: Array<UserFileType>,
   currentStatus: CurrentStudentUserAndWorkspaceStatusType,

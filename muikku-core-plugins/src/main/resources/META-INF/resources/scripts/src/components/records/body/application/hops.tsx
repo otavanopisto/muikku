@@ -27,7 +27,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   timeout: number;
   constructor(props: HopsProps){
     super(props);
-    
+
     this.setHopsToWithDelay = this.setHopsToWithDelay.bind(this);
   }
   setHopsToWithDelay(hops: HOPSDataType){
@@ -38,14 +38,17 @@ class Hops extends React.Component<HopsProps, HopsState> {
     if (this.props.records.location !== "hops"){
       return null;
     } else if (this.props.hops.status === "ERROR"){
-      //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
-      //message but here we got to put something
+      // TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
+      // message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
     } else if (this.props.hops.status !== "READY"){
       return null;
     }
-    
-    return <HopsGraph onHopsChange={this.setHopsToWithDelay}/>
+
+    return (<div>
+      <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.hops.title")}</div>
+        <HopsGraph onHopsChange={this.setHopsToWithDelay}/>
+      </div>)
   }
 }
 

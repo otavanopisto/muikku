@@ -14,82 +14,74 @@ export interface UPDATE_STUDIES_SUMMARY_STATUS extends SpecificActionType<"UPDAT
 export interface UpdateSummaryTriggerType {
   ():AnyActionType
 }
- 
+
 let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      
-      dispatch({               
+
+      dispatch({
         type: 'UPDATE_STUDIES_SUMMARY_STATUS',
         payload: <SummaryStatusType>"LOADING"
       });
-      
+
       /* Get user id */
-      
       let pyramusId = getState().status.userSchoolDataIdentifier;
       let id = getState().status.userId;
-            
-      /* We need completed courses from Eligibility */
 
+      /* We need completed courses from Eligibility */
       let eligibility:any = await promisify( mApi().records.studentMatriculationEligibility
-          .read(pyramusId), 'callback')();
+        .read(pyramusId), 'callback')();
 
       /* We need past month activity */
-      
       let activityLogs:any = await promisify(mApi().activitylogs.user
-          .read(pyramusId, {from: new Date(new Date().setMonth(new Date().getMonth()-1)), to: new Date()}), 'callback')();
+        .read(pyramusId, {from: new Date(new Date().setMonth(new Date().getMonth()-1)), to: new Date()}), 'callback')();
 
       /* We need returned exercises and evaluated courses */
-
       let assignmentsDone:any = [];
       let coursesDone:any = [];
-      
-      
-      /* Getting past the object with keys */
-      
-      let activityArrays:any = Object.keys(activityLogs).map(key => activityLogs[key]); 
 
-      /* picking the done exercises and evaluated courses from the objects */
-      
+      /* Getting past the object with keys */
+      let activityArrays:any = Object.keys(activityLogs).map(key => activityLogs[key]);
+
+      /* Picking the done exercises and evaluated courses from the objects */
       activityArrays.forEach(function(element:any) {
         element.find(function(param:any) {
           param["type"] == "MATERIAL_ASSIGNMENTDONE" ? assignmentsDone.push(param["type"]) : param["type"] == "EVALUATION_GOTPASSED" ? coursesDone.push(param["type"]) : null;
         });
       });
-      
-      /* User workspaces */
 
-        let workspaces:any = await promisify(mApi().workspace.workspaces.read({userIdentifier: pyramusId, includeInactiveWorkspaces: true}), 'callback')();
-          if (workspaces && workspaces.length){
-            await Promise.all([
-              Promise.all(workspaces.map(async (workspace:any, index:any)=>{
-                let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
-                    .read(workspace.id, pyramusId), 'callback')();
-                  workspaces[index].studentActivity = activity;
-                })
-              ),
-              Promise.all(workspaces.map(async (workspace:any, index:any)=>{
-                let statistics:WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
-                    .read(workspace.id, {userIdentifier: pyramusId}), 'callback')();
-                  workspaces[index].forumStatistics = statistics;
-                })
-              ),
-              Promise.all(workspaces.map(async (workspace:any, index:any)=>{
-                let courseActivity:ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
-                    .read(pyramusId, {workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')();
-                  workspaces[index].activityLogs = courseActivity;
-                })
-              )
-            ]);
-          }
+      /* User workspaces */
+      let workspaces:any = await promisify(mApi().workspace.workspaces.read({userIdentifier: pyramusId, includeInactiveWorkspaces: true}), 'callback')();
+
+      if (workspaces && workspaces.length){
+        await Promise.all([
+          Promise.all(workspaces.map(async (workspace:any, index:any)=>{
+            let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
+                .read(workspace.id, pyramusId), 'callback')();
+              workspaces[index].studentActivity = activity;
+            })
+          ),
+          Promise.all(workspaces.map(async (workspace:any, index:any)=>{
+            let statistics:WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
+                .read(workspace.id, {userIdentifier: pyramusId}), 'callback')();
+              workspaces[index].forumStatistics = statistics;
+            })
+          ),
+          Promise.all(workspaces.map(async (workspace:any, index:any)=>{
+            let courseActivity:ActivityLogType[] = <ActivityLogType[]>await promisify(mApi().activitylogs.user.workspace
+                .read(pyramusId, {workspaceEntityId: workspace.id, from: new Date(new Date().getFullYear()-2, 0), to: new Date()}), 'callback')();
+              workspaces[index].activityLogs = courseActivity;
+            })
+          )
+        ]);
+      }
 
       let graphData = {
         activity : activityLogs.general,
         workspaces:  workspaces
       }
-      
+
       /* Does have matriculation examination in goals? */
-      
       let summaryData = {
         eligibilityStatus: eligibility.coursesCompleted,
         activity: activityLogs.general.length,
@@ -97,16 +89,16 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
         coursesDone: coursesDone.length,
         graphData: graphData
       }
-      
-      dispatch({               
+
+      dispatch({
         type: 'UPDATE_STUDIES_SUMMARY',
         payload: summaryData
       });
-      
-      dispatch({               
+
+      dispatch({
         type: 'UPDATE_STUDIES_SUMMARY_STATUS',
         payload: <SummaryStatusType>"READY"
-      });      
+      });
     }
     catch(err) {
       if (!(err instanceof MApiError)){
@@ -115,7 +107,7 @@ let updateSummary:UpdateSummaryTriggerType = function updateSummary() {
       dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.summary.errormessage.summaryUpdateFailed"), 'error'));
     }
   }
-} 
+}
 
 export default {updateSummary};
 export {updateSummary};

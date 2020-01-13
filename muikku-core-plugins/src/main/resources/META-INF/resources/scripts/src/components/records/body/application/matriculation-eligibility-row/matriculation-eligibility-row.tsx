@@ -8,10 +8,6 @@ import {updateMatriculationSubjectEligibility, UpdateMatriculationSubjectEligibi
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify from "~/util/promisify";
 import '~/sass/elements/application-sub-panel.scss';
-/**
- * Interface representing MatriculationEligibilityRow component properties
- * 
- */
 
 
 
@@ -20,35 +16,25 @@ interface MatriculationEligibilityRowProps {
   i18n: i18nType,
 }
 
-/**
- * Interface representing MatriculationEligibilityRow component state
- * 
- */
-
 interface MatriculationEligibilityRowState {
   loading: boolean
 }
 
-/**
- * MatriculationEligibilityRow component
- * 
- * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
- */
-
 class MatriculationEligibilityRow extends React.Component<MatriculationEligibilityRowProps, MatriculationEligibilityRowState> {
   constructor(props: MatriculationEligibilityRowProps){
     super(props);
-    this.state = {loading : true};    
+    this.state = {
+      loading: true
+    };
   }
-  
 
   
-  componentDidMount () {
+ componentDidMount () {
     this.setState({
       loading: false
     });
   }
-  
+
   render() {
     return (
        <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-eligibility" title={this.getEligibleTooltip()}>
@@ -60,18 +46,16 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
 
   /**
    * Returns name for matriculation subject
-   * 
-   * @returns matriculation subject name or empty string if not found 
+   *
+   * @returns matriculation subject name or empty string if not found
    */
-  
 
-  
   /**
    * Returns list text for student matriculation eligibility
-   * 
+   *
    * @returns list text for student matriculation eligibility
    */
-  
+
   getEligibleText(): string {
     switch (this.props.subject.eligibility) { 
       case "ELIGIBLE":
@@ -80,20 +64,15 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.false.short");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleText.error");
-    } 
+    }
   }
 
   /**
    * Returns item tooltip for student matriculation eligibility
-   * 
+   *
    * @returns item tooltip for student matriculation eligibility
-   * 
-   * 
-   * 
-   * , this.state.acceptedCount, this.state.requiredCount
-   * 
    */
-  
+
   getEligibleTooltip(): string {
     if (this.state.loading) {
       return "";
@@ -105,7 +84,7 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.false");
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.error");
-    } 
+    }
   }
 }
 

@@ -41,106 +41,72 @@ class YO extends React.Component<YOProps, YOState> {
   constructor(props: YOProps) {
     super(props);
   }
+  
+  render() {
 
-  /**
-   * Finds a subject code for matriculation subject
-   * 
-   * @param code matriculation subject code
-   * @returns subject code or null if not found
-   */
-  
-  getSubjectCodeForCode = (code: string) => {
-    const result = this.props.yo.subjects.find((matriculationSubject) => {
-      return matriculationSubject.code === code;
-    });
-
-    return result ? result.subjectCode : null;
-  }
-  
-  setSubjectEligibilities () {
-    let matriculationSubjects = this.props.eligibilitySubjects;
-  }
-  
-  componentDidMount() {
-    if( this.props.hops.status === "READY" && !!this.props.hops.value) {
-      this.setSubjectEligibilities();
-    }
-  }
-  
-// <div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
-// <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div>
-  render() {      
-    console.log(this.props);
     let i18n = this.props.i18n;
 
-    
-    
     if (this.props.records.location !== "yo" || this.props.yo.status != "READY") {
       return null;
     } else {
-      
-      const selectedMatriculationSubjects = this.props.eligibilitySubjects.status == "READY" ? this.props.eligibilitySubjects.subjects.map((subject) => {
+      const selectedMatriculationSubjects = this.props.eligibilitySubjects.status == "READY" ? this.props.eligibilitySubjects.subjects.map((subject, index) => {
         return (
-          <MatriculationEligibilityRow subject={subject} />
+          <MatriculationEligibilityRow key={subject.subjectName + index} subject={subject} />
         );
       }) : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> ; 
      
-     
-//  <div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
+//  < div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
       
        const enrollmentLink = this.props.yo.enrollment != null ?
-           (this.props.yo.enrollment).filter((exam) => exam.eligible == true).map((exam) => {
-             return (
-               exam.enrolled ?
+         (this.props.yo.enrollment).filter((exam) => exam.eligible == true).map((exam) => {
+           return (
+             exam.enrolled ?
+               <div key={exam.id}>
+                 <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
+                 <span className="application-sub-panel__notification-content">{new Date(exam.enrollmentDate).toLocaleDateString("fi-Fi")}</span>
                  <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup" disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp.hasAssigned")}</Button>
-               :
+               </div>
+             :
+               <div key={exam.id}>
                  <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
+               </div>
            );
          }) : null;
-      return (
-          // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components. 
+
+         return (
+          // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components.
           // Github issue: #4840
-          
         <div>
           <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.yo.title")}</div>
           <div className="application-panel__content">
           <div className="application-sub-panel application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.abiStatus.title")}</div>
             {this.props.yo.eligibility != null ? this.props.yo.eligibilityStatus == "ELIGIBLE" ?
-                <div>
-                  <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
-                    <div className="application-sub-panel__notification-item">
-                      <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
-                      <div className="application-sub-panel__notification-footer">
-                        {enrollmentLink}
-                      </div>
+              <div>
+                <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
+                  <div className="application-sub-panel__notification-item">
+                    <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
+                    <div className="application-sub-panel__notification-footer">
+                      {enrollmentLink}
+                    </div>
+                  </div>
+                </div>
+              </div> :
+              this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
+                <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
+                  <div className="application-sub-panel__notification-item">
+                    <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete">
+                      <span className="application-sub-panel__notification-content">
+                        {i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}
+                      </span>
+                    </div>
+                    <div className="application-sub-panel__notification-footer">
+                      {enrollmentLink}
                     </div>
                   </div>
                 </div> :
-                this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
-                  <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
-                    <div className="application-sub-panel__notification-item">
-                      <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete">
-                        <span className="application-sub-panel__notification-content">
-                          {i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}
-                        </span>
-                      </div>
-                      <div className="application-sub-panel__notification-footer">
-                        {enrollmentLink}
-                      </div>
-                    </div>
-                  </div> :
-                  <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
-                   <div className="application-sub-panel__notification-body">
-                     <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
-                     <span className="application-sub-panel__notification-content">{moment(this.props.yo.eligibility.enrollmentDate).format("D.M.YYYY")}</span>
-                   </div>
-                   <div className="application-sub-panel__notification-body">
-                     <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.examDate")}</span>
-                     <span className="application-sub-panel__notification-content">{moment(this.props.yo.eligibility.examDate).format("D.M.YYYY")}</span>
-                   </div>
-                 </div>
-              : null}
+              null
+            : null}
             </div>
             <div className="application-sub-panel  application-sub-panel--yo-status-container">
               <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
@@ -153,29 +119,7 @@ class YO extends React.Component<YOProps, YOState> {
               </div>
             </div>
           </div>
-      {/*  Waiting for planned workspaces
-          <div className="application-sub-panel">
-            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.plannedWorkspaces.title")}</div>
-            <div className="application-sub-panel__body application-list">
-              <div className="application-list__item course">
-                <div className="application-list__item-header application-list__item-header--course">
-                  <span className="application-list__header-icon icon-books"></span>
-                  <span className="application-list__header-primary">Gur- gurzi 4</span>
-                  <span className="application-list__header-secondary">Toissijainen</span>
-                </div>
-              </div>
-              <div className="application-list__item course">
-                <div className="application-list__item-header  application-list__item-header--course">
-                  <span className="application-list__header-icon icon-books"></span>
-                  <span className="application-list__header-primary">Gur- gurzi 5</span>
-                  <span className="application-list__header-secondary">Toissijainen</span>
-                </div>
-              </div>
-            </div>
-          </div>
-      */}
-            </div>
- 
+        </div>
       );
     }
   }

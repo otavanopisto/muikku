@@ -22,18 +22,17 @@ export interface SubjectEligibilitySubjectsType {
 }
 
 export interface YOEnrollmentType{
-  id: number,
-  enrolled: boolean,
-  eligible: boolean,
-  starts: string,
-  ends: string
+ id: number,
+ enrolled: boolean,
+ enrollmentDate: string,
+ eligible: boolean,
+ starts: string,
+ ends: string,
 }
 
 export interface YOEligibilityType {
   coursesCompleted: number,
-  coursesRequired: number,
-  enrollmentDate: String,
-  examDate: String
+  coursesRequired: number
 }
 
 export interface YOType {
@@ -68,11 +67,11 @@ export default function yo(state:YOType={
   } else if (action.type === "UPDATE_STUDIES_YO_SUBJECTS"){
      return Object.assign({}, state, {
        subjects: action.payload
-     });       
+     });
   } else if (action.type === "UPDATE_STUDIES_YO_ELIGIBILITY_STATUS"){
      return Object.assign({}, state, {
        eligibilityStatus: action.payload
-     });       
+     });
   } else if (action.type === "UPDATE_STUDIES_YO_ELIGIBILITY"){
      return Object.assign({}, state, {
        eligibility: action.payload
