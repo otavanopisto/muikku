@@ -8,14 +8,16 @@ export interface ProfileType {
   username?: string,
   addresses?: Array<StudentUserAddressType>,
   student?: UserWithSchoolDataType,
-  visibility?: any
+  chatVisibility?: string,
+  chatNickname?: string
 }
 
 export default function profile(state: ProfileType = {
   properties: {},
   username: null,
   addresses: null,
-  visibility: null,
+  chatVisibility: null,
+  chatNickname: null,
 }, action: ActionType): ProfileType {
   if (action.type === "SET_PROFILE_USER_PROPERTY"){
     let newProperties = {...state.properties}
@@ -34,6 +36,14 @@ export default function profile(state: ProfileType = {
   } else if (action.type === "SET_PROFILE_STUDENT"){
     return {...state, ...{
       student: action.payload
+    }}
+  } else if (action.type === "SET_PROFILE_CHAT_VISIBILITY"){
+    return {...state, ...{
+      chatVisibility: action.payload
+    }}
+  } else if (action.type === "SET_PROFILE_CHAT_NICKNAME"){
+    return {...state, ...{
+      chatNickname: action.payload
     }}
   }
   return state;

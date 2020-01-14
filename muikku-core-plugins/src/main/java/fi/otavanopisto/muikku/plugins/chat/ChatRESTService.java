@@ -272,12 +272,10 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();	  
-    
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
-    
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
 
-	  
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
+
     return Response.ok(userChatSettings).build();
   }
   @PUT
@@ -291,7 +289,6 @@ public class ChatRESTService extends PluginRESTService {
 
     chatSyncController.syncStudent(userIdentifier);
 
-    
     UserChatVisibility visibility = userChatSettings.getVisibility();
     String nick = userChatSettings.getNick();
     UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);	  
@@ -319,11 +316,9 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString);
-    
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
-    
 
-	  
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
+
     return Response.ok(userChatSettings).build();
   }
 
