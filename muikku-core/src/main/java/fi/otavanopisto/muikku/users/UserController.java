@@ -14,6 +14,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 
 public class UserController {
   
@@ -22,6 +23,10 @@ public class UserController {
   
   public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {
     return userSchoolDataController.createStaffMember(dataSource, staffMember);
+  }
+
+  public BridgeResponse<StudentPayload> createStudent(String dataSource, StudentPayload student) {
+    return userSchoolDataController.createStudent(dataSource, student);
   }
 
   public User findUserByDataSourceAndIdentifier(String schoolDataSource, String userIdentifier) {

@@ -83,6 +83,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -1307,6 +1308,8 @@ public class UserRESTService extends AbstractRESTService {
   @RESTPermit(MuikkuPermissions.CREATE_STAFF_MEMBER)
   public Response createStaffMember(StaffMemberPayload payload) {
     
+    // Payload validation
+    
     if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
@@ -1315,6 +1318,73 @@ public class UserRESTService extends AbstractRESTService {
     
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     BridgeResponse<StaffMemberPayload> response = userController.createStaffMember(dataSource, payload);
+        
+    if (response.ok()) {
+      
+      // Mail about credential creation
+
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+        String confirmationHash = userSchoolDataController.requestCredentialReset(schoolDataSource, payload.getEmail());
+        String resetLink = String.format("%s/forgotpassword/reset?h=%s", baseUrl, confirmationHash);
+        String mailSubject = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailSubject");
+        String mailContent = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailContent", new String[] { resetLink });
+        mailer.sendMail(systemSettingsController.getSystemEmailSenderAddress(), payload.getEmail(), mailSubject, mailContent);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+      
+      // Success resposne
+      
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+
+  /**
+   * POST mApi().user.students
+   * 
+   * Creates a new student.
+   * 
+   * Payload:
+   * {firstName: required; the first name of the student
+   *  lastName: required; the last name of the student
+   *  email: required; the email address of the student
+   *  studyProgrammeIdentifier: required; student's study programme (e.g. STUDYPROGRAMME-42)
+   *  gender: optional; student gender (MALE|FEMALE|OTHER)
+   *  ssn: optional; student social security number
+   * 
+   * Output:
+   * {identifier: identifier of the created student (e.g. STUDENT-123)
+   *  firstName: the first name of the student
+   *  lastName: the last name of the student
+   *  email: the email address of the student
+   *  studyProgrammeIdentifier: the study programme of the student
+   *  gender: student gender, if originally sent
+   *  ssn: student social security number, if originally sent
+   * 
+   * Errors:
+   * 409 if the email address or (optional) SSN is already in use; response contains a localized error message 
+   */
+  @POST
+  @Path("/students")
+  @RESTPermit(MuikkuPermissions.CREATE_STUDENT)
+  public Response createStudent(StudentPayload payload) {
+    
+    // Payload validation
+    
+    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getStudyProgrammeIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
+    }
+
+    // Student creation
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    BridgeResponse<StudentPayload> response = userController.createStudent(dataSource, payload);
         
     if (response.ok()) {
       
