@@ -34,7 +34,6 @@ import fi.foyt.coops.model.File;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
-import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -57,9 +56,6 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
-
-  @Inject
-  private MaterialController materialController;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -148,7 +144,13 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       htmlMaterial = htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, entity.getContent(), entity.getRemoveAnswers());
     }
     catch (WorkspaceMaterialContainsAnswersExeption e) {
-      return Response.status(Status.CONFLICT).entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
+        logger.log(Level.WARNING, String.format("Update material %d by user %d denied due to material containing answers", id, sessionController.getLoggedUserEntity().getId()));
+        return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
+      }
+      else {
+        return Response.status(Status.CONFLICT).entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
+      }
     }
     catch (Exception e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
