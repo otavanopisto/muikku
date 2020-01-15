@@ -58,17 +58,11 @@ public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
 
   public UserChatSettings updateVisibility(UserChatSettings settings, UserChatVisibility visibility) {
     settings.setVisibility(visibility);
-    
-    getEntityManager().persist(settings);
-    
-    return settings;
+    return persist(settings);
   }
   
   public UserChatSettings updateNick(UserChatSettings settings, String nick) {
     settings.setNick(nick);
-    
-    getEntityManager().persist(settings);
-    
-    return settings;
+    return persist(settings);
   }
 }

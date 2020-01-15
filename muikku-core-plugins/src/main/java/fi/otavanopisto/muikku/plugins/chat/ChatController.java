@@ -28,7 +28,7 @@ public class ChatController {
     return userChatSettingsDAO.create(userIdentifier.toId(), visibility, nick);
   }
 
-  public UserChatSettings updateUserChatSettings(UserChatSettings settings, UserChatVisibility visibility) {
+  public UserChatSettings updateUserChatVisibility(UserChatSettings settings, UserChatVisibility visibility) {
     return userChatSettingsDAO.updateVisibility(settings, visibility);
   }
   

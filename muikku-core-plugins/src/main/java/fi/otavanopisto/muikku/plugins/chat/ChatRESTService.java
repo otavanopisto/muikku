@@ -217,9 +217,9 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Logged user doesn't exist").build();
     }
     
-    String nick = "";
-    if (userChatSettings.getNick() != null) {
-      nick = userChatSettings.getNick();
+    String nick = userChatSettings.getNick();
+    if (nick == null) {
+      nick = "";
     }
     
     if (chatEnabled) {
@@ -296,12 +296,14 @@ public class ChatRESTService extends PluginRESTService {
 
     UserChatVisibility visibility = userChatSettings.getVisibility();
     String nick = userChatSettings.getNick();
+    if (nick == null) {
+      nick = "";
+    }
     UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);	  
     if (findUserChatSettings == null) {
       chatController.createUserChatSettings(userIdentifier, visibility, nick);
-
     } else {
-      chatController.updateUserChatSettings(findUserChatSettings, visibility);
+      chatController.updateUserChatVisibility(findUserChatSettings, visibility);
       chatController.updateChatNick(findUserChatSettings, nick);
     }
     return Response.ok(userChatSettings).build(); 
