@@ -1,7 +1,6 @@
 /*global converse */
 import * as React from 'react'
-import './chat.scss';
-import converse from '~/lib/converse';
+import '~/sass/elements/chat.scss';
 
 interface Iprops{
   groupMessage?: any,
@@ -39,9 +38,9 @@ declare global {
 
 
 export class ChatMessage extends React.Component<Iprops, Istate> {
-  
+
   private myRef: any;
-  
+
   constructor(props: any){
     super(props);
     this.state = {
@@ -60,7 +59,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
   this.showRemoveButton = this.showRemoveButton.bind(this);
   this.removeMessage = this.removeMessage.bind(this);
   }
-  
+
   showRealName (){
     if (this.state.showName === false && window.MUIKKU_IS_STUDENT === false){
       this.setState({
@@ -72,9 +71,9 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       });
     }
   }
-  
+
   showRemoveButton () {
-    
+
     if (window.MUIKKU_IS_STUDENT && this.state.senderClass === "sender-me"){
       this.setState({
         showRemoveButton: !this.state.showRemoveButton
@@ -85,20 +84,20 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       });
     }
   }
-  
+
   removeMessage (){
-    
+
   }
-  
+
   componentDidMount (){
-      
-      
+
+
       let reactComponent = this;
 
       let groupMessage = this.props.groupMessage;
-      
+
       let stamp = new Date(groupMessage.timeStamp);
-      
+
       reactComponent.setState({
         groupMessage: groupMessage,
         senderClass: groupMessage.senderClass,
@@ -107,27 +106,27 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
         timeStamp: stamp,
         content: groupMessage.content,
         deleted: groupMessage.deleted
-        
+
       });
-      
+
     }
-    
+
     componentDidUpdate (){
-     
+
     }
-    
-    
+
+
     render() {
-      
+
       return  (
               <div>
               {<div className={this.state.senderClass + " chat__message-item"}>
-                
+
                 <p className={this.state.senderClass + " chat__message-item--timestamp"}>
-                <b onClick={this.showRealName} className={this.state.senderClass}>{this.state.from} 
+                <b onClick={this.showRealName} className={this.state.senderClass}>{this.state.from}
                 {(this.state.showName === true) && <i>({this.state.realName}) </i>}
                 </b>
-               {new Intl.DateTimeFormat('en-GB', { 
+               {new Intl.DateTimeFormat('en-GB', {
                    year: 'numeric', month: 'numeric', day: 'numeric',
                    hour: 'numeric', minute: 'numeric', second: 'numeric',
                    hour12: false
@@ -139,10 +138,10 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
             </div>}
             </div>
 
-        
-        
 
-      
+
+
+
       );
     }
   }

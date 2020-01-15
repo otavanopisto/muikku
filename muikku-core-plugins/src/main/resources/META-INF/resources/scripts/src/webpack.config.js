@@ -84,7 +84,8 @@ module.exports = {
 	entry: entries,
 	output: {
 		filename: "[name].js",
-		path: __dirname + "/../dist"
+		path: __dirname + "/../dist",
+		jsonpFunction: "webpackjsonpFunction3"
 	},
 	resolve: {
 		alias: {

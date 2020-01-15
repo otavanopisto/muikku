@@ -1,6 +1,6 @@
 /*global converse */
 import * as React from 'react'
-import './chat.scss';
+import '~/sass/elements/chat.scss';
 import converse from '~/lib/converse';
 
 interface Iprops{
@@ -59,9 +59,9 @@ declare global {
 
 
 export class RoomsList extends React.Component<Iprops, Istate> {
-  
+
   private myRef: any;
-  
+
   constructor(props: any){
     super(props);
     this.state = {
@@ -98,22 +98,22 @@ export class RoomsList extends React.Component<Iprops, Istate> {
     this.openChatSettings = this.openChatSettings.bind(this);
     this.toggleRoomInfo = this.toggleRoomInfo.bind(this);
    // this.openMucConversation = this.openMucConversation.bind(this);
-    
+
 
   }
 
      getMUCMessages (stanza: any) {
-    
+
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-      
-      
+
+
       if (stanza && stanza.attributes.type.nodeValue === "groupchat"){
         let message = stanza.textContent;
         let from = stanza.attributes.from.value;
         let senderClass ="";
 
         from = from.split("/").pop();
-        
+
         if (from === this.state.nick){
           senderClass = "sender-me";
 
@@ -121,17 +121,17 @@ export class RoomsList extends React.Component<Iprops, Istate> {
           senderClass = "sender-others";
         }
         let groupMessage: any = {from: from, content: message, senderClass: senderClass};
-        
+
         if (message !== ""){
-          
+
           let groupMessages = this.state.groupMessages;
-          
+
           groupMessages.push(groupMessage);
 
-          
-          
+
+
           this.setState({groupMessages: groupMessages});
-          
+
           return;
         }
       } else {
@@ -153,7 +153,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
         });
       }
     }
-    
+
     toggleRoomInfo() {
         if (this.state.showRoomInfo === false){
           this.setState({
@@ -165,27 +165,27 @@ export class RoomsList extends React.Component<Iprops, Istate> {
           });
         }
       }
-    
-    
+
+
     fetchRoomConfiguration () {
       /* Send an IQ stanza to fetch the groupchat configuration data.
       * Returns a promise which resolves once the response IQ
       * has been received.
       */
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-      
-      
+
+
       return this.state.converse.api.sendIQ(
         $iq({'to': this.state.roomJid, 'type': "get"})
         .c("query", {xmlns: Strophe.NS.MUC_OWNER})
       );
     }
 
-  
-    
+
+
     componentDidMount (){
-      
-      
+
+
       let reactComponent = this;
 
       if (converse){
@@ -193,33 +193,33 @@ export class RoomsList extends React.Component<Iprops, Istate> {
           converse: converse
         });
       }
-      
+
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-      
+
       let chat = this.props.chat;
       let orderNumber = this.props.orderNumber;
       let description;
-      
+
       if (chat){
-          
+
 
         this.setState({
           roomName: chat.name,
           roomJid: chat.jid,
           isStudent: window.MUIKKU_IS_STUDENT,
           roomDesc: chat.roomDesc
-          
-      
+
+
         });
       }
-      
-      
-      
+
+
+
     }
-    
-    
+
+
     render() {
-      
+
       return  (
         <div>
             <span className="chat__rooms-list--toggle-info icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></span>
@@ -229,7 +229,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
             { (this.state.showRoomInfo === true) && <div className="chat__rooms-list--room-info"><p>{this.state.roomDesc}</p></div> }
         </div>
 
-      
+
       );
     }
   }
