@@ -184,13 +184,13 @@ public class ChatRESTService extends PluginRESTService {
     }
 
     SchoolDataIdentifier identifier = sessionController.getLoggedUser();
-    
+
     if (identifier == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
     }
-	  
+
     String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
-    
+
     if (enabledUsersCsv == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
@@ -200,19 +200,19 @@ public class ChatRESTService extends PluginRESTService {
     if (!enabledUsers.contains(identifier.toId())) {
       return Response.ok(new StatusRESTModel(false, false, null, null)).build();
     }
-    
+
     UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
-    
+
     if (userChatSettings != null) {
       UserChatVisibility visibility = userChatSettings.getVisibility();
-    	
+
       if (visibility == UserChatVisibility.VISIBLE_TO_ALL) {
         chatEnabled = true;
       }
     } 
-    
+
     User user = userController.findUserByIdentifier(identifier);
-    
+
     if (user == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Logged user doesn't exist").build();
     }

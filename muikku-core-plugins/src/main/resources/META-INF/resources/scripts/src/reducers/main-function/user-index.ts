@@ -11,7 +11,7 @@ export interface UserType {
   hasEvaluationFees?: false,
   curriculumIdentifier?: string,
   organizationIdentifier?: string,
- 
+
   //EXTENDED VALUES, may or may not be available
   email?: string,
   language?: string,
@@ -40,6 +40,11 @@ export interface UserWithSchoolDataType {
   studyTimeEnd?: string,
   updatedByStudent: boolean,
   userEntityId: number
+}
+
+export interface UserChatSettingsType {
+  chatVisibility: string,
+  chatNickname: string
 }
 
 export interface OrganizationType {
@@ -83,7 +88,7 @@ export interface UserRecepientType {
 
 export interface UserGroupRecepientType {
   type: "usergroup",
-  value: UserGroupType 
+  value: UserGroupType
 }
 
 export interface StaffRecepientType {

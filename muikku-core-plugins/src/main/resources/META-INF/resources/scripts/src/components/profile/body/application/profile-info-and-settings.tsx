@@ -6,8 +6,7 @@ import { StatusType } from '~/reducers/base/status';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { ProfileType } from '~/reducers/main-function/profile';
-import { saveProfileProperty, SaveProfilePropertyTriggerType,
-    updateProfileChatVisibility, UpdateProfileChatVisibilityTriggerType, updateProfileChatNickname, UpdateProfileChatNicknameTriggerType} from '~/actions/main-function/profile';
+import { saveProfileProperty, SaveProfilePropertyTriggerType, updateProfileChatSettings, UpdateProfileChatSettingsTriggerType} from '~/actions/main-function/profile';
 import { bindActionCreators } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import moment from '~/lib/moment';
@@ -43,16 +42,15 @@ interface ProfileInfoAndSettingsProps {
   profile: ProfileType,
   saveProfileProperty: SaveProfilePropertyTriggerType,
   displayNotification: DisplayNotificationTriggerType,
-  updateProfileChatVisibility: UpdateProfileChatVisibilityTriggerType,
-  updateProfileChatNickname: UpdateProfileChatNicknameTriggerType
+  updateProfileChatSettings: UpdateProfileChatSettingsTriggerType
 }
 
 interface ProfileInfoAndSettingsState {
   profileVacationStart: any,
   profileVacationEnd: any,
   phoneNumber: string,
-  chatVisibility: any,
-  chatNickname: any
+  chatVisibility: string,
+  chatNickname: string
 }
 
 class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps, ProfileInfoAndSettingsState> {
@@ -69,8 +67,8 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       profileVacationStart: (props.profile.properties['profile-vacation-start'] && moment(props.profile.properties['profile-vacation-start'])) || null,
       profileVacationEnd: (props.profile.properties['profile-vacation-end'] && moment(props.profile.properties['profile-vacation-end'])) || null,
       phoneNumber: props.profile.properties['profile-phone'] || "",
-      chatVisibility: props.profile.chatVisibility || null,
-      chatNickname: props.profile.chatNickname || ""
+      chatVisibility: props.profile.chatSettings ? (props.profile.chatSettings.chatVisibility || null) : null,
+      chatNickname: props.profile.chatSettings ? (props.profile.chatSettings.chatNickname || "") : null
     }
   }
   componentWillReceiveProps(nextProps: ProfileInfoAndSettingsProps){
@@ -95,17 +93,17 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       });
     }
 
-    if (nextProps.profile.chatVisibility &&
-        this.props.profile.chatVisibility !== nextProps.profile.chatVisibility){
+    if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.chatVisibility &&
+        this.props.profile.chatSettings.chatVisibility !== nextProps.profile.chatSettings.chatVisibility){
       this.setState({
-        chatVisibility: nextProps.profile.chatVisibility
+        chatVisibility: nextProps.profile.chatSettings.chatVisibility
       });
     }
 
-    if (nextProps.profile.chatNickname &&
-        this.props.profile.chatNickname !== nextProps.profile.chatNickname){
+    if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.chatNickname &&
+        this.props.profile.chatSettings.chatNickname !== nextProps.profile.chatSettings.chatNickname){
       this.setState({
-        chatNickname: nextProps.profile.chatNickname
+        chatNickname: nextProps.profile.chatSettings.chatNickname
       });
     }
   }
@@ -159,16 +157,18 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), cb);
       }
     }
-
-    if ((this.props.profile.chatVisibility || null) !== this.state.chatVisibility){
-      totals++;
-      this.props.updateProfileChatVisibility(this.state.chatVisibility, cb);
+    if (this.props.profile.chatSettings) {
+      if ((this.props.profile.chatSettings.chatVisibility || null) !== this.state.chatVisibility){
+        totals++;
+        this.props.updateProfileChatSettings({
+          chatVisibility: this.state.chatVisibility,
+          chatNickname: this.state.chatNickname,
+          success: cb,
+          fail: cb,
+        });
+      }
     }
 
-    if ((this.props.profile.chatNickname || "") !== this.state.chatNickname){
-      totals++;
-      this.props.updateProfileChatNickname(this.state.chatNickname, cb);
-    }
   }
 
   render(){
@@ -237,7 +237,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
         <div className="profile-element__item">
           <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
-          <input className="form-element__input" type="text" onChange={this.onChatNickChange} value={this.state.chatNickname}/>
+          <input className="form-element__input" type="text" onChange={this.onChatNickChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""}/>
 
         </div>
         <div className="profile-element__item">
@@ -258,7 +258,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({saveProfileProperty, displayNotification, updateProfileChatVisibility, updateProfileChatNickname}, dispatch);
+  return bindActionCreators({saveProfileProperty, displayNotification, updateProfileChatSettings}, dispatch);
 };
 
 export default connect(

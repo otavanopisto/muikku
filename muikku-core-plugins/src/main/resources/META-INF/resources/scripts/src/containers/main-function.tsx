@@ -43,7 +43,7 @@ import { loadStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 
 import ProfileBody from '../components/profile/body';
-import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatVisibility, loadProfileChatNickname } from '~/actions/main-function/profile';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings } from '~/actions/main-function/profile';
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 import {Chat} from '../components/chat/chat';
@@ -345,9 +345,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
         this.props.store.dispatch(loadProfileAddress() as Action);
       }
 
-      this.props.store.dispatch(loadProfileChatVisibility() as Action);
-
-      this.props.store.dispatch(loadProfileChatNickname() as Action);
+      this.props.store.dispatch(loadProfileChatSettings() as Action);
     }
 
     return <ProfileBody/>

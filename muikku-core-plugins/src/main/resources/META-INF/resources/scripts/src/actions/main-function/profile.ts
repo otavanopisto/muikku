@@ -2,7 +2,7 @@ import promisify, { promisifyNewConstructor } from '~/util/promisify';
 import actions from '../base/notifications';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
-import {UserType, StudentUserAddressType,StudentUserProfileChatType, UserWithSchoolDataType} from '~/reducers/main-function/user-index';
+import {UserType, StudentUserAddressType,StudentUserProfileChatType, UserWithSchoolDataType, UserChatSettingsType} from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 import $ from '~/lib/jquery';
 import { resize } from '~/util/modifiers';
@@ -37,29 +37,17 @@ export interface UpdateProfileAddressTriggerType {
   }):AnyActionType
 }
 
-export interface LoadProfileChatVisibilityTriggerType {
+export interface LoadProfileChatSettingsTriggerType {
   ():AnyActionType
 }
 
-export interface UpdateProfileChatVisibilityTriggerType {
+export interface UpdateProfileChatSettingsTriggerType {
   (data: {
     chatVisibility: string,
-    userIdentifier: any
+    chatNickname: string,
     success: ()=>any,
     fail: ()=>any
-  }, callback?: ()=>any):AnyActionType
-}
-
-export interface LoadProfileChatNicknameTriggerType {
-  ():AnyActionType
-}
-
-export interface UpdateProfileChatNicknameTriggerType {
-  (data: {
-    chatNickname: string
-    success: ()=>any,
-    fail: ()=>any
-  }, callback?: ()=>any):AnyActionType
+  }):AnyActionType
 }
 
 export interface UploadProfileImageTriggerType {
@@ -84,8 +72,7 @@ export interface SET_PROFILE_USER_PROPERTY extends SpecificActionType<"SET_PROFI
 export interface SET_PROFILE_USERNAME extends SpecificActionType<"SET_PROFILE_USERNAME", string>{}
 export interface SET_PROFILE_ADDRESSES extends SpecificActionType<"SET_PROFILE_ADDRESSES", Array<StudentUserAddressType>>{}
 export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STUDENT", UserWithSchoolDataType>{}
-export interface SET_PROFILE_CHAT_VISIBILITY extends SpecificActionType<"SET_PROFILE_CHAT_VISIBILITY", string>{}
-export interface SET_PROFILE_CHAT_NICKNAME extends SpecificActionType<"SET_PROFILE_CHAT_NICKNAME", string>{}
+export interface SET_PROFILE_CHAT_SETTINGS extends SpecificActionType<"SET_PROFILE_CHAT_SETTINGS", UserChatSettingsType>{}
 
 let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loadProfilePropertiesSet() {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -243,15 +230,15 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
   }
 }
 
-let loadProfileChatVisibility:LoadProfileChatVisibilityTriggerType = function loadProfileChatVisibility(){
+let loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadProfileChatSettings(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
 
-      if (chatSettings && chatSettings.visibility) {
+      if (chatSettings && chatSettings.visibility && chatSettings.nick) {
         dispatch({
-          type: "SET_PROFILE_CHAT_VISIBILITY",
-          payload: chatSettings.visibility
+          type: "SET_PROFILE_CHAT_SETTINGS",
+          payload: chatSettings
         });
       }
 
@@ -263,16 +250,15 @@ let loadProfileChatVisibility:LoadProfileChatVisibilityTriggerType = function lo
   }
 }
 
-let updateProfileChatVisibility: UpdateProfileChatVisibilityTriggerType = function updateProfileChatVisibility(data){
+let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function updateProfileChatSettings(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
 
     try {
-      let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
 
-      await promisify(mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data, nick: chatSettings.nick}), 'callback')();
+      await promisify(mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data.chatVisibility, nick: data.chatNickname}), 'callback')();
 
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.visibilityChange.success'), 'success'));
+
 
       data.success && data.success();
 
@@ -282,52 +268,6 @@ let updateProfileChatVisibility: UpdateProfileChatVisibilityTriggerType = functi
       }
 
       dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.visibilityChange.error'), 'error'));
-
-      data.fail && data.fail();
-    }
-  }
-}
-
-let loadProfileChatNickname:LoadProfileChatNicknameTriggerType = function loadProfileChatNickname(){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
-
-    try {
-      let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
-
-      if (chatSettings && chatSettings.nick) {
-        dispatch({
-          type: "SET_PROFILE_USERNAME",
-          payload: chatSettings.nick
-        });
-      }
-    } catch(err){
-      if (!(err instanceof MApiError)){
-        throw err;
-      }
-    }
-  }
-}
-
-let updateProfileChatNickname: UpdateProfileChatNicknameTriggerType = function updateProfileChatNickname(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let state = getState();
-    try {
-
-      let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
-
-      await promisify(mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: chatSettings.visibility, nick: data}), 'callback')();
-
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.nicknameChange.success'), 'success'));
-
-      data.success && data.success();
-
-    } catch(err){
-      if (!(err instanceof MApiError)){
-        throw err;
-      }
-
-      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.chat.nicknameChange.error'), 'error'));
 
       data.fail && data.fail();
     }
@@ -406,4 +346,4 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
   }
 }
 
-export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, loadProfileChatVisibility, updateProfileChatVisibility, loadProfileChatNickname, updateProfileChatNickname, uploadProfileImage, deleteProfileImage};
+export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage, deleteProfileImage};
