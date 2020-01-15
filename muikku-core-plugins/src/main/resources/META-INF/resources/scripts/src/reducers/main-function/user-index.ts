@@ -43,8 +43,8 @@ export interface UserWithSchoolDataType {
 }
 
 export interface UserChatSettingsType {
-  chatVisibility: string,
-  chatNickname: string
+  visibility: string,
+  nick?: string
 }
 
 export interface OrganizationType {

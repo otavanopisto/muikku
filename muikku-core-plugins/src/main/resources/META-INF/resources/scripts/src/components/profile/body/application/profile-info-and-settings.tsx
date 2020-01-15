@@ -67,8 +67,8 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       profileVacationStart: (props.profile.properties['profile-vacation-start'] && moment(props.profile.properties['profile-vacation-start'])) || null,
       profileVacationEnd: (props.profile.properties['profile-vacation-end'] && moment(props.profile.properties['profile-vacation-end'])) || null,
       phoneNumber: props.profile.properties['profile-phone'] || "",
-      chatVisibility: props.profile.chatSettings ? (props.profile.chatSettings.chatVisibility || null) : null,
-      chatNickname: props.profile.chatSettings ? (props.profile.chatSettings.chatNickname || "") : null
+      chatVisibility: props.profile.chatSettings ? (props.profile.chatSettings.visibility || null) : null,
+      chatNickname: props.profile.chatSettings ? (props.profile.chatSettings.nick || "") : null
     }
   }
   componentWillReceiveProps(nextProps: ProfileInfoAndSettingsProps){
@@ -93,17 +93,17 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       });
     }
 
-    if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.chatVisibility &&
-        this.props.profile.chatSettings.chatVisibility !== nextProps.profile.chatSettings.chatVisibility){
+    if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.visibility &&
+        this.props.profile.chatSettings.visibility !== nextProps.profile.chatSettings.visibility){
       this.setState({
-        chatVisibility: nextProps.profile.chatSettings.chatVisibility
+        chatVisibility: nextProps.profile.chatSettings.visibility
       });
     }
 
-    if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.chatNickname &&
-        this.props.profile.chatSettings.chatNickname !== nextProps.profile.chatSettings.chatNickname){
+    if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.nick &&
+        this.props.profile.chatSettings.nick !== nextProps.profile.chatSettings.nick){
       this.setState({
-        chatNickname: nextProps.profile.chatSettings.chatNickname
+        chatNickname: nextProps.profile.chatSettings.nick
       });
     }
   }
@@ -158,11 +158,11 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       }
     }
     if (this.props.profile.chatSettings) {
-      if ((this.props.profile.chatSettings.chatVisibility || null) !== this.state.chatVisibility){
+      if (((this.props.profile.chatSettings.visibility || null) !== this.state.chatVisibility) || ((this.props.profile.chatSettings.nick || null) !== this.state.chatNickname)){
         totals++;
         this.props.updateProfileChatSettings({
-          chatVisibility: this.state.chatVisibility,
-          chatNickname: this.state.chatNickname,
+          visibility: this.state.chatVisibility,
+          nick: this.state.chatNickname,
           success: cb,
           fail: cb,
         });

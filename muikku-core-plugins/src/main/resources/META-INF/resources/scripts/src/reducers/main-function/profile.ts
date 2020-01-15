@@ -15,7 +15,7 @@ export default function profile(state: ProfileType = {
   properties: {},
   username: null,
   addresses: null,
-  chatSettings: null,
+  chatSettings: Object(),
 }, action: ActionType): ProfileType {
   if (action.type === "SET_PROFILE_USER_PROPERTY"){
     let newProperties = {...state.properties}

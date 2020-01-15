@@ -43,8 +43,8 @@ export interface LoadProfileChatSettingsTriggerType {
 
 export interface UpdateProfileChatSettingsTriggerType {
   (data: {
-    chatVisibility: string,
-    chatNickname: string,
+    visibility: string,
+    nick?: string,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
@@ -256,7 +256,7 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function u
 
     try {
 
-      await promisify(mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data.chatVisibility, nick: data.chatNickname}), 'callback')();
+      await promisify(mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data.visibility, nick: data.nick}), 'callback')();
 
       data.success && data.success();
 
