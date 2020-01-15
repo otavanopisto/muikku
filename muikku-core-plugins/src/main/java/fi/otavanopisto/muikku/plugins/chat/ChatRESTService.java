@@ -216,9 +216,14 @@ public class ChatRESTService extends PluginRESTService {
     if (user == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Logged user doesn't exist").build();
     }
-
+    
+    String nick = "";
+    if (userChatSettings.getNick() != null) {
+      nick = userChatSettings.getNick();
+    }
+    
     if (chatEnabled) {
-      return Response.ok(new StatusRESTModel(true, true, user.getDisplayName(),"")).build();
+      return Response.ok(new StatusRESTModel(true, true, user.getDisplayName(), nick)).build();
     } else {
       return Response.ok(new StatusRESTModel(false, true, null, null)).build();
     }
