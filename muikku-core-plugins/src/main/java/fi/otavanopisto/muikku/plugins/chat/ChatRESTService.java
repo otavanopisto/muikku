@@ -301,7 +301,7 @@ public class ChatRESTService extends PluginRESTService {
     }
     UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);	  
     if (findUserChatSettings == null) {
-      chatController.createUserChatSettings(userIdentifier, visibility, nick);
+      findUserChatSettings = chatController.createUserChatSettings(userIdentifier, visibility, nick);
     } else {
       chatController.updateUserChatVisibility(findUserChatSettings, visibility);
       chatController.updateChatNick(findUserChatSettings, nick);
