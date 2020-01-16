@@ -306,7 +306,7 @@ public class ChatRESTService extends PluginRESTService {
       chatController.updateUserChatVisibility(findUserChatSettings, visibility);
       chatController.updateChatNick(findUserChatSettings, nick);
     }
-    return Response.ok(userChatSettings).build(); 
+    return Response.ok(findUserChatSettings).build(); 
   }
   private WorkspaceChatSettingsRestModel restModel(WorkspaceChatSettings workspaceChatSettings) {
     WorkspaceChatSettingsRestModel restModel = new WorkspaceChatSettingsRestModel();
