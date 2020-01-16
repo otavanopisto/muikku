@@ -67,8 +67,8 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       profileVacationStart: (props.profile.properties['profile-vacation-start'] && moment(props.profile.properties['profile-vacation-start'])) || null,
       profileVacationEnd: (props.profile.properties['profile-vacation-end'] && moment(props.profile.properties['profile-vacation-end'])) || null,
       phoneNumber: props.profile.properties['profile-phone'] || "",
-      chatVisibility: props.profile.chatSettings ? (props.profile.chatSettings.visibility || null) : null,
-      chatNickname: props.profile.chatSettings ? (props.profile.chatSettings.nick || "") : null
+      chatVisibility: props.profile.chatSettings.visibility || null,
+      chatNickname: props.profile.chatSettings.nick || ""
     }
   }
   componentWillReceiveProps(nextProps: ProfileInfoAndSettingsProps){
@@ -137,21 +137,21 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       }
     }
 
-    if (this.state.profileVacationStart != null) {
+    if (!this.props.status.isStudent) {
       if (this.props.profile.properties['profile-vacation-start'] !== this.state.profileVacationStart){
         totals++;
         this.props.saveProfileProperty('profile-vacation-start', this.state.profileVacationStart ? this.state.profileVacationStart.toISOString() : null, cb);
       }
     }
 
-    if (this.state.profileVacationEnd != null) {
+    if (!this.props.status.isStudent) {
       if (this.props.profile.properties['profile-vacation-end'] !== this.state.profileVacationEnd){
         totals++;
         this.props.saveProfileProperty('profile-vacation-end', this.state.profileVacationEnd ? this.state.profileVacationEnd.toISOString() : null, cb);
       }
     }
 
-    if (this.state.phoneNumber != null) {
+    if (!this.props.status.isStudent) {
       if ((this.props.profile.properties['profile-phone'] || "") !== this.state.phoneNumber){
         totals++;
         this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), cb);
