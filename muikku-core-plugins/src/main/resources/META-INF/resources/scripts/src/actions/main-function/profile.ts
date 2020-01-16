@@ -256,8 +256,6 @@ let updateProfileChatSettings: UpdateProfileChatSettingsTriggerType = function u
 
     try {
 
-      //await promisify(mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data.visibility, nick: data.nick}), 'callback')();
-
       dispatch({
         type: "SET_PROFILE_CHAT_SETTINGS",
         payload: <UserChatSettingsType>(await promisify(mApi().chat.settings.update({userIdentifier: state.status.userSchoolDataIdentifier, visibility: data.visibility, nick: data.nick}), 'callback')())
