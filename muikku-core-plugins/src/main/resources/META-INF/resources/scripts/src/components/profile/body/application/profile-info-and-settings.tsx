@@ -59,8 +59,8 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
     this.handleDateChange = this.handleDateChange.bind(this);
     this.onPhoneChange = this.onPhoneChange.bind(this);
-    this.onChatChange = this.onChatChange.bind(this);
-    this.onChatNickChange = this.onChatNickChange.bind(this);
+    this.onChatVisibilityChange = this.onChatVisibilityChange.bind(this);
+    this.onChatNicknameChange = this.onChatNicknameChange.bind(this);
     this.save = this.save.bind(this);
 
     this.state = {
@@ -117,12 +117,12 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       phoneNumber: e.target.value
     });
   }
-  onChatChange(e: React.ChangeEvent<HTMLSelectElement>){
+  onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>){
     this.setState({
       chatVisibility: e.target.value
     });
   }
-  onChatNickChange(e: React.ChangeEvent<HTMLInputElement>){
+  onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({
       chatNickname: e.target.value
     });
@@ -229,7 +229,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
         <div className="profile-element__item">
           <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
-          <select className="form-element__select" value={this.state.chatVisibility} onChange={this.onChatChange}>
+          <select className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : ""} onChange={this.onChatVisibilityChange}>
             <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
             <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
           </select>
@@ -237,7 +237,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
         <div className="profile-element__item">
           <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.chat.setNick')}</label>
-          <input className="form-element__input" type="text" onChange={this.onChatNickChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""}/>
+          <input className="form-element__input" type="text" onChange={this.onChatNicknameChange} value={this.state.chatNickname !== null ? this.state.chatNickname : ""}/>
 
         </div>
         <div className="profile-element__item">
