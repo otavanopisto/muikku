@@ -53,7 +53,7 @@ export default function(store: Store<StateType>){
             muc_show_join_leave: true,
             ping_interval: 45,
             prebind_url : "/rest/chat/prebind",
-            // websocket_url: This is worth to check out is we can use websockets instead of BOSH
+            // websocket_url: This is worth to check out if we can use websockets instead of BOSH
             whitelisted_plugins: ["myplugin","addRoom", "profileChatSettings"]
           });
         }
