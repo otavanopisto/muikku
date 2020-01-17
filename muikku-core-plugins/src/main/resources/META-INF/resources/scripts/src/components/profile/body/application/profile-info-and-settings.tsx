@@ -98,6 +98,10 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       this.setState({
         chatVisibility: nextProps.profile.chatSettings.visibility
       });
+    }else if(nextProps.profile.chatSettings.visibility === undefined){
+      this.setState({
+        chatVisibility: "DISABLED"
+      });
     }
 
     if (nextProps.profile.chatSettings && nextProps.profile.chatSettings.nick &&
