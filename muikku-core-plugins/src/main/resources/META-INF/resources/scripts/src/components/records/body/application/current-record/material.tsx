@@ -1,16 +1,17 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { RecordsGradesType, MaterialType } from "~/reducers/main-function/records/records";
-import { WorkspaceType } from "~/reducers/main-function/workspaces";
+import { RecordsGradesType, MaterialType } from "~/reducers/main-function/records";
+import { WorkspaceType } from "~/reducers/workspaces";
 
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
+import { StatusType } from "~/reducers/base/status";
 
 interface MaterialProps {
   material: MaterialType,
   workspace: WorkspaceType,
   i18n: i18nType,
-  grades: RecordsGradesType
+  status: StatusType,
 }
 
 interface MaterialState {
@@ -43,12 +44,8 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
       <div className="application-list__item-content application-list__item-content--main">
         <div className="application-list__item-header application-list__item-header--studies-assignment" onClick={this.props.material.evaluation ? this.toggleOpened : null}>
           {evaluation ?
-            <span title={this.props.grades[[
-              evaluation.gradingScaleSchoolDataSource,
-              evaluation.gradingScaleIdentifier,
-              evaluation.gradeSchoolDataSource,
-              evaluation.gradeIdentifier].join("-")].scale + getShortenGradeExtension(evaluation.grade)}
-              className={`application-list__indicator-badge application-list__indicator-badge--task ${evaluation.passed ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
+            <span title={evaluation.gradingScale + getShortenGradeExtension(evaluation.grade)}
+              className={`text text--assignment-assesment-grade ${evaluation.passed ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
             : <span className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}>N</span>}
           
           <span className="application-list__header-primary">{this.props.material.assignment.title}</span>

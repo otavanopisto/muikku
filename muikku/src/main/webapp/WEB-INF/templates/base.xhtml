@@ -29,6 +29,7 @@
       phoneNumbers: #{sessionBackingBean.phoneNumbers},
       studyTimeLeftStr: '#{sessionBackingBean.studyTimeLeftStr}'  || null,
       studyStartDate: '#{sessionBackingBean.studyStartDate}'  || null,
+      studyEndDate: '#{sessionBackingBean.studyEndDate}' || null,
       studyTimeEnd: '#{sessionBackingBean.studyTimeEnd}' || null
     }
     var HOPS_ENABLED = #{sessionBackingBean.getUserPropertyAsBoolean('hops.enabled')};

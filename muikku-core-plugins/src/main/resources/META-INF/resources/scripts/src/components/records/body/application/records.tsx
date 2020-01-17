@@ -13,21 +13,24 @@ import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/workspace-activity.scss';
 import '~/sass/elements/file-uploader.scss';
 
-import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
+import { RecordsType, TransferCreditType } from '~/reducers/main-function/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
 import { MatriculationLink } from './matriculation-link';
+import { StatusType } from '~/reducers/base/status';
+import moment from '~/lib/moment';
 
 let ProgressBarLine = require('react-progressbar.js').Line;
 
 interface RecordsProps {
   i18n: i18nType,
-  records: RecordsType
+  records: RecordsType,
+  status: StatusType,
 }
 
 interface RecordsState {
@@ -36,7 +39,7 @@ interface RecordsState {
 let storedCurriculumIndex:any = {};
 
 function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: WorkspaceType){
-  let assesmentState:WorkspaceAssessementState;
+  let assesmentState:WorkspaceAssessementStateType;
   let assesmentDate:string;
   if (workspace.studentAssessmentState && workspace.studentAssessmentState.state){
     assesmentState = workspace.studentAssessmentState.state;
@@ -58,15 +61,11 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
 }
 
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
-  let gradeId = [
-    transferCredit.gradingScaleIdentifier,
-    transferCredit.gradeIdentifier].join('-');
-  let grade = props.records.grades[gradeId];
   return <div className="application-list__header-secondary">
     <span>{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
     <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
-      getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
-      {shortenGrade(grade.grade)}
+      getShortenGradeExtension(transferCredit.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${transferCredit.passed ? "state-PASSED" : "state-FAILED"}`}>
+      {shortenGrade(transferCredit.grade)}
     </span>
   </div>
 }
@@ -180,16 +179,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.records.studyStartDate ? 
-            this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>
+          <span>{this.props.status.profile.studyStartDate ?
+              this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate()) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.records.studyEndDate ? "plugin.records.studyEndDateLabel" :
+        <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.status.profile.studyEndDate ? "plugin.records.studyEndDateLabel" :
           "plugin.records.studyTimeEndLabel")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.records.studyEndDate || this.props.records.studyTimeEnd ? 
-            this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : "-"}</span>
+          <span>{this.props.status.profile.studyEndDate || this.props.status.profile.studyTimeEnd ?
+            this.props.i18n.time.format(moment(this.props.status.profile.studyEndDate || this.props.status.profile.studyTimeEnd, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate()) : "-"}</span>
         </div>
       </div>
     </div>
@@ -277,7 +276,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: state.records
+    records: state.records,
+    status: state.status,
   }
 };
 

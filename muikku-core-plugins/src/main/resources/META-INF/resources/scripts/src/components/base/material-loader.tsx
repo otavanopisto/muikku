@@ -8,11 +8,11 @@ import * as React from 'react';
 //TODO add the scss files that are necessary to render this material page correctly...
 //this file is temporary use it to dump the content from the deprecated scss files that are necessary
 import "~/sass/elements/__ugly-material-loader-deprecated-file-mashup.scss";
-import { MaterialType } from '~/reducers/main-function/records/records';
+import { MaterialType } from '~/reducers/main-function/records';
 import '~/sass/elements/rich-text.scss';
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
-import { WorkspaceType } from '~/reducers/main-function/workspaces';
+import { WorkspaceType } from '~/reducers/workspaces';
 import promisify from '~/util/promisify';
 
 

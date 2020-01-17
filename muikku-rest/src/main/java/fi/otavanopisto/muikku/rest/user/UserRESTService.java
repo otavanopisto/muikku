@@ -77,6 +77,8 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
+import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -1725,12 +1727,29 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   private fi.otavanopisto.muikku.rest.model.TransferCredit createRestModel(TransferCredit transferCredit) {
+	GradingScale gradingScale = null;
+	SchoolDataIdentifier identifier = transferCredit.getGradingScaleIdentifier();
+	if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+	  gradingScale = gradingController.findGradingScale(identifier); 
+	}
+
+	GradingScaleItem grade = null;
+	if (gradingScale != null) {
+	  identifier = transferCredit.getGradeIdentifier();
+	  if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+	    grade = gradingController.findGradingScaleItem(gradingScale, identifier);
+	  }
+	}
+	  
     return new fi.otavanopisto.muikku.rest.model.TransferCredit(
         toId(transferCredit.getIdentifier()), 
         toId(transferCredit.getStudentIdentifier()), 
         transferCredit.getDate(), 
         toId(transferCredit.getGradeIdentifier()), 
         toId(transferCredit.getGradingScaleIdentifier()), 
+        grade == null ? null : grade.getName(),
+        gradingScale == null ? null : gradingScale.getName(),
+        grade == null ? null : grade.isPassingGrade(),
         transferCredit.getVerbalAssessment(), 
         toId(transferCredit.getAssessorIdentifier()), 
         transferCredit.getCourseName(), 

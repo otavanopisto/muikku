@@ -1,6 +1,6 @@
 import { ActionType } from '~/actions';
 import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/main-function/user-index';
-import { WorkspaceType, WorkspaceListType, ActivityLogType} from "~/reducers/main-function/workspaces";
+import { WorkspaceType, WorkspaceListType, ActivityLogType} from "~/reducers/workspaces";
 
 //TODO
 import { VOPSDataType } from '~/reducers/main-function/vops';
