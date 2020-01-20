@@ -98,7 +98,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       this.setState({
         chatVisibility: nextProps.profile.chatSettings.visibility
       });
-    }else if(nextProps.profile.chatSettings.visibility === undefined){
+    } else if(nextProps.profile.chatSettings.visibility === undefined){
       this.setState({
         chatVisibility: "DISABLED"
       });
@@ -172,7 +172,6 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         });
       }
     }
-
   }
 
   render(){
@@ -233,7 +232,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
 
         <div className="profile-element__item">
           <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.chat.visibility')}</label>
-          <select className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : ""} onChange={this.onChatVisibilityChange}>
+          <select className="form-element__select" value={this.state.chatVisibility !== null ? this.state.chatVisibility : "DISABLED"} onChange={this.onChatVisibilityChange}>
             <option value="VISIBLE_TO_ALL">{this.props.i18n.text.get('plugin.profile.chat.visibleToAll')}</option>
             <option value="DISABLED">{this.props.i18n.text.get('plugin.profile.chat.disabled')}</option>
           </select>
