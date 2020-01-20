@@ -34,7 +34,6 @@ import fi.foyt.coops.model.File;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
-import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -57,9 +56,6 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
-
-  @Inject
-  private MaterialController materialController;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -155,7 +151,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).build();
       }
       
-      if (entity.getRemoveAnswers()) {
+      if (Boolean.TRUE.equals(entity.getRemoveAnswers())) {
         logger.log(Level.WARNING, String.format("Publish material %d by user %d with forced answer removal", id, sessionController.getLoggedUserEntity().getId()));
       }
       
@@ -203,7 +199,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Specified revision could not be found").build(); 
       }
 
-      if (entity.getRemoveAnswers()) {
+      if (Boolean.TRUE.equals(entity.getRemoveAnswers())) {
         logger.log(Level.WARNING, String.format("Revert material %d by user %d with forced answer removal", id, sessionController.getLoggedUserEntity().getId()));
       }
       
