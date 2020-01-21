@@ -9,17 +9,17 @@ export interface LoadWorkspacesFromServerTriggerType {
   ():AnyActionType
 }
 
-export type UPDATE_WORKSPACES = SpecificActionType<"UPDATE_WORKSPACES", WorkspaceListType>;
+export type UPDATE_USER_WORKSPACES = SpecificActionType<"UPDATE_USER_WORKSPACES", WorkspaceListType>;
 export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", WorkspaceMaterialReferenceType>;
 
-export type ACTIONS = UPDATE_WORKSPACES | UPDATE_LAST_WORKSPACE
+export type ACTIONS = UPDATE_USER_WORKSPACES | UPDATE_LAST_WORKSPACE
 
 let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType = function loadWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let userId = getState().status.userId;
     try {
       dispatch({
-        type: "UPDATE_WORKSPACES",
+        type: "UPDATE_USER_WORKSPACES",
         payload: <WorkspaceListType>(await (promisify(mApi().workspace.workspaces.read({userId}), 'callback')()) || 0)
       });
     } catch (err){
