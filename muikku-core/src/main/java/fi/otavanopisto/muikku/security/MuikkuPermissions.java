@@ -93,6 +93,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
   public static final String CREATE_STAFF_MEMBER = "CREATE_STAFF_MEMBER";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
+  public static final String CREATE_STUDENT = "CREATE_STUDENT";
   
   /* WORKSPACE */
   
@@ -174,6 +178,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String MANAGE_WORKSPACE_MATERIALS = "MANAGE_WORKSPACE_MATERIALS";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
+  public static final String REMOVE_ANSWERS = "REMOVE_ANSWERS";
 
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
