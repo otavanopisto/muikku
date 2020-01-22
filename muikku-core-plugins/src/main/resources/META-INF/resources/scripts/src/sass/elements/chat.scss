@@ -41,7 +41,7 @@ $the-grey: #eaeaea;
   flex-flow: column nowrap;
   height: 450px;
   background-color: $color-default;
-  border-radius: 10px 10px 0 0;
+  border-radius: 5px 5px 0 0;
   box-shadow: 0 0 20px $color-chat-controlbox-box-shadow;
   position: fixed;
   right: 15px;
@@ -51,7 +51,7 @@ $the-grey: #eaeaea;
 .chat__controlbox-header {
   align-items: center;
   background-color: $color-default;
-  border-radius: 10px 10px 0 0;
+  border-radius: 5px 5px 0 0;
   color: $color-default-contrast;
   display: flex;
   flex-basis: 0;
@@ -88,6 +88,7 @@ $the-grey: #eaeaea;
   background: $color-default;
   border: 2px solid $color-default-separator-border;
   border-radius: 5px;
+  margin: 0 0 15px;
   padding: 5px;
   width: 100%;
 }
@@ -104,18 +105,14 @@ $the-grey: #eaeaea;
   border-color: $collor-chat-user-status-away;
 }
 
-.chat__rooms-container {
-  padding: 5px 0 0;
-}
-
 .chat__rooms-heading {
   font-size: 0.875rem;
-  margin: 10px 0 0;
+  margin: 0 0 5px;
   text-transform: uppercase;
 }
 
 .chat__rooms-listing {
-  padding: 5px 0 10px;
+  margin: 0 0 10px;
 }
 
 .chat__room {

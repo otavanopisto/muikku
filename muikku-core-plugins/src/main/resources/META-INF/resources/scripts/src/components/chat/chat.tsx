@@ -581,20 +581,18 @@ export class Chat extends React.Component<Iprops, Istate> {
               <option value="away">Palaan pian</option>
             </select>
 
-            <div className="chat__rooms-container">
-              <div className="chat__rooms-heading">Kurssikohtaiset huoneet: </div>
-              <div className="chat__rooms-listing">
-                {this.getWorkspaceMucRooms().length > 0 ?
-                  this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
-                : <div className="chat__room  chat__room--empty">Ei huoneita</div>}
-              </div>
+            <div className="chat__rooms-heading">Kurssikohtaiset huoneet: </div>
+            <div className="chat__rooms-listing">
+              {this.getWorkspaceMucRooms().length > 0 ?
+                this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
+              : <div className="chat__room  chat__room--empty">Ei huoneita</div>}
+            </div>
 
-              <div className="chat__rooms-heading">Muut huoneet:</div>
-              <div className="chat__rooms-listing">
-              {this.getNotWorkspaceMucRooms().length > 0 ?
-                this.getNotWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
-              : <div className="chat__room chat__room--empty">Ei huoneita</div>}
-              </div>
+            <div className="chat__rooms-heading">Muut huoneet:</div>
+            <div className="chat__rooms-listing">
+            {this.getNotWorkspaceMucRooms().length > 0 ?
+              this.getNotWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
+            : <div className="chat__room chat__room--empty">Ei huoneita</div>}
             </div>
 
             { (this.state.showNewRoomForm === true) && <div className="chat__new-room-tab--container">
