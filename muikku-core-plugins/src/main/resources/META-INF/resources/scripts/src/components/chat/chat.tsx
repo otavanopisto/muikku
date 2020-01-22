@@ -53,7 +53,8 @@ declare namespace JSX {
 
 declare global {
   interface Window {
-    MUIKKU_IS_STUDENT:boolean;
+    MUIKKU_IS_STUDENT:boolean,
+    MUIKKU_LOGGED_USER: string
   }
 }
 
@@ -255,12 +256,9 @@ export class Chat extends React.Component<Iprops, Istate> {
       data.nick = reactComponent.state.nick;
     }
     let jid;
-
-    if (this.state.converse.locked_muc_domain || (this.state.converse.muc_domain)) {
-      jid = `${Strophe.escapeNode(data.jid)}@${this.state.converse.muc_domain}`;
-    } else {
-      jid = data.jid + '@conference.dev.muikkuverkko.fi'
-    }
+    
+    jid = data.jid + '@conference.dev.muikkuverkko.fi'
+    
 
     let roomJidAndNick = jid + (data.nick !== null ? `/${data.nick}` : "");
 
@@ -483,30 +481,30 @@ export class Chat extends React.Component<Iprops, Istate> {
 
           const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-
+          let from = window.MUIKKU_LOGGED_USER;
           const iq: any = $iq({
             'to': 'conference.dev.muikkuverkko.fi',
-            'from': "pyramus-student-18@dev.muikkuverkko.fi",
+            'from': from + "@dev.muikkuverkko.fi",
             'type': "get"
           }).c("query", {xmlns: Strophe.NS.DISCO_ITEMS});
           reactComponent.state.converse.api.sendIQ(iq)
             .then((iq: any) => reactComponent.onRoomsFound(iq))
             .catch((iq: any) => console.log(iq))
 
-          reactComponent.state.converse.api.listen.on('message', (data: any) => {
-
-            if (data.chatbox && data.chatbox.attributes.message_type === "chat"){
-              reactComponent.setState({
-                messages: data.chatbox.messages.models.map((model: any) => ({
-                  message: model.attributes.message,
-                  from: model.attributes.from,
-                  id: data.chatbox.id
-                })).filter((message: any) => message.message !== undefined)
-              })
-            } else {
-              return;
-            }
-          })
+//          reactComponent.state.converse.api.listen.on('message', (data: any) => {
+//
+//            if (data.chatbox && data.chatbox.attributes.message_type === "chat"){
+//              reactComponent.setState({
+//                messages: data.chatbox.messages.models.map((model: any) => ({
+//                  message: model.attributes.message,
+//                  from: model.attributes.from,
+//                  id: data.chatbox.id
+//                })).filter((message: any) => message.message !== undefined)
+//              })
+//            } else {
+//              return;
+//            }
+//          })
 
           let chatControlBoxStatus = window.sessionStorage.getItem("showControlBox");
 

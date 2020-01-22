@@ -173,18 +173,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       stanza.cnode(Strophe.xmlElement("password", [], password));
       } */
       //this.save('connection_status', converse.ROOMSTATUS.CONNECTING);
-      reactComponent.state.converse.api.send(stanza);
+      //reactComponent.state.converse.api.send(stanza);
 
       if (data.nick === "") {
         // Make sure defaults apply if no nick is provided.
         data.nick = reactComponent.state.nick;
       }
 
-      if (this.state.converse.locked_muc_domain || (this.state.converse.muc_domain)) {
-        jid = `${Strophe.escapeNode(data.jid)}@${this.state.converse.muc_domain}`;
-      } else {
         jid = data.jid;
-      }
+      
 
       reactComponent.state.converse.api.rooms.open(jid, _.extend(data,
         {
@@ -201,8 +198,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             chatRoomOccupants: chat.occupants
           });
 
-
-          chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
+          chat.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
+          //chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
         });
 
     }
@@ -214,10 +211,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
 
-      if (stanza && stanza.attributes.type.nodeValue === "groupchat"){
+      if (stanza && stanza.attributes.type === "groupchat"){
 
-        let message = stanza.textContent;
-        let from = stanza.attributes.from.value;
+        let message = stanza.attributes.message;
+        let from = stanza.attributes.identifier || stanza.attributes.from;
         from = from.split("/").pop();
         from.toUpperCase();
         let senderClass ="";
@@ -240,13 +237,13 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         }
 
         if (message !== ""){
-          messageId = stanza.attributes.id.value;
+          messageId = stanza.attributes.id;
         } else {
           messageId = "null";
         }
 
 
-        if (from === window.MUIKKU_LOGGED_USER){
+        if (stanza.attributes.sender === "me"){
           senderClass = "sender-me";
         } else {
 
@@ -258,15 +255,21 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         }
 
         var stamp = null;
-        var list = stanza.childNodes;
-
-        for(var node of list) {
-            if (node.nodeName == 'delay') {
-                stamp = node.attributes.stamp.nodeValue
-              } else {
-                stamp = new Date().toString()
-              }
-          }
+//        var list = stanza.childNodes;
+//
+//        for(var node of list) {
+//            if (node.nodeName == 'delay') {
+//                stamp = node.attributes.stamp.nodeValue
+//              } else {
+//                stamp = new Date().toString()
+//              }
+//          }
+        
+        if (stanza.attributes.time){
+          stamp = stanza.attributes.time;
+        } else {
+          stamp = new Date().toString()
+        }
 
         let groupMessage: any = {from: nick + " ", alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
 
@@ -350,6 +353,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       const attrs = chat.getOutgoingMessageAttributes(text, spoiler_hint);
 
       attrs.fullname = window.PROFILE_DATA.displayName;
+      attrs.identifier = window.MUIKKU_LOGGED_USER;
 
       let message = chat.messages.findWhere('correcting')
 
