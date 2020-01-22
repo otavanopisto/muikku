@@ -376,7 +376,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
     }
 
-
     //--- SETTINGS & INFOS
     openChatSettings() {
       if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false){

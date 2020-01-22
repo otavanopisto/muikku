@@ -108,7 +108,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.getChatNick = this.getChatNick.bind(this);
   }
 
-  handleSubmit(event: any) { // login
+  handleSubmit(event: any) { // login 
 
     this.setState({
       path: "http-bind",
