@@ -6,7 +6,7 @@ import {RoomsList} from './roomslist';
 import converse from '~/lib/converse';
 import {PrivateMessages} from './privatemessages';
 
-interface Iprops{
+interface Iprops {
   chat?: any,
   onOpenChat?:any,
   showChatbox?: any,
@@ -58,7 +58,6 @@ declare global {
 }
 
 export class Chat extends React.Component<Iprops, Istate> {
-
 
   constructor(props: any){
     super(props);
@@ -383,24 +382,21 @@ export class Chat extends React.Component<Iprops, Istate> {
       });
 
       window.sessionStorage.setItem("showControlBox", "opened");
-
     }
   }
-
   openNewRoomForm(){
     if (!this.state.showNewRoomForm){
-        this.setState({
-            showNewRoomForm: true
-          });
+      this.setState({
+          showNewRoomForm: true
+        });
 
-        } else {
-          this.setState({
-            showNewRoomForm: false
-          });
-        }
+      } else {
+        this.setState({
+          showNewRoomForm: false
+        });
+      }
   }
   onOpenChat (room: string) {
-
     let openRoomsList = this.state.openRooms;
 
     if (openRoomsList.includes(room)){
@@ -422,47 +418,38 @@ export class Chat extends React.Component<Iprops, Istate> {
 
       this.setState({openRooms: openRoomsList})
     }
-
-
   }
+  getWorkspaceMucRooms() {
+    return this.state.availableMucRooms.filter((room:any) => room.jid.startsWith("workspace-"));
+  }
+  getNotWorkspaceMucRooms() {
+    return this.state.availableMucRooms.filter((room:any) => !room.jid.startsWith("workspace-"));
+  }
+  changeUserAvailability (e:any){
+    let newStatus = e.target.value;
 
-    getWorkspaceMucRooms() { return this.state.availableMucRooms.filter((room:any) => room.jid.startsWith("workspace-")); }
+    this.state.converse.api.user.status.set(newStatus);
 
-    getNotWorkspaceMucRooms() { return this.state.availableMucRooms.filter((room:any) => !room.jid.startsWith("workspace-")); }
+    this.userAvailability();
+  }
+  userAvailability (){
+    let userStatus = this.state.converse.api.user.status.get();
 
-    changeUserAvailability (e:any){
-      let newStatus = e.target.value;
-
-      this.state.converse.api.user.status.set(newStatus);
-
-      this.userAvailability();
+    if (userStatus === "online"){
+      this.setState({
+        selectedState: userStatus
+      });
+    } else if (userStatus === "away"){
+      this.setState({
+        selectedState: userStatus
+      });
+    } else{
+      this.setState({
+        selectedState: userStatus
+      });
     }
-
-    userAvailability (){
-
-      let userStatus = this.state.converse.api.user.status.get();
-
-
-      if (userStatus === "online"){
-        this.setState({
-          userStatusColor: "green",
-          selectedState: userStatus
-        });
-      } else if (userStatus === "away"){
-        this.setState({
-          userStatusColor: "orange",
-          selectedState: userStatus
-        });
-      } else{
-        this.setState({
-          userStatusColor: "grey",
-          selectedState: userStatus
-        });
-      }
-    }
-
-    componentDidMount() {
-
+  }
+  componentDidMount() {
     var reactComponent = this;
 
     converse.plugins.add('myplugin', {
@@ -557,25 +544,22 @@ export class Chat extends React.Component<Iprops, Istate> {
 
       },
     });
-
-
   }
-
   render() {
+    let userStatusClassName = this.state.selectedState === "online" ? "online" : this.state.selectedState === "offline" ? "offline" : "away";
 
     return  (
 
-      <div className="chat__container">
-
-        { (this.state.showChatButton === true) && <div onClick={() => this.openControlBox()} className="chat__container--button">
+      <div className="chat">
+        { (this.state.showChatButton === true) && <div onClick={() => this.openControlBox()} className="chat__bubble">
           <span className="icon-discussion"></span>
         </div>}
 
         { (this.state.showControlBox === true) && <div>
-          <div className="chat__controlbox--body">
-            <div className="chat__controlbox--header">
-              <span onClick={() => this.openNewRoomForm()} className="chat__controlbox--new-room icon-add"></span>
-              <span onClick={() => this.openControlBox()} className="icon-close chat__controlbox--close-controlbox"></span>
+          <div className="chat__controlbox">
+            <div className="chat__controlbox-header">
+              <span onClick={() => this.openNewRoomForm()} className="chat__button chat_button--new-room icon-add"></span>
+              <span onClick={() => this.openControlBox()} className="chat__button chat_button--close icon-close"></span>
             </div>
 
             { (this.state.isConnectionOk === false) && <div>
@@ -589,21 +573,29 @@ export class Chat extends React.Component<Iprops, Istate> {
           </div>
           }
 
+          { (this.state.showMaterial === true) && <div className="chat__controlbox-body">
 
-          { (this.state.showMaterial === true) && <div className="chat__controlbox--container">
-            <select value={this.state.selectedState} style={{"borderColor": this.state.userStatusColor, "boxShadow": "0 0 3px " + this.state.userStatusColor }} onChange={this.changeUserAvailability} className="chat__controlbox--user-status">
+            <select value={this.state.selectedState} onChange={this.changeUserAvailability} className={`chat__user-status chat__user-status--${userStatusClassName}`}>
               <option value="online">Paikalla</option>
               <option value="offline">Poissa</option>
               <option value="away">Palaan pian</option>
             </select>
 
-            <h4 className="chat__controlbox--headings">Kurssikohtaiset huoneet: </h4>
+            <div className="chat__rooms-container">
+              <div className="chat__rooms-heading">Kurssikohtaiset huoneet: </div>
+              <div className="chat__rooms-listing">
+                {this.getWorkspaceMucRooms().length > 0 ?
+                  this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
+                : <div className="chat__room  chat__room--empty">Ei huoneita</div>}
+              </div>
 
-            {this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)}
-
-            <h4 className="chat__controlbox--headings">Muut huoneet:</h4>
-            {this.getNotWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)}
-
+              <div className="chat__rooms-heading">Muut huoneet:</div>
+              <div className="chat__rooms-listing">
+              {this.getNotWorkspaceMucRooms().length > 0 ?
+                this.getNotWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
+              : <div className="chat__room chat__room--empty">Ei huoneita</div>}
+              </div>
+            </div>
 
             { (this.state.showNewRoomForm === true) && <div className="chat__new-room-tab--container">
               <span onClick={() => this.openNewRoomForm()} className="chat__new-room-tab--close icon-close-small"></span>
@@ -622,7 +614,7 @@ export class Chat extends React.Component<Iprops, Istate> {
           </div>}
         </div>
 
-        <div className="chat__chatboxes">
+        <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openRooms.includes(chat.jid) ? <Groupchat key={i} onOpenPrivateChat={this.onOpenPrivateChat.bind(this)} onOpenChat={this.onOpenChat} nick={this.state.nick} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>:null)}
           {this.state.privateChats.map((chat: any, i:any) => <PrivateMessages key={i} onOpenPrivateChat={this.onOpenPrivateChat} info={chat} converse={this.state.converse}/>)}
         </div>

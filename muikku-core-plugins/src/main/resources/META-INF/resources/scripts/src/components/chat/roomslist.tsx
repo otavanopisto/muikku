@@ -166,7 +166,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
         }
       }
 
-
     fetchRoomConfiguration () {
       /* Send an IQ stanza to fetch the groupchat configuration data.
       * Returns a promise which resolves once the response IQ
@@ -181,11 +180,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       );
     }
 
-
-
     componentDidMount (){
-
-
       let reactComponent = this;
 
       if (converse){
@@ -202,34 +197,25 @@ export class RoomsList extends React.Component<Iprops, Istate> {
 
       if (chat){
 
-
         this.setState({
           roomName: chat.name,
           roomJid: chat.jid,
           isStudent: window.MUIKKU_IS_STUDENT,
           roomDesc: chat.roomDesc
-
-
         });
       }
-
-
-
     }
-
 
     render() {
 
       return  (
-        <div>
-            <span className="chat__rooms-list--toggle-info icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></span>
-            <div className="chat__rooms-list--room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
+        <div className="chat__room">
+            <div className="chat__room-action icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></div>
+            <div className="chat__room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
               {this.state.roomName}
             </div>
-            { (this.state.showRoomInfo === true) && <div className="chat__rooms-list--room-info"><p>{this.state.roomDesc}</p></div> }
+            { (this.state.showRoomInfo === true) && <div className="chat__room-description"><p>{this.state.roomDesc}</p></div> }
         </div>
-
-
       );
     }
   }
