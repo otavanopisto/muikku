@@ -41,6 +41,7 @@ $the-grey: #eaeaea;
   flex-flow: column nowrap;
   height: 450px;
   background-color: $color-default;
+  border-top: 4px solid $color-chat-controlbox-main-color;
   border-radius: 5px 5px 0 0;
   box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
   position: fixed;
@@ -63,8 +64,14 @@ $the-grey: #eaeaea;
 }
 
 .chat__button {
-  color: $color-info;
+  color: $color-chat-controlbox-main-color;
   cursor: pointer;
+  transition: color 0.2s ease-in-out;
+
+  &:hover,
+  &:active {
+    color: $color-default-contrast;
+  }
 }
 
 .chat__button--new-room {
@@ -129,7 +136,7 @@ $the-grey: #eaeaea;
 
 .chat__room-action {
   align-items: center;
-  color: $color-info;
+  color: $color-chat-controlbox-main-color;
   cursor: pointer;
   display: flex;
   flex-basis: 14px;

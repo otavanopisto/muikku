@@ -107,7 +107,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.getChatNick = this.getChatNick.bind(this);
   }
 
-  handleSubmit(event: any) { // login 
+  handleSubmit(event: any) { // login
 
     this.setState({
       path: "http-bind",
@@ -255,9 +255,9 @@ export class Chat extends React.Component<Iprops, Istate> {
       data.nick = reactComponent.state.nick;
     }
     let jid;
-    
+
     jid = data.jid + '@conference.dev.muikkuverkko.fi'
-    
+
 
     let roomJidAndNick = jid + (data.nick !== null ? `/${data.nick}` : "");
 
@@ -575,8 +575,8 @@ export class Chat extends React.Component<Iprops, Istate> {
 
             <select value={this.state.selectedState} onChange={this.changeUserAvailability} className={`chat__user-status chat__user-status--${userStatusClassName}`}>
               <option value="online">Paikalla</option>
-              <option value="offline">Poissa</option>
               <option value="away">Palaan pian</option>
+              <option value="offline">Poissa</option>
             </select>
 
             <div className="chat__rooms-heading">Kurssikohtaiset huoneet: </div>
