@@ -40,6 +40,56 @@ $the-grey: #eaeaea;
   }
 }
 
+// Chat Rooms
+.chat__chatrooms-container {
+  display:flex;
+  margin-right: 320px;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+// CHat panel wrapper
+.chat__panel-wrapper {
+
+}
+
+.chat__panel-wrapper--reorder {
+  order: -1;
+}
+
+// Chat Minimized
+.chat__minimized {
+  align-items: center;
+  border-radius: 5px 5px 0 0;
+  color: $color-default;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  margin: 0 15px 0 0;
+  padding: 5px 10px;
+
+  .chat__button--close {
+    color: $color-default;
+  }
+}
+
+.chat__minimized--workspace {
+  background: $color-chat-workspace-room-main-color;
+}
+
+.chat__minimized--other {
+  background: $color-chat-other-room-main-color;
+}
+
+.chat__minimized-title {
+  cursor: pointer;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
 // Chat Panels
 .chat__panel {
   bottom: 0;
@@ -50,13 +100,24 @@ $the-grey: #eaeaea;
   border-top: 4px solid $color-default;
   border-radius: 5px 5px 0 0;
   box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
+  margin: 0 15px 0 0;
 }
 
 .chat__panel--controlbox {
   border-top: 4px solid $color-chat-controlbox-main-color;
   position: fixed;
-  right: 15px;
+  right: 0;
   width: 320px;
+}
+
+.chat__panel--workspace {
+  border-top: 4px solid $color-chat-workspace-room-main-color;
+  width: 400px;
+}
+
+.chat__panel--other {
+  border-top: 4px solid $color-chat-other-room-main-color;
+  width: 400px;
 }
 
 .chat__panel-header {
@@ -67,10 +128,31 @@ $the-grey: #eaeaea;
   display: flex;
   flex-basis: 0;
   flex-grow: 0;
+  flex-flow: row nowrap;
   flex-shrink: 0;
   font-size: 1rem;
-  justify-content: space-between;
   padding: 10px;
+}
+
+.chat__panel-header--controlbox {
+  justify-content: space-between;
+}
+
+.chat__panel-header--workspace {
+  border-bottom: 2px solid $color-default-separator-border;
+  justify-content: flex-start;
+}
+
+.chat__panel-header--other {
+  border-bottom: 2px solid $color-default-separator-border;
+  justify-content: flex-start;
+}
+
+.chat__panel-header-title {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.875rem;
 }
 
 .chat__panel-body {
@@ -85,12 +167,11 @@ $the-grey: #eaeaea;
 // Chat Button
 .chat__button {
   cursor: pointer;
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
   transition: color 0.2s ease-in-out;
-
-  &:hover,
-  &:active {
-    color: $color-default-contrast;
-  }
 }
 
 // Control specific icon colors
@@ -99,6 +180,7 @@ $the-grey: #eaeaea;
 
   .chat__button--new-room {
     color: $color-chat-controlbox-main-color;
+    margin: 0;
   }
 
   .chat__button--close {
@@ -107,13 +189,17 @@ $the-grey: #eaeaea;
 }
 
 // Workspace room specific icon colors
-.chat__panel-header--workspace-room {
+.chat__panel-header--workspace {
 
   .chat__button--room-settings {
     color: $color-chat-workspace-room-main-color;
   }
 
-  .chat__button--hide-room {
+  .chat__button--minimize {
+    color: $color-chat-workspace-room-main-color;
+  }
+
+  .chat__button--occupants {
     color: $color-chat-workspace-room-main-color;
   }
 
@@ -123,13 +209,17 @@ $the-grey: #eaeaea;
 }
 
 // Other room specific icon colors
-.chat__panel-header--other-room {
+.chat__panel-header--other {
 
   .chat__button--room-settings {
     color: $color-chat-other-room-main-color;
   }
 
-  .chat__button--hide-room {
+  .chat__button--minimize {
+    color: $color-chat-other-room-main-color;
+  }
+
+  .chat__button--occupants {
     color: $color-chat-other-room-main-color;
   }
 
@@ -184,7 +274,7 @@ $the-grey: #eaeaea;
 
 .chat__controlbox-room-action {
   align-items: center;
-  color: $color-chat-controlbox-main-color;
+  color: $color-info;
   cursor: pointer;
   display: flex;
   flex-basis: 14px;
@@ -257,7 +347,7 @@ $the-grey: #eaeaea;
 }
 
 .chat__textfield {
-  border: 2px solid $color-default-contrast;
+  border: 2px solid $color-default-helper;
   border-radius: 3px;
   font-size: 0.875rem;
   font-weight: 400;
@@ -267,19 +357,14 @@ $the-grey: #eaeaea;
 }
 
 .chat__memofield {
-  border: 4px solid $color-default-contrast;
+  border: 2px solid $color-default-helper;
   border-radius: 3px;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1;
-  min-height: 60px;
+  min-height: 80px;
   padding: 5px;
   width: 100%;
-}
-
-.chat__textfield--new-room,
-.chat__memofield--new-room {
-  border: 2px solid $color-chat-controlbox-main-color;
 }
 
 .chat__checkbox {
@@ -287,16 +372,12 @@ $the-grey: #eaeaea;
   -moz-appearance: none;
   align-items: center;
   appearance: none;
-  border: solid 2px $color-default-contrast;
+  border: solid 2px $color-default-helper;
   border-radius: 3px;
   display: flex;
   height: 1rem;
   justify-content: center;
   width: 1rem;
-}
-
-.chat__checkbox--new-room {
-  border: solid 2px $color-chat-controlbox-main-color;
 }
 
 .chat__submit {
@@ -314,14 +395,6 @@ $the-grey: #eaeaea;
   background: $color-chat-controlbox-main-color;
 }
 
-// Chat Rooms
-.chat__chatrooms-container {
-  display:flex;
-  margin-right: 335px;
-  flex-direction: row;
-  align-items: flex-end;
-}
-
 .chat__muc--body, .chat__private-chat--body {
   justify-self: flex-end;
   margin-left: 10px;
@@ -333,17 +406,6 @@ $the-grey: #eaeaea;
   border-radius: 10px 10px 0 0;
   width: 400px;
   height:350px;
-}
-
-.chat__muc--header, .chat__private-chat--header {
-  background-color: darken($workspace-blue, 10%);
-  color:#fff;
-  text-align: right;
-  font-size: 13px;
-  height: 28px;
-  width:100%;
-  padding: 5px;
-  border-radius: 10px 10px 0 0;
 }
 
 .chat__muc--room-settings {
@@ -400,18 +462,6 @@ $the-grey: #eaeaea;
 
 .chat__chatbox--room-settings-icon {
   padding: 5px;
-}
-
-.chat__minimized-chat {
-  display: block;
-  width: 160px;
-  height: 30px;
-  z-index: 7;
-  background-color: #FFF;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px 10px 0 0;
-  text-align: center;
-  padding-top: 8px;
 }
 
 .chat__message-item {
@@ -509,10 +559,6 @@ $the-grey: #eaeaea;
  button.saveSettings {
   align-content:right;
   margin: 255px 0 0 300px
-}
-
-.order-minimized {
-  order: -1;
 }
 
 .chat__rooms-list--room-name {

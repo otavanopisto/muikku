@@ -572,7 +572,6 @@ export class Chat extends React.Component<Iprops, Istate> {
           }
 
           { (this.state.showMaterial === true) && <div className="chat__panel-body chat__panel-body--controlbox">
-
             <select value={this.state.selectedState} onChange={this.changeUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${userStatusClassName}`}>
               <option value="online">Paikalla</option>
               <option value="away">Palaan pian</option>
@@ -616,7 +615,6 @@ export class Chat extends React.Component<Iprops, Istate> {
                 </form>
               </div>
             </div>}
-
           </div>}
         </div>
 
