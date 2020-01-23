@@ -209,12 +209,12 @@ export class RoomsList extends React.Component<Iprops, Istate> {
     render() {
 
       return  (
-        <div className="chat__room">
-            <div className="chat__room-action icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></div>
-            <div className="chat__room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
+        <div className="chat__controlbox-room">
+            <div className="chat__controlbox-room-action icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></div>
+            <div className="chat__controlbox-room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
               {this.state.roomName}
             </div>
-            { (this.state.showRoomInfo === true) && <div className="chat__room-description"><p>{this.state.roomDesc}</p></div> }
+            { (this.state.showRoomInfo === true) && <div className="chat__controlbox-room-description"><p>{this.state.roomDesc}</p></div> }
         </div>
       );
     }

@@ -554,10 +554,10 @@ export class Chat extends React.Component<Iprops, Istate> {
         </div>}
 
         { (this.state.showControlBox === true) && <div>
-          <div className="chat__controlbox">
-            <div className="chat__controlbox-header">
-              <span onClick={() => this.openNewRoomForm()} className="chat__button chat_button--new-room icon-add"></span>
-              <span onClick={() => this.openControlBox()} className="chat__button chat_button--close icon-close"></span>
+          <div className="chat__panel chat__panel--controlbox">
+            <div className="chat__panel-header chat__panel-header--controlbox">
+              <span onClick={() => this.openNewRoomForm()} className="chat__button chat__button--new-room icon-add"></span>
+              <span onClick={() => this.openControlBox()} className="chat__button chat__button--close icon-close"></span>
             </div>
 
             { (this.state.isConnectionOk === false) && <div>
@@ -571,40 +571,50 @@ export class Chat extends React.Component<Iprops, Istate> {
           </div>
           }
 
-          { (this.state.showMaterial === true) && <div className="chat__controlbox-body">
+          { (this.state.showMaterial === true) && <div className="chat__panel-body chat__panel-body--controlbox">
 
-            <select value={this.state.selectedState} onChange={this.changeUserAvailability} className={`chat__user-status chat__user-status--${userStatusClassName}`}>
+            <select value={this.state.selectedState} onChange={this.changeUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${userStatusClassName}`}>
               <option value="online">Paikalla</option>
               <option value="away">Palaan pian</option>
               <option value="offline">Poissa</option>
             </select>
 
-            <div className="chat__rooms-heading">Kurssikohtaiset huoneet: </div>
-            <div className="chat__rooms-listing">
+            <div className="chat__controlbox-rooms-heading">Kurssikohtaiset huoneet: </div>
+            <div className="chat__controlbox-rooms-listing">
               {this.getWorkspaceMucRooms().length > 0 ?
                 this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
-              : <div className="chat__room  chat__room--empty">Ei huoneita</div>}
+              : <div className="chat__controlbox-room  chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
-            <div className="chat__rooms-heading">Muut huoneet:</div>
-            <div className="chat__rooms-listing">
+            <div className="chat__controlbox-rooms-heading">Muut huoneet:</div>
+            <div className="chat__controlbox-rooms-listing">
             {this.getNotWorkspaceMucRooms().length > 0 ?
               this.getNotWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
-            : <div className="chat__room chat__room--empty">Ei huoneita</div>}
+            : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
-            { (this.state.showNewRoomForm === true) && <div className="chat__new-room-tab--container">
-              <span onClick={() => this.openNewRoomForm()} className="chat__new-room-tab--close icon-close-small"></span>
-              <h3>Luo uusi huone</h3>
-              <br />
-              <form onSubmit={this.joinRoom}>
-                <label className="chat__controlbox--headings">Huoneen nimi: </label><input className="chat__new-room-tab--settings-input" name="roomName" ref="roomName" type="text"></input>
-                <label className="chat__controlbox--headings">Huoneen kuvaus: </label><input className="chat__new-room-tab--settings-input" name="roomDesc" ref="roomDesc" type="text"></input>
-                {(!this.state.isStudent) && <div>
-                  <label className="chat__controlbox--headings">Pysyvä huone: </label><input type="checkbox" name="persistent"></input><br />
-                </div>}
-                <input className="chat__new-room--join-button" type="submit" value="Liity"></input>
-              </form>
+            { (this.state.showNewRoomForm === true) && <div className="chat__subpanel chat__subpanel--new-room">
+              <div className="chat__subpanel-header chat__subpanel-header--new-room">
+                <div className="chat__subpanel-title">Luo uusi huone</div>
+                <div onClick={() => this.openNewRoomForm()} className="chat__button chat__button--close icon-close-small"></div>
+              </div>
+              <div className="chat__subpanel-body">
+                <form onSubmit={this.joinRoom}>
+                  <div className="chat__subpanel-row">
+                    <label className="chat__label">Huoneen nimi:</label>
+                    <input className="chat__textfield chat__textfield--new-room" name="roomName" ref="roomName" type="text"></input>
+                  </div>
+                  <div className="chat__subpanel-row">
+                    <label className="chat__label">Huoneen kuvaus:</label>
+                    <textarea className="chat__memofield chat__memofield--new-room" name="roomDesc" ref="roomDesc"></textarea>
+                  </div>
+                  {(!this.state.isStudent) && <div className="chat__subpanel-row">
+                    <label className="chat__label">Pysyvä huone:</label>
+                    <input className="chat__checkbox chat__checkbox--new-room" type="checkbox" name="persistent"></input>
+                  </div>}
+                  <input className="chat__submit chat__submit--new-room" type="submit" value="Lisää huone"></input>
+                </form>
+              </div>
             </div>}
 
           </div>}

@@ -40,22 +40,26 @@ $the-grey: #eaeaea;
   }
 }
 
-// Chat Controlbox
-.chat__controlbox {
+// Chat Panels
+.chat__panel {
   bottom: 0;
   display: flex;
   flex-flow: column nowrap;
   height: 450px;
   background-color: $color-default;
-  border-top: 4px solid $color-chat-controlbox-main-color;
+  border-top: 4px solid $color-default;
   border-radius: 5px 5px 0 0;
   box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
+}
+
+.chat__panel--controlbox {
+  border-top: 4px solid $color-chat-controlbox-main-color;
   position: fixed;
   right: 15px;
   width: 320px;
 }
 
-.chat__controlbox-header {
+.chat__panel-header {
   align-items: center;
   background-color: $color-default;
   border-radius: 5px 5px 0 0;
@@ -69,8 +73,17 @@ $the-grey: #eaeaea;
   padding: 10px;
 }
 
+.chat__panel-body {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 0.875rem;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+// Chat Button
 .chat__button {
-  color: $color-chat-controlbox-main-color;
   cursor: pointer;
   transition: color 0.2s ease-in-out;
 
@@ -80,24 +93,53 @@ $the-grey: #eaeaea;
   }
 }
 
-.chat__button--new-room {
+// Control specific icon colors
+.chat__panel-header--controlbox,
+.chat__subpanel-header--new-room {
 
+  .chat__button--new-room {
+    color: $color-chat-controlbox-main-color;
+  }
+
+  .chat__button--close {
+    color: $color-chat-controlbox-main-color;
+  }
 }
 
-.chat__button--close {
+// Workspace room specific icon colors
+.chat__panel-header--workspace-room {
 
+  .chat__button--room-settings {
+    color: $color-chat-workspace-room-main-color;
+  }
+
+  .chat__button--hide-room {
+    color: $color-chat-workspace-room-main-color;
+  }
+
+  .chat__button--close {
+    color: $color-chat-workspace-room-main-color;
+  }
 }
 
-.chat__controlbox-body {
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 0.875rem;
-  overflow-y: auto;
-  padding: 10px;
+// Other room specific icon colors
+.chat__panel-header--other-room {
+
+  .chat__button--room-settings {
+    color: $color-chat-other-room-main-color;
+  }
+
+  .chat__button--hide-room {
+    color: $color-chat-other-room-main-color;
+  }
+
+  .chat__button--close {
+    color: $color-chat-other-room-main-color;
+  }
 }
 
-.chat__user-status {
+// Chat Controlbox Specific
+.chat__controlbox-user-status {
   background: $color-default;
   border: 2px solid $color-default-separator-border;
   border-radius: 5px;
@@ -106,41 +148,41 @@ $the-grey: #eaeaea;
   width: 100%;
 }
 
-.chat__user-status--online {
+.chat__controlbox-user-status--online {
   border-color: $collor-chat-user-status-online;
 }
 
-.chat__user-status--offline {
+.chat__controlbox-user-status--offline {
   border-color: $collor-chat-user-status-offline;
 }
 
-.chat__user-status--away {
+.chat__controlbox-user-status--away {
   border-color: $collor-chat-user-status-away;
 }
 
-.chat__rooms-heading {
+.chat__controlbox-rooms-heading {
   font-size: 0.875rem;
   margin: 0 0 5px;
   text-transform: uppercase;
 }
 
-.chat__rooms-listing {
+.chat__controlbox-rooms-listing {
   margin: 0 0 10px;
 }
 
-.chat__room {
+.chat__controlbox-room {
   align-items: center;
   display: flex;
   flex-flow: row wrap;
   padding: 5px 0;
 }
 
-.chat__room--empty {
+.chat__controlbox-room--empty {
   font-style: italic;
   font-weight: 300;
 }
 
-.chat__room-action {
+.chat__controlbox-room-action {
   align-items: center;
   color: $color-chat-controlbox-main-color;
   cursor: pointer;
@@ -152,14 +194,14 @@ $the-grey: #eaeaea;
   margin: 0 5px 0 0;
 }
 
-.chat__room-name {
+.chat__controlbox-room-name {
   cursor: pointer;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
 }
 
-.chat__room-description {
+.chat__controlbox-room-description {
   background: $color-chat-room-description-background;
   border-radius: 3px;
   flex-basis: 100%;
@@ -169,38 +211,107 @@ $the-grey: #eaeaea;
   padding: 5px;
 }
 
-// Chat Controlbox New Room
-.chat__new-room-tab--container {
+// Chat Subpanels
+.chat__subpanel {
+  background: $color-default;
+  bottom: 0;
+  left: 0;
   position: absolute;
-  top: 30px;
+  right: 0;
+  top: 0;
+}
+
+.chat__subpanel-header {
+  align-items: center;
+  background-color: $color-default;
+  border-radius: 5px 5px 0 0;
+  color: $color-default-contrast;
+  display: flex;
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.chat__subpanel-title {
+  font-size: 1;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.chat__subpanel-body {
+  padding: 10px;
+}
+
+.chat__subpanel-row {
+  margin: 0 0 10px;
+}
+
+// Chat Form Elements
+.chat__label {
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.chat__textfield {
+  border: 2px solid $color-default-contrast;
+  border-radius: 3px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
+  padding: 5px;
   width: 100%;
-  height: 100%;
-  padding: 10px 20px 6px 10px;
 }
 
-.chat__new-room-tab--close, .chat__muc--close-chatbox {
-  float:right;
-  font-size: 17px;
-}
-
-.chat__new-room-tab--settings-input, .chat__muc--settings-input {
+.chat__memofield {
+  border: 4px solid $color-default-contrast;
+  border-radius: 3px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
+  min-height: 60px;
+  padding: 5px;
   width: 100%;
-  border-radius: 5px;
-  border: 2px solid #009fe3;
-  margin-bottom: 10px;
-  padding: 3px;
-  font-size: 13px;
 }
 
-.chat__new-room--join-button, .chat__muc--save-button {
-  width: 63%;
-  height: 40px;
-  margin: 20%;
-  background-color: #2fd2ae;
-  color: #fff;
-  border: 1px solid #2fd2ae;
-  border-radius: 9px;
-  text-transform: UPPERCASE;
+.chat__textfield--new-room,
+.chat__memofield--new-room {
+  border: 2px solid $color-chat-controlbox-main-color;
+}
+
+.chat__checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  align-items: center;
+  appearance: none;
+  border: solid 2px $color-default-contrast;
+  border-radius: 3px;
+  display: flex;
+  height: 1rem;
+  justify-content: center;
+  width: 1rem;
+}
+
+.chat__checkbox--new-room {
+  border: solid 2px $color-chat-controlbox-main-color;
+}
+
+.chat__submit {
+  border: 0;
+  border-radius: 3px;
+  color: $color-default;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1;
+  padding: 8px 10px;
+  text-transform: uppercase;
+}
+
+.chat__submit--new-room {
+  background: $color-chat-controlbox-main-color;
 }
 
 // Chat Rooms
