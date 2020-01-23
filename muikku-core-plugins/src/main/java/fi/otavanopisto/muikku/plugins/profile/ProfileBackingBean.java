@@ -20,6 +20,9 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.chat.ChatController;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -49,6 +52,9 @@ public class ProfileBackingBean {
   
   @Inject 
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private ChatController chatController;
 
   @RequestAction
   @LoggedIn
@@ -105,22 +111,18 @@ public class ProfileBackingBean {
     
     SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
     emails = userEmailEntityController.getUserEmailAddresses(identifier);
-   
+    
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
+    
     chatEnabled = false;
-    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
-    
-    if (StringUtils.isEmpty(enabledUsersCsv)) {
-      return null;
-    }
-    
-    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
-    
-    if (StringUtils.isNotBlank(enabledUsersCsv)) { 
-      if (enabledUsers.contains(identifier.toId())) {
+    if (userChatSettings != null) {
+      UserChatVisibility visibility = userChatSettings.getVisibility();
+
+      if (visibility == UserChatVisibility.VISIBLE_TO_ALL) {
         chatEnabled = true;
       }
-    }
-      return null;
+    } 
+    return null;
   }
   
   public String getDisplayName() {

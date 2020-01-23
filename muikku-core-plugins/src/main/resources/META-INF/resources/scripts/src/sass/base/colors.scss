@@ -48,6 +48,15 @@ $color-list-hover-background: #e7fffc;
 $color-list-active-background: rgba(208, 255, 249, 1);
 $color-list-selected-background: #29b0c4;
 
+// Chat
+$color-chat-bubble-background: #00afcd;
+$color-chat-bubble-box-shadow: rgba(0,0,0,0.2);
+$color-chat-controlbox-box-shadow: rgba(0,0,0,0.3);
+$collor-chat-user-status-online: #6de164;
+$collor-chat-user-status-offline: #cecdcd;
+$collor-chat-user-status-away: #fbb470;
+$color-chat-room-description-background: #f8f8f8;
+
 // Labels
 $color-label-background: #f5f5f5;
 $color-label-mobile-selected-background: #97e1ef;
@@ -60,7 +69,7 @@ $color-signature-border: #f2f2f2;
 $color-signature-background: #f8f8f8;
 
 // Evaluation
-$color-evaluation-request: $color-primary; 
+$color-evaluation-request: $color-primary;
 $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
 $color-grade-passed: #2ed31c;
@@ -399,7 +408,7 @@ $color-tab-invisible-border: rgba(255, 255, 255, 0);
 
 
 //  CATEGORIES
-$color-category-1: #0099ff; 
+$color-category-1: #0099ff;
 $color-category-2: #ff9900;
 $color-category-3: #ff008d;
 $color-category-4: #0bf0f2;

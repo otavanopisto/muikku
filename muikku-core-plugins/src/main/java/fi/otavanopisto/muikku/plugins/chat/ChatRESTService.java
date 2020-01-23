@@ -189,17 +189,7 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
     }
 
-    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
-
-    if (enabledUsersCsv == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
-    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
     boolean chatEnabled = false;
-
-    if (!enabledUsers.contains(identifier.toId())) {
-      return Response.ok(new StatusRESTModel(false, false, null, null)).build();
-    }
 
     UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
 

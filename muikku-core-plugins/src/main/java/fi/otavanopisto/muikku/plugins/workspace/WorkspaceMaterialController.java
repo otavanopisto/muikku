@@ -1082,6 +1082,17 @@ public class WorkspaceMaterialController {
     return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0, false, WorkspaceFolderType.FRONT_PAGE, MaterialViewRestrict.NONE);
   }
 
+  public boolean isUsedInPublishedWorkspaces(Material material) {
+    List<WorkspaceMaterial> workspaceMaterials = listWorkspaceMaterialsByMaterial(material);
+    for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(getWorkspaceEntityId(workspaceMaterial));
+      if (workspaceEntity != null && workspaceEntity.getPublished()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private WorkspaceFolder findWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
     List<WorkspaceFolder> frontPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
         WorkspaceFolderType.FRONT_PAGE);

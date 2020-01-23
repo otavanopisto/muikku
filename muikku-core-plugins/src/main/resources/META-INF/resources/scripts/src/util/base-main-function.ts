@@ -35,7 +35,6 @@ export default function(store: Store<StateType>){
         if (result && result.enabled) {
           converse.initialize({
             authentication : "prebind",
-            assets_path: "/scripts/conversejs/",
             auto_away: 300,
             auto_login : true,
             auto_reconnect: true,
@@ -49,11 +48,11 @@ export default function(store: Store<StateType>){
             logLevel: "debug", // Needs to be set to info when in production mode
             message_archiving: "always",
             muc_domain : "conference." + location.hostname,
-            muc_history_max_stanzas: 0, // Should be 0 is MAM (message_archiving: "always") is in use
+            muc_history_max_stanzas: 0, // Should be 0 if MAM (message_archiving: "always") is in use
             muc_show_join_leave: true,
             ping_interval: 45,
             prebind_url : "/rest/chat/prebind",
-            // websocket_url: This is worth to check out is we can use websockets instead of BOSH
+            // websocket_url: This is worth to check out if we can use websockets instead of BOSH
             whitelisted_plugins: ["myplugin","addRoom", "profileChatSettings"]
           });
         }
