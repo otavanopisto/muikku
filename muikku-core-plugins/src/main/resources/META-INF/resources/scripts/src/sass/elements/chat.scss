@@ -30,8 +30,14 @@ $the-grey: #eaeaea;
   box-shadow: 0 0 10px $color-chat-bubble-box-shadow;
   position: fixed;
   right: 15px;
+  transform: rotate(-15deg);
+  transition: transform 0.2s ease-in-out;
   width: 55px;
   z-index: 9999;
+
+  &:hover {
+    transform: rotate(0deg);
+  }
 }
 
 // Chat Controlbox
@@ -46,7 +52,7 @@ $the-grey: #eaeaea;
   box-shadow: 0 1px 5px $color-chat-controlbox-box-shadow;
   position: fixed;
   right: 15px;
-  width: 300px;
+  width: 320px;
 }
 
 .chat__controlbox-header {
@@ -200,7 +206,7 @@ $the-grey: #eaeaea;
 // Chat Rooms
 .chat__chatrooms-container {
   display:flex;
-  margin-right: 315px;
+  margin-right: 335px;
   flex-direction: row;
   align-items: flex-end;
 }
