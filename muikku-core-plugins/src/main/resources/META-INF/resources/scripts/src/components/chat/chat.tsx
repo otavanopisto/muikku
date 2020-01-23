@@ -349,14 +349,9 @@ export class Chat extends React.Component<Iprops, Istate> {
           jid: jid,
           roomDesc: description
         }
-
         roomsList.push(addRoomToList);
-
           this.setState({availableMucRooms: roomsList});
-
       }
-
-
       return;
     } else {
       // this.informNoRoomsFound();
@@ -364,7 +359,6 @@ export class Chat extends React.Component<Iprops, Istate> {
 
     return true;
   }
-
   openControlBox(){
     if (!this.state.showChatButton){
       this.setState({

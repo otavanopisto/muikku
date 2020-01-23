@@ -46,7 +46,6 @@ interface Istate {
   chatRoomOccupants: any,
   occupants?: any,
   showOccupantsList?: boolean,
-  messageAreaWidth?: number,
   occupantsListOpened?: any,
   privateChats?: any
 }
@@ -102,7 +101,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       chatRoomOccupants: [],
       occupants: [],
       showOccupantsList: null,
-      messageAreaWidth: 100,
       occupantsListOpened: [],
       privateChats: []
     }
@@ -587,7 +585,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (this.state.showOccupantsList === true){
         this.setState({
-          messageAreaWidth: 100,
           showOccupantsList: false
         })
 
@@ -608,7 +605,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           roomsWithOpenOccupantsList.push(room.attributes.jid);
           this.setState({
             occupantsListOpened: roomsWithOpenOccupantsList,
-            messageAreaWidth: 75 ,
             showOccupantsList: true
           })
           this.getOccupants();
@@ -708,8 +704,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           roomOccupantsFromSessionStorage.map((item: any) => {
             if (item === chat.jid){
               this.setState({
-                showOccupantsList: true,
-                messageAreaWidth: 75
+                showOccupantsList: true
               });
             }
           })
@@ -775,23 +770,23 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                 <div className={this.state.settingsInformBox}>
                   <p>{this.state.isRoomConfigSavedSuccesfully}</p>
                 </div>
-              </div> }
+              </div>}
 
-              <form onSubmit={(e)=>this.sendMessage(e)}>
-                <div className="chat__muc--message-wrapper">
-                  <div style={{width: this.state.messageAreaWidth + '%'}} className="chat__muc--messages" ref={ (ref) => this.myRef=ref }>
-                    {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
-                    <div style={{ float:"left", clear: "both"}} ref={(el) => { this.messagesEnd = el; }}></div>
-                  </div>
-                  {this.state.showOccupantsList && <div className="chat__muc--occupants-list">
-                    <ul>
-                      {this.state.occupants.map((occupant: any, i: any) => <li onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</li>)}
-                    </ul>
-                  </div>}
+              <div className="chat__panel-body chat__panel-body--chatroom">
+                <div className="chat__muc-messages-container" ref={ (ref) => this.myRef=ref }>
+                  {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
+                  <div style={{ float:"left", clear: "both"}} ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
-                <input name="chatRecipient" className="chat__muc--recipient" value={this.state.roomJid} readOnly/>
-                <textarea className="chat__muc--message-area" onKeyDown={this.onEnterPress} placeholder="..Kirjoita jotakin" name="chatMessage"></textarea>
-                <button className="chat__muc--send-message" type="submit" value=""><span className="icon-announcer"></span></button>
+                {this.state.showOccupantsList && <div className="chat__muc-occupants">
+                  <ul>
+                    {this.state.occupants.map((occupant: any, i: any) => <li onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</li>)}
+                  </ul>
+                </div>}
+              </div>
+              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>
+                <input name="chatRecipient" className="chat__muc-recipient" value={this.state.roomJid} readOnly/>
+                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita..." name="chatMessage"></textarea>
+                <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-announcer"></span></button>
               </form>
             </div>)
           }
