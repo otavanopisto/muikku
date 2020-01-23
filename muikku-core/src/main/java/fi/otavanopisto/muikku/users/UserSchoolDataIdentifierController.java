@@ -76,6 +76,10 @@ public class UserSchoolDataIdentifierController {
   public EnvironmentRoleEntity findUserSchoolDataIdentifierRole(UserSchoolDataIdentifier userSchoolDataIdentifier) {
     return userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getRole() : null;
   }
+
+  public EnvironmentRoleEntity findUserSchoolDataIdentifierRole(UserEntity userEntity) {
+    return findUserSchoolDataIdentifierRole(new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier()));
+  }
   
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifierIncludeArchived(SchoolDataSource dataSource, String identifier) {
     return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
