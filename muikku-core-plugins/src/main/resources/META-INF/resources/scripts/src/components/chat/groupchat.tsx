@@ -752,8 +752,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-close"></div>
             </div>
           ) : (
-            <div  id={this.props.orderNumber} className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
-              <div id={this.props.orderNumber} className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
+            <div className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
+              <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
                 <div className="chat__panel-header-title">{this.state.roomName}</div>
                 <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-profile"></div>
                 <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-remove"></div>
