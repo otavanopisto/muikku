@@ -372,6 +372,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (text !== null || text !== ""){
         reactComponent.state.converse.api.send(chat.createMessageStanza(message));
+        reactComponent.getMUCMessages(message);
       }
 
     }
