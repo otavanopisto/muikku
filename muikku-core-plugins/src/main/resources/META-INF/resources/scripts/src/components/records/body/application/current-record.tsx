@@ -41,7 +41,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
     }
     
     let assesmentStateClassName = "";
-    switch (this.props.records.current.workspace.studentAssessmentState.state){
+    switch (this.props.records.current.workspace.studentAssessments.assessmentState){
       case "pass":
         assesmentStateClassName = "PASSED";
         break;
@@ -58,9 +58,11 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
         break;
     }
     
-    let workspaceEvaluation = this.props.records.current.workspace.studentAssessmentState &&
-      this.props.records.current.workspace.studentAssessmentState.text ?
-        <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessmentState.text}} 
+    let workspaceEvaluation = this.props.records.current.workspace.studentAssessments &&
+      this.props.records.current.workspace.studentAssessments.assessments &&
+      this.props.records.current.workspace.studentAssessments.assessments[0] &&
+      this.props.records.current.workspace.studentAssessments.assessments[0].verbalAssessment ?
+        <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessments.assessments[0].verbalAssessment}} 
         className={`rich-text application-sub-panel__text application-sub-panel__text--course-evaluation state-${assesmentStateClassName}`}/> : null;
     
     return <div className="application-sub-panel">
