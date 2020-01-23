@@ -9,6 +9,7 @@ import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
+import {UsersType} from './main-function/users';
 import {WorkspacesType} from './main-function/workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
@@ -23,12 +24,14 @@ export interface StateType {
   locales: LocaleListType,
   status: StatusType,
   title: string,
+  
   credentials?: CredentialsType,
   websocket?: WebsocketStateType,
   announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
   messages?: MessagesType,
+  users: UsersType;
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
   courses?: CoursesType,
