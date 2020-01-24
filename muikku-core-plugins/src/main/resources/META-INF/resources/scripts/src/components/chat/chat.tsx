@@ -586,7 +586,7 @@ export class Chat extends React.Component<Iprops, Istate> {
             : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
-            { (this.state.showNewRoomForm === true) && <div className="chat__subpanel chat__subpanel--new-room">
+            { (this.state.showNewRoomForm === true) && <div className="chat__subpanel">
               <div className="chat__subpanel-header chat__subpanel-header--new-room">
                 <div className="chat__subpanel-title">Luo uusi huone</div>
                 <div onClick={() => this.openNewRoomForm()} className="chat__button chat__button--close icon-close-small"></div>
@@ -595,15 +595,15 @@ export class Chat extends React.Component<Iprops, Istate> {
                 <form onSubmit={this.joinRoom}>
                   <div className="chat__subpanel-row">
                     <label className="chat__label">Huoneen nimi:</label>
-                    <input className="chat__textfield chat__textfield--new-room" name="roomName" ref="roomName" type="text"></input>
+                    <input className="chat__textfield" name="roomName" ref="roomName" type="text"></input>
                   </div>
                   <div className="chat__subpanel-row">
                     <label className="chat__label">Huoneen kuvaus:</label>
-                    <textarea className="chat__memofield chat__memofield--new-room" name="roomDesc" ref="roomDesc"></textarea>
+                    <textarea className="chat__memofield" name="roomDesc" ref="roomDesc"></textarea>
                   </div>
                   {(!this.state.isStudent) && <div className="chat__subpanel-row">
                     <label className="chat__label">Pysyvä huone:</label>
-                    <input className="chat__checkbox chat__checkbox--new-room" type="checkbox" name="persistent"></input>
+                    <input className="chat__checkbox" type="checkbox" name="persistent"></input>
                   </div>}
                   <input className="chat__submit chat__submit--new-room" type="submit" value="Lisää huone"></input>
                 </form>

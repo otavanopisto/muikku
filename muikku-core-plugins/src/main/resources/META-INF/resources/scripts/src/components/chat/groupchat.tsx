@@ -756,16 +756,28 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                 <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-close"></div>
               </div>
 
-              {(this.state.openChatSettings === true) && <div className="chat__muc--room-settings">
-                <span onClick={() => this.openChatSettings()} className="chat__muc--close-chatbox icon-close-small"></span>
-                <form onSubmit={this.saveRoomFeatures}>
-                  <label className="control-panel">Huoneen nimi: </label><input className="chat__muc--settings-input" name="newRoomName" defaultValue={this.state.roomName} type="text"></input>
-                  <label className="control-panel">Huoneen kuvaus: </label><input className="chat__muc--settings-input" name="newRoomDescription" type="text"></input>
-                  {(!this.state.isStudent) && <div>
-                    <label className="control-panel">Pysyvä huone: </label><input type="checkbox" name="persistent"></input><br />
-                  </div>}
-                  <input className="chat__muc--save-button" type="submit" value="Tallenna"></input>
-                </form>
+              {(this.state.openChatSettings === true) && <div className="chat__subpanel">
+                <div className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}>
+                  <div className="chat__subpanel-title">Huoneen asetukset</div>
+                  <div onClick={() => this.openChatSettings()} className="chat__button chat__button--close icon-close-small"></div>
+                </div>
+                <div className="chat__subpanel-body">
+                  <form onSubmit={this.saveRoomFeatures}>
+                    <div className="chat__subpanel-row">
+                      <label className="chat__label">Huoneen nimi: </label>
+                      <input className="chat__textfield" name="newRoomName" defaultValue={this.state.roomName} type="text"></input>
+                    </div>
+                    <div className="chat__subpanel-row">
+                      <label className="chat__label">Huoneen kuvaus: </label>
+                      <textarea className="chat__memofield" name="newRoomDescription"></textarea>
+                    </div>
+                    {(!this.state.isStudent) && <div className="chat__subpanel-row">
+                      <label className="chat__label">Pysyvä huone: </label>
+                      <input className="chat__checkbox" type="checkbox" name="persistent"></input>
+                    </div>}
+                    <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value="Tallenna"></input>
+                  </form>
+                </div>
 
                 <div className={this.state.settingsInformBox}>
                   <p>{this.state.isRoomConfigSavedSuccesfully}</p>
@@ -785,8 +797,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.state.roomJid} readOnly/>
-                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita..." name="chatMessage"></textarea>
-                <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-announcer"></span></button>
+                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
+                <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right-thin"></span></button>
               </form>
             </div>)
           }
