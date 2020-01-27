@@ -421,8 +421,10 @@ $collor-chat-user-status-offline: #cecdcd;
 $collor-chat-user-status-away: #fbb470;
 $color-chat-room-description-background: #f8f8f8;
 $color-chat-controlbox-main-color: #f95ae7;
-$color-chat-workspace-room-main-color: $color-workspace;
+$color-chat-workspace-room-main-color: #0ebd96;
 $color-chat-other-room-main-color: $color-info;
+$color-chat-message-default-background: #ebebeb;
+$color-chat-panel-header-shadow: rgba(0,0,0,0.15);
 
 @import "colors/frontpage";
 @import "colors/main-function";

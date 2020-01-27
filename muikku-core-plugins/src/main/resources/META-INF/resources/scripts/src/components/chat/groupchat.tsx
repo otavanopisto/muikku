@@ -228,12 +228,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         if (stanza.attributes.sender === "me"){
           senderClass = "sender-me";
         } else {
-
-          if (this.state.roomJid.startsWith("workspace-")){
-            senderClass = "sender-others-workspace";
-          } else {
-            senderClass = "sender-them";
-          }
+          senderClass = "sender-them";
         }
 
         var stamp = null;
@@ -754,11 +749,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               </div>}
 
               <div className="chat__panel-body chat__panel-body--chatroom">
-                <div className="chat__muc-messages-container" ref={ (ref) => this.myRef=ref }>
+                <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} ref={ (ref) => this.myRef=ref }>
                   {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
-                  <div style={{ float:"left", clear: "both"}} ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
-                {this.state.showOccupantsList && <div className="chat__muc-occupants">
+                {this.state.showOccupantsList && <div className="chat__occupants-container">
                   <ul>
                     {this.state.occupants.map((occupant: any, i: any) => <li onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</li>)}
                   </ul>

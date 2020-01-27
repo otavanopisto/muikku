@@ -36,7 +36,6 @@ declare global {
   }
 }
 
-
 export class ChatMessage extends React.Component<Iprops, Istate> {
 
   private myRef: any;
@@ -53,13 +52,12 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       deleted: null,
       showName: false,
       showRemoveButton: false
+    }
+    this.myRef = null;
+    this.showRealName = this.showRealName.bind(this);
+    this.showRemoveButton = this.showRemoveButton.bind(this);
+    this.removeMessage = this.removeMessage.bind(this);
   }
-  this.myRef = null;
-  this.showRealName = this.showRealName.bind(this);
-  this.showRemoveButton = this.showRemoveButton.bind(this);
-  this.removeMessage = this.removeMessage.bind(this);
-  }
-
   showRealName (){
     if (this.state.showName === false && window.MUIKKU_IS_STUDENT === false){
       this.setState({
@@ -71,9 +69,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       });
     }
   }
-
   showRemoveButton () {
-
     if (window.MUIKKU_IS_STUDENT && this.state.senderClass === "sender-me"){
       this.setState({
         showRemoveButton: !this.state.showRemoveButton
@@ -84,64 +80,47 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       });
     }
   }
-
   removeMessage (){
 
   }
-
   componentDidMount (){
+    let reactComponent = this;
+    let groupMessage = this.props.groupMessage;
+    let stamp = new Date(groupMessage.timeStamp);
 
-
-      let reactComponent = this;
-
-      let groupMessage = this.props.groupMessage;
-
-      let stamp = new Date(groupMessage.timeStamp);
-
-      reactComponent.setState({
-        groupMessage: groupMessage,
-        senderClass: groupMessage.senderClass,
-        from: groupMessage.from,
-        realName: groupMessage.alt || groupMessage.from,
-        timeStamp: stamp,
-        content: groupMessage.content,
-        deleted: groupMessage.deleted
-
-      });
-
-    }
-
-    componentDidUpdate (){
-
-    }
-
-
-    render() {
-
-      return  (
-              <div>
-              {<div className={this.state.senderClass + " chat__message-item"}>
-
-                <p className={this.state.senderClass + " chat__message-item--timestamp"}>
-                <b onClick={this.showRealName} className={this.state.senderClass}>{this.state.from}
-                {(this.state.showName === true) && <i>({this.state.realName}) </i>}
-                </b>
-               {new Intl.DateTimeFormat('en-GB', {
-                   year: 'numeric', month: 'numeric', day: 'numeric',
-                   hour: 'numeric', minute: 'numeric', second: 'numeric',
-                   hour12: false
-               }).format(this.state.timeStamp)}</p>
-               <div className={this.state.senderClass}>
-                {(this.state.showRemoveButton === true) && <div onClick={() => this.props.removeMessage(this.state.groupMessage)} className={this.state.senderClass + " chat__message-item--remove-button"}><span className="icon-delete"></span></div>}
-                <p onClick={this.showRemoveButton} className={this.state.senderClass + " chat__message-item--text"}>{this.props.groupMessage.deleted ? <i>Viesti poistettu</i> : this.props.groupMessage.content}</p>
-              </div>
-            </div>}
-            </div>
-
-
-
-
-
-      );
-    }
+    reactComponent.setState({
+      groupMessage: groupMessage,
+      senderClass: groupMessage.senderClass,
+      from: groupMessage.from,
+      realName: groupMessage.alt || groupMessage.from,
+      timeStamp: stamp,
+      content: groupMessage.content,
+      deleted: groupMessage.deleted
+    });
   }
+  componentDidUpdate (){
+
+  }
+  render() {
+
+    return  (<div className={`chat__message chat__message--${this.state.senderClass}`}>
+      <div className="chat__message-meta">
+        <span className="chat__message-meta-sender" onClick={this.showRealName}>
+          {this.state.from} {(this.state.showName === true) && <span className="chat__message-meta-sender-real-name">({this.state.realName}) </span>}
+        </span>
+        <span className="chat__message-meta-timestamp">
+          {new Intl.DateTimeFormat('fi-FI', {
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: 'numeric', minute: 'numeric', second: 'numeric',
+            hour12: false
+          }).format(this.state.timeStamp)}
+        </span>
+      </div>
+      <div className="chat__message-content-container" onClick={this.showRemoveButton}>
+        {(this.state.showRemoveButton === true) && <div onClick={() => this.props.removeMessage(this.state.groupMessage)} className="chat__message-delete"><span className="icon-delete"></span></div>}
+        <span className="chat__message-content" onClick={this.showRemoveButton}>{this.props.groupMessage.deleted ? <i>Viesti poistettu</i> : this.props.groupMessage.content}</span>
+      </div>
+    </div>
+    );
+  }
+}
