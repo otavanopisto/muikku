@@ -19,6 +19,7 @@ interface Istate {
   roomJid?: string,
   roomsList?: Object,
   roomName?: string,
+  roomDesc?: any,
   roomConfig?: any,
   to?: string,
   messages?: Object,
@@ -38,8 +39,7 @@ interface Istate {
   settingsInformBox:string,
   showRoomInfo: boolean,
   roomAlign: string,
-  minimized: boolean,
-  roomDesc: any
+  minimized: boolean
 }
 
 declare namespace JSX {
@@ -70,6 +70,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       roomJid: "",
       roomsList: [],
       roomName: "",
+      roomDesc: "",
       roomConfig: [],
       to: "",
       messages: [],
@@ -89,8 +90,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       settingsInformBox: "settingsInform-none",
       showRoomInfo: false,
       roomAlign: "",
-      minimized: false,
-      roomDesc: ""
+      minimized: false
     }
     this.myRef = null;
     this.openChatSettings = this.openChatSettings.bind(this);
@@ -201,7 +201,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
             <div className="chat__controlbox-room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
               {this.state.roomName}
             </div>
-            { (this.state.showRoomInfo === true) && <div className="chat__controlbox-room-description">{this.state.roomDesc}</div> }
+            { (this.state.showRoomInfo === true) && <div className="chat__controlbox-room-description"><p>{this.state.roomDesc}</p></div> }
         </div>
       );
     }

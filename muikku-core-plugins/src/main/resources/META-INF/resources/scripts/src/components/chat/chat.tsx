@@ -207,10 +207,8 @@ export class Chat extends React.Component<Iprops, Istate> {
     });
   }
 
-
   //---------- CONVERSE MUC ROOMS --------------------
-
-  // Nickname & room name for new chat room
+  // Nickname, persistency, room name and room description for new chat room
   parseRoomDataFromEvent (form: HTMLFormElement) {
     const data = new FormData(form);
     const jid = data.get('roomName').toString();
@@ -273,7 +271,6 @@ export class Chat extends React.Component<Iprops, Istate> {
     reactComponent.state.converse.api.rooms.open(jid, _.extend({
       'nick': nick,
       'maximize': true,
-      //'name': jid.split('@conference.dev.muikkuverkko.fi'),
       'auto_configure': true,
       'publicroom': true,
       'roomconfig': {
@@ -308,7 +305,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       nick: window.MUIKKU_LOGGED_USER
     });
   }
-  // ----- ROOMS LIST-----ä
+  // ----- ROOMS LIST-----
   async onRoomsFound (iq: any) {
     //    /* Handle the IQ stanza returned from the server, containing
     //     * all its public groupchats.
