@@ -415,6 +415,18 @@ $the-grey: #eaeaea;
   width: 1rem;
 }
 
+.chat__checkbox:checked {
+  background-color: $color-form-element-selected;
+  border: solid 2px $color-form-element-selected;
+}
+
+.chat__checkbox:checked::after {
+  color: $color-default;
+  content: "\e639";
+  font-family: muikku;
+  font-size: .875rem;
+}
+
 .chat__submit {
   border: 0;
   border-radius: 3px;

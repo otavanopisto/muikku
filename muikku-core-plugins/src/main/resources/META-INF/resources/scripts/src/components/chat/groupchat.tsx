@@ -47,7 +47,8 @@ interface Istate {
   occupants?: any,
   showOccupantsList?: boolean,
   occupantsListOpened?: any,
-  privateChats?: any
+  privateChats?: any,
+  roomDesc: any
 }
 
 declare namespace JSX {
@@ -64,7 +65,6 @@ declare global {
     MUIKKU_LOGGED_USER: string
   }
 }
-
 
 export class Groupchat extends React.Component<Iprops, Istate> {
 
@@ -88,7 +88,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       showChatbox: null,
       openChatSettings: false,
       isStudent: false,
-      openRoomNumber:null,
+      openRoomNumber: null,
       nick: "",
       isRoomConfigSavedSuccesfully: "",
       settingsInformBox: "settingsInform-none",
@@ -102,7 +102,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       occupants: [],
       showOccupantsList: null,
       occupantsListOpened: [],
-      privateChats: []
+      privateChats: [],
+      roomDesc: ""
     }
     this.myRef = null;
     this.sendMessage = this.sendMessage.bind(this);
@@ -114,12 +115,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.minimizeChats = this.minimizeChats.bind(this);
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
     this.getOccupants = this.getOccupants.bind(this);
-
   }
-
-
   openMucConversation (room: string) {
-
     let data = {
         jid: room,
         nick: this.props.nick
@@ -133,22 +130,17 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       let result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
 
-
       if (!result.includes(room)){
         result.push(room);
       }
 
-
-
       reactComponent.setState({
         nick: this.props.nick
-
       });
 
       window.sessionStorage.setItem("openChats", JSON.stringify(result));
 
       let nick: string;
-
       nick = this.props.nick;
 
       if (!nick) {
@@ -176,8 +168,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         data.nick = reactComponent.state.nick;
       }
 
-        jid = data.jid;
-
+      jid = data.jid;
 
       reactComponent.state.converse.api.rooms.open(jid, _.extend(data,
         {
@@ -199,9 +190,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
 
     }
-
     //------- HANDLING INCOMING GROUPCHAT MESSAGES
-
     async getMUCMessages (stanza: any) {
 
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
@@ -228,7 +217,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         } else {
           userName = from;
           nick = from;
-
         }
 
         if (message !== ""){
@@ -275,10 +263,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
            groupMessages.push(groupMessage);
           } else{
             let arr= new Array();
-
             arr.push(message);
             deleteId = message.split("=").pop();
-
           }
 
           var i:any;
@@ -286,7 +272,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             var groupMessageId = groupMessages[i].messageId;
             if (deleteId && groupMessageId === deleteId){
               groupMessages[i] = {...groupMessages[i], deleted: true}
-
             }
           }
           groupMessages.sort((a: any, b: any) => (a.timeStamp > b.timeStamp) ? 1 : -1)
@@ -294,7 +279,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           this.setState({groupMessages: groupMessages});
 
           if (this.state.showOccupantsList === true){
-              this.getOccupants();
+            this.getOccupants();
           }
           return;
         }
@@ -302,7 +287,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         return;
       }
     }
-
     removeMessage(data: any) {
       let reactComponent = this;
       let text = data;
@@ -328,11 +312,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       reactComponent.state.converse.api.send(chat.createMessageStanza(message));
     }
-
-
-
     sendMessage(event: any){
-
       event.preventDefault();
 
       let text = event.target.chatMessage.value;
@@ -370,7 +350,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
 
     }
-
     //--- SETTINGS & INFOS
     openChatSettings() {
       if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false){
@@ -385,27 +364,23 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
       }
     }
-
     toggleRoomInfo() {
-        if (this.state.showRoomInfo === false){
-          this.setState({
-            showRoomInfo: true
-          });
-        } else {
-          this.setState({
-            showRoomInfo: false
-          });
-        }
+      if (this.state.showRoomInfo === false){
+        this.setState({
+          showRoomInfo: true
+        });
+      } else {
+        this.setState({
+          showRoomInfo: false
+        });
       }
-
+    }
     saveRoomFeatures(event: any){
-
       event.preventDefault();
 
       let roomName = event.target.newRoomName.value;
-      let roomDescription = event.target.newRoomDescription.value;
+      let roomDesc = event.target.newRoomDescription.value;
       let persistentRoom = event.target.persistent;
-
 
       if (persistentRoom && persistentRoom.checked === true){
         persistentRoom = 1;
@@ -418,7 +393,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           jid: roomName.trim() + '@conference.muikkuverkko.fi',
           FORM_TYPE: "hidden",
           roomname: roomName,
-          roomdesc: roomDescription,
+          roomdesc: roomDesc,
           changesubject: 0,
           maxusers: 30,
           presencebroadcast: "participant",
@@ -473,9 +448,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
           this.sendConfiguration(configArray);
 
-
           this.setState({
-           roomName: roomName
+           roomName: roomName,
+           roomDesc: roomDesc
           });
 
           return;
@@ -520,10 +495,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           settingsInformBox: "settingsInform --failed"
         })
       );
-
-
     }
-
     fetchRoomConfiguration () {
       /* Send an IQ stanza to fetch the groupchat configuration data.
       * Returns a promise which resolves once the response IQ
@@ -531,13 +503,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       */
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-
       return this.state.converse.api.sendIQ(
         $iq({'to': this.state.roomJid, 'type': "get"})
         .c("query", {xmlns: Strophe.NS.MUC_OWNER})
       );
     }
-
     minimizeChats (roomJid:any){
 
       let minimizedRoomList = this.state.minimizedChats;
@@ -576,7 +546,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
 
     }
-
     async toggleOccupantsList (){
 
       let room = this.state.converse.api.rooms.get(this.state.roomJid);
@@ -614,7 +583,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         }
       }
     }
-
     async getOccupants (){
       let room = this.state.converse.api.rooms.get(this.state.roomJid);
       if (room.occupants.models){
@@ -652,7 +620,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           });
       }
     }
-
     scrollToBottom = () => {
       if (this.messagesEnd){
         this.messagesEnd.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -694,7 +661,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         this.setState({
           roomName: chat.name,
           roomJid: chat.jid,
-          isStudent: window.MUIKKU_IS_STUDENT
+          isStudent: window.MUIKKU_IS_STUDENT,
+          roomDesc: chat.roomDesc
+
         });
 
         var roomOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
@@ -769,7 +738,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                     </div>
                     <div className="chat__subpanel-row">
                       <label className="chat__label">Huoneen kuvaus: </label>
-                      <textarea className="chat__memofield" name="newRoomDescription"></textarea>
+                      <textarea className="chat__memofield" name="newRoomDescription" defaultValue={this.state.roomDesc}></textarea>
                     </div>
                     {(!this.state.isStudent) && <div className="chat__subpanel-row">
                       <label className="chat__label">Pysyvä huone: </label>

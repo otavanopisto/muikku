@@ -57,9 +57,7 @@ declare global {
   }
 }
 
-
 export class RoomsList extends React.Component<Iprops, Istate> {
-
   private myRef: any;
 
   constructor(props: any){
@@ -98,14 +96,11 @@ export class RoomsList extends React.Component<Iprops, Istate> {
     this.openChatSettings = this.openChatSettings.bind(this);
     this.toggleRoomInfo = this.toggleRoomInfo.bind(this);
    // this.openMucConversation = this.openMucConversation.bind(this);
-
-
   }
 
      getMUCMessages (stanza: any) {
 
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-
 
       if (stanza && stanza.attributes.type.nodeValue === "groupchat"){
         let message = stanza.textContent;
@@ -128,8 +123,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
 
           groupMessages.push(groupMessage);
 
-
-
           this.setState({groupMessages: groupMessages});
 
           return;
@@ -138,7 +131,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
         return;
       }
     }
-
     //--- SETTINGS & INFOS
     openChatSettings() {
       if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false){
@@ -153,7 +145,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
         });
       }
     }
-
     toggleRoomInfo() {
         if (this.state.showRoomInfo === false){
           this.setState({
@@ -165,7 +156,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
           });
         }
       }
-
     fetchRoomConfiguration () {
       /* Send an IQ stanza to fetch the groupchat configuration data.
       * Returns a promise which resolves once the response IQ
@@ -179,7 +169,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
         .c("query", {xmlns: Strophe.NS.MUC_OWNER})
       );
     }
-
     componentDidMount (){
       let reactComponent = this;
 
@@ -192,8 +181,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
       let chat = this.props.chat;
-      let orderNumber = this.props.orderNumber;
-      let description;
 
       if (chat){
 
@@ -214,7 +201,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
             <div className="chat__controlbox-room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
               {this.state.roomName}
             </div>
-            { (this.state.showRoomInfo === true) && <div className="chat__controlbox-room-description"><p>{this.state.roomDesc}</p></div> }
+            { (this.state.showRoomInfo === true) && <div className="chat__controlbox-room-description">{this.state.roomDesc}</div> }
         </div>
       );
     }

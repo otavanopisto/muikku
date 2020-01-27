@@ -213,8 +213,10 @@ export class Chat extends React.Component<Iprops, Istate> {
   // Nickname & room name for new chat room
   parseRoomDataFromEvent (form: HTMLFormElement) {
     const data = new FormData(form);
-    const jid = data.get('roomName');
+    const jid = data.get('roomName').toString();
     const persistentRoom = data.get('persistent');
+    const roomDesc = data.get('roomDesc');
+    const roomName = data.get('roomName');
     let nick: any;
     if (this.state.converse.locked_muc_nickname) {
       nick =this.state.nick;
@@ -225,7 +227,9 @@ export class Chat extends React.Component<Iprops, Istate> {
     return {
       'jid': jid,
       'nick': nick,
-      'persistent': persistentRoom
+      'persistent': persistentRoom,
+      'roomdesc': roomDesc,
+      'roomname': roomName
     }
   }
   // Creating new chat room
@@ -244,23 +248,14 @@ export class Chat extends React.Component<Iprops, Istate> {
 
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-    let makeRoomPersistent;
+    // We need to trim and replace white spaces so new room will be created succefully
+    let jid = data.jid.trim().replace(/\s+/g, '-') + '@conference.dev.muikkuverkko.fi';
 
-    if (data.persistent){
-      makeRoomPersistent = true;
-    } else { makeRoomPersistent = false;}
-
-    if (data.nick === "") {
-      // Make sure defaults apply if no nick is provided.
-      data.nick = reactComponent.state.nick;
-    }
-    let jid;
-
-    jid = data.jid + '@conference.dev.muikkuverkko.fi'
-
-
+    let persistent = data.persistent ? true : false;
+    let roomName = (data.roomname && data.roomname !== "") ? data.roomname : "";
+    let roomDesc = (data.roomdesc && data.roomdesc !== "") ? data.roomdesc : "";
+    let nick = (data.nick || data.nick == "") ? reactComponent.state.nick : data.nick;
     let roomJidAndNick = jid + (data.nick !== null ? `/${data.nick}` : "");
-
 
     const stanza = $pres({
       'from': this.state.converse.connection.jid,
@@ -273,19 +268,18 @@ export class Chat extends React.Component<Iprops, Istate> {
     //this.save('connection_status', converse.ROOMSTATUS.CONNECTING);
     this.state.converse.api.send(stanza);
 
-
     this.state.converse.api.user.status.set('online');
 
-    reactComponent.state.converse.api.rooms.open(jid, _.extend(data, {
-      'nick': data.nick,
+    reactComponent.state.converse.api.rooms.open(jid, _.extend({
+      'nick': nick,
       'maximize': true,
-      'name': jid.split('@conference.dev.muikkuverkko.fi'),
+      //'name': jid.split('@conference.dev.muikkuverkko.fi'),
       'auto_configure': true,
       'publicroom': true,
-      'persistentroom:': makeRoomPersistent,
       'roomconfig': {
-        'persistentroom': makeRoomPersistent,
-        'roomdesc': 'Comfy room for hanging out'
+        'persistentroom': persistent,
+        'roomdesc': roomDesc,
+        'roomname': roomName
       }
     }), true).then((chat: any) => {
 
@@ -302,23 +296,18 @@ export class Chat extends React.Component<Iprops, Istate> {
       this.setState({availableMucRooms: groupchats, chatBox: chat, showNewRoomForm: false});
     });
 
-
     event.target.reset();
-
   }
-
   informRoomCreationFailed(){
     alert("EI OLE MITÄÄN HUONEITA TÄÄLLÄ!!");
   }
 
   // ------ mApi() ----------
-
   async getChatNick (){
     this.setState({
       nick: window.MUIKKU_LOGGED_USER
     });
   }
-
   // ----- ROOMS LIST-----ä
   async onRoomsFound (iq: any) {
     //    /* Handle the IQ stanza returned from the server, containing
