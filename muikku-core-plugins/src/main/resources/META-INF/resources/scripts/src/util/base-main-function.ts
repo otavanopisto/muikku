@@ -50,8 +50,10 @@ export default function(store: Store<StateType>){
             muc_domain : "conference." + location.hostname,
             muc_history_max_stanzas: 0, // Should be 0 if MAM (message_archiving: "always") is in use
             muc_show_join_leave: true,
+            persistent_store: "IndexedDB",
             ping_interval: 45,
             prebind_url : "/rest/chat/prebind",
+            //trusted: "on",
             // websocket_url: This is worth to check out if we can use websockets instead of BOSH
             whitelisted_plugins: ["myplugin","addRoom", "profileChatSettings"]
           });
