@@ -3,7 +3,7 @@ import {StateType} from '~/reducers';
 import {connect, Dispatch} from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import {UsersType} from '~/reducers/main-function/users/index.ts';
-import  OrganizationUserPanel from './users/user-panel';
+import  UserPanel from '~/components/general/user-panel';
 import { ButtonPill} from '~/components/general/button';
 
 interface OrganizationUsersProps {
@@ -23,8 +23,8 @@ class OrganizationUsers extends React.Component<OrganizationUsersProps, Organiza
   }
   render(){
     return (<div>
-        <OrganizationUserPanel i18n={this.props.i18n} users={this.props.users.students}/>
-        <OrganizationUserPanel i18n={this.props.i18n} users={this.props.users.staff}/>
+        <UserPanel i18n={this.props.i18n} title="plugin.organization.users.teachers.title" users={this.props.users.staff}/>
+        <UserPanel i18n={this.props.i18n} title="plugin.organization.users.students.title" users={this.props.users.students}/>
       </div>)}}
 
 

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { getUserImageUrl } from "~/util/modifiers";
+import '~/sass/elements/avatar.scss';
 
 interface AvatarProps {
   hasImage: boolean,
