@@ -129,7 +129,7 @@
       }, this));
       
       $('#workspaceGradeSave').on('click', $.proxy(function(event) {
-        
+        $('#workspaceGradeSave').attr('disabled', 'disabled');
         var successCallback = $.proxy(function(assessment) {
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
           this.element.trigger("workspaceAssessmentSaved", {
@@ -158,6 +158,7 @@
             else {
               successCallback(assessment);
             }
+            $('#workspaceGradeSave').removeAttr('disabled');
           }, this));
         }
         else if (mode == 'edit') {
@@ -176,10 +177,12 @@
             else {
               successCallback(assessment);
             }
+            $('#workspaceGradeSave').removeAttr('disabled');
           }, this));
         }
         else {
           this._toggleWorkspaceGradeEditor(false);
+          $('#workspaceGradeSave').removeAttr('disabled');
         }
       }, this)); 
     },
@@ -203,7 +206,7 @@
       // Save workspace supplementation request
       
       $('#workspaceSupplementationSave').on('click', $.proxy(function(event) {
-        
+        $('#workspaceSupplementationSave').attr('disabled', 'disabled');        
         var successCallback = $.proxy(function(supplementationRequest) {
           CKEDITOR.instances.workspaceSupplementationText.discardDraft();
           this.element.trigger("workspaceSupplementationRequestSaved", {
@@ -228,6 +231,7 @@
             else {
               successCallback(supplementationRequest);
             }
+            $('#workspaceSupplementationSave').removeAttr('disabled');        
           }, this));
         }
         else if (mode == 'edit') {
@@ -243,10 +247,12 @@
             else {
               successCallback(supplementationRequest);
             }
+            $('#workspaceSupplementationSave').removeAttr('disabled');        
           }, this));
         }
         else {
           this._toggleWorkspaceSupplementationEditor(false);
+          $('#workspaceSupplementationSave').removeAttr('disabled');        
         }
       }, this)); 
     },
