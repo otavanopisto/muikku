@@ -21,9 +21,9 @@ interface MaterialState {
 export default class Material extends React.Component<MaterialProps, MaterialState> {
   constructor(props: MaterialProps){
     super(props);
-    
+
     this.toggleOpened = this.toggleOpened.bind(this);
-    
+
     this.state = {
       opened: false
     }
@@ -47,7 +47,6 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
             <span title={evaluation.gradingScale + getShortenGradeExtension(evaluation.grade)}
               className={`application-list__indicator-badge application-list__indicator-badge--task ${evaluation.passed ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
             : <span className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}>N</span>}
-          
           <span className="application-list__header-primary">{this.props.material.assignment.title}</span>
         </div>
         {this.state.opened ? <div className="application-list__item-body text">

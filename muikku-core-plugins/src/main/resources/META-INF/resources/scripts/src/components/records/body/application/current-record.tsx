@@ -32,37 +32,39 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
   constructor(props: CurrentRecordProps){
     super(props);
   }
-  
+
   render(){
     if (this.props.records.location !== "records" || !this.props.records.current){
       return null;
     } else if (this.props.records.currentStatus === "LOADING"){
       return null;
     }
-    
+
     let assesmentStateClassName = "";
-    switch (this.props.records.current.workspace.studentAssessmentState.state){
-      case "pass":
-        assesmentStateClassName = "PASSED";
-        break;
-      case "pending":
-      case "pending_pass":
-      case "pending_fail":
-        assesmentStateClassName = "PENDING"; 
-        break;
-      case "fail":
-        assesmentStateClassName = "FAILED"; 
-        break;
-      case "incomplete":
-        assesmentStateClassName = "INCOMPLETE"; 
-        break;
+    if (this.props.records.current.workspace.studentAssessmentState) {
+      switch (this.props.records.current.workspace.studentAssessmentState.state){
+        case "pass":
+          assesmentStateClassName = "PASSED";
+          break;
+        case "pending":
+        case "pending_pass":
+        case "pending_fail":
+          assesmentStateClassName = "PENDING";
+          break;
+        case "fail":
+          assesmentStateClassName = "FAILED";
+          break;
+        case "incomplete":
+          assesmentStateClassName = "INCOMPLETE";
+          break;
+      }
     }
-    
+
     let workspaceEvaluation = this.props.records.current.workspace.studentAssessmentState &&
       this.props.records.current.workspace.studentAssessmentState.text ?
-        <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessmentState.text}} 
+        <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessmentState.text}}
         className={`rich-text application-sub-panel__text application-sub-panel__text--course-evaluation state-${assesmentStateClassName}`}/> : null;
-    
+
     return <div className="application-sub-panel">
       <div className="application-sub-panel__header application-sub-panel__header--studies-detailed-info" key={this.props.records.current.workspace.id}>
         {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
@@ -77,7 +79,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
              status={this.props.status}/>
           })}
         </ApplicationList>
-          
+
         {this.props.records.current.journals.length ? <div className="application-list">
             <div className="application-list__header"><h3 className="application-list__title">{this.props.i18n.text.get("plugin.records.studydiary.title")}</h3></div>
           <div className="application-list_item-wrapper">
