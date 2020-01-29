@@ -526,6 +526,10 @@ $the-grey: #eaeaea;
   .chat__message-content-container {
     text-align: right;
   }
+
+  .chat__message-action-container {
+    justify-content: flex-end;
+  }
 }
 
 // When Chat sender is THEM
@@ -537,6 +541,10 @@ $the-grey: #eaeaea;
 
   .chat__message-content-container {
     text-align: left;
+  }
+
+  .chat__message-action-container {
+    justify-content: flex-start;
   }
 }
 
@@ -598,6 +606,29 @@ $the-grey: #eaeaea;
       color: $color-default;
     }
   }
+}
+
+.chat__message-action-container {
+  align-items: center;
+  border-bottom: 1px dashed $color-default-separator-border;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  margin: 0 0 5px;
+  padding: 5px;
+}
+
+.chat__message-delete {
+  align-items: center;
+  border-radius: 5px;
+  color: $color-fatal;
+  cursor: pointer;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-flow: row nowrap;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
 // OLDIES

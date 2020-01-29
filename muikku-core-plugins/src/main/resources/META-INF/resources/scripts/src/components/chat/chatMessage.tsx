@@ -117,8 +117,12 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
         </span>
       </div>
       <div className="chat__message-content-container" onClick={this.showRemoveButton}>
-        {(this.state.showRemoveButton === true) && <div onClick={() => this.props.removeMessage(this.state.groupMessage)} className="chat__message-delete"><span className="icon-delete"></span></div>}
-        <span className="chat__message-content" onClick={this.showRemoveButton}>{this.props.groupMessage.deleted ? <i>Viesti poistettu</i> : this.props.groupMessage.content}</span>
+        <div className="chat__message-content" onClick={this.showRemoveButton}>
+          {this.props.groupMessage.deleted ? <i>Viesti poistettu</i> : this.props.groupMessage.content}
+        </div>
+        {(this.state.showRemoveButton === true) && <div className="chat__message-action-container">
+          <div onClick={() => this.props.removeMessage(this.state.groupMessage)} className="chat__message-delete">Poista</div>
+        </div>}
       </div>
     </div>
     );
