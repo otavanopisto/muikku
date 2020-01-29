@@ -18,7 +18,7 @@ interface NavigationAsideProps {
 interface NavigationAsideState {
 }
 
-class CoursesAside extends React.Component<NavigationAsideProps, NavigationAsideState> {
+class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAsideState> {
   render() {
     let locationData = queryString.parse( document.location.hash.split( "?" )[1] || "", { arrayFormat: 'bracket' } );
 
@@ -41,4 +41,4 @@ function mapDispatchToProps( dispatch: Dispatch<any> ) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( CoursesAside );
+)( WorkspacesAside );

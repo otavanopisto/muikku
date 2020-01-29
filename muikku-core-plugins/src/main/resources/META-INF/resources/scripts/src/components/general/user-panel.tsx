@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
-import {MobileOnlyTabs} from "~/components/general/tabs";
 import {UserWithSchoolDataType} from "~/reducers/main-function/user-index";
 import Avatar from "~/components/general/avatar";
 import {getName} from "~/util/modifiers";

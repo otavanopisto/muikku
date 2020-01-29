@@ -7,8 +7,8 @@ import ApplicationPanelBody from '~/components/general/application-panel/compone
 import Tabs from '~/components/general/tabs';
 import Summary from './application/summary';
 import Users from './application/users';
-import Courses from './application/courses';
-import CoursesAside from './application/courses/aside';
+import Workspaces from './application/workspaces';
+import WorkspacesAside from './application/workspaces/aside';
 import Reports from './application/reports';
 import {i18nType} from '~/reducers/base/i18n';
 import { ButtonPill} from '~/components/general/button';
@@ -17,6 +17,7 @@ import AddUserDialog from '../dialogs/new-user';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
+
 
 const tabNames = ["summary", "users", "courses", "reports"];
  
@@ -88,7 +89,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
           {
             id: "COURSES",
             name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
-            component: ()=> { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<CoursesAside />} children={<Courses />}/>}
+            component: ()=> { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<Workspaces />}/>}
             
           },
           {

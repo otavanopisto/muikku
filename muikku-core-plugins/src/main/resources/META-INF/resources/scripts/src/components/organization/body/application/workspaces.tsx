@@ -3,13 +3,13 @@ import {StateType} from '~/reducers';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
-import Course from './courses/course';
+import Workspace from './workspaces/workspace';
 import {i18nType} from '~/reducers/base/i18n';
 import {CoursesStateType, WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
 import { loadMoreCoursesFromServer, LoadMoreCoursesFromServerTriggerType } from '~/actions/main-function/courses';
 
 
-interface CoursesProps {
+interface WorkspacesProps {
   i18n: i18nType,
   coursepickerCoursesState: CoursesStateType,
   coursepickerHasMore: boolean,
@@ -17,10 +17,10 @@ interface CoursesProps {
   coursepickerCoursesCourses: WorkspaceCourseListType
 }
 
-interface CoursesState {
+interface WorkspacesState {
 }
 
-class Courses extends React.Component<CoursesProps, CoursesState> {
+class Workspaces extends React.Component<WorkspacesProps, WorkspacesState> {
   render(){
     if (this.props.coursepickerCoursesState === "LOADING"){
       return null;
@@ -33,8 +33,8 @@ class Courses extends React.Component<CoursesProps, CoursesState> {
     }
     return (
         <ApplicationList>
-        {this.props.coursepickerCoursesCourses.map((course: WorkspaceCourseType)=>{
-          return <Course key={course.id} course={course}/>
+        {this.props.coursepickerCoursesCourses.map((workspace: WorkspaceCourseType)=>{
+          return <Workspace key={workspace.id} course={workspace}/>
         })}
         {this.props.coursepickerCoursesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}
         </ApplicationList>
@@ -60,4 +60,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Courses);
+)(Workspaces);
