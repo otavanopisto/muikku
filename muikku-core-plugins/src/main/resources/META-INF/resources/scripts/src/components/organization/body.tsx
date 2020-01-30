@@ -23,3 +23,8 @@ export default class OrganizationManagementBody extends React.Component<Organiza
     </div>);
   }
 }
+
+let kinostaa = true;
+let treffit = kinostaa ? (sinä:object, minä:object) => {
+  return // toimintaa tähän 
+} : ":(";

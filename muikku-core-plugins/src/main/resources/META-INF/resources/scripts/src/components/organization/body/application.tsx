@@ -37,29 +37,26 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
       activeTab : "SUMMARY",
     }
     this.onTabChange = this.onTabChange.bind(this);
-    
   }
-  
+
   onTabChange(id: "SUMMARY" | "USERS" | "COURSES" | "REPORTS" ) {
     this.setState({
       activeTab: id
     });
   }
-    
+
   render(){
-        
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
         let usersPrimaryAction = <AddUserDialog><ButtonPill buttonModifiers="organization" icon="add" /></AddUserDialog>;
         let coursesPrimaryAction = <AddWorkspaceDialog><ButtonPill buttonModifiers="organization" icon="add" /></AddWorkspaceDialog>;
-        
         let coursesToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">
-              <input className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.organization.courses.search.placeholder')} />
+              <input className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.organization.workspaces.search.placeholder')} />
               <div className="form-element__input-decoration--main-function-search icon-search"></div>
             </div>
           </ApplicationPanelToolbarActionsMain>
-          </ApplicationPanelToolbar>
+          </ApplicationPanelToolbar>;
           
         let usersToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
@@ -68,9 +65,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
               <div className="form-element__input-decoration--main-function-search icon-search"></div>
             </div>
           </ApplicationPanelToolbarActionsMain>
-          </ApplicationPanelToolbar>
-          
-;
+          </ApplicationPanelToolbar>;
         
         return (
           <ApplicationPanel modifier="organization" title={title} onTabChange={this.onTabChange} activeTab={this.state.activeTab} panelTabs={[
