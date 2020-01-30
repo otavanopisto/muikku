@@ -30,7 +30,7 @@ public interface WorkspaceSearchBuilder {
 
   List<SchoolDataIdentifier> getEducationTypeIdentifiers();
 
-  WorkspaceSearchBuilder addEducationTypeIdentifiers(SchoolDataIdentifier educationTypeIdentifier);
+  WorkspaceSearchBuilder addEducationTypeIdentifier(SchoolDataIdentifier educationTypeIdentifier);
 
   WorkspaceSearchBuilder setEducationTypeIdentifiers(List<SchoolDataIdentifier> educationTypeIdentifiers);
 

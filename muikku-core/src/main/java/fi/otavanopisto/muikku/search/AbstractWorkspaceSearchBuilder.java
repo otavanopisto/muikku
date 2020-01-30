@@ -74,7 +74,7 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   }
   
   @Override
-  public WorkspaceSearchBuilder addEducationTypeIdentifiers(SchoolDataIdentifier educationTypeIdentifier) {
+  public WorkspaceSearchBuilder addEducationTypeIdentifier(SchoolDataIdentifier educationTypeIdentifier) {
     if (this.educationTypeIdentifiers == null) {
       this.educationTypeIdentifiers = new ArrayList<>();
     }
