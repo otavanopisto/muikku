@@ -180,7 +180,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
       .muikkuMaterialLoader({
         readOnlyFields: true,
         fieldlessMode: true,
-        baseUrl: "/workspace/" + this.props.workspace.urlName + "/materials/",
+        baseUrl: "/workspace/" + this.props.workspace.urlName + "/materials"
       }).muikkuMaterialLoader('loadMaterial', this.refs.sandbox, fieldAnswers);
   }
   render(){
