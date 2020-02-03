@@ -173,14 +173,14 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
       materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = fieldAnswers;
     }
     
-    //I can't start explaining how wrong this is, oh god... XD
+    //I can't start explaining how wrong this is
     //get data from the sever, put in in a variable, parse the variable, create a virtual element so that the material loader can
     //Read it from what it believes is the dom
-    //Why not, eehmmm... pass the data directly? O.O mind blown!!!
     $('<div/>').attr("data-grades", JSON.stringify((window as any).GRADES))
       .muikkuMaterialLoader({
         readOnlyFields: true,
-        fieldlessMode: true
+        fieldlessMode: true,
+        baseUrl: "/workspace/" + this.props.workspace.urlName + "/materials/",
       }).muikkuMaterialLoader('loadMaterial', this.refs.sandbox, fieldAnswers);
   }
   render(){
