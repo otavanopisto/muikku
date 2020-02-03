@@ -185,7 +185,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
   }
   render(){
     return <div className="__deprecated">
-      {this.props.material.evaluation.verbalAssessment ?
+      {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
           <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>

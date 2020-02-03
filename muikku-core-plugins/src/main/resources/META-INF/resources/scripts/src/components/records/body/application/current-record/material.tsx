@@ -42,7 +42,7 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
     let evaluation = this.props.material.evaluation;
     return <div className={`application-list__item assignment ${this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"}`}>
       <div className="application-list__item-content application-list__item-content--main">
-        <div className="application-list__item-header application-list__item-header--studies-assignment" onClick={this.props.material.evaluation ? this.toggleOpened : null}>
+        <div className="application-list__item-header application-list__item-header--studies-assignment" onClick={this.toggleOpened}>
           {evaluation ?
             <span title={evaluation.gradingScale + getShortenGradeExtension(evaluation.grade)}
               className={`application-list__indicator-badge application-list__indicator-badge--task ${evaluation.passed ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
