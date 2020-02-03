@@ -39,7 +39,8 @@ interface Istate {
   settingsInformBox:string,
   showRoomInfo: boolean,
   roomAlign: string,
-  minimized: boolean
+  minimized: boolean,
+  showOccupantsList: boolean,
 }
 
 declare namespace JSX {
@@ -90,7 +91,8 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       settingsInformBox: "settingsInform-none",
       showRoomInfo: false,
       roomAlign: "",
-      minimized: false
+      minimized: false,
+      showOccupantsList: false
     }
     this.myRef = null;
     this.openChatSettings = this.openChatSettings.bind(this);

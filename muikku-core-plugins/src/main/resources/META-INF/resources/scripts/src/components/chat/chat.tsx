@@ -95,7 +95,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       privateChats: []
     }
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.joinRoom= this.joinRoom.bind(this);
+    this.joinRoom = this.joinRoom.bind(this);
     this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
    // this.sendMessage = this.sendMessage.bind(this);
     this.openControlBox = this.openControlBox.bind(this);
@@ -374,27 +374,31 @@ export class Chat extends React.Component<Iprops, Istate> {
         });
       }
   }
-  onOpenChat (room: string) {
+  onOpenChat (roomJid: string) {
     let openRoomsList = this.state.openRooms;
 
-    if (openRoomsList.includes(room)){
-      const filteredRooms = openRoomsList.filter(item => item !== room)
-      this.setState({openRooms: filteredRooms})
+    if (openRoomsList.includes(roomJid)){
+      const filteredRooms = openRoomsList.filter(item => item !== roomJid);
+      this.setState({
+        openRooms: filteredRooms
+      });
 
       var result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
 
-      const filteredChats = result.filter(function(item:any) {
-        return item !== room;
-      })
+      const filteredChats = result.filter(function(item: any) {
+        return item !== roomJid;
+      });
 
       window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
 
       return;
 
     } else {
-      openRoomsList.push(room);
+      openRoomsList.push(roomJid);
 
-      this.setState({openRooms: openRoomsList})
+      this.setState({
+        openRooms: openRoomsList
+      });
     }
   }
   getWorkspaceMucRooms() {

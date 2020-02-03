@@ -40,13 +40,13 @@ interface Istate {
   showRoomInfo: boolean,
   roomAlign: string,
   minimized: boolean,
-  minimizedChats: any
+  minimizedRooms: Object[],
   chatRoomType: string,
   showName: boolean,
   chatRoomOccupants: any,
   occupants?: any,
   showOccupantsList?: boolean,
-  occupantsListOpened?: any,
+  occupantsListOpened?: Object[],
   privateChats?: any,
   roomDesc: any
 }
@@ -95,12 +95,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       showRoomInfo: false,
       roomAlign: "",
       minimized: false,
-      minimizedChats: [],
+      minimizedRooms: [],
       chatRoomType: "",
       showName: false,
       chatRoomOccupants: [],
       occupants: [],
-      showOccupantsList: null,
+      showOccupantsList: false,
       occupantsListOpened: [],
       privateChats: [],
       roomDesc: ""
@@ -503,11 +503,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         .c("query", {xmlns: Strophe.NS.MUC_OWNER})
       );
     }
-    minimizeChats (roomJid:any){
+    minimizeChats (roomJid: string){
+      // For some reason this.state.minimizedRoom is everytime empty, that's why we load list from sessionStorage
+      // let minimizedRoomList = this.state.minimizedRooms;
+      let minimizedRoomList = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
-      let minimizedRoomList = this.state.minimizedChats;
-
-      if (this.state.minimized === false){
+      if (this.state.minimized === false) {
         this.setState({
           minimized: true
         });
@@ -515,48 +516,57 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         if (!minimizedRoomList.includes(roomJid)){
           minimizedRoomList.push(roomJid);
 
-          this.setState({minimizedChats: minimizedRoomList})
+          this.setState({
+            minimizedRooms: minimizedRoomList
+          });
           window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedRoomList));
         }
-      } else{
+      } else {
 
-        if (minimizedRoomList.includes(roomJid)){
-          const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJid)
-          this.setState({minimizedChats: filteredRooms})
+        this.setState({
+          minimized: false
+        });
 
-          var result = JSON.parse(window.sessionStorage.getItem('minimizedChats')) || [];
+        if (minimizedRoomList.includes(roomJid)) {
+          const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJid);
 
-          const filteredChats = result.filter(function(item:any) {
-          return item !== roomJid;
+          this.setState({
+            minimizedRooms: filteredRooms
+          });
+
+          let result = JSON.parse(window.sessionStorage.getItem('minimizedChats')) || [];
+
+          const filteredChats = result.filter(function(item: any) {
+            return item !== roomJid;
           })
 
           window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredChats));
 
           return;
         }
-
-        this.setState({
-          minimized: false
-        });
       }
-
     }
     async toggleOccupantsList (){
 
       let room = await this.state.converse.api.rooms.get(this.state.roomJid);
 
-      let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
+      // For some reason this.state.occupantsListOpened is everytime empty, that's why we load list from sessionStorage
+      // let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
+      let roomsWithOpenOccupantsList = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
 
       if (this.state.showOccupantsList === true){
         this.setState({
           showOccupantsList: false
-        })
+        });
 
         const filteredRooms = roomsWithOpenOccupantsList.filter((item: any) => item !== room.attributes.jid);
-        this.setState({occupantsListOpened: filteredRooms});
-        var result = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
+        this.setState({
+          occupantsListOpened: filteredRooms
+        });
 
-        const filteredChats = result.filter(function(item:any) {
+        let result = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
+
+        const filteredChats = result.filter(function(item: any) {
           return item !== room.attributes.jid;
         });
 
@@ -664,8 +674,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
         var roomOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
 
-        if (roomOccupantsFromSessionStorage){
-
+        if (roomOccupantsFromSessionStorage) {
           roomOccupantsFromSessionStorage.map((item: any) => {
             if (item === chat.jid){
               this.setState({
@@ -680,15 +689,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         this.isWorkspaceChatRoom(chat.jid);
       }
 
-      let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats"));
+      let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
-      if (minimizedChatsFromSessionStorage){
+      if (minimizedChatsFromSessionStorage) {
         reactComponent.setState({
-          minimizedChats: minimizedChatsFromSessionStorage
+          minimizedRooms: minimizedChatsFromSessionStorage
         });
 
         minimizedChatsFromSessionStorage.map((item: any) => {
-          if (item === chat.jid){
+          if (item === chat.jid) {
             this.setState({
               minimized: true
             });
