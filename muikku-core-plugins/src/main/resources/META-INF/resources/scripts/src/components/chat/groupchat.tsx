@@ -543,24 +543,24 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
     async toggleOccupantsList (){
 
-      let room = this.state.converse.api.rooms.get(this.state.roomJid);
-      let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
+      let room = await this.state.converse.api.rooms.get(this.state.roomJid);
 
+      let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
 
       if (this.state.showOccupantsList === true){
         this.setState({
           showOccupantsList: false
         })
 
-        const filteredRooms = roomsWithOpenOccupantsList.filter((item: any) => item !== room.attributes.jid)
-          this.setState({occupantsListOpened: filteredRooms})
-          var result = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
+        const filteredRooms = roomsWithOpenOccupantsList.filter((item: any) => item !== room.attributes.jid);
+        this.setState({occupantsListOpened: filteredRooms});
+        var result = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
 
-          const filteredChats = result.filter(function(item:any) {
-            return item !== room.attributes.jid;
-          })
+        const filteredChats = result.filter(function(item:any) {
+          return item !== room.attributes.jid;
+        });
 
-          window.sessionStorage.setItem("showOccupantsList", JSON.stringify(filteredChats));
+        window.sessionStorage.setItem("showOccupantsList", JSON.stringify(filteredChats));
 
         return;
       } else {
@@ -579,40 +579,41 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
     }
     async getOccupants (){
-      let room = this.state.converse.api.rooms.get(this.state.roomJid);
+      let room = await this.state.converse.api.rooms.get(this.state.roomJid);
+
       if (room.occupants.models){
-          let occupantsList = this.state.occupants;
-          let user: any;
-          let userData: any;
-          let nickname: any;
+        let occupantsList = this.state.occupants;
+        let user: any;
+        let userData: any;
+        let nickname: any;
 
-          for (const item of room.occupants.models) {
-            if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")){
-              nickname = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
-              user = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick,{}), 'callback')());
+        for (const item of room.occupants.models) {
+          if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")){
+            nickname = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
+            user = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick,{}), 'callback')());
 
-              userData = {id: item.attributes.nick, nick: nickname.nick, status: item.attributes.show, firstName: user.firstName, lastName: user.lastName};
+            userData = {id: item.attributes.nick, nick: nickname.nick, status: item.attributes.show, firstName: user.firstName, lastName: user.lastName};
 
-            } else {
-              user = item.attributes.nick;
-              nickname = item.attributes.nick;
+          } else {
+            user = item.attributes.nick;
+            nickname = item.attributes.nick;
 
-              userData = {id: item.attributes.nick, nick: nickname, status: item.attributes.show, firstName: "", lastName: ""};
-            }
-
-            var isExists = occupantsList.some(function(curr :any) {
-                if (curr.id === userData.id) {
-                    return true;
-                }
-            });
-
-            if (isExists !== true){
-              occupantsList.push(userData);
-            }
+            userData = {id: item.attributes.nick, nick: nickname, status: item.attributes.show, firstName: "", lastName: ""};
           }
-          this.setState({
-            occupants: occupantsList
+
+          var isExists = occupantsList.some(function(curr :any) {
+              if (curr.id === userData.id) {
+                  return true;
+              }
           });
+
+          if (isExists !== true){
+            occupantsList.push(userData);
+          }
+        }
+        this.setState({
+          occupants: occupantsList
+        });
       }
     }
     scrollToBottom = () => {
@@ -714,9 +715,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             <div className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
               <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
                 <div className="chat__panel-header-title">{this.state.roomName}</div>
-                <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-profile"></div>
+                <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-members"></div>
                 <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-remove"></div>
-                <div onClick={() => this.openChatSettings()} className="chat__button chat__button--room-settings icon-cogs"></div>
+                {(!this.state.isStudent) && <div onClick={() => this.openChatSettings()} className="chat__button chat__button--room-settings icon-cogs"></div>}
                 <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-close"></div>
               </div>
 
