@@ -21,9 +21,7 @@ interface NavigationAsideState {
 class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAsideState> {
   render() {
     let locationData = queryString.parse( document.location.hash.split( "?" )[1] || "", { arrayFormat: 'bracket' } );
-
-    return <Navigation>
-     </Navigation>
+    return <Navigation></Navigation>
   }
 }
 
