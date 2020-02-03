@@ -502,9 +502,9 @@ $the-grey: #eaeaea;
 .chat__occupants-container {
   align-items: flex-start;
   border-left: 2px solid $color-default-separator-border;
-  flex-basis: 25%;
-  flex-grow: 1;
-  flex-shrink: 1;
+  flex-basis: 35%;
+  flex-grow: 0;
+  flex-shrink: 0;
   padding: 5px;
 }
 
