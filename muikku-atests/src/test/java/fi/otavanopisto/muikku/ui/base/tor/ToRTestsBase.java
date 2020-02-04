@@ -178,8 +178,8 @@ public class ToRTestsBase extends AbstractUITest {
         navigate("/records", false);
         waitForPresent(".application-list__header-primary");
         waitAndClick(".application-list__header-primary");
-        waitForPresent(".application-list__indicator-badge--task");
-        assertText(".application-list__indicator-badge--task", "E");
+        waitForPresent(".state-PASSED");
+        assertText(".state-PASSED", "E");
         waitAndClick(".application-list__item-header--studies-assignment");
         waitForVisible(".application-sub-panel__text--task-evaluation p");
         assertTextIgnoreCase(".application-sub-panel__text--task-evaluation p", "Test evaluation.");

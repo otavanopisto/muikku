@@ -29,6 +29,7 @@ export interface ProfileStatusType {
   phoneNumbers: Array<string>,
   studyTimeLeftStr: string,
   studyStartDate: string,
+  studyEndDate: string,
   studyTimeEnd: string
 }
 
