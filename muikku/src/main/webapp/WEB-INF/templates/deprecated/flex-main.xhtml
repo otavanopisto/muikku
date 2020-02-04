@@ -5,15 +5,15 @@
   template="flex-base.xhtml">
 
   <ui:define name="styles-main">
-    <link rel="stylesheet" href="//cdn.muikkuverkko.fi/libs/converse-muikku/1.1.8/converse.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="https://cdn.conversejs.org/6.0.0/dist/converse.min.css"/>
   </ui:define>
 
   <ui:define name="scripts-main">
     <script defer="defer" jsf:name="/scripts/gui/environment.js"/>
+    <script src="https://cdn.conversejs.org/6.0.0/dist/converse.min.js" charset="utf-8"></script>
   </ui:define>
   
   <ui:define name="scripts-end">
-    <script defer="defer" src="//cdn.muikkuverkko.fi/libs/converse-muikku/1.1.8/converse-no-jquery.min.js"/>
     <script defer="defer" jsf:name="/scripts/gui/chat.js"/>
   </ui:define>
     
