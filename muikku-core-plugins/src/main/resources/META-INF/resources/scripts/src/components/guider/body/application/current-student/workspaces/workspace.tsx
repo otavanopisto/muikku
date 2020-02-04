@@ -69,7 +69,7 @@ function getWorkspaceAssessmentsAndPercents(props: StudentWorkspaceProps, worksp
       <span title={props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date)) +
         getShortenGradeExtension(workspace.studentActivity.assessmentState.grade)}
         className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${
-          workspace.studentActivity.assessmentState.state === "pass" || workspace.studentActivity.assessmentState.state === "pending_pass" ? "state-passed" : "state-failed"}`}>
+          workspace.studentActivity.assessmentState.state === "pass" || workspace.studentActivity.assessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
         {shortenGrade(workspace.studentActivity.assessmentState.grade)}
       </span>
     </span>
@@ -84,7 +84,7 @@ function getWorkspaceAssessmentsAndPercents(props: StudentWorkspaceProps, worksp
         workspace.studentActivity.exercisesDonePercent}%
       </span>
       <span title={props.i18n.text.get("plugin.guider.evaluated", props.i18n.time.format(workspace.studentActivity.assessmentState.date)) + " - " + status}
-        className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${workspace.studentActivity.assessmentState.state === "incomplete" ? "state-incomplete" : "state-failed"}`}>
+        className={`application-list__indicator-badge application-list__indicator-badge--course application-list__indicator-badge--course-in-guider ${workspace.studentActivity.assessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
         {status[0].toLocaleUpperCase()}
       </span>
     </span>
@@ -126,19 +126,19 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
       case "pending_pass":
       case "pending_fail":
         stateText = "plugin.guider.assessmentState.PENDING";
-        extraClasses = "state-pending";
+        extraClasses = "state-PENDING";
         break;
       case "pass":
         stateText = "plugin.guider.assessmentState.PASS";
-        extraClasses = "state-passed";
+        extraClasses = "state-PASSED";
         break;
       case "fail":
         stateText = "plugin.guider.assessmentState.FAIL";
-        extraClasses = "state-failed";
+        extraClasses = "state-FAILED";
         break;
       case "incomplete":
         stateText = "plugin.guider.assessmentState.INCOMPLETE";
-        extraClasses = "course--assessment-incomplete";
+        extraClasses = "state-INCOMPLETE";
         break;
       default:
         stateText = "plugin.guider.assessmentState.UNASSESSED";
