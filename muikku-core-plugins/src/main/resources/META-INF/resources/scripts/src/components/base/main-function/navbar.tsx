@@ -88,6 +88,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.records.records',
       href: "/records",
       icon: "profile",
+      to: true,
       condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW
     }, {
       //Evaluation is also an external

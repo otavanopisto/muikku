@@ -18,6 +18,7 @@ public class WorkspaceMaterialEvaluation {
       String grade, 
       String gradeIdentifier, 
       String gradeSchoolDataSource, 
+      String gradingScale,
       String verbalAssessment,
       Boolean passed) {
     super();
@@ -31,6 +32,7 @@ public class WorkspaceMaterialEvaluation {
     this.grade = grade;
     this.gradeIdentifier = gradeIdentifier;
     this.gradeSchoolDataSource = gradeSchoolDataSource;
+    this.gradingScale = gradingScale;
     this.verbalAssessment = verbalAssessment;
     this.passed = passed;
   }
@@ -131,6 +133,14 @@ public class WorkspaceMaterialEvaluation {
     this.passed = passed;
   }
 
+  public String getGradingScale() {
+  return gradingScale;
+  }
+
+  public void setGradingScale(String gradingScale) {
+  this.gradingScale = gradingScale;
+  }
+
   private Long id;
   private Date evaluated;
   private Long assessorEntityId;
@@ -141,6 +151,7 @@ public class WorkspaceMaterialEvaluation {
   private String grade;
   private String gradeIdentifier;
   private String gradeSchoolDataSource;
+  private String gradingScale;
   private String verbalAssessment;
   private Boolean passed;
 
