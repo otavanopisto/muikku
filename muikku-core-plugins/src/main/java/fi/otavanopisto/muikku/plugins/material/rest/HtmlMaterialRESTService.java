@@ -184,7 +184,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).build();
       }
       
-      if (entity.getRemoveAnswers()) {
+      if (Boolean.TRUE.equals(entity.getRemoveAnswers())) {
         logger.log(Level.WARNING, String.format("Publish material %d by user %d with forced answer removal", id, sessionController.getLoggedUserEntity().getId()));
       }
       
@@ -233,7 +233,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Specified revision could not be found").build(); 
       }
 
-      if (entity.getRemoveAnswers()) {
+      if (Boolean.TRUE.equals(entity.getRemoveAnswers())) {
         logger.log(Level.WARNING, String.format("Revert material %d by user %d with forced answer removal", id, sessionController.getLoggedUserEntity().getId()));
       }
       

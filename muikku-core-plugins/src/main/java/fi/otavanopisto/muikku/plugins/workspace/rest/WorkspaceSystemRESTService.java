@@ -20,9 +20,13 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.security.Permission;
+import fi.otavanopisto.muikku.model.security.WorkspaceGroupPermission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -41,6 +45,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -71,6 +76,12 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private PermissionController permissionController;
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -87,6 +98,50 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
   @Inject
   private WorkspaceMaterialAudioFieldAnswerDAO workspaceMaterialAudioFieldAnswerDAO;
   
+  @GET
+  @Path("/permissioncopy")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response permissioncopy(@QueryParam("permission") String permissionName, @QueryParam("sourceUserGroupEntityId") Long sourceUserGroupEntityId, @QueryParam("targetUserGroupEntityId") Long targetUserGroupEntityId) {
+    
+    // Access check
+    
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Parameter validation
+    
+    UserGroupEntity sourceUserGroupEntity = userGroupEntityController.findUserGroupEntityById(sourceUserGroupEntityId);
+    if (sourceUserGroupEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("sourceUserGroupEntityId not found").build();
+    }
+    UserGroupEntity targetUserGroupEntity = userGroupEntityController.findUserGroupEntityById(targetUserGroupEntityId);
+    if (targetUserGroupEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("targetUserGroupEntityId not found").build();
+    }
+    Permission permission = permissionController.findByName(permissionName);
+    if (permission == null) {
+      return Response.status(Status.NOT_FOUND).entity("permissionName not found").build();
+    }
+    
+    // Copy
+    
+    int addedPermissions = 0;
+    List<WorkspaceGroupPermission> permissions = permissionController.listByUserGroupEntityAndPermission(sourceUserGroupEntity, permission);
+    logger.info(String.format("Permission applies to %d workspaces", permissions.size()));
+    for (WorkspaceGroupPermission workspacePermission : permissions) {
+      WorkspaceEntity workspaceEntity = workspacePermission.getWorkspace();
+      if (!permissionController.hasPermission(workspaceEntity, targetUserGroupEntity, permission)) {
+        permissionController.addWorkspaceGroupPermission(workspaceEntity, targetUserGroupEntity, permission);
+        addedPermissions++;
+      }
+    }
+    logger.info(String.format("Permission applied to %d workspaces", addedPermissions));
+    
+    return Response.ok().build();
+  }
+
   @GET
   @Path("/movefileanswers")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)

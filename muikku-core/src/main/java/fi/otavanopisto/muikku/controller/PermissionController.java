@@ -67,6 +67,10 @@ public class PermissionController {
       Permission permission) {
     return workspaceGroupPermissionDAO.create(workspaceEntity, userGroupEntity, permission);
   }
+  
+  public List<WorkspaceGroupPermission> listByUserGroupEntityAndPermission(UserGroupEntity userGroupEntity, Permission permission) {
+    return workspaceGroupPermissionDAO.listByUserGroupEntityAndPermission(userGroupEntity, permission);
+  }
 
   public void removeWorkspaceGroupPermission(WorkspaceGroupPermission workspaceGroupPermission) {
     workspaceGroupPermissionDAO.delete(workspaceGroupPermission);

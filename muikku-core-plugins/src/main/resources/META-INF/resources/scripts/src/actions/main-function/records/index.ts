@@ -7,7 +7,7 @@ import { AllStudentUsersDataType, AllStudentUsersDataStatusType, TranscriptOfRec
   CurrentStudentUserAndWorkspaceStatusType, CurrentRecordType, TransferCreditType, RecordGroupType } from '~/reducers/main-function/records';
 import { UserFileType, UserWithSchoolDataType } from '~/reducers/user-index';
 import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceStudentActivityType,
-  WorkspaceJournalListType, MaterialContentNodeType, MaterialEvaluationType, MaterialAssignmentType } from '~/reducers/workspaces';
+  WorkspaceJournalListType, MaterialContentNodeType, MaterialEvaluationType, MaterialAssignmentType, WorkspaceStudentAssessmentsType } from '~/reducers/workspaces';
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS", AllStudentUsersDataStatusType>;
@@ -262,8 +262,8 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       
         if (!wasFoundInMemory){
           workspace = <WorkspaceType>await promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')();
-          workspace.studentAssessmentState = <WorkspaceStudentAssessmentStateType>await promisify(mApi().workspace.workspaces
-              .students.assessmentstate.read(workspace.id, userId), 'callback')();
+          workspace.studentAssessments = <WorkspaceStudentAssessmentsType>await promisify(mApi().workspace.workspaces
+              .students.assessments.read(workspace.id, userId), 'callback')();
           workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
             .read(workspace.id), 'callback')();
         }

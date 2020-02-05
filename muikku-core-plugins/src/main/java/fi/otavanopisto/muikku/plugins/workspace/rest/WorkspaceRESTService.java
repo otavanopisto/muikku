@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -60,6 +61,7 @@ import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
@@ -412,7 +414,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (userIdentifier != null) {
         if (includeInactiveWorkspaces) {
           workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
-        } else {
+        } 
+        else {
           workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(userIdentifier);
         }
       }
@@ -423,9 +426,27 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
           return Response.status(Status.FORBIDDEN).build();
         }
-        workspaceEntities = Boolean.TRUE.equals(includeUnpublished)
-          ? workspaceController.listWorkspaceEntities()
-          : workspaceController.listPublishedWorkspaceEntities();
+        workspaceEntities = Boolean.TRUE.equals(includeUnpublished) ? workspaceController.listWorkspaceEntities() : workspaceController.listPublishedWorkspaceEntities();
+      }
+   
+      // When querying workspaces of a student, plain teachers are limited to workspaces they are teaching
+      
+      if ((userIdentifier != null || userEntity != null) && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_STUDENT_WORKSPACES)) {
+        EnvironmentRoleEntity targetRole = userIdentifier != null
+            ? userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier)
+            : userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+        if (targetRole != null && targetRole.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+          Predicate<WorkspaceEntity> isTeacher = new Predicate<WorkspaceEntity>() {
+            @Override
+            public boolean test(WorkspaceEntity workspaceEntity) {
+              return sessionController.hasWorkspacePermission(MuikkuPermissions.TEACH_WORKSPACE, workspaceEntity);
+            }
+          };
+          workspaceEntities = workspaceEntities.stream().filter(isTeacher).collect(Collectors.toList());
+          if (workspaceEntities.isEmpty()) {
+            return Response.noContent().build();
+          }
+        }
       }
     }
 

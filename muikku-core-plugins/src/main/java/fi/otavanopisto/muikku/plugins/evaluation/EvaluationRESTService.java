@@ -680,7 +680,7 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     
     fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments assesments = 
-    		new fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments(assessmentState.getState(), assessmentState.getDate(), result);
+        new fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments(assessmentState.getState(), assessmentState.getDate(), result);
 
     return assesments;
   }

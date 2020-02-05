@@ -45,11 +45,12 @@ import GuiderBody from '../components/guider/body';
 
 import ProfileBody from '../components/profile/body';
 import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } from '~/actions/main-function/profile';
-import { CKEDITOR_VERSION } from '~/lib/ckeditor';
-
 
 import RecordsBody from '../components/records/body';
-import { updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records';
+
+import { CKEDITOR_VERSION } from '~/lib/ckeditor';
+
+import { setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords } from '~/actions/main-function/records';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
 
@@ -78,7 +79,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
-
     this.itsFirstTime = true;
     this.loadedLibs = [];
 
@@ -213,7 +213,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
-
+      
+      if (currentLocationHasData) {
+        this.loadCoursePickerData(currentLocationData);
+      }
+      
       let state:StateType = this.props.store.getState();
       if (state.status.loggedIn){
         this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
@@ -233,7 +237,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
             this.loadCoursePickerData(currentLocationData);
           }
         }) as Action);
-      } else {
+      } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData);
       }
     }

@@ -8,6 +8,8 @@ import {StateType} from '~/reducers';
 
 import '~/sass/elements/panel.scss';
 
+import '~/sass/elements/panel.scss';
+
 interface WorkspacesPanelProps {
   i18n: i18nType,
   status: StatusType,

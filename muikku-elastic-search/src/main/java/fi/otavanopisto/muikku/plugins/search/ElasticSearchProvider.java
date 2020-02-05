@@ -55,6 +55,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
@@ -402,11 +403,6 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
-    return searchWorkspaces(schoolDataSource, subjects, identifiers, null, null, null, freeText, null, null, includeUnpublished, start, maxResults, null);
-  }
-
-  @Override
   public SearchResult searchWorkspaces(String schoolDataSource, String subjectIdentifier, int courseNumber) {
     BoolQueryBuilder query = boolQuery();
     query.must(termQuery("published", Boolean.TRUE));
@@ -447,7 +443,7 @@ public class ElasticSearchProvider implements SearchProvider {
       List<SchoolDataIdentifier> curriculumIdentifiers, 
       List<SchoolDataIdentifier> organizationIdentifiers, 
       String freeText, 
-      List<WorkspaceAccess> accesses, 
+      Collection<WorkspaceAccess> accesses, 
       SchoolDataIdentifier accessUser, 
       boolean includeUnpublished, 
       int start, 
@@ -574,6 +570,11 @@ public class ElasticSearchProvider implements SearchProvider {
     }
   }
 
+  @Override
+  public WorkspaceSearchBuilder searchWorkspaces() {
+    return new ElasticWorkspaceSearchBuilder(this);
+  }
+
   private Set<SchoolDataIdentifier> getUserWorkspaces(SchoolDataIdentifier userIdentifier) {
     Set<SchoolDataIdentifier> result = new HashSet<>();
     
@@ -609,11 +610,6 @@ public class ElasticSearchProvider implements SearchProvider {
     return result;
   }
 
-  @Override
-  public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults) {
-    return searchWorkspaces(null, null, null, searchTerm, false, start, maxResults);
-  }
-  
   @Override
   public SearchResult searchUserGroups(String query, List<OrganizationEntity> organizations, int start, int maxResults) {
     try {

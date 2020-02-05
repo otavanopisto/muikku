@@ -21,16 +21,16 @@ import { UserWithSchoolDataType } from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
+import { MatriculationLink } from './matriculation-link';
 import { StatusType } from '~/reducers/base/status';
 import moment from '~/lib/moment';
-import { MatriculationLink } from './matriculation-link';
 
 let ProgressBarLine = require('react-progressbar.js').Line;
 
 interface RecordsProps {
   i18n: i18nType,
   records: RecordsType,
-  status: StatusType
+  status: StatusType,
 }
 
 interface RecordsState {
@@ -69,7 +69,7 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
   return <div className="application-list__header-secondary">
     <span>{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
     <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
-      getShortenGradeExtension(transferCredit.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${transferCredit.passed ? "state-passed" : "state-failed"}`}>
+      getShortenGradeExtension(transferCredit.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${transferCredit.passed ? "state-PASSED" : "state-FAILED"}`}>
       {shortenGrade(transferCredit.grade)}
     </span>
   </div>
@@ -282,7 +282,7 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     records: state.records,
-    status: state.status
+    status: state.status,
   }
 };
 
