@@ -8,11 +8,11 @@ import * as React from 'react';
 //TODO add the scss files that are necessary to render this material page correctly...
 //this file is temporary use it to dump the content from the deprecated scss files that are necessary
 import "~/sass/elements/__ugly-material-loader-deprecated-file-mashup.scss";
-import { MaterialType } from '~/reducers/main-function/records/records';
+import { MaterialType } from '~/reducers/main-function/records';
 import '~/sass/elements/rich-text.scss';
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
-import { WorkspaceType } from '~/reducers/main-function/workspaces';
+import { WorkspaceType } from '~/reducers/workspaces';
 import promisify from '~/util/promisify';
 
 
@@ -173,19 +173,19 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
       materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = fieldAnswers;
     }
     
-    //I can't start explaining how wrong this is, oh god... XD
+    //I can't start explaining how wrong this is
     //get data from the sever, put in in a variable, parse the variable, create a virtual element so that the material loader can
     //Read it from what it believes is the dom
-    //Why not, eehmmm... pass the data directly? O.O mind blown!!!
     $('<div/>').attr("data-grades", JSON.stringify((window as any).GRADES))
       .muikkuMaterialLoader({
         readOnlyFields: true,
-        fieldlessMode: true
+        fieldlessMode: true,
+        baseUrl: "/workspace/" + this.props.workspace.urlName + "/materials"
       }).muikkuMaterialLoader('loadMaterial', this.refs.sandbox, fieldAnswers);
   }
   render(){
     return <div className="__deprecated">
-      {this.props.material.evaluation.verbalAssessment ?
+      {this.props.material.evaluation && this.props.material.evaluation.verbalAssessment ?
           <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>

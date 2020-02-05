@@ -10,11 +10,11 @@ import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
 import {UsersType} from './main-function/users';
-import {WorkspacesType} from './main-function/workspaces';
+import {WorkspacesType} from './workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
-import { RecordsType } from './main-function/records/records';
+import { RecordsType } from './main-function/records';
 import { ErrorType } from './base/error';
 import { ProfileType } from './main-function/profile';
 
@@ -24,7 +24,6 @@ export interface StateType {
   locales: LocaleListType,
   status: StatusType,
   title: string,
-  
   credentials?: CredentialsType,
   websocket?: WebsocketStateType,
   announcements?: AnnouncementsType,

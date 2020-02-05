@@ -45,6 +45,12 @@ import GuiderBody from '../components/guider/body';
 
 import ProfileBody from '../components/profile/body';
 import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } from '~/actions/main-function/profile';
+
+import RecordsBody from '../components/records/body';
+import { updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records';
+import { updateVops } from '~/actions/main-function/vops';
+import { updateHops } from '~/actions/main-function/hops';
+
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 interface MainFunctionProps {
@@ -71,6 +77,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
+    this.renderRecordsBody = this.renderRecordsBody.bind(this);
     
     this.itsFirstTime = true;
     this.loadedLibs = [];
@@ -100,6 +107,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.loadAnnouncerData(window.location.hash.replace("#","").split("/"));
     } else if (window.location.pathname.includes("/guider")){
       this.loadGuiderData();
+    } else if (window.location.pathname.includes("/records")){
+      this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
     }
   }
   updateFirstTime(){
@@ -125,6 +134,22 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
 
     this.props.store.dispatch(loadStudent(originalData.c) as Action)
+  }
+  loadRecordsData(dataSplitted: string[]){
+    let givenLocation = dataSplitted[0].split("/")[0];
+    let originalData:any = queryString.parse(dataSplitted[1] || "", {arrayFormat: 'bracket'});
+
+    if (!givenLocation && !originalData.w){
+      this.props.store.dispatch(updateAllStudentUsersAndSetViewToRecords() as Action);
+    } else if (!givenLocation){
+      this.props.store.dispatch(setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), originalData.i, parseInt(originalData.w)) as Action);
+    } else if (givenLocation === "vops"){
+      this.props.store.dispatch(setLocationToVopsInTranscriptOfRecords() as Action);
+      this.props.store.dispatch(updateVops() as Action);
+    } else if (givenLocation === "hops"){
+      this.props.store.dispatch(setLocationToHopsInTranscriptOfRecords() as Action);
+      this.props.store.dispatch(updateHops() as Action);
+    }
   }
   loadAnnouncerData(location: string[]){
     if (location.length === 1){
@@ -189,6 +214,10 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
       
+      if (currentLocationHasData) {
+        this.loadCoursePickerData(currentLocationData);
+      }
+      
       let state:StateType = this.props.store.getState();
       if (state.status.loggedIn){
         this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
@@ -208,7 +237,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
             }
           }
         }) as Action);
-      } else {
+      } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData);
       }
     }
@@ -371,6 +400,21 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     
     return <ProfileBody/>
   }
+  renderRecordsBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
+
+      this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
+
+      this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+    }
+
+    return <RecordsBody/>
+  }
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
@@ -383,6 +427,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       <Route path="/announcer" render={this.renderAnnouncerBody}/>
       <Route path="/guider" render={this.renderGuiderBody}/>
       <Route path="/profile" render={this.renderProfileBody}/>
+      <Route path="/records" render={this.renderRecordsBody}/>
     </div></BrowserRouter>);
   }
 }
