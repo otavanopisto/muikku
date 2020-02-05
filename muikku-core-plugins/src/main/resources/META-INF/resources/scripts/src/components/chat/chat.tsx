@@ -460,7 +460,7 @@ export class Chat extends React.Component<Iprops, Istate> {
           }).c("query", {xmlns: Strophe.NS.DISCO_ITEMS});
           reactComponent.state.converse.api.sendIQ(iq)
             .then((iq: any) => reactComponent.onRoomsFound(iq))
-            .catch((iq: any) => console.log(iq))
+            .catch((iq: any) => console.log(iq));
 
 //          reactComponent.state.converse.api.listen.on('message', (data: any) => {
 //
