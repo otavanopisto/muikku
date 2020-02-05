@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/main-function/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
