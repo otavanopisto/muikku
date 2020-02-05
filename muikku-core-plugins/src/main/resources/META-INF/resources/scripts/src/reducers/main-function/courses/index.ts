@@ -59,6 +59,7 @@ export interface WorkspaceCourseType {
     evaluationHasFee: boolean
   }
 }
+
 export type WorkspaceCourseListType = Array<WorkspaceCourseType>;
 
 export interface CoursesPatchType {
