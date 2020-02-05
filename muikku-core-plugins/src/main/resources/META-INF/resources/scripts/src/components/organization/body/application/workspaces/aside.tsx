@@ -49,11 +49,11 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
     let active =  [
      {
        name: "active",
-       label: "plugin.organization.filters.active.true"
+       label: "plugin.organization.filters.state.active.true"
      },
      {
        name: "inactive",
-       label: "plugin.organization.filters.active.false"
+       label: "plugin.organization.filters.state.active.false"
      }
     ];
     
