@@ -36,6 +36,7 @@ import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from 
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
 
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
+import { displayNotification } from '~/actions/base/notifications';
 
 interface WorkspaceProps {
   store: Store<StateType>,
@@ -392,6 +393,10 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
         }
       }) as Action);
+      
+      if (state.status.loggedIn && state.status.isStudent && !state.status.permissions.WORKSPACE_SIGNUP) {
+        this.props.store.dispatch(displayNotification(state.i18n.text.get('plugin.workspace.materials.cannotSignUpWarning'), "warning") as Action);
+      }
     }
 
     return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}
