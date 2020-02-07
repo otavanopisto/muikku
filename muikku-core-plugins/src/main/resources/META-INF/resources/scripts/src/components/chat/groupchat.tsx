@@ -148,7 +148,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
 
     let jid = Strophe.getBareJidFromJid(data.jid);
-    let roomJidAndNick = jid + (nick !== null ? `/${nick}` : "");
+    let roomJidAndNick = jid + (nick !== null ? "/" + nick : "");
 
     const stanza = $pres({
       'from': reactComponent.state.converse.connection.jid,
@@ -201,7 +201,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         from.toUpperCase();
         let senderClass ="";
         let user:any;
-        let nickname: any;
+        let chatSettings: any;
         let messageId: any;
         let deleteId: any;
         let nick: any;
@@ -209,9 +209,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
         if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
           user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
-          nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
+          chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
           userName = user.firstName + " " + user.lastName;
-          nick = nickname.nick;
+          nick = chatSettings.nick;
         } else {
           userName = from;
           nick = from;
@@ -245,8 +245,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         } else {
           stamp = new Date().toString();
         }
-
-        let groupMessage: any = {from: nick + " ", alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
+        if (nick == "" || nick == undefined) {
+          nick = userName;
+        }
+        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
 
         if (message !== "") {
 
