@@ -235,7 +235,7 @@ let loadProfileChatSettings:LoadProfileChatSettingsTriggerType = function loadPr
     try {
       let chatSettings:any = (await promisify(mApi().chat.settings.read(), 'callback')());
 
-      if (chatSettings && chatSettings.visibility && chatSettings.nick) {
+      if (chatSettings && chatSettings.visibility) {
         dispatch({
           type: "SET_PROFILE_CHAT_SETTINGS",
           payload: chatSettings

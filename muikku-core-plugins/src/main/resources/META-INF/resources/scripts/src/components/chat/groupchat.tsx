@@ -311,7 +311,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       event.preventDefault();
 
       let text = event.target.chatMessage.value;
-      let jid = this.state.roomJid;
 
       var reactComponent = this;
 
@@ -323,8 +322,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       attrs.fullname = window.PROFILE_DATA.displayName;
       attrs.identifier = window.MUIKKU_LOGGED_USER;
+      attrs.from = this.state.jid;
+      attrs.to = this.state.roomJid;
 
-      let message = chat.messages.findWhere('correcting')
+      let message = chat.messages.findWhere('correcting');
 
       if (message) {
         message.save({
