@@ -170,7 +170,7 @@ public class ChatSyncController {
               broadcastPresenceRolesList.add("visitor");
 
               
-              chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName, workspace.getDescription());
+              chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName, "");
               chatRoomEntity.setPersistent(true);
               chatRoomEntity.setLogEnabled(true);
               chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
@@ -306,7 +306,7 @@ public class ChatSyncController {
     broadcastPresenceRolesList.add("participant");
     broadcastPresenceRolesList.add("visitor");
 
-    chatRoomEntity = new MUCRoomEntity(separator + workspace.getIdentifier(), roomName, workspace.getDescription());
+    chatRoomEntity = new MUCRoomEntity(separator + workspace.getIdentifier(), roomName, "");
     chatRoomEntity.setPersistent(true);
     chatRoomEntity.setLogEnabled(true);
     chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
