@@ -84,7 +84,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     this.onWorkspaceHelpBodyActiveNodeIdChange = this.onWorkspaceHelpBodyActiveNodeIdChange.bind(this);
 
     window.addEventListener("hashchange", this.onHashChange.bind(this));
-    
+
     this.state = {
       enrollmentDialogOpen: !props.store.getState().status.loggedIn,
     }
@@ -393,9 +393,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
         }
       }) as Action);
-      
+
       if (state.status.loggedIn && state.status.isStudent && !state.status.permissions.WORKSPACE_SIGNUP) {
-        this.props.store.dispatch(displayNotification(state.i18n.text.get('plugin.workspace.materials.cannotSignUpWarning'), "warning") as Action);
+        this.props.store.dispatch(displayNotification(state.i18n.text.get('plugin.workspace.materials.cannotSignUpWarning'), "notice") as Action);
       }
     }
 

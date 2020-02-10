@@ -34,7 +34,7 @@
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    border-radius: 2px;
+    border-radius: 3px;
     bottom: auto;
     box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-size: $text-desktop-font-size;
@@ -143,6 +143,7 @@
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     background-color: $color-dialog-desktop-background;
+    border-radius: 3px 3px 0 0;
     color: $color-dialog-desktop-text;
     display: flex;
     height: 3rem;
@@ -255,14 +256,24 @@
 .dialog--enrollment {
   background: transparent;
   bottom: auto;
-  
+  top: 10px;
+
+  .dialog__content-row--label {
+    flex-flow: row nowrap;
+  }
+
   .dialog__content-column {
-  	width: 50%;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
   	flex-grow: 1;
   	padding-left: 24px;
   }
- 
-  .dialog__window {
-  	border-radius: 3px;
-  }
+}
+
+.dialog__header--enrollment {
+  background: $color-default;
+  color: $color-default-contrast;
 }
