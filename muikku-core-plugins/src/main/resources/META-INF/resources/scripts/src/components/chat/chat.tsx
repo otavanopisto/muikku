@@ -533,18 +533,20 @@ export class Chat extends React.Component<Iprops, Istate> {
     return  (
 
       <div className="chat">
+
+        {/* Chat bubble */}
         { (this.state.showChatButton === true) && <div onClick={() => this.openControlBox()} className="chat__bubble">
           <span className="icon-discussion"></span>
         </div>}
 
-        { (this.state.showControlBox === true) && <div>
-          <div className="chat__panel chat__panel--controlbox">
-            <div className="chat__panel-header chat__panel-header--controlbox">
-              <span onClick={() => this.openNewRoomForm()} className="chat__button chat__button--new-room icon-add"></span>
-              <span onClick={() => this.openControlBox()} className="chat__button chat__button--close icon-close"></span>
-            </div>
+        {/* Chat controlbox */}
+        { (this.state.showControlBox === true) && <div className="chat__panel chat__panel--controlbox">
+          <div className="chat__panel-header chat__panel-header--controlbox">
+            <span onClick={() => this.openNewRoomForm()} className="chat__button chat__button--new-room icon-add"></span>
+            <span onClick={() => this.openControlBox()} className="chat__button chat__button--close icon-close"></span>
+          </div>
 
-            { (this.state.isConnectionOk === false) && <div>
+          { (this.state.isConnectionOk === false) && <div>
             <h1>Kirjaudu chattiin</h1>
             <form onSubmit={this.handleSubmit}>
               <label>Käyttäjätunnus: </label><input name="jid" ref="jid" type="text"></input><br />
@@ -576,7 +578,7 @@ export class Chat extends React.Component<Iprops, Istate> {
             : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
-            { (this.state.showNewRoomForm === true) && <div className="chat__subpanel">
+            {(this.state.showNewRoomForm === true) && <div className="chat__subpanel">
               <div className="chat__subpanel-header chat__subpanel-header--new-room">
                 <div className="chat__subpanel-title">Luo uusi huone</div>
                 <div onClick={() => this.openNewRoomForm()} className="chat__button chat__button--close icon-close-small"></div>
@@ -600,14 +602,14 @@ export class Chat extends React.Component<Iprops, Istate> {
               </div>
             </div>}
           </div>}
-        </div>
+        </div>}
 
+        {/* Chatrooms */}
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openRooms.includes(chat.jid) ? <Groupchat key={i} onOpenPrivateChat={this.onOpenPrivateChat.bind(this)} onOpenChat={this.onOpenChat} nick={this.state.nick} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>:null)}
           {this.state.privateChats.map((chat: any, i:any) => <PrivateMessages key={i} onOpenPrivateChat={this.onOpenPrivateChat} info={chat} converse={this.state.converse}/>)}
         </div>
-      </div>}
-    </div>
+      </div>
     );
   }
 }

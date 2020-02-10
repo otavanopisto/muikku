@@ -9,7 +9,10 @@ $the-grey: #eaeaea;
 
 .chat {
   @include text;
+  align-items: flex-end;
   bottom: 0;
+  display: flex;
+  justify-content: flex-end;
   position: fixed;
   right: 15px;
   z-index: 9999;
@@ -21,16 +24,15 @@ $the-grey: #eaeaea;
   background-color: $color-chat-bubble-background;
   border-radius: 100%;
   border: 2px solid $color-default;
-  bottom: 10px;
+  box-shadow: 0 0 10px $color-chat-bubble-box-shadow;
   color: $color-default;
   cursor: pointer;
   display: flex;
   font-size: 1.85rem;
   height: 55px;
   justify-content: center;
-  box-shadow: 0 0 10px $color-chat-bubble-box-shadow;
-  position: fixed;
-  right: 15px;
+  margin: 0 0 5px;
+  order: 2;
   transform: rotate(-15deg);
   transition: transform 0.2s ease-in-out;
   width: 55px;
@@ -43,10 +45,11 @@ $the-grey: #eaeaea;
 
 // Chat Rooms
 .chat__chatrooms-container {
-  display:flex;
-  margin-right: 320px;
-  flex-direction: row;
   align-items: flex-end;
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  order: 1;
 }
 
 // CHat panel wrapper
@@ -107,8 +110,8 @@ $the-grey: #eaeaea;
 
 .chat__panel--controlbox {
   border-top: 4px solid $color-chat-controlbox-main-color;
-  position: fixed;
-  right: 0;
+  margin: 0;
+  order: 2;
   width: 320px;
 }
 
