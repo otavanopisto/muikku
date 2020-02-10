@@ -260,11 +260,12 @@ public class FlagTestsBase extends AbstractUITest {
       sendKeys(".autocomplete--guider .env-dialog__input", "test");
       waitForPresentAndVisible(".glyph--autocomplete-recipient");      
       waitAndClick(".glyph--autocomplete-recipient");
-      waitAndClick("body > div:nth-child(11) > div > div > div.dialog__footer > div > a.button.button--success.button--standard-ok");
+
+      waitAndClick("body > div:nth-child(12) div.dialog__footer > div > a.button.button--success.button--standard-ok");
       waitForPresentAndVisible(".button--guider-share-label");
+      waitForNotVisible("body > div:nth-child(12)");
+      waitAndClick("body > div:nth-child(11) > div > div > div.dialog__footer > div > a.button.button--success.button--standard-ok");    
       waitForNotVisible("body > div:nth-child(11)");
-      waitAndClick("body > div:nth-child(10) > div > div > div.dialog__footer > div > a.button.button--success.button--standard-ok");    
-      waitForNotVisible("body > div:nth-child(10)");
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
       logout();

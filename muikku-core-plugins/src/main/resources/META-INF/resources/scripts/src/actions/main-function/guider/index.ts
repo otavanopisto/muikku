@@ -6,7 +6,7 @@ import promisify from '~/util/promisify';
 import {UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, LastLoginStudentDataType} from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import {GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType} from '~/reducers/main-function/guider';
-import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/main-function/workspaces';
+import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/workspaces';
 import {VOPSDataType} from '~/reducers/main-function/vops';
 import {HOPSDataType} from '~/reducers/main-function/hops';
 import {StateType} from '~/reducers';
@@ -225,10 +225,11 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
           .then((files:Array<UserFileType>)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "files", value: files}})
           }),
-        promisify(mApi().records.vops.read(id), 'callback')()
-          .then((vops:VOPSDataType)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
-          }),
+          // VOPS disabled until studies view redesign
+//        promisify(mApi().records.vops.read(id), 'callback')()
+//          .then((vops:VOPSDataType)=>{
+//            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
+//          }),
         promisify(mApi().records.hops.read(id), 'callback')()
           .then((hops:HOPSDataType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "hops", value: hops}})

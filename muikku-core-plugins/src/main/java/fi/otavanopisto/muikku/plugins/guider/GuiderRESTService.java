@@ -571,14 +571,16 @@ public class GuiderRESTService extends PluginRESTService {
 
   @GET
   @Path("/users/{IDENTIFIER}/files")
-  @RESTPermit(GuiderPermissions.GUIDER_LIST_TORFILES)
+  @RESTPermit (handling = Handling.INLINE)
   public Response listTranscriptOfRecordsFiles(@PathParam("IDENTIFIER") String identifierString) {
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString);
     UserEntity ue = userEntityController.findUserEntityByUserIdentifier(identifier);
     if (ue == null) {
       return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
     }
-    
+    if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_LIST_TORFILES) && !identifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     List<TranscriptOfRecordsFile> torFiles = torFileController.listFiles(ue);
     return Response.ok().entity(torFiles).build();
   }

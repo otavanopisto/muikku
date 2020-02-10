@@ -18,7 +18,11 @@ public class WorkspaceSeekerResultProvider extends AbstractSeekerResultProvider 
   public List<SeekerResult> search(String searchTerm) {
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      SearchResult result = elasticSearchProvider.searchWorkspaces(searchTerm, 0, 10);
+      SearchResult result = elasticSearchProvider.searchWorkspaces()
+          .setFreeText(searchTerm)
+          .setFirstResult(0)
+          .setMaxResults(10)
+          .search();
       return searchResultProcessor.process(result);
     }
     return null;
