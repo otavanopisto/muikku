@@ -7,7 +7,7 @@ export type UsersListType = Array<UserWithSchoolDataType>;
 
 export interface UsersType {
   students: UsersListType ,
-  staff: UsersListType,
+  staff: UsersListType
 }
 
 export default function users (state:UsersType={

@@ -5,7 +5,7 @@ import { i18nType } from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { CoursesType, CourseEducationFilterType, CourseCurriculumFilterType, CourseOrganizationFilterType } from '~/reducers/main-function/courses';
+import { CoursesType, CourseEducationFilterType, CourseCurriculumFilterType} from '~/reducers/main-function/courses';
 import { StateType } from '~/reducers';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 

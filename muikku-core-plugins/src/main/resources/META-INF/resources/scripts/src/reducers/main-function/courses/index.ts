@@ -32,12 +32,15 @@ export interface CoursesAvaliableFiltersType {
 }
 
 export type CoursesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+
 export interface CoursesActiveFiltersType {
   educationFilters: Array<string>,
   curriculumFilters: Array<string>,
-  organizationFilters: Array<string>,
+  publishedFilters?: Array<string>,
+  stateFilters?: Array<string>,
+  organizationFilters?: Array<string>,
   query: string,
-  baseFilter: CoursesBaseFilterType
+  baseFilter?: CoursesBaseFilterType
 }
 
 export interface WorkspaceCourseType {
@@ -63,7 +66,7 @@ export interface WorkspaceCourseType {
 export type WorkspaceCourseListType = Array<WorkspaceCourseType>;
 
 export interface CoursesPatchType {
-  avaliableFilters?: CoursesAvaliableFiltersType,
+  avaliableFilters?: CoursesAvaliableFiltersType ,
   state?: CoursesStateType,
   activeFilters?: CoursesActiveFiltersType,
   courses?: WorkspaceCourseListType,
