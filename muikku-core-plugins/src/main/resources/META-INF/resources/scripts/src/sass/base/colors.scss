@@ -13,6 +13,9 @@ $color-disabled: #b3b2b2;
 $color-warn: #ea7503;
 $color-warn-contrast: $color-default;
 
+$color-notice: #fdbe4a;
+$color-notice-contrast: $color-default;
+
 $color-info: #009fe3;
 $color-info-contrast: $color-default;
 
@@ -146,6 +149,9 @@ $color-notification-queue-item-primary-text: $color-primary-contrast;
 
 $color-notification-queue-item-warn-background: $color-warn;
 $color-notification-queue-item-warn-text: $color-warn-contrast;
+
+$color-notification-queue-item-notice-background: $color-notice;
+$color-notification-queue-item-notice-text: $color-default-contrast;
 
 $color-notification-queue-item-info-background: $color-info;
 $color-notification-queue-item-info-text: $color-info-contrast;

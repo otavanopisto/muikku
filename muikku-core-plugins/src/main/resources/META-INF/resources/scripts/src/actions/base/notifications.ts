@@ -14,7 +14,7 @@ export interface HideNotificationTriggerType {
 }
 
 const DEFAULT_TIMEOUT = 5000;
-const PERMANENT_LIST = ["warning", "fatal", "error"];
+const PERMANENT_LIST = ["warning", "fatal", "error", "notice"];
 
 let displayNotification:DisplayNotificationTriggerType = function displayNotification(message, severity, timeout?: number){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -23,12 +23,12 @@ let displayNotification:DisplayNotificationTriggerType = function displayNotific
       'severity': severity,
       'message': message
     };
-    
+
     dispatch({
       'type': 'ADD_NOTIFICATION',
       'payload': notification
     });
-    
+
     if (!PERMANENT_LIST.includes(severity) || timeout){
       setTimeout(()=>{
         dispatch({

@@ -51,31 +51,66 @@
   &.notification-queue__item--primary {
     background-color: $color-notification-queue-item-primary-background;
     color: $color-notification-queue-item-primary-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-primary-text;
+    }
   }
 
   &.notification-queue__item--warn {
     background-color: $color-notification-queue-item-warn-background;
     color: $color-notification-queue-item-warn-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-warn-text;
+    }
+  }
+
+  &.notification-queue__item--notice {
+    background-color: $color-notification-queue-item-notice-background;
+    color: $color-notification-queue-item-notice-text;
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-notice-text;
+    }
   }
 
   &.notification-queue__item--info {
     background-color: $color-notification-queue-item-info-background;
     color: $color-notification-queue-item-info-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-info-text;
+    }
   }
 
   &.notification-queue__item--fatal {
     background-color: $color-notification-queue-item-fatal-background;
     color: $color-notification-queue-item-fatal-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-fatal-text;
+    }
   }
 
   &.notification-queue__item--error {
     background-color: $color-notification-queue-item-error-background;
     color: $color-notification-queue-item-error-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-error-text;
+    }
   }
 
   &.notification-queue__item--success {
     background-color: $color-notification-queue-item-success-background;
     color: $color-notification-queue-item-success-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-success-text;
+    }
   }
 
   &.notification-queue__item--loading {
@@ -84,16 +119,28 @@
     background-position: 8px center;
     background-repeat: no-repeat;
     color: $color-notification-queue-item-loading-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-loading-text;
+    }
   }
 
   &.notification-queue__item--secondary {
     background-color: $color-notification-queue-item-secondary-background;
     color: $color-notification-queue-item-secondary-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-secondary-text;
+    }
   }
 
   &.notification-queue__item--inverse {
     background-color: $color-notification-queue-item-inverse-background;
     color: $color-notification-queue-item-inverse-text;
+
+    .notification-queue__close::before {
+      color: $color-notification-queue-item-inverse-text;
+    }
   }
 
   &.hidden {
