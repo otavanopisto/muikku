@@ -77,8 +77,8 @@ const CCPROPSPARSER = function(value: string): CCPropsType {
 }
 
 const CCPROPSDEF:CCPropsType = {
-  allowModifications: null,
-  commercialUse: null
+  allowModifications: "sa",
+  commercialUse: "nc"
 }
 
 const CCVALIDATE = function(version: string, value: string){
