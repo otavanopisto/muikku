@@ -598,7 +598,7 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
-        else {
+        else if (workspaces) {
           var workspaceContainer = $('ul.evaluation-my-workspaces');
           workspaces.sort(function(a, b) {
             return a.name.localeCompare(b.name);
