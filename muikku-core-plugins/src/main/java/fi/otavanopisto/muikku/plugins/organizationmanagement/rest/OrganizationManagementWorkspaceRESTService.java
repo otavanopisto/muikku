@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.organizationmanagement.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -10,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
@@ -89,8 +87,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
-  @Any
-  private Instance<SearchProvider> searchProviders;
+  private Instance<SearchProvider> searchProviderInstance;
   
   @GET
   @Path("/")
@@ -110,7 +107,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     String schoolDataSourceFilter = null;
     List<String> workspaceIdentifierFilters = null;
     
-    SearchProvider searchProvider = getSearchProvider();
+    SearchProvider searchProvider = searchProviderInstance.get();
     if (searchProvider == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
@@ -238,10 +235,10 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     return Response.ok(workspaces).build();
   }
   
-  private SearchProvider getSearchProvider() {
-    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
-    return searchProviderIterator.hasNext() ? searchProviderIterator.next() : null;
-  }
+//  private SearchProvider getSearchProvider() {
+//    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+//    return searchProviderIterator.hasNext() ? searchProviderIterator.next() : null;
+//  }
 
   private OrganizationManagerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName) {
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
