@@ -217,9 +217,9 @@ class Help extends React.Component<HelpProps, HelpState> {
         </Dropdown>
       </div>
     ) : null;
-    
+
     const emptyMessage = this.props.materials.length === 0 ? (
-      <div className="material-admin-panel">{this.props.i18n.text.get("plugin.workspace.helpPage.empty")}</div>
+      <div className="material-page material-page--empty">{this.props.i18n.text.get("plugin.workspace.helpPage.empty")}</div>
     ) : null;
 
     const results: any = [];
@@ -256,7 +256,7 @@ class Help extends React.Component<HelpProps, HelpState> {
             workspace={this.props.workspace}
            />
         </ContentPanelItem>;
-      
+
       if (node.hidden && !isEditable) {
         return;
       }
