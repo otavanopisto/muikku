@@ -6,16 +6,11 @@
 .material-page {
   background-color: $color-application-panel-box-background;
   border: solid 1px $color-application-panel-box-border;
-  padding: 0 10px;
   position: relative;
   width: 100%;
 
   &.material-page--hidden {
     opacity: 0.3;
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    padding: 0 20px;
   }
 }
 
@@ -27,19 +22,6 @@
 
 .material-page--workspace-description {
   border: 0;
-
-  .material-page__content {
-    margin: 0;
-  }
-
-  .material-admin-panel--page-functions {
-    margin: 0 -20px;
-    padding: 0 10px 10px;
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    margin: 15px 0;
-  }
 }
 
 .material-page__title {
@@ -50,6 +32,7 @@
   font-weight: 300;
   line-height: 1.75rem;
   margin: 15px 0 0;
+  padding: 0 20px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.375rem;
@@ -64,37 +47,52 @@
 
 .material-page__title--exercise {
   border-left: 3px solid $color-exercise;
-  margin-left: -10px;
   padding: 0 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
     border-left: 5px solid $color-exercise;
-    margin-left: -20px;
     padding: 0 0 0 15px;
   }
 }
 
 .material-page__title--assignment {
   border-left: 3px solid $color-assignment;
-  margin-left: -10px;
   padding: 0 0 0 6px;
 
   @include breakpoint($breakpoint-pad) {
     border-left: 5px solid $color-assignment;
-    margin-left: -20px;
     padding: 0 0 0 15px;
   }
 }
 
 .material-page__content {
   margin: 15px 0;
+  padding: 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 20px;
+  }
 }
 
 .material-page__content--binary-pdf {
+  margin: 15px 0 0;
+  padding: 0;
+
   object {
-  	width: 100%;
-  	/* Yes height should be specific, any unit works, %, rem, flex, etc... */
-  	height: 400px;
+  	height: 520px;
+    width: 100%;
+
+    @include breakpoint($breakpoint-pad) {
+      height: 966px;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      height: 840px;
+    }
+
+    @include breakpoint($breakpoint-desktop-xl) {
+      height: 890px;
+    }
   }
 }
 
@@ -116,9 +114,11 @@
   flex-flow: row wrap;
   justify-content: center;
   margin: 15px 0;
+  padding: 0 10px;
 
   @include breakpoint($breakpoint-pad) {
     margin: 20px 0;
+    padding: 0 20px;
   }
 }
 
@@ -127,11 +127,11 @@
   border-top: 1px solid $color-application-panel-box-border;
   font-size: 0.75rem;
   font-weight: 300;
-  margin: 15px -10px 0;
+  margin: 15px 0 0;
   padding: 5px 10px;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 20px -20px 0;
+    margin: 20px 0 0;
     padding: 10px 20px;
   }
 }

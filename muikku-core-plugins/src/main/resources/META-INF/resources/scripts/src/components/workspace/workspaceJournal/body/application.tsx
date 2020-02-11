@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import ApplicationPanel from '~/components/general/application-panel';
+import ApplicationPanel from '~/components/general/application-panel/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
@@ -49,7 +49,7 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
    let toolbar = <Toolbar/>
     let primaryOption;
     if (this.props.workspace){
-      primaryOption = <div className="form-element form-element--main-action"> 
+      primaryOption = <div className="form-element form-element--main-action">
         {!this.props.status.isStudent && this.props.workspace.journals ?
             <select className="form-element__select form-element__select--main-action"
               value={this.props.workspace.journals.userEntityId || ""} onChange={this.onWorkspaceJournalFilterChange}>
@@ -61,7 +61,7 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
                 return <option key={student.userEntityId} value={student.userEntityId}>{getName(student, true)}</option>
               })}
             </select>
-        : 
+        :
           <NewJournal><Button buttonModifiers="primary-function">
             {this.props.i18n.text.get('plugin.workspace.journal.newEntryButton.label')}
           </Button></NewJournal>

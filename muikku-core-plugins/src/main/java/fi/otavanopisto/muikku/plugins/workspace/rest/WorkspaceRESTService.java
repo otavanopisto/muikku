@@ -2998,6 +2998,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     boolean canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     if (workspaceStudentId == null && userEntityId == null && canListAllEntries) {
       List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
+      if (workspaceUserEntities.isEmpty()) {
+        return Response.ok(result).build(); 
+      }
       Set<UserEntity> userEntities = new HashSet<>();
       for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
         userEntities.add(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());

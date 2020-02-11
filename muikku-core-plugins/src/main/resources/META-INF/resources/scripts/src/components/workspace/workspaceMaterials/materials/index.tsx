@@ -390,7 +390,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               </Dropdown>
             </div>
           : null}
-          {section.title}
+          <div className="content-panel__chapter-title-text">{section.title}</div>
         </h2>
         {sectionSpecificContentData}
         {lastManagementOptionsWithinSectionItem}
