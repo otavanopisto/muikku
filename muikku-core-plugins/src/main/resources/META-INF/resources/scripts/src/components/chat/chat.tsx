@@ -110,7 +110,7 @@ export class Chat extends React.Component<Iprops, Istate> {
   handleSubmit(event: any) { // login
 
     this.setState({
-      path: "http-bind",
+      path: "http-bind/",
       port: 443,
       jid: event.target.jid.value + '@dev.muikkuverkko.fi',
       password: event.target.password
@@ -253,7 +253,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     let roomName = (data.roomname && data.roomname !== "") ? data.roomname : "";
     let roomDesc = (data.roomdesc && data.roomdesc !== "") ? data.roomdesc : "";
     let nick = (data.nick || data.nick == "") ? reactComponent.state.nick : data.nick;
-    let roomJidAndNick = jid + (data.nick !== null ? `/${data.nick}` : "");
+    let roomJidAndNick = jid + (data.nick !== null ? "data.nick" : "");
 
     const stanza = $pres({
       'from': this.state.converse.connection.jid,
