@@ -49,7 +49,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
     super(props);
   }
   render(){
-    if (!this.props.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
+    if (!this.props.status.loggedIn){
       return null;
     }
     return <div className="panel panel--workspace-teachers">
