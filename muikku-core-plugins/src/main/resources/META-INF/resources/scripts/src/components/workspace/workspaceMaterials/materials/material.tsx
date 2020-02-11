@@ -17,9 +17,11 @@ import { MaterialLoaderAssesment } from "~/components/base/material-loader/asses
 import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
 import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
+import { StatusType } from "~/reducers/base/status";
 
 interface WorkspaceMaterialProps {
   i18n: i18nType,
+  status: StatusType,
   workspaceEditMode: WorkspaceEditModeStateType,
   materialContentNode: MaterialContentNodeType,
   folder: MaterialContentNodeType,
@@ -77,7 +79,8 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           canAddAttachments={!isBinary} canEditContent={!isBinary} folder={this.props.folder}
           editable={this.props.workspaceEditMode.active}
           material={this.props.materialContentNode} workspace={this.props.workspace}
-          compositeReplies={this.props.compositeReplies} answerable onAssignmentStateModified={this.updateWorkspaceActivity}
+          compositeReplies={this.props.compositeReplies} answerable={this.props.status.loggedIn}
+          onAssignmentStateModified={this.updateWorkspaceActivity}
           invisible={!loaded}>
           {(props, state, stateConfiguration) => {
             return <div>
@@ -109,6 +112,7 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     workspaceEditMode: state.workspaces.editMode,
+    status: state.status,
   }
 };
 

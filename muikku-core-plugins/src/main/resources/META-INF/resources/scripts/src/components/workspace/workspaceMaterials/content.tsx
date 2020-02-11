@@ -227,7 +227,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             }
 
             const pageElement = <TocElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId}
-              isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} isHidden={subnode.hidden} disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
+              isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} isHidden={subnode.hidden || node.hidden}
+              disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
               hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>;
 
             if (!isEditable) {
