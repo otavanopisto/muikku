@@ -80,6 +80,11 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           editable={this.props.workspaceEditMode.active}
           material={this.props.materialContentNode} workspace={this.props.workspace}
           compositeReplies={this.props.compositeReplies} answerable={this.props.status.loggedIn}
+          readOnly={
+            this.props.materialContentNode.assignmentType === "EVALUATED" ? 
+              !this.props.status.loggedIn :
+              false
+          }
           onAssignmentStateModified={this.updateWorkspaceActivity}
           invisible={!loaded}>
           {(props, state, stateConfiguration) => {
