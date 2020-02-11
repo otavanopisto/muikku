@@ -17,7 +17,7 @@ export interface UPDATE_COURSES_STATE extends
   SpecificActionType<"UPDATE_COURSES_STATE", CoursesStateType>{}
   
 export interface LoadCoursesFromServerTriggerType {
-  (filters: CoursesActiveFiltersType): AnyActionType
+  (filters: CoursesActiveFiltersType, loadOrganizationCourses: boolean): AnyActionType
 }
 export interface LoadMoreCoursesFromServerTriggerType {
   (): AnyActionType
@@ -42,8 +42,8 @@ export interface LoadAvailableOrganizationFiltersFromServerTriggerType {
   (callback?: (organizations: CourseOrganizationFilterListType) => any):AnyActionType
 }
 
-let loadCoursesFromServer:LoadCoursesFromServerTriggerType = function loadCoursesFromServer(filters){
-  return loadCoursesHelper.bind(this, filters, true);
+let loadCoursesFromServer:LoadCoursesFromServerTriggerType = function loadCoursesFromServer(filters, loadOrganizationCourses){
+  return loadCoursesHelper.bind(this, filters, loadOrganizationCourses, true);
 }
 
 let loadMoreCoursesFromServer:LoadMoreCoursesFromServerTriggerType = function loadMoreCoursesFromServer(){

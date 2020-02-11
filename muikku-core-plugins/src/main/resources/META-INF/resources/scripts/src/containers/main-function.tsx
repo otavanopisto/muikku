@@ -96,7 +96,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
   }
   onHashChange(){ 
     if (window.location.pathname.includes("/coursepicker")){
-      this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}));
+      this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}), false);
     } else if (window.location.pathname.includes("/communicator")){
       this.loadCommunicatorData(window.location.hash.replace("#","").split("/"));
     } else if (window.location.pathname.includes("/discussion")){
@@ -183,7 +183,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       }) as Action);
     }
   }
-  loadCoursePickerData(originalData:any){
+  loadCoursePickerData(originalData:any, organizationCourses: boolean){
     let filters:CoursesActiveFiltersType = {
       educationFilters: originalData.e || [],
       curriculumFilters: originalData.c || [],
@@ -191,7 +191,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
     }
-    this.props.store.dispatch(loadCoursesFromServer(filters) as Action);
+    this.props.store.dispatch(loadCoursesFromServer(filters, organizationCourses) as Action);
   }
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
@@ -215,7 +215,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       let currentLocationHasData = Object.keys(currentLocationData).length;
       
       if (currentLocationHasData) {
-        this.loadCoursePickerData(currentLocationData);
+        this.loadCoursePickerData(currentLocationData, false);
       }
       
       let state:StateType = this.props.store.getState();
@@ -233,12 +233,12 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
             if (defaultSelections.c || defaultSelections.o) {
               location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
             } else {
-              this.loadCoursePickerData(currentLocationData);
+              this.loadCoursePickerData(currentLocationData, false);
             }
           }
         }) as Action);
       } else if (!currentLocationHasData) {
-        this.loadCoursePickerData(currentLocationData);
+        this.loadCoursePickerData(currentLocationData, false);
       }
     }
     
@@ -281,7 +281,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
           if (defaultSelections.c || defaultSelections.o) {
             location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
           } else {
-            this.loadCoursePickerData(currentLocationData);
+            this.loadCoursePickerData(currentLocationData, true);
           }
         }
       }) as Action);
