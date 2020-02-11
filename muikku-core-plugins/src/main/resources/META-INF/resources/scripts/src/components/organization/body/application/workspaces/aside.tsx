@@ -56,26 +56,31 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
        label: "plugin.organization.filters.state.active.false"
      }
     ];
+
+    
+//    These are waiting for backend works
+// 
+//  <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.published.title')}>
+//    {published.map( ( element ) => {
+//      let isActive = this.state.published;
+//      let hash = "?" + ( isActive ?
+//        queryString.stringify( Object.assign( {}, locationData, { p: ( locationData.p || [] ).filter( ( i: string ) => i !== element.name ) } ), { arrayFormat: 'bracket' } ) :
+//        queryString.stringify( Object.assign( {}, locationData, { p: ( locationData.p || [] ).concat( element.name ) } ), { arrayFormat: 'bracket' } ) )
+//      return <NavigationElement key={element.name} isActive={isActive} hash={hash}>{this.props.i18n.text.get(element.label)}</NavigationElement>
+//    })}
+//  </NavigationTopic>
+//  <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.state.title')}>
+//    {active.map( ( element ) => {
+//      let isActive = this.state.active;
+//      let hash = "?" + ( isActive ?
+//        queryString.stringify( Object.assign( {}, locationData, { s: ( locationData.e || [] ).filter( ( i: string ) => i !== element.name ) } ), { arrayFormat: 'bracket' } ) :
+//        queryString.stringify( Object.assign( {}, locationData, { s: ( locationData.e || [] ).concat(element.name ) } ), { arrayFormat: 'bracket' } ) )
+//      return <NavigationElement key={element.name} isActive={isActive} hash={hash}>{this.props.i18n.text.get(element.label)}</NavigationElement>
+//    })}
+//  </NavigationTopic>   
     
     return <Navigation>
-      <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.published.title')}>
-        {published.map( ( element ) => {
-          let isActive = this.state.published;
-          let hash = "?" + ( isActive ?
-            queryString.stringify( Object.assign( {}, locationData, { p: ( locationData.p || [] ).filter( ( i: string ) => i !== element.name ) } ), { arrayFormat: 'bracket' } ) :
-            queryString.stringify( Object.assign( {}, locationData, { p: ( locationData.p || [] ).concat( element.name ) } ), { arrayFormat: 'bracket' } ) )
-          return <NavigationElement key={element.name} isActive={isActive} hash={hash}>{this.props.i18n.text.get(element.label)}</NavigationElement>
-        })}
-      </NavigationTopic>
-      <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.state.title')}>
-        {active.map( ( element ) => {
-          let isActive = this.state.active;
-          let hash = "?" + ( isActive ?
-            queryString.stringify( Object.assign( {}, locationData, { s: ( locationData.e || [] ).filter( ( i: string ) => i !== element.name ) } ), { arrayFormat: 'bracket' } ) :
-            queryString.stringify( Object.assign( {}, locationData, { s: ( locationData.e || [] ).concat(element.name ) } ), { arrayFormat: 'bracket' } ) )
-          return <NavigationElement key={element.name} isActive={isActive} hash={hash}>{this.props.i18n.text.get(element.label)}</NavigationElement>
-        })}
-      </NavigationTopic>
+
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
         {this.props.courses.avaliableFilters.educationTypes.map( ( educationType: CourseEducationFilterType ) => {
           let isActive = this.props.courses.activeFilters.educationFilters.includes( educationType.identifier );
