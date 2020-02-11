@@ -9,7 +9,7 @@ import equals = require("deep-equal");
 
 import WorkspaceMaterial from './material';
 import { ButtonPill } from "~/components/general/button";
-import Dropdown from "~/components/general/dropdown"; 
+import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
@@ -25,7 +25,7 @@ interface WorkspaceMaterialsProps {
   workspaceEditMode: WorkspaceEditModeStateType,
   onActiveNodeIdChange: (activeNodeId: number)=>any,
   onOpenNavigation: ()=>any,
-  
+
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
@@ -50,11 +50,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   private flattenedMaterial: MaterialContentNodeListType;
   constructor(props: WorkspaceMaterialsProps){
     super(props);
-    
+
     this.state = {
       defaultOffset: DEFAULT_OFFSET
     }
-    
+
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
@@ -64,7 +64,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     this.pastePage = this.pastePage.bind(this);
     this.createPageFromBinary = this.createPageFromBinary.bind(this);
     this.toggleSectionHiddenStatus = this.toggleSectionHiddenStatus.bind(this);
-    
+
     this.getFlattenedMaterials(props);
   }
   componentDidMount(){
@@ -74,7 +74,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         defaultOffset
       })
     }
-    
+
     window.addEventListener("scroll", this.onScroll);
   }
   componentWillUnmount(){
@@ -193,7 +193,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   pastePage(section: MaterialContentNodeType, nextSibling: MaterialContentNodeType) {
     const workspaceMaterialCopiedId = localStorage.getItem("workspace-material-copied-id") || null;
     const workspaceCopiedId = localStorage.getItem("workspace-copied-id") || null;
-    
+
     if (workspaceMaterialCopiedId) {
       this.props.createWorkspaceMaterialContentNode({
         workspace: this.props.workspace,
@@ -229,7 +229,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
   getActive(){
     //gets the current active node
     let winner:number = null;
-  
+
     //when you are at the bottom the active is the last one
     let isAllTheWayToTheBottom = document.documentElement.scrollHeight - document.documentElement.scrollTop === document.documentElement.clientHeight;
     if (!isAllTheWayToTheBottom){
@@ -254,7 +254,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
             cropTop = 0;
           }
           const cropTotal = -cropTop-cropBottom;
-          
+
           const visibleFraction = (element.offsetHeight - cropTotal) / element.offsetHeight;
           let weight = visibleFraction;
           if (!winner || elementTop < winnerTop) {
@@ -270,7 +270,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     } else {
       winner = this.flattenedMaterial[this.flattenedMaterial.length - 1].workspaceMaterialId;
     }
-  
+
     winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
     return winner;
   }
@@ -280,7 +280,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     }
 
     const isEditable = this.props.workspaceEditMode.active;
-    
+
     const createSectionElementWhenEmpty = this.props.materials.length === 0 && isEditable ? (
       <div className="material-admin-panel material-admin-panel--master-functions">
         <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
@@ -288,14 +288,14 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         </Dropdown>
       </div>
     ) : null;
-    
+
     const emptyMessage = this.props.materials.length === 0 ? (
-      <div className="material-admin-panel">{this.props.i18n.text.get("plugin.workspace.materialsManagement.empty")}</div>
+      <div className="material-page material-page--empty">{this.props.i18n.text.get("plugin.workspace.materialsManagement.empty")}</div>
     ) : null;
-    
+
     const results: any = [];
     this.props.materials.forEach((section, index)=>{
-      
+
       if (index === 0 && isEditable) {
         results.push(<div key={"sectionfunctions-" + section.workspaceMaterialId} className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
@@ -303,9 +303,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           </Dropdown>
         </div>);
       }
-      
+
       const nextSection = this.props.materials[index + 1] || null;
-      
+
       const lastManagementOptionsWithinSectionItem = isEditable ? (
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown modifier="material-management" items={this.getMaterialsOptionListDropdown(section, nextSection, null, true).map((item)=>{
@@ -327,9 +327,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           </Dropdown>
         </div>
       ) : null;
-    
+
       const sectionSpecificContentData: any = [];
-    
+
       section.children.forEach((node, index)=>{
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
@@ -354,7 +354,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
             </Dropdown>
           </div>);
         }
-      
+
         let compositeReplies = this.props.workspace && this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === node.workspaceMaterialId);
         let material = !this.props.workspace || !this.props.materialReplies || (!isEditable && node.hidden) ? null :
           <ContentPanelItem ref={node.workspaceMaterialId + ""} key={node.workspaceMaterialId + ""}>
@@ -369,7 +369,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           </ContentPanelItem>;
         sectionSpecificContentData.push(material);
       });
-      
+
       if (!isEditable && section.hidden) {
         return;
       }
@@ -377,7 +377,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       results.push(<section key={"section-" + section.workspaceMaterialId} className="content-panel__chapter" id={"section-" + section.workspaceMaterialId}>
         {/*TOP OF THE CHAPTER*/}
         <h2 className={`content-panel__chapter-title ${section.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
-          {isEditable ? 
+          {isEditable ?
             <div className="material-admin-panel material-admin-panel--chapter-functions">
               <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.editChapterTooltip")}>
                 <ButtonPill buttonModifiers="material-management-chapter" icon="pencil" onClick={this.startupEditor.bind(this, section)}/>
