@@ -18,7 +18,7 @@ import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messag
 
 import CousePickerBody from '../components/coursepicker/body';
 import { loadLoggedUser } from '~/actions/main-function/user-index';
-import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer, loadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
+import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 import { UserType } from '~/reducers/main-function/user-index';
 
@@ -205,9 +205,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
       
-      this.props.store.dispatch(loadAvaliableEducationFiltersFromServer() as Action);
-      this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
-      this.props.store.dispatch(loadAvailableOrganizationFiltersFromServer() as Action);
+      this.props.store.dispatch(LoadAvailableEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(LoadAvailableOrganizationFiltersFromServer() as Action);
       
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
       
@@ -263,8 +263,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
       this.props.websocket.restoreEventListeners();
-      this.props.store.dispatch(loadAvaliableEducationFiltersFromServer() as Action);
-      this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(LoadAvailableEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
@@ -407,7 +407,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
 
-      this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
 
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));

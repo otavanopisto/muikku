@@ -76,8 +76,10 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   }
   
   try {
-    
-    let nCourses:WorkspaceCourseListType = organization == false ? <WorkspaceCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')() : <WorkspaceCourseListType>await promisify(mApi().organization.workspaces.cacheClear().read(params), 'callback')();
+
+    let nCourses:WorkspaceCourseListType = organization === false ? 
+        <WorkspaceCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')() :
+        <WorkspaceCourseListType>await promisify(mApi().organizationmanagement.workspaces.cacheClear().read(params), 'callback')();
   
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side

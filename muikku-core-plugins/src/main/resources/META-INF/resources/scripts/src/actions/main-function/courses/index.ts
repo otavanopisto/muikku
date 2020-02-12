@@ -6,8 +6,8 @@ import { CoursesActiveFiltersType, CoursesPatchType, CoursesStateType, CourseEdu
 import { loadCoursesHelper } from './helpers';
 import { StateType } from '~/reducers';
 
-export interface UPDATE_COURSES_AVALIABLE_FILTERS_EDUCATION_TYPES extends SpecificActionType<"UPDATE_COURSES_AVALIABLE_FILTERS_EDUCATION_TYPES", CourseEducationFilterListType>{}
-export interface UPDATE_COURSES_AVALIABLE_FILTERS_CURRICULUMS extends SpecificActionType<"UPDATE_COURSES_AVALIABLE_FILTERS_CURRICULUMS", CourseCurriculumFilterListType>{}
+export interface UPDATE_COURSES_AVAILABLE_FILTERS_EDUCATION_TYPES extends SpecificActionType<"UPDATE_COURSES_AVAILABLE_FILTERS_EDUCATION_TYPES", CourseEducationFilterListType>{}
+export interface UPDATE_COURSES_AVAILABLE_FILTERS_CURRICULUMS extends SpecificActionType<"UPDATE_COURSES_AVAILABLE_FILTERS_CURRICULUMS", CourseCurriculumFilterListType>{}
 export interface UPDATE_COURSES_AVAILABLE_FILTERS_ORGANIZATIONS extends SpecificActionType<"UPDATE_COURSES_AVAILABLE_FILTERS_ORGANIZATIONS", CourseOrganizationFilterListType>{}
 export interface UPDATE_COURSES_ACTIVE_FILTERS extends 
   SpecificActionType<"UPDATE_COURSES_ACTIVE_FILTERS", CoursesActiveFiltersType>{}
@@ -16,13 +16,23 @@ export interface UPDATE_COURSES_ALL_PROPS extends
 export interface UPDATE_COURSES_STATE extends 
   SpecificActionType<"UPDATE_COURSES_STATE", CoursesStateType>{}
   
+  export interface UPDATE_ORGANIZATION_COURSES_AVAILABLE_FILTERS_EDUCATION_TYPES extends SpecificActionType<"UPDATE_ORGANIZATION_COURSES_AVAILABLE_FILTERS_EDUCATION_TYPES", CourseEducationFilterListType>{}
+  export interface UPDATE_ORGANIZATION_COURSES_AVAILABLE_FILTERS_CURRICULUMS extends SpecificActionType<"UPDATE_ORGANIZATION_COURSES_AVAILABLE_FILTERS_CURRICULUMS", CourseCurriculumFilterListType>{}
+  export interface UPDATE_ORGANIZATION_COURSES_ALL_PROPS extends 
+    SpecificActionType<"UPDATE_ORGANIZATION_COURSES_ALL_PROPS", CoursesPatchType>{}
+  export interface UPDATE_ORGANIZATION_COURSES_STATE extends 
+    SpecificActionType<"UPDATE_ORGANIZATION_COURSES_STATE", CoursesStateType>{}
+    
+
+  
+  
 export interface LoadCoursesFromServerTriggerType {
   (filters: CoursesActiveFiltersType, loadOrganizationCourses: boolean): AnyActionType
 }
 export interface LoadMoreCoursesFromServerTriggerType {
   (): AnyActionType
 }
-export interface LoadAvaliableEducationFiltersFromServerTriggerType {
+export interface LoadAvailableEducationFiltersFromServerTriggerType {
   ():AnyActionType
 }
 export interface SignupIntoCourseTriggerType {
@@ -34,7 +44,7 @@ export interface SignupIntoCourseTriggerType {
   }):AnyActionType
 }
 
-export interface LoadAvaliableCurriculumFiltersFromServerTriggerType {
+export interface LoadAvailableCurriculumFiltersFromServerTriggerType {
   (callback?: (curriculums: CourseCurriculumFilterListType)=>any):AnyActionType
 }
 
@@ -50,11 +60,11 @@ let loadMoreCoursesFromServer:LoadMoreCoursesFromServerTriggerType = function lo
   return loadCoursesHelper.bind(this, null, false);
 }
 
-let loadAvaliableEducationFiltersFromServer:LoadAvaliableEducationFiltersFromServerTriggerType = function loadAvaliableEducationFiltersFromServer(){
+let LoadAvailableEducationFiltersFromServer:LoadAvailableEducationFiltersFromServerTriggerType = function LoadAvailableEducationFiltersFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
-        type: "UPDATE_COURSES_AVALIABLE_FILTERS_EDUCATION_TYPES",
+        type: "UPDATE_COURSES_AVAILABLE_FILTERS_EDUCATION_TYPES",
         payload: <CourseEducationFilterListType>(await promisify(mApi().workspace.educationTypes.read(), 'callback')())
       });
     } catch (err){
@@ -66,12 +76,12 @@ let loadAvaliableEducationFiltersFromServer:LoadAvaliableEducationFiltersFromSer
   }
 }
   
-let loadAvaliableCurriculumFiltersFromServer:LoadAvaliableCurriculumFiltersFromServerTriggerType = function loadAvaliableCurriculumFiltersFromServer(callback){
+let LoadAvailableCurriculumFiltersFromServer:LoadAvailableCurriculumFiltersFromServerTriggerType = function LoadAvailableCurriculumFiltersFromServer(callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let curriculums = <CourseCurriculumFilterListType>(await promisify(mApi().coursepicker.curriculums.read(), 'callback')())
       dispatch({
-        type: "UPDATE_COURSES_AVALIABLE_FILTERS_CURRICULUMS",
+        type: "UPDATE_COURSES_AVAILABLE_FILTERS_CURRICULUMS",
         payload: curriculums
       });
       callback && callback(curriculums);
@@ -84,7 +94,7 @@ let loadAvaliableCurriculumFiltersFromServer:LoadAvaliableCurriculumFiltersFromS
   }
 }
 
-let loadAvailableOrganizationFiltersFromServer:LoadAvailableOrganizationFiltersFromServerTriggerType = function loadAvailableOrganizationFiltersFromServer(callback){
+let LoadAvailableOrganizationFiltersFromServer:LoadAvailableOrganizationFiltersFromServerTriggerType = function LoadAvailableOrganizationFiltersFromServer(callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let organizations = <CourseOrganizationFilterListType>(await promisify(mApi().coursepicker.organizations.read(), 'callback')())
@@ -120,5 +130,5 @@ let signupIntoCourse:SignupIntoCourseTriggerType = function signupIntoCourse(dat
   }
 }
 
-export {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadAvailableOrganizationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
-export default {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadAvailableOrganizationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
+export {LoadAvailableCurriculumFiltersFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableOrganizationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
+export default {LoadAvailableCurriculumFiltersFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableOrganizationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
