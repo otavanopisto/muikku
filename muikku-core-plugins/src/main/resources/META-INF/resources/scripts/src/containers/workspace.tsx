@@ -221,7 +221,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
       this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId, success: (workspace)=>{
-        if (!workspace.staffMembers && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
+        if (!workspace.staffMembers && state.status.loggedIn){
           this.props.store.dispatch(loadStaffMembersOfWorkspace(workspace) as Action)
         }
       }}) as Action);
@@ -418,7 +418,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.props.store.dispatch(setCurrentWorkspace({
         workspaceId: state.status.currentWorkspaceId,
         success: (workspace)=>{
-          if (!workspace.staffMembers && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
+          if (!workspace.staffMembers && state.status.loggedIn){
             this.props.store.dispatch(loadStaffMembersOfWorkspace(workspace) as Action)
           }
           if (!workspace.students && state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS){
