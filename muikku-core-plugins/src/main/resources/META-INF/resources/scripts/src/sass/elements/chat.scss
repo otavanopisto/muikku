@@ -519,6 +519,10 @@ $the-grey: #eaeaea;
   }
 }
 
+.chat__messages-last-message {
+  height: 0;
+}
+
 // When Chat sender is ME
 .chat__message--sender-me {
 
