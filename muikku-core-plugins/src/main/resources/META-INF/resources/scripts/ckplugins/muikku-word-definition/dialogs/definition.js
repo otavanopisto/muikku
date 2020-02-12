@@ -15,46 +15,16 @@ CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
         label: lang.definitionDialogTextLabel,
         setup: function(editor) {
           var text = null;
-          
-          var ranges = editor.getSelection().getRanges();
-          while (ranges.length > 0) {
-            var range = ranges.pop();
-            if (range) {
-              try {
-                var tempDiv = new CKEDITOR.dom.element('div');
-                range.cloneContents().clone( 1, 1 ).appendTo(tempDiv);
-                
-                var marks = tempDiv.getElementsByTag('mark');
-                for (var i = 0, l = marks.count(); i < l; i++) {
-                  var mark = marks.getItem(i);
-                  text = mark.getAttribute('data-muikku-word-definition');
-                  if (text) {
-                    break;
-                  }
-                }
-              } catch (e) {
-                
-              }
-            }
-            
-            if (text) {
-              break;
-            }
-          }
-          
-          if (!text) {
-            var ancestor = editor.getSelection().getCommonAncestor();
-            if (ancestor) {
-              var mark = ancestor.getAscendant('mark');
-              if (mark) {
-                text = mark.getAttribute('data-muikku-word-definition');
-                if (text) {
-                  editor.getSelection().selectElement(mark);
-                }
+          var ancestor = editor.getSelection().getCommonAncestor();
+          if (ancestor) {
+            var mark = ancestor.getAscendant('mark', true);
+            if (mark) {
+              text = mark.getAttribute('data-muikku-word-definition');
+              if (text) {
+                editor.getSelection().selectElement(mark);
               }
             }
           }
-
           this.setValue(text||'');
         },
         commit: function(editor) {
