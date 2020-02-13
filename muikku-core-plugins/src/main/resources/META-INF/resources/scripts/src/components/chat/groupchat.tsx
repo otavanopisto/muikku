@@ -203,9 +203,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (stanza && stanza.attributes.type === "groupchat") {
         let message = stanza.attributes.message;
-        let from = stanza.attributes.identifier || stanza.attributes.from;
-        from = from.split("/").pop();
-        from.toUpperCase();
         let occupant;
         if (!stanza.vcard){
           occupant = stanza.attributes.identifier;
