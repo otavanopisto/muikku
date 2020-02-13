@@ -122,17 +122,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   handleIncomingMessages( data: any ) {
     let reactComponent = this;
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-<<<<<<< HEAD
-    data.chatbox.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
-  }
-=======
-    
     if (data.chatbox.attributes.jid === this.state.roomJid){
       data.chatbox.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
     }
-}
-  
->>>>>>> d79071b45f5f942261ec16aed1156f007f89dfeb
+  }
   openMucConversation(room: string){
     let data = {
       jid: room,
