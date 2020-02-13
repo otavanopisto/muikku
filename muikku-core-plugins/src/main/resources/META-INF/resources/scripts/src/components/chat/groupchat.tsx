@@ -198,6 +198,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let from = stanza.attributes.identifier || stanza.attributes.from;
         from = from.split("/").pop();
         from.toUpperCase();
+        let occupant;
+        if (!stanza.vcard){
+          occupant = stanza.attributes.identifier;
+        } else {
+          occupant = stanza.vcard.attributes.jid;
+        }
+        occupant = occupant.split("@");
+        occupant = occupant[0].toString().toUpperCase();
         let senderClass ="";
         let user:any;
         let chatSettings: any;
@@ -206,14 +214,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let nick: any;
         let userName: any;
 
-        if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
-          user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
-          chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
+        if (occupant.startsWith("PYRAMUS-STAFF-") || occupant.startsWith("PYRAMUS-STUDENT-")) {
+          user = (await promisify(mApi().user.users.basicinfo.read(occupant,{}), 'callback')());
+          chatSettings = (await promisify(mApi().chat.settings.read(occupant), 'callback')());
           userName = user.firstName + " " + user.lastName;
           nick = chatSettings.nick;
         } else {
-          userName = from;
-          nick = from;
+          userName = occupant;
+          nick = occupant;
         }
 
         if (message !== "") {
