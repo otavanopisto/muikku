@@ -169,8 +169,7 @@ export class Chat extends React.Component<Iprops, Istate> {
 
     let text = event.target.chatMessage.value;
 
-    var reactComponent = this;
-    reactComponent.state.converse.api.chats.open('pyramus-staff-1@dev.muikkuverkko.fi').then((chat:any) => {
+    this.state.converse.api.chats.open('pyramus-staff-1@dev.muikkuverkko.fi').then((chat:any) => {
 
       var spoiler_hint = "undefined";
 
@@ -193,14 +192,14 @@ export class Chat extends React.Component<Iprops, Istate> {
       }
 
       if (text !== null || text !== ""){
-        reactComponent.setState({
+        this.setState({
           messages: chat.messages.models.map((model: any) => ({
             message: model.attributes.message,
             from: model.attributes.from
           })).filter((message: any) => message.message !== undefined)
         })
 
-        reactComponent.state.converse.api.send(chat.createMessageStanza(message));
+        this.state.converse.api.send(chat.createMessageStanza(message));
         return true;
       }
 
@@ -233,8 +232,6 @@ export class Chat extends React.Component<Iprops, Istate> {
   // Creating new chat room
   joinRoom (event: any) {
 
-    var reactComponent = this;
-
     event.preventDefault();
 
     const data = this.parseRoomDataFromEvent(event.target);
@@ -252,7 +249,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     let persistent = data.persistent ? true : false;
     let roomName = (data.roomname && data.roomname !== "") ? data.roomname : "";
     let roomDesc = (data.roomdesc && data.roomdesc !== "") ? data.roomdesc : "";
-    let nick = (data.nick || data.nick == "") ? reactComponent.state.nick : data.nick;
+    let nick = (data.nick || data.nick == "") ? this.state.nick : data.nick;
     let roomJidAndNick = jid + (data.nick !== null ? "data.nick" : "");
 
     const stanza = $pres({
@@ -268,7 +265,7 @@ export class Chat extends React.Component<Iprops, Istate> {
 
     this.state.converse.api.user.status.set('online');
 
-    reactComponent.state.converse.api.rooms.open(jid, _.extend({
+    this.state.converse.api.rooms.open(jid, _.extend({
       'nick': nick,
       'maximize': true,
       'auto_configure': true,
@@ -432,19 +429,19 @@ export class Chat extends React.Component<Iprops, Istate> {
     }
   }
   componentDidMount() {
-    var reactComponent = this;
+    var __this = this;
 
-    converse.plugins.add('myplugin', {
+    converse.plugins.add("muikku-chat-ui", {
 
       initialize: function () {
         var _converse = this._converse;
-        reactComponent.setState({converse: _converse});
+        __this.setState({converse: _converse});
 
-        reactComponent.state.converse.on('connected', function () {
+        __this.state.converse.on('connected', function () {
 
-          const rooms = reactComponent.state.converse.api.rooms;
+          const rooms = __this.state.converse.api.rooms;
 
-          reactComponent.setState({
+          __this.setState({
             isConnectionOk: true,
             showMaterial: true,
             isStudent: window.MUIKKU_IS_STUDENT
@@ -458,14 +455,14 @@ export class Chat extends React.Component<Iprops, Istate> {
             'from': from + "@dev.muikkuverkko.fi",
             'type': "get"
           }).c("query", {xmlns: Strophe.NS.DISCO_ITEMS});
-          reactComponent.state.converse.api.sendIQ(iq)
-            .then((iq: any) => reactComponent.onRoomsFound(iq))
+          __this.state.converse.api.sendIQ(iq)
+            .then((iq: any) => __this.onRoomsFound(iq))
             .catch((iq: any) => console.log(iq));
 
-//          reactComponent.state.converse.api.listen.on('message', (data: any) => {
+//          __this.state.converse.api.listen.on('message', (data: any) => {
 //
 //            if (data.chatbox && data.chatbox.attributes.message_type === "chat"){
-//              reactComponent.setState({
+//              __this.setState({
 //                messages: data.chatbox.messages.models.map((model: any) => ({
 //                  message: model.attributes.message,
 //                  from: model.attributes.from,
@@ -481,18 +478,18 @@ export class Chat extends React.Component<Iprops, Istate> {
 
           if (chatControlBoxStatus){
             if (chatControlBoxStatus === "opened"){
-              reactComponent.setState({
+              __this.setState({
                 showControlBox: true,
                 showChatButton: false
                });
             } else {
-              reactComponent.setState({
+              __this.setState({
                 showControlBox: false,
                 showChatButton: true
               });
             }
           } else {
-            reactComponent.setState({
+            __this.setState({
               showControlBox: false,
               showChatButton: true
             });
@@ -501,7 +498,7 @@ export class Chat extends React.Component<Iprops, Istate> {
           let openChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("openChats"));
 
           if (openChatsFromSessionStorage){
-            reactComponent.setState({
+            __this.setState({
               openRooms: openChatsFromSessionStorage
             });
           }
@@ -509,21 +506,20 @@ export class Chat extends React.Component<Iprops, Istate> {
           let openPrivateChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("openPrivateChats"));
 
           if (openPrivateChatsFromSessionStorage){
-            reactComponent.setState({
+            __this.setState({
               privateChats: openPrivateChatsFromSessionStorage
             });
           }
-          let userStatus = reactComponent.state.converse.api.user.status.get();
+          let userStatus = __this.state.converse.api.user.status.get();
 
-          reactComponent.setState({
+          __this.setState({
             selectedState: userStatus
           });
 
-          reactComponent.userAvailability();
+          __this.userAvailability();
 
-          reactComponent.getChatNick();
+          __this.getChatNick();
         });
-
       },
     });
   }

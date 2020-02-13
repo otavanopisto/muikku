@@ -148,16 +148,16 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       }
     }
     toggleRoomInfo() {
-        if (this.state.showRoomInfo === false){
-          this.setState({
-            showRoomInfo: true
-          });
-        } else {
-          this.setState({
-            showRoomInfo: false
-          });
-        }
+      if (this.state.showRoomInfo === false){
+        this.setState({
+          showRoomInfo: true
+        });
+      } else {
+        this.setState({
+          showRoomInfo: false
+        });
       }
+    }
     fetchRoomConfiguration () {
       /* Send an IQ stanza to fetch the groupchat configuration data.
       * Returns a promise which resolves once the response IQ
@@ -165,14 +165,12 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       */
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-
       return this.state.converse.api.sendIQ(
         $iq({'to': this.state.roomJid, 'type': "get"})
         .c("query", {xmlns: Strophe.NS.MUC_OWNER})
       );
     }
     componentDidMount (){
-      let reactComponent = this;
 
       if (converse){
         this.setState({
@@ -185,7 +183,6 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       let chat = this.props.chat;
 
       if (chat){
-
         this.setState({
           roomName: chat.name,
           roomJid: chat.jid,
@@ -194,10 +191,8 @@ export class RoomsList extends React.Component<Iprops, Istate> {
         });
       }
     }
-
     render() {
-
-      return  (
+      return (
         <div className="chat__controlbox-room">
             <div className="chat__controlbox-room-action icon-action-menu-launcher"  onClick={() => this.toggleRoomInfo()}></div>
             <div className="chat__controlbox-room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>

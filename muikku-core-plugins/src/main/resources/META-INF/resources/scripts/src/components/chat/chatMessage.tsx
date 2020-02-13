@@ -84,11 +84,10 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
 
   }
   componentDidMount (){
-    let reactComponent = this;
     let groupMessage = this.props.groupMessage;
     let stamp = new Date(groupMessage.timeStamp);
 
-    reactComponent.setState({
+    this.setState({
       groupMessage: groupMessage,
       senderClass: groupMessage.senderClass,
       from: groupMessage.from,
