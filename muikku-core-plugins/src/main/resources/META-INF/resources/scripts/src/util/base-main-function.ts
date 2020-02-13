@@ -52,14 +52,12 @@ export default function(store: Store<StateType>){
             hide_muc_server: false,
             allow_muc: true,
             muc_domain : "conference." + location.hostname,
-//			muc_history_max_stanzas: 25,            
-			muc_history_max_stanzas: 0, // Should be 0 if MAM (message_archiving: "always") is in use
+            muc_history_max_stanzas: 0, // Should be 0 if MAM (message_archiving: "always") is in use
             muc_show_join_leave: true,
-//            muc_nickname_from_jid: true,
-//            allow_non_roster_messaging: true,
+            allow_non_roster_messaging: true,
             persistent_store: "localStorage", // Activate this for production (It'll use either or anyway, so might as well have something here)
             ping_interval: 45,
-//            trusted: "off", // Tämä oli päällä. Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY
+            trusted: "off", // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY
             whitelisted_plugins: ["myplugin","addRoom", "profileChatSettings"]
           });
         }
