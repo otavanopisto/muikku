@@ -120,9 +120,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   }
   
   handleIncomingMessages( data: any ) {
-    let reactComponent = this;
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-    data.chatbox.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
+    let cid = data.chatbox.cid;
+    data.chatbox.messages.chatbox.messages.models.map((msg: any) => this.getMUCMessages(msg));
+
 }
   
   openMucConversation(room: string){
@@ -190,7 +191,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           groupMessages: [],
           chatRoomOccupants: chat.occupants
         });
-
 //        chat.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
         //chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
       });
@@ -262,16 +262,16 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           let groupMessages = this.state.groupMessages;
 
           if (!message.startsWith("messageID=")) {
-           groupMessages.push(groupMessage);
+            groupMessages.push(groupMessage);
           } else {
             let arr= new Array();
             arr.push(message);
             deleteId = message.split("=").pop();
           }
 
-          var i:any;
+          let i:any;
           for (i = 0; i < groupMessages.length; i++) {
-            var groupMessageId = groupMessages[i].messageId;
+            let groupMessageId = groupMessages[i].messageId;
             if (deleteId && groupMessageId === deleteId) {
               groupMessages[i] = {...groupMessages[i], deleted: true}
             }
