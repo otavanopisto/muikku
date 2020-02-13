@@ -203,9 +203,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (stanza && stanza.attributes.type === "groupchat") {
         let message = stanza.attributes.message;
-        let from = stanza.attributes.identifier || stanza.attributes.from;
-        from = from.split("/").pop();
-        from.toUpperCase();
+        let occupant;
+        if (!stanza.vcard){
+          occupant = stanza.attributes.identifier;
+        } else {
+          occupant = stanza.vcard.attributes.jid;
+        }
+        occupant = occupant.split("@");
+        occupant = occupant[0].toString().toUpperCase();
         let senderClass ="";
         let user:any;
         let chatSettings: any;
@@ -214,14 +219,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let nick: any;
         let userName: any;
 
-        if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
-          user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
-          chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
+        if (occupant.startsWith("PYRAMUS-STAFF-") || occupant.startsWith("PYRAMUS-STUDENT-")) {
+          user = (await promisify(mApi().user.users.basicinfo.read(occupant,{}), 'callback')());
+          chatSettings = (await promisify(mApi().chat.settings.read(occupant), 'callback')());
           userName = user.firstName + " " + user.lastName;
           nick = chatSettings.nick;
         } else {
-          userName = from;
-          nick = from;
+          userName = occupant;
+          nick = occupant;
         }
 
         if (message !== "") {
@@ -765,9 +770,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
-                  <ul>
-                    {this.state.occupants.map((occupant: any, i: any) => <li onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</li>)}
-                  </ul>
+                  {this.state.occupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</div>)}
                 </div>}
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>
