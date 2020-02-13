@@ -116,7 +116,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
     this.getOccupants = this.getOccupants.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
+    this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
+  
+  handleIncomingMessages( data: any ) {
+    let reactComponent = this;
+    const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
+    data.chatbox.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
+}
+  
   openMucConversation(room: string){
     let data = {
       jid: room,
@@ -183,8 +191,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           chatRoomOccupants: chat.occupants
         });
 
-        chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
-        //chat.addHandler('message', 'groupMessages', this.getMUCMessages.bind(this) );
+//        chat.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
+        //chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
       });
 
     }
@@ -347,7 +355,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (text !== null || text !== ""){
         this.state.converse.api.send(chat.createMessageStanza(message));
-        this.getMUCMessages(message);
+//        this.getMUCMessages(message);
       }
     }
     //--- SETTINGS & INFOS
@@ -704,8 +712,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           }
         })
       }
-
+      converse.api.listen.on('message', this.handleIncomingMessages);
     }
+    
     componentDidUpdate(){
 
     }
