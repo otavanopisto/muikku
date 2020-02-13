@@ -116,7 +116,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
     this.getOccupants = this.getOccupants.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
+    this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
+  
+  handleIncomingMessages( data: any ) {
+    let reactComponent = this;
+    const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
+    data.chatbox.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
+}
+  
   openMucConversation(room: string){
     let data = {
       jid: room,
@@ -183,8 +191,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           chatRoomOccupants: chat.occupants
         });
 
-        chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
-        //chat.addHandler('message', 'groupMessages', this.getMUCMessages.bind(this) );
+//        chat.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
+        //chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
       });
 
     }
@@ -195,9 +203,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (stanza && stanza.attributes.type === "groupchat") {
         let message = stanza.attributes.message;
-        let from = stanza.attributes.identifier || stanza.attributes.from;
-        from = from.split("/").pop();
-        from.toUpperCase();
+        let occupant;
+        if (!stanza.vcard){
+          occupant = stanza.attributes.identifier;
+        } else {
+          occupant = stanza.vcard.attributes.jid;
+        }
+        occupant = occupant.split("@");
+        occupant = occupant[0].toString().toUpperCase();
         let senderClass ="";
         let user:any;
         let chatSettings: any;
@@ -206,14 +219,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let nick: any;
         let userName: any;
 
-        if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
-          user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
-          chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
+        if (occupant.startsWith("PYRAMUS-STAFF-") || occupant.startsWith("PYRAMUS-STUDENT-")) {
+          user = (await promisify(mApi().user.users.basicinfo.read(occupant,{}), 'callback')());
+          chatSettings = (await promisify(mApi().chat.settings.read(occupant), 'callback')());
           userName = user.firstName + " " + user.lastName;
           nick = chatSettings.nick;
         } else {
-          userName = from;
-          nick = from;
+          userName = occupant;
+          nick = occupant;
         }
 
         if (message !== "") {
@@ -339,7 +352,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (text !== null || text !== ""){
         this.state.converse.api.send(chat.createMessageStanza(message));
-        this.getMUCMessages(message);
+//        this.getMUCMessages(message);
       }
     }
     //--- SETTINGS & INFOS
@@ -696,8 +709,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           }
         })
       }
-
+      converse.api.listen.on('message', this.handleIncomingMessages);
     }
+    
     componentDidUpdate(){
 
     }
