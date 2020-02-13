@@ -115,7 +115,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.minimizeChats = this.minimizeChats.bind(this);
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
     this.getOccupants = this.getOccupants.bind(this);
+    this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
+  
+  handleIncomingMessages( data: any ) {
+    let reactComponent = this;
+    const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
+    data.chatbox.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
+}
+  
   openMucConversation(room: string){
     let data = {
       jid: room,
@@ -184,7 +192,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           chatRoomOccupants: chat.occupants
         });
 
-        chat.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
+//        chat.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
         //chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
       });
 
@@ -344,7 +352,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (text !== null || text !== ""){
         reactComponent.state.converse.api.send(chat.createMessageStanza(message));
-        reactComponent.getMUCMessages(message);
+//        reactComponent.getMUCMessages(message);
       }
 
       this.scrollToBottom();
@@ -668,7 +676,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     componentDidMount(){
       let reactComponent = this;
       let converse = this.props.converse;
-
+      
       if (converse) {
         this.setState({
           converse: converse
@@ -681,7 +689,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           roomName: chat.name,
           roomJid: chat.jid,
           isStudent: window.MUIKKU_IS_STUDENT,
-          roomDesc: chat.roomDesc
+          roomDesc: chat.roomDesc,
+          chat: chat
         });
 
         var roomOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
@@ -716,11 +725,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           }
         })
       }
-
+      converse.api.listen.on('message', this.handleIncomingMessages);
     }
+    
     componentDidUpdate(){
       this.scrollToBottom();
     }
+        
+
+    
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
 
