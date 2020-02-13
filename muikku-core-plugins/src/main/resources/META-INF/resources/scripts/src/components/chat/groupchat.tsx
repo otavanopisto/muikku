@@ -756,9 +756,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
-                  <ul>
-                    {this.state.occupants.map((occupant: any, i: any) => <li onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</li>)}
-                  </ul>
+                  {this.state.occupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</div>)}
                 </div>}
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>

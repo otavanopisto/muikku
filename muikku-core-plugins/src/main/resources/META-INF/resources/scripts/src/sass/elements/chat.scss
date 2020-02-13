@@ -509,7 +509,14 @@ $the-grey: #eaeaea;
   flex-basis: 35%;
   flex-grow: 0;
   flex-shrink: 0;
+  overflow-y: auto;
   padding: 5px;
+}
+
+.chat__occupants-item {
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 3px;
 }
 
 .chat__message {
