@@ -21,6 +21,7 @@ import MathField from '../fields/math-field';
 import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } from '~/reducers/workspaces';
 import { WebsocketStateType } from '~/reducers/util/websocket';
 import Link from '~/components/base/material-loader/static/link';
+import Table from '~/components/base/material-loader/static/table';
 
 //These are all our supported objects as for now
 const objects: {[key: string]: any} = {
@@ -101,6 +102,7 @@ const statics:{[componentKey:string]: any} = {
   'mark[data-muikku-word-definition]': WordDefinition,
   'iframe[data-url]': IFrame,
   'a[href]': Link,
+  'table': Table,
 };
 
 //Fixes the html inconsitencies because
