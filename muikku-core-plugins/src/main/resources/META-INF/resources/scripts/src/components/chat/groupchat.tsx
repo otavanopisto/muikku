@@ -121,7 +121,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
   handleIncomingMessages( data: any ) {
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-    let cid = data.chatbox.cid;
     if (data.chatbox.attributes.jid === this.state.roomJid){
       data.chatbox.messages.models.map((msg: any) => this.getMUCMessages(msg));
     }
@@ -718,7 +717,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
-
+      let messages = this.state.groupMessages;
+      console.log(messages);
       return  (
         <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
@@ -767,11 +767,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} ref={ (ref) => this.myRef=ref }>
-                  {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
+                  {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp + 'timeStamp'} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
-                  {this.state.occupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</div>)}
+                  {this.state.occupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick + i +'occupant'}</div>)}
                 </div>}
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>
