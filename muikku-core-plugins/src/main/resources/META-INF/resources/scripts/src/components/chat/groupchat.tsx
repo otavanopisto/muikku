@@ -118,15 +118,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.scrollToBottom = this.scrollToBottom.bind(this);
     this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
-  
+
   handleIncomingMessages( data: any ) {
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
     let cid = data.chatbox.cid;
     if (data.chatbox.attributes.jid === this.state.roomJid){
       data.chatbox.messages.models.map((msg: any) => this.getMUCMessages(msg));
     }
-}
-  
+  }
   openMucConversation(room: string){
     let data = {
       jid: room,
@@ -192,8 +191,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           groupMessages: [],
           chatRoomOccupants: chat.occupants
         });
-//        chat.messages.models.map((msg: any) => reactComponent.getMUCMessages(msg));
-        //chat.addHandler('message', 'groupMessages', reactComponent.getMUCMessages.bind(reactComponent) );
+        // chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
+        // chat.addHandler('message', 'groupMessages', this.getMUCMessages.bind(this) );
+
       });
 
     }
@@ -712,7 +712,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
       converse.api.listen.on('message', this.handleIncomingMessages);
     }
-    
+
     componentDidUpdate(){
 
     }

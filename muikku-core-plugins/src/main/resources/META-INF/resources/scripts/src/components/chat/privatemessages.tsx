@@ -34,8 +34,6 @@ interface Istate {
   chat?: any,
   chatRecipientNick?: string,
   info?: any
-
-
 }
 
 declare namespace JSX {
@@ -52,7 +50,6 @@ declare global {
     MUIKKU_LOGGED_USER: string
   }
 }
-
 
 export class PrivateMessages extends React.Component<Iprops, Istate> {
 
@@ -80,9 +77,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     }
     this.myRef = null;
     this.openConversation = this.openConversation.bind(this);
-
   }
-
   minimizeChats (roomJid: any) {
     let minimizedRoomList = this.state.minimizedChats;
 
@@ -121,57 +116,54 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       });
     }
   }
-
   async sendMessage (event: any){
     event.preventDefault();
     let chat = this.state.chat;
     let text = event.target.chatMessage.value;
 
-    var reactComponent = this;
+    let __this = this;
 
-      var spoiler_hint = "undefined";
+    let spoiler_hint = "undefined";
 
-        const attrs = chat.getOutgoingMessageAttributes(text, spoiler_hint);
+    const attrs = chat.getOutgoingMessageAttributes(text, spoiler_hint);
 
-        let message = chat.messages.findWhere('correcting');
+    let message = chat.messages.findWhere('correcting');
 
-        if (message) {
-          const older_versions = message.get('older_versions') || [];
-          older_versions.push(message.get('message'));
-          message.save({
-            'correcting': false,
-            'edited': chat.moment().format(),
-            'message': text,
-            'older_versions': older_versions,
-            'references': text
-          });
-        } else {
-          message = chat.messages.create(attrs);
-        }
+    if (message) {
+      const older_versions = message.get('older_versions') || [];
+      older_versions.push(message.get('message'));
+      message.save({
+        'correcting': false,
+        'edited': chat.moment().format(),
+        'message': text,
+        'older_versions': older_versions,
+        'references': text
+      });
+    } else {
+      message = chat.messages.create(attrs);
+    }
 
     // TODO: null check for sending messages
     if (text !== "" || text !== null){
-      reactComponent.state.converse.api.send(chat.createMessageStanza(message));
-      reactComponent.getPrivateMessages(message);
+      __this.state.converse.api.send(chat.createMessageStanza(message));
+      __this.getPrivateMessages(message);
       return true;
     }
-
   }
-
-  scrollToBottom = () => {
-    if (this.messagesEnd){
-      this.messagesEnd.scrollIntoView({ behavior: "smooth", block: "end" });
+  scrollToBottom(behavior: string = "smooth") {
+    const isAlreadyInBottom = this.myRef.scrollTop + this.myRef.offsetHeight === this.myRef.scrollHeight;
+    if (!isAlreadyInBottom && this.messagesEnd){
+      this.messagesEnd.scrollIntoView({ behavior });
     }
   }
-
   openConversation(jid: any){
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-    let reactComponent = this;
+    let __this = this;
     this.state.converse.api.chats.open(jid).then(async(chat:any) => {
       this.setState({
         chat: chat,
-        chatRecipientNick: chat.attributes.nickname || reactComponent.state.nickTo
+        chatRecipientNick: chat.attributes.nickname || __this.state.nickTo
       })
 
       let result;
@@ -238,26 +230,70 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       this.setState({messages: newArrFromOldMessages, roomJid: jid});
     });
   }
-
   async getPrivateMessages (data: any) {
 
-      const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
+    const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-      if (data.chatbox && data.chatbox.attributes.message_type === "chat"){
-        let message = data.stanza.textContent;
-        let from:any;
+    if (data.chatbox && data.chatbox.attributes.message_type === "chat"){
+      let message = data.stanza.textContent;
+      let from:any;
+      let user:any;
+      let nickname: any;
+      let nick: any;
+      let userName: any;
+
+
+      let messages = this.state.messages;
+      var msg = data.chatbox.messages.models[data.chatbox.messages.models.length - 1];
+
+      from = msg.attributes.from;
+      from = from.split("@")[0];
+      from = from.toUpperCase();
+
+      if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")){
+        user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
+        nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
+        userName = user.firstName + " " + user.lastName;
+        nick = nickname.nick;
+      } else {
+        userName = from;
+        nick = from;
+
+      }
+
+      let newMessage = {
+        message: msg.attributes.message,
+        from:  userName + " '" + nick + "' ",
+        id: msg.attributes.id,
+        stamp: msg.attributes.time,
+        senderClass: "sender-" + msg.attributes.sender
+      }
+
+      var isExists = messages.some(function(curr :any) {
+          if (curr.id === msg.attributes.id) {
+              return true;
+          }
+      });
+
+      if (isExists !== true){
+        messages.push(newMessage);
+      }
+
+
+      this.setState({messages: messages});
+
+        return;
+      } else if (data.attributes && data.attributes.type === "chat"){
+
+        let message = data.attributes.message;
+        let from = data.attributes.from;
+        from = from.split("@")[0];
+        from = from.toUpperCase();
+        let senderClass ="sender-" + data.attributes.sender;
         let user:any;
         let nickname: any;
         let nick: any;
         let userName: any;
-
-
-        let messages = this.state.messages;
-        var msg = data.chatbox.messages.models[data.chatbox.messages.models.length - 1];
-
-        from = msg.attributes.from;
-        from = from.split("@")[0];
-        from = from.toUpperCase();
 
         if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")){
           user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
@@ -270,66 +306,16 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
 
         }
 
-        let newMessage = {
-          message: msg.attributes.message,
-          from:  userName + " '" + nick + "' ",
-          id: msg.attributes.id,
-          stamp: msg.attributes.time,
-          senderClass: "sender-" + msg.attributes.sender
-        }
-
-        var isExists = messages.some(function(curr :any) {
-            if (curr.id === msg.attributes.id) {
-                return true;
-            }
-        });
-
-        if (isExists !== true){
-          messages.push(newMessage);
-        }
-
+        let messages = this.state.messages;
 
         this.setState({messages: messages});
-
-          return;
-        } else if (data.attributes && data.attributes.type === "chat"){
-
-          let message = data.attributes.message;
-          let from = data.attributes.from;
-          from = from.split("@")[0];
-          from = from.toUpperCase();
-          let senderClass ="sender-" + data.attributes.sender;
-          let user:any;
-          let nickname: any;
-          let nick: any;
-          let userName: any;
-
-          if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")){
-            user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
-            nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
-            userName = user.firstName + " " + user.lastName;
-            nick = nickname.nick;
-          } else {
-            userName = from;
-            nick = from;
-
-          }
-
-          let messages = this.state.messages;
-
-          this.setState({messages: messages});
-
-        }
+      }
     }
-
-
     componentDidMount (){
 
-
-      let reactComponent = this;
+      let __this = this;
 
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-
 
       let chat = this.props.info;
 
@@ -351,7 +337,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         this.openConversation(jid);
 
         this.props.converse.api.listen.on('message', function (messageXML: any) {
-          reactComponent.getPrivateMessages(messageXML);
+          __this.getPrivateMessages(messageXML);
         });
 
         this.scrollToBottom();
@@ -359,7 +345,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats"));
 
         if (minimizedChatsFromSessionStorage){
-          reactComponent.setState({
+          this.setState({
             minimizedChats: minimizedChatsFromSessionStorage
           });
 
@@ -373,16 +359,11 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
           })
         }
       }
-
     }
-
     componentDidUpdate(){
-      this.scrollToBottom();
+
     }
-
-
     render() {
-
       return  (
         <div className={"chat__private-chat--body " + this.state.minimizedClass}>
         { (this.state.minimized === true) && <div
@@ -396,10 +377,6 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
             <span onClick={() => this.minimizeChats(this.state.roomJid)} className="icon-remove"></span>
             <span onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="icon-close"></span>
           </div>
-
-
-
-
           <form onSubmit={(e)=>this.sendMessage(e)}>
             <div className="chat__private-chat--messages" ref={ (ref) => this.myRef=ref }>
               {this.state.messages.map((message: any, i:any) => <PrivateMessage key={i} message={message} />)}
@@ -411,11 +388,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
             <button className="chat__private-chat--send-message" type="submit" value=""><span className="icon-announcer"></span></button>
           </form>
         </div>}
-
-
       </div>
-
-
       );
     }
   }

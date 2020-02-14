@@ -58,7 +58,7 @@ export default function(store: Store<StateType>){
             persistent_store: "localStorage", // Activate this for production (It'll use either or anyway, so might as well have something here)
             ping_interval: 45,
             trusted: "off", // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY
-            whitelisted_plugins: ["myplugin","addRoom", "profileChatSettings"]
+            whitelisted_plugins: ["muikku-chat-ui"]
           });
         }
       });
