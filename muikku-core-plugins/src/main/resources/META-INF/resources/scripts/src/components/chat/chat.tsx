@@ -126,23 +126,20 @@ export class Chat extends React.Component<Iprops, Istate> {
 
   onOpenPrivateChat(occupant: any) {
     if (occupant.id === window.MUIKKU_LOGGED_USER){
-        return;
-      }
-
+      return;
+    }
     else if (occupant.id.startsWith("PYRAMUS-STAFF-") || window.MUIKKU_IS_STUDENT === false){
       let jid = occupant.id.toLowerCase() + "@dev.muikkuverkko.fi";
 
-      let privateChats = this.state.privateChats;
-
-      var isExists = privateChats.some(function(curr :any) {
+      var isExists = this.state.privateChats.some(function(curr :any) {
         if (curr.jid === jid) {
           return true;
         }
       });
 
-      if (isExists === true){
+      if (isExists === true) {
 
-        const filteredRooms = privateChats.filter((item: any) => item.jid !== jid)
+        const filteredRooms = this.state.privateChats.filter((item: any) => item.jid !== jid)
         this.setState({privateChats: filteredRooms})
 
         var result = JSON.parse(window.sessionStorage.getItem('openPrivateChats')) || [];
@@ -153,13 +150,11 @@ export class Chat extends React.Component<Iprops, Istate> {
 
         window.sessionStorage.setItem("openPrivateChats", JSON.stringify(filteredChats));
 
-        return;
       } else {
-        privateChats.push({jid: jid, info: occupant});
+        this.state.privateChats.push({jid: jid, info: occupant});
 
-        this.setState({privateChats: privateChats})
+        this.setState({privateChats: this.state.privateChats})
       }
-
     }
   }
 

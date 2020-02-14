@@ -116,6 +116,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
     this.getOccupants = this.getOccupants.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
+    this.onEnterPress = this.onEnterPress.bind(this);
     this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
 
