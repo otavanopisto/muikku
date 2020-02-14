@@ -34,11 +34,14 @@ export default function(store: Store<StateType>){
       mApi().chat.status.read().callback(function(err:Error, result:{mucNickName:string,nick:string,enabled:true}) {
         if (result && result.enabled) {
           converse.initialize({
+            // * * * * * * * * * * * * * * *
+            // Thou shall not touch these
+            // * * * * * * * * * * * * * * *
+            muc_domain : "conference." + location.hostname,
             authentication : "prebind",
             prebind_url : "/rest/chat/prebind",
             bosh_service_url: "/http-bind/",
             default_domain: location.hostname,
-            auto_away: 300,
             auto_login: true,
             auto_reconnect: true,
             fullname: result.mucNickName,
@@ -46,19 +49,57 @@ export default function(store: Store<StateType>){
             i18n: state.locales.current,
             jid: state.status.userSchoolDataIdentifier,
             keepalive: true,
+            // This forces the use of nickname set in Muikku user's profile view
+            // This is default value but added here as a reminder not to touch this as Muikku Chat UI requires this setting for displaying nick names/real names.
+            muc_nickname_from_jid: false,
+            // * * * * * * * * * * * * * * *
+
+            // - - - - - - - - - - - - - - -
+            // Thou shall touch these
+            // - - - - - - - - - - - - - - -
+
+            // Sets timeout when user is marked away automatically
+            auto_away: 300,
+
+            // Supported locales for converse. If Muikku has more langauges in future we need to update this.
             locales: ["fi", "en"],
-            logLevel: "debug", // Needs to be set to info when in production mode
-            message_archiving: "always",
+
+            // Needs to be set to "info" when in production mode
+            logLevel: "debug",
+
+            // This might be depcerated as it is not included in converse documentation
             hide_muc_server: false,
+
             allow_muc: true,
-            muc_domain : "conference." + location.hostname,
-            muc_history_max_stanzas: 0, // Should be 0 if MAM (message_archiving: "always") is in use
+
+            // We try to archive every message, openfire needs to have archiving turned on with chat rooms also
+            message_archiving: "always",
+
+            // This defines the maximum amount of archived messages to be returned per query.
+            archived_messages_page_size: 10,
+
+            // Should be 0 if MAM (message_archiving: "always") is in use
+            muc_history_max_stanzas: 0,
+
             muc_show_join_leave: true,
+
+            // This allows students and teachers private messages between each other without adding recipient to contacts
             allow_non_roster_messaging: true,
-            persistent_store: "localStorage", // Activate this for production (It'll use either or anyway, so might as well have something here)
+
+            // We could set this to IndexedDB so we don't bump into 5MB limit of local storage (not very like to happen).
+            // IndexedDB is also async and might be more future proof.
+            persistent_store: "localStorage",
+
+            // How often converse pings in milliseconds
             ping_interval: 45,
-            trusted: "off", // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY
+
+            // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY.
+            // For production this option needs to be removed.
+            trusted: "off",
+
+            // Plugins that can be used
             whitelisted_plugins: ["muikku-chat-ui"]
+            // - - - - - - - - - - - - - - -
           });
         }
       });
