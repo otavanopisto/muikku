@@ -77,6 +77,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     }
     this.myRef = null;
     this.openConversation = this.openConversation.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
   }
   minimizeChats (roomJid: any) {
     let minimizedRoomList = this.state.minimizedChats;
@@ -93,7 +94,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         this.setState({minimizedChats: minimizedRoomList})
         window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedRoomList));
       }
-    } else{
+    } else {
 
       if (minimizedRoomList.includes(roomJid)){
         const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJid)
@@ -112,41 +113,38 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
 
       this.setState({
         minimized: false,
-        minimizedClass:""
+        minimizedClass: ""
       });
     }
   }
   async sendMessage (event: any){
     event.preventDefault();
-    let chat = this.state.chat;
     let text = event.target.chatMessage.value;
-
-    let __this = this;
 
     let spoiler_hint = "undefined";
 
-    const attrs = chat.getOutgoingMessageAttributes(text, spoiler_hint);
+    const attrs = this.state.chat.getOutgoingMessageAttributes(text, spoiler_hint);
 
-    let message = chat.messages.findWhere('correcting');
+    let message = this.state.chat.messages.findWhere('correcting');
 
     if (message) {
       const older_versions = message.get('older_versions') || [];
       older_versions.push(message.get('message'));
       message.save({
         'correcting': false,
-        'edited': chat.moment().format(),
+        'edited': this.state.chat.moment().format(),
         'message': text,
         'older_versions': older_versions,
         'references': text
       });
     } else {
-      message = chat.messages.create(attrs);
+      message = this.state.chat.messages.create(attrs);
     }
 
     // TODO: null check for sending messages
     if (text !== "" || text !== null){
-      __this.state.converse.api.send(chat.createMessageStanza(message));
-      __this.getPrivateMessages(message);
+      this.state.converse.api.send(this.state.chat.createMessageStanza(message));
+      this.getPrivateMessages(message);
       return true;
     }
   }
@@ -159,11 +157,10 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
   openConversation(jid: any){
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-    let __this = this;
     this.state.converse.api.chats.open(jid).then(async(chat:any) => {
       this.setState({
         chat: chat,
-        chatRecipientNick: chat.attributes.nickname || __this.state.nickTo
+        chatRecipientNick: chat.attributes.nickname || this.state.nickTo
       })
 
       let result;
@@ -174,7 +171,6 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       }
 
       let sessionResult = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
-
 
       if (!sessionResult.includes(jid)){
           sessionResult.push(jid);
@@ -197,8 +193,8 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       let senderClass: any;
 
       for (i = 0; i < olderMessages.length; i++) {
-        var pathForStamp = './/*[local-name()="delay"]/@stamp';
-        var pathForFrom = './/*[local-name()="message"]/@from';
+        let pathForStamp = './/*[local-name()="delay"]/@stamp';
+        let pathForFrom = './/*[local-name()="message"]/@from';
         stamp = olderMessages[i].ownerDocument.evaluate(pathForStamp, olderMessages[i], null, XPathResult.STRING_TYPE, null ).stringValue;
         from = olderMessages[i].ownerDocument.evaluate(pathForFrom, olderMessages[i], null, XPathResult.STRING_TYPE, null ).stringValue;
 
@@ -214,7 +210,6 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         } else {
           userName = from;
           nick = from;
-
         }
 
         if (from === window.MUIKKU_LOGGED_USER){
@@ -242,8 +237,6 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       let nick: any;
       let userName: any;
 
-
-      let messages = this.state.messages;
       var msg = data.chatbox.messages.models[data.chatbox.messages.models.length - 1];
 
       from = msg.attributes.from;
@@ -258,7 +251,6 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       } else {
         userName = from;
         nick = from;
-
       }
 
       let newMessage = {
@@ -269,20 +261,18 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         senderClass: "sender-" + msg.attributes.sender
       }
 
-      var isExists = messages.some(function(curr :any) {
-          if (curr.id === msg.attributes.id) {
-              return true;
-          }
+      let isExists = this.state.messages.some(function(curr :any) {
+        if (curr.id === msg.attributes.id) {
+          return true;
+        }
       });
 
       if (isExists !== true){
-        messages.push(newMessage);
+        this.state.messages.push(newMessage);
       }
 
+      this.setState({messages: this.state.messages});
 
-      this.setState({messages: messages});
-
-        return;
       } else if (data.attributes && data.attributes.type === "chat"){
 
         let message = data.attributes.message;
@@ -303,12 +293,9 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         } else {
           userName = from;
           nick = from;
-
         }
 
-        let messages = this.state.messages;
-
-        this.setState({messages: messages});
+        this.setState({messages: this.state.messages});
       }
     }
     componentDidMount (){
@@ -325,7 +312,6 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         let firstName = chat.info.firstName;
         let lastName = chat.info.lastName;
 
-
         this.setState({
           jidTo: jid,
           nickTo: nick,
@@ -340,7 +326,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
           __this.getPrivateMessages(messageXML);
         });
 
-        this.scrollToBottom();
+        this.scrollToBottom.bind(this, "auto");
 
         let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats"));
 
