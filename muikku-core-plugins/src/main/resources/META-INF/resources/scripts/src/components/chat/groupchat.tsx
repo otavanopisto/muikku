@@ -600,7 +600,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let room = await this.state.converse.api.rooms.get(this.state.roomJid);
 
       if (room.occupants.models) {
-        let occupantsList = this.state.occupants;
         let user: any;
         let userData: any;
         let nickname: any;
@@ -619,18 +618,18 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             userData = {id: item.attributes.nick, nick: nickname, status: item.attributes.show, firstName: "", lastName: ""};
           }
 
-          var isExists = occupantsList.some(function(curr :any) {
-              if (curr.id === userData.id) {
-                  return true;
-              }
+          let isExists = this.state.occupants.some(function(curr :any) {
+            if (curr.id === userData.id) {
+                return true;
+            }
           });
 
           if (isExists !== true) {
-            occupantsList.push(userData);
+            this.state.occupants.push(userData);
           }
         }
         this.setState({
-          occupants: occupantsList
+          occupants: this.state.occupants
         });
       }
     }
