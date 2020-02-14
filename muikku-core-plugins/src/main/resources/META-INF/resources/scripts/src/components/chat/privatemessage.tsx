@@ -80,17 +80,25 @@ export class PrivateMessage extends React.Component<Iprops, Istate> {
     }
     render() {
       return  (
-        <div className={this.state.senderClass + " chat__message-item"}>
-          <p className={this.state.senderClass + " chat__message-item--timestamp"}>
-          <b onClick={this.showRealName} className={this.state.senderClass}>{this.state.from}
-          {(this.state.showName === true) && <i>({this.state.realName}) </i>}
-          </b>{new Intl.DateTimeFormat('en-GB', {
+        <div className={`chat__message chat__message--${this.state.senderClass}`}>
+        <div className="chat__message-meta">
+          <span className="chat__message-meta-sender" onClick={this.showRealName}>
+            {this.state.from} {(this.state.showName === true) && <span className="chat__message-meta-sender-real-name">({this.state.realName}) </span>}
+          </span>
+          <span className="chat__message-meta-timestamp">
+            {new Intl.DateTimeFormat('fi-FI', {
               year: 'numeric', month: 'numeric', day: 'numeric',
               hour: 'numeric', minute: 'numeric', second: 'numeric',
               hour12: false
-          }).format(this.state.timeStamp)}</p>
-          <p className={this.state.senderClass + " chat__message-item--text"}>{this.state.message}</p>
+            }).format(this.state.timeStamp)}
+          </span>
         </div>
+        <div className="chat__message-content-container">
+          <div className="chat__message-content">
+            {this.state.message}
+          </div>
+        </div>
+      </div>
       );
     }
   }

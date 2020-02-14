@@ -78,7 +78,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     this.myRef = null;
     this.openConversation = this.openConversation.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
-    this.onEnterPress = this.onEnterPress.bind(this);
+    // this.onEnterPress = this.onEnterPress.bind(this);
   }
   minimizeChats (roomJid: any) {
     let minimizedRoomList = this.state.minimizedChats;
