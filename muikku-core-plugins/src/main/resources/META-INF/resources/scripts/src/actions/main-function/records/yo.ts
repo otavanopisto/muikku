@@ -34,8 +34,6 @@ let updateMatriculationSubjectEligibility:UpdateMatriculationSubjectEligibilityT
      let state = getState();
      let selectedSubjects = state.hops.value.studentMatriculationSubjects;
      
-     
-     
      let subjects: Array<YOMatriculationSubjectType> = await promisify(mApi().records.matriculationSubjects.read(), 'callback')() as Array<YOMatriculationSubjectType>;     
      let subjectCodes: Array<string> = [];
      
@@ -98,8 +96,8 @@ let updateYO:updateYOTriggerType = function updateYO() {
 
     try {
 
-      let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
-      let now: Number = new Date().getTime();
+//      let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
+//      let now: Number = new Date().getTime();
       let matriculationExamData:any = await promisify (mApi().matriculation.exams.read({}), 'callback')();
 
       dispatch({

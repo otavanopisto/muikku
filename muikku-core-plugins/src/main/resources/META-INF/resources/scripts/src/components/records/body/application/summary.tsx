@@ -8,7 +8,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-sub-panel.scss';
-import { RecordsType } from '~/reducers/main-function/records/records';
+import { RecordsType } from '~/reducers/main-function/records';
 import { SummaryType } from '~/reducers/main-function/records/summary';
 import { HOPSType } from '~/reducers/main-function/hops';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
@@ -18,6 +18,7 @@ import {StateType} from '~/reducers';
 import MainChart from '~/components/general/graph/main-chart';
 import '~/sass/elements/application-sub-panel.scss';
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
+
 
 interface SummaryProps {
   i18n: i18nType,

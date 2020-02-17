@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 
 public interface UserSchoolDataBridge {
 	
@@ -28,6 +29,7 @@ public interface UserSchoolDataBridge {
 	/* User */
 	
 	public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember);
+  public BridgeResponse<StudentPayload> createStudent(StudentPayload student);
 	
 	/**
 	 * Creates new user

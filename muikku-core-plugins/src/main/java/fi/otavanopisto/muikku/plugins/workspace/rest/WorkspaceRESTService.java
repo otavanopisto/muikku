@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -55,8 +57,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
+import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -151,6 +155,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private LocaleController localeController;
 
   @Inject
   private CourseMetaController courseMetaController;
@@ -389,7 +396,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (userIdentifier != null) {
         if (includeInactiveWorkspaces) {
           workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
-        } else {
+        } 
+        else {
           workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(userIdentifier);
         }
       }
@@ -400,9 +408,27 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
           return Response.status(Status.FORBIDDEN).build();
         }
-        workspaceEntities = Boolean.TRUE.equals(includeUnpublished)
-          ? workspaceController.listWorkspaceEntities()
-          : workspaceController.listPublishedWorkspaceEntities();
+        workspaceEntities = Boolean.TRUE.equals(includeUnpublished) ? workspaceController.listWorkspaceEntities() : workspaceController.listPublishedWorkspaceEntities();
+      }
+   
+      // When querying workspaces of a student, plain teachers are limited to workspaces they are teaching
+      
+      if ((userIdentifier != null || userEntity != null) && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_STUDENT_WORKSPACES)) {
+        EnvironmentRoleEntity targetRole = userIdentifier != null
+            ? userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier)
+            : userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+        if (targetRole != null && targetRole.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+          Predicate<WorkspaceEntity> isTeacher = new Predicate<WorkspaceEntity>() {
+            @Override
+            public boolean test(WorkspaceEntity workspaceEntity) {
+              return sessionController.hasWorkspacePermission(MuikkuPermissions.TEACH_WORKSPACE, workspaceEntity);
+            }
+          };
+          workspaceEntities = workspaceEntities.stream().filter(isTeacher).collect(Collectors.toList());
+          if (workspaceEntities.isEmpty()) {
+            return Response.noContent().build();
+          }
+        }
       }
     }
 
@@ -2068,12 +2094,16 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response deleteNode(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId,
-      @QueryParam("removeAnswers") Boolean removeAnswers,
+      @QueryParam("removeAnswers") @DefaultValue ("false") Boolean removeAnswers,
       @QueryParam("updateLinkedMaterials") @DefaultValue ("false") Boolean updateLinkedMaterials) {
     // TODO Our workspace?
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
+    if (removeAnswers) {
+      logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d with forced answer removal", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -2113,7 +2143,14 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.noContent().build();
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
-        return Response.status(Status.CONFLICT).entity(new WorkspaceMaterialDeleteError(WorkspaceMaterialDeleteError.Reason.CONTAINS_ANSWERS)).build();
+        Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+        if (material != null && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(material)) {
+          logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d denied due to material containing answers", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
+          return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
+        }
+        else {
+          return Response.status(Status.CONFLICT).entity(new WorkspaceMaterialDeleteError(WorkspaceMaterialDeleteError.Reason.CONTAINS_ANSWERS)).build();
+        }
       }
       catch (Exception e) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).build();

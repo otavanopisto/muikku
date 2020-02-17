@@ -1,7 +1,7 @@
 import {ActionType} from "~/actions";
 import {i18nType} from '~/reducers/base/i18n';
 
-import {WorkspaceType, WorkspaceListType} from '~/reducers/main-function/workspaces';
+import {WorkspaceType, WorkspaceListType} from '~/reducers/workspaces';
 import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, UserGroupListType } from '~/reducers/main-function/user-index';
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";

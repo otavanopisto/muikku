@@ -24,12 +24,11 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
     super(props);
   }
 
-
   render(){
     let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.records.pageTitle')}</h2>
-    return (<div>
+    return (<div className="application-panel-wrapper">
       <ApplicationPanel modifier="records" title={title} asideBefore={this.props.aside}>
-        <Records/>
+        <Records />
         <CurrentRecord/>
         {/* Removed until it works <Vops/> */}
         <Hops/>

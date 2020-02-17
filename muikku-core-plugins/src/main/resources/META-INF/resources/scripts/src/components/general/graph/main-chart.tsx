@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {StateType} from '~/reducers';
-import {WorkspaceListType, ActivityLogType} from '~/reducers/main-function/workspaces';
+import {WorkspaceListType, ActivityLogType} from '~/reducers/workspaces';
 import WorkspaceFilter from './filters/workspace-filter';
 import GraphFilter from './filters/graph-filter';
 import '~/sass/elements/chart.scss';

@@ -2,12 +2,10 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Link from '~/components/general/link';
 import { i18nType } from '~/reducers/base/i18n';
-
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { TranscriptOfRecordLocationType, RecordsType } from '~/reducers/main-function/records/records';
+import { TranscriptOfRecordLocationType, RecordsType } from '~/reducers/main-function/records';
 import {StateType} from '~/reducers';
-
 import NavigationMenu, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 import { HOPSType } from '~/reducers/main-function/hops';
 

@@ -2,10 +2,9 @@ import actions from '../../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
-import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceStudentActivityType } from 'reducers/main-function/workspaces';
-import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType,
-  CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records/records';
+import {UserWithSchoolDataType, UserFileType} from '~/reducers/main-function/user-index';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentStateType } from 'reducers/workspaces';
+import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records';
 import { StateType } from '~/reducers';
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
@@ -13,6 +12,7 @@ export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"U
 export type UPDATE_RECORDS_LOCATION = SpecificActionType<"UPDATE_RECORDS_LOCATION", TranscriptOfRecordLocationType>;
 export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS = SpecificActionType<"UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS", CurrentStudentUserAndWorkspaceStatusType>;
 export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE = SpecificActionType<"UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE", CurrentRecordType>;
+export type UPDATE_RECORDS_SET_FILES = SpecificActionType<"UPDATE_RECORDS_SET_FILES", Array<UserFileType>>;
 
 export interface SetLocationToStatisticsInTranscriptOfRecordsTriggerType {
   ():AnyActionType
@@ -41,6 +41,10 @@ export interface SetLocationToHopsInTranscriptOfRecordsTriggerType {
   ():AnyActionType
 }
 
+export interface UpdateTranscriptOfRecordsFilesTriggerType {
+  ():AnyActionType
+}
+
 let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRecordsTriggerType = function updateAllStudentUsersAndSetViewToRecords(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
@@ -56,6 +60,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       if (getState().records.userDataStatus !== "WAIT"){
         return;
       }
+      
       dispatch({
         type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
         payload: <AllStudentUsersDataStatusType>"LOADING"
@@ -64,11 +69,9 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       //OK let me try to explain this :<
       
       //We get the current used id this user is supposedly a student
-      
       let userId:number = getState().status.userId;
     
       //we get the users that represent that userId
-      
       let users:Array<UserWithSchoolDataType> = await promisify(mApi().user.students.read({
         userEntityId: userId, 
         includeInactiveStudents: true, 
@@ -211,7 +214,6 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
           //to filter, sometimes there might be no record at all eg, the user curriculum identifier has no workspace or
           //transfer credit with that id; or it might be empty, eg, as the default record hold no records at all,
           //we want to filter those cases out
-
           resultingData[index].records = workspaceOrder.map((curriculumIdentifier: string)=>{
             return recordById[curriculumIdentifier];
           }).concat([defaultRecords]).filter((record: RecordGroupType)=>(record && record.workspaces.length + record.transferCredits.length));
@@ -317,7 +319,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       })()
       
       ]);
-     
+      
       dispatch({
         type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE",
         payload: {
@@ -380,7 +382,20 @@ let setLocationToHopsInTranscriptOfRecords:SetLocationToHopsInTranscriptOfRecord
   };
 }
 
-export default {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords,setLocationToYoInTranscriptOfRecords,setLocationToSummaryInTranscriptOfRecords,setLocationToStatisticsInTranscriptOfRecords}
-export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords,setLocationToYoInTranscriptOfRecords,setLocationToSummaryInTranscriptOfRecords,setLocationToStatisticsInTranscriptOfRecords}
+let updateTranscriptOfRecordsFiles:UpdateTranscriptOfRecordsFilesTriggerType = function updateTranscriptOfRecordsFiles(){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let files:Array<UserFileType> = <Array<UserFileType>>(
+        await promisify(mApi().guider.users.files.read(getState().status.userSchoolDataIdentifier), 'callback')());
+    
+    dispatch({
+      type: "UPDATE_RECORDS_SET_FILES",
+      payload: files
+    });
+  }
+}
+
+
+
+
+export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,setLocationToVopsInTranscriptOfRecords, setLocationToStatisticsInTranscriptOfRecords, setLocationToYoInTranscriptOfRecords,  setLocationToHopsInTranscriptOfRecords, setLocationToSummaryInTranscriptOfRecords, updateTranscriptOfRecordsFiles}
+ 

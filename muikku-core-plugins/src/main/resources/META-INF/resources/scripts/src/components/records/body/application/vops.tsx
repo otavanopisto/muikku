@@ -6,7 +6,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/application-list.scss';
-import { RecordsType } from '~/reducers/main-function/records/records';
+import { RecordsType } from '~/reducers/main-function/records';
 import { VOPSType } from '~/reducers/main-function/vops';
 import VopsGraph from '~/components/base/vops';
 import {StateType} from '~/reducers';

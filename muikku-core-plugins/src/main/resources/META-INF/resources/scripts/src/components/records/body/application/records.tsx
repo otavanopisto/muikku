@@ -10,10 +10,10 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/workspace-activity.scss';
 import '~/sass/elements/file-uploader.scss';
-import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
+import { RecordsType, TransferCreditType } from '~/reducers/main-function/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
@@ -21,7 +21,7 @@ import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from 
 
 interface RecordsProps {
   i18n: i18nType,
-  records: RecordsType
+  records: RecordsType,
 }
 
 interface RecordsState {
@@ -34,7 +34,7 @@ interface RecordsState {
 let storedCurriculumIndex:any = {};
 
 function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: WorkspaceType){
-  let assesmentState:WorkspaceAssessementState;
+  let assesmentState:WorkspaceAssessementStateType;
   let assesmentDate:string;
   if (workspace.studentAssessmentState && workspace.studentAssessmentState.state){
     assesmentState = workspace.studentAssessmentState.state;
@@ -58,6 +58,7 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
   return <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
       getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
       {shortenGrade(grade.grade)}
+
     </span>
 }
 
@@ -147,7 +148,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
 
   render(){
-    if (this.props.records.userDataStatus === "LOADING"){
+    if (this.props.records.userDataStatus === "LOADING" || this.props.records.userDataStatus === "WAIT"){
       return null;
     } else if (this.props.records.userDataStatus === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
@@ -160,6 +161,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         storedCurriculumIndex[curriculum.identifier] = curriculum.name;
       });
     }
+
     let studentRecords = <div className="application-sub-panel">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
@@ -226,7 +228,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     <div className="application-sub-panel">
       <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
       <div className="application-sub-panel__body">
-      {this.props.records.files.length ?
+      {this.props.records.files.length?
         <ApplicationList className="uploaded-files text">
           {this.props.records.files.map((file)=>{
             return <ApplicationListItem className="uploaded-files__item" key={file.id}>
@@ -245,7 +247,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: state.records
+    records: state.records,
   }
 };
 function mapDispatchToProps(dispatch: Dispatch<any>){

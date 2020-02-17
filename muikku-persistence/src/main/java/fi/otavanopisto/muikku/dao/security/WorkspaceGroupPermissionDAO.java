@@ -67,6 +67,23 @@ public class WorkspaceGroupPermissionDAO extends CoreDAO<WorkspaceGroupPermissio
     
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public List<WorkspaceGroupPermission> listByUserGroupEntityAndPermission(UserGroupEntity userGroupEntity, Permission permission) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceGroupPermission> criteria = criteriaBuilder.createQuery(WorkspaceGroupPermission.class);
+    Root<WorkspaceGroupPermission> root = criteria.from(WorkspaceGroupPermission.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceGroupPermission_.userGroup), userGroupEntity),
+        criteriaBuilder.equal(root.get(WorkspaceGroupPermission_.permission), permission)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
   @Override
   public void delete(WorkspaceGroupPermission workspaceRolePermission) {

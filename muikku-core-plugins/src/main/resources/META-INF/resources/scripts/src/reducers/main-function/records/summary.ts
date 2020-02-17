@@ -1,7 +1,7 @@
 import { ActionType } from "actions";
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
-import { WorkspaceListType, ActivityLogType} from "~/reducers/main-function/workspaces";
+import { WorkspaceListType, ActivityLogType} from "~/reducers/workspaces";
 
 
 export type SummaryStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";

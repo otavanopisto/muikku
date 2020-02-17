@@ -305,8 +305,21 @@ public class CoursePickerRESTService extends PluginRESTService {
         }
       }
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
-          curriculumIdentifiers, organizationIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
+      searchResult = searchProvider.searchWorkspaces()
+        .setSchoolDataSource(schoolDataSourceFilter)
+        .setSubjects(subjects)
+        .setWorkspaceIdentifiers(workspaceIdentifierFilters)
+        .setEducationTypeIdentifiers(educationTypes)
+        .setCurriculumIdentifiers(curriculumIdentifiers)
+        .setOrganizationIdentifiers(organizationIdentifiers)
+        .setFreeText(searchString)
+        .setAccesses(accesses)
+        .setAccessUser(sessionController.getLoggedUser())
+        .setIncludeUnpublished(includeUnpublished)
+        .setFirstResult(firstResult)
+        .setMaxResults(maxResults)
+        .setSorts(sorts)
+        .search();
       
       schoolDataBridgeSessionController.startSystemSession();
       try {

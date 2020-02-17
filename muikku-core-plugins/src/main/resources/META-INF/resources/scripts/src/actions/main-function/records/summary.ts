@@ -4,7 +4,7 @@ import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { SummaryDataType, SummaryStatusType, SummaryWorkspaceListType } from '~/reducers/main-function/records/summary';
-import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/main-function/workspaces';
+import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, ActivityLogType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 
 

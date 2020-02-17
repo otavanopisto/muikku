@@ -3,7 +3,7 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as queryString from 'query-string';
 import { i18nType } from '~/reducers/base/i18n';
-import { RecordsType } from '~/reducers/main-function/records/records';
+import { RecordsType } from '~/reducers/main-function/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
 import Button from '~/components/general/button';
@@ -121,12 +121,12 @@ class YO extends React.Component<YOProps, YOState> {
           </div>
         </div>
       );
-    }
+    }   
   }
 }
 
 function mapStateToProps(state: StateType) {
-  return {
+  return {    
     i18n: state.i18n,
     records: state.records,
     hops: state.hops,

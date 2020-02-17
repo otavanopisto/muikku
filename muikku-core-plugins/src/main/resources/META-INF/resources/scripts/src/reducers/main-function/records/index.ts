@@ -1,5 +1,5 @@
 import { UserWithSchoolDataType, UserFileType } from "~/reducers/main-function/user-index";
-import { WorkspaceType } from "~/reducers/main-function/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { CourseCurriculumFilterListType } from "~/reducers/main-function/courses";
 
@@ -11,6 +11,9 @@ export interface TransferCreditType {
   date: string,
   gradeIdentifier: string,
   gradingScaleIdentifier: string,
+  grade: string,
+  gradingScale: string,
+  passed: boolean,
   identifier: string,
   length: number,
   lengthUnitIdentifier: string,
@@ -82,6 +85,23 @@ export interface MaterialType {
   assignment?: MaterialAssignmentType
 }
 
+export interface MaterialAnswerType {
+  embedId: string,
+  fieldName: string,
+  materialId: number,
+  value: string,
+  workspaceMaterialId: number
+}
+
+export interface MaterialCompositeRepliesType {
+  answers: Array<MaterialAnswerType>,
+  created: string,
+  lastModified: string,
+  state: string,
+  submitted: string,
+  withdrawn?: string
+}
+
 export interface MaterialEvaluationType {
   id: number,
   evaluated: string,
@@ -93,10 +113,10 @@ export interface MaterialEvaluationType {
   grade: string,
   gradeIdentifier: string,
   gradeSchoolDataSource: string,
+  gradingScale: string,
   verbalAssessment: string,
   passed: boolean
 }
-
 
 export type MaterialListType = Array<MaterialType>;
 
@@ -161,6 +181,10 @@ export default function records(state: RecordsType={
   } else if (action.type === "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE"){
     return Object.assign({}, state, {
       current: action.payload
+    });
+  } else if (action.type === "UPDATE_RECORDS_SET_FILES"){
+    return Object.assign({}, state, {
+      files: action.payload
     });
   }
   return state;

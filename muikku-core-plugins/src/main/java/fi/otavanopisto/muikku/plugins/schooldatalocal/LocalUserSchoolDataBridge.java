@@ -44,6 +44,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
 
 @Dependent
 public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
@@ -59,6 +60,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload payload) {
 	  throw new SchoolDataBridgeInternalException("Not supported");
 	}
+
+	public BridgeResponse<StudentPayload> createStudent(StudentPayload payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
 
 	/**
 	 * {@inheritDoc}
