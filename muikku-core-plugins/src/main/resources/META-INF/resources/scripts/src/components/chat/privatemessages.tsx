@@ -230,7 +230,10 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
           newArrFromOldMessages.push({message: text, from: userName + " ("+ nick +")", id: "", stamp: stamp, senderClass: senderClass});
         }
       }
-      this.setState({messages: newArrFromOldMessages, roomJid: jid});
+      this.setState({
+        messages: newArrFromOldMessages,
+        roomJid: jid
+      });
     });
   }
   async getPrivateMessages (data: any) {

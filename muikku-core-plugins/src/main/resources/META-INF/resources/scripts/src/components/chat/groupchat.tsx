@@ -26,7 +26,7 @@ interface Istate {
   roomName?: string,
   roomConfig?: any,
   messages?: Object,
-  groupMessages?: any,
+  groupMessages?: Object[],
   availableMucRooms?: Object,
   chatBox?: any,
   chat?: any,
@@ -122,9 +122,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
   handleIncomingMessages( data: any ) {
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-    if (data.chatbox.attributes.jid === this.state.roomJid){
-      data.chatbox.messages.models.map((msg: any) => this.getMUCMessages(msg));
+    if(data.chatbox !== undefined) {
+      if (data.chatbox.attributes.jid === this.state.roomJid){
+        if (data.chatbox.messages.models.length > 0) {
+          this.getMUCMessages(data.chatbox.messages.models[data.chatbox.messages.models.length - 1]);          
+        }
+      }  
     }
+    
   }
   openMucConversation(room: string){
     let data = {
@@ -191,9 +196,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           groupMessages: [],
           chatRoomOccupants: chat.occupants
         });
-
         // chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
         // chat.addHandler('message', 'groupMessages', this.getMUCMessages.bind(this) );
+
       });
 
     }
@@ -268,32 +273,33 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         } else {
           stamp = new Date().toString();
         }
-        
         let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
 
-        if (message !== "") {
 
-          let groupMessages = this.state.groupMessages;
+        if (message !== "") {
+          let tempGroupMessages = new Array;
+        
+          if(this.state.groupMessages.length !== 0){
+            tempGroupMessages = [...this.state.groupMessages];
+          }
 
           if (!message.startsWith("messageID=")) {
-           groupMessages.push(groupMessage);
+            tempGroupMessages.push(groupMessage);
           } else {
-            let arr= new Array();
-            arr.push(message);
             deleteId = message.split("=").pop();
           }
 
-          var i:any;
-          for (i = 0; i < groupMessages.length; i++) {
-            var groupMessageId = groupMessages[i].messageId;
+          let i:any;
+          for (i = 0; i < tempGroupMessages.length; i++) {
+            let groupMessageId = tempGroupMessages[i].messageId;
             if (deleteId && groupMessageId === deleteId) {
-              groupMessages[i] = {...groupMessages[i], deleted: true}
+              tempGroupMessages[i] = {...tempGroupMessages[i], deleted: true}
             }
           }
-          groupMessages.sort((a: any, b: any) => (a.timeStamp > b.timeStamp) ? 1 : -1)
+          tempGroupMessages.sort((a: any, b: any) => (a.timeStamp > b.timeStamp) ? 1 : -1)
 
           this.setState({
-            groupMessages: groupMessages
+            groupMessages: tempGroupMessages
           }, this.scrollToBottom.bind(this, "auto"));
 
           if (this.state.showOccupantsList === true) {
@@ -609,7 +615,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let room = await this.state.converse.api.rooms.get(this.state.roomJid);
 
       if (room.occupants.models) {
-        let occupantsList = this.state.occupants;
         let user: any;
         let userData: any;
         let nickname: any;
@@ -628,18 +633,18 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             userData = {id: item.attributes.nick, nick: nickname, status: item.attributes.show, firstName: "", lastName: ""};
           }
 
-          var isExists = occupantsList.some(function(curr :any) {
-              if (curr.id === userData.id) {
-                  return true;
-              }
+          let isExists = this.state.occupants.some(function(curr :any) {
+            if (curr.id === userData.id) {
+                return true;
+            }
           });
 
           if (isExists !== true) {
-            occupantsList.push(userData);
+            this.state.occupants.push(userData);
           }
         }
         this.setState({
-          occupants: occupantsList
+          occupants: this.state.occupants
         });
       }
     }
@@ -727,7 +732,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
-
+      let messages = this.state.groupMessages;
       return  (
         <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
@@ -776,11 +781,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} ref={ (ref) => this.myRef=ref }>
-                  {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
+                  {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp + 'timeStamp'} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
-                  {this.state.occupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</div>)}
+                  {this.state.occupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick + i +'occupant'}</div>)}
                 </div>}
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>

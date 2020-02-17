@@ -123,7 +123,6 @@ export class Chat extends React.Component<Iprops, Istate> {
     });
   }
   // --------------- PRIVATE MESSAGES ----------------------
-
   onOpenPrivateChat(occupant: any) {
     if (occupant.id === window.MUIKKU_LOGGED_USER){
       return;
@@ -153,7 +152,9 @@ export class Chat extends React.Component<Iprops, Istate> {
       } else {
         this.state.privateChats.push({jid: jid, info: occupant});
 
-        this.setState({privateChats: this.state.privateChats})
+        this.setState({
+          privateChats: this.state.privateChats
+        })
       }
     }
   }
