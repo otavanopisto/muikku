@@ -177,7 +177,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
     if (data.nick === "") {
       // Make sure defaults apply if no nick is provided.
-      data.nick = this.state.nick;
+      data.nick = this.props.nick;
     }
 
     jid = data.jid;
@@ -187,7 +187,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         'jid':jid,
         'maximize': true,
         'auto_configure': true,
-        'nick': this.state.nick,
+        'nick': this.props.nick,
         'publicroom': true,
       }), false).then((chat: any) => {
         this.setState({
@@ -209,6 +209,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       if (stanza && stanza.attributes.type === "groupchat") {
         let message = stanza.attributes.message;
         let occupant;
+        let from = stanza.attributes.from;
+
+        from = from.split("/").pop();
+
         if (!stanza.vcard){
           occupant = stanza.attributes.identifier;
         } else {
@@ -224,14 +228,20 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let nick: any;
         let userName: any;
 
-        if (occupant.startsWith("PYRAMUS-STAFF-") || occupant.startsWith("PYRAMUS-STUDENT-")) {
-          user = (await promisify(mApi().user.users.basicinfo.read(occupant,{}), 'callback')());
-          chatSettings = (await promisify(mApi().chat.settings.read(occupant), 'callback')());
-          userName = user.firstName + " " + user.lastName;
+        if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
+          from = from.split("@");
+          from = from[0];
+          chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
           nick = chatSettings.nick;
+          
+          if (nick == "" || nick == undefined) {
+            user = (await promisify(mApi().user.users.basicinfo.read(occupant,{}), 'callback')());
+            userName = user.firstName + " " + user.lastName;
+            nick = userName;
+          }
         } else {
-          userName = occupant;
-          nick = occupant;
+          //userName = occupant;
+          nick = from;
         }
 
         if (message !== "") {
@@ -240,7 +250,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           messageId = "null";
         }
 
-        if (occupant === window.MUIKKU_LOGGED_USER) {
+        if (stanza.attributes.sender === "me" || from === window.MUIKKU_LOGGED_USER) {
           senderClass = "sender-me";
         } else {
           senderClass = "sender-them";
@@ -262,10 +272,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         } else {
           stamp = new Date().toString();
         }
-        if (nick == "" || nick == undefined) {
-          nick = userName;
-        }
-        let groupMessage = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
+        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
+
 
         if (message !== "") {
           let tempGroupMessages = new Array;
@@ -340,6 +348,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       attrs.identifier = window.MUIKKU_LOGGED_USER;
       attrs.from = this.state.jid;
       attrs.to = this.state.roomJid;
+      attrs.nick = chat.attributes.nick || window.PROFILE_DATA.displayName;
 
       let message = chat.messages.findWhere('correcting');
 
