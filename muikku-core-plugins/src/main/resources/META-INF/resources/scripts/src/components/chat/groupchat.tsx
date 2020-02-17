@@ -26,7 +26,7 @@ interface Istate {
   roomName?: string,
   roomConfig?: any,
   messages?: Object,
-  groupMessages?: any,
+  groupMessages?: Object[],
   availableMucRooms?: Object,
   chatBox?: any,
   chat?: any,
@@ -121,9 +121,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
   handleIncomingMessages( data: any ) {
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-    if (data.chatbox.attributes.jid === this.state.roomJid){
-      data.chatbox.messages.models.map((msg: any) => this.getMUCMessages(msg));
+    if(data.chatbox !== undefined) {
+      if (data.chatbox.attributes.jid === this.state.roomJid){
+        if (data.chatbox.messages.models.length > 0) {
+          this.getMUCMessages(data.chatbox.messages.models[data.chatbox.messages.models.length - 1]);          
+        }
+      }  
     }
+    
   }
   openMucConversation(room: string){
     let data = {
@@ -260,31 +265,32 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         if (nick == "" || nick == undefined) {
           nick = userName;
         }
-        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
+        let groupMessage = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
 
         if (message !== "") {
-
-          let groupMessages = this.state.groupMessages;
+          let tempGroupMessages = new Array;
+        
+          if(this.state.groupMessages.length !== 0){
+            tempGroupMessages = [...this.state.groupMessages];
+          }
 
           if (!message.startsWith("messageID=")) {
-            groupMessages.push(groupMessage);
+            tempGroupMessages.push(groupMessage);
           } else {
-            let arr= new Array();
-            arr.push(message);
             deleteId = message.split("=").pop();
           }
 
           let i:any;
-          for (i = 0; i < groupMessages.length; i++) {
-            let groupMessageId = groupMessages[i].messageId;
+          for (i = 0; i < tempGroupMessages.length; i++) {
+            let groupMessageId = tempGroupMessages[i].messageId;
             if (deleteId && groupMessageId === deleteId) {
-              groupMessages[i] = {...groupMessages[i], deleted: true}
+              tempGroupMessages[i] = {...tempGroupMessages[i], deleted: true}
             }
           }
-          groupMessages.sort((a: any, b: any) => (a.timeStamp > b.timeStamp) ? 1 : -1)
+          tempGroupMessages.sort((a: any, b: any) => (a.timeStamp > b.timeStamp) ? 1 : -1)
 
           this.setState({
-            groupMessages: groupMessages
+            groupMessages: tempGroupMessages
           }, this.scrollToBottom.bind(this, "auto"));
 
           if (this.state.showOccupantsList === true) {
@@ -718,7 +724,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
       let messages = this.state.groupMessages;
-      console.log(messages);
       return  (
         <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
