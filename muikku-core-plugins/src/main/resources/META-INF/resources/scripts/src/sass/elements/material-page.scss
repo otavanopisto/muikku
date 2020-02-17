@@ -1507,6 +1507,21 @@
   margin: 2px 0;
 }
 
+// Table Wrapper
+.material-page__table-wrapper {
+  overflow-x: auto;
+}
+
+// Word Definition
+mark[data-muikku-word-definition] {
+  background: transparent;
+  border-bottom: 1px dashed  $color-material-word-definition-color;
+  color: $color-material-word-definition-color;
+  cursor: help;
+  font-weight: 400;
+  position: relative;
+}
+
 // Assignment assessment
 .material-page__assignment-assessment {
   border-left-style: solid;

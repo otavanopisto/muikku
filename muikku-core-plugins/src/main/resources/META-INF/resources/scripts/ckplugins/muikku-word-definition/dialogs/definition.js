@@ -1,6 +1,6 @@
 CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
   var lang = editor.lang['muikku-word-definition'];
-  
+
   return {
     title: lang.definitionDialogTitle,
     minWidth: 400,
@@ -28,32 +28,32 @@ CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
           this.setValue(text||'');
         },
         commit: function(editor) {
-          var removeStyle = new CKEDITOR.style({ 
+          var removeStyle = new CKEDITOR.style({
             element: 'mark',
             alwaysRemoveElement: true
           });
-          
+
           removeStyle.remove(editor);
-          
+
           var value = this.getValue();
           if(value != ""){
-            var applyStyle = new CKEDITOR.style({ 
+            var applyStyle = new CKEDITOR.style({
               element: 'mark',
-              attributes: { 
-                'data-muikku-word-definition': value 
+              attributes: {
+                'data-muikku-word-definition': value
               }
          	 });
-          
+
             applyStyle.apply(editor);
           }
         }
       }]
     }],
-    
+
     onShow: function() {
       this.setupContent(editor);
     },
-    
+
     onOk: function() {
       this.commitContent(editor);
     }
