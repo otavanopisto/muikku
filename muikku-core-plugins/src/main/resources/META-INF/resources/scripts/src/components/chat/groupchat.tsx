@@ -121,7 +121,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   }
 
   handleIncomingMessages( data: any ) {
-    const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
     if(data.chatbox !== undefined) {
       if (data.chatbox.attributes.jid === this.state.roomJid){
         if (data.chatbox.messages.models.length > 0) {
