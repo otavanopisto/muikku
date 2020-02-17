@@ -3,10 +3,6 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
-$muikku-blue: #009fe3;
-$workspace-blue: #2fd2ae;
-$the-grey: #eaeaea;
-
 .chat {
   @include text;
   align-items: flex-end;
@@ -85,6 +81,10 @@ $the-grey: #eaeaea;
   background: $color-chat-other-room-main-color;
 }
 
+.chat__minimized--private {
+  background: $color-chat-private-main-color;
+}
+
 .chat__minimized-title {
   cursor: pointer;
   flex-basis: auto;
@@ -125,6 +125,11 @@ $the-grey: #eaeaea;
   width: 400px;
 }
 
+.chat__panel--private {
+  border-top: 4px solid $color-chat-private-main-color;
+  width: 400px;
+}
+
 .chat__panel-header {
   align-items: center;
   background-color: $color-default;
@@ -151,6 +156,10 @@ $the-grey: #eaeaea;
 }
 
 .chat__panel-header--other {
+  justify-content: flex-start;
+}
+
+.chat__panel-header--private {
   justify-content: flex-start;
 }
 
@@ -210,7 +219,7 @@ $the-grey: #eaeaea;
   }
 }
 
-// Workspace Room specific icon colors
+// Controlbox Room specific icon colors
 .chat__panel-header--controlbox,
 .chat__subpanel-header--new-room {
 
@@ -263,6 +272,18 @@ $the-grey: #eaeaea;
 
   .chat__button--close {
     color: $color-chat-other-room-main-color;
+  }
+}
+
+// Private chat specific icon colors
+.chat__panel-header--private {
+
+  .chat__button--minimize {
+    color: $color-chat-private-main-color;
+  }
+
+  .chat__button--close {
+    color: $color-chat-private-main-color;
   }
 }
 
@@ -492,6 +513,11 @@ $the-grey: #eaeaea;
   color: $color-chat-other-room-main-color;
 }
 
+.chat__submit--send-muc-message-private {
+  background: $color-default;
+  color: $color-chat-private-main-color;
+}
+
 // Chat Messages
 .chat__messages-container {
   color: $color-default-contrast;
@@ -623,6 +649,22 @@ $the-grey: #eaeaea;
   }
 }
 
+// Private Chat's specific 'sender-me' messages
+.chat__messages-container--private {
+
+  .chat__message--sender-me {
+
+    .chat__message-meta-sender {
+      color: $color-chat-private-main-color;
+    }
+
+    .chat__message-content {
+      background: $color-chat-private-main-color;
+      color: $color-default;
+    }
+  }
+}
+
 .chat__message-action-container {
   align-items: center;
   border-bottom: 1px dashed $color-default-separator-border;
@@ -687,30 +729,6 @@ $the-grey: #eaeaea;
 
 .game-info {
   margin-left: 20px;
-}
-.sender-me {
-  align-self: flex-end;
-
-  b {
-    color: #777878;
-    font-size: 12px;
-  }
-}
-
-.sender-them {
-  align-self: flex-start;
-   b{
-     color: $muikku-blue;
-     font-size: 12px;
-   }
-}
-
-.sender-others-workspace {
-  align-self: flex-start;
-   b{
-     color: $workspace-blue;
-     font-size: 12px;
-   }
 }
 
 .--none {

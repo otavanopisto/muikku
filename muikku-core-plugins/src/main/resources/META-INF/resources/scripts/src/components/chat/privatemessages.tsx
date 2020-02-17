@@ -78,6 +78,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     this.myRef = null;
     this.openConversation = this.openConversation.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
+    // this.onEnterPress = this.onEnterPress.bind(this);
   }
   minimizeChats (roomJid: any) {
     let minimizedRoomList = this.state.minimizedChats;
@@ -154,6 +155,13 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       this.messagesEnd.scrollIntoView({ behavior });
     }
   }
+  onEnterPress(e: any) {
+    if(e.keyCode == 13 && e.shiftKey == false) {
+      e.preventDefault();
+
+      return false;
+    }
+  }
   openConversation(jid: any){
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
@@ -222,7 +230,10 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
           newArrFromOldMessages.push({message: text, from: userName + " ("+ nick +")", id: "", stamp: stamp, senderClass: senderClass});
         }
       }
-      this.setState({messages: newArrFromOldMessages, roomJid: jid});
+      this.setState({
+        messages: newArrFromOldMessages,
+        roomJid: jid
+      });
     });
   }
   async getPrivateMessages (data: any) {
@@ -338,8 +349,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
           minimizedChatsFromSessionStorage.map((item: any) => {
             if (item === chat.jid){
               this.setState({
-                minimized: true,
-                minimizedClass: "order-minimized"
+                minimized: true
               });
             }
           })
@@ -351,29 +361,35 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     }
     render() {
       return  (
-        <div className={"chat__private-chat--body " + this.state.minimizedClass}>
-        { (this.state.minimized === true) && <div
-        onClick={() => this.minimizeChats(this.state.roomJid)}
-          className="chat__minimized-chat">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo} <span onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="close icon-close"></span></div>}
 
-          { (this.state.minimized === false) && <div className="chat__private-chat--container">
+        <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
-          <div className="chat__private-chat--header">
-            <div className="chat__chatbox--room-name">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
-            <span onClick={() => this.minimizeChats(this.state.roomJid)} className="icon-remove"></span>
-            <span onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="icon-close"></span>
-          </div>
-          <form onSubmit={(e)=>this.sendMessage(e)}>
-            <div className="chat__private-chat--messages" ref={ (ref) => this.myRef=ref }>
-              {this.state.messages.map((message: any, i:any) => <PrivateMessage key={i} message={message} />)}
-              <div style={{ float:"left", clear: "both"}} ref={(el) => { this.messagesEnd = el; }}></div>
+          {this.state.minimized === true ? (
+            <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__minimized chat__minimized--private">
+              <div className="chat__minimized-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
+              <div onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="chat__button chat__button--close icon-close"></div>
             </div>
+          ) : (
+            <div className="chat__panel chat__panel--private">
+              <div className="chat__panel-header chat__panel-header--private">
+                <div className="chat__panel-header-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
+                <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-remove"></div>
+                <div onClick={() => this.props.onOpenPrivateChat(this.state.roomJid)} className="chat__button chat__button--close icon-close"></div>
+              </div>
 
-            <input name="chatRecipient" className="chat__private-chat--recipient" value={this.state.roomJid} readOnly/>
-            <textarea className="chat__private-chat--message-area" placeholder="..Kirjoita jotakin" name="chatMessage"></textarea>
-            <button className="chat__private-chat--send-message" type="submit" value=""><span className="icon-announcer"></span></button>
-          </form>
-        </div>}
+              <div className="chat__panel-body chat__panel-body--chatroom">
+                <div className="chat__messages-container chat__messages-container--private" ref={ (ref) => this.myRef=ref }>
+                {this.state.messages.map((message: any, i:any) => <PrivateMessage key={i} message={message} />)}
+                  <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
+                </div>
+              </div>
+              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>
+                <input name="chatRecipient" className="chat__muc-recipient" value={this.state.roomJid} readOnly/>
+                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
+                <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right-thin"></span></button>
+              </form>
+            </div>
+          )}
       </div>
       );
     }
