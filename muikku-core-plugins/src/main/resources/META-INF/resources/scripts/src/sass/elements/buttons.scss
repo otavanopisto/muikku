@@ -380,10 +380,6 @@
   height: $button-primary-height;
   width: 100%;
 
-  &:not(:first-child) {
-    margin-left: 10px;
-  }
-
   @include breakpoint($breakpoint-pad) {
     display: inline-flex;
     width: auto;
@@ -398,8 +394,11 @@
       background-color: darken($color-yo-sign-up, 20%);
     }
   }
-}
 
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+}
 
 .button--primary-function {
   display: none;

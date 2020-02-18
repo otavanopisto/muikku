@@ -120,8 +120,8 @@
 
 .application-sub-panel__body--studies-summary-cards {
   display: flex;
-  justify-content: space-between;
   flex-direction: column;
+  justify-content: space-between;
 
   @include breakpoint($breakpoint-desktop) {
     flex-direction: row;
