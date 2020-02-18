@@ -16,7 +16,7 @@ interface FrontpageStudyingState {
 
 export default class FrontpageStudying extends React.Component<FrontpageStudyingProps, FrontpageStudyingState> {
   render() {
-    return <section id="studying" className="screen-container__section">    
+    return <section id="studying" className="screen-container__section">
       <h2 className="screen-container__header">{this.props.i18n.text.get( 'plugin.sectionTitle.studying' )}</h2>
       <div className="ordered-container ordered-container--frontpage-studying">
         <div className="ordered-container__item ordered-container__item--upper-secondary-school">
@@ -27,9 +27,9 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
               <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.nettilukio.description' )}</div>
             </div>
             <div className="card__footer">
-              <Button href="http://www.nettilukio.fi/nettilukio_esittely"
+              <Button openInNewTab="_blank" href="https://nettilukio.fi"
                 buttonModifiers={["branded", "frontpage-upper-secondary-school-readmore"]}>
-                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )} </Button>
+                {this.props.i18n.text.get( 'plugin.studying.nettilukio.link' )} </Button>
             </div>
           </div>
         </div>
@@ -41,9 +41,9 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
               <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.nettiperuskoulu.description' )}</div>
             </div>
             <div className="card__footer">
-              <Button href="http://www.nettiperuskoulu.fi/esittely_nettipk"
+              <Button openInNewTab="_blank" href="https://nettiperuskoulu.fi"
                 buttonModifiers={["branded", "frontpage-secondary-school-readmore"]}>
-                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )}</Button>
+                {this.props.i18n.text.get( 'plugin.studying.nettiperuskoulu.link' )}</Button>
             </div>
           </div>
         </div>
@@ -55,9 +55,12 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
               <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.aineopiskelu.description' )}</div>
             </div>
             <div className="card__footer">
-              <Button href="http://aineopiskelu.otavanopisto.fi/esittely_aineopiskelu "
+              <Button openInNewTab="_blank" href="https://nettilukio.fi/aineopiskelu"
                 buttonModifiers={["branded", "frontpage-open-materials-readmore"]}>
-                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )}</Button>
+                {this.props.i18n.text.get( 'plugin.studying.nettilukio.aineopiskelu.link' )}</Button>
+              <Button openInNewTab="_blank" href="https://nettiperuskoulu.fi/aineopiskelu"
+                buttonModifiers={["branded", "frontpage-open-materials-readmore"]}>
+                {this.props.i18n.text.get( 'plugin.studying.nettiperuskoulu.aineopiskelu.link' )}</Button>
             </div>
           </div>
         </div>

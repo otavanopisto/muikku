@@ -17,7 +17,7 @@ interface FeedProps {
 }
 
 interface FeedState {
-  
+
 }
 
 class Feed extends React.Component<FeedProps, FeedState> {
@@ -26,7 +26,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
       {this.props.entries.map((entry, index)=>{
         return <li className="feed__item" key={entry.link}>
           <span className="feed__item-description">
-            <a href={entry.link} target="top">{entry.title}</a>
+            <a href={entry.link} target="_blank">{entry.title}</a>
             <span dangerouslySetInnerHTML={{__html: entry.description}}/>
           </span>
           <span className="feed__item-date">{this.props.i18n.time.format(entry.publicationDate)}</span>

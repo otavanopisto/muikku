@@ -60,7 +60,7 @@ $color-signature-border: #f2f2f2;
 $color-signature-background: #f8f8f8;
 
 // Evaluation
-$color-evaluation-request: $color-primary; 
+$color-evaluation-request: $color-primary;
 $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
 $color-grade-passed: #2ed31c;
@@ -270,6 +270,7 @@ $color-carousel-default-dot-active-background: $color-warn;
 
 // hero
 $color-hero-default-background: #0089c6;
+$color-hero-default-shadow: rgba(0,0,0,0.25);
 
 // logo
 $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
@@ -399,7 +400,7 @@ $color-tab-invisible-border: rgba(255, 255, 255, 0);
 
 
 //  CATEGORIES
-$color-category-1: #0099ff; 
+$color-category-1: #0099ff;
 $color-category-2: #ff9900;
 $color-category-3: #ff008d;
 $color-category-4: #0bf0f2;
