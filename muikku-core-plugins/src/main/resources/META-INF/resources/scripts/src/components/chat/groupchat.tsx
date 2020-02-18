@@ -626,36 +626,41 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let tempStudentOccupants = [...this.state.studentOccupants];
         let tempStaffOccupants = [...this.state.staffOccupants];
         for (const item of room.occupants.models) {
-          if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
-            chatSettings = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
-            user = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick,{}), 'callback')());
-
-            userData = {id: item.attributes.nick, nick: chatSettings.nick, status: item.attributes.show, firstName: user.firstName, lastName: user.lastName};
-
-          } else {
-            user = item.attributes.nick;
-            chatSettings = item.attributes.nick;
-
-            userData = {id: item.attributes.nick, nick: chatSettings, status: item.attributes.show, firstName: "", lastName: ""};
+          if(typeof item.attributes.nick !== 'undefined'){
+            if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
+              chatSettings = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
+              user = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick,{}), 'callback')());
+              let nick = chatSettings.nick;
+              if(nick === ""){
+                nick = user.firstName + " " + user.lastName;
+              }
+              userData = {id: item.attributes.nick, nick: nick, status: item.attributes.show, firstName: user.firstName, lastName: user.lastName};
+            } else {
+              user = item.attributes.nick;
+              let nick = item.attributes.nick;
+              userData = {id: item.attributes.nick, nick: nick, status: item.attributes.show, firstName: "", lastName: ""};
+            }
           }
 
-          if(item.attributes.nick.startsWith("PYRAMUS-STAFF-")){
-            let isExists = tempStaffOccupants.some(function(curr :any) {
-              if (curr.id === userData.id) {
-                  return true;
+          if(typeof item.attributes.nick !== 'undefined'){
+            if(item.attributes.nick.startsWith("PYRAMUS-STAFF-")){
+              let isExists = tempStaffOccupants.some(function(curr :any) {
+                if (curr.id === userData.id) {
+                    return true;
+                }
+              });
+              if (isExists !== true) {
+                tempStaffOccupants.push(userData);
               }
-            });
-            if (isExists !== true) {
-              tempStaffOccupants.push(userData);
-            }
-          } else{
-            let isExists = tempStudentOccupants.some(function(curr :any) {
-              if (curr.id === userData.id) {
-                  return true;
+            } else{
+              let isExists = tempStudentOccupants.some(function(curr :any) {
+                if (curr.id === userData.id) {
+                    return true;
+                }
+              });
+              if (isExists !== true) {
+                tempStudentOccupants.push(userData);
               }
-            });
-            if (isExists !== true) {
-              tempStudentOccupants.push(userData);
             }
           }
         }
