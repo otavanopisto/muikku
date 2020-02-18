@@ -44,7 +44,8 @@ interface Istate {
   chatRoomType: string,
   showName: boolean,
   chatRoomOccupants: any,
-  occupants?: any,
+  studentOccupants?: Object[],
+  staffOccupants?: Object[],
   showOccupantsList?: boolean,
   occupantsListOpened?: Object[],
   privateChats?: any,
@@ -99,7 +100,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       chatRoomType: "",
       showName: false,
       chatRoomOccupants: [],
-      occupants: [],
+      studentOccupants: [],
+      staffOccupants: [],
       showOccupantsList: false,
       occupantsListOpened: [],
       privateChats: [],
@@ -195,7 +197,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           groupMessages: [],
           chatRoomOccupants: chat.occupants
         });
-        // chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
+    chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
         // chat.addHandler('message', 'groupMessages', this.getMUCMessages.bind(this) );
 
       });
@@ -611,39 +613,55 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
     }
     async getOccupants(){
+//      this.state.occupants cannot be enough to house members of different rooms in state.
+//      Something more on the lines of roomsAndOccupants[] > occupants[]
+//      It seems to work though... I am confused
+      let roomJID = this.state.roomJid;
       let room = await this.state.converse.api.rooms.get(this.state.roomJid);
 
       if (room.occupants.models) {
         let user: any;
         let userData: any;
-        let nickname: any;
-
+        let chatSettings: any;
+        let tempStudentOccupants = [...this.state.studentOccupants];
+        let tempStaffOccupants = [...this.state.staffOccupants];
         for (const item of room.occupants.models) {
           if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
-            nickname = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
+            chatSettings = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
             user = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick,{}), 'callback')());
 
-            userData = {id: item.attributes.nick, nick: nickname.nick, status: item.attributes.show, firstName: user.firstName, lastName: user.lastName};
+            userData = {id: item.attributes.nick, nick: chatSettings.nick, status: item.attributes.show, firstName: user.firstName, lastName: user.lastName};
 
           } else {
             user = item.attributes.nick;
-            nickname = item.attributes.nick;
+            chatSettings = item.attributes.nick;
 
-            userData = {id: item.attributes.nick, nick: nickname, status: item.attributes.show, firstName: "", lastName: ""};
+            userData = {id: item.attributes.nick, nick: chatSettings, status: item.attributes.show, firstName: "", lastName: ""};
           }
 
-          let isExists = this.state.occupants.some(function(curr :any) {
-            if (curr.id === userData.id) {
-                return true;
+          if(item.attributes.nick.startsWith("PYRAMUS-STAFF-")){
+            let isExists = tempStaffOccupants.some(function(curr :any) {
+              if (curr.id === userData.id) {
+                  return true;
+              }
+            });
+            if (isExists !== true) {
+              tempStaffOccupants.push(userData);
             }
-          });
-
-          if (isExists !== true) {
-            this.state.occupants.push(userData);
+          } else{
+            let isExists = tempStudentOccupants.some(function(curr :any) {
+              if (curr.id === userData.id) {
+                  return true;
+              }
+            });
+            if (isExists !== true) {
+              tempStudentOccupants.push(userData);
+            }
           }
         }
         this.setState({
-          occupants: this.state.occupants
+          studentOccupants: tempStudentOccupants,
+          staffOccupants: tempStaffOccupants
         });
       }
     }
@@ -784,7 +802,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
-                  {this.state.occupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick + i +'occupant'}</div>)}
+                  <div className="chat__occupants-staff">
+                    {this.state.staffOccupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</div>)}
+                  </div>
+                  <div className="chat__occupants-student">
+                    {this.state.studentOccupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</div>)}
+                  </div>
                 </div>}
               </div>
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>
