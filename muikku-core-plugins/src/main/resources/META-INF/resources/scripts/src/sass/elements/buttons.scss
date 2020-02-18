@@ -379,11 +379,11 @@
   color: $color-yo-sign-up-contrast;
   height: $button-primary-height;
   width: 100%;
-  
+
   &:not(:first-child) {
     margin-left: 10px;
   }
-  
+
   @include breakpoint($breakpoint-pad) {
     display: inline-flex;
     width: auto;

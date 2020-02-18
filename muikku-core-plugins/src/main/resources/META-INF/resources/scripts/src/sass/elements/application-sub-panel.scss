@@ -160,7 +160,7 @@
 }
 
 .application-sub-panel__card-item {
-  margin: 10px 0 10px;
+  margin: 10px 0;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 300px;
