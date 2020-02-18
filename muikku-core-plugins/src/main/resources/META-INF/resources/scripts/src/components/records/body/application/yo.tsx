@@ -49,11 +49,11 @@ class YO extends React.Component<YOProps, YOState> {
     if (this.props.records.location !== "yo" || this.props.yo.status != "READY" || this.props.hops.eligibility.upperSecondarySchoolCurriculum == false) {
       return null;
     } else {
-      const selectedMatriculationSubjects = this.props.eligibilitySubjects.status == "READY" ? this.props.eligibilitySubjects.subjects.map((subject, index) => {
+      const selectedMatriculationSubjects = this.props.eligibilitySubjects.status == "READY" ?  this.props.eligibilitySubjects.subjects.length > 0 ? this.props.eligibilitySubjects.subjects.map((subject, index) => {
         return (
           <MatriculationEligibilityRow key={subject.subjectName + index} subject={subject} />
         );
-      }) : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> ; 
+      }) : <div>{this.props.i18n.text.get("plugin.records.yo.noMatriculationSubjectsSelected")}</div>  : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> ; 
      
 //  < div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
       
