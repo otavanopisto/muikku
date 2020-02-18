@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import Materials from './materials';
 import MaterialEditor from '~/components/base/material-editor';
+import SignupDialog from '~/components/coursepicker/dialogs/workspace-signup';
 import TableOfContentsComponent from './content';
 
 import EnrollmentDialog from "../enrollment-dialog";
@@ -13,7 +14,9 @@ interface WorkspaceMaterialsBodyProps {
   workspaceUrl: string,
   onActiveNodeIdChange: (newId: number)=>any;
   enrollmentDialogOpen: boolean;
+  signupDialogOpen: boolean;
   onCloseEnrollmentDialog: () => void;
+  onCloseSignupDialog: () => void;
 }
 
 interface WorkspaceMaterialsBodyState {
@@ -34,6 +37,8 @@ export default class WorkspaceMaterialsBody extends React.Component<WorkspaceMat
       <WorkspaceNavbar activeTrail="materials" workspaceUrl={this.props.workspaceUrl}/>
       <EnrollmentDialog
         isOpen={this.props.enrollmentDialogOpen} onClose={this.props.onCloseEnrollmentDialog}/>
+      <SignupDialog
+        isOpen={this.props.signupDialogOpen} onClose={this.props.onCloseSignupDialog}/>
       <MaterialEditor/>
       <Materials onOpenNavigation={this.onOpenNavigation}
         navigation={navigationComponent} ref="materials" onActiveNodeIdChange={this.props.onActiveNodeIdChange}/>

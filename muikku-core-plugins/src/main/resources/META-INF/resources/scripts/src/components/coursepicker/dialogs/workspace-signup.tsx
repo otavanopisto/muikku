@@ -18,8 +18,11 @@ import { WorkspaceType } from '~/reducers/workspaces';
 
 interface WorkspaceSignupDialogProps {
   i18n: i18nType,
-  children: React.ReactElement<any>,
-  workspace: WorkspaceType,
+  children?: React.ReactElement<any>,
+  isOpen?: boolean;
+  onClose?: () => void,
+  workspace?: WorkspaceType,
+  currentWorkspace: WorkspaceType,
   signupIntoWorkspace: SignupIntoWorkspaceTriggerType
 }
 
@@ -44,8 +47,9 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
   }
   signup(closeDialog: ()=>any){
     this.setState({locked: true});
+    const workspaceToUse = this.props.workspace || this.props.currentWorkspace;
     this.props.signupIntoWorkspace({
-      workspace: this.props.workspace,
+      workspace: workspaceToUse,
       success: ()=>{
         this.setState({locked: false, message: ""});
         closeDialog();
@@ -57,11 +61,12 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
     });
   }
   render(){
+    const workspaceToUse = this.props.workspace || this.props.currentWorkspace;
     let content = (closeDialog: ()=>any) => <div>
       <div>
-        <div className="dialog__content-row">{this.props.i18n.text.get('plugin.workspaceSignUp.courseDescription', this.props.workspace.name,
-            this.props.workspace.nameExtension || "")}</div>
-        {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ?
+        <div className="dialog__content-row">{this.props.i18n.text.get('plugin.workspaceSignUp.courseDescription', workspaceToUse.name,
+            workspaceToUse.nameExtension || "")}</div>
+        {workspaceToUse.feeInfo && workspaceToUse.feeInfo.evaluationHasFee ?
           <div className="form-element dialog__content-row">
             <p><label>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.label')}</label></p>
             <p><span>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.content')}</span></p>
@@ -85,7 +90,7 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
     
     return <Dialog modifier="workspace-signup-dialog"
       title={this.props.i18n.text.get('plugin.workspaceSignUp.title')}
-      content={content} footer={footer}>
+      content={content} footer={footer} isOpen={this.props.isOpen} onClose={this.props.onClose}>
       {this.props.children}
     </Dialog>
   }
@@ -93,7 +98,8 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
 
 function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    currentWorkspace: state.workspaces.currentWorkspace,
   }
 };
 

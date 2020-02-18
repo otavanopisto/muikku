@@ -45,6 +45,7 @@ interface WorkspaceProps {
 
 interface WorkspaceState {
   enrollmentDialogOpen: boolean;
+  signupDialogOpen: boolean;
 }
 
 (window as any).USES_HISTORY_API = true;
@@ -79,6 +80,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     this.loadWorkspaceMaterialsData = this.loadWorkspaceMaterialsData.bind(this);
     this.loadWorkspaceHelpData = this.loadWorkspaceHelpData.bind(this);
     this.closeEnrollmentDialog = this.closeEnrollmentDialog.bind(this);
+    this.closeSignupDialog = this.closeSignupDialog.bind(this);
 
     this.onWorkspaceMaterialsBodyActiveNodeIdChange = this.onWorkspaceMaterialsBodyActiveNodeIdChange.bind(this);
     this.onWorkspaceHelpBodyActiveNodeIdChange = this.onWorkspaceHelpBodyActiveNodeIdChange.bind(this);
@@ -87,11 +89,17 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
     this.state = {
       enrollmentDialogOpen: !props.store.getState().status.loggedIn,
+      signupDialogOpen: false,
     }
   }
   closeEnrollmentDialog() {
     this.setState({
       enrollmentDialogOpen: false,
+    });
+  }
+  closeSignupDialog() {
+    this.setState({
+      signupDialogOpen: false,
     });
   }
   loadlib(url: string){
@@ -112,8 +120,16 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     } else if (window.location.pathname.includes("/announcer")){
       this.loadWorkspaceAnnouncerData(window.location.hash.replace("#","").split("/"));
     } else if (window.location.pathname.includes("/materials")){
-      if (window.location.hash.replace("#", "")){
-        this.loadWorkspaceMaterialsData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
+      const hashvalue = window.location.hash.replace("#", "");
+      const supposedLoadedSection = hashvalue &&
+        parseInt(window.location.hash.replace("#", "").replace("p-", ""));
+      const signupDialogOn = hashvalue === "signup";
+      if (signupDialogOn) {
+        this.setState({
+          signupDialogOpen: true,
+        });
+      } else if (supposedLoadedSection){
+        this.loadWorkspaceMaterialsData(supposedLoadedSection);
       } else if (this.props.store.getState().workspaces.currentMaterials &&
           this.props.store.getState().workspaces.currentMaterials[0] &&
           this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
@@ -396,12 +412,20 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       if (state.status.loggedIn && state.status.isStudent && !state.status.permissions.WORKSPACE_SIGNUP) {
         this.props.store.dispatch(displayNotification(state.i18n.text.get('plugin.workspace.materials.cannotSignUpWarning'), "notice") as Action);
+      } else if (state.status.isStudent && !state.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT) {
+        this.props.store.dispatch(displayNotification(
+          state.i18n.text.get('plugin.workspace.materials.notSignedUpWarning') +
+            ` <a href="#signup">${state.i18n.text.get('plugin.workspace.materials.notSignedUpWarningLink')}</a>`,
+          "notice",
+        ) as Action);
       }
     }
 
     return <WorkspaceMaterialsBody workspaceUrl={props.match.params["workspaceUrl"]}
       onActiveNodeIdChange={this.onWorkspaceMaterialsBodyActiveNodeIdChange}
       enrollmentDialogOpen={this.state.enrollmentDialogOpen}
+      signupDialogOpen={this.state.signupDialogOpen}
+      onCloseSignupDialog={this.closeSignupDialog}
       onCloseEnrollmentDialog={this.closeEnrollmentDialog}/>
   }
   renderWorkspaceUsers(props: RouteComponentProps<any>){
