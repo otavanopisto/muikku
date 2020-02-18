@@ -5,7 +5,6 @@ import {i18nType} from '~/reducers/base/i18n';
 import $ from '~/lib/jquery';
 
 import Header from './body/header';
-import Separator from './body/separator';
 import Studying from './body/studying';
 import Videos from './body/videos';
 import News from './body/news';
@@ -25,7 +24,7 @@ interface FrontpageBodyProps {
 }
 
 interface FrontpageBodyState {
-  
+
 }
 
 class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodyState> {
@@ -33,16 +32,13 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
     return (<div>
       <FrontpageNavbar />
       <Header i18n={this.props.i18n}/>
-      
-      <Separator/>
-      
       <ScreenContainer fullHeight={false}>
         <Studying i18n={this.props.i18n}/>
         <Videos/>
         <News i18n={this.props.i18n}/>
         <Organization i18n={this.props.i18n}/>
       </ScreenContainer>
-        
+
       <Footer i18n={this.props.i18n}/>
     </div>);
   }
