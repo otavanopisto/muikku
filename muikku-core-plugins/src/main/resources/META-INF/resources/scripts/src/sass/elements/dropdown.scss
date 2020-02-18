@@ -59,7 +59,8 @@
 }
 
 .dropdown--material-page-field-explanation,
-.dropdown--material-page-field-hint {
+.dropdown--material-page-field-hint,
+.dropdown--word-definition {
   max-width: 300px;
 
   .dropdown__container {
@@ -73,6 +74,18 @@
       font-weight: 300;
       padding: 5px 10px;
     }
+  }
+}
+
+.dropdown--word-definition {
+
+  .dropdown__container {
+    background: $color-material-word-definition-background-color;
+    border: 1px solid $color-material-word-definition-border-color;
+  }
+
+  .dropdown__arrow {
+    border-bottom-color: $color-material-word-definition-border-color;
   }
 }
 

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { HTMLtoReactComponent } from "~/util/modifiers";
-import "~/sass/elements/material-table-container.scss";
 
 interface TableProps {
   element: HTMLElement,
@@ -14,6 +13,6 @@ export default class Table extends React.Component<TableProps, {}>{
     super(props);
   }
   render (){
-    return <div className="material-table-container" dangerouslySetInnerHTML={{__html: this.props.element.outerHTML}}/>
+    return <div className="material-page__table-wrapper" dangerouslySetInnerHTML={{__html: this.props.element.outerHTML}}/>
   }
 }
