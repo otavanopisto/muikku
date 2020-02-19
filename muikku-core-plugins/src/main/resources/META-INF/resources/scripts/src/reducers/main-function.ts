@@ -11,7 +11,9 @@ import workspaces from './workspaces';
 
 import courses from './main-function/courses';
 
+import users from './main-function/users';
 import userIndex from './main-function/user-index';
+
 
 import discussion from '~/reducers/main-function/discussion';
 
@@ -32,6 +34,7 @@ export default combineReducers({
   status,
   websocket,
   title,
+  users,
   userIndex,
   records,
   vops,
