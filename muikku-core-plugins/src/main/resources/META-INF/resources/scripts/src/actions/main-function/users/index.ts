@@ -1,6 +1,5 @@
 import mApi, {MApiError} from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {loadStudentsHelper} from './helpers';
 import promisify from '~/util/promisify';
 import {UserStatusType} from 'reducers/main-function/users';
 import {UserType} from 'reducers/main-function/user-index';

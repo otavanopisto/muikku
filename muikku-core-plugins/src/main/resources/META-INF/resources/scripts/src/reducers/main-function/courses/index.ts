@@ -24,7 +24,7 @@ export type CourseOrganizationFilterListType = Array<CourseOrganizationFilterTyp
 
 export type CoursesBaseFilterListType = Array<CoursesBaseFilterType>;
 
-export interface CoursesavailableFiltersType {
+export interface CoursesAvailableFiltersType {
   educationTypes: CourseEducationFilterListType,
   curriculums: CourseCurriculumFilterListType,
   organizations?: CourseOrganizationFilterListType,
@@ -32,9 +32,12 @@ export interface CoursesavailableFiltersType {
 }
 
 export type CoursesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+
 export interface CoursesActiveFiltersType {
   educationFilters: Array<string>,
   curriculumFilters: Array<string>,
+  publishedFilters?: Array<string>,
+  stateFilters?: Array<string>,
   organizationFilters?: Array<string>,
   query: string,
   baseFilter?: CoursesBaseFilterType
@@ -63,7 +66,7 @@ export interface WorkspaceCourseType {
 export type WorkspaceCourseListType = Array<WorkspaceCourseType>;
 
 export interface CoursesPatchType {
-  availableFilters?: CoursesavailableFiltersType,
+  availableFilters?: CoursesAvailableFiltersType,
   state?: CoursesStateType,
   activeFilters?: CoursesActiveFiltersType,
   courses?: WorkspaceCourseListType,
@@ -72,7 +75,7 @@ export interface CoursesPatchType {
 }
 
 export interface CoursesType {
-  availableFilters: CoursesavailableFiltersType,
+  availableFilters: CoursesAvailableFiltersType,
   state: CoursesStateType,
   activeFilters: CoursesActiveFiltersType,
   courses: WorkspaceCourseListType,

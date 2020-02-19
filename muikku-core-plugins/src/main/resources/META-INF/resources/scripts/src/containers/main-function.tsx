@@ -94,7 +94,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     script.src = url;
     document.head.appendChild(script);
   }
-  onHashChange(){ 
+  onHashChange(){
     if (window.location.pathname.includes("/coursepicker")){
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}), false);
     } else if (window.location.pathname.includes("/communicator")){
@@ -109,8 +109,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.loadGuiderData();
     } else if (window.location.pathname.includes("/records")){
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+    } else if (window.location.pathname.includes("/organization")){
+      this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}), true);
     }
   }
+
   updateFirstTime(){
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
     this.prevPathName = window.location.pathname;
@@ -203,12 +206,10 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
   renderCoursePickerBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
-      
+      this.props.websocket.restoreEventListeners();      
       this.props.store.dispatch(LoadAvailableEducationFiltersFromServer() as Action);
       this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
       this.props.store.dispatch(LoadAvailableOrganizationFiltersFromServer() as Action);
-      
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
       
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
