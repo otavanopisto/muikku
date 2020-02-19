@@ -11,10 +11,10 @@ import { loadMoreCoursesFromServer, LoadMoreCoursesFromServerTriggerType } from 
 
 interface WorkspacesProps {
   i18n: i18nType,
-  coursepickerCoursesState: CoursesStateType,
-  coursepickerHasMore: boolean,
+  organizationWorkspacesState: CoursesStateType,
+  organizationWorkspacesHasMore: boolean,
   loadMoreCoursesFromServer: LoadMoreCoursesFromServerTriggerType,
-  coursepickerCoursesCourses: WorkspaceCourseListType
+  organizationWorkspaces: WorkspaceCourseListType
 }
 
 interface WorkspacesState {
@@ -22,21 +22,21 @@ interface WorkspacesState {
 
 class Workspaces extends React.Component<WorkspacesProps, WorkspacesState> {
   render(){
-    if (this.props.coursepickerCoursesState === "LOADING"){
+    if (this.props.organizationWorkspacesState === "LOADING"){
       return null;
-    } else if (this.props.coursepickerCoursesState === "ERROR"){
+    } else if (this.props.organizationWorkspacesState === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    } else if (this.props.coursepickerCoursesCourses.length === 0){
+    } else if (this.props.organizationWorkspaces.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
     }
     return (
         <ApplicationList>
-        {this.props.coursepickerCoursesCourses.map((workspace: WorkspaceCourseType)=>{
+        {this.props.organizationWorkspaces.map((workspace: WorkspaceCourseType)=>{
           return <Workspace key={workspace.id} course={workspace}/>
         })}
-        {this.props.coursepickerCoursesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}
+        {this.props.organizationWorkspacesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}
         </ApplicationList>
     );
   }
@@ -45,9 +45,9 @@ class Workspaces extends React.Component<WorkspacesProps, WorkspacesState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerCoursesState: state.courses.state,
-    coursepickerHasMore: state.courses.hasMore,
-    coursepickerCoursesCourses: state.courses.courses
+    organizationWorkspacesState: state.courses.state,
+    organizationWorkspacesHasMore: state.courses.hasMore,
+    organizationWorkspaces: state.courses.courses
   }
 };
 
