@@ -210,18 +210,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       if (stanza && stanza.attributes.type === "groupchat") {
         let message = stanza.attributes.message;
-        let occupant;
         let from = stanza.attributes.from;
-
         from = from.split("/").pop();
-
-        if (!stanza.vcard){
-          occupant = stanza.attributes.identifier;
-        } else {
-          occupant = stanza.vcard.attributes.jid;
-        }
-        occupant = occupant.split("@");
-        occupant = occupant[0].toString().toUpperCase();
+        
         let senderClass ="";
         let user:any;
         let chatSettings: any;
@@ -237,12 +228,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           nick = chatSettings.nick;
           
           if (nick == "" || nick == undefined) {
-            user = (await promisify(mApi().user.users.basicinfo.read(occupant,{}), 'callback')());
+            user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
             userName = user.firstName + " " + user.lastName;
             nick = userName;
           }
         } else {
-          //userName = occupant;
           nick = from;
         }
 
@@ -252,29 +242,19 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           messageId = "null";
         }
 
-        if (stanza.attributes.sender === "me" || from === window.MUIKKU_LOGGED_USER) {
+        if (from === window.MUIKKU_LOGGED_USER) {
           senderClass = "sender-me";
         } else {
           senderClass = "sender-them";
         }
 
         var stamp = null;
-//        var list = stanza.childNodes;
-//
-//        for(var node of list) {
-//            if (node.nodeName == 'delay') {
-//                stamp = node.attributes.stamp.nodeValue
-//              } else {
-//                stamp = new Date().toString()
-//              }
-//          }
-
         if (stanza.attributes.time) {
           stamp = stanza.attributes.time;
         } else {
           stamp = new Date().toString();
         }
-        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false};
+        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false, userIdentifier: from};
 
 
         if (message !== "") {

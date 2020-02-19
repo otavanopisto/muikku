@@ -1,6 +1,8 @@
 /*global converse */
 import * as React from 'react'
 import '~/sass/elements/chat.scss';
+import mApi, { MApiError } from '~/lib/mApi';
+import promisify, { promisifyNewConstructor } from '~/util/promisify';
 
 interface Iprops{
   groupMessage?: any,
@@ -18,7 +20,8 @@ interface Istate {
   content: string,
   deleted: boolean,
   showName: boolean,
-  showRemoveButton: boolean
+  showRemoveButton: boolean,
+  userIdentifier: string
 }
 
 declare namespace JSX {
@@ -51,17 +54,26 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       content: "",
       deleted: null,
       showName: false,
-      showRemoveButton: false
+      showRemoveButton: false,
+      userIdentifier: ""
     }
     this.myRef = null;
     this.showRealName = this.showRealName.bind(this);
     this.showRemoveButton = this.showRemoveButton.bind(this);
     this.removeMessage = this.removeMessage.bind(this);
   }
-  showRealName (){
+  async showRealName (userIdentifier: Object){
+    let user: any;
+    let userName;
+    
     if (this.state.showName === false && window.MUIKKU_IS_STUDENT === false){
+      if (userIdentifier){
+        user = (await promisify(mApi().user.users.basicinfo.read(userIdentifier,{}), 'callback')());
+        userName = user.firstName + " " + user.lastName;
+      }
       this.setState({
-        showName: true
+        showName: true,
+        realName: userName
       });
     } else{
       this.setState({
@@ -91,10 +103,10 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       groupMessage: groupMessage,
       senderClass: groupMessage.senderClass,
       from: groupMessage.from,
-      realName: groupMessage.alt || groupMessage.from,
       timeStamp: stamp,
       content: groupMessage.content,
-      deleted: groupMessage.deleted
+      deleted: groupMessage.deleted,
+      userIdentifier: groupMessage.userIdentifier
     });
   }
   componentDidUpdate (){
@@ -104,7 +116,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
 
     return  (<div className={`chat__message chat__message--${this.state.senderClass}`}>
       <div className="chat__message-meta">
-        <span className="chat__message-meta-sender" onClick={this.showRealName}>
+        <span className="chat__message-meta-sender" onClick={() => this.showRealName(this.state.userIdentifier)}>
           {this.state.from} {(this.state.showName === true) && <span className="chat__message-meta-sender-real-name">({this.state.realName}) </span>}
         </span>
         <span className="chat__message-meta-timestamp">
