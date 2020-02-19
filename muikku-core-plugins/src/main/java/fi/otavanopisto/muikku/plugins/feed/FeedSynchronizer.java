@@ -42,7 +42,7 @@ public class FeedSynchronizer {
   
   private String clean(String html) {
     Document doc = Jsoup.parse(html);
-    doc = new Cleaner(Whitelist.basicWithImages()).clean(doc);
+    doc = new Cleaner(Whitelist.basic()).clean(doc);
     doc.select("a[target]").attr("rel", "noopener noreferer");
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
