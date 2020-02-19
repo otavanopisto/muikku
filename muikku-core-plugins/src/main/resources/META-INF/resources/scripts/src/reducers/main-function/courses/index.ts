@@ -19,6 +19,17 @@ export interface CourseOrganizationFilterType {
   name: string
 }
 
+
+export interface OrganizationCourseTeacherType {
+  firstName: string,
+  lastName: string
+}
+
+export interface OrganizationType {
+  identifier: string,
+  name: string
+}
+
 export type CourseCurriculumFilterListType = Array<CourseCurriculumFilterType>;
 export type CourseOrganizationFilterListType = Array<CourseOrganizationFilterType>;
 
@@ -30,6 +41,7 @@ export interface CoursesAvailableFiltersType {
   organizations?: CourseOrganizationFilterListType,
   baseFilters?: CoursesBaseFilterListType
 }
+
 
 export type CoursesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
@@ -57,7 +69,9 @@ export interface WorkspaceCourseType {
   isCourseMember: boolean,
   educationTypeName: string,
   hasCustomImage: boolean,
-  
+  organization?: Array<OrganizationType>,
+  teachers?: Array<OrganizationCourseTeacherType>,
+  studentCount? : number,
   feeInfo?: {
     evaluationHasFee: boolean
   }

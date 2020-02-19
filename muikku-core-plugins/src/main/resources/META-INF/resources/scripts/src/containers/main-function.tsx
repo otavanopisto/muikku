@@ -2,55 +2,41 @@ import Notifications from '../components/base/notifications';
 import { BrowserRouter, Route } from 'react-router-dom';
 import * as React from 'react';
 import '~/sass/util/base.scss';
-
 import { Store } from 'react-redux';
 import { StateType } from '~/reducers';
 import {Action} from 'redux';
 import Websocket from '~/util/websocket';
 import * as queryString from 'query-string';
-
 import titleActions from '~/actions/base/title';
-
 import IndexBody from '../components/index/body';
 import { loadAnnouncementsAsAClient } from '~/actions/main-function/announcements';
 import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions/main-function/workspaces';
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
-
 import CousePickerBody from '../components/coursepicker/body';
 import { loadLoggedUser } from '~/actions/main-function/user-index';
 import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 import { UserType } from '~/reducers/main-function/user-index';
-
 import OrganizationAdministrationBody from '../components/organization/body';
-
-
 import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
-
 import DiscussionBody from '../components/discussion/body';
 import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer} from '~/actions/main-function/discussion';
-
 import {loadAnnouncement, loadAnnouncements} from '~/actions/main-function/announcements';
 import AnnouncementsBody from '../components/announcements/body';
 import { AnnouncementListType } from '~/reducers/main-function/announcements';
-
 import AnnouncerBody from '../components/announcer/body';
-
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
 import { loadUsers } from '~/actions/main-function/users';
 import GuiderBody from '../components/guider/body';
-
 import ProfileBody from '../components/profile/body';
 import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } from '~/actions/main-function/profile';
-
 import RecordsBody from '../components/records/body';
 import { updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
-
 import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 interface MainFunctionProps {
@@ -78,7 +64,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
-    
     this.itsFirstTime = true;
     this.loadedLibs = [];
     
