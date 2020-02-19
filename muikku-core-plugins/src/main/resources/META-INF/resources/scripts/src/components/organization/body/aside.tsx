@@ -7,10 +7,8 @@ import {AnnouncementType, AnnouncementsType} from '~/reducers/main-function/anno
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import {StateType} from '~/reducers';
-
 import '~/sass/elements/toc.scss';
 import '~/sass/elements/label.scss';
-
 import '~/sass/elements/item-list.scss';
 
 
