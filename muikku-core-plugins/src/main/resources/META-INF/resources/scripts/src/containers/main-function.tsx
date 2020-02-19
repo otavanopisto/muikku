@@ -39,7 +39,8 @@ import AnnouncerBody from '../components/announcer/body';
 
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
-import { loadStudents, loadStudent } from '~/actions/main-function/guider';
+import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
+import { loadUsers } from '~/actions/main-function/users';
 import GuiderBody from '../components/guider/body';
 
 import ProfileBody from '../components/profile/body';
@@ -94,7 +95,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     document.head.appendChild(script);
   }
   onHashChange(){ 
-    if (window.location.pathname.includes("/coursepicker")){
+    if (window.location.pathname.includes("/coursepicker") || window.location.pathname.includes("/organization")){
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}));
     } else if (window.location.pathname.includes("/communicator")){
       this.loadCommunicatorData(window.location.hash.replace("#","").split("/"));
@@ -108,7 +109,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.loadGuiderData();
     } else if (window.location.pathname.includes("/records")){
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
-    }
+    } 
   }
   updateFirstTime(){
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
@@ -182,6 +183,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       }) as Action);
     }
   }
+  
+  
   loadCoursePickerData(originalData:any){
     let filters:CoursesActiveFiltersType = {
       educationFilters: originalData.e || [],
@@ -203,7 +206,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-      
       this.props.store.dispatch(loadAvaliableEducationFiltersFromServer() as Action);
       this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
       this.props.store.dispatch(loadAvailableOrganizationFiltersFromServer() as Action);
@@ -261,6 +263,31 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
+      this.props.websocket.restoreEventListeners();
+      this.props.store.dispatch(loadAvaliableEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(loadAvaliableCurriculumFiltersFromServer() as Action);
+
+      let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+      let currentLocationHasData = Object.keys(currentLocationData).length;
+      let state:StateType = this.props.store.getState();
+      
+      this.props.store.dispatch(loadUsers() as Action);
+      
+      this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
+        if (!currentLocationHasData) {
+          let defaultSelections : any = {};
+          if (user.curriculumIdentifier) {
+            defaultSelections["c"] = [ user.curriculumIdentifier ];
+          }
+          if (defaultSelections.c || defaultSelections.o) {
+            location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
+          } else {
+            this.loadCoursePickerData(currentLocationData);
+          }
+        }
+      }) as Action);
+      
+
     }
     return <OrganizationAdministrationBody/>
   }

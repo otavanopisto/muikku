@@ -1,19 +1,15 @@
 import * as React from 'react';
+import {StateType} from '~/reducers';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import '~/sass/elements/empty.scss';
-import '~/sass/elements/loaders.scss';
-import '~/sass/elements/message.scss';
-import BodyScrollLoader from '~/components/general/body-scroll-loader';
-import SelectableList from '~/components/general/selectable-list';
+import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
+import Workspace from './workspaces/workspace';
 import {i18nType} from '~/reducers/base/i18n';
 import {CoursesStateType, WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
 import { loadMoreCoursesFromServer, LoadMoreCoursesFromServerTriggerType } from '~/actions/main-function/courses';
-import Course from './courses/course';
-import {StateType} from '~/reducers';
-import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
 
-interface CoursepickerWorkspacesProps {
+
+interface WorkspacesProps {
   i18n: i18nType,
   coursepickerCoursesState: CoursesStateType,
   coursepickerHasMore: boolean,
@@ -21,21 +17,10 @@ interface CoursepickerWorkspacesProps {
   coursepickerCoursesCourses: WorkspaceCourseListType
 }
 
-interface CoursepickerWorkspacesState {
+interface WorkspacesState {
 }
 
-class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProps, CoursepickerWorkspacesState> {
-  constructor(props: CoursepickerWorkspacesProps){
-    super(props);
-    
-    //once this is in state READY only then a loading more event can be triggered
-    this.statePropertyLocation = "coursepickerCoursesState";
-    //it will only call the function if this is true
-    this.hasMorePropertyLocation = "coursepickerHasMore";
-    //this is the function that will be called
-    this.loadMoreTriggerFunctionLocation = "loadMoreCoursesFromServer";
-  }
-
+class Workspaces extends React.Component<WorkspacesProps, WorkspacesState> {
   render(){
     if (this.props.coursepickerCoursesState === "LOADING"){
       return null;
@@ -46,12 +31,14 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
     } else if (this.props.coursepickerCoursesCourses.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
     }
-    return (<ApplicationList>
-      {this.props.coursepickerCoursesCourses.map((course: WorkspaceCourseType)=>{
-        return <Course key={course.id} course={course}/>
-      })}
-      {this.props.coursepickerCoursesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}
-    </ApplicationList>);
+    return (
+        <ApplicationList>
+        {this.props.coursepickerCoursesCourses.map((workspace: WorkspaceCourseType)=>{
+          return <Workspace key={workspace.id} course={workspace}/>
+        })}
+        {this.props.coursepickerCoursesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}
+        </ApplicationList>
+    );
   }
 }
 
@@ -64,11 +51,13 @@ function mapStateToProps(state: StateType){
   }
 };
 
+
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({loadMoreCoursesFromServer}, dispatch);
 };
 
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CoursepickerWorkspaces);
+)(Workspaces);

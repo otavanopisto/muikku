@@ -9,6 +9,7 @@ import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
+import {UsersType} from './main-function/users';
 import {WorkspacesType} from './workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
@@ -29,6 +30,7 @@ export interface StateType {
   hops?: HOPSType,
   vops?: VOPSType,
   messages?: MessagesType,
+  users: UsersType;
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
   courses?: CoursesType,
