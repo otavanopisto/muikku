@@ -11,8 +11,10 @@ interface FeedProps {
     publicationDate: string,
     description: string,
     link: string,
-    title: string
+    title: string,
+    image: string,
   }>,
+  feedReadTarget: string,
   i18n: i18nType
 }
 
@@ -25,11 +27,15 @@ class Feed extends React.Component<FeedProps, FeedState> {
     return <ul className="feed">
       {this.props.entries.map((entry, index)=>{
         return <li className="feed__item" key={entry.link}>
-          <span className="feed__item-description">
+          {entry.image ? <div className="feed__item-image"><img src={entry.image}/></div> :
+            this.props.feedReadTarget === "nettilukio" ? <div className="feed__item-image feed__item-image--empty"><img src="/gfx/kuva_nettilukio.png"/></div> :
+              <div className="feed__item-image feed__item-image--empty"><img src="/gfx/kuva_nettiperuskoulu.png"/></div>
+          }
+          <div className="feed__item-description">
             <a href={entry.link} target="_blank">{entry.title}</a>
-            <span dangerouslySetInnerHTML={{__html: entry.description}}/>
-          </span>
-          <span className="feed__item-date">{this.props.i18n.time.format(entry.publicationDate)}</span>
+            <div dangerouslySetInnerHTML={{__html: entry.description}}/>
+            <div className="feed__item-date">{this.props.i18n.time.format(entry.publicationDate)}</div>
+          </div>
         </li>
       })}
     </ul>
