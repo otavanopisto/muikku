@@ -44,7 +44,10 @@ public class FeedSynchronizer {
   private Logger logger;
   
   private String clean(String html) {
-    Document doc = Jsoup.parse(html);
+    if (StringUtils.isBlank(html)) {
+      return html;
+    }
+    Document doc = Jsoup.parse(html.replace("\u00a0"," ")); // non-breaking spaces
     doc = new Cleaner(Whitelist.basic()).clean(doc);
     doc.select("a[target]").attr("rel", "noopener noreferer");
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
