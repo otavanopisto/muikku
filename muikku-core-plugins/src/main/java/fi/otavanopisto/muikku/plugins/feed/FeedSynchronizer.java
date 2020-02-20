@@ -20,6 +20,9 @@ import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 
+import com.rometools.modules.mediarss.MediaEntryModule;
+import com.rometools.modules.mediarss.MediaModule;
+import com.rometools.modules.mediarss.types.MediaContent;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
@@ -42,7 +45,7 @@ public class FeedSynchronizer {
   
   private String clean(String html) {
     Document doc = Jsoup.parse(html);
-    doc = new Cleaner(Whitelist.basicWithImages()).clean(doc);
+    doc = new Cleaner(Whitelist.basic()).clean(doc);
     doc.select("a[target]").attr("rel", "noopener noreferer");
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
@@ -72,6 +75,21 @@ public class FeedSynchronizer {
         // Create/update entries from feed
         
         for (SyndEntry entry : entries) {
+          
+          String thumbnailUrl = null;
+          MediaEntryModule mediaEntryModule = (MediaEntryModule) entry.getModule(MediaModule.URI);
+          if (mediaEntryModule != null) {
+            MediaContent[] mediaContents = mediaEntryModule.getMediaContents();
+            if (mediaContents != null) {
+              for (int i = 0; i < mediaContents.length; i++) {
+                if (StringUtils.startsWith(mediaContents[i].getType(), "image") && mediaContents[i].getReference() != null) {
+                  thumbnailUrl = mediaContents[i].getReference().toString();
+                  break;
+                }
+              }
+            }
+          }
+          
           FeedItem existingItem = feedItems.stream().filter(feedItem -> StringUtils.equals(feedItem.getLink(), entry.getLink())).findFirst().orElse(null);
           if (existingItem == null) {
             feedItemDAO.create(
@@ -80,7 +98,7 @@ public class FeedSynchronizer {
                 entry.getAuthor(),
                 entry.getDescription() == null ? null : clean(entry.getDescription().getValue()),
                 entry.getPublishedDate(),
-                null, // TODO thumbnail image
+                thumbnailUrl,
                 feed);
           }
           else {
@@ -91,7 +109,7 @@ public class FeedSynchronizer {
                 entry.getAuthor(),
                 entry.getDescription() == null ? null : clean(entry.getDescription().getValue()),
                 entry.getPublishedDate(),
-                null);  // TODO thumbnail image
+                thumbnailUrl);
             feedItems.remove(existingItem);
           }
         }
