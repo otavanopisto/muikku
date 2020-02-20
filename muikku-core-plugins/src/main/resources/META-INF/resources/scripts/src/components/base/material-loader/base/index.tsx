@@ -100,7 +100,7 @@ const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REP
 const statics:{[componentKey:string]: any} = {
   'figure[class="image"]': Image,
   'mark[data-muikku-word-definition]': WordDefinition,
-  'iframe[data-url]': IFrame,
+  'iframe': IFrame,
   'a[href]': Link,
   'table': Table,
 };
