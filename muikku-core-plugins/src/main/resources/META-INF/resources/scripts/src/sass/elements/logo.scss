@@ -27,13 +27,17 @@
 .logo--organization {
   display: inline-block;
   height: $logo-text-mobile-size;
+  margin: -10px 0 10px ;
+  max-width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     height: $logo-text-pad-size;
+    margin: 0;
   }
 
   @include breakpoint($breakpoint-desktop) {
     height: $logo-text-desktop-size;
+    margin: -10px 0 0 -10px;
   }
 }
 
