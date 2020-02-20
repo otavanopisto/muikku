@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.plugins.feed.model.FeedItem;
 import fi.otavanopisto.muikku.plugins.feed.model.FeedItem_;
 
 public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
+
   private static final long serialVersionUID = 5636966026090215803L;
   
   public FeedItem create(String title, String link, String author, String description, Date publicationDate, String image, Feed feed) {
@@ -90,5 +91,4 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
   public void delete(FeedItem feedItem) {
     super.delete(feedItem);
   }
-
 }
