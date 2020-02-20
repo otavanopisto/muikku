@@ -20,7 +20,7 @@ interface CourseState {
   expanded: boolean
 }
 
-class Course extends React.Component<CourseProps, CourseState>{
+class Workspace extends React.Component<CourseProps, CourseState>{
   constructor(props: CourseProps){
     super(props);
     
@@ -67,4 +67,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Course);
+)(Workspace);

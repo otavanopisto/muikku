@@ -200,6 +200,9 @@
   flex-flow: row nowrap;
 }
 
+
+
+
 .application-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   align-items: center;
@@ -219,11 +222,9 @@
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
-
     .label {
       background-color: $color-label-mobile-selected-background;
     }
-
     .glyph,
     .link,
     .application-list__header-primary,
@@ -269,6 +270,7 @@
   }
 }
 
+
 .application-list__item--notification {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
@@ -287,6 +289,17 @@
     border-color: transparent;
     box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
     z-index: 10;
+  }
+}
+
+
+.application-list__item--user {
+  border-top: 1px solid $color-default-item-separator-border;
+  cursor: pointer;
+  padding: 10px;
+
+  &:first-child {
+    border-color: transparent;
   }
 }
 
@@ -528,7 +541,6 @@
 .application-list__item-header-main-content {
   display: inline-block;
 }
-
 .application-list__item-header-main-content--discussion-message-creator {
   font-size: 0.875rem;
   font-weight: 600;
@@ -541,7 +553,6 @@
 
 .application-list__item-header-main-content--communicator-sender {
   font-weight: 600;
-
   &::after {
     content: ">";
     margin: 0 10px;
@@ -589,7 +600,26 @@
   flex-shrink: 1;
 }
 
-// Discussion
+// User
+
+.application-list__item-content-aside--user {
+  padding: 0 16px 0 0;
+}
+
+.application-list__item-content-main--user {
+  align-self: center;
+}
+
+.application-list__item-content--secondary {
+  color: $color-text-secondary;
+}
+
+.application-list__item-content-wrapper--user {
+  padding: 10px 0;
+}
+
+
+// Discussion 
 
 .application-list__header-container--discussion {
   padding: 10px;
