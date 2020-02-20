@@ -9,7 +9,6 @@ export default class JumboDialog extends Dialog {
  
   render(){
     return (
-        
       <Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen} openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
         {(closePortal: ()=>any)=>{return <div className={`env-dialog env-dialog--mainfunction env-dialog--${this.props.modifier} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
           <div className="env-dialog__wrapper">

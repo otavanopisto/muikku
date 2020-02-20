@@ -10,7 +10,7 @@ import { StateType } from '~/reducers';
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
 
-export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null, organization:boolean, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
   let courses:CoursesType = state.courses;
   let hasEvaluationFees:boolean = state.userIndex && 
@@ -76,7 +76,10 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   }
   
   try {
-    let nCourses:WorkspaceCourseListType = <WorkspaceCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+
+    let nCourses:WorkspaceCourseListType = organization === false ? 
+        <WorkspaceCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')() :
+        <WorkspaceCourseListType>await promisify(mApi().organizationmanagement.workspaces.cacheClear().read(params), 'callback')();
   
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side

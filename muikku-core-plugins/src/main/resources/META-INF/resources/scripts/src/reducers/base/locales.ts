@@ -4,7 +4,7 @@ import $ from '~/lib/jquery';
 import {ActionType} from "~/actions";
 
 export interface LocaleListType {
-  avaliable: {
+  AVAILABLE: {
     name: string,
     locale: string
   }[],
@@ -12,7 +12,7 @@ export interface LocaleListType {
 }
 
 export default function locales(state={
-  avaliable: $.makeArray($("#language-picker a").map((index: number, element: HTMLElement)=>{
+  AVAILABLE: $.makeArray($("#language-picker a").map((index: number, element: HTMLElement)=>{
     return {
       name: $(element).text().trim(),
       locale: $(element).data('locale')
