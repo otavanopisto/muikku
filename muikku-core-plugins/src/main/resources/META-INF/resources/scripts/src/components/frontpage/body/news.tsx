@@ -27,7 +27,7 @@ export default class FrontpageNews extends React.Component<FrontpageNewsProps, F
             <div className="card__content">
               <h2 className="card__title card__title--frontpage-upper-secondary-school">{this.props.i18n.text.get( 'plugin.frontpageBoxTitle.nettilukio.news' )}</h2>
               <div className="frontpage-news-container">
-                <FrontpageFeed queryOptions={{ numItems: 8 }} feedReadTarget="nettilukio"></FrontpageFeed>
+                <FrontpageFeed queryOptions={{ numItems: 4 }} feedReadTarget="nettilukio"></FrontpageFeed>
               </div>
             </div>
           </div>
@@ -38,7 +38,7 @@ export default class FrontpageNews extends React.Component<FrontpageNewsProps, F
             <div className="card__content">
               <h2 className="card__title card__title--frontpage-secondary-school">{this.props.i18n.text.get( 'plugin.frontpageBoxTitle.nettiperuskoulu.news' )}</h2>
               <div className="frontpage-news-container">
-                <FrontpageFeed queryOptions={{ numItems: 8 }} feedReadTarget="nettipk"></FrontpageFeed>
+                <FrontpageFeed queryOptions={{ numItems: 4 }} feedReadTarget="nettipk"></FrontpageFeed>
               </div>
             </div>
           </div>

@@ -27,13 +27,17 @@ class Feed extends React.Component<FeedProps, FeedState> {
     return <ul className="feed">
       {this.props.entries.map((entry, index)=>{
         return <li className="feed__item" key={entry.link}>
-          {entry.image ? <div className="feed__item-image"><img src={entry.image}/></div> :
-            this.props.feedReadTarget === "nettilukio" ? <div className="feed__item-image feed__item-image--empty"><img src="/gfx/kuva_nettilukio.png"/></div> :
-              <div className="feed__item-image feed__item-image--empty"><img src="/gfx/kuva_nettiperuskoulu.png"/></div>
-          }
-          <div className="feed__item-description">
-            <a href={entry.link} target="_blank">{entry.title}</a>
-            <div dangerouslySetInnerHTML={{__html: entry.description}}/>
+          <div className="feed__item-aside">
+            {entry.image ? <img className="feed__item-image" src={entry.image}/> :
+              this.props.feedReadTarget === "nettilukio" ? <img className="feed__item-image feed__item-image--empty" src="/gfx/kuva_nettilukio-feed.png"/> :
+              <img className="feed__item-image feed__item-image--empty" src="/gfx/kuva_nettiperuskoulu-feed.png"/>
+            }
+          </div>
+          <div className="feed__item-body">
+            {this.props.feedReadTarget === "nettilukio" ? <a className="feed__item-title feed__item-title--nettilukio" href={entry.link} target="_blank">{entry.title}</a> :
+            <a className="feed__item-title feed__item-title--nettiperuskoulu" href={entry.link} target="_blank">{entry.title}</a>}
+
+            <div className="feed__item-description" dangerouslySetInnerHTML={{__html: entry.description}}/>
             <div className="feed__item-date">{this.props.i18n.time.format(entry.publicationDate)}</div>
           </div>
         </li>

@@ -192,7 +192,11 @@
 }
 
 .ordered-container__item-subcontainer--organization-description {
-  margin-top: 1.5rem;
+  margin-top: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-top: 1.5rem;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     margin-top: 0;
@@ -253,6 +257,7 @@
     flex-grow: 1;
     flex-shrink: 1;
     order: 2;
+
 
     &:first-child {
       padding: 0 $ordered-container-item-gutter 0 0;

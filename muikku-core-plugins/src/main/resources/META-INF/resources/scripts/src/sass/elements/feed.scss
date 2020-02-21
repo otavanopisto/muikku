@@ -18,55 +18,91 @@
 
 .feed__item {
   display: flex;
-  flex-flow: row wrap;
-  margin-bottom: 1.25rem;
+  flex-flow: row nowrap;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
 
   &:last-child {
     margin-bottom: 0;
   }
 }
 
-.feed__item-image {
+.feed__item-aside {
   border-radius: 5px;
-  flex-basis: 150px;
+  flex-basis: 50px;
   flex-grow: 0;
   flex-shrink: 0;
-  height: auto;
-  margin: 0 10px 0 0;
+  height: 50px;
+  margin: 4px 15px 0 0;
+  max-width: 50px;
   overflow: hidden;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 75px;
+    height: 75px;
+    margin: 6px 15px 0 0;
+    max-width: 75px;
+  }
 }
 
-.feed__item-image--empty {
+.feed__item-image {
+  height: 50px;
+  width: auto;
 
+  @include breakpoint($breakpoint-pad) {
+    height: 75px;
+  }
 }
 
-.feed__item-description {
+.feed__item-title {
+  @include prefix(transition, webkit ms o moz, color 0.3s);
+  color: $color-feed-default-text;
+  display: block;
+  font-weight: 600;
+  margin: 0 0 5px;
+
+  &:hover,
+  &:active,
+  &.hover,
+  &.active {
+    color: $color-feed-item-description-active;
+  }
+}
+
+.feed__item-title--nettilukio {
+  color: $color-frontpage-card-upper-secondary-school-title;
+}
+
+.feed__item-title--nettiperuskoulu {
+  color: $color-frontpage-card-secondary-school-title;
+}
+
+.feed__item-body {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  line-height: 1.375rem;
-  margin-bottom: .375rem;
   width: 100%;
+}
 
-  a {
-    @include prefix(transition, webkit ms o moz, color 0.3s);
-    color: $color-feed-default-text;
-    display: inline;
-    font-weight: 600;
-    margin-right: .375rem;
-    text-decoration: none;
-    text-transform: none;
+.feed__item-description {
+  line-height: 1.275rem;
+  margin-bottom: .375rem;
 
-    &:hover,
-    &:active,
-    &.hover,
-    &.active {
-      color: $color-feed-item-description-active;
-    }
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.375rem;
   }
 }
 
 .feed__item-date {
   color: $color-feed-default-date;
-  display: block;
+  flex-basis: 50px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 10px 0 0;
+  max-width: 50px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 75px;
+    max-width: 75px;
+  }
 }
