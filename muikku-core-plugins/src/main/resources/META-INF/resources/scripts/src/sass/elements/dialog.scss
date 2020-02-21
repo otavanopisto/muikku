@@ -162,7 +162,7 @@
 .dialog__button-set {
   align-items: center;
   display: flex;
-  fle-flow: row nowrap;
+  flex-flow: row nowrap;
   justify-content: flex-end;
 
   @include breakpoint($breakpoint-desktop) {

@@ -8,6 +8,7 @@ import Header from './body/header';
 import Studying from './body/studying';
 import Videos from './body/videos';
 import News from './body/news';
+import InstragramGallery from './body/instagram';
 import Organization from './body/organization';
 import Footer from './body/footer';
 
@@ -36,6 +37,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
         <Studying i18n={this.props.i18n}/>
         <Videos/>
         <News i18n={this.props.i18n}/>
+        <InstragramGallery i18n={this.props.i18n}/>
         <Organization i18n={this.props.i18n}/>
       </ScreenContainer>
 
