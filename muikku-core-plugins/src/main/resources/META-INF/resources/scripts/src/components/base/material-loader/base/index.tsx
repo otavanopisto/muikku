@@ -97,12 +97,36 @@ const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REP
 
 //The handlers that do more to html static items
 //That are somehow brokeeeen
-const statics:{[componentKey:string]: any} = {
-  'figure[class="image"]': Image,
-  'mark[data-muikku-word-definition]': WordDefinition,
-  'iframe': IFrame,
-  'a[href]': Link,
-  'table': Table,
+const statics:{[componentKey:string]: {
+  container: string,
+  element: any,
+  containerClassName: string,
+}} = {
+  'figure[class="image"]': {
+    container: "div",
+    containerClassName: "image-container",
+    element: Image
+  },
+  'mark[data-muikku-word-definition]': {
+    container: "span",
+    containerClassName: "word-definition-container",
+    element: WordDefinition,
+  },
+  'iframe': {
+    container: "div",
+    containerClassName: "iframe-container",
+    element: IFrame,
+  },
+  'a[href]': {
+    container: "span",
+    containerClassName: "link-container",
+    element: Link,
+  },
+  'table': {
+    container: "div",
+    containerClassName: "table-container",
+    element: Table,
+  },
 };
 
 //Fixes the html inconsitencies because
@@ -292,7 +316,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     Object.keys(statics).forEach((componentKey)=>{
       $(this.elements).find(componentKey).addBack(componentKey).toArray().forEach((element: HTMLElement)=>{
         //we get all the elements but we pass them to a handler
-        let ElementClass = statics[componentKey];
+        let ElementClass = statics[componentKey].element;
         let rElement:React.ReactElement<any> = <ElementClass {...{
           element,
           dataset: extractDataSet(element),
@@ -304,8 +328,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
         //we do the same we did in the dynamics
         let parentElement = element.parentElement;
-        let newParentElement = document.createElement("div");
-        newParentElement.className = "static-container";
+        let newParentElement = document.createElement(statics[componentKey].container);
+        newParentElement.className = statics[componentKey].containerClassName;
         parentElement.replaceChild(newParentElement, element);
         
         //And we push it but we add the content key to save time on updates
@@ -342,7 +366,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     
     //The same with the dynamics
     this.staticRegistry.forEach((statice)=>{
-      let ElementClass = statics[statice.componentKey];
+      let ElementClass = statics[statice.componentKey].element;
       let rElement:React.ReactElement<any> = <ElementClass {...{
         element: statice.element,
         dataset: extractDataSet(statice.element),
