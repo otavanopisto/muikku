@@ -27,6 +27,6 @@ export default class FrontpageFeed extends React.Component<FrontpageFeedProps, F
     });
   }
   render(){
-    return <Feed feedReadTarget={this.props.feedReadTarget} entries={this.state.entries}></Feed>
+    return <Feed entries={this.state.entries}></Feed>
   }
 }

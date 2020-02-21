@@ -25,21 +25,7 @@ export default class FrontpageNews extends React.Component<FrontpageNewsProps, F
         <div className="ordered-container__item ordered-container__item--frontpage-news">
           <div className="card">
             <div className="card__content">
-              <h2 className="card__title card__title--frontpage-upper-secondary-school">{this.props.i18n.text.get( 'plugin.frontpageBoxTitle.nettilukio.news' )}</h2>
-              <div className="frontpage-news-container">
-                <FrontpageFeed queryOptions={{ numItems: 4 }} feedReadTarget="nettilukio"></FrontpageFeed>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="ordered-container__item ordered-container__item--frontpage-news">
-          <div className="card">
-            <div className="card__content">
-              <h2 className="card__title card__title--frontpage-secondary-school">{this.props.i18n.text.get( 'plugin.frontpageBoxTitle.nettiperuskoulu.news' )}</h2>
-              <div className="frontpage-news-container">
-                <FrontpageFeed queryOptions={{ numItems: 4 }} feedReadTarget="nettipk"></FrontpageFeed>
-              </div>
+              <FrontpageFeed queryOptions={{ numItems: 8 }} feedReadTarget="nettilukio,nettipk"></FrontpageFeed>
             </div>
           </div>
         </div>

@@ -4,7 +4,10 @@
 @import "../base/breakpoints";
 
 .feed {
+  align-items: flex-start;
   color: $color-feed-default-text;
+  display: flex;
+  flex-flow: row wrap;
   font-family: $text-branded-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
@@ -18,12 +21,27 @@
 
 .feed__item {
   display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
   flex-flow: row nowrap;
+  flex-shrink: 1;
   margin-bottom: 1.5rem;
   max-width: 100%;
 
   &:last-child {
     margin-bottom: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    margin-bottom: 1.75rem;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    margin-bottom: 2rem;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    margin-bottom: 2.5rem;
   }
 }
 
@@ -37,11 +55,32 @@
   max-width: 50px;
   overflow: hidden;
 
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: 100px;
+    height: 100px;
+    margin-right: 20px;
+    max-width: 100px;
+  }
+
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 75px;
-    height: 75px;
-    margin: 6px 15px 0 0;
-    max-width: 75px;
+    flex-basis: 125px;
+    height: 125px;
+    margin-right: 20px;
+    max-width: 125px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 150px;
+    height: 150px;
+    margin-right: 25px;
+    max-width: 150px;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    flex-basis: 200px;
+    height: 200px;
+    margin-right: 30px;
+    max-width: 200px;
   }
 }
 
@@ -49,8 +88,20 @@
   height: 50px;
   width: auto;
 
+  @include breakpoint($breakpoint-mobile-xl) {
+    height: 100px;
+  }
+
   @include breakpoint($breakpoint-pad) {
-    height: 75px;
+    height: 125px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    height: 150px;
+  }
+
+  @include breakpoint($breakpoint-desktop-xl) {
+    height: 200px;
   }
 }
 
@@ -66,6 +117,14 @@
   &.hover,
   &.active {
     color: $color-feed-item-description-active;
+  }
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 0.875rem;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1rem;
   }
 }
 
@@ -93,16 +152,43 @@
   }
 }
 
-.feed__item-date {
-  color: $color-feed-default-date;
-  flex-basis: 50px;
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin: 0 10px 0 0;
-  max-width: 50px;
+.feed__item-meta {
+  align-items: center;
+  color: $color-feed-default-date; // This is for the hyphen between date and label so we don't have to add class to it in html
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 0.75rem;
+  line-height: 1;
+  margin: 10px 0 0;
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: 75px;
-    max-width: 75px;
+    font-size: 0.8125rem;
   }
+}
+
+.feed__item-date {
+  color: $color-feed-default-date;
+  margin: 0 5px 0 0;
+}
+
+.feed__item-label {
+  @include prefix(transition, webkit ms o moz, color 0.3s);
+  margin: 0 0 0 5px;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  &:hover,
+  &:active,
+  &.hover,
+  &.active {
+    color: $color-feed-item-description-active;
+  }
+}
+
+.feed__item-label--nettilukio {
+  color: $color-frontpage-card-upper-secondary-school-title;
+}
+
+.feed__item-label--nettiperuskoulu {
+  color: $color-frontpage-card-secondary-school-title;
 }

@@ -13,8 +13,9 @@ interface FeedProps {
     link: string,
     title: string,
     image: string,
+    feed: string,
   }>,
-  feedReadTarget: string,
+
   i18n: i18nType
 }
 
@@ -29,16 +30,15 @@ class Feed extends React.Component<FeedProps, FeedState> {
         return <li className="feed__item" key={entry.link}>
           <div className="feed__item-aside">
             {entry.image ? <img className="feed__item-image" src={entry.image}/> :
-              this.props.feedReadTarget === "nettilukio" ? <img className="feed__item-image feed__item-image--empty" src="/gfx/kuva_nettilukio-feed.png"/> :
+              entry.feed === "nettilukio" ? <img className="feed__item-image feed__item-image--empty" src="/gfx/kuva_nettilukio-feed.png"/> :
               <img className="feed__item-image feed__item-image--empty" src="/gfx/kuva_nettiperuskoulu-feed.png"/>
             }
           </div>
           <div className="feed__item-body">
-            {this.props.feedReadTarget === "nettilukio" ? <a className="feed__item-title feed__item-title--nettilukio" href={entry.link} target="_blank">{entry.title}</a> :
-            <a className="feed__item-title feed__item-title--nettiperuskoulu" href={entry.link} target="_blank">{entry.title}</a>}
-
+            {entry.feed === "nettilukio" ? <a className="feed__item-title feed__item-title--nettilukio" href={entry.link} target="_blank">{entry.title}</a> :
+              <a className="feed__item-title feed__item-title--nettiperuskoulu" href={entry.link} target="_blank">{entry.title}</a>}
             <div className="feed__item-description" dangerouslySetInnerHTML={{__html: entry.description}}/>
-            <div className="feed__item-date">{this.props.i18n.time.format(entry.publicationDate)}</div>
+            <div className="feed__item-meta"><span className="feed__item-date">{this.props.i18n.time.format(entry.publicationDate)}</span> - {entry.feed === "nettilukio" ? <a href="https://nettilukio.fi" target="_blank" className="feed__item-label feed__item-label--nettilukio">nettilukio.fi</a> : <a href="https://nettiperuskoulu.fi" target="_blank" className="feed__item-label feed__item-label--nettiperuskoulu">nettiperuskoulu.fi</a>}</div>
           </div>
         </li>
       })}

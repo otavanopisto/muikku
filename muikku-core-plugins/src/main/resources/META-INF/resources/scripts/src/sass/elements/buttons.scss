@@ -303,7 +303,8 @@
   background-color: $color-frontpage-button-open-materials-readmore-background;
   color: $color-frontpage-button-open-materials-readmore-text;
   display: inline-flex;
-  margin: 3px 0 0 0;
+  margin: 5px 5px 0 0;
+  white-space: normal;
 
   &:hover,
   &.hover {
