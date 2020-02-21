@@ -54,7 +54,7 @@ public class FeedSynchronizer {
     return doc.body().html();
   }
 
-  @Schedule(second = "0", minute = "*", hour = "*", persistent = false)
+  @Schedule(second = "0", minute = "0", hour = "*", persistent = false)
   public void updateFeeds() {
     Client client = ClientBuilder.newClient();
     List<Feed> feeds = feedDAO.listAll();
