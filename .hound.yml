@@ -4,5 +4,7 @@ javascript:
 eslint:
   enabled: true
   config_file: .eslintrc.json
+  version: 6.8.0
 scss:
   config_file: .scss-style.yml
+  version: 0.57.1 
