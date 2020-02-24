@@ -27,7 +27,7 @@
 .logo--organization {
   display: inline-block;
   height: $logo-text-mobile-size;
-  margin: -10px 0 10px ;
+  margin: -10px 0 10px;
   max-width: 100%;
 
   @include breakpoint($breakpoint-pad) {
