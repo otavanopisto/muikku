@@ -34,7 +34,7 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
             <span>info@otavia.fi</span>
           </p>
           <p className="footer__subitem footer__subitem--privacy-policy">
-            <a href="https://otavia.fi/wp-content/uploads/2020/02/Opiskelija-ja-opintotietorekisterin-tietosuojaseloste_Otavia.pdf" target="_blank" className="link link--privacy-policy">{this.props.i18n.text.get('plugin.footer.ooPrivacyPolicy.label')}</a>
+            <a href="https://otavia.fi/opiskelija-ja-opintotietorekisterin-tietosuojaseloste/" target="_blank" className="link link--privacy-policy">{this.props.i18n.text.get('plugin.footer.ooPrivacyPolicy.label')}</a>
           </p>
         </div>
         <div className="footer__item footer__item--logos">
@@ -44,7 +44,7 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
       </div>
       <div className="footer__container--plagscan">
         <div className="footer__item footer__item--plagscan">
-          <a href="https://www.plagscan.com" className="link link--plagscan-logo" target="_blank"><img src="/gfx/plagscan-logo-white.png" alt="" title=""/></a> <span className="footer__item--plagscan-text">{this.props.i18n.text.get('plugin.footer.plagscan.text')}</span> <a href="https://otavia.fi/wp-content/uploads/2020/02/plagscan_tietosuojaseloste.pdf" target="_blank" className="link link--plagscan-privacy-policy">({this.props.i18n.text.get('plugin.footer.plagScanPrivacyPolicy.label')}).</a>
+          <a href="https://www.plagscan.com" className="link link--plagscan-logo" target="_blank"><img src="/gfx/plagscan-logo-white.png" alt="" title=""/></a> <span className="footer__item--plagscan-text">{this.props.i18n.text.get('plugin.footer.plagscan.text')}</span> <a href="https://otavia.fi/plagscan_tietosuojaseloste/" target="_blank" className="link link--plagscan-privacy-policy">({this.props.i18n.text.get('plugin.footer.plagScanPrivacyPolicy.label')}).</a>
         </div>
       </div>
     </footer>
