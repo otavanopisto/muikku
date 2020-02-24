@@ -54,6 +54,18 @@
   margin: 4px 15px 0 0;
   max-width: 50px;
   overflow: hidden;
+  transition: opacity 0.3s ease-in-out;
+
+  &:hover,
+  &:active,
+  &.hover,
+  &.active {
+    opacity: 0.7;
+  }
+
+  img {
+    border: 0;
+  }
 
   @include breakpoint($breakpoint-mobile-xl) {
     flex-basis: 100px;
@@ -106,25 +118,18 @@
 }
 
 .feed__item-title {
-  @include prefix(transition, webkit ms o moz, color 0.3s);
   color: $color-feed-default-text;
   display: block;
   font-weight: 600;
   margin: 0 0 5px;
 
-  &:hover,
-  &:active,
-  &.hover,
-  &.active {
-    color: $color-feed-item-description-active;
-  }
-
   @include breakpoint($breakpoint-mobile-xl) {
-    font-size: 0.875rem;
+    font-size: 1rem;
+    font-weight: 400;
   }
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -172,17 +177,9 @@
 }
 
 .feed__item-label {
-  @include prefix(transition, webkit ms o moz, color 0.3s);
   margin: 0 0 0 5px;
   text-decoration: none;
   text-transform: uppercase;
-
-  &:hover,
-  &:active,
-  &.hover,
-  &.active {
-    color: $color-feed-item-description-active;
-  }
 }
 
 .feed__item-label--nettilukio {
