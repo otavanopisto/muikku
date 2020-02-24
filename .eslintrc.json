@@ -5,6 +5,9 @@
     "browser": true,
     "jquery": true
   },
+  "parserOptions": {
+    "sourceType": "module"
+   },
   "extends": "eslint:recommended",
   "globals": {
     "async": false,
