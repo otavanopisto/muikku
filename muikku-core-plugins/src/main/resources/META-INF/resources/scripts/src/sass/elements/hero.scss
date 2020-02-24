@@ -7,7 +7,7 @@
   @include text;
   background: url("/gfx/oo-branded-site-header-background-mobile.jpg") no-repeat center center $color-hero-default-background;
   background-size: cover;
-    margin-top: $navbar-mobile-height;
+  margin-top: $navbar-mobile-height;
 
   @include breakpoint($breakpoint-pad) {
     background-image: url("/gfx/oo-branded-site-header-background.png");
