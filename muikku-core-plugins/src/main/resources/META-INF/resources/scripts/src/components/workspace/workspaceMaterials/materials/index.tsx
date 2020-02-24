@@ -153,6 +153,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       canEditContent: false,
       showRemoveAnswersDialogForPublish: false,
       showRemoveAnswersDialogForDelete: false,
+      showUpdateLinkedMaterialsDialogForPublish: false,
+      showUpdateLinkedMaterialsDialogForPublishCount: 0,
       canSetTitle: true,
     });
   }

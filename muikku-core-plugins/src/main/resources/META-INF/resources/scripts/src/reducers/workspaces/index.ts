@@ -343,6 +343,8 @@ export interface WorkspaceMaterialEditorType {
   canSetTitle: boolean,
   showRemoveAnswersDialogForPublish: boolean,
   showRemoveAnswersDialogForDelete: boolean,
+  showUpdateLinkedMaterialsDialogForPublish: boolean,
+  showUpdateLinkedMaterialsDialogForPublishCount: number,
 }
 
 export interface WorkspacesType {
@@ -556,6 +558,8 @@ export default function workspaces(state: WorkspacesType={
     canEditContent: true,
     showRemoveAnswersDialogForPublish: false,
     showRemoveAnswersDialogForDelete: false,
+    showUpdateLinkedMaterialsDialogForPublish: false,
+    showUpdateLinkedMaterialsDialogForPublishCount: 0,
     canSetTitle: true,
   }
 }, action: ActionType): WorkspacesType {
@@ -695,6 +699,8 @@ export default function workspaces(state: WorkspacesType={
       newEditor.currentDraftNodeValue = {...newEditor.currentDraftNodeValue, ...action.payload.update};
     }
     newEditor.showRemoveAnswersDialogForPublish = action.payload.showRemoveAnswersDialogForPublish;
+    newEditor.showUpdateLinkedMaterialsDialogForPublish = action.payload.showUpdateLinkedMaterialsDialogForPublish;
+    newEditor.showUpdateLinkedMaterialsDialogForPublishCount = action.payload.showUpdateLinkedMaterialsDialogForPublishCount;
     
     return {
       ...state,

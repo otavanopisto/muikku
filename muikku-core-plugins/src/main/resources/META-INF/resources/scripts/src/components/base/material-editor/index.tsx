@@ -19,6 +19,7 @@ import Dropdown from "~/components/general/dropdown";
 import ConfirmPublishPageWithAnswersDialog from "./confirm-publish-page-with-answers-dialog";
 import ConfirmRemovePageWithAnswersDialog from "./confirm-remove-page-with-answers-dialog";
 import ConfirmRemoveAttachment from "./confirm-remove-attachment";
+import ConfirmPublishPageWithLinkedMaterialDialog from "./confirm-publish-page-with-linked-material-dialog";
 
 import equals = require("deep-equal");
 import Tabs from '~/components/general/tabs';
@@ -492,6 +493,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
         </Tabs>
         <ConfirmPublishPageWithAnswersDialog/>
         <ConfirmRemovePageWithAnswersDialog onDeleteSuccess={this.close}/>
+        <ConfirmPublishPageWithLinkedMaterialDialog/>
      </div>
   }
 }

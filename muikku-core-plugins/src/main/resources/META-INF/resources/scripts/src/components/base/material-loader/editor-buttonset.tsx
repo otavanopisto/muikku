@@ -45,6 +45,8 @@ function startupEditor(props: EditorButtonSetProps){
     canSetTitle: typeof props.canSetTitle === "undefined" ? true : props.canSetTitle,
     showRemoveAnswersDialogForPublish: false,
     showRemoveAnswersDialogForDelete: false,
+    showUpdateLinkedMaterialsDialogForPublish: false,
+    showUpdateLinkedMaterialsDialogForPublishCount: 0,
   }, true);
 }
 

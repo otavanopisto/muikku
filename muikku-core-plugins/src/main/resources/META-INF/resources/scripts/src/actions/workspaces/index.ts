@@ -55,6 +55,8 @@ export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_ST
 }>;
 export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<"UPDATE_MATERIAL_CONTENT_NODE", {
   showRemoveAnswersDialogForPublish: boolean,
+  showUpdateLinkedMaterialsDialogForPublish: boolean,
+  showUpdateLinkedMaterialsDialogForPublishCount: number,
   material: MaterialContentNodeType,
   update: Partial<MaterialContentNodeType>,
   isDraft?: boolean,
@@ -170,6 +172,7 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
     material: MaterialContentNodeType,
     update: Partial<MaterialContentNodeType>,
     isDraft?: boolean,
+    updateLinked?: boolean,
     removeAnswers?: boolean,
     success?: ()=>any,
     fail?: ()=>any,
@@ -1438,6 +1441,8 @@ let requestWorkspaceMaterialContentNodeAttachments:RequestWorkspaceMaterialConte
       dispatch({
         type: "UPDATE_MATERIAL_CONTENT_NODE",
         payload: {
+          showUpdateLinkedMaterialsDialogForPublish: false,
+          showUpdateLinkedMaterialsDialogForPublishCount: 0,
           showRemoveAnswersDialogForPublish: false,
           material: material,
           update: {
@@ -1462,6 +1467,8 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
           type: "UPDATE_MATERIAL_CONTENT_NODE",
           payload: {
             showRemoveAnswersDialogForPublish: false,
+            showUpdateLinkedMaterialsDialogForPublish: false,
+            showUpdateLinkedMaterialsDialogForPublishCount: 0,
             material: data.material,
             update: data.update,
             isDraft: data.isDraft,
@@ -1470,6 +1477,27 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
       }
 
       if (!data.isDraft) {
+
+        if (!data.updateLinked) {
+          const materialsAnswer: any[] =
+            (await promisify(mApi().materials.material.workspaceMaterials.read(data.material.materialId), 'callback')()) as any;
+        
+          if (materialsAnswer && materialsAnswer.length > 1) {
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                showRemoveAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: materialsAnswer.length,
+                showUpdateLinkedMaterialsDialogForPublish: true,
+                update: data.material,
+                material: data.material,
+                isDraft: false,
+              }
+            });
+            return;
+          }
+        }
+
         if (typeof data.update.html !== "undefined" && data.material.html !== data.update.html) {
           await promisify(mApi().materials.html.content
               .update(data.material.materialId, {
@@ -1542,6 +1570,8 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
             dispatch({
               type: "UPDATE_MATERIAL_CONTENT_NODE",
               payload: {
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
                 showRemoveAnswersDialogForPublish: false,
                 material: data.material,
                 update: {
@@ -1615,6 +1645,8 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
           payload: {
+            showUpdateLinkedMaterialsDialogForPublish: false,
+            showUpdateLinkedMaterialsDialogForPublishCount: 0,
             showRemoveAnswersDialogForPublish,
             material: data.material,
             update: data.material,
