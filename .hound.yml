@@ -2,7 +2,7 @@ fail_on_violations: true
 javascript:
   enabled: false
 eslint:
-  enabled: true
+  enabled: false
   config_file: .eslintrc.json
   version: 6.8.0
 tslint:
