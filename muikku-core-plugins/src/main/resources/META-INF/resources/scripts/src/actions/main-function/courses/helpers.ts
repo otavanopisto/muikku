@@ -110,10 +110,17 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     }
     
     //And there it goes
-    dispatch({
-      type: "UPDATE_COURSES_ALL_PROPS",
-      payload
-    });
+    if (organization === false) {
+      dispatch({
+        type: "UPDATE_COURSES_ALL_PROPS",
+        payload
+      });
+    } else {
+      dispatch({
+        type: "UPDATE_ORGANIZATION_COURSES_ALL_PROPS",
+        payload
+      });      
+    }
   } catch (err){
     if (!(err instanceof MApiError)){
       throw err;

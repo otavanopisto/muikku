@@ -183,8 +183,5 @@ export function organizationCourses(state:CoursesType = {
         state: action.payload
       });
     }
-    
-    
-    
     return state;
-  }
+}
