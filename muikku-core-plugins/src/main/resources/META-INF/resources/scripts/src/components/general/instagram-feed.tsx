@@ -5,7 +5,7 @@ import '~/sass/elements/instagram-gallery.scss';
 interface InstagramFeedProps {
   userId: string,
   photoCount: number,
-  thumbnailWidth: number,
+  thumbnailWidth: number
 }
 
 interface InstagramFeedState {
@@ -45,13 +45,13 @@ export default class InstagramFeed extends React.Component<InstagramFeedProps, I
             src,
             width,
             height,
-            url
+            url,
           };
-        }
+        },
       );
       this.setState({ photos });
     } catch (error) {
-      console.error(error);
+
     }
   }
 
