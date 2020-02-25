@@ -194,7 +194,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 })}
                 {record.transferCredits.length ?
                   <div className="application-list__header-container application-list__header-container--sorter" onClick={this.sortRecords.bind(this, record.transferCredits)}>
-                    <h3 className="application-list__header application-list__header--sorter">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3>
+                    <h3 className="application-list__header application-list__header--sorter">{this.props.i18n.text.get("plugin.records.transferCredits")} {record.groupCurriculumIdentifier ? (storedCurriculumIndex[record.groupCurriculumIdentifier]) : null}</h3>
                     <div className={`icon-sort-alpha-${this.state.sortDirectionRecords === 'asc' ? 'desc' : 'asc'}`}></div>
                   </div> : null}
                   {record.transferCredits.map((credit)=>{
