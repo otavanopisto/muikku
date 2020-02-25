@@ -1667,11 +1667,6 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
 let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTriggerType = function deleteWorkspaceMaterialContentNode(data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      dispatch({
-        type: "DELETE_MATERIAL_CONTENT_NODE",
-        payload: data.material
-      });
-
       let urlPath = "materials";
       if (data.material.type === "folder") {
         urlPath = "folders";
@@ -1683,6 +1678,11 @@ let deleteWorkspaceMaterialContentNode:DeleteWorkspaceMaterialContentNodeTrigger
           }), 'callback')()
 
       data.success && data.success();
+      
+      dispatch({
+        type: "DELETE_MATERIAL_CONTENT_NODE",
+        payload: data.material
+      });
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
