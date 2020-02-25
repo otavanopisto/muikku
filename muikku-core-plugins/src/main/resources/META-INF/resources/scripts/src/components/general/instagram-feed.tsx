@@ -2,18 +2,18 @@ import * as React from 'react';
 
 import '~/sass/elements/instagram-gallery.scss';
 
-interface FrontpageInstagramGalleryProps {
+interface InstagramFeedProps {
   userId: string,
   photoCount: number,
   thumbnailWidth: number,
 }
 
-interface FrontpageInstagramGalleryState {
+interface InstagramFeedState {
   photos: Array<any>
 }
 
-export default class FrontpageInstagramGallery extends React.Component<FrontpageInstagramGalleryProps, FrontpageInstagramGalleryState> {
-  constructor(props: FrontpageInstagramGalleryProps){
+export default class InstagramFeed extends React.Component<InstagramFeedProps, InstagramFeedState> {
+  constructor(props: InstagramFeedProps){
     super(props);
 
     this.state = {

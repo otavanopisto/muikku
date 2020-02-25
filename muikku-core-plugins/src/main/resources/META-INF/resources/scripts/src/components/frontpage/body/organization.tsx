@@ -46,11 +46,8 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
                 www.otavia.fi
               </Button>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
   }

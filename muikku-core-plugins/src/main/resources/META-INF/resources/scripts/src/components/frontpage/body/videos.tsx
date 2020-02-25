@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
 
 interface FrontpageVideosProps {
