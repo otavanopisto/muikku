@@ -52,19 +52,22 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
       activator = findDOMNode(activator);
     }
     
-    let $target = $(activator);
-    let $arrow = $(this.refs["arrow"]);
-    let $dropdown = $(this.refs["dropdown"]);
+    const $target = $(activator);
+    const $arrow = $(this.refs["arrow"]);
+    const $dropdown = $(this.refs["dropdown"]);
       
-    let position = activator.getBoundingClientRect();
-    let windowWidth = $(window).width();
-    let windowHeight = $(window).height();
-    let moreSpaceInTheLeftSide = (windowWidth - position.left) < position.left;
-    let spaceLeftInBottom = windowHeight - position.top - position.height;
-    let notEnoughSpaceInBottom = spaceLeftInBottom < $dropdown.outerHeight() + 5;
+    const position = activator.getBoundingClientRect();
+    const windowWidth = $(window).width();
+    const windowHeight = $(window).height();
+    const moreSpaceInTheLeftSide = (windowWidth - position.left) < position.left;
+    const targetIsWiderThanDropdown = $target.outerWidth() > $dropdown.outerWidth();
+    const spaceLeftInBottom = windowHeight - position.top - position.height;
+    const notEnoughSpaceInBottom = spaceLeftInBottom < $dropdown.outerHeight() + 5;
     
     let left = null;
-    if (moreSpaceInTheLeftSide){
+    if (targetIsWiderThanDropdown) {
+      left = position.left + $target.outerWidth()/2 - ($dropdown.outerWidth()/2);
+    } else if (moreSpaceInTheLeftSide){
       left = position.left - $dropdown.outerWidth() + $target.outerWidth();
     } else {
       left = position.left;
@@ -81,7 +84,9 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     let arrowRight = null;
     let arrowTop = null;
     let reverseArrow = false;
-    if (moreSpaceInTheLeftSide){
+    if (targetIsWiderThanDropdown) {
+      arrowLeft = ($dropdown.outerWidth() / 2) - ($arrow.outerWidth()/2);
+    } else if (moreSpaceInTheLeftSide){
       arrowRight = ($target.outerWidth() / 2) - ($arrow.outerWidth()/2);
     } else {
       arrowLeft = ($target.outerWidth() / 2) - ($arrow.outerWidth()/2);
