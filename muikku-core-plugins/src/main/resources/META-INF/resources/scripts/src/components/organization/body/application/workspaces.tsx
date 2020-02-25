@@ -3,6 +3,7 @@ import {StateType} from '~/reducers';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
+import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Workspace from './workspaces/workspace';
 import {i18nType} from '~/reducers/base/i18n';
 import {CoursesStateType, WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
@@ -20,7 +21,18 @@ interface WorkspacesProps {
 interface WorkspacesState {
 }
 
-class Workspaces extends React.Component<WorkspacesProps, WorkspacesState> {
+class Workspaces extends BodyScrollLoader<WorkspacesProps, WorkspacesState> {
+  
+  constructor(props: WorkspacesProps){
+    super(props);
+    //once this is in state READY only then a loading more event can be triggered
+    this.statePropertyLocation = "organizationWorkspacesState";
+    //it will only call the function if this is true
+    this.hasMorePropertyLocation = "organizationWorkspacesHasMore";
+    //this is the function that will be called
+    this.loadMoreTriggerFunctionLocation = "loadMoreCoursesFromServer";
+  }
+  
   render(){
     if (this.props.organizationWorkspacesState === "LOADING"){
       return null;
@@ -45,9 +57,9 @@ class Workspaces extends React.Component<WorkspacesProps, WorkspacesState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    organizationWorkspacesState: state.courses.state,
-    organizationWorkspacesHasMore: state.courses.hasMore,
-    organizationWorkspaces: state.courses.courses
+    organizationWorkspacesState: state.organizationCourses.state,
+    organizationWorkspacesHasMore: state.organizationCourses.hasMore,
+    organizationWorkspaces: state.organizationCourses.courses
   }
 };
 

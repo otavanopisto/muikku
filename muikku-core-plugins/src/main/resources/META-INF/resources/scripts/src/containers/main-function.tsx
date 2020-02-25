@@ -79,6 +79,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     script.src = url;
     document.head.appendChild(script);
   }
+
   onHashChange(){
     if (window.location.pathname.includes("/coursepicker")){
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}), false);
@@ -103,6 +104,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
     this.prevPathName = window.location.pathname;
   }
+
   loadGuiderData(){
     //This code allows you to use the weird deprecated #userprofile/PYRAMUS-STUDENT-30055%22%3EJuhana type of links
     if (window.location.hash.replace("#","").indexOf("userprofile") === 0) {
@@ -123,6 +125,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
     this.props.store.dispatch(loadStudent(originalData.c) as Action)
   }
+
   loadRecordsData(dataSplitted: string[]){
     let givenLocation = dataSplitted[0].split("/")[0];
     let originalData:any = queryString.parse(dataSplitted[1] || "", {arrayFormat: 'bracket'});
@@ -139,6 +142,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(updateHops() as Action);
     }
   }
+
   loadAnnouncerData(location: string[]){
     if (location.length === 1){
       this.props.store.dispatch(loadAnnouncements(location[0]) as Action);
@@ -146,9 +150,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1])) as Action);
     }
   }
+
   loadAnnouncementsData(announcementId: number){
     this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
   }
+
   //NOTE because loadDiscussionThreadsFromServer can only run after areas have been loaded, this needs to be so
   loadDiscussionData(location: string[]){
     if (location.length <= 2){
@@ -171,6 +177,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       }) as Action);
     }
   }
+
   loadCoursePickerData(originalData:any, organizationCourses: boolean){
     let filters:CoursesActiveFiltersType = {
       educationFilters: originalData.e || [],
@@ -181,6 +188,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
     this.props.store.dispatch(loadCoursesFromServer(filters, organizationCourses) as Action);
   }
+
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
       this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
@@ -188,6 +196,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
     }
   }
+
   renderCoursePickerBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -196,15 +205,16 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
       this.props.store.dispatch(LoadAvailableOrganizationFiltersFromServer() as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
-      
+
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
-      
+
       if (currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false);
       }
-      
+
       let state:StateType = this.props.store.getState();
+
       if (state.status.loggedIn){
         this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
           if (!currentLocationHasData) {
@@ -227,23 +237,25 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
         this.loadCoursePickerData(currentLocationData, false);
       }
     }
-    
+
     return <CousePickerBody/>
   }
+
   renderIndexBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadLastMessageThreadsFromServer.bind(null,6));
-      
+
       this.props.store.dispatch(loadAnnouncementsAsAClient() as Action);
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
       this.props.store.dispatch(loadWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
     }
-    
+
     return <IndexBody/>
   }
+
   renderOrganizationAdministrationBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -254,10 +266,15 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
+
+      if (currentLocationHasData) {
+        this.loadCoursePickerData(currentLocationData, true);
+      }
+
       let state:StateType = this.props.store.getState();
       
       this.props.store.dispatch(loadUsers() as Action);
-      
+
       this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
         if (!currentLocationHasData) {
           let defaultSelections : any = {};
@@ -271,11 +288,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
           }
         }
       }) as Action);
-      
 
     }
     return <OrganizationAdministrationBody/>
   }
+
   renderCommunicatorBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -306,6 +323,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     
     return <CommunicatorBody/>
   }
+
   renderDiscussionBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -325,6 +343,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
     return <DiscussionBody/>
   }
+
   renderAnnouncementsBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -335,6 +354,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
     return <AnnouncementsBody/>
   }
+
   renderAnnouncerBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -355,6 +375,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     
     return <AnnouncerBody/>
   }
+
   renderGuiderBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -368,6 +389,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
     return <GuiderBody/>
   }
+
   renderProfileBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -386,6 +408,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     
     return <ProfileBody/>
   }
+
   renderRecordsBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -401,6 +424,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
     return <RecordsBody/>
   }
+
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
