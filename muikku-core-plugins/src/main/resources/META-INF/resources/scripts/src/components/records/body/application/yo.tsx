@@ -41,7 +41,7 @@ class YO extends React.Component<YOProps, YOState> {
   constructor(props: YOProps) {
     super(props);
   }
-  
+
   render() {
 
     let i18n = this.props.i18n;
@@ -53,10 +53,10 @@ class YO extends React.Component<YOProps, YOState> {
         return (
           <MatriculationEligibilityRow key={subject.subjectName + index} subject={subject} />
         );
-      }) : <div>{this.props.i18n.text.get("plugin.records.yo.noMatriculationSubjectsSelected")}</div>  : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> ; 
-     
+      }) : <div>{this.props.i18n.text.get("plugin.records.yo.noMatriculationSubjectsSelected")}</div>  : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> ;
+
 //  < div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
-      
+
        const enrollmentLink = this.props.yo.enrollment != null ?
          (this.props.yo.enrollment).filter((exam) => exam.eligible == true).map((exam) => {
            return (
@@ -121,12 +121,12 @@ class YO extends React.Component<YOProps, YOState> {
           </div>
         </div>
       );
-    }   
+    }
   }
 }
 
 function mapStateToProps(state: StateType) {
-  return {    
+  return {
     i18n: state.i18n,
     records: state.records,
     hops: state.hops,

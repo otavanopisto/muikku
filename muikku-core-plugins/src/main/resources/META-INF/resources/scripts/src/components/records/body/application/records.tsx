@@ -105,8 +105,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
     window.location.hash = "#?u=" + user.userEntityId + "&i=" + encodeURIComponent(user.id) + "&w=" + workspace.id;
   }
-
-
   sortBy (data: any, key: string, direction: string) {
     data.sort(
         (a: any, b: any) => {
@@ -118,8 +116,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         }
     )
   }
-
-
   sortWorkspaces(data: any){
     let key = "name";
     let sortDirection = this.state.sortDirectionWorkspaces;
