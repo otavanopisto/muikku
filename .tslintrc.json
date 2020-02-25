@@ -4,7 +4,6 @@
     "curly": true,
     "eofline": true,
     "indent": [true, "spaces"],
-    "max-line-length": false,
     "no-consecutive-blank-lines": true,
     "no-console": [true, "log", "error"],
     "no-debugger": true,
