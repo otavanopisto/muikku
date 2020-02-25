@@ -6,7 +6,7 @@ eslint:
 tslint:
    enabled: true
    config_file: .tslintrc.json
-   versio: 5.9.1
+   version: 5.9.1
 scss:
   config_file: .scss-style.yml
   version: 0.57.1 
