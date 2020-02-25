@@ -3,10 +3,10 @@ javascript:
   enabled: false
 eslint:
   enabled: false
-  config_file: .eslintrc.json
-  version: 6.8.0
 tslint:
    enabled: true
+   config_file: .tslintrc.json
+   versio: 5.9.1
 scss:
   config_file: .scss-style.yml
   version: 0.57.1 
