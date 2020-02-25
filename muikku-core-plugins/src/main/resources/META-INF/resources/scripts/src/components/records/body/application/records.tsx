@@ -51,15 +51,9 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
 }
 
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
-  let gradeId = [
-    transferCredit.gradingScaleIdentifier,
-    transferCredit.gradeIdentifier].join('-');
-  let grade = props.records.grades[gradeId];
   return <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
-      getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
-      {shortenGrade(grade.grade)}
-
-    </span>
+      getShortenGradeExtension(transferCredit.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${transferCredit.passed ? "state-PASSED" : "state-FAILED"}`}>
+      {shortenGrade(transferCredit.grade)}</span>
 }
 
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
