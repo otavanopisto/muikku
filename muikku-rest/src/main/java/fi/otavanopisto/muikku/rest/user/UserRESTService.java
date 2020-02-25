@@ -1350,7 +1350,7 @@ public class UserRESTService extends AbstractRESTService {
   /**
    * PUT mApi().user.staffMembers
    * 
-   * Creates a new staff member.
+   * Updates a staff member.
    * 
    * Payload:
    * {identifier: required; identifier of the edited staff member
