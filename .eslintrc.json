@@ -8,10 +8,13 @@
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 6
-   },
+  },
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
+  ],
+  "plugins": [
+    "react"
   ],
   "globals": {
     "async": false,
