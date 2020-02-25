@@ -166,7 +166,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             {records.length ? records.map((record, index)=>{
               return <ApplicationList key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <div onClick={this.sortWorkspaces.bind(this, record.workspaces)} className="application-list__header-container application-list__header-container--sorter">
-                  <h3 className="application-list__header application-list__header--sorter">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3>
+                  <h3 className="application-list__header application-list__header--sorter">{record.groupCurriculumIdentifier ? storedCurriculumIndex[record.groupCurriculumIdentifier] : null}</h3>
                   <div className={`icon-sort-alpha-${this.state.sortDirectionWorkspaces === 'asc' ? 'desc' : 'asc'}`}></div>
                 </div> : null}
                 {record.workspaces.map((workspace)=>{
