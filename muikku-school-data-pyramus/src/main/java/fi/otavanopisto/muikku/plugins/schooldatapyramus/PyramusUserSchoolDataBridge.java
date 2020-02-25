@@ -95,6 +95,21 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
+  public BridgeResponse<StaffMemberPayload> updateStaffMember(StaffMemberPayload staffMember) {
+    Long studentId = identifierMapper.getPyramusStudentId(staffMember.getIdentifier());
+    
+    if (studentId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
+    }
+
+    BridgeResponse<StaffMemberPayload> response = pyramusClient.responsePut(String.format("/muikku/users/%d", studentId), Entity.entity(staffMember, MediaType.APPLICATION_JSON), StaffMemberPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
+      response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
+    }
+    return response;
+  }
+  
+  @Override
   public BridgeResponse<StudentPayload> createStudent(StudentPayload student) {
     
     // Convert Muikku study programme identifier to Pyramus study programme id
@@ -895,4 +910,5 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
     }
   }
+
 }

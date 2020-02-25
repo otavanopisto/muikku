@@ -1348,6 +1348,47 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   /**
+   * PUT mApi().user.staffMembers
+   * 
+   * Creates a new staff member.
+   * 
+   * Payload:
+   * {identifier: required; identifier of the edited staff member
+   *  firstName: required; the first name of the staff member
+   *  lastName: required; the last name of the staff member
+   *  email: required; the email address of the staff member
+   *  role: required; TEACHER or MANAGER }
+   * 
+   * Output:
+   * {identifier: identifier of the staff member
+   *  firstName: the first name of the staff member
+   *  lastName: the last name of the staff member
+   *  email: the email address of the staff member
+   *  role: TEACHER or MANAGER}
+   * 
+   * Errors:
+   * 409 if the email address is already in use; response contains a localized error message 
+   */
+  @PUT
+  @Path("/staffMembers/{ID}")
+  @RESTPermit(MuikkuPermissions.UPDATE_STAFF_MEMBER)
+  public Response updateStaffMember(@PathParam("ID") String id, StaffMemberPayload payload) {
+    
+    // Payload validation
+    
+    if (StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
+    }
+
+    // User creation
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(dataSource, payload);
+        
+    return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+  }
+
+  /**
    * POST mApi().user.students
    * 
    * Creates a new student.
