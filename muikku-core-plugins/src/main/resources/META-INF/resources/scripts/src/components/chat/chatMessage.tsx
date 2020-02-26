@@ -19,6 +19,7 @@ interface Istate {
   timeStamp: any,
   content: string,
   deleted: boolean,
+  deletedTime: string,
   showName: boolean,
   showRemoveButton: boolean,
   userIdentifier: string
@@ -53,6 +54,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       timeStamp: "",
       content: "",
       deleted: null,
+      deletedTime: "",
       showName: false,
       showRemoveButton: false,
       userIdentifier: ""
@@ -106,6 +108,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       timeStamp: stamp,
       content: groupMessage.content,
       deleted: groupMessage.deleted,
+      deletedTime: groupMessage.deletedTime,
       userIdentifier: groupMessage.userIdentifier
     });
   }
@@ -129,7 +132,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
       </div>
       <div className="chat__message-content-container" onClick={this.showRemoveButton}>
         <div className="chat__message-content" onClick={this.showRemoveButton}>
-          {this.props.groupMessage.deleted ? <i>Viesti poistettu</i> : this.props.groupMessage.content}
+          {this.props.groupMessage.deleted ? <i>Viesti poistettu {this.props.groupMessage.deletedTime}</i>  : this.props.groupMessage.content}
         </div>
         {(this.state.showRemoveButton === true) && <div className="chat__message-action-container">
           <div onClick={() => this.props.removeMessage(this.state.groupMessage)} className="chat__message-delete">Poista</div>

@@ -129,7 +129,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           this.getMUCMessages(data.chatbox.messages.models[data.chatbox.messages.models.length - 1]);          
         }
       }  
-    }
+    } 
     
   }
   openMucConversation(room: string){
@@ -220,7 +220,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let deleteId: any;
         let nick: any;
         let userName: any;
-
+        let deletedTime: any;
+        
         if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
           from = from.split("@");
           from = from[0];
@@ -254,7 +255,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         } else {
           stamp = new Date().toString();
         }
-        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false, userIdentifier: from};
+        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false, deletedTime: "", userIdentifier: from};
 
 
         if (message !== "") {
@@ -268,13 +269,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             tempGroupMessages.push(groupMessage);
           } else {
             deleteId = message.split("=").pop();
+            deletedTime = stanza.attributes.dateTime;
           }
 
           let i:any;
           for (i = 0; i < tempGroupMessages.length; i++) {
             let groupMessageId = tempGroupMessages[i].messageId;
             if (deleteId && groupMessageId === deleteId) {
-              tempGroupMessages[i] = {...tempGroupMessages[i], deleted: true}
+              tempGroupMessages[i] = {...tempGroupMessages[i], deleted: true, deletedTime: deletedTime}
             }
           }
           tempGroupMessages.sort((a: any, b: any) => (a.timeStamp > b.timeStamp) ? 1 : -1)
@@ -296,9 +298,16 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let text = data;
       let chat = this.state.chatBox;
 
-      var spoiler_hint = undefined;
+      var spoiler_hint = "undefined";
 
       const attrs = chat.getOutgoingMessageAttributes("messageID=" + text.messageId, spoiler_hint);
+      
+      let today = new Date();
+      let date = today.getDate()+'.'+(today.getMonth()+1)+'.'+today.getFullYear();
+      let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      let dateTime = date+' '+time;
+      
+      attrs.dateTime = dateTime;
 
       let message = chat.messages.findWhere('correcting')
 
@@ -308,13 +317,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           'edited': chat.moment().format(),
           'message': text,
           'references': text,
-          'fullname': window.PROFILE_DATA.displayName
+          'fullname': window.PROFILE_DATA.displayName,
+          'dateTime': dateTime
         });
       } else {
         message = chat.messages.create(attrs);
       }
 
       this.state.converse.api.send(chat.createMessageStanza(message));
+      this.getMUCMessages(message);
     }
     sendMessage(event: any){
       event.preventDefault();
