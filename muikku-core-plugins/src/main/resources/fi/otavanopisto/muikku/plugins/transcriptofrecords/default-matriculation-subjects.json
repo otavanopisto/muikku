@@ -113,10 +113,14 @@
   },
   {
     "code": "GC",
-    "subjectCode": null
+    "subjectCode": "POC"
   },
   {
     "code": "LC",
     "subjectCode": "LAB3"
+  },
+  {
+    "code": "SMC",
+    "subjectCode": "SMB3"
   }
 ]
