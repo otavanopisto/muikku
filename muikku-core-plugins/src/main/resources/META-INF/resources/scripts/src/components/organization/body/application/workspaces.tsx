@@ -7,30 +7,30 @@ import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Workspace from './workspaces/workspace';
 import {i18nType} from '~/reducers/base/i18n';
 import {CoursesStateType, WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
-import { loadMoreCoursesFromServer, LoadMoreCoursesFromServerTriggerType } from '~/actions/main-function/courses';
+import { loadMoreOrganizationCoursesFromServer, LoadMoreOrganizationCoursesFromServerTriggerType } from '~/actions/main-function/courses';
 
 
-interface WorkspacesProps {
+interface OrganizationWorkspacesProps {
   i18n: i18nType,
   organizationWorkspacesState: CoursesStateType,
   organizationWorkspacesHasMore: boolean,
-  loadMoreCoursesFromServer: LoadMoreCoursesFromServerTriggerType,
+  loadMoreOrganizationCoursesFromServer: LoadMoreOrganizationCoursesFromServerTriggerType,
   organizationWorkspaces: WorkspaceCourseListType
 }
 
-interface WorkspacesState {
+interface OrganizationWorkspacesState {
 }
 
-class Workspaces extends BodyScrollLoader<WorkspacesProps, WorkspacesState> {
+class OrganizationWorkspaces extends BodyScrollLoader<OrganizationWorkspacesProps, OrganizationWorkspacesState> {
   
-  constructor(props: WorkspacesProps){
+  constructor(props: OrganizationWorkspacesProps){
     super(props);
     //once this is in state READY only then a loading more event can be triggered
     this.statePropertyLocation = "organizationWorkspacesState";
     //it will only call the function if this is true
     this.hasMorePropertyLocation = "organizationWorkspacesHasMore";
     //this is the function that will be called
-    this.loadMoreTriggerFunctionLocation = "loadMoreCoursesFromServer";
+    this.loadMoreTriggerFunctionLocation = "loadMoreOrganizationCoursesFromServer";
   }
   
   render(){
@@ -65,11 +65,10 @@ function mapStateToProps(state: StateType){
 
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({loadMoreCoursesFromServer}, dispatch);
+  return bindActionCreators({loadMoreOrganizationCoursesFromServer}, dispatch);
 };
-
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Workspaces);
+)(OrganizationWorkspaces);

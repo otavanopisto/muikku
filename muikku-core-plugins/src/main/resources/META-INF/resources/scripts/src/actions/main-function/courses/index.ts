@@ -32,6 +32,11 @@ export interface LoadCoursesFromServerTriggerType {
 export interface LoadMoreCoursesFromServerTriggerType {
   (): AnyActionType
 }
+
+export interface LoadMoreOrganizationCoursesFromServerTriggerType {
+  (): AnyActionType
+}
+
 export interface LoadAvailableEducationFiltersFromServerTriggerType {
   ():AnyActionType
 }
@@ -57,8 +62,11 @@ let loadCoursesFromServer:LoadCoursesFromServerTriggerType = function loadCourse
 }
 
 let loadMoreCoursesFromServer:LoadMoreCoursesFromServerTriggerType = function loadMoreCoursesFromServer(){
-  
   return loadCoursesHelper.bind(this, null, false, false);
+}
+
+let loadMoreOrganizationCoursesFromServer:LoadMoreOrganizationCoursesFromServerTriggerType = function loadMoreOrganizationCoursesFromServer(){
+  return loadCoursesHelper.bind(this, null, true, false);
 }
 
 let LoadAvailableEducationFiltersFromServer:LoadAvailableEducationFiltersFromServerTriggerType = function LoadAvailableEducationFiltersFromServer(){
@@ -131,5 +139,5 @@ let signupIntoCourse:SignupIntoCourseTriggerType = function signupIntoCourse(dat
   }
 }
 
-export {LoadAvailableCurriculumFiltersFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableOrganizationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
-export default {LoadAvailableCurriculumFiltersFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableOrganizationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
+export {LoadAvailableCurriculumFiltersFromServer, loadCoursesFromServer, loadMoreOrganizationCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableOrganizationFiltersFromServer, loadMoreCoursesFromServer, signupIntoCourse};
+export default {loadCoursesFromServer};

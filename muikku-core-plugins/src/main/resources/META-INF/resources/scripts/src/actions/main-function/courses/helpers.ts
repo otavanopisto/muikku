@@ -13,6 +13,11 @@ const MAX_LOADED_AT_ONCE = 26;
 export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null, organization:boolean, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
   let courses:CoursesType = state.courses;
+
+  if (organization === true) { 
+    courses = state.organizationCourses;
+  } 
+  
   let hasEvaluationFees:boolean = state.userIndex && 
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees
@@ -39,10 +44,17 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     activeFilters: actualFilters
   }
   
-  dispatch({
-    type: "UPDATE_COURSES_ALL_PROPS",
-    payload: newCoursesPropsWhileLoading
-  });
+  if (organization === false) {  
+    dispatch({
+      type: "UPDATE_COURSES_ALL_PROPS",
+      payload: newCoursesPropsWhileLoading
+    });
+  } else {
+    dispatch({
+      type: "UPDATE_ORGANIZATION_COURSES_ALL_PROPS",
+      payload: newCoursesPropsWhileLoading
+    });
+  }
   
   //Generate the api query, our first result in the messages that we have loaded
   let firstResult = initial ? 0 : courses.courses.length + 1;
