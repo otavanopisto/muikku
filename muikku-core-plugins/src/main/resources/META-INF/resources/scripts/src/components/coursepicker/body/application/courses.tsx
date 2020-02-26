@@ -24,6 +24,7 @@ interface CoursepickerWorkspacesProps {
 interface CoursepickerWorkspacesState {
 }
 
+
 class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProps, CoursepickerWorkspacesState> {
   constructor(props: CoursepickerWorkspacesProps){
     super(props);

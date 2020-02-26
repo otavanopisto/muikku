@@ -57,7 +57,8 @@ let loadCoursesFromServer:LoadCoursesFromServerTriggerType = function loadCourse
 }
 
 let loadMoreCoursesFromServer:LoadMoreCoursesFromServerTriggerType = function loadMoreCoursesFromServer(){
-  return loadCoursesHelper.bind(this, null, false);
+  
+  return loadCoursesHelper.bind(this, null, false, false);
 }
 
 let LoadAvailableEducationFiltersFromServer:LoadAvailableEducationFiltersFromServerTriggerType = function LoadAvailableEducationFiltersFromServer(){
