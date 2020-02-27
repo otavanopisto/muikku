@@ -7,12 +7,10 @@ import mApi from '~/lib/mApi';
 import MatriculationSubjectType from "./matriculation-subject-type";
 import Link from '~/components/general/link';
 
-
 /**
  * Interface representing MatriculationSubjectsList component properties
- * 
- * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
- */
+ *
+  */
 interface MatriculationSubjectsListProps {
   initialMatriculationSubjects?: string[],
   onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void,
@@ -21,9 +19,8 @@ interface MatriculationSubjectsListProps {
 
 /**
  * Interface representing MatriculationSubjectsList component state
- * 
- * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
- */
+ *
+  */
 interface MatriculationSubjectsListState {
   matriculationSubjects: MatriculationSubjectType[]
   selectedMatriculationSubjects: string[]
@@ -32,25 +29,24 @@ interface MatriculationSubjectsListState {
 
 /**
  * MatriculationSubjectsList component
- * 
- * @author Heikki Kurhinen <heikki.kurhinen@metatavu.fi>
- */
+ *
+  */
 class MatriculationSubjectsList extends React.Component<MatriculationSubjectsListProps, MatriculationSubjectsListState> {
   constructor(props: MatriculationSubjectsListProps){
     super(props);
-    
+
     this.state = {
       matriculationSubjects: [],
       selectedMatriculationSubjects: [""],
       loading: false
     }
   }
-  
+
   /**
-   * Method for notifying about matriculation subject changes 
-   * 
+   * Method for notifying about matriculation subject changes
+   *
    * Method filters out empty values from input array
-   * 
+   *
    * @param selectedSubjects selected subjects
    */
   notifyMatriculationSubjectChange(selectedSubjects: string[]) {
@@ -61,9 +57,9 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
 
   /**
    * Event handler for matriculation subject change
-   * 
+   *
    * @param index list index
-   * @param e event 
+   * @param e event
    */
   handleMatriculationSubjectChange(index: number, e: React.ChangeEvent<HTMLInputElement> ) {
     const selectedSubjects = [...this.state.selectedMatriculationSubjects];
@@ -72,13 +68,13 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
     this.setState({
       selectedMatriculationSubjects: selectedSubjects
     });
-    
+
     this.notifyMatriculationSubjectChange(selectedSubjects);
   }
 
   /**
    * Event handler for handling matriculation subject removals
-   * 
+   *
    * @param index index number
    */
   handleMatriculationSubjectRemove(index: number) {
@@ -106,17 +102,17 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
 
   /**
    * Finds a matriculation subject name by subject value
-   * 
+   *
    * @param code matriculation subject code
-   * @returns subject name or empty string if not found 
+   * @returns subject name or empty string if not found
    */
   getMatriculationSubjectNameByCode = (code: string): string => {
     return this.props.i18n.text.get(`plugin.records.hops.matriculationSubject.${code}`);
   }
 
   /**
-   * Component did mount life-cycle method  
-   * 
+   * Component did mount life-cycle method
+   *
    * Reads available matriculation subjects from REST API
    */
   componentDidMount() {
@@ -139,8 +135,8 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
   }
 
   /**
-   * Component render method  
-   * 
+   * Component render method
+   *
    * Renders component
    */
   render(){
@@ -163,9 +159,9 @@ class MatriculationSubjectsList extends React.Component<MatriculationSubjectsLis
     });
 
     return (
-      <div className="form-element__custom-element">   
+      <div className="form-element__custom-element">
         {matriculationSubjectInputs}
-        <div className="form-element__button-container"> 
+        <div className="form-element__button-container">
           <Link className="button button--primary-function-content" onClick={this.handleMatriculationSubjectAdd.bind(this)}>{this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjectAdd")}</Link>
         </div>
       </div>

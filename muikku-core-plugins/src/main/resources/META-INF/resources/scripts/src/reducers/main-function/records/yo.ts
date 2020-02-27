@@ -4,12 +4,11 @@ export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 export type SubjectEligibilityStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type EligibleStatusType = "ELIGIBLE" | "NOT_ELIGIBLE";
-
-
-export type SubjectEligibilityListType = Array<SubjectEligibilityType> 
+export type SubjectEligibilityListType = Array<SubjectEligibilityType>
 
 export interface SubjectEligibilityType {
-  subjectName: string,
+  subjectCode: string,
+  code: string,
   eligibility: EligibleStatusType,
   requiredCount: number,
   acceptedCount: number,

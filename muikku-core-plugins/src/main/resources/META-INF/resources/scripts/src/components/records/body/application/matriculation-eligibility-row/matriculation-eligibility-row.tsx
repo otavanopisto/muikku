@@ -9,8 +9,6 @@ import mApi, { MApiError } from '~/lib/mApi';
 import promisify from "~/util/promisify";
 import '~/sass/elements/application-sub-panel.scss';
 
-
-
 interface MatriculationEligibilityRowProps {
   subject: SubjectEligibilityType,
   i18n: i18nType,
@@ -27,18 +25,18 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
       loading: true
     };
   }
-
-  
  componentDidMount () {
     this.setState({
       loading: false
     });
   }
-
+  getMatriculationSubjectNameByCode = (code: string): string => {
+    return this.props.i18n.text.get(`plugin.records.hops.matriculationSubject.${code}`);
+  }
   render() {
     return (
        <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-eligibility" title={this.getEligibleTooltip()}>
-        <div className="application-sub-panel__summary-item-label">{this.props.subject.subjectName}</div>
+        <div className="application-sub-panel__summary-item-label">{this.getMatriculationSubjectNameByCode(this.props.subject.code)}</div>
         <div className={`application-sub-panel__summary-item-state application-sub-panel__summary-item-state--${this.props.subject.eligibility == "ELIGIBLE" ? "eligible" : "not-eligible" }`}>{this.state.loading ? this.props.i18n.text.get("plugin.records.hops.matriculationEligibleLoading") : (this.getEligibleText())}</div>
       </div>
     );

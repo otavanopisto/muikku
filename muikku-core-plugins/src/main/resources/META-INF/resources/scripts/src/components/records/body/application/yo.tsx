@@ -1,27 +1,18 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as queryString from 'query-string';
 import { i18nType } from '~/reducers/base/i18n';
 import { RecordsType } from '~/reducers/main-function/records';
-import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
-import Link from '~/components/general/link';
 import Button from '~/components/general/button';
-import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 import { HOPSType } from "~/reducers/main-function/hops";
-import mApi from '~/lib/mApi';
 import { YOType, YOEligibilityType, YOEligibilityStatusType, SubjectEligibilitySubjectsType } from '~/reducers/main-function/records/yo';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/application-sub-panel.scss';
-import moment from '~/lib/moment';
 import '~/sass/elements/buttons.scss';
 import MatriculationEligibilityRow from './matriculation-eligibility-row/matriculation-eligibility-row';
-
-import promisify from "~/util/promisify";
-
 
 interface YOProps {
   i18n: i18nType,
@@ -51,7 +42,7 @@ class YO extends React.Component<YOProps, YOState> {
     } else {
       const selectedMatriculationSubjects = this.props.eligibilitySubjects.status == "READY" ?  this.props.eligibilitySubjects.subjects.length > 0 ? this.props.eligibilitySubjects.subjects.map((subject, index) => {
         return (
-          <MatriculationEligibilityRow key={subject.subjectName + index} subject={subject} />
+          <MatriculationEligibilityRow key={subject.subjectCode + index} subject={subject} />
         );
       }) : <div>{this.props.i18n.text.get("plugin.records.yo.noMatriculationSubjectsSelected")}</div>  : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> ;
 
