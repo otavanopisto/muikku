@@ -34,15 +34,29 @@ class Workspace extends React.Component<CourseProps, CourseState>{
     this.setState({expanded: !this.state.expanded})
   }
   render(){
-    return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
+    let teachers = this.props.course.teachers.map((teacher, index) => {
+      let teacherCount = this.props.course.teachers.length;
+      let teacherFullName = teacherCount > 1 && teacherCount != index + 1 ? teacher.firstName +" "+ teacher.lastName + ", " : teacher.firstName +" "+ teacher.lastName;
+        return <span key={teacher.lastName + index}>
+          {teacherFullName}
+         </span>
+      
+     });
+    return   <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
         <span className="application-list__header-icon icon-books"></span>
         <span className="application-list__header-primary">{this.props.course.name} {this.props.course.nameExtension ? "(" + this.props.course.nameExtension + ")" : null}</span>
-        <span className="application-list__header-secondary">{this.props.course.educationTypeName}</span>
+        <span className="application-list__header-secondary">Todo: actions</span>
       </ApplicationListItemHeader>
       {this.state.expanded ?
         <div>
-          <ApplicationListItemBody className="application-list__item-body--course">
+          <ApplicationListItemBody>
+            <div className="application-list__item-body-meta-content">
+              <div><label>{this.props.i18n.text.get("plugin.organization.workspaces.workspace.educationType.title")}</label><span>{this.props.course.educationTypeName}</span></div>
+              <div><label>{this.props.i18n.text.get("plugin.organization.workspaces.workspace.teachers.title")}</label><span className="application-list__item-body">{teachers}</span></div>
+              <div><label>{this.props.i18n.text.get("plugin.organization.workspaces.workspace.studentCount.title")}</label><span>{this.props.course.studentCount}</span></div>
+             </div>
+            <label>{this.props.i18n.text.get("plugin.organization.workspaces.workspace.description.title")}</label>
             <article className="rich-text" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
