@@ -237,6 +237,10 @@
       <groupId>com.rometools</groupId>
       <artifactId>rome</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.rometools</groupId>
+      <artifactId>rome-modules</artifactId>
+    </dependency>
     
     <!-- XMPP (for prebind) -->
     <!-- TODO versions in BOM -->

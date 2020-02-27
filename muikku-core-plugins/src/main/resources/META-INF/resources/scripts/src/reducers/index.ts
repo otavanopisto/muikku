@@ -41,6 +41,7 @@ export interface StateType {
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
   courses?: CoursesType,
+  organizationCourses: CoursesType,
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,

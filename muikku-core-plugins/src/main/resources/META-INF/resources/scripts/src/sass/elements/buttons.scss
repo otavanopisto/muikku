@@ -309,6 +309,8 @@
   background-color: $color-frontpage-button-open-materials-readmore-background;
   color: $color-frontpage-button-open-materials-readmore-text;
   display: inline-flex;
+  margin: 5px 5px 0 0;
+  white-space: normal;
 
   &:hover,
   &.hover {
@@ -519,7 +521,7 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $button-pill-desktop-font-size;
     height: $button-pill-desktop-size;
-    width: $button-pill-desktop-size;  
+    width: $button-pill-desktop-size;
   }
 
   &:hover,
@@ -630,7 +632,7 @@
   background-color: $color-main-function-button-pill-settings-background;
   color: $color-main-function-button-pill-settings-text;
   font-size: $button-pill-settings-font-size;
-  height: auto; 
+  height: auto;
   vertical-align: top;
 
   &:hover,
@@ -975,7 +977,6 @@
   font-variant: normal;
   height: $button-social-size;
   line-height: $button-social-size;
-  speak: none;
   text-align: center;
   text-decoration: none;
   text-transform: none;

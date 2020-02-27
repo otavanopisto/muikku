@@ -10,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class FeedItem {
   
@@ -98,7 +96,6 @@ public class FeedItem {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @JsonIgnore
   private Long id;
   
   @Column
@@ -121,6 +118,6 @@ public class FeedItem {
   private String image;
 
   @ManyToOne(optional = false)
-  @JsonIgnore
   private Feed feed;
+
 }

@@ -69,17 +69,14 @@ class YO extends React.Component<YOProps, YOState> {
           // Github issue: #4840
         <div>
           <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.yo.title")}</div>
-          <div className="application-panel__content">
           <div className="application-sub-panel application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.abiStatus.title")}</div>
             {this.props.yo.eligibility != null ? this.props.yo.eligibilityStatus == "ELIGIBLE" ?
-              <div>
-                <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
-                  <div className="application-sub-panel__notification-item">
-                    <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
-                    <div className="application-sub-panel__notification-footer">
-                      {enrollmentLink}
-                    </div>
+              <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
+                <div className="application-sub-panel__notification-item">
+                  <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
+                  <div className="application-sub-panel__notification-footer">
+                    {enrollmentLink}
                   </div>
                 </div>
               </div> :
@@ -87,8 +84,8 @@ class YO extends React.Component<YOProps, YOState> {
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete">
-                      <span className="application-sub-panel__notification-content">
-                        {i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}
+                      <span className="application-sub-panel__notification-content" dangerouslySetInnerHTML={{__html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}}>
+
                       </span>
                     </div>
                     <div className="application-sub-panel__notification-footer">
@@ -98,14 +95,13 @@ class YO extends React.Component<YOProps, YOState> {
                 </div> :
               null
             : null}
-            </div>
-            <div className="application-sub-panel  application-sub-panel--yo-status-container">
-              <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
-              <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
-                <div className="application-sub-panel__notification-item">
-                  <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
-                    {selectedMatriculationSubjects}
-                  </div>
+          </div>
+          <div className="application-sub-panel  application-sub-panel--yo-status-container">
+            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
+            <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">
+              <div className="application-sub-panel__notification-item">
+                <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
+                  {selectedMatriculationSubjects}
                 </div>
               </div>
             </div>

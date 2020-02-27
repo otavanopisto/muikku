@@ -9,7 +9,7 @@ import messages from './main-function/messages';
 import announcements from './main-function/announcements';
 import workspaces from './workspaces';
 
-import courses from './main-function/courses';
+import courses, {organizationCourses} from './main-function/courses';
 
 import users from './main-function/users';
 import userIndex from './main-function/user-index';
@@ -50,6 +50,7 @@ export default combineReducers({
   workspaces,
   messages,
   courses,
+  organizationCourses,
   discussion,
   guider,
   profile

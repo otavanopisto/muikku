@@ -113,6 +113,10 @@
   background-color: $color-sub-panel-status-complete-background;
 }
 
+.application-sub-panel__body--studies-yo-subjects {
+  background-color: $color-sub-panel-summarizer-background;
+}
+
 .application-sub-panel__body--studies-summary-dates {
   display: flex;
   flex-flow: column nowrap;
@@ -128,7 +132,7 @@
   }
 }
 
-.application-sub-panel__body--studies-yo-cards {
+.application-sub-panel__body--studies-yo-subjects {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -251,7 +255,7 @@
 
 .application-sub-panel__item--summarizer {
   align-items: normal;
-  flex-basis: 50;
+  flex-basis: 50%;
   flex-flow: column wrap;
 
   @include breakpoint($breakpoint-desktop) {
@@ -290,7 +294,6 @@
 
 .application-sub-panel__item-body--summarizer {
   align-items: center;
-  background-color: $color-sub-panel-summarizer-background;
   display: flex;
   flex-wrap: wrap;
 }
@@ -300,6 +303,7 @@
 }
 
 .application-sub-panel__summary-item--subject-eligibility {
+  align-items: center;
   display: flex;
   flex-basis: 50%;
   flex-shrink: 0;
@@ -312,15 +316,21 @@
 }
 
 .application-sub-panel__summary-item-state {
+  align-items: center;
+  border-radius: 5px;
   cursor: help;
   display: flex;
+  font-size: 0.75rem;
   justify-content: center;
+  line-height: 1;
   padding: 5px;
-  width: 40px;
+  text-transform: uppercase;
+  width: 45px;
 }
 
 .application-sub-panel__summary-item-state--eligible {
   background-color: $color-sub-panel-summarizer-true-background;
+  color: $color-sub-panel-summarizer-true-font;
 }
 
 .application-sub-panel__summary-item-state--not-eligible {
