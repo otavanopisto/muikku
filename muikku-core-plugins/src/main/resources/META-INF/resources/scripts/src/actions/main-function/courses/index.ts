@@ -23,7 +23,6 @@ export interface UPDATE_COURSES_STATE extends
   export interface UPDATE_ORGANIZATION_COURSES_STATE extends 
     SpecificActionType<"UPDATE_ORGANIZATION_COURSES_STATE", CoursesStateType>{}
     
-
   
   
 export interface LoadCoursesFromServerTriggerType {
