@@ -77,9 +77,9 @@ class MatriculationEligibilityRow extends React.Component<MatriculationEligibili
     }
     switch (this.props.subject.eligibility) {
       case "ELIGIBLE":
-        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.true");
+        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.true", this.props.subject.acceptedCount, this.props.subject.requiredCount);
       case "NOT_ELIGIBLE":
-        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.false");
+        return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.false", this.props.subject.acceptedCount, this.props.subject.requiredCount);
       default:
         return this.props.i18n.text.get("plugin.records.hops.matriculationEligibleTooltip.error");
     }

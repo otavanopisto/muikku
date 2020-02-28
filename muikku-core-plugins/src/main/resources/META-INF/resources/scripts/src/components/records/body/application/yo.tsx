@@ -84,9 +84,7 @@ class YO extends React.Component<YOProps, YOState> {
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete">
-                      <span className="application-sub-panel__notification-content" dangerouslySetInnerHTML={{__html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}}>
-
-                      </span>
+                      <span className="application-sub-panel__notification-content" dangerouslySetInnerHTML={{__html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}}/>
                     </div>
                     <div className="application-sub-panel__notification-footer">
                       {enrollmentLink}
