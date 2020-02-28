@@ -83,9 +83,8 @@ class YO extends React.Component<YOProps, YOState> {
               this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
                   <div className="application-sub-panel__notification-item">
-                    <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete">
-                      <span className="application-sub-panel__notification-content" dangerouslySetInnerHTML={{__html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}}/>
-                    </div>
+                    <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete"
+                      dangerouslySetInnerHTML={{__html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}}/>
                     <div className="application-sub-panel__notification-footer">
                       {enrollmentLink}
                     </div>
@@ -98,7 +97,7 @@ class YO extends React.Component<YOProps, YOState> {
             <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
             <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">
               <div className="application-sub-panel__notification-item">
-                <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
+                <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
                   {selectedMatriculationSubjects}
                 </div>
               </div>
