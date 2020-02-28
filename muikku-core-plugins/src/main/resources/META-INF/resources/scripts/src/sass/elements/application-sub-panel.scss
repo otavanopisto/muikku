@@ -157,8 +157,26 @@
   }
 }
 
-.application-sub-panel__notification-content:not(:first-child) {
-  margin-left: 0.5rem;
+.application-sub-panel__notification-content {
+  margin: 0 0 10px;
+
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.application-sub-panel__notification-content-title {
+  font-weight: 600;
+}
+
+.application-sub-panel__notification-content-label {
+  margin: 0 0.5rem 0 0;
+}
+
+.application-sub-panel__notification-content-data {
+  background-color: $color-sub-panel-data-1-background;
+  border-radius: 3px;
+  padding: 4px;
 }
 
 .application-sub-panel__notification-footer {

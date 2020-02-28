@@ -53,13 +53,18 @@ class YO extends React.Component<YOProps, YOState> {
            return (
              exam.enrolled ?
                <div key={exam.id}>
-                 <span className="application-sub-panel__notification-content">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
-                 <span className="application-sub-panel__notification-content">{new Date(exam.enrollmentDate).toLocaleDateString("fi-Fi")}</span>
-                 <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup" disabled={true}>{this.props.i18n.text.get("plugin.records.yo.button.signUp.hasAssigned")}</Button>
+                 <div className="application-sub-panel__notification-content">
+                   <span className="application-sub-panel__notification-content-title">{this.props.i18n.text.get("plugin.records.yo.button.signUp.hasAssigned")}</span>
+                </div>
+                 <div className="application-sub-panel__notification-content">
+                   <span className="application-sub-panel__notification-content-label">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
+                   <span className="application-sub-panel__notification-content-data">{new Date(exam.enrollmentDate).toLocaleDateString("fi-Fi")}</span>
+                 </div>
                </div>
              :
                <div key={exam.id}>
-                 <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))} className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
+                 <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))}
+                   className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
                </div>
            );
          }) : null;
@@ -75,9 +80,7 @@ class YO extends React.Component<YOProps, YOState> {
               <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
                 <div className="application-sub-panel__notification-item">
                   <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
-                  <div className="application-sub-panel__notification-footer">
-                    {enrollmentLink}
-                  </div>
+                  {this.props.yo.enrollment.length < 0 && <div className="application-sub-panel__notification-footer">{enrollmentLink}</div>}
                 </div>
               </div> :
               this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
@@ -85,9 +88,7 @@ class YO extends React.Component<YOProps, YOState> {
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete"
                       dangerouslySetInnerHTML={{__html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}}/>
-                    <div className="application-sub-panel__notification-footer">
-                      {enrollmentLink}
-                    </div>
+                    {this.props.yo.enrollment.length > 0 && <div className="application-sub-panel__notification-footer">{enrollmentLink}</div>}
                   </div>
                 </div> :
               null
