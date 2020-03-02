@@ -33,6 +33,11 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.create(userSchoolDataIdentifier, workspaceEntity, workspaceUserRole, identifier, Boolean.TRUE, Boolean.FALSE);
   }
 
+  public long countWorkspaceStudents(WorkspaceEntity workspaceEntity) {
+    Long countWorkspaceStudents = workspaceUserEntityDAO.countByWorkspaceEntityAndRoleArchetypeAndArchived(workspaceEntity, WorkspaceRoleArchetype.STUDENT, Boolean.FALSE);
+    return countWorkspaceStudents != null ? countWorkspaceStudents : 0;
+  }
+
   public WorkspaceUserEntity findWorkspaceUserEntityById(Long id) {
     return workspaceUserEntityDAO.findById(id);
   }

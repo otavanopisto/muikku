@@ -39,6 +39,50 @@
   }
 }
 
+.card__meta {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 0 20px;
+}
+
+.card__meta-aside {
+  flex-basis: 50px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 10px 0 0;
+}
+
+.card__meta-aside-logo {
+  color: $color-instagram-main-color;
+  font-size: 50px;
+  height: 50px;
+  line-height: 1;
+  transition: color 0.3s ease-in-out;
+  width: 50px;
+}
+
+.card__meta-body {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.card__meta-body-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.card__meta-body-link--instagram {
+  color: $color-instagram-main-color;
+  transition: color 0.3s ease-in-out;
+}
+
+.card__meta-body-description {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
 .card__title {
   color: $color-frontpage-text-title;
   font-size: 1.2rem;

@@ -2364,7 +2364,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response deleteNode(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId,
-      @QueryParam("removeAnswers") Boolean removeAnswers,
+      @QueryParam("removeAnswers") @DefaultValue ("false") Boolean removeAnswers,
       @QueryParam("updateLinkedMaterials") @DefaultValue ("false") Boolean updateLinkedMaterials) {
     // TODO Our workspace?
     

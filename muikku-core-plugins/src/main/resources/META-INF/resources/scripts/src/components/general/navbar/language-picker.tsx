@@ -22,7 +22,7 @@ interface LanguagePickerState {
 
 class LanguagePicker extends React.Component<LanguagePickerProps, LanguagePickerState> {
   render(){
-    return <Dropdown modifier="navigation" items={this.props.locales.avaliable.map((locale)=>{
+    return <Dropdown modifier="navigation" items={this.props.locales.available.map((locale)=>{
       return (<Link className={`link link--full link--navigation-dropdown`} onClick={this.props.setLocale.bind(this, locale.locale)}>
         <span>{locale.name}</span>
       </Link>);

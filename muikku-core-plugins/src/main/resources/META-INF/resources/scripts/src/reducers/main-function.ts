@@ -8,11 +8,9 @@ import websocket from './util/websocket';
 import messages from './main-function/messages';
 import announcements from './announcements';
 import workspaces from './workspaces';
-
 import userIndex from './user-index';
 
 import discussion from '~/reducers/discussion';
-
 import guider from './main-function/guider';
 
 import profile from './main-function/profile';

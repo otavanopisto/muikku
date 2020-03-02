@@ -2,9 +2,10 @@ fail_on_violations: true
 javascript:
   enabled: false
 eslint:
-  enabled: true
-  version: 6.3.0
-  config_file: .eslintrc.json
+  enabled: false
+tslint:
+   enabled: true
+   config_file: .tslintrc.json
 scss:
-  version: 0.57.1
   config_file: .scss-lint.yml
+  version: 0.57.1

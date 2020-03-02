@@ -16,6 +16,7 @@
   @include breakpoint($breakpoint-pad) {
     background-image: url("/gfx/oo-branded-site-header-background.png");
     background-size: auto;
+    box-shadow: 0 2px 5px $color-hero-default-shadow;
     margin-top: $navbar-desktop-height;
   }
 }

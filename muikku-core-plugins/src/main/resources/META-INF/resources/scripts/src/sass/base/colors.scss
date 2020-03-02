@@ -264,6 +264,7 @@ $color-text-default: $color-inverse;
 $color-text-secondary: #cecece;
 $color-text-link: $color-primary;
 $color-text-link-selected: $color-default;
+$color-text-secondary: #b3b2b2;
 
 // ToC
 $color-toc-item-link-background: $color-default;
@@ -343,6 +344,11 @@ $color-button-social-highlight-text: $color-default;
 $color-feed-default-text: $color-inverse;
 $color-feed-default-date: #8c8c8c;
 $color-feed-item-description-active: $color-primary;
+$color-feed-item-image-default-color: $color-primary;
+
+// instagram feed
+$color-instagram-feed-shadow-color: rgba(0, 0, 0, 0.15);
+$color-instagram-main-color: #e1306c;
 
 // Carousel
 $color-carousel-default-dot-background: #afafaf;
@@ -354,6 +360,7 @@ $color-hero-default-background: #0089c6;
 $color-hero-workspace-background: $color-default;
 $color-hero-workspace-name-extension-background: $color-default;
 $color-hero-workspace-education-type-background: #4ee23a;
+$color-hero-default-shadow: rgba(0, 0, 0, 0.25);
 
 // Logo
 $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
@@ -363,6 +370,8 @@ $color-panel-background-color: $color-default;
 $color-panel-border-color: #e2e2e2;
 $color-panel-shadow: rgba(0, 0, 0, 0.05);
 $color-panel-workspace-signup-background: #ff008d;
+$color-panel-border: #e2e2e2;
+$color-panel-shadow: rgba(0, 0, 0, 0.05);
 
 // Item list
 $color-item-list-item-font-color-active: #fff;

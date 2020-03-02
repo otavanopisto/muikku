@@ -11,7 +11,17 @@
     "es6": true,
     "browser": true
   },
-  "extends": "eslint:recommended",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 6
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+  ],
+  "plugins": [
+    "react"
+  ],
   "globals": {
     "async": false,
     "mApi": false,

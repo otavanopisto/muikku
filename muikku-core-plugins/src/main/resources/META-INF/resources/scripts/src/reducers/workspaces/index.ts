@@ -290,7 +290,7 @@ export type WorkspaceOrganizationFilterListType = Array<WorkspaceOrganizationFil
 
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 
-export interface WorkspacesAvaliableFiltersType {
+export interface WorkspacesavailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType,
   curriculums: WorkspaceCurriculumFilterListType,
   organizations: WorkspaceOrganizationFilterListType,
@@ -352,7 +352,7 @@ export interface WorkspacesType {
   userWorkspaces: WorkspaceListType,
   lastWorkspace?: WorkspaceMaterialReferenceType,
   currentWorkspace?: WorkspaceType,
-  avaliableFilters: WorkspacesAvaliableFiltersType,
+  availableFilters: WorkspacesavailableFiltersType,
   state: WorkspacesStateType,
   activeFilters: WorkspacesActiveFiltersType,
   hasMore: boolean,
@@ -517,7 +517,7 @@ export default function workspaces(state: WorkspacesType={
   currentMaterials: null,
   currentHelp: null,
   currentMaterialsReplies: null,
-  avaliableFilters: {
+  availableFilters: {
     educationTypes: [],
     curriculums: [],
     organizations: [],
@@ -587,19 +587,19 @@ export default function workspaces(state: WorkspacesType={
     })
   } else if (action.type === "UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES"){
     return Object.assign({}, state, {
-      avaliableFilters: Object.assign({}, state.avaliableFilters, {
+      availableFilters: Object.assign({}, state.availableFilters, {
         educationTypes: action.payload
       })
     });
   } else if (action.type === "UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS"){
     return Object.assign({}, state, {
-      avaliableFilters: Object.assign({}, state.avaliableFilters, {
+      availableFilters: Object.assign({}, state.availableFilters, {
         curriculums: action.payload
       })
     });
   } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS"){
     return Object.assign({}, state, {
-      avaliableFilters: Object.assign({}, state.avaliableFilters, {
+      availableFilters: Object.assign({}, state.availableFilters, {
         organizations: action.payload
       })
     });

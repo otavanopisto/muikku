@@ -41,7 +41,7 @@ export default class Autocomplete extends React.Component<AutocompleteProps, Aut
   }
   render(){
     let style:any = {
-        maxHeight: this.state.maxHeight
+      maxHeight: this.state.maxHeight
     };
     if (this.props.pixelsOffset){
       style.top = this.props.pixelsOffset;

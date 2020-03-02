@@ -6,10 +6,8 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import {StateType} from '~/reducers';
-
 import '~/sass/elements/toc.scss';
 import '~/sass/elements/label.scss';
-
 import '~/sass/elements/item-list.scss';
 import { AnnouncementsType } from 'reducers/announcements';
 

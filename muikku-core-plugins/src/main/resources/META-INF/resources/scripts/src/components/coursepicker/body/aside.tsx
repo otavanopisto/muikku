@@ -24,7 +24,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
 
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
-        {this.props.workspaces.avaliableFilters.educationTypes.map( ( educationType: WorkspaceEducationFilterType ) => {
+        {this.props.workspaces.availableFilters.educationTypes.map( ( educationType: WorkspaceEducationFilterType ) => {
           let isActive = this.props.workspaces.activeFilters.educationFilters.includes( educationType.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).filter( ( i: string ) => i !== educationType.identifier ) } ), { arrayFormat: 'bracket' } ) :
@@ -33,7 +33,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
         })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
-        {this.props.workspaces.avaliableFilters.curriculums.map( ( curriculum: WorkspaceCurriculumFilterType ) => {
+        {this.props.workspaces.availableFilters.curriculums.map( ( curriculum: WorkspaceCurriculumFilterType ) => {
           let isActive = this.props.workspaces.activeFilters.curriculumFilters.includes( curriculum.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).filter( ( c: string ) => c !== curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) :
@@ -42,7 +42,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
         } )}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.organization')}>
-        {this.props.workspaces.avaliableFilters.organizations.map( ( organization: WorkspaceOrganizationFilterType ) => {
+        {this.props.workspaces.availableFilters.organizations.map( ( organization: WorkspaceOrganizationFilterType ) => {
           let isActive = this.props.workspaces.activeFilters.organizationFilters.includes( organization.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { o: ( locationData.o || [] ).filter( ( o: string ) => o !== organization.identifier ) } ), { arrayFormat: 'bracket' } ) :

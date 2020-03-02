@@ -32,7 +32,6 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
         <span className="filter-item__label">{workspace.name}</span>
       </div>);
       });
-    
     if (this.props.completedWorkspaces && this.props.completedWorkspaces.length > 0 && this.props.filteredCompletedWorkspaces){
       items.push(<div className="filter-category" key="completedWorkspaces">
           <span className="filter-category__label">{this.props.i18n.text.get("plugin.guider.completedCoursesLabel")}</span>

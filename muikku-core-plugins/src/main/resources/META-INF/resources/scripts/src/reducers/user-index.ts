@@ -22,6 +22,7 @@ export interface UserType {
   studyTimeEnd?: string
 }
 
+
 export interface UserWithSchoolDataType {
   curriculumIdentifier?: string,
   email: string,
@@ -177,5 +178,6 @@ export default function userIndex(state:UserIndexType={
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop)});
   }
+  
   return state;
 }

@@ -52,7 +52,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
     let primaryOption = <div className="form-element form-element--main-action"> 
       {this.props.status.loggedIn ?
       <select className="form-element__select form-element__select--main-action" value={this.props.workspaces.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
-        {this.props.workspaces.avaliableFilters.baseFilters.map((filter: WorkspaceBaseFilterType)=>{
+        {this.props.workspaces.availableFilters.baseFilters.map((filter: WorkspaceBaseFilterType)=>{
           if (this.props.status.isStudent && filter === "AS_TEACHER"){
             return false
           } 

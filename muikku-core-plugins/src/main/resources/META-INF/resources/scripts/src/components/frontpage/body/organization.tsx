@@ -32,11 +32,11 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
               <h2 className="ordered-container__subcontainer-header--social-media">
                 {this.props.i18n.text.get( 'plugin.organization.some.title' )}
               </h2>
-              <ButtonSocial className="icon-facebook" href="https://www.facebook.com/otavanopisto" target="top"/>
-              <ButtonSocial className="icon-twitter" href="https://twitter.com/OtavanOpisto" target="top"/>
-              <ButtonSocial className="icon-instagram" href="https://www.instagram.com/otavanopisto/" target="top"/>
-              <ButtonSocial className="icon-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"/>
-              <ButtonSocial className="icon-linkedin" href="https://www.linkedin.com/company/106028" target="top"/>
+              <ButtonSocial openInNewTab="_blank"  className="icon-facebook" href="https://www.facebook.com/otavanopisto"/>
+              <ButtonSocial openInNewTab="_blank" className="icon-twitter" href="https://twitter.com/OtavanOpisto"/>
+              <ButtonSocial openInNewTab="_blank" className="icon-instagram" href="https://www.instagram.com/otavanopisto/"/>
+              <ButtonSocial openInNewTab="_blank" className="icon-pinterest" href="https://fi.pinterest.com/otavanopisto/"/>
+              <ButtonSocial openInNewTab="_blank" className="icon-linkedin" href="https://www.linkedin.com/company/106028"/>
             </div>
           </div>
 
@@ -45,18 +45,12 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
               <div className="ordered-container__subcontainer-content ordered-container__subcontainer-content--organization-description"
                 dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get( 'plugin.organization.description')}}>
               </div>
-              <Button href="http://www.otavanopisto.fi" target="top" buttonModifiers={["branded", "frontpage-website"]}>
-                www.otavanopisto.fi
-              </Button>
-              <Button href="http://www.otavanopisto.fi/uutiskirje" target="top" buttonModifiers={["branded", "frontpage-newsletter"]}>
-                {this.props.i18n.text.get( 'plugin.organization.newsletter.link' )}
+              <Button href="http://www.otavia.fi" openInNewTab="_blank" buttonModifiers={["branded", "frontpage-website"]}>
+                www.otavia.fi
               </Button>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
   }
