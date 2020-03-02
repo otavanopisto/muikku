@@ -130,6 +130,7 @@
 @include breakpoint($breakpoint-pad) {
   .navbar--main-function .navbar__item--menu-button,
   .navbar--workspace .navbar__item--menu-button,
+  .navbar--workspace-edit-mode .navbar__item--menu-button,
   .navbar__mobile-title {
     display: none;
   }
