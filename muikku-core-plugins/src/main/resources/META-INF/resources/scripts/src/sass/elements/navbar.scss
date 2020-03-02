@@ -190,6 +190,15 @@
   }
 }
 
+// NAVBAR EDITMODE IN WORKSPACES
+.navbar--workspace-edit-mode {
+  background-color: $color-workspace-edit-mode-navbar-background;
+
+  .navbar__item--menu-button .link {
+    color: $color-environment-navbar-item-menu-button;
+  }
+}
+
 // NAVBAR LOGIN, FORGOTPASSWORD, AVATAR, LANGUAGE
 .navbar__default-options {
   align-items: center;
