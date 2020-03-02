@@ -49,7 +49,8 @@ interface Istate {
   showOccupantsList?: boolean,
   occupantsListOpened?: Object[],
   privateChats?: any,
-  roomDesc: any
+  roomDesc: any,
+  isPersistentRoom: boolean
 }
 
 declare namespace JSX {
@@ -105,7 +106,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       showOccupantsList: false,
       occupantsListOpened: [],
       privateChats: [],
-      roomDesc: ""
+      roomDesc: "",
+      isPersistentRoom: false
     }
     this.myRef = null;
     this.sendMessage = this.sendMessage.bind(this);
@@ -191,28 +193,33 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         'auto_configure': true,
         'nick': this.props.nick,
         'publicroom': true,
-      }), false).then((chat: any) => {
+      }), true).then((chat: any) => {
         this.setState({
           chatBox: chat,
           groupMessages: [],
-          chatRoomOccupants: chat.occupants
+          chatRoomOccupants: chat.occupants,
+          isPersistentRoom: chat.features.attributes.persistent
         });
-    chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
-        // chat.addHandler('message', 'groupMessages', this.getMUCMessages.bind(this) );
-
+        
+        chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
+        
+      
+      
+      //this.messageHandler(chat.messages.models);
       });
 
     }
     //------- HANDLING INCOMING GROUPCHAT MESSAGES
+   // messageHandler(messages: any){
+   //   messages.map((msg:any) => this.getMUCMessages(msg));
+  //  }
     async getMUCMessages(stanza: any){
-
+      
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
       if (stanza && stanza.attributes.type === "groupchat") {
         let message = stanza.attributes.message;
         let from = stanza.attributes.from;
-        from = from.split("/").pop();
-        
         let senderClass ="";
         let user:any;
         let chatSettings: any;
@@ -222,20 +229,25 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let userName: any;
         let deletedTime: any;
         
-        if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
-          from = from.split("@");
-          from = from[0];
-          chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
-          nick = chatSettings.nick;
+        if (from){
+          from = from.split("/").pop();
           
-          if (nick == "" || nick == undefined) {
-            user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
-            userName = user.firstName + " " + user.lastName;
-            nick = userName;
+          if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
+              from = from.split("@");
+              from = from[0];
+              chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
+              nick = chatSettings.nick;
+              
+              if (nick == "" || nick == undefined) {
+                user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
+                userName = user.firstName + " " + user.lastName;
+                nick = userName;
+              }
+          } else {
+            nick = from;
           }
-        } else {
-          nick = from;
         }
+        
 
         if (message !== "") {
           messageId = stanza.attributes.id;
@@ -403,7 +415,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       this.setState({
         roomConfig: {
-          jid: roomName.trim() + '@conference.muikkuverkko.fi',
+         // jid: roomName.trim() + '@conference.muikkuverkko.fi',
+          jid: this.state.roomJid,
           FORM_TYPE: "hidden",
           roomname: roomName,
           roomdesc: roomDesc,
@@ -738,6 +751,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         })
       }
       converse.api.listen.on('message', this.handleIncomingMessages);
+      converse.api.listen.on('membersFetched', () => { this.handleIncomingMessages });
     }
 
     componentDidUpdate(){
@@ -781,7 +795,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                     </div>
                     {(!this.state.isStudent) && <div className="chat__subpanel-row">
                       <label className="chat__label">Pysyvä huone: </label>
-                      <input className="chat__checkbox" type="checkbox" name="persistent"></input>
+                      <input className="chat__checkbox" defaultChecked={this.state.isPersistentRoom} type="checkbox" name="persistent"></input>
                     </div>}
                     <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value="Tallenna"></input>
                   </form>
@@ -794,7 +808,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} ref={ (ref) => this.myRef=ref }>
-                  {this.state.groupMessages.map((groupMessage: any) => <ChatMessage key={groupMessage.timeStamp + 'timeStamp'} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
+                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">

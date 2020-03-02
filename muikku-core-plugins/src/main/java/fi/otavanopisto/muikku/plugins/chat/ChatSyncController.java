@@ -179,7 +179,7 @@ public class ChatSyncController {
 
             EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
             if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-              client.addAdmin("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+              client.addOwner("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
             } else {
               client.addMember("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
             }
@@ -342,7 +342,7 @@ public class ChatSyncController {
 
     EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
     if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-      client.addAdmin("workspace-chat-" + workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
+      client.addOwner("workspace-chat-" + workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
     } else {
       client.addMember("workspace-chat-" + workspace.getIdentifier(), userIdentifier.getDataSource() +"-"+ userIdentifier.getIdentifier());
    }
