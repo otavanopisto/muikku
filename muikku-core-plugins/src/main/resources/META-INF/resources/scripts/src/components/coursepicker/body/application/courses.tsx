@@ -1,16 +1,12 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-
-import {i18nType} from '~/reducers/base/i18n';
-
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
-
 import '~/sass/elements/message.scss';
-
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';
+import {i18nType} from '~/reducers/base/i18n';
 import Course from './courses/course';
 import {StateType} from '~/reducers';
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
@@ -27,6 +23,7 @@ interface CoursepickerWorkspacesProps {
 
 interface CoursepickerWorkspacesState {
 }
+
 
 class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProps, CoursepickerWorkspacesState> {
   constructor(props: CoursepickerWorkspacesProps){
@@ -49,7 +46,8 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
       return <div className="empty"><span>{"ERROR"}</span></div>
     } else if (this.props.workspaces.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
-    }    
+    }
+    
     return (<ApplicationList>
       {this.props.workspaces.map((workspace: WorkspaceType)=>{
         return <Course key={workspace.id} workspace={workspace}/>
