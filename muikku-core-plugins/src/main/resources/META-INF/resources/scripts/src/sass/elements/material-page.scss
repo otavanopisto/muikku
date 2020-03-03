@@ -700,7 +700,7 @@
 
 // Memo field
 .material-page__memofield-wrapper {
-  padding : 0.01em; // This fixes CKEditors top margin but does not affect anything visually
+  padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
   position: relative;
 
   .material-page__field-answer-synchronizer {
@@ -709,9 +709,11 @@
 
   // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
   // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
+  // scss-lint:disable SelectorFormat
   .cke_editable.cke_wysiwyg_div {
     padding: 0 8px;
   }
+  // scss-lint:enable SelectorFormat
 
   .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
     background: $color-default;
@@ -1692,8 +1694,8 @@ mark[data-muikku-word-definition] {
   line-height: 1;
   padding: 5px;
   position: absolute;
-  transition: background-color 0.2s ease-in-out;
   top: -20px;
+  transition: background-color 0.2s ease-in-out;
   white-space: nowrap;
 }
 
