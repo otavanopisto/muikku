@@ -534,7 +534,6 @@
   align-items: center;
   display: inline-flex;
   flex-flow: row wrap;
-  margin: 4px;
   position: relative;
   vertical-align: middle;
 }
@@ -544,6 +543,7 @@
   background: lighten($taskfield-border-color, 30%);
   border-radius: 2px;
   display: inline-flex;
+  margin: 4px;
   padding: 4px;
 
   &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
@@ -616,7 +616,6 @@
   align-items: center;
   display: inline-flex;
   flex-flow: row wrap;
-  margin: 4px;
   position: relative;
   vertical-align: middle;
 }
@@ -626,6 +625,7 @@
   background: lighten($taskfield-border-color, 30%);
   border-radius: 2px;
   display: inline-flex;
+  margin: 4px;
   padding: 4px;
 
   &.correct-answer { // // If the whole taskfield is correct we then mark taskfield items as correct
@@ -700,7 +700,18 @@
 
 // Memo field
 .material-page__memofield-wrapper {
+  padding : 0.01em; // This fixes CKEditors top margin but does not affect anything visually
   position: relative;
+
+  .material-page__field-answer-synchronizer {
+    left: 0;
+  }
+
+  // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
+  // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
+  .cke_editable.cke_wysiwyg_div {
+    padding: 0 8px;
+  }
 
   .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
     background: $color-default;
@@ -942,7 +953,6 @@
 // Sorter field
 .material-page__sorterfield-wrapper {
   display: block;
-  margin: 4px 0;
   position: relative;
 }
 
@@ -1027,7 +1037,6 @@
 
 // Organizer field
 .material-page__organizerfield-wrapper {
-  margin: 4px 0;
   position: relative;
 }
 
@@ -1053,6 +1062,11 @@
   @include breakpoint($breakpoint-pad) {
     font-weight: 400;
   }
+}
+
+.material-page__organizerfield-terms-container {
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .material-page__organizerfield-term { // Single draggable term
@@ -1192,6 +1206,11 @@
   padding: 5px;
 }
 
+// Connectfield
+.material-page__connectfield-wrapper {
+  position: relative;
+}
+
 .material-page__connectfield {
   align-items: flex-start;
   display: flex;
@@ -1206,10 +1225,9 @@
   flex-basis: 100%;
   flex-grow: 0;
   flex-shrink: 1;
-  margin: 4px;
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: calc(50% - 8px);
+    flex-basis: 50%;
   }
 }
 
@@ -1318,10 +1336,9 @@
   flex-basis: 100%;
   flex-grow: 0;
   flex-shrink: 1;
-  margin: 4px;
 
   @include breakpoint($breakpoint-pad) {
-    flex-basis: calc(50% - 8px);
+    flex-basis: 50%;
   }
 }
 
@@ -1510,7 +1527,6 @@
 
 // Math field
 .material-page__mathfield-wrapper {
-  margin: 2px 0;
   position: relative;
 }
 
@@ -1672,11 +1688,13 @@ mark[data-muikku-word-definition] {
   border-radius: 3px;
   font-size: 0.8125rem;
   font-weight: 400;
+  left: 4px;
   line-height: 1;
   padding: 5px;
   position: absolute;
   transition: background-color 0.2s ease-in-out;
   top: -20px;
+  white-space: nowrap;
 }
 
 .material-page__field-answer-synchronizer--saving {
