@@ -188,16 +188,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       }) as Action);
     }
   }
-
-  loadCommunicatorData(location: string[]){
-    if (location.length === 1){
-      this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
-    } else {
-      this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
-    }
-  }
-
-  loadCoursePickerData(originalData:any, organizationCourses: boolean){
+  loadCoursePickerData(originalData:any, isOrganization: boolean){
     let filters:WorkspacesActiveFiltersType = {
       educationFilters: originalData.e || [],
       curriculumFilters: originalData.c || [],
@@ -209,10 +200,18 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
   }
 
   
+  loadCommunicatorData(location: string[]){
+    if (location.length === 1){
+      this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
+    } else {
+      this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
+    }
+  }
   renderCoursePickerBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();      
+      this.props.websocket.restoreEventListeners();
+
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
@@ -273,8 +272,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
       this.props.websocket.restoreEventListeners();
-      this.props.store.dispatch(LoadAvailableEducationFiltersFromServer() as Action);
-      this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
