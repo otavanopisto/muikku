@@ -6,19 +6,21 @@ import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 import '~/sass/elements/buttons.scss';
 import {StateType} from '~/reducers';
-import { WorkspaceCourseType } from '~/reducers/main-function/courses';
 import Button from '~/components/general/button';
-import { signupIntoCourse, SignupIntoCourseTriggerType } from '~/actions/main-function/courses';
+import { signupIntoWorkspace, SignupIntoWorkspaceTriggerType } from '~/actions/workspaces';
 import { bindActionCreators } from 'redux';
+import { WorkspaceType } from '~/reducers/workspaces';
 
 interface WorkspaceSignupDialogProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
-  course: WorkspaceCourseType,
-  signupIntoCourse: SignupIntoCourseTriggerType
+  workspace: WorkspaceType,
+  signupIntoWorkspace: SignupIntoWorkspaceTriggerType
 }
 
 interface WorkspaceSignupDialogState {
@@ -42,8 +44,8 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
   }
   signup(closeDialog: ()=>any){
     this.setState({locked: true});
-    this.props.signupIntoCourse({
-      course: this.props.course,
+    this.props.signupIntoWorkspace({
+      workspace: this.props.workspace,
       success: ()=>{
         this.setState({locked: false, message: ""});
         closeDialog();
@@ -57,8 +59,9 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
   render(){
     let content = (closeDialog: ()=>any) => <div>
       <div>
-        <div className="dialog__content-row">{this.props.i18n.text.get('plugin.workspaceSignUp.courseDescription', this.props.course.name, this.props.course.nameExtension || "")}</div>
-        {this.props.course.feeInfo && this.props.course.feeInfo.evaluationHasFee ?
+        <div className="dialog__content-row">{this.props.i18n.text.get('plugin.workspaceSignUp.courseDescription', this.props.workspace.name,
+            this.props.workspace.nameExtension || "")}</div>
+        {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ?
           <div className="form-element dialog__content-row">
             <p><label>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.label')}</label></p>
             <p><span>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.content')}</span></p>
@@ -95,7 +98,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({signupIntoCourse}, dispatch);
+  return bindActionCreators({signupIntoWorkspace}, dispatch);
 };
 
 export default connect(

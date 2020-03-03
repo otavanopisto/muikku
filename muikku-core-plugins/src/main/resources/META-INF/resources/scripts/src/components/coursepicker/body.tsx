@@ -12,7 +12,7 @@ interface CoursepickerBodyState {
   
 }
 
-export default class CoursepickerBody extends React.Component<CoursepickerBodyProps, CoursepickerBodyState> {
+export default class CommunicatorBody extends React.Component<CoursepickerBodyProps, CoursepickerBodyState> {
   render(){
     let aside = <Aside />
     return (<div>

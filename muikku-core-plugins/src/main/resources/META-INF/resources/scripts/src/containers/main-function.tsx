@@ -10,12 +10,23 @@ import * as queryString from 'query-string';
 import titleActions from '~/actions/base/title';
 import IndexBody from '../components/index/body';
 import { loadAnnouncementsAsAClient } from '~/actions/main-function/announcements';
-import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions/main-function/workspaces';
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 import CousePickerBody from '../components/coursepicker/body';
 import { loadLoggedUser } from '~/actions/main-function/user-index';
+
+// New ones
+import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
+import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
+import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
+
+
+
+// Deprecating 
 import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
+
+
+
 import { UserType } from '~/reducers/main-function/user-index';
 import OrganizationAdministrationBody from '../components/organization/body';
 import CommunicatorBody from '../components/communicator/body';
@@ -178,17 +189,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
   }
 
-  loadCoursePickerData(originalData:any, organizationCourses: boolean){
-    let filters:CoursesActiveFiltersType = {
-      educationFilters: originalData.e || [],
-      curriculumFilters: originalData.c || [],
-      organizationFilters: originalData.o || [],
-      query: originalData.q || null,
-      baseFilter: originalData.b || "ALL_COURSES"
-    }
-    this.props.store.dispatch(loadCoursesFromServer(filters, organizationCourses) as Action);
-  }
-
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
       this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
@@ -197,13 +197,25 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
   }
 
+  loadCoursePickerData(originalData:any, organizationCourses: boolean){
+    let filters:WorkspacesActiveFiltersType = {
+      educationFilters: originalData.e || [],
+      curriculumFilters: originalData.c || [],
+      organizationFilters: originalData.o || [],
+      query: originalData.q || null,
+      baseFilter: originalData.b || "ALL_COURSES"
+    }
+    this.props.store.dispatch(loadWorkspacesFromServer(filters) as Action);
+  }
+
+  
   renderCoursePickerBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();      
-      this.props.store.dispatch(LoadAvailableEducationFiltersFromServer() as Action);
-      this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
-      this.props.store.dispatch(LoadAvailableOrganizationFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
@@ -248,7 +260,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       this.props.store.dispatch(loadAnnouncementsAsAClient() as Action);
       this.props.store.dispatch(loadLastWorkspaceFromServer() as Action);
-      this.props.store.dispatch(loadWorkspacesFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(6) as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.site.title')));
     }
