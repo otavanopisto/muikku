@@ -83,6 +83,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   private height: number | string;
   private cancelChangeTrigger: boolean;
   private timeout: NodeJS.Timer;
+  private timeoutProps: CKEditorProps;
   private previouslyAppliedConfig: any;
   
   constructor(props: CKEditorProps){
@@ -119,14 +120,16 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     }
   }
   setupCKEditor(props: CKEditorProps = this.props){
+    const configObj = {...extraConfig(props), ...(props.configuration || {})};
     if (!getCKEDITOR()){
+      this.timeoutProps = props;
       this.timeout = setTimeout(()=>{
-        this.setupCKEditor(props);
+        this.setupCKEditor(this.timeoutProps);
       }, 10);
       return;
     }
     
-    let configObj = {...extraConfig(props), ...(props.configuration || {})};
+    this.timeoutProps = null;
     this.previouslyAppliedConfig = configObj;
     
     let allPlugins = configObj.extraPlugins.split(",");
@@ -211,7 +214,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     this.cancelChangeTrigger = true;
   }
   componentWillReceiveProps(nextProps: CKEditorProps){
-    if (!getCKEDITOR()){
+    if (this.timeoutProps) {
+      this.timeoutProps = nextProps;
       return;
     }
     
