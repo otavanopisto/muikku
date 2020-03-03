@@ -94,6 +94,8 @@ interface BaseState {
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT = 600;
 //The client will wait this amount of milliseconds and otherwise it will consider the answer unsynced 
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY = 2000;
+//The client will wait this amount of milliseconds to trigger an update
+const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE = 2000;
 
 //The handlers that do more to html static items
 //That are somehow brokeeeen
@@ -536,7 +538,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       this.timeoutConnectionFailedRegistry[name] = setTimeout(()=>{
         context.setState({syncError: "server does not reply"});
       }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY);
-    }, TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY)
+    }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE)
   }
   render(){
     //This is all there is we just glue the HTML in there
