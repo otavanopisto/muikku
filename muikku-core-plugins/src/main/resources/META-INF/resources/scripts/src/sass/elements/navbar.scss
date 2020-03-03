@@ -130,6 +130,7 @@
 @include breakpoint($breakpoint-pad) {
   .navbar--main-function .navbar__item--menu-button,
   .navbar--workspace .navbar__item--menu-button,
+  .navbar--workspace-edit-mode .navbar__item--menu-button,
   .navbar__mobile-title {
     display: none;
   }
@@ -184,6 +185,15 @@
 // NAVBAR IN WORKSPACES
 .navbar--workspace {
   background-color: $color-workspace-navbar-background;
+
+  .navbar__item--menu-button .link {
+    color: $color-environment-navbar-item-menu-button;
+  }
+}
+
+// NAVBAR EDITMODE IN WORKSPACES
+.navbar--workspace-edit-mode {
+  background-color: $color-workspace-edit-mode-navbar-background;
 
   .navbar__item--menu-button .link {
     color: $color-environment-navbar-item-menu-button;

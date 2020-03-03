@@ -117,7 +117,8 @@
   color: $color-menu-environment-header-button-close;
 }
 
-.menu__button-close--workspace {
+.menu__button-close--workspace,
+.menu__button-close--workspace-edit-mode {
   color: $color-menu-workspace-header-button-close;
 }
 
@@ -157,7 +158,8 @@
   }
 }
 
-.menu--workspace {
+.menu--workspace,
+.menu--workspace-edit-mode {
 
   .menu__header {
     background-color: $color-workspace-menu-header-background;

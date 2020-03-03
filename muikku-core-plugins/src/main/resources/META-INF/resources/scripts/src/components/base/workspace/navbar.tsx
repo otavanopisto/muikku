@@ -18,6 +18,7 @@ import EvaluationRequestDialog from './evaluation-request-dialog';
 import EvaluationCancelDialog from './evaluation-cancel-dialog';
 import { UpdateWorkspaceEditModeStateTriggerType, updateWorkspaceEditModeState } from '~/actions/workspaces';
 import { bindActionCreators } from 'redux';
+import workspace from '~/components/guider/body/application/current-student/workspaces/workspace';
 
 interface ItemDataElement {
   modifier: string,
@@ -260,8 +261,10 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
          checked={this.props.workspaceEditMode.active}/>)
   }
 
+  let navbarModifiers = this.props.workspaceEditMode.active ? "workspace-edit-mode" : "workspace";
+
   return <Navbar mobileTitle={this.props.title} isProfileContainedInThisApp={false}
-    modifier="workspace" navigation={trueNavigation} navbarItems={[
+    modifier={navbarModifiers} navigation={trueNavigation} navbarItems={[
       assessmentRequestItem,
       //managementItem
     ].concat(itemData.map((item)=>{

@@ -13,7 +13,7 @@ $color-disabled: #b3b2b2;
 $color-warn: #ea7503;
 $color-warn-contrast: $color-default;
 
-$color-notice: #fdbe4a;
+$color-notice: #ffce65;
 $color-notice-contrast: $color-default;
 
 $color-info: #009fe3;
@@ -508,6 +508,7 @@ $color-environment-navbar-background: #009fe3;
 $color-environment-navbar-title: $color-default;
 $color-environment-navbar-item-menu-button: $color-default;
 $color-workspace-navbar-background: $color-workspace;
+$color-workspace-edit-mode-navbar-background: #000000;
 
 // ICON LINKS
 $color-environment-link-icon-color: $color-default;

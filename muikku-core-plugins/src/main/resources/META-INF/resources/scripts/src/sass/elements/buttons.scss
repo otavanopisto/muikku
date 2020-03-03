@@ -1408,7 +1408,7 @@
 .button-pill--editing-master-switch-active {
 
   &::after {
-    background: lighten($color-success, 10%);
+    background: $color-fatal;
     border-radius: 100%;
     content: " ";
     height: $generic-mobile-switch-size;
