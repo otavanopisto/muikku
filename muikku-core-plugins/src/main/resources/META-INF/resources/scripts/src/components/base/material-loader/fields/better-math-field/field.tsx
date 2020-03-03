@@ -32,7 +32,7 @@ function checkIsParentOrSelf(element: HTMLElement, comparer: HTMLElement | strin
   if (typeof comparer === "string" ? element && element.className.indexOf(comparer) !== -1 : element === comparer){
     return true;
   }
-  
+
   return element.parentElement ? checkIsParentOrSelf(element.parentElement, comparer) : false;
 }
 
@@ -54,10 +54,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
   constructor(props: FieldProps){
     super(props);
-    
+
     this.value = props.value;
     this.MQInterface = getMQInterface;
-    
+
     this.onFocusField = this.onFocusField.bind(this);
     this.onBlurField = this.onBlurField.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -79,9 +79,9 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     //we want to load mathjax and create the markup from the property value of the field
     loadMathJax(false);
     this.createMarkup();
-    
-    document.execCommand("enableObjectResizing", false, false);
-    
+
+    document.execCommand("enableObjectResizing", false);
+
     if (!this.props.readOnly){
       document.body.addEventListener('click', this.handleAllClicks);
     }
@@ -90,7 +90,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     if (nextProps.className !== this.props.className){
       (this.refs.input as HTMLElement).className = nextProps.className;
     }
-    
+
     if (nextProps.readOnly !== this.props.readOnly){
       if (nextProps.readOnly){
         (this.refs.input as HTMLElement).classList.add("disabled");
@@ -102,12 +102,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         document.body.addEventListener('click', this.handleAllClicks);
       }
     }
-    
+
     if (nextProps.value === this.value){
       //console.log("change denied");
       return;
     }
-    
+
     this.value = nextProps.value;
     this.createMarkup();
   }
@@ -115,7 +115,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     //we might unselect any previously selected equation
     //this is for when the field updates
     this.unselect();
-    
+
     //straightforward process we find all the formulas and convert it to svg
     (this.refs.input as HTMLInputElement).innerHTML = this.value;
     Array.from((this.refs.input as HTMLInputElement).querySelectorAll("." + this.props.formulaClassName)).forEach((element: HTMLElement)=>{
@@ -124,12 +124,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   onFocusField(e: React.FocusEvent<any>){
     //console.log("focus");
-    
+
     if (this.isBlurDelayed){
       //console.log("cancelling next blur");
       this.cancelBlur = true;
     }
-    
+
     //because we cannot get on wheter we are focusing on the mathquill via a focus event we use the contenteditable event
     //because blur lags when the selectedfield is open, we can use it to figure out if mathquill has the focus
     //and cancel the blur event, this would only active if I was on ace editor before
@@ -137,7 +137,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     if (this.selectedMathField && checkIsParentOrSelf(target as HTMLElement, this.selectedMathField.el())){
       this.isOnAceEditor = false;
     }
-    
+
     //On focus field gets called every time the contenteditable gains focus
     //Because there might be elements inside the contenteditable like an image that represents an equation
     //we might check whether the element that allowed us to gain focus was a formula
@@ -147,10 +147,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       //And we select it
       this.selectFormula(elem as HTMLImageElement);
     }
-    
+
     //Disable any last element just in case of overlap
     this.lastMouseedDownElement = null;
-    
+
     //And trigger the onfocus event for the parent (it will make the toolbar visible and stuff)
     (this.refs.input as HTMLElement).classList.add("focused");
     this.props.onFocus();
@@ -191,20 +191,20 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   onBlurField(e: React.ChangeEvent<any> | Event){
     //console.log("blur detected");
-    
+
     let actualExecution = ()=>{
       this.isBlurDelayed = false;
-      
+
       //We might want to cancel the blur when
       //A formula is selected this causes the actual field
       //To blur the hell out, however we want to still be focused
       //Even when what it concerns to the browser we are not focused
       if (this.cancelBlur){
         //console.log("blur cancelled");
-        
+
         //So we just set the variable to phantom blurred true reset the boolean and exit
         this.cancelBlur = false;
-        
+
         //I have no idea why the contenteditable loses focus unless it's recalled on
         //the blur event but this works
         if (!this.selectedMathField){
@@ -213,16 +213,16 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         return;
       }
       //console.log("blur");
-      
+
       this.unselect();
       (this.refs.input as HTMLElement).classList.remove("focused");
       this.props.onBlur();
     }
-    
+
     if (this.cancelBlur){
       //console.log("cancelling blur right away");
       this.cancelBlur = false;
-      
+
       //I have no idea why the contenteditable loses focus unless it's recalled on
       //the blur event but this works
       if (!this.selectedMathField){
@@ -238,7 +238,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   focus(avoidCancellingBlur?: boolean){
     //console.log("forced focus event");
-    
+
     if (!avoidCancellingBlur){
       //We want to cancel a possible blur if there's a blur event but the focus is forced back
       if (this.isBlurDelayed){
@@ -258,7 +258,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         }, TIMEOUT_FOR_CANCELLING_BLUR);
       }
     }
-    
+
     //This gets called by the parent component to force the focus back
     //as in like when we use the toolbar
     if (this.selectedMathField){
@@ -271,21 +271,21 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     } else {
       (this.refs.input as HTMLDivElement).focus();
     }
-    
+
     (this.refs.input as HTMLElement).classList.add("focused");
   }
   onChange(){
     //This gets called every time the contenteditable changes
     //very good actually and simple
     this.props.onChange(this.calculateOutput());
-    
+
     //The good thing is that it even detects when the formula changes
     //Without even needed to use the event listeners of the formula with
     //the mathquill API
     if (this.selectedFormula){
       //We set it as the selected formula changed
       this.changedSelected = true;
-      
+
       //and set the value of the editor in such case
       //this only happens of course if we are not on the ace editor
       if (!this.isOnAceEditor){
@@ -323,7 +323,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         this.aceEditor.focus();
         this.aceEditor.session.insert(this.aceEditor.getCursorPosition(), command.latexText);
       }
-      
+
       //Trigger an onchange event as these are not figured by the contenteditable
       //as there is no input per say
       this.onChange();
@@ -335,7 +335,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.selectFormula(image);
   }
   selectFormula(target: HTMLImageElement){
-    
+
     //Sometimes select formula might trigger with the same formula in that case
     //just cancel it out, this might happen eg, with the focus and handle all clicks that both
     //detect the event on first click
@@ -343,40 +343,40 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       //console.log("cancelling due to duplication");
       return;
     }
-    
+
     //console.log("selecting", target);
-    
+
     //We set the cancel the blur to true as the focus will go out of the contenteditable
     //once we are done
     //console.log("cancelling next blur");
     this.cancelBlur = true;
-    
+
     //we unselect any previously selected equations
     this.unselect();
-    
+
     //we set is as clear, this comes from an image hence it hasn't been changed
     //and its true to the image
     this.changedSelected = false;
     this.selectedFormula = target;
-    
+
     //Now we do all this garbage of
     //creating the component by hand
     this.selectedMathFieldContainer = document.createElement('div');
     this.selectedMathFieldContainer.setAttribute("contenteditable", "false");
     this.selectedMathFieldContainer.className = this.props.editorClassName;
-    
+
     //styles, to provide functionality without the SCSS
 //    this.selectedMathFieldContainer.style.border = "solid 1px red";
 //    this.selectedMathFieldContainer.style.display = "block";
 //    this.selectedMathFieldContainer.style.margin = "30px";
 //    this.selectedMathFieldContainer.style.position = "relative";
-    
+
     let newElement = document.createElement('span');
     newElement.textContent = this.selectedFormula.alt || "";
-    
+
     let actualContainerForTheMathField = document.createElement('div');
     actualContainerForTheMathField.className = this.props.editorClassName + "--formula-container";
-    
+
     //styles, to provide functionality without the SCSS
 //    actualContainerForTheMathField.style.border = "solid 1px blue";
 //    actualContainerForTheMathField.style.padding = "5px 10px";
@@ -384,37 +384,37 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 //    actualContainerForTheMathField.style.alignItems = "center";
 //    actualContainerForTheMathField.style.justifyContent = "center";
 //    actualContainerForTheMathField.style.display = "flex";
-    
+
     actualContainerForTheMathField.appendChild(newElement);
     this.selectedMathFieldContainer.appendChild(actualContainerForTheMathField);
-    
+
     let editorContainer = document.createElement('div');
     editorContainer.className = this.props.editorClassName + "--formula-text-editor";
-    
+
     //styles, to provide functionality without the SCSS
 //    editorContainer.style.border = "solid 1px green";
 //    editorContainer.style.height = "100px";
 //    editorContainer.style.position = "relative";
-    
+
     let editor = document.createElement('div');
     editor.style.position = "absolute";
     editor.style.width = "100%"
     editor.style.height = "100%";
     editor.textContent = this.selectedFormula.alt || "";
-    
+
     editorContainer.appendChild(editor);
-    
+
     this.selectedMathFieldContainer.appendChild(editorContainer);
-    
+
     this.selectedFormula.parentElement.replaceChild(this.selectedMathFieldContainer, this.selectedFormula);
-    
+
     //Now we create the math field from the span in the middle
     this.selectedMathField = this.MQInterface().MathField(newElement);
 
     //And we give it focus, this is when the onblur event of the contenteditable will
     //be called and we will be phantom blurred
     this.selectedMathField.focus();
-    
+
     //And we create the editor for the fields
     this.aceEditor = (window as any).ace.edit(editor);
     this.aceEditor.session.setMode("ace/mode/latex");
@@ -424,11 +424,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.aceEditor.on("focus", this.onAceEditorFocus);
     this.aceEditor.on("input", this.onAceEditorInput);
     setTimeout(this.onAceEditorInput, 100);
-    
+
     this.isOnAceEditor = false;
-    
+
     window.addEventListener("keyup", this.onDeleteSomethingInMathMode, false);
-    
+
     this.props.onLatexModeOpen();
   }
   onDeleteSomethingInMathMode(e: KeyboardEvent){
@@ -465,7 +465,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     //This detects clicks everywhere in any element
     //console.log("detected click at", e.target);
     let clickedTarget:HTMLElement = e.target as HTMLElement;
-    
+
     if (clickedTarget.className === this.props.formulaClassName){
       //if we click on a formula, we want to select it
       //this is the part where select formula might be called twice because
@@ -476,26 +476,26 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     } else {
       //If we didn't click a formula  we need to check whether this is the field
       let areWeInsideTheElement = checkIsParentOrSelf(clickedTarget, this.refs.input as HTMLElement);
-      
+
       //If this is the field
       if (areWeInsideTheElement){
-        
+
         //we might check wheter we are inside the formula editor
         let areWeInsideFormulaEditor = this.selectedMathFieldContainer && checkIsParentOrSelf(clickedTarget, this.selectedMathFieldContainer);
-        
+
         //if we are not, yet we clicked somewhere in the contenteditable
         //we just unselect it
         if (!areWeInsideFormulaEditor){
           this.unselect();
         }
-        
+
         if (this.selectedMathField && this.isOnAceEditor){
           //console.log("Ace editor bug refocus");
           this.focus();
         }
         return;
       }
-      
+
       //We force the focus back if we are in the mathfield as it tends to lose it
       //but we have to make sure that there is no blur event going on
       if (this.selectedMathField){
@@ -512,7 +512,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   unselect(focusAfterImage?: boolean, selectAfterUnselect?: boolean){
     if (this.selectedFormula){
       //console.log("unselect");
-      
+
       let latex = this.selectedMathField.latex();
       if (latex.trim() === ""){
         this.selectedMathFieldContainer.parentElement.removeChild(this.selectedMathFieldContainer);
@@ -533,18 +533,18 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
           toSVG(this.selectedFormula, warningImage, cb, loadingImage, cb);
         }
       }
-      
+
       this.selectedMathField && this.selectedMathField.revert();
       this.selectedMathField = null;
       this.selectedMathFieldContainer = null;
       this.selectedFormula = null;
-      
+
       this.aceEditor && this.aceEditor.destroy();
       this.aceEditor = null;
       this.isOnAceEditor = false;
-      
+
       window.removeEventListener("keyup", this.onDeleteSomethingInMathMode);
-      
+
       this.props.onLatexModeClose();
     }
   }

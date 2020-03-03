@@ -3,7 +3,7 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
-import Syncer from "./base/syncer";
+import Synchronizer from "./base/synchronizer";
 
 interface SorterFieldItemType {
   id: string,
@@ -18,30 +18,30 @@ interface SorterFieldProps {
     capitalize: boolean,
     items: Array<SorterFieldItemType>
   },
-  
+
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
   i18n: i18nType,
-      
+
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
   onAnswerChange?: (name: string, value: boolean)=>any,
-  
+
   invisible?: boolean,
 }
 
 interface SorterFieldState {
   items: Array<SorterFieldItemType>,
   selectedItem: SorterFieldItemType,
-  
+
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
   //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string,
-  
+
   //We have a answer state for each element in the sorter field
   //so we know which ones are messed up
   answerState: Array<"PASS" | "FAIL">
@@ -50,7 +50,7 @@ interface SorterFieldState {
 export default class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   constructor(props: SorterFieldProps){
     super(props);
-    
+
     let value = null;
     let items: Array<SorterFieldItemType>;
     //We take the initial value and parse it because somehow it comes as a string
@@ -66,23 +66,23 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
         }
       })
     } else {
-      //if we don't have a value, we 
+      //if we don't have a value, we
       items = shuffle(props.content.items) || [];
     }
-    
+
     this.state = {
       items,
       selectedItem: null,
-      
+
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
-      
+
       //initial answer state is not known
       answerState: null
     }
-    
+
     this.swap = this.swap.bind(this);
     this.selectItem = this.selectItem.bind(this);
     this.cancelSelectedItem = this.cancelSelectedItem.bind(this);
@@ -97,7 +97,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     if (itemA.id === itemB.id){
       return;
     }
-    
+
     //this is a basic function for swapping
     let items = this.state.items.map(item=>{
       if (item.id === itemA.id){
@@ -107,10 +107,10 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       }
       return item;
     });
-    
+
     //if we got on change we call it and we remember to stringify the answer because it wants strings
     this.props.onChange && this.props.onChange(this, this.props.content.name, JSON.stringify(items.map(item=>item.id)));
-    
+
     //items are update with the swapped version, and after that's done we check for rightness
     this.setState({
       items,
@@ -121,7 +121,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     if (!this.props.checkAnswers){
       return;
     }
-    
+
     //ok so now we loop per item
     let newanswerState:Array<"PASS" | "FAIL"> = this.state.items.map((item, index)=>{
       //we check the answer from the property of the content, using the index we get what
@@ -131,14 +131,14 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       let isAnswerProper = answer.id === item.id || item.name.toLocaleLowerCase() === answer.name.toLocaleLowerCase();
       return isAnswerProper ? "PASS" : "FAIL";
     });
-    
+
     //We check if the new state is different before update
     if (!equals(newanswerState, this.state.answerState)){
       this.setState({
         answerState: newanswerState
       });
     }
-    
+
     //In this case whether it overall right or not depends son whether
     //one of them failed, so we check
     let isCorrect = !newanswerState.includes("FAIL");
@@ -147,7 +147,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       this.props.onAnswerChange(this.props.content.name, isCorrect);
       return;
     }
-    
+
     //Otherwise we compare and update accordingly only when necessary
     let wasCorrect = !this.state.answerState.includes("FAIL");
     if (isCorrect && !wasCorrect){
@@ -170,7 +170,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       });
       return;
     }
-    
+
     this.setState({
       selectedItem: item
     });
@@ -181,7 +181,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     });
   }
   render(){
-    //This element we are gunna use depends on the orientation, we use divs of spans
+    //This element we are gonna use depends on the orientation, we use divs of spans
     let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
     let elementClassName = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
 
@@ -200,7 +200,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
         )}
       </span>
     }
-    
+
     if (this.props.invisible){
       let filler = this.state.items.map((i, index)=>{
         let text = i.name;
@@ -223,13 +223,13 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     //Lets get the class name to match the state of the entire field if necessary
     let fieldStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && this.state.answerState ?
         (this.state.answerState.includes("FAIL") ? "incorrect-answer" : "correct-answer") : "";
-    
+
     //if elements is disabled
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     //we use that element and the class to create the field
     return <Element className="material-page__sorterfield-wrapper">
-      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <Element className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
        {this.state.items.map((item, index)=>{
          //We get the text
@@ -260,7 +260,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
            className={`material-page__sorterfield-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
          "material-page__sorterfield-item--selected" : ""} ${itemStateAfterCheck}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
-           onClick={this.selectItem.bind(this, item)} onDrag={this.selectItem.bind(this, item)} 
+           onClick={this.selectItem.bind(this, item)} onDrag={this.selectItem.bind(this, item)}
            onDropInto={this.cancelSelectedItem}>
            <span className="material-page__sorterfield-item-icon icon-move"></span>
            <span className="material-page__sorterfield-item-label">{text}</span>

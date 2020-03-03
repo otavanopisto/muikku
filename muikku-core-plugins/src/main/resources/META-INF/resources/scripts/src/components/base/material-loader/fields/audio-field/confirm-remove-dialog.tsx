@@ -8,7 +8,6 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/link.scss';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
-import { bindActionCreators } from 'redux';
 
 interface ConfirmRemoveDialogProps {
   i18n: i18nType,
@@ -26,7 +25,7 @@ class ConfirmRemoveDialog extends React.Component<ConfirmRemoveDialogProps, Conf
     this.state = {
       locked: false
     }
-    
+
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
@@ -43,7 +42,7 @@ class ConfirmRemoveDialog extends React.Component<ConfirmRemoveDialogProps, Conf
     </div>
 
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.confirm.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get("plugin.workspace.materials.assignmentAudioAttachment.removeDialog.removeButtonLabel")}
@@ -54,7 +53,7 @@ class ConfirmRemoveDialog extends React.Component<ConfirmRemoveDialogProps, Conf
         </div>
       )
     }
-    
+
     return <Dialog modifier="confirm-remove-answer-dialog"
       title={this.props.i18n.text.get("plugin.workspace.materials.assignmentAudioAttachment.removeDialog.title")}
       content={content} footer={footer}>{this.props.children}</Dialog>

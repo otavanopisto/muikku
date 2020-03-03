@@ -1,10 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import Link from "~/components/general/link";
-import $ from '~/lib/jquery';
 import { StatusType } from "~/reducers/base/status";
-import {ButtonPill} from "~/components/general/button";
-let ProgressBarLine = require('react-progressbar.js').Line;
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
@@ -16,11 +12,11 @@ interface FileFieldProps {
   },
   i18n: i18nType,
   status: StatusType,
-  
+
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
-  
+
   invisible?: boolean,
 }
 
@@ -31,7 +27,7 @@ interface FileFieldState {
     name: string,
     contentType: string,
   }>,
-  
+
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
   //We only set them up in the initial state
@@ -43,16 +39,16 @@ interface FileFieldState {
 export default class FileField extends React.Component<FileFieldProps, FileFieldState> {
   constructor(props: FileFieldProps){
     super(props);
-    
+
     this.state = {
       values: (props.initialValue && (JSON.parse(props.initialValue) || [])) || [],
-      
+
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null
     }
-    
+
     this.onFileAdded = this.onFileAdded.bind(this);
     this.checkDoneAndRunOnChange = this.checkDoneAndRunOnChange.bind(this);
     this.removeFile = this.removeFile.bind(this);
@@ -66,7 +62,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
       name: file.name,
       contentType: data.fileContentType || file.type,
     }];
-    
+
     this.setState({
       values: newValues
     }, this.checkDoneAndRunOnChange);
@@ -75,7 +71,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     if (!this.props.onChange){
       return;
     }
-    
+
     //ok now that all is done we need to filter what failed to upload, and otherwise
     //set the fileId name and content type from the value as the value for the result
     let result = JSON.stringify(this.state.values.map((value)=>{
@@ -88,7 +84,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
         fileId, name, contentType
       }
     }));
-    
+
     //call onchange
     this.props.onChange(this, this.props.content.name, result);
   }
@@ -103,19 +99,19 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     const index = this.state.values.findIndex((f) => f.fileId === data.fileId);
     this.removeFileAt(index);
   }
-  
+
   render(){
     //rendering things here
     //this is the data that it has already created
     let dataInContainer = null;
-    
+
     //if elements is disabled
     let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
-    
+
     let formDataGenerator = (file: File, formData: FormData) => {
       formData.append("file", file);
     }
-    
+
     //and this is the container
     return <div className="material-page__filefield-wrapper">
       <div className={`material-page__filefield ${ElementDisabledState}`}>

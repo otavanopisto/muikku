@@ -79,7 +79,7 @@
   padding: 0;
 
   object {
-  	height: 520px;
+    height: 520px;
     width: 100%;
 
     @include breakpoint($breakpoint-pad) {
@@ -470,7 +470,7 @@
   align-items: center;
   display: inline-flex;
   flex-flow: row wrap;
-  position: realtive;
+  position: relative;
 
   &:hover {
 
@@ -502,6 +502,7 @@
   align-items: center;
   display: inline-flex;
   flex-flow: row wrap;
+  position: relative;
 }
 
 .material-page__selectfield-wrapper--list {
@@ -534,6 +535,7 @@
   display: inline-flex;
   flex-flow: row wrap;
   margin: 4px;
+  position: relative;
   vertical-align: middle;
 }
 
@@ -615,6 +617,7 @@
   display: inline-flex;
   flex-flow: row wrap;
   margin: 4px;
+  position: relative;
   vertical-align: middle;
 }
 
@@ -697,6 +700,7 @@
 
 // Memo field
 .material-page__memofield-wrapper {
+  position: relative;
 
   .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
     background: $color-default;
@@ -939,6 +943,7 @@
 .material-page__sorterfield-wrapper {
   display: block;
   margin: 4px 0;
+  position: relative;
 }
 
 .material-page__sorterfield {
@@ -1023,6 +1028,7 @@
 // Organizer field
 .material-page__organizerfield-wrapper {
   margin: 4px 0;
+  position: relative;
 }
 
 .material-page__organizerfield {
@@ -1505,6 +1511,7 @@
 // Math field
 .material-page__mathfield-wrapper {
   margin: 2px 0;
+  position: relative;
 }
 
 // Table Wrapper
@@ -1658,6 +1665,33 @@ mark[data-muikku-word-definition] {
 .material-page__assignment-assessment-date-label {
   font-weight: bold;
   padding: 0 10px 0 0;
+}
+
+// MATERIAL PAGE FIELD ANSWER SYNCHRONIZER
+.material-page__field-answer-synchronizer {
+  border-radius: 3px;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1;
+  padding: 5px;
+  position: absolute;
+  transition: background-color 0.2s ease-in-out;
+  top: -20px;
+}
+
+.material-page__field-answer-synchronizer--saving {
+  background: $color-notice;
+  color: $color-default-contrast;
+}
+
+.material-page__field-answer-synchronizer--saved {
+  background: $color-success;
+  color: $color-default;
+}
+
+.material-page__field-answer-synchronizer--error {
+  background: $color-warn;
+  color: $color-default;
 }
 
 // MATERIAL PAGE CUSTOM BOX STYLES

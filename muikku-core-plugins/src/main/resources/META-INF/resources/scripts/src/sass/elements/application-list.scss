@@ -219,9 +219,11 @@
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
+
     .label {
       background-color: $color-label-mobile-selected-background;
     }
+
     .glyph,
     .link,
     .application-list__header-primary,
@@ -534,6 +536,7 @@
 .application-list__item-header-main-content {
   display: inline-block;
 }
+
 .application-list__item-header-main-content--discussion-message-creator {
   font-size: 0.875rem;
   font-weight: 600;
@@ -546,6 +549,7 @@
 
 .application-list__item-header-main-content--communicator-sender {
   font-weight: 600;
+
   &::after {
     content: ">";
     margin: 0 10px;
@@ -649,7 +653,7 @@
 }
 
 
-// Discussion 
+// Discussion
 .application-list__header--workspace-users {
   padding: 10px;
 

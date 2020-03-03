@@ -9,7 +9,7 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/material-page.scss';
 import '~/sass/elements/material-admin.scss';
-import { ButtonPill } from '~/components/general/button';
+
 import Toc, { TocTopic, TocElement } from '~/components/general/toc';
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
@@ -44,11 +44,11 @@ function isScrolledIntoView(el: HTMLElement) {
 class ContentComponent extends React.Component<ContentProps, ContentState> {
   constructor(props: ContentProps) {
     super(props);
-    
+
     this.state = {
       materials: props.materials
     };
-    
+
     this.hotInsertBeforeSection = this.hotInsertBeforeSection.bind(this);
     this.hotInsertBeforeSubnode = this.hotInsertBeforeSubnode.bind(this);
     this.onInteractionBetweenSections = this.onInteractionBetweenSections.bind(this);
@@ -78,10 +78,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     newMaterialState.splice(baseIndex, 1);
     newMaterialState.splice(targetBeforeIndex, 0, this.state.materials[baseIndex]);
     const contentNodesRepaired = repairContentNodes(newMaterialState);
-    
+
     const material = this.state.materials[baseIndex];
     const update = contentNodesRepaired.find((cn) => cn.workspaceMaterialId === material.workspaceMaterialId);
-    
+
     this.setState({
       materials: contentNodesRepaired,
     }, () => {
@@ -118,20 +118,20 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     } else {
       newMaterialState[parentTargetBeforeIndex].children.splice(targetBeforeIndex, 0, this.state.materials[parentBaseIndex].children[baseIndex]);
     }
-    
+
     const repariedNodes = repairContentNodes(newMaterialState);
     const workspaceId = this.state.materials[parentBaseIndex].children[baseIndex].workspaceMaterialId;
-    
+
     const material = this.state.materials[parentBaseIndex].children[baseIndex];
     const update = repariedNodes[parentTargetBeforeIndex].children.find((cn: MaterialContentNodeType) => cn.workspaceMaterialId === material.workspaceMaterialId);
-    
+
     this.setState({
       materials: repariedNodes,
     }, ()=>{
       if (parentBaseIndex !== parentTargetBeforeIndex) {
         (this.refs[`draggable-${parentTargetBeforeIndex}-${workspaceId}`] as Draggable).onRootSelectStart(null, true);
       }
-      
+
       this.props.updateWorkspaceMaterialContentNode({
         workspace: this.props.workspace,
         material,
@@ -169,7 +169,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     if (!this.props.materials || !this.props.materials.length){
       return null;
     }
-    
+
     const isEditable = this.props.workspaceEditMode.active;
 
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
@@ -262,7 +262,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           }
           return topic;
         } else {
-          return <Draggable 
+          return <Draggable
             interactionData={node}
             interactionGroup="TOC"
             key={node.workspaceMaterialId}

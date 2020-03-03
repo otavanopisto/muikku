@@ -3,7 +3,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import CKEditor from '~/components/general/ckeditor';
 import $ from '~/lib/jquery';
 import equals = require("deep-equal");
-import Syncer from "./base/syncer";
+import Synchronizer from "./base/synchronizer";
 
 interface MemoFieldProps {
   type: string,
@@ -169,7 +169,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
 
     //and here the element itself
     return <div className="material-page__memofield-wrapper">
-      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       {field}
       <div className="material-page__counter-wrapper">
         <div className="material-page__word-count-container">
