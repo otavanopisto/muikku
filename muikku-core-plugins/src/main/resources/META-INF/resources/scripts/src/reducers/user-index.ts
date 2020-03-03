@@ -10,6 +10,7 @@ export interface UserType {
   hasImage?: boolean,
   hasEvaluationFees?: false,
   curriculumIdentifier?: string,
+  organizationIdentifier?: string,
  
   //EXTENDED VALUES, may or may not be available
   email?: string,
@@ -20,6 +21,7 @@ export interface UserType {
   studyStartDate?: string,
   studyTimeEnd?: string
 }
+
 
 export interface UserWithSchoolDataType {
   curriculumIdentifier?: string,
@@ -41,10 +43,16 @@ export interface UserWithSchoolDataType {
   userEntityId: number
 }
 
+export interface OrganizationType {
+  id: number,
+  name: string
+}
+
 export interface UserGroupType {
   id: number,
   name: string,
-  userCount: number
+  userCount: number,
+  organization?: OrganizationType
 }
 
 export interface UserStaffType {
@@ -170,5 +178,6 @@ export default function userIndex(state:UserIndexType={
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop)});
   }
+  
   return state;
 }
