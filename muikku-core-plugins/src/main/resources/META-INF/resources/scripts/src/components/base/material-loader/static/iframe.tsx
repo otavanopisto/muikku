@@ -29,13 +29,33 @@ export default class Iframe extends React.Component<IframeProps, {}>{
       
       if (Tag === "iframe") {
         const iframeProps = {...elementProps};
+        const isYoutube = elementProps.src.includes("//www.youtube.com");
+        let containerStyle: any = {height: elementProps.height || 160, width: "100%"};
         delete iframeProps.height;
-        iframeProps.style = {
-          maxWidth: "100%",
-          height: "100%",
-          width: !iframeProps.width ? "100%" : null,
+        if (isYoutube) {
+          delete iframeProps.width;
+          containerStyle = {
+            width: "100%",
+            paddingTop: "56.25%",
+            position: "relative",
+          }
+          iframeProps.style = {
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            width: "100%",
+            height: "100%",
+          }
+        } else {
+          iframeProps.style = {
+            maxWidth: "100%",
+            height: "100%",
+            width: !iframeProps.width ? "100%" : null,
+          }
         }
-        return <div className="iframe" style={{height: elementProps.height || 160, width: "100%"}}>
+        return <div className="iframe" style={containerStyle}>
           <Tag {...iframeProps}>{children}</Tag>
         </div>
       }
