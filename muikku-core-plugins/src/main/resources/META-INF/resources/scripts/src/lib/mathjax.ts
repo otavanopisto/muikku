@@ -80,7 +80,12 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
       newImage.src = errorSrc;
     }
     
-    actualParentElement.replaceChild(newImage, actualUsedElementInTheDOM);
+    try {
+      actualParentElement.replaceChild(newImage, actualUsedElementInTheDOM);
+    } catch {
+      // TODO there shouldn't be a try cactch here this is a bug
+      // fix the bug properly later
+    }
     
     cb && cb(newImage);
   });

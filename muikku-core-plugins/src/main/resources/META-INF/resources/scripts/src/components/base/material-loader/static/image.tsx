@@ -133,10 +133,13 @@ export default class Image extends React.Component<ImageProps, ImageState>{
       //two alternatives of image, one with src, and another one
       //where the source would be data-original
       if (Tag === "img"){
-        if (!this.props.dataset.original.includes("//")){
-          elementProps.src = this.props.path + "/" + this.props.dataset.original;
+        const src = this.props.dataset.original;
+        const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
+          (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+        if (!isAbsolute){
+          elementProps.src = this.props.path + "/" + src;
         } else {
-          elementProps.src = this.props.dataset.original;
+          elementProps.src = src;
         }
       }
       
