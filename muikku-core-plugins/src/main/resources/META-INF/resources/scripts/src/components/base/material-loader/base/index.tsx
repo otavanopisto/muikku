@@ -21,7 +21,6 @@ import MathField from '../fields/math-field';
 import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } from '~/reducers/workspaces';
 import { WebsocketStateType } from '~/reducers/util/websocket';
 import Link from '~/components/base/material-loader/static/link';
-import Table from '~/components/base/material-loader/static/table';
 
 //These are all our supported objects as for now
 const objects: {[key: string]: any} = {
@@ -124,11 +123,6 @@ const statics:{[componentKey:string]: {
     containerClassName: "link-container",
     element: Link,
   },
-  'table': {
-    container: "div",
-    containerClassName: "table-container",
-    element: Table,
-  },
 };
 
 //Fixes the html inconsitencies because
@@ -155,6 +149,15 @@ function preprocessor($html: any): any{
         this.src = "";
       }
     }
+  });
+  
+  $html.find("table").each(function(){
+    <div className="" dangerouslySetInnerHTML={{__html: this.props.element.outerHTML}}/>
+    let elem = document.createElement("div");
+    elem.className = "material-page__table-wrapper";
+    
+    $(this).replaceWith(elem);
+    elem.appendChild(this);
   });
 
   return $html;

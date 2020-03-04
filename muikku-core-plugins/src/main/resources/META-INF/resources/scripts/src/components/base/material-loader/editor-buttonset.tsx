@@ -16,6 +16,7 @@ function toggleVisiblePageStatus(props: EditorButtonSetProps) {
       hidden: !props.material.hidden,
     },
     isDraft: false,
+    updateLinked: true,
   });
 }
 
