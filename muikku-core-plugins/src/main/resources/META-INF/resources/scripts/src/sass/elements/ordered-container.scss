@@ -176,43 +176,6 @@
     order: 3;
   }
 
-  // Events card
-  .ordered-container__item--frontpage-events {
-    flex-basis: calc(50% - #{$ordered-container-item-gutter});
-    flex-grow: 1;
-    flex-shrink: 1;
-    order: 1;
-    padding: 0 $ordered-container-item-gutter 0 0;
-  }
-
-  // News card
-  .ordered-container__item--frontpage-news {
-    flex-basis: calc(50% - #{$ordered-container-item-gutter});
-    flex-grow: 1;
-    flex-shrink: 1;
-    order: 2;
-    padding: 0 0 0 $ordered-container-item-gutter;
-  }
-
-  // Images card
-  .ordered-container__item--frontpage-images {
-    align-self: flex-start;
-    flex-basis: calc(50% - #{$ordered-container-item-gutter});
-    flex-grow: 1;
-    flex-shrink: 1;
-    order: 3;
-    overflow: hidden; // This prevents slick carousel to reserve 100% fill entire container some reason!
-    padding: 0 $ordered-container-item-gutter 0 0;
-  }
-
-  // Blogs card
-  .ordered-container__item--frontpage-blogs {
-    flex-basis: calc(50% - #{$ordered-container-item-gutter});
-    flex-grow: 1;
-    flex-shrink: 1;
-    order: 4;
-    padding: 0 0 0 $ordered-container-item-gutter;
-  }
   // News card
   .ordered-container__item--frontpage-news {
     flex-basis: 100%;
