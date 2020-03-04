@@ -90,7 +90,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     super(props);
     
     this.name = "ckeditor-" + (new Date()).getTime();
-    this.currentData = props.children;
+    this.currentData = props.children || "";
     
     this.width = null;
     this.height = null;
@@ -187,7 +187,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       const height = instance.container.$.getBoundingClientRect().height;
       instance.resize("100%", height - borderTop - borderBottom, false, true);
       
-      instance.setData(props.children);
+      instance.setData(props.children || "");
         
       //TODO somehow, the autofocus doesn't focus in the last row but in the first
       //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
@@ -224,9 +224,9 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     if (!equals(configObj, this.previouslyAppliedConfig)) {
       getCKEDITOR().instances[this.name].destroy();
       this.setupCKEditor(nextProps);
-    } else if (nextProps.children !== this.currentData){
+    } else if ((nextProps.children || "") !== this.currentData){
       this.enableCancelChangeTrigger();
-      getCKEDITOR().instances[this.name].setData(nextProps.children);
+      getCKEDITOR().instances[this.name].setData(nextProps.children || "");
     }
   }
   shouldComponentUpdate(){

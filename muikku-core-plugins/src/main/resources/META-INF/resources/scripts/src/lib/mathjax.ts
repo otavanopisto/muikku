@@ -52,13 +52,14 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
   document.body.appendChild(container);
   
   let actualUsedElementInTheDOM = element;
+  const actualParentElement = element.parentElement;
   if (placeholderSrc && !(element as HTMLImageElement).src){
     let placeholderImage = (element as HTMLImageElement).alt ? element as HTMLImageElement : document.createElement("img");
     placeholderImage.alt = formula;
     placeholderImage.className = element.className;
     placeholderImage.src = placeholderSrc
     
-    element.parentElement.replaceChild(placeholderImage, element);
+    actualParentElement.replaceChild(placeholderImage, element);
     actualUsedElementInTheDOM = placeholderImage;
     
     placeholderCb && placeholderCb(placeholderImage);
@@ -79,7 +80,7 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
       newImage.src = errorSrc;
     }
     
-    actualUsedElementInTheDOM.parentElement.replaceChild(newImage, actualUsedElementInTheDOM);
+    actualParentElement.replaceChild(newImage, actualUsedElementInTheDOM);
     
     cb && cb(newImage);
   });
