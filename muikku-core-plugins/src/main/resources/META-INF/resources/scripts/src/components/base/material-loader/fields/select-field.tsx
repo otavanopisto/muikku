@@ -4,7 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import uuid from "uuid/v4";
 import { processMathInPage } from '~/lib/mathjax';
-import Syncer from "./base/syncer";
+import Synchronizer from "./base/synchronizer";
 
 interface SelectFieldProps {
   type: string,
@@ -26,20 +26,20 @@ interface SelectFieldProps {
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
   onAnswerChange?: (name: string, value: boolean)=>any,
-   
+
   invisible?: boolean,
 }
 
 interface SelectFieldState {
   value: string,
-  
+
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
   //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string,
-  
+
   //The answer might be unknown pass or fail, sometimes there's just no right answer
   answerState: "UNKNOWN" | "PASS" | "FAIL"
 }
@@ -47,17 +47,17 @@ interface SelectFieldState {
 export default class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
   constructor(props: SelectFieldProps){
     super(props);
-    
+
     this.onSelectChange = this.onSelectChange.bind(this);
-    
+
     this.state = {
       value: props.initialValue || '',
-      
+
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
-      
+
       //We dunno what the answer state is
       answerState: null
     }
@@ -69,7 +69,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     this.setState({value: e.target.value}, this.checkAnswers);
   }
   shouldComponentUpdate(nextProps: SelectFieldProps, nextState: SelectFieldState){
-    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state) 
+    return !equals(nextProps.content, this.props.content) || this.props.readOnly !== nextProps.readOnly || !equals(nextState, this.state)
     || this.props.i18n !== nextProps.i18n || this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers || this.props.checkAnswers !== nextProps.checkAnswers
     || this.state.modified !== nextState.modified || this.state.synced !== nextState.synced || this.state.syncError !== nextState.syncError;
   }
@@ -78,7 +78,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     if (!this.props.checkAnswers){
       return;
     }
-    
+
     //So just like text-field, there might be no right answer
     let actuallyCorrectAnswers = this.props.content.options.filter(a=>a.correct);
     if (!actuallyCorrectAnswers.length){
@@ -92,7 +92,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
       }
       return;
     }
-    
+
     //we do the same and start looping
     let isCorrect:boolean;
     let answer;
@@ -105,7 +105,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
         break;
       }
     }
-    
+
     //We update accordingly only if the answer has changed
     if (isCorrect && this.state.answerState !== "PASS"){
       this.setState({
@@ -134,7 +134,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
             disabled/>
         </span>
       }
-      
+
       return <span className="material-page__radiobutton-wrapper" ref="base">
         {this.props.content.options.map(o=>{
           return <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"}`} key={o.name}>
@@ -146,14 +146,14 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
         })}
       </span>
     }
-    
+
     //Select field is able to mark what were meant to be the correct answers in the field itself
     let markcorrectAnswers = false;
     //It also has a summary component of what the correct answers were meant to be
     let correctAnswersummaryComponent = null;
     //the classic variable
     let answerIsCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerState === "PASS"
-      
+
     //So we only care about this logic if we didn't get the answer right and we are asking for show the right thing
     //Note that a state of UNKNOWN also goes through here, but not a state of PASS
     if (this.props.displayCorrectAnswers && !answerIsCheckedAndItisCorrect){
@@ -188,16 +188,16 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
         </span>;
       }
     }
-    
+
     //The classname that represents the state of the whole field
     let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.displayCorrectAnswers &&
       this.props.checkAnswers ? (this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer") : "";
-    
+
     //So the dropdown and list type are handled differently
     if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
       let selectFieldType = this.props.content.listType === "list" ? "list" : "dropdown";
       return <span className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType}`}>
-        <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+        <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
         <select className={`material-page__selectfield ${fieldStateAfterCheck}`} size={this.props.content.listType === "list" ? this.props.content.options.length : null}
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
@@ -211,7 +211,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
 
     //this is for the standard
     return <span className="material-page__radiobutton-wrapper">
-      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map(o=>{
           //lets generate unique id for labels and radio buttons

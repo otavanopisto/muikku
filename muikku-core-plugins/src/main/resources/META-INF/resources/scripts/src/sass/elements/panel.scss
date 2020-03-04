@@ -21,9 +21,9 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-    flex-basis: 33%;
+    flex-basis: 33.333%;
     flex-flow: column nowrap;
-    max-width: 33%;
+    max-width: 33.333%;
   }
 }
 
@@ -80,6 +80,10 @@
   @include breakpoint($breakpoint-pad) {
     flex-basis: 50%;
   }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 100%;
+  }
 }
 
 .panel--workspaces {
@@ -88,6 +92,10 @@
 
   @include breakpoint($breakpoint-pad) {
     flex-basis: 50%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 100%;
   }
 }
 
@@ -100,8 +108,8 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-    flex-basis: 33%;
-    max-width: 33%;
+    flex-basis: 33.333%;
+    max-width: 33.333%;
   }
 }
 
@@ -114,8 +122,8 @@
   }
 
   @include breakpoint($breakpoint-desktop) {
-    flex-basis: 33%;
-    max-width: 33%;
+    flex-basis: 33.333%;
+    max-width: 33.333%;
   }
 }
 

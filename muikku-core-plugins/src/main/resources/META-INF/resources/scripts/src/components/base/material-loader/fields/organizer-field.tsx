@@ -3,7 +3,7 @@ import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
-import Syncer from "./base/syncer";
+import Synchronizer from "./base/synchronizer";
 
 interface FieldType {
   name: string,
@@ -34,12 +34,12 @@ interface OrganizerFieldProps {
     categories: Array<CategoryType>,
     categoryTerms: Array<CategoryTerm>
   },
-  
+
   readOnly?: boolean,
   initialValue?: string,
   onChange?: (context: React.Component<any, any>, name: string, newValue: any)=>any,
   i18n: i18nType,
-      
+
   displayCorrectAnswers?: boolean,
   checkAnswers?: boolean,
   onAnswerChange?: (name: string, value: boolean)=>any,
@@ -60,14 +60,14 @@ interface OrganizerFieldState {
   order: Array<string>,
   useList: Array<string>,
   selectedItemId: string,
-  
+
   //This state comes from the context handler in the base
   //We can use it but it's the parent managing function that modifies them
   //We only set them up in the initial state
   modified: boolean,
   synced: boolean,
   syncError: string,
-  
+
   //Wheter it was right or wrong overall
   answerStateOverall: "PASS" | "FAIL",
   //contains and object which contains and object saying whether the terms currently in the object passed or failed
@@ -79,11 +79,11 @@ interface OrganizerFieldState {
 export default class OrganizerField extends React.Component<OrganizerFieldProps, OrganizerFieldState> {
   constructor(props: OrganizerFieldProps){
     super(props);
-    
+
     this.onDropDraggableItem = this.onDropDraggableItem.bind(this);
     this.deleteTermFromBox = this.deleteTermFromBox.bind(this);
     this.checkAnswers = this.checkAnswers.bind(this);
-    
+
     //set up the initial value, parse it because it comes as string
     let value = props.initialValue ? JSON.parse(props.initialValue) : null;
     //The list of used items
@@ -113,18 +113,18 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       }),
       useList,
       selectedItemId: null,
-      
+
       //modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
-      
+
       //We don't know any of this
       answerStateOverall: null,
       answerState: null,
       answerStateMissingTerms: null
     };
-    
+
     this.cancelSelectedItemId = this.cancelSelectedItemId.bind(this);
     this.selectItemId = this.selectItemId.bind(this);
     this.selectBox = this.selectBox.bind(this);
@@ -140,12 +140,12 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     if (!this.props.checkAnswers){
       return;
     }
-    
+
     //we set up the terms
     let newanswerState:OrganizerFieldanswerStateType = {};
     let newMissingTerms:OrganizerFieldanswerStateMissingTermsType = {};
     let overallanswerState:"PASS" | "FAIL" = "PASS";
-    
+
     //We loop from the boxes, the boxId is the same as the categoryId
     Object.keys(this.state.boxes).forEach((boxId)=>{
       //We find the correlation from the results as they are given by the properties
@@ -154,7 +154,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       let elementsLeft = new Set(categoryTermCorrelation.terms);
       //the box itself has a state of PASS by default
       newanswerState[boxId] = {"*": "PASS"};
-      
+
       //so we loop in the terms within that box
       this.state.boxes[boxId].forEach((termId)=>{
         //we check whether it is correct, that is, if it in the category term correlation array
@@ -169,7 +169,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         //we delete the term we have used already from the elements left set
         elementsLeft.delete(termId);
       });
-      
+
       //Now the elements left set represent the elements we didn't check against
       //which means they weren't in the box and they are missing, we create an array
       let elementsLeftArray = Array.from(elementsLeft);
@@ -181,9 +181,9 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       //and we set it up as in the missing terms list
       newMissingTerms[boxId] = elementsLeftArray;
     });
-    
+
     //We update the state based on whether any of these attributes changed
-    if (overallanswerState !== this.state.answerStateOverall || !equals(newanswerState, this.state.answerState) || 
+    if (overallanswerState !== this.state.answerStateOverall || !equals(newanswerState, this.state.answerState) ||
         !equals(newMissingTerms, this.state.answerStateMissingTerms)){
       this.setState({
         answerState: newanswerState,
@@ -191,7 +191,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         answerStateOverall: overallanswerState
       });
     }
-    
+
     //And we use the overall state to call the rightness change function
     let isCorrect = overallanswerState === "PASS";
     let wasCorrect = this.state.answerStateOverall === "PASS";
@@ -215,7 +215,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
       //we change the box for the category id and concat the
       //new term id at the end
       nBox[categoryId] = [...nBox[categoryId], termId]
-      
+
       //we update the state
       this.setState({
         boxes: nBox,
@@ -225,7 +225,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         useList: [...this.state.useList, termId],
         selectedItemId: null,
       }, this.checkAnswers);
-      
+
       //Call the onchange function stringifying as usual
       this.props.onChange && this.props.onChange(this, this.props.content.name, JSON.stringify(nBox));
     }
@@ -239,7 +239,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     //then should mean the term is being used several times and so
     //this is fine
     newUseList.splice(index, 1);
-    
+
     //we get the new boxes
     let nBox = {...this.state.boxes};
     //make a clone for the category box
@@ -248,13 +248,13 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     let index2 = nBox[categoryId].indexOf(termId);
     //and we delete it
     nBox[categoryId].splice(index2, 1);
-    
+
     //update the state
     this.setState({
       boxes: nBox,
       useList: newUseList
     }, this.checkAnswers);
-    
+
     //Call the onchange function stringifying as usual
     this.props.onChange && this.props.onChange(this, this.props.content.name, JSON.stringify(nBox));
   }
@@ -308,19 +308,19 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
         </div>
       </div>
     }
-    
+
     //The overall state if we got one and we check answers
     let fieldStateAfterCheck = this.props.checkAnswers && this.state.answerStateOverall ? this.state.answerStateOverall === "FAIL" ? "incorrect-answer" : "correct-answer" : "";
-    
+
     //the classic variable
     let answerIsCheckedAndItisCorrect = this.props.checkAnswers && this.state.answerStateOverall === "PASS"
-      
+
     //if elements is disabled
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
-        
+
     //we add that class name in our component
     return <div className="material-page__organizerfield-wrapper">
-      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <div className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
         <div className="material-page__organizerfield-terms">
           <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
@@ -353,10 +353,10 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
           {this.props.content.categories.map((category)=>{
             //we make a category class name for if the answer state is there, only worth it if the whole thing is not right
             //if the whole thing is right then every category is right
-            let fieldCategoryStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
-              this.state.answerState && this.state.answerState[category.id] ? (this.state.answerState[category.id]["*"] === "FAIL" ? 
+            let fieldCategoryStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && !answerIsCheckedAndItisCorrect &&
+              this.state.answerState && this.state.answerState[category.id] ? (this.state.answerState[category.id]["*"] === "FAIL" ?
                 "incorrect-answer" : "correct-answer") : "";
-            
+
             //Showing the missing terms is only reasonable when display correct answers is there
             //we first check whether the category is right
             let wecheckAnswersAndCategoryisCorrect = this.props.checkAnswers &&
@@ -364,12 +364,12 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
             let itemCorrectAnswerMissingTerms:any = null;
             //if we are asked to display and the answers are not right then we add the missing items
             if (this.props.displayCorrectAnswers && !wecheckAnswersAndCategoryisCorrect){
-              itemCorrectAnswerMissingTerms = this.state.answerStateMissingTerms && 
+              itemCorrectAnswerMissingTerms = this.state.answerStateMissingTerms &&
                 this.state.answerStateMissingTerms[category.id] && this.state.answerStateMissingTerms[category.id].map((missingTermId)=>{
                 return <div key={missingTermId} className="material-page__organizerfield-term material-page__organizerfield-term--missing">{this.state.terms[missingTermId]}</div>;
               });
             }
-            
+
             return <Droppable interactionGroup={this.props.content.name} onClick={this.selectBox.bind(this, category)}
               className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
               key={category.id} interactionData={category.id}>
@@ -377,13 +377,13 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
               <div className="material-page__organizerfield-category-terms-container">{this.state.boxes[category.id].map((termId)=>{
                 //showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
                 //otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
-                let itemStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && !answerIsCheckedAndItisCorrect && 
-                  this.state.answerState && this.state.answerState[category.id] ? this.state.answerState[category.id][termId] === "FAIL" ? 
+                let itemStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && !answerIsCheckedAndItisCorrect &&
+                  this.state.answerState && this.state.answerState[category.id] ? this.state.answerState[category.id][termId] === "FAIL" ?
                     "incorrect-answer" : "correct-answer" : "";
 
                 return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}>
                   <span className="material-page__organizerfield-term-label">{this.state.terms[termId]}</span>
-                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-cross"></span> 
+                  {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-cross"></span>
                     : <span className="material-page__organizerfield-term-icon icon-cross"></span>}
                 </div>
               })}{itemCorrectAnswerMissingTerms}</div>

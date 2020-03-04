@@ -1,32 +1,31 @@
 import * as React from "react";
 import { i18nType } from "reducers/base/i18n";
-import '~/sass/elements/syncer.scss';
 
-interface SyncerProps {
+interface SynchronizerProps {
   synced: boolean;
   syncError: string;
   i18n: i18nType;
 }
 
-interface SyncerState {
+interface SynchronizerState {
   displaySyncedMessage: boolean;
 }
 
-export default class Syncer extends React.PureComponent<SyncerProps, SyncerState> {
-  constructor(props: SyncerProps){
+export default class Synchronizer extends React.PureComponent<SynchronizerProps, SynchronizerState> {
+  constructor(props: SynchronizerProps){
     super(props);
-    
+
     this.state = {
       displaySyncedMessage: false,
     }
   }
-  
-  componentWillReceiveProps(nextProps: SyncerProps) {
+
+  componentWillReceiveProps(nextProps: SynchronizerProps) {
     if (nextProps.synced && !this.props.synced && !nextProps.syncError) {
       this.setState({
         displaySyncedMessage: true,
       });
-      
+
       setTimeout(() => {
         this.setState({
           displaySyncedMessage: false,
@@ -34,23 +33,27 @@ export default class Syncer extends React.PureComponent<SyncerProps, SyncerState
       }, 1000);
     }
   }
-  
+
   render() {
     if (this.props.synced && !this.state.displaySyncedMessage && !this.props.syncError) {
       return null;
     }
-    
+
     let message: string;
+    let modifier: string;
     if (this.props.syncError) {
-      message = this.props.i18n.text.get("error");
+      message = this.props.i18n.text.get("plugin.workspace.materials.answerSavingFailed", this.props.syncError);
+      modifier = "error";
     } else if (!this.props.synced) {
-      message = this.props.i18n.text.get("syncing");
+      message = this.props.i18n.text.get("plugin.workspace.materials.answerSavingLabel");
+      modifier = "saving";
     } else if (this.state.displaySyncedMessage) {
-      message = this.props.i18n.text.get("synced!!!");
+      message = this.props.i18n.text.get("plugin.workspace.materials.answerSavedLabel");
+      modifier = "saved";
     }
 
     return (
-      <div className="syncer">
+      <div className={`material-page__field-answer-synchronizer material-page__field-answer-synchronizer--${modifier}`}>
         {message}
       </div>
     );

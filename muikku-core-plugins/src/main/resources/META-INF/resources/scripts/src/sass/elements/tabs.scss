@@ -240,20 +240,3 @@
     flex-basis: 50%;
   }
 }
-
-// Used when editing material page
-
-.tabs__tab-labels--material-editor {
-  padding: 0 40px 0 2px;
-}
-
-.tabs__tab-data--material-editor {
-  &.active {
-    display: flex;
-  }
-}
-
-// Used when viewing workspace students
-.tabs__tab--workspace-students {
-  flex-basis: 50%;
-}

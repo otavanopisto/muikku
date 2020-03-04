@@ -3,7 +3,7 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
-import Syncer from "./base/syncer";
+import Synchronizer from "./base/synchronizer";
 
 interface FieldType {
   name: string,
@@ -372,7 +372,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     return <div className="material-page__connectfield-wrapper">
-      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <div className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
         <div className="material-page__connectfield-terms-container">
           {this.state.fields.map((field, index)=>{

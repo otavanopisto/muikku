@@ -3,7 +3,7 @@ import MathField from './better-math-field';
 import { i18nType } from "~/reducers/base/i18n";
 import '~/sass/elements/math-field.scss';
 import equals = require("deep-equal");
-import Syncer from "./base/syncer";
+import Synchronizer from "./base/synchronizer";
 
 interface MathFieldProps {
   type: string,
@@ -56,7 +56,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
   render(){
     //NOTE you cannot change the formula class name unless you want to break backwards compatibility
     return <div>
-      <Syncer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
+      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <MathField ref="base" className="material-page__mathfield"
       value={this.state.value} onChange={this.setValue}
       formulaClassName="material-page__mathfield-formula"
