@@ -14,6 +14,13 @@ const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
   let workspaces:WorkspacesType = state.workspaces;
+
+
+if (organization === true) { 
+  workspaces = state.organizationWorkspaces;
+} 
+
+
   let hasEvaluationFees:boolean = state.userIndex &&
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees

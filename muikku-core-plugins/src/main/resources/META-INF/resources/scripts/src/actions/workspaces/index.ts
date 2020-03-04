@@ -104,7 +104,7 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
     }
   }
 }
-  
+
 export interface UpdateLastWorkspaceTriggerType {
   (newReference:WorkspaceMaterialReferenceType):AnyActionType
 }
@@ -124,7 +124,7 @@ let updateLastWorkspace:UpdateLastWorkspaceTriggerType = function updateLastWork
     }
   }
 }
-  
+
 export interface SetCurrentWorkspaceTriggerType {
   (data?: {
     workspaceId: number,
