@@ -5,7 +5,6 @@ import { WorkspaceType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import ProgressData from '../progressData';
 import { StatusType } from "~/reducers/base/status";
-import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import { updateWorkspace, UpdateWorkspaceTriggerType } from "~/actions/workspaces";
 
@@ -38,12 +37,12 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
   render(){
     return <header className="hero hero--workspace">
       <div className="hero__wrapper hero__wrapper--workspace" style={
-      {backgroundImage:this.props.workspace && this.props.workspace.hasCustomImage ? 
+      {backgroundImage:this.props.workspace && this.props.workspace.hasCustomImage ?
       `url(/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped)` : "url(/gfx/workspace-default-header.jpg)"}}>
         <h1 className="hero__workspace-title">{this.props.workspace && this.props.workspace.name}</h1>
-        {this.props.workspace && this.props.workspace.nameExtension ? 
+        {this.props.workspace && this.props.workspace.nameExtension ?
           <div className="hero__workspace-name-extension"><span>{this.props.workspace.nameExtension}</span></div> : null}
-        {this.props.workspace && this.props.workspace.additionalInfo && this.props.workspace.additionalInfo.educationType ? 
+        {this.props.workspace && this.props.workspace.additionalInfo && this.props.workspace.additionalInfo.educationType ?
           <div className="hero__workspace-education-type"><span>{this.props.workspace.additionalInfo.educationType.name}</span></div> : null}
         {/*{this.props.workspace && this.props.workspace.studentActivity  ? <ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/> : null} */}
       </div>
@@ -60,13 +59,13 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
           <span className="meta__item-label">{this.props.i18n.text.get('plugin.workspace.index.courseSubjectLabel')}</span>
           <span className="meta__item-description">{this.props.workspace ? this.props.workspace.additionalInfo.subject.name : null}</span>
         </div>
-        {this.props.workspace && this.props.workspace.additionalInfo.workspaceType ? 
+        {this.props.workspace && this.props.workspace.additionalInfo.workspaceType ?
           <div className="meta__item">
             <span className="meta__item-label">{this.props.i18n.text.get('plugin.workspace.index.courseTypeLabel')}</span>
             <span className="meta__item-description">{this.props.workspace.additionalInfo.workspaceType}</span>
           </div>
         : null}
-        {this.props.workspace && this.props.workspace.additionalInfo.beginDate && this.props.workspace.additionalInfo.endDate ? 
+        {this.props.workspace && this.props.workspace.additionalInfo.beginDate && this.props.workspace.additionalInfo.endDate ?
           <div className="meta__item">
             <span className="meta__item-label">{this.props.i18n.text.get('plugin.workspace.index.courseDatesLabel')}</span>
             <span className="meta__item-description">
@@ -77,7 +76,7 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
           </div>
         : null}
         { /*
-        {this.props.workspace && this.props.status.permissions.WORKSPACE_CAN_PUBLISH ? 
+        {this.props.workspace && this.props.status.permissions.WORKSPACE_CAN_PUBLISH ?
           <div className="workspace-publication-container" onClick={this.toggleWorkspacePublished}>
             <Button buttonModifiers={this.props.workspace.published ? "workspace-unpublish" : "workspace-publish"}>
               {this.props.i18n.text.get(this.props.workspace.published ? 'plugin.workspace.index.unpublish' : 'plugin.workspace.index.publish')}
