@@ -312,6 +312,7 @@ export interface WorkspacesavailableFiltersType {
 }
 
 export type WorkspacesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+
 export interface WorkspacesActiveFiltersType {
   educationFilters: Array<string>,
   curriculumFilters: Array<string>,

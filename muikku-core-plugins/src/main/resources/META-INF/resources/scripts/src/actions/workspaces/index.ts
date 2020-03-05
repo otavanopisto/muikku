@@ -421,12 +421,25 @@ let cancelAssessmentAtWorkspace:CancelAssessmentAtWorkspaceTriggerType = functio
 export interface LoadWorkspacesFromServerTriggerType {
   (filters: WorkspacesActiveFiltersType): AnyActionType
 }
-export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
-  (userEntityId?: number): AnyActionType
-}
+
 export interface LoadMoreWorkspacesFromServerTriggerType {
   (): AnyActionType
 }
+
+export interface LoadOrganizationWorkspacesFromServerTriggerType {
+  (filters: WorkspacesActiveFiltersType): AnyActionType
+}
+
+export interface LoadMoreOrganizationWorkspacesFromServerTriggerType {
+  (): AnyActionType
+}
+
+
+
+export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
+  (userEntityId?: number): AnyActionType
+}
+
 export interface LoadMoreCurrentWorkspaceJournalsFromServerTriggerType {
   (): AnyActionType
 }

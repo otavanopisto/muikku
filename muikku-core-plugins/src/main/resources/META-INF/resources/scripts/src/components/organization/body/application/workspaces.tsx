@@ -6,16 +6,19 @@ import ApplicationList, { ApplicationListItem } from '~/components/general/appli
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Workspace from './workspaces/workspace';
 import {i18nType} from '~/reducers/base/i18n';
-import {CoursesStateType, WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
-import { loadMoreOrganizationCoursesFromServer, LoadMoreOrganizationCoursesFromServerTriggerType } from '~/actions/main-function/courses';
+import { WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
 
+//import { loadMoreOrganizationCoursesFromServer, LoadMoreOrganizationCoursesFromServerTriggerType } from '~/actions/main-function/courses';
+
+import {WorkspacesStateType, WorkspaceListType, WorkspaceType} from '~/reducers/workspaces';
+import {} from '~/actions/workspaces';
 
 interface OrganizationWorkspacesProps {
   i18n: i18nType,
-  organizationWorkspacesState: CoursesStateType,
+  organizationWorkspacesState: WorkspacesStateType,
   organizationWorkspacesHasMore: boolean,
   loadMoreOrganizationCoursesFromServer: LoadMoreOrganizationCoursesFromServerTriggerType,
-  organizationWorkspaces: WorkspaceCourseListType
+  organizationWorkspaces: WorkspaceListType
 }
 
 interface OrganizationWorkspacesState {
@@ -45,8 +48,8 @@ class OrganizationWorkspaces extends BodyScrollLoader<OrganizationWorkspacesProp
     }
     return (
         <ApplicationList>
-        {this.props.organizationWorkspaces.map((workspace: WorkspaceCourseType)=>{
-          return <Workspace key={workspace.id} course={workspace}/>
+        {this.props.organizationWorkspaces.map((workspace: WorkspaceType)=>{
+          return <Workspace key={workspace.id} workspace={workspace}/>
         })}
         {this.props.organizationWorkspacesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}
         </ApplicationList>
@@ -57,9 +60,10 @@ class OrganizationWorkspaces extends BodyScrollLoader<OrganizationWorkspacesProp
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    organizationWorkspacesState: state.organizationCourses.state,
-    organizationWorkspacesHasMore: state.organizationCourses.hasMore,
-    organizationWorkspaces: state.organizationCourses.courses
+    organizationWorkspacesState: state.organizationWorkspaces.state,
+    organizationWorkspacesHasMore: state.organizationWorkspaces.hasMore,
+    organizationWorkspaces: state.organizationWorkspaces.availableWorkspaces
+    
   }
 };
 
