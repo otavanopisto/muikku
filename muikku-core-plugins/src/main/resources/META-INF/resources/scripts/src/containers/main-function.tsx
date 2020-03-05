@@ -10,13 +10,20 @@ import * as queryString from 'query-string';
 import titleActions from '~/actions/base/title';
 import IndexBody from '../components/index/body';
 import { loadAnnouncementsAsAClient } from '~/actions/announcements';
-import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 import CousePickerBody from '../components/coursepicker/body';
 import { loadLoggedUser } from '~/actions/user-index';
-import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
-import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import { UserType } from '~/reducers/user-index';
+
+// New ones
+import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
+import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
+import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
+
+// Deprecating 
+//import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
+//import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
+
 import OrganizationAdministrationBody from '../components/organization/body';
 import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
@@ -190,6 +197,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.props.store.dispatch(loadWorkspacesFromServer(filters) as Action);
   }
 
+  
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
       this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
