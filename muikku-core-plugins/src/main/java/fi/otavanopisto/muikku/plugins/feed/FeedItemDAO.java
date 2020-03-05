@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -16,17 +15,10 @@ import fi.otavanopisto.muikku.plugins.feed.model.FeedItem;
 import fi.otavanopisto.muikku.plugins.feed.model.FeedItem_;
 
 public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
+
   private static final long serialVersionUID = 5636966026090215803L;
   
-  public FeedItem create(
-    String title,
-    String link,
-    String author,
-    String description,
-    Date publicationDate,
-    String image,
-    Feed feed
-  ) {
+  public FeedItem create(String title, String link, String author, String description, Date publicationDate, String image, Feed feed) {
     FeedItem feedItem = new FeedItem(
         title,
         link,
@@ -38,11 +30,36 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
     );
     return persist(feedItem);
   }
+  
+  public FeedItem update(FeedItem feedItem, String title, String link, String author, String description, Date publicationDate, String image) {
+    EntityManager entityManager = getEntityManager();
+    
+    feedItem.setTitle(title);
+    feedItem.setLink(link);
+    feedItem.setAuthor(author);
+    feedItem.setDescription(description);
+    feedItem.setPublicationDate(publicationDate);
+    feedItem.setImage(image);
+    
+    entityManager.persist(feedItem);
+    return feedItem;
+  }
+  
+  public List<FeedItem> listByFeed(Feed feed) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<FeedItem> criteria = criteriaBuilder.createQuery(FeedItem.class);
+    Root<FeedItem> root = criteria.from(FeedItem.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(FeedItem_.feed), feed)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
 	
-	public List<FeedItem> findByFeed(
-	    Feed feed,
-	    int numItems
-  ) {
+	public List<FeedItem> findByFeed(Feed feed, int numItems) {
 	  return findByFeeds(Collections.singletonList(feed), numItems, FeedSortOrder.DESCENDING);
 	}
 
@@ -69,10 +86,9 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
 
     return entityManager.createQuery(criteria).setMaxResults(numItems).getResultList();
 	}
-	
-  public void deleteAll() {
-    EntityManager entityManager = getEntityManager();
-    Query query = entityManager.createQuery("delete from " + FeedItem.class.getSimpleName());
-    query.executeUpdate();
+
+  @Override
+  public void delete(FeedItem feedItem) {
+    super.delete(feedItem);
   }
 }

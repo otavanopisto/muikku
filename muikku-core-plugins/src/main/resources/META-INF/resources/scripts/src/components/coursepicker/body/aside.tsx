@@ -24,7 +24,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
 
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
-        {this.props.courses.avaliableFilters.educationTypes.map( ( educationType: CourseEducationFilterType ) => {
+        {this.props.courses.availableFilters.educationTypes.map( ( educationType: CourseEducationFilterType ) => {
           let isActive = this.props.courses.activeFilters.educationFilters.includes( educationType.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).filter( ( i: string ) => i !== educationType.identifier ) } ), { arrayFormat: 'bracket' } ) :
@@ -33,7 +33,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
         })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
-        {this.props.courses.avaliableFilters.curriculums.map( ( curriculum: CourseCurriculumFilterType ) => {
+        {this.props.courses.availableFilters.curriculums.map( ( curriculum: CourseCurriculumFilterType ) => {
           let isActive = this.props.courses.activeFilters.curriculumFilters.includes( curriculum.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).filter( ( c: string ) => c !== curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) :
@@ -42,7 +42,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
         } )}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.organization')}>
-        {this.props.courses.avaliableFilters.organizations.map( ( organization: CourseOrganizationFilterType ) => {
+        {this.props.courses.availableFilters.organizations.map( ( organization: CourseOrganizationFilterType ) => {
           let isActive = this.props.courses.activeFilters.organizationFilters.includes( organization.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { o: ( locationData.o || [] ).filter( ( o: string ) => o !== organization.identifier ) } ), { arrayFormat: 'bracket' } ) :

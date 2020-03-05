@@ -60,7 +60,7 @@ $color-signature-border: #f2f2f2;
 $color-signature-background: #f8f8f8;
 
 // Evaluation
-$color-evaluation-request: $color-primary; 
+$color-evaluation-request: $color-primary;
 $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
 $color-grade-passed: #2ed31c;
@@ -187,6 +187,7 @@ $color-label-inverse: $color-default;
 $color-text-default: $color-inverse;
 $color-text-link: $color-primary;
 $color-text-link-selected: $color-default;
+$color-text-secondary: #b3b2b2;
 
 // Separator
 $color-separator-background: $color-inverse;
@@ -262,6 +263,11 @@ $color-button-social-highlight-text: $color-default;
 $color-feed-default-text: $color-inverse;
 $color-feed-default-date: #8c8c8c;
 $color-feed-item-description-active: $color-primary;
+$color-feed-item-image-default-color: $color-primary;
+
+// instagram feed
+$color-instagram-feed-shadow-color: rgba(0, 0, 0, 0.15);
+$color-instagram-main-color: #e1306c;
 
 // carousel
 $color-carousel-default-dot-background: #afafaf;
@@ -270,6 +276,7 @@ $color-carousel-default-dot-active-background: $color-warn;
 
 // hero
 $color-hero-default-background: #0089c6;
+$color-hero-default-shadow: rgba(0, 0, 0, 0.25);
 
 // logo
 $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
@@ -277,7 +284,7 @@ $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
 // panel
 $color-panel-background-color: $color-default;
 $color-panel-border: #e2e2e2;
-$color-panel-shadow: rgba(0,0,0,0.05);
+$color-panel-shadow: rgba(0, 0, 0, 0.05);
 
 // item list
 $color-item-list-item-font-color-active: #fff;
@@ -399,7 +406,7 @@ $color-tab-invisible-border: rgba(255, 255, 255, 0);
 
 
 //  CATEGORIES
-$color-category-1: #0099ff; 
+$color-category-1: #0099ff;
 $color-category-2: #ff9900;
 $color-category-3: #ff008d;
 $color-category-4: #0bf0f2;

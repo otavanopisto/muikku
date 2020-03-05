@@ -25,7 +25,7 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
     let footer = (closePortal: ()=> any) => <div></div>;
     
     return(<JumboDialog modifier="new-message"
-        title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
+        title={this.props.i18n.text.get('plugin.organization.users.addUser.title')}
         content={content} footer={footer}>
         {this.props.children}
       </JumboDialog>

@@ -10,9 +10,14 @@ import { StateType } from '~/reducers';
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
 
-export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null, organization:boolean, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
   let courses:CoursesType = state.courses;
+
+  if (organization === true) { 
+    courses = state.organizationCourses;
+  } 
+  
   let hasEvaluationFees:boolean = state.userIndex && 
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees
@@ -39,10 +44,17 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     activeFilters: actualFilters
   }
   
-  dispatch({
-    type: "UPDATE_COURSES_ALL_PROPS",
-    payload: newCoursesPropsWhileLoading
-  });
+  if (organization === false) {  
+    dispatch({
+      type: "UPDATE_COURSES_ALL_PROPS",
+      payload: newCoursesPropsWhileLoading
+    });
+  } else {
+    dispatch({
+      type: "UPDATE_ORGANIZATION_COURSES_ALL_PROPS",
+      payload: newCoursesPropsWhileLoading
+    });
+  }
   
   //Generate the api query, our first result in the messages that we have loaded
   let firstResult = initial ? 0 : courses.courses.length + 1;
@@ -76,7 +88,10 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   }
   
   try {
-    let nCourses:WorkspaceCourseListType = <WorkspaceCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+
+    let nCourses:WorkspaceCourseListType = organization === false ? 
+        <WorkspaceCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')() :
+        <WorkspaceCourseListType>await promisify(mApi().organizationmanagement.workspaces.cacheClear().read(params), 'callback')();
   
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
@@ -107,10 +122,17 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     }
     
     //And there it goes
-    dispatch({
-      type: "UPDATE_COURSES_ALL_PROPS",
-      payload
-    });
+    if (organization === false) {
+      dispatch({
+        type: "UPDATE_COURSES_ALL_PROPS",
+        payload
+      });
+    } else {
+      dispatch({
+        type: "UPDATE_ORGANIZATION_COURSES_ALL_PROPS",
+        payload
+      });      
+    }
   } catch (err){
     if (!(err instanceof MApiError)){
       throw err;

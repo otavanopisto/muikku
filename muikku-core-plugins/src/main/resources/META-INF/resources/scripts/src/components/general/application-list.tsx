@@ -8,7 +8,6 @@ interface ApplicationListProps {
 }
 
 interface ApplicationListState {
-
 }
 
 export default class ApplicationList extends React.Component<ApplicationListProps, ApplicationListState> {
@@ -25,7 +24,6 @@ interface ApplicationListItemProps extends React.DetailedHTMLProps<React.HTMLAtt
 }
 
 interface ApplicationListItemState {
-
 }
 
 export class ApplicationListItem extends React.Component<ApplicationListItemProps, ApplicationListItemState> {
@@ -44,7 +42,6 @@ interface ApplicationListItemHeaderProps extends React.DetailedHTMLProps<React.H
 }
 
 interface ApplicationListItemHeaderState {
-
 }
 
 export class ApplicationListItemHeader extends React.Component<ApplicationListItemHeaderProps, ApplicationListItemHeaderState> {
@@ -63,7 +60,6 @@ interface ApplicationListItemBodyProps extends React.DetailedHTMLProps<React.HTM
 }
 
 interface ApplicationListItemBodyState {
-
 }
 
 export class ApplicationListItemBody extends React.Component<ApplicationListItemBodyProps, ApplicationListItemBodyState> {
@@ -82,7 +78,6 @@ interface ApplicationListItemFooterProps extends React.DetailedHTMLProps<React.H
 }
 
 interface ApplicationListItemFooterState {
-
 }
 
 export class ApplicationListItemFooter extends React.Component<ApplicationListItemFooterProps, ApplicationListItemFooterState> {
@@ -101,7 +96,6 @@ interface ApplicationListItemContentContainerProps extends React.DetailedHTMLPro
 }
 
 interface ApplicationListItemContentContainerState {
-
 }
 
 export class ApplicationListItemContentContainer extends React.Component<ApplicationListItemContentContainerProps, ApplicationListItemContentContainerState> {
@@ -117,13 +111,13 @@ export class ApplicationListItemContentContainer extends React.Component<Applica
 
 interface ApplicationListItemContentWrapperProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   modifiers?: string | Array<string>,
+  actions? : React.ReactElement<any>,
   asideModifiers?: string | Array<string>,
   mainModifiers?: string | Array<string>,
   aside: React.ReactElement<any>
 }
 
 interface ApplicationListItemContentWrapperState {
-
 }
 
 export class ApplicationListItemContentWrapper extends React.Component<ApplicationListItemContentWrapperProps, ApplicationListItemContentWrapperState> {
@@ -143,6 +137,23 @@ export class ApplicationListItemContentWrapper extends React.Component<Applicati
       <div className={`application-list__item-content-main ${this.props.mainModifiers ? asideModifiers.map( m => `application-list__item-content-main--${m}` ).join( " " ) : ""}`}>
         {this.props.children}
       </div>
+        {this.props.actions ? 
+          <div className="application-list__item-content-actions">{this.props.actions}</div>
+        : null}
     </div>
+  }
+}
+   
+interface ApplicationListItemContentDataProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+      modifiers?: string | Array<string>,
+}
+
+interface ApplicationListItemContentDataState {
+
+}
+export class ApplicationListItemContentData extends React.Component<ApplicationListItemContentDataProps, ApplicationListItemContentDataState> {
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    return <div className={`application-list__item-content ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map( m => `application-list__item-content--${m}` ).join( " " ) : ""}`}>{this.props.children}</div> 
   }
 }

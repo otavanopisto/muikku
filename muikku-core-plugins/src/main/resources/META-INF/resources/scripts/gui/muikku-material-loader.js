@@ -276,6 +276,7 @@
           value = value.replace(/`/g, "'"); // To not mess up MathJax
         }
         muikkuFieldElement = $('<div>')
+          .attr('name', data.name)
           .addClass('muikku-text-field')
           .text(value);
       }
@@ -464,6 +465,7 @@
           value = value.replace(/`/g, "'"); // To not mess up MathJax
         }
         memoFieldElement = $('<div>')
+          .attr('name', data.name)
           .addClass('muikku-memo-field')
           .html(value);
       }
@@ -508,13 +510,13 @@
         },
         checkAnswer: function(showCorrectAnswers) {
           if (this.hasDisplayableAnswers()) {
-            $(this.element).parent().find('.muikku-field-examples').remove();
-            var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', $(this.element).attr('name'));
+            $(this.element).parent().find('.muikku-field-examples[data-for-field="' + this.options.fieldName + '"]').remove();
+            var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', this.options.fieldName);
             exampleDetails.append( 
               $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
             );
             exampleDetails.append($('<span>').addClass('muikku-field-example').html(this.options.meta.example.replace(/(?:\r\n|\r|\n)/g, '<br/>')));
-            var countContainer = $(this.element).parent().find('.count-container');
+            var countContainer = $(this.element).parent().find('.count-container[data-for-field="' + this.options.fieldName + '"]');
             if (countContainer.length) {
               $(countContainer).after(exampleDetails);
             }
@@ -536,7 +538,9 @@
         var wordCounter = $('<div class="word-count-container">')
           .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
           .append('<span class="word-count">');
-        var countContainer = $('<div class="count-container">')
+        var countContainer = $('<div>')
+          .attr('data-for-field', data.name)
+          .addClass('count-container')
           .append(wordCounter)
           .append(characterCounter);
         memoFieldElement.after(countContainer);
@@ -559,7 +563,9 @@
           var wordCounter = $('<div class="word-count-container">')
             .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
             .append('<span class="word-count">');
-          var countContainer = $('<div class="count-container">')
+          var countContainer = $('<div>')
+            .attr('data-for-field', data.name)
+            .addClass('count-container')
             .append(wordCounter)
             .append(characterCounter);
           memoFieldElement.after(countContainer);

@@ -1,16 +1,12 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-
-import {i18nType} from '~/reducers/base/i18n';
-
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
-
 import '~/sass/elements/message.scss';
-
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';
+import {i18nType} from '~/reducers/base/i18n';
 import {CoursesStateType, WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
 import { loadMoreCoursesFromServer, LoadMoreCoursesFromServerTriggerType } from '~/actions/main-function/courses';
 import Course from './courses/course';
@@ -27,6 +23,7 @@ interface CoursepickerWorkspacesProps {
 
 interface CoursepickerWorkspacesState {
 }
+
 
 class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProps, CoursepickerWorkspacesState> {
   constructor(props: CoursepickerWorkspacesProps){
