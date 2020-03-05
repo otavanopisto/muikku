@@ -6,19 +6,24 @@ import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 import '~/sass/elements/buttons.scss';
 import {StateType} from '~/reducers';
-import { WorkspaceCourseType } from '~/reducers/main-function/courses';
 import Button from '~/components/general/button';
-import { signupIntoCourse, SignupIntoCourseTriggerType } from '~/actions/main-function/courses';
+import { signupIntoWorkspace, SignupIntoWorkspaceTriggerType } from '~/actions/workspaces';
 import { bindActionCreators } from 'redux';
+import { WorkspaceType } from '~/reducers/workspaces';
 
 interface WorkspaceSignupDialogProps {
   i18n: i18nType,
-  children: React.ReactElement<any>,
-  course: WorkspaceCourseType,
-  signupIntoCourse: SignupIntoCourseTriggerType
+  children?: React.ReactElement<any>,
+  isOpen?: boolean;
+  onClose?: () => void,
+  workspace?: WorkspaceType,
+  currentWorkspace: WorkspaceType,
+  signupIntoWorkspace: SignupIntoWorkspaceTriggerType
 }
 
 interface WorkspaceSignupDialogState {
@@ -42,8 +47,9 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
   }
   signup(closeDialog: ()=>any){
     this.setState({locked: true});
-    this.props.signupIntoCourse({
-      course: this.props.course,
+    const workspaceToUse = this.props.workspace || this.props.currentWorkspace;
+    this.props.signupIntoWorkspace({
+      workspace: workspaceToUse,
       success: ()=>{
         this.setState({locked: false, message: ""});
         closeDialog();
@@ -55,10 +61,12 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
     });
   }
   render(){
+    const workspaceToUse = this.props.workspace || this.props.currentWorkspace;
     let content = (closeDialog: ()=>any) => <div>
       <div>
-        <div className="dialog__content-row">{this.props.i18n.text.get('plugin.workspaceSignUp.courseDescription', this.props.course.name, this.props.course.nameExtension || "")}</div>
-        {this.props.course.feeInfo && this.props.course.feeInfo.evaluationHasFee ?
+        <div className="dialog__content-row">{this.props.i18n.text.get('plugin.workspaceSignUp.courseDescription', workspaceToUse.name,
+            workspaceToUse.nameExtension || "")}</div>
+        {workspaceToUse.feeInfo && workspaceToUse.feeInfo.evaluationHasFee ?
           <div className="form-element dialog__content-row">
             <p><label>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.label')}</label></p>
             <p><span>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.content')}</span></p>
@@ -82,7 +90,7 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
     
     return <Dialog modifier="workspace-signup-dialog"
       title={this.props.i18n.text.get('plugin.workspaceSignUp.title')}
-      content={content} footer={footer}>
+      content={content} footer={footer} isOpen={this.props.isOpen} onClose={this.props.onClose}>
       {this.props.children}
     </Dialog>
   }
@@ -90,12 +98,13 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
 
 function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    currentWorkspace: state.workspaces.currentWorkspace,
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({signupIntoCourse}, dispatch);
+  return bindActionCreators({signupIntoWorkspace}, dispatch);
 };
 
 export default connect(

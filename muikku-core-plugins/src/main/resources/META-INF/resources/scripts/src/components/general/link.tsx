@@ -1,34 +1,12 @@
 import * as React from 'react';
-import $ from '~/lib/jquery';
 import { Redirect } from "react-router-dom";
 
 import '~/sass/elements/link.scss';
+import { scrollToSection } from '~/util/modifiers';
 
-function scrollToSection(anchor: string) {
-  try {
-    if (!$(anchor).size()){
-      window.location.href = anchor;
-      return;
-    }
-  } catch (err){
-    window.location.href = anchor;
-    return;
-  }
-  
-  let topOffset = 90;
-  let scrollTop = $(anchor).offset().top - topOffset;
 
-  $('html, body').stop().animate({
-    scrollTop : scrollTop
-  }, {
-    duration : 500,
-    easing : "easeInOutQuad"
-  });
-  
-  setTimeout(()=>{
-    window.location.href = anchor;
-  }, 500);
-}
+// TODO remove the className, make it a modifier and add link class automatically to all the links
+
 
 interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
   disablePropagation?: boolean,
@@ -37,7 +15,10 @@ interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<H
   href?: string,
   to?: string,
   className?: string,
-  openInNewTab?: string
+  openInNewTab?: string,
+  onScrollToSection?: ()=>any,
+  scrollPadding?: number,
+  disableScroll?: boolean
 }
 
 interface LinkState {
@@ -77,7 +58,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     
     if (!this.props.to){
       if (this.props.href && this.props.href[0] === '#'){
-        scrollToSection(this.props.href);
+        if (this.props.disableScroll){
+          window.location.hash = this.props.href;
+        } else {
+          scrollToSection(this.props.href, this.props.onScrollToSection, this.props.scrollPadding);
+        }
       } else if (this.props.href){
         if (this.props.openInNewTab){
           window.open(this.props.href, this.props.openInNewTab).focus();
@@ -146,10 +131,17 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     let elementProps:LinkProps  = Object.assign({}, this.props);
     delete elementProps["disablePropagation"];
     delete elementProps["disabled"];
+    delete elementProps["to"];
+    delete elementProps["onScrollToSection"];
     delete elementProps["openInNewTab"];
+    delete elementProps["scrollPadding"];
+    delete elementProps["disableScroll"];
     
-    return <Element {...elementProps}
+    return <Element ref="element" {...elementProps}
       className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchMove={this.onTouchMove}/>
+  }
+  getElement():HTMLElement {
+    return this.refs["element"] as HTMLElement;
   }
 }
