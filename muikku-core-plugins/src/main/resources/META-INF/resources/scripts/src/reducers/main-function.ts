@@ -43,7 +43,7 @@ export default combineReducers({
   workspaces,
   messages,
   // Deprecating
-  courses,
+//  courses,
   
   
   organizationWorkspaces,

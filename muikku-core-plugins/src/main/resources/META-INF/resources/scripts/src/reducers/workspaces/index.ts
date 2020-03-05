@@ -4,6 +4,12 @@ type UserStaffType = any;
 type ShortWorkspaceUserWithActiveStatusType = any;
 const repairContentNodes: any = null
 
+export interface OrganizationCourseTeacherType {
+  firstName: string,
+  lastName: string
+}
+
+
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
 export interface WorkspaceStudentActivityType {
@@ -221,6 +227,10 @@ export interface WorkspaceType {
 
   //Fancy stuff in here
   journals?: WorkspaceJournalsType
+      
+  // These are only in organizationlistings
+  teachers?: Array<OrganizationCourseTeacherType>,
+  studentCount? : number
 }
 
 export interface WorkspaceUpdateType {

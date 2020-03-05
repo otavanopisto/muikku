@@ -33,8 +33,8 @@ export interface StateType {
   users: UsersType;
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
-  courses?: CoursesType,
-  organizationCourses: CoursesType,
+//  courses?: CoursesType,
+  organizationWorkspaces: WorkspacesType,
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,

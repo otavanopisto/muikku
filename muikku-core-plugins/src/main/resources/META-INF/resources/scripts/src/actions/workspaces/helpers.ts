@@ -16,9 +16,9 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
   let workspaces:WorkspacesType = state.workspaces;
 
 
-if (organization === true) { 
-  workspaces = state.organizationWorkspaces;
-} 
+//if (organization === true) { 
+//  workspaces = state.organizationWorkspaces;
+//} 
 
 
   let hasEvaluationFees:boolean = state.userIndex &&
