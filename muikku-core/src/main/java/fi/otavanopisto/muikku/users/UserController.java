@@ -25,6 +25,10 @@ public class UserController {
     return userSchoolDataController.createStaffMember(dataSource, staffMember);
   }
 
+  public BridgeResponse<StaffMemberPayload> updateStaffMember(String dataSource, StaffMemberPayload staffMember) {
+    return userSchoolDataController.updateStaffMember(dataSource, staffMember);
+  }
+
   public BridgeResponse<StudentPayload> createStudent(String dataSource, StudentPayload student) {
     return userSchoolDataController.createStudent(dataSource, student);
   }
