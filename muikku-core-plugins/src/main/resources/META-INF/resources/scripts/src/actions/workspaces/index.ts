@@ -265,7 +265,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                      workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
                                                      .students.assessments.cacheClear().read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
                                                  
-                                                 reuseExistantValue(true,
+                                                 reuseExistantValue(status.loggedIn,
                                                      workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
