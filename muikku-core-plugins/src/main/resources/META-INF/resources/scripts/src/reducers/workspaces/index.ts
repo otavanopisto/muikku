@@ -587,13 +587,13 @@ export default function workspaces(state: WorkspacesType={
        userWorkspaces: state.userWorkspaces.map(processWorkspaceToHaveNewAssessmentStateAndDate.bind(this, action.payload.workspace.id, action.payload.newState,
           action.payload.newDate, action.payload.newAssessmentRequest)) 
     })
-  } else if (action.type === "UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES"){
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"){
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
         educationTypes: action.payload
       })
     });
-  } else if (action.type === "UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS"){
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"){
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
         curriculums: action.payload
