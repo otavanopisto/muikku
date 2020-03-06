@@ -29,8 +29,8 @@ export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<"UPDATE_WORKS
   oldAssessmentRequestToDelete?: WorkspaceAssessmentRequestType
 }>
 export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<"UPDATE_WORKSPACES_EDIT_MODE_STATE", Partial<WorkspaceEditModeStateType>>;
-export type UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
-export type UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
+export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
+export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS", WorkspaceOrganizationFilterListType>
 export type UPDATE_WORKSPACES_ACTIVE_FILTERS = 
   SpecificActionType<"UPDATE_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
@@ -514,7 +514,7 @@ let loadUserWorkspaceEducationFiltersFromServer:LoadUserWorkspaceEducationFilter
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
-        type: "UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES",
+        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
         payload: <WorkspaceEducationFilterListType>(await promisify(mApi().workspace.educationTypes.read(), 'callback')())
       });
     } catch (err){
@@ -531,7 +531,7 @@ let loadUserWorkspaceCurriculumFiltersFromServer:LoadUserWorkspaceCurriculumFilt
     try {
       let curriculums = <WorkspaceCurriculumFilterListType>(await promisify(mApi().coursepicker.curriculums.read(), 'callback')())
       dispatch({
-        type: "UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS",
+        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
         payload: curriculums
       });
       callback && callback(curriculums);
@@ -1478,10 +1478,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
 
       if (!data.isDraft) {
 
-        // if we are not asked to update possibly linked materials
-        // and we actually have a material id because sections do not
-        // have a materialId
-        if (!data.updateLinked && data.material.materialId) {
+        if (!data.updateLinked) {
           const materialsAnswer: any[] =
             (await promisify(mApi().materials.material.workspaceMaterials.read(data.material.materialId), 'callback')()) as any;
         

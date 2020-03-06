@@ -43,13 +43,15 @@ public class WorkspaceMaterialReplyController {
     Date submitted = state == WorkspaceMaterialReplyState.SUBMITTED ? new Date() : null;
     Date withdrawn = state == WorkspaceMaterialReplyState.WITHDRAWN ? new Date() : null;
     WorkspaceRootFolder root = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    switch (workspaceMaterial.getAssignmentType()) {
-    case EVALUATED:
-      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_ASSIGNMENTDONE, root.getWorkspaceEntityId(), null);
-    break;
-    case EXERCISE:
-      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_EXERCISEDONE, root.getWorkspaceEntityId(), null);
-    break;
+    if (workspaceMaterial.getAssignmentType() != null) {
+      switch (workspaceMaterial.getAssignmentType()) {
+      case EVALUATED:
+        activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_ASSIGNMENTDONE, root.getWorkspaceEntityId(), null);
+      break;
+      case EXERCISE:
+        activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_EXERCISEDONE, root.getWorkspaceEntityId(), null);
+      break;
+      }
     }
     return workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), numberOfTries, created, lastModified, submitted, withdrawn);
   }

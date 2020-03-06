@@ -13,6 +13,8 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
   padding: $navbar-mobile-height 0 10px;
   width: 100%;
 
@@ -25,7 +27,6 @@
   @include text;
   display: flex;
   flex-direction: column;
-  max-width: $breakpoint-max-usable-screen;
   width: 100%;
 }
 
