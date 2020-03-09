@@ -1989,3 +1989,13 @@ mark[data-muikku-word-definition] {
   padding: 0 10px 4px 15px;
   text-shadow: none;
 }
+
+// EXERCISE TEXT
+.material-exercise {
+  border-left: 3px solid $color-exercise;
+  border-radius: 0;
+  box-shadow: none;
+  color: $color-default-contrast;
+  padding: 0 10px 4px 15px;
+  text-shadow: none;
+}
