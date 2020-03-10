@@ -211,7 +211,6 @@ export interface WorkspaceType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
-  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
@@ -221,44 +220,7 @@ export interface WorkspaceType {
   journals?: WorkspaceJournalsType
 }
 
-export interface WorkspaceUpdateType {
-  archived?: boolean,
-  description?: string,
-  hasCustomImage?: boolean,
-  id?: number,
-  lastVisit?: string,
-  materialDefaultLicense?: string,
-  name?: string,
-  nameExtension?: string | null,
-  numVisits?: number,
-  published?: boolean,
-  urlName?: string,
-  access?: WorkspaceAccessType,
-  curriculumIdentifiers?: Array<string>,
-  subjectIdentifier?: string | number,
-
-  canSignup?: boolean,
-  isCourseMember?: boolean,
-  educationTypeName?: string,
-  studentActivity?: WorkspaceStudentActivityType,
-  forumStatistics?: WorkspaceForumStatisticsType,
-  studentAssessments?: WorkspaceStudentAssessmentsType,
-  studentAssessmentState?: WorkspaceStudentAssessmentStateType,
-  activityStatistics?: WorkspaceActivityStatisticsType,
-  feeInfo?: WorkspaceFeeInfoType,
-  assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
-  additionalInfo?: WorkspaceAdditionalInfoType,
-  staffMembers?: Array<UserStaffType>,
-  producers?: Array<WorkspaceProducerType>,
-  contentDescription?: MaterialContentNodeType,
-  help?: MaterialContentNodeType,
-  activityLogs?: ActivityLogType[],
-  students?: Array<ShortWorkspaceUserWithActiveStatusType>,
-  details?: WorkspaceDetailsType,
-  permissions?: WorkspacePermissionsType[],
-      
-  journals?: WorkspaceJournalsType
-}
+export type WorkspaceUpdateType = Partial<WorkspaceType>;
 
 export interface WorkspaceMaterialReferenceType {
   workspaceName: string,
@@ -659,11 +621,6 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let newCurrentWorkspace = state.currentWorkspace;
-    if (!action.payload.isDraft && newCurrentWorkspace.help.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
-      found = true;
-      newCurrentWorkspace = {...newCurrentWorkspace};
-      newCurrentWorkspace.help = {...newCurrentWorkspace.help, ...action.payload.update};
-    }
     if (!action.payload.isDraft && !found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
       newCurrentWorkspace = {...newCurrentWorkspace};

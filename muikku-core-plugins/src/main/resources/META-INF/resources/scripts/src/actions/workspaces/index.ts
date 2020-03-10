@@ -252,7 +252,6 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let activity:WorkspaceStudentActivityType;
       let additionalInfo:WorkspaceAdditionalInfoType;
       let contentDescription:MaterialContentNodeType;
-      let help:MaterialContentNodeType;
       let producers:Array<WorkspaceProducerType>;
       let isCourseMember:boolean;
       let journals:WorkspaceJournalsType;
@@ -1478,7 +1477,10 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
 
       if (!data.isDraft) {
 
-        if (!data.updateLinked) {
+        // if we are not asked to update possibly linked materials
+        // and we actually have a material id because sections do not
+        // have a materialId
+        if (!data.updateLinked && data.material.materialId) {
           const materialsAnswer: any[] =
             (await promisify(mApi().materials.material.workspaceMaterials.read(data.material.materialId), 'callback')()) as any;
         
