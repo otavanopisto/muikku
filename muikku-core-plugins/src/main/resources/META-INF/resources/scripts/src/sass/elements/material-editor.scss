@@ -185,10 +185,8 @@
 }
 
 .cke_dialog {
-  border-radius: 10px;
 
   * {
-    box-sizing: border-box !important;
     white-space: normal;
   }
 
@@ -208,9 +206,9 @@
 
   .cke_dialog_body {
     background-color: $color-dialog-default-background;
-    border-bottom-left-radius: 5px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;
@@ -237,6 +235,7 @@
     align-items: center;
     background-color: $color-dialog-mobile-background;
     border: 0;
+    box-sizing: border-box !important;
     color: $color-dialog-mobile-text;
     display: flex;
     font-size: $dialog-title-mobile-font-size;
@@ -287,6 +286,8 @@
   }
 
   .cke_dialog_contents_body {
+    max-width: 100%;
+    min-width: 320px;
     padding: 0 10px 10px;
   }
 
