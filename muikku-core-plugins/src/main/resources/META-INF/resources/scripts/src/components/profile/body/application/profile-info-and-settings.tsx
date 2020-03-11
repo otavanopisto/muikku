@@ -153,17 +153,17 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
           </UpdateAddressDialog>
         </div> : <form>
           <div className="profile-element__item">
-            <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
+            <label className="profile-element__label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
             <input className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
           </div>
           <div className="profile-element__item">
-            <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
+            <label className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
             <DatePicker className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationStart")}
              maxDate={this.state.profileVacationEnd || null}
              locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationStart}/>
           </div>
           <div className="profile-element__item">
-            <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
+            <label className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
             <DatePicker className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
              minDate={this.state.profileVacationStart || null}
              locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>

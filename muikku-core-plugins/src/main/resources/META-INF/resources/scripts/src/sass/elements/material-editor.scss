@@ -206,9 +206,9 @@
 
   .cke_dialog_body {
     background-color: $color-dialog-default-background;
-    border-bottom-left-radius: 10px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;
@@ -376,6 +376,18 @@
     }
   }
 
+  // Setting containers with different box view model
+  .sorter-items-container,
+  .connectfield-elements-container,
+  .organizer-categories-container,
+  .selection-options-container,
+  .textfield-elements-container {
+
+    * {
+      box-sizing: border-box;
+    }
+  }
+
   .selection-options-container,
   .textfield-elements-container,
   .connectfield-elements-container,
@@ -395,7 +407,6 @@
     padding: 2px 0;
   }
 
-
   .cke_dialog_ui_input_text {
     align-items: center;
     display: flex;
@@ -404,8 +415,18 @@
   textarea.cke_dialog_ui_input_textarea {
     border: solid 2px lighten($color-form-element-border, 20%);
     height: 5rem;
-    padding: 4px 8px;
+    outline: none;
+    padding: 2px 6px;
+    transition: border 0.3s ease-in-out;
     width: 100%;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border: solid 2px $color-form-element-border;
+      outline: none;
+      padding: 2px 6px;
+     }
   }
 
   div.cke_dialog_ui_input_select {
@@ -448,7 +469,17 @@
     font-size: $text-mobile-font-size;
     height: 1.75rem;
     margin: 0;
+    outline: none;
     padding: 2px 6px;
+    transition: border 0.3s ease-in-out;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border: solid 2px $color-form-element-border;
+      outline: none;
+      padding: 2px 6px;
+    }
 
     @include breakpoint($breakpoint-pad) {
       font-size: $text-desktop-font-size;
@@ -469,32 +500,28 @@
     height: 1.375rem;
     justify-content: center;
     margin: 0 0 0 5px;
-    width: 1.375rem;
-  }
-
-  input.cke_dialog_ui_checkbox_input:checked {
-    background-color: $color-form-element-selected;
-    border: solid 2px $color-form-element-selected;
-  }
-
-  input.cke_dialog_ui_checkbox_input:checked::after {
-    color: $color-default;
-    content: "\e639";
-    font-family: muikku;
-    font-size: 0.875rem;
-  }
-
-  textarea.cke_dialog_ui_input_textarea,
-  input.cke_dialog_ui_input_text,
-  input.cke_dialog_ui_checkbox_input {
+    outline: none;
     transition: border 0.3s ease-in-out;
+    width: 1.375rem;
 
     &:hover,
     &:focus,
     &:active {
       border: solid 2px $color-form-element-border;
       outline: none;
-      padding: 2px 6px;
+    }
+
+    &:checked {
+      background-color: $color-form-element-selected;
+      border: solid 2px $color-form-element-selected;
+      outline: none;
+    }
+
+    &:checked::after {
+      color: $color-default;
+      content: "\e639";
+      font-family: muikku;
+      font-size: 0.875rem;
     }
   }
 

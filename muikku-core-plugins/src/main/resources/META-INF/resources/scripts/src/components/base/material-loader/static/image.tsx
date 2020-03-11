@@ -12,8 +12,9 @@ interface ImageProps {
     licenseUrl: string,
     source: string,
     sourceUrl: string,
-    
-    //Someone thought it was smart to set up two versions of data
+
+    // Someone thought it was smart to set up two versions of data
+    // Just no!, data-original was NEVER saved to database as part of img attribute nor it does not have any use anymore, it's was added when preprocessing images with jquery for lazyloader was active
     original?: string
   },
   i18n: i18nType,
@@ -30,10 +31,10 @@ export default class Image extends React.Component<ImageProps, ImageState>{
   private predictedAspectRatio: number;
   constructor(props: ImageProps){
     super(props);
-    
+
     const img = this.props.element.querySelector("img");
     const aspectRatio = img.width/img.height;
-    
+
     this.state = {
       predictedHeight: null,
       maxWidth: null,
@@ -42,7 +43,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
     if (!isNaN(aspectRatio)) {
       this.predictedAspectRatio = aspectRatio;
     }
-    
+
     this.calculatePredictedHeight = this.calculatePredictedHeight.bind(this);
     this.calculateMaxWidth = this.calculateMaxWidth.bind(this);
   }
@@ -105,20 +106,20 @@ export default class Image extends React.Component<ImageProps, ImageState>{
           </div>);
         }
       }
-      
+
       if (Tag === "figure") {
         const img = this.props.element.querySelector("img");
         elementProps.style = elementProps.style || {};
         elementProps.style.width = (img.width || this.state.maxWidth) + "px";
         elementProps.style.maxWidth = "100%";
       }
-      
+
       if (Tag === "img"){
         if (this.predictedAspectRatio && this.props.invisible) {
           Tag = "div";
           delete elementProps.src;
         }
-        
+
         elementProps.style = elementProps.style || {};
         elementProps.style.width = (elementProps.width || this.state.maxWidth) + "px";
         elementProps.style.maxWidth = "100%";
@@ -129,9 +130,6 @@ export default class Image extends React.Component<ImageProps, ImageState>{
         elementProps.onLoad = this.calculateMaxWidth;
       }
 
-      //I don't know who thought it was a clever idea to have
-      //two alternatives of image, one with src, and another one
-      //where the source would be data-original
       if (Tag === "img"){
         const src = this.props.dataset.original;
         const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
@@ -142,7 +140,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
           elementProps.src = src;
         }
       }
-      
+
       return <Tag {...elementProps}>{children}</Tag>
     });
   }
