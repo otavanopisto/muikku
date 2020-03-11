@@ -9,7 +9,6 @@ export interface OrganizationCourseTeacherType {
   lastName: string
 }
 
-
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
 export interface WorkspaceStudentActivityType {
@@ -301,7 +300,6 @@ export interface WorkspaceOrganizationFilterType {
 
 export type WorkspaceCurriculumFilterListType = Array<WorkspaceCurriculumFilterType>;
 export type WorkspaceOrganizationFilterListType = Array<WorkspaceOrganizationFilterType>;
-
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 
 export interface WorkspacesavailableFiltersType {
@@ -311,7 +309,20 @@ export interface WorkspacesavailableFiltersType {
   baseFilters: WorkspaceBaseFilterListType
 }
 
+export interface OrganizationWorkspacesavailableFiltersType {
+  educationTypes: WorkspaceEducationFilterListType,
+  curriculums: WorkspaceCurriculumFilterListType,
+}
+
+
+
 export type WorkspacesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+
+export interface OrganizationWorkspacesActiveFiltersType {
+  educationFilters: Array<string>,
+  curriculumFilters: Array<string>,
+  query: string,
+}
 
 export interface WorkspacesActiveFiltersType {
   educationFilters: Array<string>,
@@ -320,6 +331,7 @@ export interface WorkspacesActiveFiltersType {
   query: string,
   baseFilter: WorkspaceBaseFilterType
 }
+
 
 export interface WorkspaceTypeType {
   identifier: string,
@@ -362,22 +374,34 @@ export interface WorkspaceMaterialEditorType {
 
 export interface WorkspacesType {
   availableWorkspaces: WorkspaceListType,
-  userWorkspaces: WorkspaceListType,
-  lastWorkspace?: WorkspaceMaterialReferenceType,
-  currentWorkspace?: WorkspaceType,
   availableFilters: WorkspacesavailableFiltersType,
   state: WorkspacesStateType,
   activeFilters: WorkspacesActiveFiltersType,
   hasMore: boolean,
   toolbarLock: boolean,
+  types?: Array<WorkspaceTypeType>
+  userWorkspaces: WorkspaceListType,
+  lastWorkspace?: WorkspaceMaterialReferenceType,
+  currentWorkspace?: WorkspaceType,
   currentMaterials: MaterialContentNodeListType,
   currentHelp: MaterialContentNodeListType,
   currentMaterialsActiveNodeId: number,
   currentMaterialsReplies: MaterialCompositeRepliesListType,
   editMode: WorkspaceEditModeStateType,
   materialEditor: WorkspaceMaterialEditorType,
+
+}
+
+export interface OrganizationWorkspacesType {
+  availableWorkspaces: WorkspaceListType,
+  availableFilters: OrganizationWorkspacesavailableFiltersType,
+  state: WorkspacesStateType,
+  activeFilters: OrganizationWorkspacesActiveFiltersType,
+  hasMore: boolean,
+  toolbarLock: boolean,
   types?: Array<WorkspaceTypeType>
 }
+
 
 export type WorkspacesPatchType = Partial<WorkspacesType>;
 
@@ -440,6 +464,7 @@ export interface MaterialAnswerType {
   value: string,
   workspaceMaterialId: number
 }
+
 export type MaterialCompositeRepliesStateType = "UNANSWERED" | "ANSWERED" | "SUBMITTED" | "WITHDRAWN" | "PASSED" | "FAILED" | "INCOMPLETE"
 
 export interface MaterialCompositeRepliesType {
@@ -518,7 +543,6 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(id: number, assessmentS
       }
     }
   }
-  
   return replacement;
 }
 
@@ -812,4 +836,48 @@ export default function workspaces(state: WorkspacesType={
     return {...state, editMode: {...state.editMode, ...action.payload}}
   }
   return state;
+}
+
+export function organizationWorkspaces(state:OrganizationWorkspacesType = {
+    availableWorkspaces: [],
+    availableFilters: {
+      educationTypes: [],
+      curriculums: [],
+    },
+    state: "LOADING",
+    activeFilters: {
+      educationFilters: [],
+      curriculumFilters: [],
+      query: "",
+    },
+    hasMore: false,
+    toolbarLock: false,
+    types: null,
+
+  }, action: ActionType): OrganizationWorkspacesType {
+    if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"){
+      return Object.assign({}, state, {
+        availableFilters: Object.assign({}, state.availableFilters, {
+          educationTypes: action.payload
+        })
+      });
+    }
+    else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"){
+      return Object.assign({}, state, {
+        availableFilters: Object.assign({}, state.availableFilters, {
+          curriculums: action.payload
+        })
+      });
+    } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS"){
+      return Object.assign({}, state, action.payload);
+    } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS"){
+      return Object.assign({}, state, {
+        activeFilters: action.payload
+      });
+    } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_STATE"){
+      return Object.assign({}, state, {
+        state: action.payload
+      });
+    }
+    return state;
 }

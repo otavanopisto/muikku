@@ -1,7 +1,8 @@
 import { UserWithSchoolDataType, UserFileType } from "~/reducers/main-function/user-index";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
-import { CourseCurriculumFilterListType } from "~/reducers/main-function/courses";
+//import { CourseCurriculumFilterListType } from "~/reducers/main-function/courses";
+import {WorkspaceCurriculumFilterListType} from '~/reducers/workspaces';
 
 export interface TransferCreditType {
   assessorIdentifier: string,
@@ -136,7 +137,7 @@ export interface RecordsType {
   currentStatus: CurrentStudentUserAndWorkspaceStatusType,
   current?: CurrentRecordType,
   location?: TranscriptOfRecordLocationType,
-  curriculums: CourseCurriculumFilterListType
+  curriculums: WorkspaceCurriculumFilterListType
 }
 
 export type TranscriptOfRecordLocationType = "records" | "hops" | "vops";
@@ -162,7 +163,7 @@ export default function records(state: RecordsType={
     return Object.assign({}, state, {
       location: action.payload
     });
-  } else if (action.type === "UPDATE_COURSES_AVAILABLE_FILTERS_CURRICULUMS"){
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"){
     return Object.assign({}, state, {
       curriculums: action.payload
     });

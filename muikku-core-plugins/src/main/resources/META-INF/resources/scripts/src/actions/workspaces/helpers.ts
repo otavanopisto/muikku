@@ -5,20 +5,20 @@ import mApi, { MApiError } from '~/lib/mApi';
 
 import {AnyActionType} from '~/actions';
 import { StateType } from '~/reducers';
-import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType } from '~/reducers/workspaces';
+import { WorkspacesActiveFiltersType, WorkspacesType, OrganizationWorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType } from '~/reducers/workspaces';
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
 const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 
-export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, loadOrganizationWorkspaces: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
-  let workspaces:WorkspacesType = state.workspaces;
+  let workspaces:WorkspacesType  = state.workspaces;
 
 
-//if (organization === true) { 
-//  workspaces = state.organizationWorkspaces;
-//} 
+if (loadOrganizationWorkspaces === true) { 
+  workspaces = state.organizationWorkspaces;
+} 
 
 
   let hasEvaluationFees:boolean = state.userIndex &&
@@ -85,7 +85,9 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
   }
 
   try {
-    let nWorkspaces:WorkspaceListType = <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+    
+    
+    let nWorkspaces:WorkspaceListType = loadOrganizationWorkspaces ? <WorkspaceListType>await promisify(mApi().organizationmanagement.workspaces.cacheClear().read(params), 'callback')()  : <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
@@ -115,11 +117,19 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
       hasMore
     }
 
+    
     //And there it goes
-    dispatch({
-      type: "UPDATE_WORKSPACES_ALL_PROPS",
-      payload
-    });
+    if (loadOrganizationWorkspaces === true) { 
+      dispatch({
+        type: "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS",
+        payload
+      });
+    } else {
+      dispatch({
+        type: "UPDATE_WORKSPACES_ALL_PROPS",
+        payload
+      });
+    }
   } catch (err){
     if (!(err instanceof MApiError)){
       throw err;

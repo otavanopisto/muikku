@@ -6,18 +6,21 @@ import ApplicationList, { ApplicationListItem } from '~/components/general/appli
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Workspace from './workspaces/workspace';
 import {i18nType} from '~/reducers/base/i18n';
-import { WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
+// import { WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
+import { LoadMoreOrganizationWorkspacesFromServer, LoadMoreOrganizationWorkspacesFromServerTriggerType } from '~/actions/workspaces';
 
-//import { loadMoreOrganizationCoursesFromServer, LoadMoreOrganizationCoursesFromServerTriggerType } from '~/actions/main-function/courses';
+// These are here for testing purposes only should be removed
+import { loadMoreWorkspacesFromServer, LoadMoreWorkspacesFromServerTriggerType } from '~/actions/workspaces';
 
-import {WorkspacesStateType, WorkspaceListType, WorkspaceType} from '~/reducers/workspaces';
+
+import {WorkspacesStateType, WorkspaceType, WorkspaceListType} from '~/reducers/workspaces';
 import {} from '~/actions/workspaces';
 
 interface OrganizationWorkspacesProps {
   i18n: i18nType,
   organizationWorkspacesState: WorkspacesStateType,
   organizationWorkspacesHasMore: boolean,
-  loadMoreOrganizationCoursesFromServer: LoadMoreOrganizationCoursesFromServerTriggerType,
+//  loadMoreOrganizationCoursesFromServer: LoadMoreOrganizationWorkspacesFromServerTriggerType,
   organizationWorkspaces: WorkspaceListType
 }
 
@@ -63,13 +66,13 @@ function mapStateToProps(state: StateType){
     organizationWorkspacesState: state.organizationWorkspaces.state,
     organizationWorkspacesHasMore: state.organizationWorkspaces.hasMore,
     organizationWorkspaces: state.organizationWorkspaces.availableWorkspaces
-    
   }
 };
 
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({loadMoreOrganizationCoursesFromServer}, dispatch);
+  // LoadMoreOrganizationWorkspacesFromServer
+  return bindActionCreators({}, dispatch);
 };
 
 export default connect(

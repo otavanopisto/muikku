@@ -28,6 +28,8 @@ export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<"UPDATE_WORKS
   newAssessmentRequest?: WorkspaceAssessmentRequestType,
   oldAssessmentRequestToDelete?: WorkspaceAssessmentRequestType
 }>
+
+
 export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<"UPDATE_WORKSPACES_EDIT_MODE_STATE", Partial<WorkspaceEditModeStateType>>;
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
@@ -43,6 +45,19 @@ export type UPDATE_WORKSPACE =
   original: WorkspaceType,
   update: WorkspaceUpdateType
 }>
+
+export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
+export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
+export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS", WorkspaceOrganizationFilterListType>
+export type UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS = 
+  SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
+export type UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS = 
+  SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS", WorkspacesPatchType>
+export type UPDATE_ORGANIZATION_WORKSPACES_STATE = 
+  SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_STATE", WorkspacesStateType>
+
+
+
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>;
 export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_HELP", MaterialContentNodeListType>;
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>;
@@ -419,22 +434,16 @@ let cancelAssessmentAtWorkspace:CancelAssessmentAtWorkspaceTriggerType = functio
 }
   
 export interface LoadWorkspacesFromServerTriggerType {
-  (filters: WorkspacesActiveFiltersType): AnyActionType
+  (filters: WorkspacesActiveFiltersType, organizationWorkspaces:boolean): AnyActionType
 }
 
 export interface LoadMoreWorkspacesFromServerTriggerType {
   (): AnyActionType
 }
 
-export interface LoadOrganizationWorkspacesFromServerTriggerType {
-  (filters: WorkspacesActiveFiltersType): AnyActionType
-}
-
 export interface LoadMoreOrganizationWorkspacesFromServerTriggerType {
   (): AnyActionType
 }
-
-
 
 export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
   (userEntityId?: number): AnyActionType
@@ -507,12 +516,16 @@ export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
   }):AnyActionType
 }
 
-let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType= function loadWorkspacesFromServer(filters){
-  return loadWorkspacesHelper.bind(this, filters, true);
+let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType= function loadWorkspacesFromServer(filters, organizationWorkspaces){
+  return loadWorkspacesHelper.bind(this, filters, true, organizationWorkspaces);
 }
 
 let loadMoreWorkspacesFromServer:LoadMoreWorkspacesFromServerTriggerType = function loadMoreWorkspacesFromServer(){
-  return loadWorkspacesHelper.bind(this, null, false);
+  return loadWorkspacesHelper.bind(this, null, false, false);
+}
+
+let LoadMoreOrganizationWorkspacesFromServer:LoadMoreOrganizationWorkspacesFromServerTriggerType = function loadMoreOrganizationWorkspacesFromServer(){
+  return loadWorkspacesHelper.bind(this, null, false, true);
 }
 
 let loadCurrentWorkspaceJournalsFromServer:LoadCurrentWorkspaceJournalsFromServerTriggerType = function loadCurrentWorkspaceJournalsFromServer(userEntityId){
@@ -1909,5 +1922,5 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState, loadWholeWorkspaceHelp,
+  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState, loadWholeWorkspaceHelp, LoadMoreOrganizationWorkspacesFromServer,
   setWholeWorkspaceHelp}

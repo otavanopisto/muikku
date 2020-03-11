@@ -22,8 +22,8 @@ import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 
 
 // Deprecating 
-import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
-import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
+//import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
+//import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 
 
 
@@ -196,7 +196,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
     }
-    this.props.store.dispatch(loadWorkspacesFromServer(filters) as Action);
+    this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization) as Action);
   }
 
   
@@ -427,7 +427,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
 
-      this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
+// This was changed due to the new workspace actions, check that it works
+      
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
 
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
