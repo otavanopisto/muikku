@@ -1480,7 +1480,7 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
         // if we are not asked to update possibly linked materials
         // and we actually have a material id because sections do not
         // have a materialId
-        if (!data.updateLinked && data.material.materialId) {
+        if (!data.updateLinked && data.material.materialId && !data.dontTriggerReducerActions) {
           const materialsAnswer: any[] =
             (await promisify(mApi().materials.material.workspaceMaterials.read(data.material.materialId), 'callback')()) as any;
         
