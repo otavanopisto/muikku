@@ -14,7 +14,7 @@ interface ImageProps {
     sourceUrl: string,
 
     // Someone thought it was smart to set up two versions of data
-    // Just no!, data-original was NEVER saved to database as part of img attribute nor it does not have any use anymore, its was added when preprocessing images with jquery for lazyloader
+    // Just no!, data-original was NEVER saved to database as part of img attribute nor it does not have any use anymore, it's was added when preprocessing images with jquery for lazyloader was active
     original?: string
   },
   i18n: i18nType,
