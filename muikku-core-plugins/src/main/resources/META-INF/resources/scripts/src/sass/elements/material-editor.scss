@@ -376,6 +376,18 @@
     }
   }
 
+  // Setting containers with different box view model
+  .sorter-items-container,
+  .connectfield-elements-container,
+  .organizer-categories-container,
+  .selection-options-container,
+  .textfield-elements-container {
+
+    * {
+      box-sizing: border-box;
+    }
+  }
+
   .selection-options-container,
   .textfield-elements-container,
   .connectfield-elements-container,
@@ -394,7 +406,6 @@
     display: flex;
     padding: 2px 0;
   }
-
 
   .cke_dialog_ui_input_text {
     align-items: center;
