@@ -152,7 +152,6 @@ function preprocessor($html: any): any{
   });
   
   $html.find("table").each(function(){
-    <div className="" dangerouslySetInnerHTML={{__html: this.props.element.outerHTML}}/>
     let elem = document.createElement("div");
     elem.className = "material-page__table-wrapper";
     
