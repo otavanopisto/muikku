@@ -151,7 +151,21 @@ function preprocessor($html: any): any{
     }
   });
   
-  $html.find("table").each(function(){
+  const $newHTML = $html.map(function() {
+    if (this.tagName === "TABLE") {
+      let elem = document.createElement("div");
+      elem.className = "material-page__table-wrapper";
+      elem.appendChild(this);
+      return elem;
+    }
+    return this;
+  });
+  
+  $newHTML.find("table").each(function(){
+    if ($(this).parent().attr("class") === "material-page__table-wrapper") {
+      return;
+    }
+    
     let elem = document.createElement("div");
     elem.className = "material-page__table-wrapper";
     
@@ -159,7 +173,7 @@ function preprocessor($html: any): any{
     elem.appendChild(this);
   });
 
-  return $html;
+  return $newHTML;
 }
 
 export default class Base extends React.Component<BaseProps, BaseState> {
