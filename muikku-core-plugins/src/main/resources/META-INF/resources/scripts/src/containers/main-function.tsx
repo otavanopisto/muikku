@@ -212,8 +212,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
-      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
 
@@ -272,8 +272,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
       this.props.websocket.restoreEventListeners();
-      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
-      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
@@ -429,7 +429,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
 // This was changed due to the new workspace actions, check that it works
       
-      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
 
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));

@@ -48,7 +48,6 @@ export type UPDATE_WORKSPACE =
 
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
-export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS", WorkspaceOrganizationFilterListType>
 export type UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS = 
   SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
 export type UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS = 
@@ -446,9 +445,7 @@ export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
 export interface LoadMoreCurrentWorkspaceJournalsFromServerTriggerType {
   (): AnyActionType
 }
-export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
-  ():AnyActionType
-}
+
 export interface LoadWholeWorkspaceMaterialsTriggerType {
   (workspaceId: number, includeHidden: boolean, callback?:(nodes: Array<MaterialContentNodeType>)=>any):AnyActionType
 }
@@ -476,8 +473,12 @@ export interface UpdateAssignmentStateTriggerType {
   (successState: MaterialCompositeRepliesStateType, avoidServerCall: boolean, workspaceId: number, workspaceMaterialId: number, existantReplyId?: number, successMessage?: string, callback?: ()=>any):AnyActionType
 }
 
+export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
+  (loadOrganizationWorkspaces:boolean):AnyActionType
+}
+
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
-  (callback?: (curriculums: WorkspaceCurriculumFilterListType)=>any):AnyActionType
+  (loadOrganizationWorkspaceFilters:boolean, callback?: (curriculums: WorkspaceCurriculumFilterListType)=>any):AnyActionType
 }
 
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
@@ -531,13 +532,20 @@ let loadMoreCurrentWorkspaceJournalsFromServer:LoadMoreCurrentWorkspaceJournalsF
   return loadCurrentWorkspaceJournalsHelper.bind(this, null, false);
 }
 
-let loadUserWorkspaceEducationFiltersFromServer:LoadUserWorkspaceEducationFiltersFromServerTriggerType = function loadUserWorkspaceEducationFiltersFromServer(){
+let loadUserWorkspaceEducationFiltersFromServer:LoadUserWorkspaceEducationFiltersFromServerTriggerType = function loadUserWorkspaceEducationFiltersFromServer(loadOrganizationWorkspaceFilters){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      dispatch({
-        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-        payload: <WorkspaceEducationFilterListType>(await promisify(mApi().workspace.educationTypes.read(), 'callback')())
-      });
+      if(!loadOrganizationWorkspaceFilters) {
+        dispatch({
+          type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
+          payload: <WorkspaceEducationFilterListType>(await promisify(mApi().workspace.educationTypes.read(), 'callback')())
+        });
+      } else {
+        dispatch({
+          type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
+          payload: <WorkspaceEducationFilterListType>(await promisify(mApi().workspace.educationTypes.read(), 'callback')())
+        });
+      }
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
@@ -547,14 +555,21 @@ let loadUserWorkspaceEducationFiltersFromServer:LoadUserWorkspaceEducationFilter
   }
 }
   
-let loadUserWorkspaceCurriculumFiltersFromServer:LoadUserWorkspaceCurriculumFiltersFromServerTriggerType = function loadUserWorkspaceCurriculumFiltersFromServer(callback){
+let loadUserWorkspaceCurriculumFiltersFromServer:LoadUserWorkspaceCurriculumFiltersFromServerTriggerType = function loadUserWorkspaceCurriculumFiltersFromServer(loadOrganizationWorkspaceFilters, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let curriculums = <WorkspaceCurriculumFilterListType>(await promisify(mApi().coursepicker.curriculums.read(), 'callback')())
-      dispatch({
-        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-        payload: curriculums
-      });
+      if(!loadOrganizationWorkspaceFilters) {
+        dispatch({
+          type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
+          payload: curriculums
+        });
+      } else {
+        dispatch({
+          type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
+          payload: curriculums
+        });
+      } 
       callback && callback(curriculums);
     } catch (err){
       if (!(err instanceof MApiError)){
@@ -569,10 +584,10 @@ let loadUserWorkspaceOrganizationFiltersFromServer:LoadUserWorkspaceOrganization
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let organizations = <WorkspaceOrganizationFilterListType>(await promisify(mApi().coursepicker.organizations.read(), 'callback')())
-      dispatch({
-        type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
-        payload: organizations
-      });
+        dispatch({
+          type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
+          payload: organizations
+        });      
       callback && callback(organizations);
     } catch (err){
       if (!(err instanceof MApiError)){
