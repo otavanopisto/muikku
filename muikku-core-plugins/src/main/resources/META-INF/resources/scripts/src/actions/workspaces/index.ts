@@ -56,8 +56,6 @@ export type UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS =
 export type UPDATE_ORGANIZATION_WORKSPACES_STATE = 
   SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_STATE", WorkspacesStateType>
 
-
-
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>;
 export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_HELP", MaterialContentNodeListType>;
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID", number>;
@@ -441,10 +439,6 @@ export interface LoadMoreWorkspacesFromServerTriggerType {
   (): AnyActionType
 }
 
-export interface LoadMoreOrganizationWorkspacesFromServerTriggerType {
-  (): AnyActionType
-}
-
 export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
   (userEntityId?: number): AnyActionType
 }
@@ -524,9 +518,10 @@ let loadMoreWorkspacesFromServer:LoadMoreWorkspacesFromServerTriggerType = funct
   return loadWorkspacesHelper.bind(this, null, false, false);
 }
 
-let LoadMoreOrganizationWorkspacesFromServer:LoadMoreOrganizationWorkspacesFromServerTriggerType = function loadMoreOrganizationWorkspacesFromServer(){
+let loadMoreOrganizationWorkspacesFromServer:LoadMoreWorkspacesFromServerTriggerType = function loadMoreWorkspacesFromServer(){
   return loadWorkspacesHelper.bind(this, null, false, true);
 }
+
 
 let loadCurrentWorkspaceJournalsFromServer:LoadCurrentWorkspaceJournalsFromServerTriggerType = function loadCurrentWorkspaceJournalsFromServer(userEntityId){
   return loadCurrentWorkspaceJournalsHelper.bind(this, userEntityId || null, true);
@@ -1922,5 +1917,5 @@ export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducation
   updateWorkspaceDetailsForCurrentWorkspace, updateWorkspaceProducersForCurrentWorkspace, updateCurrentWorkspaceImagesB64,
   loadCurrentWorkspaceUserGroupPermissions, updateCurrentWorkspaceUserGroupPermission, setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode, deleteWorkspaceMaterialContentNode, setWholeWorkspaceMaterials, createWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, updateWorkspaceEditModeState, loadWholeWorkspaceHelp, LoadMoreOrganizationWorkspacesFromServer,
+  requestWorkspaceMaterialContentNodeAttachments, createWorkspaceMaterialAttachment, loadMoreOrganizationWorkspacesFromServer, updateWorkspaceEditModeState, loadWholeWorkspaceHelp,
   setWholeWorkspaceHelp}

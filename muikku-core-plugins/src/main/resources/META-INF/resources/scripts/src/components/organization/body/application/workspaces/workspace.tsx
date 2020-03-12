@@ -35,8 +35,8 @@ class Workspace extends React.Component<CourseProps, CourseState>{
   }
   render(){
     let teachers = this.props.workspace.teachers.map((teacher, index) => {
-      let teacherCount = this.props.workspace.teachers.length;
-      let teacherFullName = teacherCount > 1 && teacherCount != index + 1 ? teacher.firstName +" "+ teacher.lastName + ", " : teacher.firstName +" "+ teacher.lastName;
+    let teacherCount = this.props.workspace.teachers.length;
+    let teacherFullName = teacherCount > 1 && teacherCount != index + 1 ? teacher.firstName +" "+ teacher.lastName + ", " : teacher.firstName +" "+ teacher.lastName;
         return <span key={teacher.lastName + index}>
           {teacherFullName}
          </span>

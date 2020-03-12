@@ -81,7 +81,6 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
 //  </NavigationTopic>   
     
     return <Navigation>
-
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
         {this.props.workspaces.availableFilters.educationTypes.map( ( educationType: WorkspaceEducationFilterType ) => {
           let isActive = this.props.workspaces.activeFilters.educationFilters.includes( educationType.identifier );

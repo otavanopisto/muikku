@@ -58,7 +58,6 @@ if (loadOrganizationWorkspaces === true) {
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
   let search = actualFilters.query;
-
   let myWorkspaces = false;
   let includeUnpublished = false;
 
