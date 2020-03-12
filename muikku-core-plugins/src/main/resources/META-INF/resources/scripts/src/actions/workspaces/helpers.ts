@@ -13,6 +13,13 @@ const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 
 export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, loadOrganizationWorkspaces: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
+
+
+// This "WorkspacesType" annoys me. It's used in the organization workspaces, 
+// which ave type "OrganizationWorkspacesType", 
+// which at this point is not conflicting, but the "OrganizationWorkspacesType" is different - less attributes. 
+// I cannot find any bugs or disadvantages in my testing though...
+
   let workspaces:WorkspacesType  = state.workspaces;
 
 
@@ -47,10 +54,18 @@ if (loadOrganizationWorkspaces === true) {
     activeFilters: actualFilters
   }
 
-  dispatch({
-    type: "UPDATE_WORKSPACES_ALL_PROPS",
-    payload: newWorkspacesPropsWhileLoading
-  });
+  
+  if (!loadOrganizationWorkspaces === true) { 
+    dispatch({
+      type: "UPDATE_WORKSPACES_ALL_PROPS",
+      payload: newWorkspacesPropsWhileLoading
+    });
+  } else  {
+    dispatch({
+      type: "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS",
+      payload: newWorkspacesPropsWhileLoading
+    });
+  }
 
   //Generate the api query, our first result in the messages that we have loaded
   let firstResult = initial ? 0 : workspaces.availableWorkspaces.length + 1;
