@@ -83,7 +83,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
     if (diffX > 0) {
       diffX = 0;
     }
-    
+
     if (diffX >= -3){
       if (diffY >= 5 || diffY <= -5){
         diffX = 0;
@@ -92,7 +92,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
         this.preventXMovement = false;
       }
     }
-    
+
     if (!this.preventXMovement){
       this.setState({drag: diffX});
     }
@@ -102,11 +102,11 @@ class Menu extends React.Component<MenuProps, MenuState> {
     let width = $(this.refs["menuContainer"]).width();
     let diff = this.state.drag;
     let movement = this.touchMovementX;
-    
+
     let menuHasSlidedEnoughForClosing = Math.abs(diff) >= width*0.33;
     let youJustClickedTheOverlay = e.target === this.refs["menu"] && movement <= 5;
     let youJustClickedALink = checkLinkClicked(e.target as HTMLElement) && movement <= 5;
-    
+
     this.setState({dragging: false});
     setTimeout(()=>{
       this.setState({drag: null});
@@ -144,13 +144,13 @@ class Menu extends React.Component<MenuProps, MenuState> {
       <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
         <div className="menu__header">
           <div className="menu__logo">
-            <a href="/"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="157" height="56" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></a>
+            <a href="/" className="menu__link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="157" height="56" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></a>
           </div>
           <Link className={`menu__button-close menu__button-close--${this.props.modifier} icon-arrow-left`}></Link>
         </div>
         <div className="menu__body">
-          {this.props.navigation ? (this.props.navigation instanceof Array ? 
-              this.props.navigation.map((n, i)=><div className="menu__extras" key={i}>{n}</div>): 
+          {this.props.navigation ? (this.props.navigation instanceof Array ?
+              this.props.navigation.map((n, i)=><div className="menu__extras" key={i}>{n}</div>):
               <div className="menu__extras">{this.props.navigation}</div>) : null}
           <ul className="menu__items">
             {this.props.items.map((item, index)=>{
@@ -211,4 +211,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Menu);
-  
+
