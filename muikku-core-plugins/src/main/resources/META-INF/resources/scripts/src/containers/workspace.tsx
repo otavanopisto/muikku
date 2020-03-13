@@ -413,7 +413,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       if (state.status.loggedIn && state.status.isStudent && !state.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT) {
         if (!state.status.permissions.WORKSPACE_SIGNUP) {
           this.props.store.dispatch(displayNotification(state.i18n.text.get('plugin.workspace.materials.cannotSignUpWarning'), "notice") as Action);
-        } else if (state.status.isStudent && !state.status.permissions.WORKSPACE_IS_WORKSPACE_STUDENT && state.status.permissions.WORKSPACE_SIGNUP) {
+        } else {
           this.props.store.dispatch(displayNotification(
             state.i18n.text.get('plugin.workspace.materials.notSignedUpWarning') +
               ` <a href="#signup">${state.i18n.text.get('plugin.workspace.materials.notSignedUpWarningLink')}</a>`,
