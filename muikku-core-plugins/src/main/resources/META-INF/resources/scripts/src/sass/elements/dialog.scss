@@ -211,6 +211,10 @@
 
 .dialog__content-row {
   margin: 0 0 10px;
+
+  label {
+    font-weight: 600;
+  }
 }
 
 .dialog__content-row--label {
