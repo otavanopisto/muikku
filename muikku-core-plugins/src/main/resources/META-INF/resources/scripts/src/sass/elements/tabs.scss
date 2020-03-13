@@ -65,18 +65,6 @@
   @include breakpoint($breakpoint-pad) {
     cursor: default;
     margin: 0;
-
-    &.active {
-      padding: 10px;
-    }
-
-    &:first-child {
-      padding: 10px 10px 10px 0;
-    }
-
-    &:last-child {
-      padding: 10px 0 10px 10px;
-    }
   }
 }
 
@@ -131,11 +119,9 @@
   }
 }
 
-
 // Holy de viera this border thing is a mess will deal with it some day
 
 // Application-panel tabs
-
 .tabs__tab-labels--application-panel {
   align-items: center;
   border-bottom: solid 1px $color-application-panel-box-border;
