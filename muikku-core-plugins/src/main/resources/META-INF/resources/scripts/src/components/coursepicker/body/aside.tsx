@@ -3,7 +3,6 @@ import { connect, Dispatch } from 'react-redux';
 import Link from '~/components/general/link';
 import { i18nType } from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
-
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import { StateType } from '~/reducers';

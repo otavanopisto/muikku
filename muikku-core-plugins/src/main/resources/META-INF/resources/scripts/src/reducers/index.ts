@@ -11,7 +11,6 @@ import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
 import {UsersType} from './main-function/users';
 import {WorkspacesType, OrganizationWorkspacesType} from './workspaces';
-// import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records';
@@ -33,7 +32,6 @@ export interface StateType {
   users: UsersType;
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
-//  courses?: CoursesType,
   organizationWorkspaces?: WorkspacesType,
   discussion?: DiscussionType,
   guider?: GuiderType,
