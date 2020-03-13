@@ -14,11 +14,10 @@ const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, loadOrganizationWorkspaces: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
 
-
 // This "WorkspacesType" annoys me. It's used in the organization workspaces, 
-// which ave type "OrganizationWorkspacesType", 
+// which have type "OrganizationWorkspacesType", 
 // which at this point is not conflicting, but the "OrganizationWorkspacesType" is different - less attributes. 
-// I cannot find any bugs or disadvantages in my testing though...
+// I cannot find any bugs or disadvantages in my testing.
 
   let workspaces:WorkspacesType  = state.workspaces;
 
