@@ -144,7 +144,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
       <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
         <div className="menu__header">
           <div className="menu__logo">
-            <a href="/" className="menu__link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="157" height="56" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></a>
+            <Link href="/" className="menu__link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="157" height="56" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></Link>
           </div>
           <Link className={`menu__button-close menu__button-close--${this.props.modifier} icon-arrow-left`}></Link>
         </div>
