@@ -5,6 +5,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
+import Dropdown from '~/components/general/dropdown';
 
 import '~/sass/elements/navbar.scss';
 
@@ -52,7 +53,9 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
         <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`} id="stick">
           <div className="navbar__wrapper">
             <div className="navbar__logo">
-              <a href="/" className="navbar__logo-link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="175" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></a>
+              <Dropdown openByHover key="frontpage" content={this.props.i18n.text.get("plugin.home.home")}>
+                <a href="/" className="navbar__logo-link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="175" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></a>
+              </Dropdown>
             </div>
             <ul className="navbar__items">
               <li className={`navbar__item navbar__item--menu-button`}>
