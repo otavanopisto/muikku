@@ -150,18 +150,16 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       result.push(room);
     }
 
-    this.setState({
-      nick: this.props.nick
-    });
-
     window.sessionStorage.setItem("openChats", JSON.stringify(result));
-
+    
     let nick: string;
     nick = this.props.nick;
-
     if (!nick) {
       throw new TypeError('join: You need to provide a valid nickname');
     }
+    this.setState({
+      nick: this.props.nick
+    });
 
     let jid = Strophe.getBareJidFromJid(data.jid);
     let roomJidAndNick = jid + (nick !== null ? "/" + nick : "");
@@ -202,12 +200,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
         
         chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
-        
-      
-      
       //this.messageHandler(chat.messages.models);
       });
-
+//      this.scrollToBottom.bind(this, "auto");
     }
     //------- HANDLING INCOMING GROUPCHAT MESSAGES
    // messageHandler(messages: any){
@@ -295,11 +290,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
           this.setState({
             groupMessages: tempGroupMessages
-          }, this.scrollToBottom.bind(this, "auto"));
+          }, this.scrollToBottom.bind(this, "smooth"));
 
-          if (this.state.showOccupantsList === true) {
-            this.getOccupants();
-          }
+//          if (this.state.showOccupantsList === true) {
+//            this.getOccupants();
+//          }
           return;
         }
       } else {
@@ -374,7 +369,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         this.state.converse.api.send(chat.createMessageStanza(message));
 //        this.getMUCMessages(message);
       }
+      this.scrollToBottom.bind(this, "smooth");
     }
+    
     //--- SETTINGS & INFOS
     openChatSettings(){
       if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false) {
@@ -534,7 +531,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
     minimizeChats(roomJid: string){
       // For some reason this.state.minimizedRoom is everytime empty when minimizeChats() is called, that's why we load list from sessionStorage instead
-      // let minimizedRoomList = this.state.minimizedRooms;
+// As soon as chat is integrated to every view these sessionStorage stuff can be deleted.
       let minimizedRoomList = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
       if (this.state.minimized === false) {
@@ -547,10 +544,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
           minimizedRoomList.push(roomJid);
 
-          this.setState({
-            minimizedRooms: minimizedRoomList
-          });
-
           window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedRoomList));
         }
       } else {
@@ -562,19 +555,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         if (minimizedRoomList.includes(roomJid)) {
 
           const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJid);
-
-          this.setState({
-            minimizedRooms: filteredRooms
-          });
-
-          let result = JSON.parse(window.sessionStorage.getItem('minimizedChats')) || [];
-
-          const filteredChats = result.filter(function(item: any) {
-            return item !== roomJid;
-          });
-
-          window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredChats));
-
+          
+          window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredRooms));
           return;
         }
       }
@@ -617,9 +599,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
     }
     async getOccupants(){
-//      this.state.occupants cannot be enough to house members of different rooms in state.
-//      Something more on the lines of roomsAndOccupants[] > occupants[]
-//      It seems to work though... I am confused
       let roomJID = this.state.roomJid;
       let room = await this.state.converse.api.rooms.get(this.state.roomJid);
 
@@ -674,10 +653,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
       }
     }
-    scrollToBottom(behavior: string = "smooth") {
-      const isAlreadyInBottom = this.myRef.scrollTop + this.myRef.offsetHeight === this.myRef.scrollHeight;
-      if (!isAlreadyInBottom && this.messagesEnd){
-        this.messagesEnd.scrollIntoView({ behavior });
+    scrollToBottom(method: string = "smooth") {
+      if (this.messagesEnd){
+        this.messagesEnd.scrollIntoView({ behavior: method });
       }
     }
     onEnterPress(e: any) {
@@ -729,7 +707,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             }
           })
         }
-
+//        this.getMUCMessages(somethingsomthing);
         this.openMucConversation(chat.jid);
         this.scrollToBottom.bind(this, "auto");
         this.isWorkspaceChatRoom(chat.jid);
@@ -738,10 +716,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
       if (minimizedChatsFromSessionStorage) {
-        this.setState({
-          minimizedRooms: minimizedChatsFromSessionStorage
-        });
-
         minimizedChatsFromSessionStorage.map((item: any) => {
           if (item === chat.jid) {
             this.setState({
@@ -751,11 +725,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         })
       }
       converse.api.listen.on('message', this.handleIncomingMessages);
-      converse.api.listen.on('membersFetched', () => { this.handleIncomingMessages });
+      converse.api.listen.on('membersFetched', this.getOccupants );
     }
 
     componentDidUpdate(){
-
+//      To have this here or not. That's the question.
+//      this.scrollToBottom();
     }
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
