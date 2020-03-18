@@ -263,6 +263,9 @@ export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: str
   let props:any = {
     key
   }
+  if (element.nodeType === 3) {
+    return element.textContent;
+  }
   Array.from(element.attributes).forEach((attr:Attr)=>{
     if (translations[attr.name]){
       props[translations[attr.name]] = attr.value
