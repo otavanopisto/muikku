@@ -10,7 +10,7 @@ export default function Pdf(props: {
   return <div className="material-page__content material-page__content--binary-pdf">
     <object type="application/pdf" data={`/rest/materials/binary/${props.material.materialId}/content`}>
       <Link href={`/rest/materials/binary/${props.material.materialId}/content`} openInNewTab={props.material.title}>
-        {props.i18n.text.get("TODO Donwnload")}
+        {props.i18n.text.get("plugin.workspace.materials.binaryDownload")}
       </Link>
     </object>
   </div>;

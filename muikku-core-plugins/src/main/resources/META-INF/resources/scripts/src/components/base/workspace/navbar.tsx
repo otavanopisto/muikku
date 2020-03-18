@@ -232,8 +232,6 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
   let assessmentRequestItem = this.props.currentWorkspace &&
     this.props.status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT ? {
     modifier: "assessment-request",
-    //TODO add the styles for the following "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete"
-    //with the required happy or unhappy faces
 
     item: (<Dropdown openByHover key="assessment-request" modifier="assessment"
         content={getTextForAssessmentState(this.props.currentWorkspace.studentAssessments.assessmentState, this.props.i18n)}>
@@ -273,11 +271,12 @@ class WorkspaceNavbar extends React.Component<WorkspaceNavbarProps, WorkspaceNav
     }
     return {
       modifier: item.modifier,
-      item: (<Link  openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+      item: (<Dropdown openByHover key={item.text} content={this.props.i18n.text.get(item.text)}>
+        <Link openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--workspace-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
         aria-label={this.props.i18n.text.get(item.text)}>
         <span className={`link__icon icon-${item.icon}`}/>
         {item.badge ? <span className="indicator indicator--workspace">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
-      </Link>)
+      </Link></Dropdown>)
     }
     }))} defaultOptions={this.props.status.loggedIn ? [editModeSwitch] : [
       (<LoginButton modifier="login-main-function" key="0"/>),

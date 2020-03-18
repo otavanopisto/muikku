@@ -32,7 +32,7 @@ class EvaluationRequestDialog extends React.Component<EvaluationRequestDialogPro
       locked: false,
       message: ""
     }
-    
+
     this.updateMessage = this.updateMessage.bind(this);
     this.request = this.request.bind(this);
   }
@@ -65,15 +65,15 @@ class EvaluationRequestDialog extends React.Component<EvaluationRequestDialogPro
       {this.props.workspace.feeInfo && this.props.workspace.feeInfo.evaluationHasFee ?
         <div className="dialog__content-row">
           <label>{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label')}</label>
-          <span>{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content')}</span>
+          <p>{this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content')}</p>
         </div> : null}
       <div className="form-element dialog__content-row">
         <p><textarea className="form-element__textarea" value={this.state.message} onChange={this.updateMessage}/></p>
       </div>
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "execute"]} onClick={this.request.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.requestButton')}
@@ -84,7 +84,7 @@ class EvaluationRequestDialog extends React.Component<EvaluationRequestDialogPro
         </div>
       )
     }
-    
+
     return <Dialog modifier="evaluation-request-dialog"
       title={this.props.i18n.text.get('plugin.workspace.evaluation.requestEvaluation.title')}
       content={content} footer={footer} isOpen={this.props.isOpen} onClose={this.props.onClose}/>

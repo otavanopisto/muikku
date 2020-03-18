@@ -9,7 +9,7 @@ export default function Any(props: {
 }) {
   return <div>
     <Link href={`/rest/materials/binary/${props.material.materialId}/content`} openInNewTab={props.material.title}>
-      {props.i18n.text.get("TODO Donwnload")}
+      {props.i18n.text.get("plugin.workspace.materials.binaryDownload")}
     </Link>
   </div>
 }

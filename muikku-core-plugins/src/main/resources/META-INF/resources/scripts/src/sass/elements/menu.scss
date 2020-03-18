@@ -52,6 +52,13 @@
   width: 175px;
 }
 
+.menu__link {
+  display: block;
+  height: $navbar-mobile-height;
+  position: relative;
+  z-index: 99;
+}
+
 .menu__container {
   @include prefix(transition, webkit moz o ms, left 0.3s);
   align-items: center;

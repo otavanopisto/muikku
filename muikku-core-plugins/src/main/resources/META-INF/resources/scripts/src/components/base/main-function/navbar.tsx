@@ -2,6 +2,7 @@ import Navbar from '~/components/general/navbar';
 import Link from '~/components/general/link';
 import LoginButton from '../login-button';
 import ForgotPasswordDialog from '../forgot-password-dialog';
+import Dropdown from '~/components/general/dropdown';
 
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
@@ -34,7 +35,7 @@ interface MainFunctionNavbarProps {
 }
 
 interface MainFunctionNavbarState {
-  
+
 }
 
 class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFunctionNavbarState> {
@@ -116,11 +117,12 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       }
       return {
         modifier: item.modifier,
-        item: (<Link openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+        item: (<Dropdown openByHover key={item.text} content={this.props.i18n.text.get(item.text)}>
+          <Link openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
           aria-label={this.props.i18n.text.get(item.text)}>
           <span className={`link__icon icon-${item.icon}`}/>
           {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
-        </Link>)
+        </Link></Dropdown>)
       }
     })} defaultOptions={this.props.status.loggedIn ? null : [
       (<LoginButton modifier="login-main-function" key="0"/>),
