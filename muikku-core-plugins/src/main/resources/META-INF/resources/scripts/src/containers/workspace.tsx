@@ -167,6 +167,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       const newHash = '#p-' + newId;
       // defusing the new id
       if (newHash !== location.hash) {
+        
+        // TODO At this point the baseURI goes bad after opening and closing the material editor and scrolling
+        
         const element = document.querySelector(newHash);
         if (element) {
           element.id = ""
