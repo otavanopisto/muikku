@@ -267,6 +267,10 @@ const translations:any = {
   "dir": "dir",
   "lang": "lang",
   "hreflang": "hrefLang",
+  "charset": "charSet",
+  "download": "download",
+  "rel": "rel",
+  "type": "type",
 
   // Textarea specific
   "rows": "rows",
