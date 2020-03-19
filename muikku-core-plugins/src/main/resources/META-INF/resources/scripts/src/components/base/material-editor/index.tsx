@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Portal from '~/components/general/portal';
-
 import '~/sass/elements/material-editor.scss';
 import { bindActionCreators } from 'redux';
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
@@ -91,7 +90,6 @@ const CKEditorConfig = (
 class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditorState> {
   constructor(props: MaterialEditorProps){
     super(props);
-
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
     this.toggleViewRestrictionStatus = this.toggleViewRestrictionStatus.bind(this);
     this.cycleAssignmentType = this.cycleAssignmentType.bind(this);
@@ -117,8 +115,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     }
   }
 
-  updateHeight() {
-    this.setState({height: window.innerHeight - 167});
+  updateHeight(offset: number) {
+    let heightOffset:number = offset? offset : 167;
+    this.setState({height: window.innerHeight - heightOffset});
   }
   
   refreshAttachments() {
@@ -309,13 +308,13 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
 
   componentDidMount() {
-    let containerTopOffset:number = 167;
-    this.updateHeight();
-    window.addEventListener('resize', this.updateHeight);
+    let containerTopOffset:number =  167;
+    this.updateHeight(containerTopOffset);
+    window.addEventListener('resize', () => this.updateHeight(containerTopOffset));
   }
 
   componentWillUnMount() {
-    window.removeEventListener('resize', this.updateHeight);
+    window.removeEventListener('resize', () => this.updateHeight);
   }
 
   render(){
@@ -421,7 +420,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             </div> : null
           }
           {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
-            <CKEditor configuration={CKEditorConfig(
+            <CKEditor ancestorHeight={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,

@@ -29,7 +29,6 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
     }
   
   render() {
-    
     let locationData = queryString.parse( document.location.hash.split( "?" )[1] || "", { arrayFormat: 'bracket' } );
     // Moc data because the backend lacks this
     
@@ -54,7 +53,6 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
        label: "plugin.organization.filters.state.active.false"
      }
     ];
-
     
 //    These are waiting for backend works
 // 
