@@ -1,4 +1,4 @@
-import { StateType } from "~/reducers";
+  import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceType, WorkspaceEditModeStateType } from "~/reducers/workspaces";

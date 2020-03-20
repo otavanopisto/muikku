@@ -6,7 +6,7 @@ interface IframeProps {
   element: HTMLElement,
   path: string,
   dataset: {
-    //Someone thought it was smart to set up two versions of data
+    //two versions of data
     url?: string
   },
   i18n: i18nType
