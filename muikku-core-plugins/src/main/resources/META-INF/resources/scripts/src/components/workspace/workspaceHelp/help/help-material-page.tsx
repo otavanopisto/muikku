@@ -9,11 +9,6 @@ import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
-import { MaterialLoaderButtons } from "~/components/base/material-loader/buttons";
-import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
-import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
-import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
-import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 
 interface HelpMaterialProps {
@@ -38,9 +33,8 @@ class HelpMaterial extends React.Component<HelpMaterialProps, HelpMaterialState>
       {(loaded: boolean) => {
         return <MaterialLoader editable={this.props.workspaceEditMode.active}
         modifiers="workspace-help" material={this.props.materialContentNode} workspace={this.props.workspace}
-        canHide disablePlugins readOnly canRevert={!isBinary} canCopy={!isBinary}
-        canDelete canRestrictView canChangePageType={!isBinary}
-        canSetLicense={!isBinary} canSetProducers={!isBinary}
+        canHide readOnly disablePlugins canRevert={!isBinary} canCopy={!isBinary}
+        canDelete canRestrictView canSetLicense={!isBinary} canSetProducers={!isBinary}
         canAddAttachments={!isBinary} canEditContent={!isBinary}
         invisible={!loaded} canPublish={!isBinary}>
           {(props, state, stateConfiguration) => {
