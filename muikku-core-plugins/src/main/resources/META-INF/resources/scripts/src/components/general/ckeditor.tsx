@@ -45,6 +45,7 @@ let pluginsLoaded:any = {};
 interface CKEditorProps {
   configuration?: any,
   ancestorHeight? : number;
+  ancestorSpacings?: number;
   onChange(arg: string):any,
   onDrop?():any,
   children?: string,
@@ -195,20 +196,20 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       
       const height = this.props.ancestorHeight ? this.props.ancestorHeight : instance.container.$.getBoundingClientRect().height;
       
-      // Get the CKeditor id
+      // CKE content-element id
       
-      const contentElementId ="cke_" + instance.name;
+      const contentElementId:string  = instance.id  + "_contents";
       
-      // CKeditor offset from top 
+      // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
       
-      let contentElementOffset = document.getElementById(contentElementId).offsetTop;
+      let contentElementOffset:number = this.props.ancestorHeight ?  document.getElementById(contentElementId).offsetTop : 0;
       
       // Calculate the height
       
-      let contentHeight = height - contentElementOffset;
+      let contentHeight:number = height - contentElementOffset;
       
       // Resize
-       instance.resize("100%", contentHeight, true, true);
+      instance.resize("100%", contentHeight, true);
       
       instance.setData(props.children || "");
         

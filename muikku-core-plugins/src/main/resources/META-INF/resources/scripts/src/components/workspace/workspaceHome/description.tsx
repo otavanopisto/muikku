@@ -38,7 +38,7 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
       <div className="panel__body">
         {this.props.workspace && <MaterialLoader editable={this.props.workspaceEditMode.active}
           modifiers="workspace-description" material={this.props.workspace.contentDescription} workspace={this.props.workspace}
-          canDelete={false} canHide={false} canPublish disablePlugins readOnly isInFrontPage canSetTitle={false}>
+          canDelete={false} canHide={false} canPublish disablePlugins readOnly isInFrontPage canAddAttachments canEditContent canSetTitle={false}>
           {(props, state, stateConfiguration) => {
             return <div>
               <MaterialLoaderEditorButtonSet {...props} {...state}/>
@@ -46,7 +46,7 @@ class DescriptionPanel extends React.Component<DescriptionPanelProps, Descriptio
               <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
               <MaterialLoaderProducersLicense {...props} {...state}/>
             </div>
-          }}  
+          }}
         </MaterialLoader>}
       </div>
     </div>;

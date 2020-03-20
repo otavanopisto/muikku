@@ -42,6 +42,7 @@ interface MemoFieldState {
 const ckEditorConfig = {
   autoGrow_onStartup: true,
   mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML',
+  mathJaxClass: 'math-tex', // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   toolbar: [
     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
     { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -52,7 +53,8 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  extraPlugins: "widget,lineutils,autogrow,muikku-mathjax,divarea",
+  removePlugins: "image",
+  extraPlugins: "image2,widget,lineutils,autogrow,muikku-mathjax,divarea",
   resize_enabled: true
 }
 

@@ -64,7 +64,7 @@ const CKEditorConfig = (
   format_tags : 'p;h3;h4',
   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
   mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG',
-  mathJaxClass: 'material-page__math-formula',
+  mathJaxClass: 'math-tex', // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
   toolbar: [
     { name: 'document', items : [ 'Source' ] },
     { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
@@ -81,8 +81,8 @@ const CKEditorConfig = (
     { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
   ],
   removePlugins: "image",
-  extraPlugins: disablePlugins ? 'divarea,oembed,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage' :
-    "language,oembed,audio,image2,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-embedded,muikku-image-details,muikku-word-definition,muikku-audio-defaults,muikku-image-target,muikku-mathjax,uploadimage,divarea",
+  extraPlugins: disablePlugins ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax" :
+  "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax",
 });
 
 // First we need to modify the material content nodes end point to be able to receive hidden
@@ -115,11 +115,11 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
     }
   }
 
-  updateHeight(offset: number) {
-    let heightOffset:number = offset? offset : 167;
+  updateHeight(offset?: number) {
+    let heightOffset:number = offset? offset : 0;
     this.setState({height: window.innerHeight - heightOffset});
   }
-  
+
   refreshAttachments() {
     if (this.props.editorState.currentNodeValue && this.props.editorState.currentNodeWorkspace && this.props.editorState.parentNodeValue) {
       // due to a ckeditor bug I cannot know when the image has done uploading
@@ -308,9 +308,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
 
   componentDidMount() {
-    let containerTopOffset:number =  167;
-    this.updateHeight(containerTopOffset);
-    window.addEventListener('resize', () => this.updateHeight(containerTopOffset));
+    let offset:number =  35;
+    this.updateHeight(offset);
+    window.addEventListener('resize', () => this.updateHeight(offset));
   }
 
   componentWillUnMount() {
@@ -420,7 +420,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             </div> : null
           }
           {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
-            <CKEditor ancestorHeight={this.state.height} configuration={CKEditorConfig(
+            <CKEditor ancestorSpacings={35} ancestorHeight={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,
@@ -429,7 +429,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               )} onChange={this.updateContent} onDrop={this.refreshAttachments}>
               {this.props.editorState.currentDraftNodeValue.html}
             </CKEditor>
-          </div> : null}
+          </div> : null}  
         </div>
       }];
 
