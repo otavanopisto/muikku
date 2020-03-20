@@ -42,7 +42,7 @@ function startupEditor(props: EditorButtonSetProps){
     canSetLicense: typeof props.canSetLicense === "undefined" ? false : props.canSetLicense,
     canSetProducers: typeof props.canSetProducers === "undefined" ? false : props.canSetProducers,
     canAddAttachments: typeof props.canAddAttachments === "undefined" ? false : props.canAddAttachments,
-    canEditContent: typeof props.canAddAttachments === "undefined" ? true : props.canAddAttachments,
+    canEditContent: typeof props.canEditContent === "undefined" ? true : props.canEditContent,
     canSetTitle: typeof props.canSetTitle === "undefined" ? true : props.canSetTitle,
     showRemoveAnswersDialogForPublish: false,
     showRemoveAnswersDialogForDelete: false,
