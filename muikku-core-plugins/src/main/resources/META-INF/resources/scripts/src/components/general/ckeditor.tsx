@@ -195,20 +195,24 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       
       const height = this.props.ancestorHeight ? this.props.ancestorHeight : instance.container.$.getBoundingClientRect().height;
       
-      // Get the CKeditor id
+      // We need to add the margins and paddings to the offSet, offsetTop does not seem to calculate the margins and paddings.
       
-      const contentElementId ="cke_" + instance.name;
+      const spacings:number  = 35;
+      
+      // CKE content-element id
+      
+      const contentElementId:string  = instance.id  + "_contents";
       
       // CKeditor offset from top 
       
-      let contentElementOffset = document.getElementById(contentElementId).offsetTop;
+      let contentElementOffset:number = document.getElementById(contentElementId).offsetTop;
       
       // Calculate the height
       
-      let contentHeight = height - contentElementOffset;
+      let contentHeight:number = height - (contentElementOffset + spacings);
       
       // Resize
-       instance.resize("100%", contentHeight, true, true);
+      instance.resize("100%", contentHeight, true);
       
       instance.setData(props.children || "");
         
