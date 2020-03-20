@@ -44,6 +44,7 @@ let pluginsLoaded:any = {};
 
 interface CKEditorProps {
   configuration?: any,
+  ancestorHeight? : number;
   onChange(arg: string):any,
   onDrop?():any,
   children?: string,
@@ -51,7 +52,7 @@ interface CKEditorProps {
 }
 
 interface CKEditorState {
-  
+  contentHeight: number;
 }
 
 const extraConfig = (props: CKEditorProps) => ({
@@ -79,8 +80,12 @@ const extraConfig = (props: CKEditorProps) => ({
 export default class CKEditor extends React.Component<CKEditorProps, CKEditorState> {
   private name:string;
   private currentData:string;
+
+  // These two are not used anywhere, why are they here?
+
   private width: number | string;
   private height: number | string;
+
   private cancelChangeTrigger: boolean;
   private timeout: NodeJS.Timer;
   private timeoutProps: CKEditorProps;
@@ -184,8 +189,26 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       const borderTop = parseInt(style.getPropertyValue("border-top")) || 0;
       const borderBottom = parseInt(style.getPropertyValue("border-bottom")) || 0;
       
-      const height = instance.container.$.getBoundingClientRect().height;
-      instance.resize("100%", height - borderTop - borderBottom, false, true);
+      // Height can be given from the ancestor or from instance container. 
+      // Instance container is "unstable" and changes according to the content it seems, so for example
+      // material editor is given the ancestorHeight - the dialog height, which is stable.
+      
+      const height = this.props.ancestorHeight ? this.props.ancestorHeight : instance.container.$.getBoundingClientRect().height;
+      
+      // Get the CKeditor id
+      
+      const contentElementId ="cke_" + instance.name;
+      
+      // CKeditor offset from top 
+      
+      let contentElementOffset = document.getElementById(contentElementId).offsetTop;
+      
+      // Calculate the height
+      
+      let contentHeight = height - contentElementOffset;
+      
+      // Resize
+       instance.resize("100%", contentHeight, true, true);
       
       instance.setData(props.children || "");
         
