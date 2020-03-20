@@ -308,9 +308,9 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
 
   componentDidMount() {
-    let containerTopOffset:number =  167;
-    this.updateHeight();
-    window.addEventListener('resize', () => this.updateHeight(containerTopOffset));
+    let offset:number =  35;
+    this.updateHeight(offset);
+    window.addEventListener('resize', () => this.updateHeight(offset));
   }
 
   componentWillUnMount() {
@@ -420,7 +420,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
             </div> : null
           }
           {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
-            <CKEditor ancestorHeight={this.state.height} configuration={CKEditorConfig(
+            <CKEditor ancestorSpacings={35} ancestorHeight={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
                 this.props.editorState.currentNodeWorkspace,
@@ -429,7 +429,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               )} onChange={this.updateContent} onDrop={this.refreshAttachments}>
               {this.props.editorState.currentDraftNodeValue.html}
             </CKEditor>
-          </div> : null}
+          </div> : null}  
         </div>
       }];
 

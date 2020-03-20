@@ -45,6 +45,7 @@ let pluginsLoaded:any = {};
 interface CKEditorProps {
   configuration?: any,
   ancestorHeight? : number;
+  ancestorSpacings?: number;
   onChange(arg: string):any,
   onDrop?():any,
   children?: string,
@@ -195,10 +196,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       
       const height = this.props.ancestorHeight ? this.props.ancestorHeight : instance.container.$.getBoundingClientRect().height;
       
-      // We need to add the margins and paddings to the offSet, offsetTop does not seem to calculate the margins and paddings.
-      
-      const spacings:number  = 35;
-      
       // CKE content-element id
       
       const contentElementId:string  = instance.id  + "_contents";
@@ -209,7 +206,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       
       // Calculate the height
       
-      let contentHeight:number = height - (contentElementOffset + spacings);
+      let contentHeight:number = height - (contentElementOffset);
       
       // Resize
       instance.resize("100%", contentHeight, true);
