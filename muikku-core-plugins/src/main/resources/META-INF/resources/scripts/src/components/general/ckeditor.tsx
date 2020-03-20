@@ -200,9 +200,9 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       
       const contentElementId:string  = instance.id  + "_contents";
       
-      // CKeditor offset from top 
+      // CKeditor offset from top when ancestor height is given
       
-      let contentElementOffset:number = document.getElementById(contentElementId).offsetTop;
+      let contentElementOffset:number = this.props.ancestorHeight ?  document.getElementById(contentElementId).offsetTop : 0;
       
       // Calculate the height
       
