@@ -250,18 +250,6 @@ const translations:any = {
   "height": "height",
   "href": "href",
   "target": "target",
-
-  // Table specefic
-  "cellspacing": "cellSpacing", // Deprecated, Table
-  "cellpadding": "cellPadding", // Deprecated, Table
-  "span": "span",
-  "summary": "summary", // Deprecated, Table
-  "colspan": "colSPan",
-  "rowspan": "rowSpan",
-  // We might need to find a way to use align and border attibutes (maybe transfer them to style attribute as css property) as they can be set in tables in ckeditor.
-  // "border": "border", // Deprecated, Table
-  // "align": "align", // Deprecated, Table
-
   "alt": "alt",
   "title": "title",
   "dir": "dir",
@@ -271,10 +259,52 @@ const translations:any = {
   "download": "download",
   "rel": "rel",
   "type": "type",
+  "media": "media",
+  "wrap": "wrap",
+  "start": "start",
+  "reversed": "reversed",
 
-  // Textarea specific
+  // Table specefic
+  "cellspacing": "cellSpacing", // Deprecated, Table
+  "cellpadding": "cellPadding", // Deprecated, Table
+  "span": "span",
+  "summary": "summary", // Deprecated, Table
+  "colspan": "colSpan",
+  "rowspan": "rowSpan",
+  "scope": "scope",
+  "headers": "headers",
+  // We might need to find a way to use align and border attibutes as they can be set in tables in ckeditor.
+  // "border": "border", // Deprecated, Table
+  // "align": "align", // Deprecated, Table
+
+  // Audio/video specific
+  "autoplay": "autoPlay",
+  "capture": "capture",
+  "controls": "controls",
+  "loop": "loop",
+  "role": "role",
+  "label": "label",
+  "default": "default",
+  "kind": "kind",
+  "srclang": "srcLang",
+  "controlsList": "controlsList",
+
+  // Form specific
+  "required": "required",
   "rows": "rows",
   "cols": "cols",
+  "tabindex": "tabIndex",
+  "hidden": "hidden",
+  "list": "list",
+  "value": "value",
+  "selected": "selected",
+  "checked": "checked",
+  "disabled": "disabled",
+  "readonly": "readOnly",
+  "size": "size",
+  "placeholder": "placeholder",
+  "multiple": "multiple",
+  "accept": "accept",
 }
 
 export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
