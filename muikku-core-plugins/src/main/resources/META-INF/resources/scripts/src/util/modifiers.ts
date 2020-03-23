@@ -308,12 +308,12 @@ const translations:any = {
 }
 
 export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
-  let result:any = {};
-  Object.keys(declaraion).forEach((key: string)=>{
-    if (key !== "cssText" && key !== "length" || parseInt(key) === NaN){
-      result[key] = (declaraion as any)[key];
-    }
-  });
+  const result:any = {};
+  for (let i = 0; i < declaraion.length; i++) {
+    const item = declaraion.item(i);
+    result[item] = (declaraion as any)[item];
+  }
+  return result;
 }
 
 export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: string, props: any, children: Array<any>, element: HTMLElement)=>any, key?: number):any {
