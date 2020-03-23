@@ -408,6 +408,16 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           } else {
             return <Link key={elementProps.key} element={element} path={path} dataset={dataset} i18n={i18n}/>
           }
+        } else if (
+          Tag === "source"
+        ) {
+          const src = elementProps.src;
+          const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
+          (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+          if (!isAbsolute){
+            const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
+            elementProps.src = path + "/" + src;
+          }
         }
       }
       

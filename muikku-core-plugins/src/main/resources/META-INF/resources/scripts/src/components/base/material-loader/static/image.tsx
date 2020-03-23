@@ -59,7 +59,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
     window.addEventListener("resize", this.calculatePredictedHeight);
   }
   calculatePredictedHeight() {
-    if (this.predictedAspectRatio) {
+    if (this.predictedAspectRatio && this.refs["img"]) {
       const predictedHeight = (this.refs["img"] as HTMLImageElement).offsetWidth/this.predictedAspectRatio;
       if (predictedHeight !== this.state.predictedHeight) {
         this.setState({
@@ -70,7 +70,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
   }
   calculateMaxWidth() {
     const image = (this.refs["img"] as HTMLImageElement);
-    if (image.src) {
+    if (image && image.src) {
       const maxWidth = image.naturalWidth;
       if (maxWidth !== this.state.maxWidth) {
         this.setState({maxWidth});
