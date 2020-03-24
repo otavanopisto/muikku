@@ -264,6 +264,10 @@ const translations:any = {
   "start": "start",
   "reversed": "reversed",
 
+  // Iframe  specific
+  "scrolling": "scrolling",
+  "frameborder": "frameBorder",
+
   // Table specefic
   "cellspacing": "cellSpacing", // Deprecated, Table
   "cellpadding": "cellPadding", // Deprecated, Table
