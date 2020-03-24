@@ -935,7 +935,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           
           if (periodBegin != null) {
             if (periodBegin.equals(now) || periodBegin.isBefore(now)) {
-              if ((periodEnd == null) || periodBegin.equals(now) || periodEnd.isAfter(now)) {
+              if ((periodEnd == null) || periodEnd.equals(now) || periodEnd.isAfter(now)) {
                 // When period has started before current date and period is ending after current date or is null
                 // the student is considered inactive.
                 return false;
