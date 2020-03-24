@@ -376,7 +376,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
         return;
       }
 
-      results.push(<section key={"section-" + section.workspaceMaterialId} className="content-panel__chapter" id={"section-" + section.workspaceMaterialId}>
+      results.push(<section key={"section-" + section.workspaceMaterialId} className="content-panel__chapter">
+        <div id={"s-" + section.workspaceMaterialId} style={{transform: "translateY(" + (-this.state.defaultOffset) + "px)"}}/>
         {/*TOP OF THE CHAPTER*/}
         <h2 className={`content-panel__chapter-title ${section.hidden ? "content-panel__chapter-title--hidden" : ""}`}>
           {isEditable ?

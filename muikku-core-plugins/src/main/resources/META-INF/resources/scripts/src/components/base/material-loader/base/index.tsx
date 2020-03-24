@@ -22,6 +22,7 @@ import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } 
 import { WebsocketStateType } from '~/reducers/util/websocket';
 import Link from '~/components/base/material-loader/static/link';
 import { HTMLtoReactComponent } from "~/util/modifiers";
+import Table from '~/components/base/material-loader/static/table';
 
 //These are all our supported objects as for now
 const objects: {[key: string]: any} = {
@@ -392,7 +393,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           Tag === "iframe" ||
           (Tag === "mark" && element.dataset.muikkuWordDefinition) ||
           (Tag === "figure" && element.classList.contains("image")) ||
-          (Tag === "a" && (element as HTMLAnchorElement).href)
+          (Tag === "a" && (element as HTMLAnchorElement).href) ||
+          Tag === "table"
         ) {
           const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
           const invisible = this.props.invisible;
@@ -401,12 +403,24 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           const key = elementProps.key;
           if (Tag === "iframe") {
             return <IFrame key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n}/>
+          } else if (Tag === "table") {
+            return <Table key={elementProps.key} element={element} props={elementProps} children={children}/>
           } else if (Tag === "mark") {
             return <WordDefinition key={elementProps.key} invisible={invisible} dataset={dataset} i18n={i18n}>{children}</WordDefinition>
           } else if (Tag === "figure") {
             return <Image key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} processingFunction={processingFunction.bind(this)}/>
           } else {
             return <Link key={elementProps.key} element={element} path={path} dataset={dataset} i18n={i18n}/>
+          }
+        } else if (
+          Tag === "source"
+        ) {
+          const src = elementProps.src;
+          const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
+          (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+          if (!isAbsolute){
+            const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
+            elementProps.src = path + "/" + src;
           }
         }
       }
