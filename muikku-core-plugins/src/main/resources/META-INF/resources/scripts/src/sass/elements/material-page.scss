@@ -765,6 +765,16 @@
   }
 }
 
+// File field
+.material-page__filefield-wrapper {
+  position: relative;
+}
+
+// Audio field
+.material-page__audiofield-wrapper {
+  position: relative;
+}
+
 .material-page__audiofield {
   @include taskfield-text;
   @include taskfield-defaults;
