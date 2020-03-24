@@ -267,6 +267,7 @@ const translations:any = {
   // Iframe  specific
   "scrolling": "scrolling",
   "frameborder": "frameBorder",
+  "allowfullscreen": "allowFullScreen",
 
   // Table specefic
   "cellspacing": "cellSpacing", // Deprecated, Table
