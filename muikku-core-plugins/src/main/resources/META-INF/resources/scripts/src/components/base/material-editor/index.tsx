@@ -121,7 +121,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
 
   refreshAttachments() {
-    if (this.props.editorState.currentNodeValue && this.props.editorState.currentNodeWorkspace && this.props.editorState.parentNodeValue) {
+    if (this.props.editorState.currentNodeValue && this.props.editorState.currentNodeWorkspace) {
       // due to a ckeditor bug I cannot know when the image has done uploading
       // I guess 3 seconds
       setTimeout(() => {
