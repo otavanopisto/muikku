@@ -481,15 +481,15 @@
 
 .application-sub-panel__text--course-evaluation {
 
-  &.state-passed {
+  &.state-PASSED {
     border-left: 3px solid $color-grade-passed;
   }
 
-  &.state-failed {
+  &.state-FAILED {
     border-left: 3px solid $color-grade-failed;
   }
 
-  &.state-incomplete {
+  &.state-INCOMPLETE {
     border-left: 3px solid $color-grade-incomplete;
   }
 }

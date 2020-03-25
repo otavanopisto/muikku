@@ -264,6 +264,11 @@ const translations:any = {
   "start": "start",
   "reversed": "reversed",
 
+  // Iframe  specific
+  "scrolling": "scrolling",
+  "frameborder": "frameBorder",
+  "allowfullscreen": "allowFullScreen",
+
   // Table specefic
   "cellspacing": "cellSpacing", // Deprecated, Table
   "cellpadding": "cellPadding", // Deprecated, Table
@@ -273,9 +278,6 @@ const translations:any = {
   "rowspan": "rowSpan",
   "scope": "scope",
   "headers": "headers",
-  // We might need to find a way to use align and border attibutes as they can be set in tables in ckeditor.
-  // "border": "border", // Deprecated, Table
-  // "align": "align", // Deprecated, Table
 
   // Audio/video specific
   "autoplay": "autoPlay",
