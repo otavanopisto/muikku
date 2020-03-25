@@ -128,19 +128,19 @@
   text-align: center;
   width: 1.875rem;
 
-  &.state-passed {
+  &.state-PASSED {
     background: $color-grade-passed;
   }
 
-  &.state-failed {
+  &.state-FAILED {
     background: $color-grade-failed;
   }
 
-  &.state-incomplete {
+  &.state-INCOMPLETE {
     background: $color-grade-incomplete;
   }
 
-  &.state-no-assessment {
+  &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
 }

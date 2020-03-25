@@ -1566,12 +1566,12 @@ mark[data-muikku-word-definition] {
   border-top: 1px solid $color-default-item-separator-border;
   display: flex;
   flex-flow: column nowrap;
-  margin: 20px -10px 0;
+  margin: 20px 0 0;
   padding: 10px;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 20px -20px 0;
+    margin: 20px 0 0;
     padding: 20px;
   }
 }
