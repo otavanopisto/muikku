@@ -34,7 +34,6 @@ interface ManagementPanelProps {
   workspace: WorkspaceType,
   i18n: i18nType,
   workspaceTypes: Array<WorkspaceTypeType>,
-
   updateWorkspace: UpdateWorkspaceTriggerType,
   updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType,
@@ -289,7 +288,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         });
       }
     }
-
+    let payload: WorkspaceUpdateType = {
+      
+    }
+    
+    
     let workspaceUpdate:WorkspaceUpdateType = {
       name: this.state.workspaceName,
       published: this.state.workspacePublished,
@@ -312,29 +315,34 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)){
       totals++;
+      
+      payload = Object.assign(workspaceUpdate, payload) ;
 
-      this.props.updateWorkspace({
-        workspace: this.props.workspace,
-        update: workspaceUpdate,
-        success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.basicData"), "success");
-          onDone();
-        },
-        fail: onDone
-      });
+//      this.props.updateWorkspace({
+//        workspace: this.props.workspace,
+//        update: workspaceUpdate,
+//        success: ()=>{
+//          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.basicData"), "success");
+//          onDone();
+//        },
+//        fail: onDone
+//      });
     }
 
     let workspaceMaterialProducers = this.state.workspaceProducers;
+    
     if (!equals(workspaceMaterialProducers, this.props.workspace.producers)){
       totals++;
-      this.props.updateWorkspaceProducersForCurrentWorkspace({
-        appliedProducers: workspaceMaterialProducers,
-        success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.producers"), "success");
-          onDone();
-        },
-        fail: onDone
-      });
+      payload = Object.assign({producers: workspaceMaterialProducers}, payload);
+
+//      this.props.updateWorkspaceProducersForCurrentWorkspace({
+//        appliedProducers: workspaceMaterialProducers,
+//        success: ()=>{
+//          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.producers"), "success");
+//          onDone();
+//        },
+//        fail: onDone
+//      });
     }
 
     let workspaceDetails:WorkspaceDetailsType = {
@@ -359,14 +367,17 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)){
       totals++;
-      this.props.updateWorkspaceDetailsForCurrentWorkspace({
-        newDetails: workspaceDetails,
-        success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.details"), "success");
-          onDone();
-        },
-        fail: onDone
-      });
+      
+      payload = Object.assign({details: workspaceDetails}, payload);
+      
+//      this.props.updateWorkspaceDetailsForCurrentWorkspace({
+//        newDetails: workspaceDetails,
+//        success: ()=>{
+//          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.details"), "success");
+//          onDone();
+//        },
+//        fail: onDone
+//      });
     }
 
     let workspaceImage = this.state.workspaceHasCustomImage ? this.state.newWorkspaceImageCombo : null;
@@ -392,26 +403,39 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         fail: onDone
       });
     }
-
     if (!equals(this.props.workspace.permissions, this.state.workspacePermissions)) {
+      let permissionsArray:WorkspacePermissionsType[]  = [];
+    
       this.state.workspacePermissions.forEach((permission) => {
         const originalPermission = this.props.workspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
         if (!equals(originalPermission, permission)) {
           totals++;
-          this.props.updateCurrentWorkspaceUserGroupPermission({
-            original: originalPermission,
-            update: permission,
-            success: ()=>{
-              // Make this a notification that displays the user group name, there's one notification per group updated as they are independent
-              this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.permissions", permission.userGroupName), "success");
-              onDone();
-            },
-            fail: onDone
-          });
+          permissionsArray.push(permission);
+//          this.props.updateCurrentWorkspaceUserGroupPermission({
+//            original: originalPermission,
+//            update: permission,
+//            success: ()=>{
+//              // Make this a notification that displays the user group name, there's one notification per group updated as they are independent
+//              this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.permissions", permission.userGroupName), "success");
+//              onDone();
+//            },
+//            fail: onDone
+//          });
         }
       });
+      payload = Object.assign({permissions: permissionsArray}, payload);
     }
-
+    
+    this.props.updateWorkspace({
+      workspace: this.props.workspace,
+      update: payload,
+      success: ()=>{
+        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.basicData"), "success");
+        onDone();
+      },
+      fail: onDone
+    });
+    
     onDone();
   }
 

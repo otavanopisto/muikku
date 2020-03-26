@@ -609,6 +609,24 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
     });
     
     try {
+      let details = data.update.details;
+      let permissions = data.update.permissions;
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
+      
+      delete data.update["details"];
+      delete data.update["permissions"];
+      
+      await promisify(mApi().workspace.workspaces
+            .details.update(data.workspace.id, details), 'callback')();
+      
+      
+      await Promise.all(permissions.map(permission => {
+        let originalPermission = currentWorkspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
+         promisify(mApi().permission.workspaceSettings.userGroups
+            .update(currentWorkspace.id, originalPermission.userGroupEntityId, permission), 'callback')();
+        } 
+      ));
+
       await promisify(mApi().workspace.workspaces.update(data.workspace.id,
         Object.assign(actualOriginal, data.update)), 'callback')();
       
@@ -1081,8 +1099,10 @@ let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWo
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let state:StateType = getState();
+    
       await promisify(mApi().workspace.workspaces
           .details.update(state.workspaces.currentWorkspace.id, data.newDetails), 'callback')();
+
 
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
 
