@@ -984,14 +984,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
         EnvironmentRoleArchetype.TEACHER);
     
-    // Get workspace staff members via Elastic
-
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
-    List<OrganizationEntity> organizations = Arrays.asList(organization);
+    // Get workspace staff members via Elastic (#4917: Should be shown across all organizations)
     
     SearchResult searchResult = elasticSearchProvider.searchUsers(
-        organizations,                                            // organizations
+        organizationEntityController.listUnarchived(),            // organizations
         null,                                                     // search string
         null,                                                     // fields
         environmentRoleArchetypes,                                // all staff archetypes
