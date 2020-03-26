@@ -1614,11 +1614,20 @@ public class UserRESTService extends AbstractRESTService {
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
       nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+      // #4917: When listing workspace staff members, search across all organizations (TODO: Would be better via WorkspaceRESTService.listWorkspaceStaffMembers)
+      
+      List<OrganizationEntity> organizations;
+      if (workspaceEntityId == null) {
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+        OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+        organizations = Arrays.asList(organization);
+      }
+      else {
+        organizations = organizationEntityController.listUnarchived();
+      }
       
       SearchResult result = elasticSearchProvider.searchUsers(
-          Arrays.asList(organization),
+          organizations,
           searchString, 
           fields, 
           nonStudentArchetypes, 

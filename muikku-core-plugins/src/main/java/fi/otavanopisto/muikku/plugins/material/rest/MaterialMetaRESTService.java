@@ -31,6 +31,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Path("/materials")
 @Stateful
 @Produces("application/json")
+@Deprecated // once new material management design is in use (workspace-materials-management.js replaced)
 public class MaterialMetaRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 5126862097206188803L;
@@ -82,8 +83,14 @@ public class MaterialMetaRESTService extends PluginRESTService {
     if (key == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid key").build();
     }
-    
-    return Response.ok(createRestModel(materialController.createMaterialMeta(material, key, payload.getValue()))).build();
+
+    MaterialMeta materialMeta = materialController.findMaterialMeta(material, key);
+    if (materialMeta == null) {
+      return Response.ok(createRestModel(materialController.createMaterialMeta(material, key, payload.getValue()))).build();
+    }
+    else { // should have called PUT...
+      return Response.ok(createRestModel(materialController.updateMaterialMeta(materialMeta, payload.getValue()))).build();
+    }
   }
 
   @GET
