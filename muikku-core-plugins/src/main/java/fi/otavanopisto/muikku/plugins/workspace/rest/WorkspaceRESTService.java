@@ -133,6 +133,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -3018,14 +3019,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   private WorkspaceJournalEntryRESTModel toRestModel(WorkspaceJournalEntry workspaceJournalEntry) {
     UserEntity entryUserEntity = userEntityController.findUserEntityById(workspaceJournalEntry.getUserEntityId());
-    User user = entryUserEntity == null ? null : userController.findUserByUserEntityDefaults(entryUserEntity);
+    UserEntityName userEntityName = entryUserEntity == null ? null : userEntityController.getName(entryUserEntity);
     
     WorkspaceJournalEntryRESTModel result = new WorkspaceJournalEntryRESTModel();
     result.setId(workspaceJournalEntry.getId());
     result.setWorkspaceEntityId(workspaceJournalEntry.getWorkspaceEntityId());
     result.setUserEntityId(workspaceJournalEntry.getUserEntityId());
-    result.setFirstName(user == null ? null : user.getFirstName());
-    result.setLastName(user == null ? null : user.getLastName());
+    result.setFirstName(userEntityName == null ? null : userEntityName.getFirstName());
+    result.setLastName(userEntityName == null ? null : userEntityName.getLastName());
     result.setContent(workspaceJournalEntry.getHtml());
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
@@ -3047,8 +3048,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         commentTreeAdd(comments, c, resultList);
       });
     return resultList;
-}  
-  
-  
+  }  
 
 }
