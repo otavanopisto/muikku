@@ -404,7 +404,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       });
     }
     if (!equals(this.props.workspace.permissions, this.state.workspacePermissions)) {
-      let permissionsArray:WorkspacePermissionsType[]  = [];
+      let permissionsArray:WorkspacePermissionsType[]=[];
     
       this.state.workspacePermissions.forEach((permission) => {
         const originalPermission = this.props.workspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
