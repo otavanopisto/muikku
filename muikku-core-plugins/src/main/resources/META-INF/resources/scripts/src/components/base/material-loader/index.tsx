@@ -11,7 +11,6 @@ import mApi from '~/lib/mApi';
 import { WorkspaceType, MaterialContentNodeType, MaterialCompositeRepliesType } from '~/reducers/workspaces';
 import promisify from '~/util/promisify';
 
-import '~/sass/elements/rich-text.scss';
 import { i18nType } from '~/reducers/base/i18n';
 import { StatusType } from '~/reducers/base/status';
 import { StateType } from '~/reducers';
@@ -27,6 +26,9 @@ import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
 import Link from '~/components/general/link';
+
+import '~/sass/elements/rich-text.scss';
+import '~/sass/elements/material-page.scss';
 
 //These represent the states assignments and exercises can be in
 const STATES = [{
