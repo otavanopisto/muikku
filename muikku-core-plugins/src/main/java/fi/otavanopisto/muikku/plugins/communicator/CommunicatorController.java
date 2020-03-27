@@ -14,7 +14,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
@@ -23,7 +22,6 @@ import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -55,6 +53,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class CommunicatorController {
@@ -97,6 +96,9 @@ public class CommunicatorController {
 
   @Inject
   private TagController tagController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   @Any
@@ -164,8 +166,10 @@ public class CommunicatorController {
     Set<Long> recipientIds = new HashSet<Long>();
     
     for (UserEntity recipient : userRecipients) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+          recipient.getDefaultSchoolDataSource(), recipient.getDefaultIdentifier());
       // #3758: Only send messages to active users
-      if (!isActiveUser(recipient)) {
+      if (!isActiveUser(userSchoolDataIdentifier)) {
         continue;
       }
       if (!recipientIds.contains(recipient.getId())) {
@@ -184,13 +188,9 @@ public class CommunicatorController {
           for (UserGroupUserEntity groupUser : groupUsers) {
             UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
-            // Only message students
-            if (userSchoolDataIdentifier.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT) {
-              continue;
-            }
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            if (!StringUtils.equals(userSchoolDataIdentifier.getIdentifier(), recipient.getDefaultIdentifier()) || !isActiveUser(recipient)) {
+            if (!isActiveUser(userSchoolDataIdentifier)) {
               continue;
             }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
@@ -216,13 +216,9 @@ public class CommunicatorController {
           for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
             UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
-            // Only message students
-            if (userSchoolDataIdentifier.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT) {
-              continue;
-            }
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            if (!StringUtils.equals(userSchoolDataIdentifier.getIdentifier(), recipient.getDefaultIdentifier()) || !isActiveUser(recipient)) {
+            if (!isActiveUser(userSchoolDataIdentifier)) {
               continue;
             }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
@@ -578,13 +574,10 @@ public class CommunicatorController {
     return null;
   }
   
-  private boolean isActiveUser(UserEntity userEntity) {
-    // It would be more accurate to search by UserSchoolDataIdentifier against search index field "identifier" but those values
-    // contain a dash (e.g. STUDENT-123) which very efficiently prevents searching as it cannot be escaped properly; search
-    // string becomes either STUDENT-123 or STUDENT\\-123 when we would like STUDENT\-123
+  private boolean isActiveUser(UserSchoolDataIdentifier identifier) {
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
-      SearchResult searchResult = searchProvider.findUser(userEntity.getId(), false);
+      SearchResult searchResult = searchProvider.findUser(identifier, false);
       return searchResult.getTotalHitCount() > 0;
     }
     return true;
