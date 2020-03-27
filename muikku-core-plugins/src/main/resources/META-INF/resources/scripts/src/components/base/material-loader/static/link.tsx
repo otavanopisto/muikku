@@ -18,7 +18,7 @@ export default class Link extends React.Component<LinkProps, {}>{
   }
   render (){
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-      if (Tag === "a" && elementProps.href && !elementProps.href.includes("//")){
+      if (Tag === "a" && elementProps.href && !elementProps.href.includes("//") && elementProps.href[0] !== "#"){
         elementProps.href = this.props.path + "/" + elementProps.href;
       }
       
