@@ -50,10 +50,10 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class CommunicatorController {
@@ -96,9 +96,6 @@ public class CommunicatorController {
 
   @Inject
   private TagController tagController;
-  
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   @Any
@@ -166,10 +163,8 @@ public class CommunicatorController {
     Set<Long> recipientIds = new HashSet<Long>();
     
     for (UserEntity recipient : userRecipients) {
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-          recipient.getDefaultSchoolDataSource(), recipient.getDefaultIdentifier());
       // #3758: Only send messages to active users
-      if (!isActiveUser(userSchoolDataIdentifier)) {
+      if (!isActiveUser(recipient.defaultSchoolDataIdentifier())) {
         continue;
       }
       if (!recipientIds.contains(recipient.getId())) {
@@ -190,7 +185,7 @@ public class CommunicatorController {
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            if (!isActiveUser(userSchoolDataIdentifier)) {
+            if (!isActiveUser(userSchoolDataIdentifier.schoolDataIdentifier())) {
               continue;
             }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
@@ -218,7 +213,7 @@ public class CommunicatorController {
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            if (!isActiveUser(userSchoolDataIdentifier)) {
+            if (!isActiveUser(userSchoolDataIdentifier.schoolDataIdentifier())) {
               continue;
             }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
@@ -574,7 +569,7 @@ public class CommunicatorController {
     return null;
   }
   
-  private boolean isActiveUser(UserSchoolDataIdentifier identifier) {
+  private boolean isActiveUser(SchoolDataIdentifier identifier) {
     SearchProvider searchProvider = getProvider("elastic-search");
     if (searchProvider != null) {
       SearchResult searchResult = searchProvider.findUser(identifier, false);

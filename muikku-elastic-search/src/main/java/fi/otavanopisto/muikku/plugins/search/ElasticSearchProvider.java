@@ -49,7 +49,6 @@ import org.elasticsearch.search.sort.SortOrder;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -121,7 +120,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
-  public SearchResult findUser(UserSchoolDataIdentifier identifier, boolean includeInactive) {
+  public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive) {
 
     // Query that checks activity based on user having a study end date set
     
@@ -130,7 +129,7 @@ public class ElasticSearchProvider implements SearchProvider {
       query.mustNot(existsQuery("studyEndDate"));
     }
     IdsQueryBuilder includeIdsQuery = idsQuery("User");
-    includeIdsQuery.addIds(String.format("%s/%s", identifier.getIdentifier(), identifier.getDataSource().getIdentifier()));
+    includeIdsQuery.addIds(String.format("%s/%s", identifier.getIdentifier(), identifier.getDataSource()));
     query.must(includeIdsQuery);
     
     // Search
