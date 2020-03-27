@@ -173,6 +173,9 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       } else if (connection && connection.counterpart === counterpart.name) {
         return "PASS";
       }
+      
+      const allCounterpartsWithTheSameValue = this.state.counterparts.filter((cp) => cp.text.toLowerCase() === counterpart.text.toLowerCase());
+      const allCounterpartsMatchingNameList = allCounterpartsWithTheSameValue.map((cp) => cp.name);
 
       // We try to find all the fields that share the same written text as our field
       const allFieldsWithTheSameValue = this.state.fields.filter((f2) => f2.text.toLocaleLowerCase() === field.text.toLocaleLowerCase());
@@ -181,7 +184,9 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
         return this.props.content.connections.find(c2=>c2.field === f2.name);
       }).filter(c2 => !!c2);
       // we check if the counterpart we have matches one of those connections
-      const counterpartIsOneOfThoseConnections = allConnectionsForTheSameFieldName.some(c2 => c2.counterpart === counterpart.name);
+      const counterpartIsOneOfThoseConnections = allConnectionsForTheSameFieldName.some(
+        c2 => allCounterpartsMatchingNameList.includes(c2.counterpart)
+      );
       return counterpartIsOneOfThoseConnections ? "PASS" : "FAIL";
     });
 
