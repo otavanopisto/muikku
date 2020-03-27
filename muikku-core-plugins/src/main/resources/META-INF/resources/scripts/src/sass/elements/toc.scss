@@ -71,6 +71,12 @@
   }
 }
 
+.toc__element--drag-placeholder-container:nth-child(2) {
+  border: 2px dashed $color-default-separator-border;
+  height: 1.75rem;
+  margin: 0 12px;
+}
+
 .toc__section--drag-container,
 .toc__item--drag-container {
   position: relative;
