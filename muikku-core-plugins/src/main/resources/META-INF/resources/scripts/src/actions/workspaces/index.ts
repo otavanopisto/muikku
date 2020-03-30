@@ -607,7 +607,7 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
       let unchangedPermissions:WorkspacePermissionsType[]=[];
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       
-      // I left the workspace image out of this, because it never is in the application state anyway
+// I left the workspace image out of this, because it never is in the application state anyway
 
      // These need to be removed from the object for the basic stuff to not fail      
      
@@ -630,6 +630,13 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
         
         // Add details back to the update object
         data.update.details = newDetails;
+        
+        // Details affect additionalInfo, so I guess we load that too. It's not a "single source of truth" when there's duplicates in the model, is it?
+        
+        let additionalInfo  = <WorkspaceAdditionalInfoType>(await promisify(mApi().workspace.workspaces.additionalInfo.cacheClear().read(currentWorkspace.id), 'callback')()); 
+
+        data.update.additionalInfo = additionalInfo;
+        
       }
       
       // Then permissions - if any

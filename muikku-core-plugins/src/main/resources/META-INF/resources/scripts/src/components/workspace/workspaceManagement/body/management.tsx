@@ -346,7 +346,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)){
       totals++;
-      
       payload = Object.assign({details: workspaceDetails}, payload);
     }
 
