@@ -317,16 +317,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       totals++;
       
       payload = Object.assign(workspaceUpdate, payload) ;
-
-//      this.props.updateWorkspace({
-//        workspace: this.props.workspace,
-//        update: workspaceUpdate,
-//        success: ()=>{
-//          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.basicData"), "success");
-//          onDone();
-//        },
-//        fail: onDone
-//      });
     }
 
     let workspaceMaterialProducers = this.state.workspaceProducers;
@@ -334,15 +324,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     if (!equals(workspaceMaterialProducers, this.props.workspace.producers)){
       totals++;
       payload = Object.assign({producers: workspaceMaterialProducers}, payload);
-
-//      this.props.updateWorkspaceProducersForCurrentWorkspace({
-//        appliedProducers: workspaceMaterialProducers,
-//        success: ()=>{
-//          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.producers"), "success");
-//          onDone();
-//        },
-//        fail: onDone
-//      });
     }
 
     let workspaceDetails:WorkspaceDetailsType = {
@@ -369,15 +350,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       totals++;
       
       payload = Object.assign({details: workspaceDetails}, payload);
-      
-//      this.props.updateWorkspaceDetailsForCurrentWorkspace({
-//        newDetails: workspaceDetails,
-//        success: ()=>{
-//          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.details"), "success");
-//          onDone();
-//        },
-//        fail: onDone
-//      });
     }
 
     let workspaceImage = this.state.workspaceHasCustomImage ? this.state.newWorkspaceImageCombo : null;
@@ -411,16 +383,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         if (!equals(originalPermission, permission)) {
           totals++;
           permissionsArray.push(permission);
-//          this.props.updateCurrentWorkspaceUserGroupPermission({
-//            original: originalPermission,
-//            update: permission,
-//            success: ()=>{
-//              // Make this a notification that displays the user group name, there's one notification per group updated as they are independent
-//              this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.permissions", permission.userGroupName), "success");
-//              onDone();
-//            },
-//            fail: onDone
-//          });
         }
       });
       payload = Object.assign({permissions: permissionsArray}, payload);
@@ -430,7 +392,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspace: this.props.workspace,
       update: payload,
       success: ()=>{
-        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.basicData"), "success");
+        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.save.successful"), "success");
         onDone();
       },
       fail: onDone
