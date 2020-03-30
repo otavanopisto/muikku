@@ -20,6 +20,11 @@
     clear: both;
   }
 
+  // This will prevent ckeditor to screw up toolbar (and other elements) rendering becouse of previous rule
+  .cke * {
+    clear: unset;
+  }
+
   // Math Formulas overflow rule
   .math-tex {
     align-items: center;
