@@ -4,13 +4,13 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import $ from '~/lib/jquery';
 
-import Header from './body/header';
-import Separator from './body/separator';
-import Studying from './body/studying';
-import Videos from './body/videos';
-import News from './body/news';
-import Organization from './body/organization';
-import Footer from './body/footer';
+import FrontpageHero from './body/header';
+import FrontpageStudying from './body/studying';
+import FrontpageVideos from './body/videos';
+import FrontpageNews from './body/news';
+import FrontpageInstagram from './body/instagram';
+import FrontpageOrganization from './body/organization';
+import FrontpageFooter from './body/footer';
 
 import '~/sass/elements/logo.scss';
 import '~/sass/elements/ordered-container.scss';
@@ -25,25 +25,23 @@ interface FrontpageBodyProps {
 }
 
 interface FrontpageBodyState {
-  
+
 }
 
 class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodyState> {
   render(){
     return (<div>
       <FrontpageNavbar />
-      <Header i18n={this.props.i18n}/>
-      
-      <Separator/>
-      
+      <FrontpageHero i18n={this.props.i18n}/>
       <ScreenContainer fullHeight={false}>
-        <Studying i18n={this.props.i18n}/>
-        <Videos/>
-        <News i18n={this.props.i18n}/>
-        <Organization i18n={this.props.i18n}/>
+        <FrontpageStudying i18n={this.props.i18n}/>
+        <FrontpageVideos/>
+        <FrontpageNews i18n={this.props.i18n}/>
+        <FrontpageInstagram i18n={this.props.i18n}/>
+        <FrontpageOrganization i18n={this.props.i18n}/>
       </ScreenContainer>
-        
-      <Footer i18n={this.props.i18n}/>
+
+      <FrontpageFooter i18n={this.props.i18n}/>
     </div>);
   }
 }

@@ -11,6 +11,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
@@ -29,6 +31,8 @@ import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 
 public class UserEntityController implements Serializable {
   
@@ -51,6 +55,10 @@ public class UserEntityController implements Serializable {
   
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
   
   public UserEntity createUserEntity(SchoolDataSource defaultSchoolDataSource, String defaultIdentifier, Locale locale) {
     return userEntityDAO.create(Boolean.FALSE, defaultSchoolDataSource, defaultIdentifier, locale != null ? locale.toString() : null);
@@ -64,6 +72,30 @@ public class UserEntityController implements Serializable {
     }
     
     return createUserEntity(schoolDataSource, identifier, null);
+  }
+  
+  public UserEntityName getName(UserEntity userEntity) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
+        SearchResult searchResult = searchProvider.findUser(userEntity.defaultSchoolDataIdentifier(), true);
+        if (searchResult.getTotalHitCount() > 0) {
+          List<Map<String, Object>> results = searchResult.getResults();
+          // Settle for first match but prefer default identifier 
+          Map<String, Object> match = results.get(0);
+          if (searchResult.getTotalHitCount() >  1) {
+            for (Map<String, Object> result : results) {
+              String identifier = (String) result.get("identifier");
+              if (StringUtils.equals(userEntity.getDefaultIdentifier(), identifier)) {
+                match = result;
+                break;
+              }
+            }
+          }
+          return new UserEntityName((String) match.get("firstName"), (String) match.get("lastName"));
+        }
+      }
+    }
+    return null;
   }
   
   public UserEntity findUserEntityById(Long id) {

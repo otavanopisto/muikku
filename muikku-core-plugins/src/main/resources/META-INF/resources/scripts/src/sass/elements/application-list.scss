@@ -174,9 +174,6 @@
   flex-flow: row nowrap;
 }
 
-
-
-
 .application-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   background-color: $color-application-list-item-background;
@@ -731,6 +728,16 @@
 
   @include breakpoint($breakpoint-pad) {
     padding: 0 0 15px;
+  }
+}
+
+.application-list__item-body-meta-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 10px;
+
+  label {
+    margin-right: 10px;
   }
 }
 

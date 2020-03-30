@@ -213,6 +213,7 @@ export interface WorkspaceType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
+  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
@@ -252,6 +253,7 @@ export interface WorkspaceUpdateType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
+  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
@@ -292,7 +294,7 @@ export type WorkspaceOrganizationFilterListType = Array<WorkspaceOrganizationFil
 
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 
-export interface WorkspacesAvaliableFiltersType {
+export interface WorkspacesavailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType,
   curriculums: WorkspaceCurriculumFilterListType,
   organizations: WorkspaceOrganizationFilterListType,
@@ -352,7 +354,7 @@ export interface WorkspacesType {
   userWorkspaces: WorkspaceListType,
   lastWorkspace?: WorkspaceMaterialReferenceType,
   currentWorkspace?: WorkspaceType,
-  avaliableFilters: WorkspacesAvaliableFiltersType,
+  availableFilters: WorkspacesavailableFiltersType,
   state: WorkspacesStateType,
   activeFilters: WorkspacesActiveFiltersType,
   hasMore: boolean,
@@ -517,7 +519,7 @@ export default function workspaces(state: WorkspacesType={
   currentMaterials: null,
   currentHelp: null,
   currentMaterialsReplies: null,
-  avaliableFilters: {
+  availableFilters: {
     educationTypes: [],
     curriculums: [],
     organizations: [],
@@ -583,21 +585,21 @@ export default function workspaces(state: WorkspacesType={
        userWorkspaces: state.userWorkspaces.map(processWorkspaceToHaveNewAssessmentStateAndDate.bind(this, action.payload.workspace.id, action.payload.newState,
           action.payload.newDate, action.payload.newAssessmentRequest)) 
     })
-  } else if (action.type === "UPDATE_WORKSPACES_AVALIABLE_FILTERS_EDUCATION_TYPES"){
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"){
     return Object.assign({}, state, {
-      avaliableFilters: Object.assign({}, state.avaliableFilters, {
+      availableFilters: Object.assign({}, state.availableFilters, {
         educationTypes: action.payload
       })
     });
-  } else if (action.type === "UPDATE_WORKSPACES_AVALIABLE_FILTERS_CURRICULUMS"){
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"){
     return Object.assign({}, state, {
-      avaliableFilters: Object.assign({}, state.avaliableFilters, {
+      availableFilters: Object.assign({}, state.availableFilters, {
         curriculums: action.payload
       })
     });
   } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS"){
     return Object.assign({}, state, {
-      avaliableFilters: Object.assign({}, state.avaliableFilters, {
+      availableFilters: Object.assign({}, state.availableFilters, {
         organizations: action.payload
       })
     });
@@ -655,8 +657,12 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let newCurrentWorkspace = state.currentWorkspace;
-    if (!action.payload.isDraft && !found &&
-        newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && newCurrentWorkspace.help.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      found = true;
+      newCurrentWorkspace = {...newCurrentWorkspace};
+      newCurrentWorkspace.help = {...newCurrentWorkspace.help, ...action.payload.update};
+    }
+    if (!action.payload.isDraft && !found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
       newCurrentWorkspace = {...newCurrentWorkspace};
       newCurrentWorkspace.contentDescription = {...newCurrentWorkspace.contentDescription, ...action.payload.update};

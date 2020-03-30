@@ -19,6 +19,9 @@ public class OrganizationManagementPermissions extends AbstractMuikkuPermissionC
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
   public static final String ORGANIZATION_VIEW = "ORGANIZATION_VIEW";
   
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
+  public static final String ORGANIZATION_MANAGE_WORKSPACES = "ORGANIZATION_MANAGE_WORKSPACES";
 
   @Override
   public List<String> listPermissions() {
