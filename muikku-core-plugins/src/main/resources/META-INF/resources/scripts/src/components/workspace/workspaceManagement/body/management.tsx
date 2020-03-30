@@ -272,6 +272,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       })
     });
   }
+
   save(){
     this.setState({
       locked: true
@@ -288,10 +289,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         });
       }
     }
-    let payload: WorkspaceUpdateType = {
-      
-    }
-    
+    let payload: WorkspaceUpdateType = {};
     
     let workspaceUpdate:WorkspaceUpdateType = {
       name: this.state.workspaceName,
@@ -352,29 +350,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       payload = Object.assign({details: workspaceDetails}, payload);
     }
 
-    let workspaceImage = this.state.workspaceHasCustomImage ? this.state.newWorkspaceImageCombo : null;
-    if (workspaceImage) {
-      totals++;
-      this.props.updateCurrentWorkspaceImagesB64({
-        originalB64: this.state.newWorkspaceImageCombo.originalB64,
-        croppedB64: this.state.newWorkspaceImageCombo.croppedB64,
-        success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
-          onDone();
-        },
-        fail: onDone
-      })
-    } else if (!workspaceImage && this.props.workspace.hasCustomImage && !this.state.workspaceHasCustomImage) {
-      totals++;
-      this.props.updateCurrentWorkspaceImagesB64({
-        delete: true,
-        success: ()=>{
-          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
-          onDone();
-        },
-        fail: onDone
-      });
-    }
+  
+    
     if (!equals(this.props.workspace.permissions, this.state.workspacePermissions)) {
       let permissionsArray:WorkspacePermissionsType[]=[];
     
@@ -398,9 +375,37 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       fail: onDone
     });
     
+    // Keep this out of the payload for now. I'd hate to put anything in the object that really does not need to be there.
+    // It's following the workspaceType and to add the image data "just for the ride" is stupid.
+    // The image never is in the application state
+
+    let workspaceImage = this.state.workspaceHasCustomImage ? this.state.newWorkspaceImageCombo : null;
+    
+    if (workspaceImage) {
+      totals++;
+      this.props.updateCurrentWorkspaceImagesB64({
+        originalB64: this.state.newWorkspaceImageCombo.originalB64,
+        croppedB64: this.state.newWorkspaceImageCombo.croppedB64,
+        success: ()=>{
+          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
+          onDone();
+        },
+        fail: onDone
+      })
+    } else if (!workspaceImage && this.props.workspace.hasCustomImage && !this.state.workspaceHasCustomImage) {
+      totals++;
+      this.props.updateCurrentWorkspaceImagesB64({
+        delete: true,
+        success: ()=>{
+          this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
+          onDone();
+        },
+        fail: onDone
+      });
+    }
+    
     onDone();
   }
-
 
   render(){
     let actualBackgroundSRC = this.state.workspaceHasCustomImage ?
