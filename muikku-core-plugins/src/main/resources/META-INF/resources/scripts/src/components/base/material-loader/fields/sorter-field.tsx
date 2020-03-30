@@ -181,8 +181,6 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     });
   }
   render(){
-    //This element we are gonna use depends on the orientation, we use divs of spans
-    let Element = this.props.content.orientation === "vertical" ? 'div' : 'span';
     let elementClassName = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
 
     //The summary for the correct answers
@@ -207,17 +205,17 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
         if (index === 0 && this.props.content.capitalize){
           text = text.charAt(0).toUpperCase() + text.slice(1);
         }
-        return <Element className="material-page__sorterfield-item" key={i.id}>
+        return <span className="material-page__sorterfield-item" key={i.id}>
           <span className="material-page__sorterfield-item-icon icon-move"></span>
           <span className="material-page__sorterfield-item-label">{text}</span>
-        </Element>
+        </span>
       })
-      return <Element ref="base" className="material-page__sorterfield-wrapper">
-        <Element className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}>
+      return <span ref="base" className="material-page__sorterfield-wrapper">
+        <span className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}>
           {filler}
-        </Element>
+        </span>
         {correctAnswersummaryComponent}
-      </Element>
+      </span>
     }
 
     //Lets get the class name to match the state of the entire field if necessary
@@ -228,9 +226,9 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     //we use that element and the class to create the field
-    return <Element className="material-page__sorterfield-wrapper">
+    return <span className="material-page__sorterfield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
-      <Element className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
+      <span className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
        {this.state.items.map((item, index)=>{
          //We get the text
          let text = item.name;
@@ -247,16 +245,16 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
 
          if (this.props.readOnly){
            //readonly component
-           return <Element className={`material-page__sorterfield-item ${itemStateAfterCheck}`} key={item.id}>
+           return <span className={`material-page__sorterfield-item ${itemStateAfterCheck}`} key={item.id}>
              <span className="material-page__sorterfield-item-icon icon-move"></span>
              <span className="material-page__sorterfield-item-label">{text}</span>
-           </Element>
+           </span>
          }
 
          //The draggable version, note how on interaction we swap
          //the parent component is a class name always make sure to have the right class name not to overflow
          //the interaction data is the item itself so the argument would be that
-         return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as={Element} parentContainerSelector=".material-page__sorterfield"
+         return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as="span" parentContainerSelector=".material-page__sorterfield"
            className={`material-page__sorterfield-item ${this.state.selectedItem && this.state.selectedItem.id === item.id ?
          "material-page__sorterfield-item--selected" : ""} ${itemStateAfterCheck}`} key={item.id} interactionGroup={this.props.content.name}
            interactionData={item} onInteractionWith={this.swap.bind(this, item)}
@@ -266,8 +264,8 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
            <span className="material-page__sorterfield-item-label">{text}</span>
          </Draggable>
        })}
-      </Element>
+      </span>
       {correctAnswersummaryComponent}
-    </Element>
+    </span>
   }
 }

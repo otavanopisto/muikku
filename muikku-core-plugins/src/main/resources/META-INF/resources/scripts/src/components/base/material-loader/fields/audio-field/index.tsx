@@ -318,18 +318,18 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
         //we need to map them
         emptyData = this.state.values.map((value, index)=>{
           //if the value is not uploading, we set it as static
-          return <div className="material-page__audiofield-file-container" key={index}/>;
+          return <span className="material-page__audiofield-file-container" key={index}/>;
         });
       }
-      return <div className="material-page__audiofield-wrapper">
-        <div className="material-page__audiofield">
+      return <span className="material-page__audiofield-wrapper">
+        <span className="material-page__audiofield">
           {!this.props.readOnly && !this.state.supportsMediaAPI() ? <input type="file"/> : null}
-          {!this.props.readOnly && this.state.supportsMediaAPI() ? <div className="material-page__audiofield-controls"/> : null}
-          {this.state.values.length > 0 ? <div className="material-page__audiofield-files-container">
+          {!this.props.readOnly && this.state.supportsMediaAPI() ? <span className="material-page__audiofield-controls"/> : null}
+          {this.state.values.length > 0 ? <span className="material-page__audiofield-files-container">
             {emptyData}
-          </div>: null }
-        </div>
-      </div>
+          </span>: null }
+        </span>
+      </span>
     }
     //rendering things here
     //this is the data that it has already created
@@ -342,7 +342,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
       dataInContainer = this.state.values.map((value, index)=>{
         if (!value.uploading) {
           //if the value is not uploading, we set it as static
-          return <div className="material-page__audiofield-file-container" key={index}>
+          return <span className="material-page__audiofield-file-container" key={index}>
             <audio className="material-page__audiofield-file" controls src={value.url}/>
             <Link className="material-page__audiofield-download-file-button icon-download"
                 title={this.props.i18n.text.get('plugin.workspace.audioField.downloadLink')} href={value.url} openInNewTab={value.name}/>
@@ -352,18 +352,18 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
                   title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
                 />
               </ConfirmRemoveDialog> : null }
-          </div>;
+          </span>;
         } else if (value.failed) {
           //if the value failed we add a message, you can get the value name there so use it to say which file
-          return <div className="material-page__audiofield-file-container">
-            <div className="material-page__audiofield-file material-page__audiofield-file--FAILED-TO-UPLOAD">
+          return <span className="material-page__audiofield-file-container">
+            <span className="material-page__audiofield-file material-page__audiofield-file--FAILED-TO-UPLOAD">
               {this.props.i18n.text.get("plugin.workspace.audioField.uploadFailed")}
-            </div>
-          </div>;
+            </span>
+          </span>;
         } else {
           //if the value is uploading
-          return <div className="material-page__audiofield-file-container material-page__audiofield-file-container--uploading" key={index}>
-            <div className="material-page__audiofield-file material-page__audiofield-file--uploading">
+          return <span className="material-page__audiofield-file-container material-page__audiofield-file-container--uploading" key={index}>
+            <span className="material-page__audiofield-file material-page__audiofield-file--uploading">
                <ProgressBarLine containerClassName="material-page__audiofield-file-upload-progressbar" options={{
                  strokeWidth: 1,
                  duration: 1000,
@@ -382,15 +382,15 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
                trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
                text={this.props.i18n.text.get("plugin.workspace.audioField.statusUploading", (Math.round(value.progress * 100)))}
                 progress={value.progress}/>
-          </div>
-        </div>;
+          </span>
+        </span>;
         }
       });
     }
 
     {this.state.recording ?
-      recordingInContainer = <div className="material-page__audiofield-file-container material-page__audiofield-file-container--recording">
-        <div className="material-page__audiofield-file material-page__audiofield-file--recording">
+      recordingInContainer = <span className="material-page__audiofield-file-container material-page__audiofield-file-container--recording">
+        <span className="material-page__audiofield-file material-page__audiofield-file--recording">
         <ProgressBarLine containerClassName="material-page__audiofield-file-record-progressbar" options={{
           strokeWidth: 1,
           duration: 1000,
@@ -413,18 +413,18 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
             .seconds(MAX_RECORDING_TIME_IN_SECONDS)
             .format('mm:ss'))}
            progress={this.state.time/MAX_RECORDING_TIME_IN_SECONDS}/>
-        </div>
-      </div>: null }
+        </span>
+      </span>: null }
 
     //if elements is disabled
     let ElementDisabledState = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     //and this is the container
-    return <div className="material-page__audiofield-wrapper">
+    return <span className="material-page__audiofield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
-      <div className={`material-page__audiofield ${ElementDisabledState}`}>
+      <span className={`material-page__audiofield ${ElementDisabledState}`}>
         {!this.props.readOnly && !this.state.supportsMediaAPI() ? <input type="file" accept="audio/*" onChange={this.onFileChanged} multiple/> : null}
-        {!this.props.readOnly && this.state.supportsMediaAPI() ? <div className="material-page__audiofield-controls">
+        {!this.props.readOnly && this.state.supportsMediaAPI() ? <span className="material-page__audiofield-controls">
           {!this.state.recording ? <Link className="material-page__audiofield-start-record-button icon-record" onClick={this.start}>
             <span className="material-page__audiofield-start-record-label">{this.props.i18n.text.get("plugin.workspace.audioField.startLink")}</span>
           </Link> : <Link className="material-page__audiofield-stop-record-button icon-stop" onClick={this.stop}>
@@ -432,14 +432,14 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
           </Link>}
           {!this.state.recording ? <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">{this.props.i18n.text.get("plugin.workspace.audioField.startRecordingHint")}</span>
           : <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">{this.props.i18n.text.get("plugin.workspace.audioField.stopRecordingHint")}</span> }
-        </div> : null}
-        {this.state.values.length > 0 || this.state.recording ? <div className="material-page__audiofield-files-container">
+        </span> : null}
+        {this.state.values.length > 0 || this.state.recording ? <span className="material-page__audiofield-files-container">
           {dataInContainer}
           {recordingInContainer}
-        </div>: null}
+        </span>: null}
         {this.props.readOnly && this.state.values.length == 0 ?
-          <div className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">{this.props.i18n.text.get("plugin.workspace.audioField.noFiles")}</div> : null}
-      </div>
-    </div>
+          <span className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">{this.props.i18n.text.get("plugin.workspace.audioField.noFiles")}</span> : null}
+      </span>
+    </span>
   }
 }

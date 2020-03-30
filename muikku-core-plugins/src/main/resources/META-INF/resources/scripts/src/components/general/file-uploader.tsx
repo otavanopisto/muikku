@@ -192,18 +192,18 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
   }
   render(){
     if (this.props.invisible) {
-      return <div className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
-        <div className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
+      return <span className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
+        <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
           <span className="file-uploader__hint">{this.props.hintText}</span>
           {this.props.readOnly ? null :
             (<input type="file" multiple className="file-uploader__field"/>)
           }
-        </div>
+        </span>
         {this.props.files && (this.props.files.length ?
-          <div className={`file-uploader__items-container ${this.props.modifier ? "file-uploader__items--" + this.props.modifier : ""}`}>
+          <span className={`file-uploader__items-container ${this.props.modifier ? "file-uploader__items--" + this.props.modifier : ""}`}>
             {this.props.files.map((file)=>{
               const url = this.props.fileUrlGenerator(file);
-              return <div className="file-uploader__item" key={file[this.props.fileIdKey]}>
+              return <span className="file-uploader__item" key={file[this.props.fileIdKey]}>
                 <span className="file-uploader__item-attachment-icon icon-attachment"></span>
                 {this.props.showURL ? <span className="file-uploader__item-title-container">
                   <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
@@ -218,22 +218,22 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                   <Link className="file-uploader__item-delete-icon icon-trash"/>
                 }
                 {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
-              </div>
+              </span>
             })}
-          </div> : this.props.emptyText && this.props.readOnly ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> :
-            this.props.emptyText ? <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div> : null
+          </span> : this.props.emptyText && this.props.readOnly ? <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span> :
+            this.props.emptyText ? <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span> : null
         )}
-      </div>
+      </span>
     }
 
     const DialogDeleteElement = this.props.deleteDialogElement;
     let dataNode = null;
     if (this.props.files) {
       if (this.props.files.length) {
-        dataNode = <div className="file-uploader__items-container">
+        dataNode = <span className="file-uploader__items-container">
           {this.props.files.map((file)=>{
             const url = this.props.fileUrlGenerator(file);
-            return <div className={`file-uploader__item ${this.props.modifier ? "file-uploader__item--" + this.props.modifier : ""}`} key={file[this.props.fileIdKey]}>
+            return <span className={`file-uploader__item ${this.props.modifier ? "file-uploader__item--" + this.props.modifier : ""}`} key={file[this.props.fileIdKey]}>
               <span className="file-uploader__item-attachment-icon icon-attachment"></span>
               {this.props.showURL ? <span className="file-uploader__item-title-container">
                 <span className="file-uploader__item-title">{file[this.props.fileNameKey]}</span>
@@ -248,11 +248,11 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                 <Link disablePropagation className="file-uploader__item-delete-icon icon-trash" title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
               </DialogDeleteElement>}
               {this.props.fileExtraNodeGenerator && this.props.fileExtraNodeGenerator(file)}
-            </div>
+            </span>
           })}
           {this.state.uploadingValues.map((uploadingFile, index) => {
             if (uploadingFile.failed) {
-              return <div className="file-uploader__item file-uploader__item--failed-to-upload" key={index}>
+              return <span className="file-uploader__item file-uploader__item--failed-to-upload" key={index}>
                 <span className="file-uploader__item-title-container">
                   <span className="file-uploader__item-title">
                     {uploadingFile.name}
@@ -260,10 +260,10 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                 </span>
                 <Link disablePropagation className="file-uploader__item-delete-icon icon-trash"
                   onClick={this.removeFailedFileAt.bind(this, index)} title={this.props.deleteFileText ? this.props.deleteFileText : ""}/>
-              </div>
+              </span>
             }
 
-            return <div className="file-uploader__item" key={index}>
+            return <span className="file-uploader__item" key={index}>
                 <ProgressBarLine containerClassName="file-uploader__item-upload-progressbar" options={{
                   strokeWidth: 1,
                   duration: 1000,
@@ -282,25 +282,25 @@ class FileUploader extends React.Component<FileUploaderProps, FileUploaderState>
                 trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
                 text={this.props.uploadingTextProcesser(Math.round(uploadingFile.progress * 100))}
                  progress={uploadingFile.progress}/>
-              </div>;
+              </span>;
           })}
-        </div>
+        </span>
       } else if (this.props.emptyText && this.props.readOnly) {
-        dataNode = <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div>
+        dataNode = <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span>
       } else if (this.props.emptyText) {
-        dataNode = <div className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</div>
+        dataNode = <span className="file-uploader__items-container file-uploader__items-container--empty">{this.props.emptyText}</span>
       }
     }
 
-    return <div className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
-      <div className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
+    return <span className={`file-uploader ${this.props.modifier ? "file-uploader--" + this.props.modifier : ""} ${this.props.readOnly ? "file-uploader--readonly" : ""}`}>
+      <span className={`file-uploader__field-container ${this.props.modifier ? "file-uploader__field-container--" + this.props.modifier : ""}`}>
         <span className="file-uploader__hint">{this.props.hintText}</span>
         {this.props.readOnly ? null :
           (<input type="file" multiple className="file-uploader__field" onChange={this.onFileInputChange}/>)
         }
-      </div>
+      </span>
       {dataNode}
-    </div>
+    </span>
   }
 }
 

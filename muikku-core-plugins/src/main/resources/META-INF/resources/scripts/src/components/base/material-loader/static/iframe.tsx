@@ -20,7 +20,7 @@ export default class Iframe extends React.Component<IframeProps, {}>{
   render (){
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
       if (Tag === "iframe" && this.props.invisible) {
-        return <div style={{height: elementProps.height + "px" || "160px"}}/>
+        return <span style={{height: elementProps.height + "px" || "160px"}}/>
       }
 
       if (Tag === "iframe" && this.props.dataset.url) {
@@ -56,9 +56,9 @@ export default class Iframe extends React.Component<IframeProps, {}>{
             width: !iframeProps.width ? "100%" : null,
           }
         }
-        return <div className="iframe" style={containerStyle}>
+        return <span className="material-page__iframe-wrapper" style={containerStyle}>
           <Tag {...iframeProps}>{children}</Tag>
-        </div>
+        </span>
       }
     });
   }
