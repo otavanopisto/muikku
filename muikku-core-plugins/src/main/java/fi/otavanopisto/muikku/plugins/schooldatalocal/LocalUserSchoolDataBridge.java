@@ -573,4 +573,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     
   }
 
+  @Override
+  public boolean isActiveUser(User user) {
+    return user.getStudyEndDate() == null;
+  }
+
 }
