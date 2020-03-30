@@ -80,6 +80,7 @@ import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -215,14 +216,12 @@ public class Evaluation2RESTService {
     }
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
     UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       if (!sessionController.getLoggedUserEntity().getId().equals(studentEntity.getId())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-    User student = userController.findUserByIdentifier(studentIdentifier);
+    UserEntityName studentName = userEntityController.getName(studentEntity);
     
     // Result object
     
@@ -249,7 +248,7 @@ public class Evaluation2RESTService {
       // Event
       
       RestEvaluationEvent event = new RestEvaluationEvent();
-      event.setStudent(student.getDisplayName());
+      event.setStudent(studentName.getDisplayName());
       event.setAuthor(assessor.getDisplayName());
       event.setDate(workspaceAssessment.getDate());
       event.setGrade(gradingScaleItem.getName());
@@ -280,7 +279,7 @@ public class Evaluation2RESTService {
       User assessor = userController.findUserByIdentifier(assessorIdentifier);
       
       RestEvaluationEvent event = new RestEvaluationEvent();
-      event.setStudent(student.getDisplayName());
+      event.setStudent(studentName.getDisplayName());
       event.setAuthor(assessor.getDisplayName());
       event.setDate(supplementationRequest.getRequestDate());
       event.setIdentifier(supplementationRequest.getId().toString());
@@ -297,8 +296,8 @@ public class Evaluation2RESTService {
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
       RestEvaluationEvent event = new RestEvaluationEvent();
-      event.setStudent(student.getDisplayName());
-      event.setAuthor(student.getDisplayName());
+      event.setStudent(studentName.getDisplayName());
+      event.setAuthor(studentName.getDisplayName());
       event.setDate(assessmentRequest.getDate());
       event.setIdentifier(assessmentRequest.getIdentifier());
       event.setText(assessmentRequest.getRequestText());

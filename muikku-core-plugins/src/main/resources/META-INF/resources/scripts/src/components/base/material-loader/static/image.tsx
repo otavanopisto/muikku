@@ -18,6 +18,7 @@ interface ImageProps {
     original?: string
   },
   i18n: i18nType,
+  processingFunction: any,
 
   invisible?: boolean,
 }
@@ -58,7 +59,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
     window.addEventListener("resize", this.calculatePredictedHeight);
   }
   calculatePredictedHeight() {
-    if (this.predictedAspectRatio) {
+    if (this.predictedAspectRatio && this.refs["img"]) {
       const predictedHeight = (this.refs["img"] as HTMLImageElement).offsetWidth/this.predictedAspectRatio;
       if (predictedHeight !== this.state.predictedHeight) {
         this.setState({
@@ -69,7 +70,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
   }
   calculateMaxWidth() {
     const image = (this.refs["img"] as HTMLImageElement);
-    if (image.src) {
+    if (image && image.src) {
       const maxWidth = image.naturalWidth;
       if (maxWidth !== this.state.maxWidth) {
         this.setState({maxWidth});
@@ -77,7 +78,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
     }
   }
   render(){
-    return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
+    const reprocessingFunction = (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
       if (Tag === "figure" && (this.props.dataset.source || this.props.dataset.author || this.props.dataset.license)){
         if (!this.props.invisible) {
           children.push(<div className="image__details icon-copyright" key="details">
@@ -142,6 +143,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
       }
 
       return <Tag {...elementProps}>{children}</Tag>
-    });
+    };
+    return HTMLtoReactComponent(this.props.element, this.props.processingFunction.bind(this, "figure", reprocessingFunction));
   }
 }

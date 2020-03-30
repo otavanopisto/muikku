@@ -701,8 +701,9 @@ export default function workspaces(state: WorkspacesType={
     
     let newEditor = state.materialEditor;
     if (newEditor && (
-        newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
-        newEditor.parentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId)) {
+          newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
+          (newEditor.parentNodeValue && newEditor.parentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId)
+        )) {
       newEditor = {
         currentNodeValue: null,
         parentNodeValue: null,

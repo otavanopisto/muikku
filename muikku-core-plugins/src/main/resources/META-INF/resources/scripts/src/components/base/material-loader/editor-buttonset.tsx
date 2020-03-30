@@ -21,7 +21,7 @@ function toggleVisiblePageStatus(props: EditorButtonSetProps) {
 }
 
 function startupEditor(props: EditorButtonSetProps){
-  if (props.folder && (typeof props.canAddAttachments === "undefined"  || props.canAddAttachments)) {
+  if (typeof props.canAddAttachments === "undefined" || props.canAddAttachments) {
     props.requestWorkspaceMaterialContentNodeAttachments(props.workspace, props.material);
   }
   props.setWorkspaceMaterialEditorState({

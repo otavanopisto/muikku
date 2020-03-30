@@ -22,6 +22,7 @@ import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } 
 import { WebsocketStateType } from '~/reducers/util/websocket';
 import Link from '~/components/base/material-loader/static/link';
 import { HTMLtoReactComponent } from "~/util/modifiers";
+import Table from '~/components/base/material-loader/static/table';
 
 //These are all our supported objects as for now
 const objects: {[key: string]: any} = {
@@ -96,35 +97,6 @@ const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT = 666;
 const TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_CONSIDERED_FAILED_IF_SERVER_DOES_NOT_REPLY = 2000;
 //The client will wait this amount of milliseconds to trigger an update
 const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE = 666;
-
-//The handlers that do more to html static items
-//That are somehow brokeeeen
-const statics:{[componentKey:string]: {
-  container: string,
-  element: any,
-  containerClassName: string,
-}} = {
-  'figure[class="image"]': {
-    container: "div",
-    containerClassName: "image-container",
-    element: Image
-  },
-  'mark[data-muikku-word-definition]': {
-    container: "span",
-    containerClassName: "word-definition-container",
-    element: WordDefinition,
-  },
-  'iframe': {
-    container: "div",
-    containerClassName: "iframe-container",
-    element: IFrame,
-  },
-  'a[href]': {
-    container: "span",
-    containerClassName: "link-container",
-    element: Link,
-  },
-};
 
 //Fixes the html inconsitencies because
 //there are some of them which shouldn't
@@ -412,17 +384,58 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     }, TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUEUE)
   }
   render(){
+    const processingFunction = (dontProcessTag: string, reprocessFunction: any, Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
+      if (Tag !== dontProcessTag) {
+        if (Tag === "object") {
+          const rElement:React.ReactElement<any> = this.getObjectElement(element, this.props, elementProps.key);
+          return rElement;
+        } else if (
+          Tag === "iframe" ||
+          (Tag === "mark" && element.dataset.muikkuWordDefinition) ||
+          (Tag === "figure" && element.classList.contains("image")) ||
+          (Tag === "a" && (element as HTMLAnchorElement).href) ||
+          Tag === "table"
+        ) {
+          const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
+          const invisible = this.props.invisible;
+          const i18n = this.props.i18n;
+          const dataset = extractDataSet(element);
+          const key = elementProps.key;
+          if (Tag === "iframe") {
+            return <IFrame key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n}/>
+          } else if (Tag === "table") {
+            return <Table key={elementProps.key} element={element} props={elementProps} children={children}/>
+          } else if (Tag === "mark") {
+            return <WordDefinition key={elementProps.key} invisible={invisible} dataset={dataset} i18n={i18n}>{children}</WordDefinition>
+          } else if (Tag === "figure") {
+            return <Image key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} processingFunction={processingFunction.bind(this)}/>
+          } else {
+            return <Link key={elementProps.key} element={element} path={path} dataset={dataset} i18n={i18n}/>
+          }
+        } else if (
+          Tag === "source"
+        ) {
+          const src = elementProps.src;
+          const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
+          (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+          if (!isAbsolute){
+            const path = "/workspace/" + this.props.workspace.urlName + "/materials/" + this.props.material.path;
+            elementProps.src = path + "/" + src;
+          }
+        }
+      }
+      
+      if (reprocessFunction) {
+        return reprocessFunction(Tag, elementProps, children, element);
+      }
+
+      return <Tag {...elementProps}>{children}</Tag>
+    };
     //This is all there is we just glue the HTML in there
     //and pick out the content from there
     return <div className="material-page__content rich-text">
       {this.state.elements.map((rootElement, index) => {
-        return HTMLtoReactComponent(rootElement, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-          if (Tag === "object") {
-            const rElement:React.ReactElement<any> = this.getObjectElement(element, this.props, elementProps.key);
-            return rElement;
-          }
-          return <Tag {...elementProps}>{children}</Tag>
-        }, index);
+        return HTMLtoReactComponent(rootElement, processingFunction.bind(this, null, null), index);
       })}
     </div>;
   }

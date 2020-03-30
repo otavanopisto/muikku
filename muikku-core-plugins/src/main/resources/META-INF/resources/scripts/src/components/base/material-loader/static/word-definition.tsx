@@ -3,7 +3,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 
 interface WordDefinitionProps {
-  element: HTMLElement,
   dataset: {
     muikkuWordDefinition: string
   },
@@ -18,10 +17,10 @@ export default class WordDefinition extends React.Component<WordDefinitionProps,
   render(){
     //TODO remove the data-muikku-word-definition thing, it's basically used for styling alone
     if (this.props.invisible){
-      return <mark data-muikku-word-definition={this.props.dataset.muikkuWordDefinition}>{this.props.element.textContent}</mark>
+      return <mark data-muikku-word-definition={this.props.dataset.muikkuWordDefinition}>{this.props.children}</mark>
     }
     return <Dropdown openByHover modifier="word-definition" content={this.props.dataset.muikkuWordDefinition}>
-      <mark data-muikku-word-definition={this.props.dataset.muikkuWordDefinition}>{this.props.element.textContent}</mark>
+      <mark data-muikku-word-definition={this.props.dataset.muikkuWordDefinition}>{this.props.children}</mark>
     </Dropdown>
   }
 }

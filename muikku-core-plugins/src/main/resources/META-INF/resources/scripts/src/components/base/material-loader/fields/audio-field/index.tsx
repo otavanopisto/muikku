@@ -7,6 +7,7 @@ import moment from '~/lib/moment';
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
+import Synchronizer from "../base/synchronizer";
 
 //so we use the media recorder
 //the media recorder is polyfilled
@@ -420,6 +421,7 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
 
     //and this is the container
     return <div className="material-page__audiofield-wrapper">
+      <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       <div className={`material-page__audiofield ${ElementDisabledState}`}>
         {!this.props.readOnly && !this.state.supportsMediaAPI() ? <input type="file" accept="audio/*" onChange={this.onFileChanged} multiple/> : null}
         {!this.props.readOnly && this.state.supportsMediaAPI() ? <div className="material-page__audiofield-controls">

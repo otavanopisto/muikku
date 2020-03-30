@@ -27,7 +27,8 @@ interface TocTopicProps {
   name?: string,
   icon?: string,
   className?: string,
-  isHidden: boolean
+  isHidden: boolean,
+  hash?: number | string,
 }
 
 interface TocTopicState {
@@ -37,9 +38,12 @@ interface TocTopicState {
 export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
   render(){
     return <div className={this.props.className}>
-      {this.props.name ? <div className={`toc__section-title ${this.props.isHidden ? "hidden" : ""}`}>
+      {this.props.name ? <Link
+        className={`toc__section-title ${this.props.isHidden ? "hidden" : ""}`}
+        href={this.props.hash ? "#" + this.props.hash : null}
+      >
         {this.props.name}
-      </div> : null}
+      </Link> : null}
       {this.props.children}
     </div>
   }

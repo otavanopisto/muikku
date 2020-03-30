@@ -82,7 +82,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) +
         getShortenGradeExtension(workspace.studentAssessmentState.grade)}
         className={`application-list__indicator-badge application-list__indicator-badge--course ${
-          workspace.studentAssessmentState.state === "pass" || workspace.studentAssessmentState.state === "pending_pass" ? "state-passed" : "state-failed"}`}>
+          workspace.studentAssessmentState.state === "pass" || workspace.studentAssessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
           {shortenGrade(workspace.studentAssessmentState.grade)}
       </span>
     </span>
@@ -92,7 +92,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
     return <span className="application-list__header-secondary">
       <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
-        className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-incomplete" : "state-failed"}`}>
+        className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
         {status[0].toLocaleUpperCase()}
       </span>
     </span>
@@ -214,11 +214,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     //incomplete might be difficult to understand
                     let extraClassNameState = "";
                     if (workspace.studentAssessmentState.state === "pass"){
-                      extraClassNameState = "state-passed"
+                      extraClassNameState = "state-PASSED"
                     } else if (workspace.studentAssessmentState.state === "fail"){
-                      extraClassNameState = "state-failed"
+                      extraClassNameState = "state-FAILED"
                     } else if (workspace.studentAssessmentState.state === "incomplete"){
-                      extraClassNameState = "state-incomplete"
+                      extraClassNameState = "state-INCOMPLETE"
                     }
                     return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <ApplicationListItemHeader modifiers="course" key={workspace.id}>

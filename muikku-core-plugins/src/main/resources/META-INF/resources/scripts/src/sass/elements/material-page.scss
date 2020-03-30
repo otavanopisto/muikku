@@ -193,6 +193,7 @@
     color: $color-text-default;
     font-family: $text-font-family;
     font-size: $text-mobile-font-size;
+    line-height: 1.125rem;
     padding: 10px;
   }
 
@@ -762,6 +763,16 @@
     line-height: 1.75rem;
     min-height: 2.75rem;
   }
+}
+
+// File field
+.material-page__filefield-wrapper {
+  position: relative;
+}
+
+// Audio field
+.material-page__audiofield-wrapper {
+  position: relative;
 }
 
 .material-page__audiofield {
@@ -1555,12 +1566,12 @@ mark[data-muikku-word-definition] {
   border-top: 1px solid $color-default-item-separator-border;
   display: flex;
   flex-flow: column nowrap;
-  margin: 20px -10px 0;
+  margin: 20px 0 0;
   padding: 10px;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 20px -20px 0;
+    margin: 20px 0 0;
     padding: 20px;
   }
 }
