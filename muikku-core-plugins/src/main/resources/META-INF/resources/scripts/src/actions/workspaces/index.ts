@@ -609,13 +609,13 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
       
 
 
-     // These need to be removed for the basic stuff to not fail      
+     // These need to be removed from the object for the basic stuff to not fail      
      
       delete data.update["details"];
       delete data.update["permissions"];
       delete data.update["producers"];
       
-      // First lets update the basic stuff - if any outside of details or permissions
+      // First lets update the basic stuff - if any outside of details, producers or permissions
       
       if(data.update){
         await promisify(mApi().workspace.workspaces.update(data.workspace.id,
@@ -648,11 +648,15 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
         ));
         
         // Here we have to combine the new permissions with old ones for dispatch, because otherwise there will be missing options in the app state
+        
+        // TODO: this mixes up the order of the checkboxes, maybe reload them or sort them here.  
+        
         data.update.permissions = unchangedPermissions.concat(newPermissions);
       }
 
-      
+      // Then producers
       if (appliedProducers){
+        
         let existingProducers = currentWorkspace.producers;
         let workspaceProducersToAdd = (existingProducers.length == 0) ? appliedProducers :
           appliedProducers.filter(producer => {          
@@ -679,6 +683,38 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
         data.update.producers = <Array<WorkspaceProducerType>>(await promisify(mApi().workspace.workspaces.materialProducers
             .cacheClear().read(currentWorkspace.id), 'callback')())
       }
+      
+
+
+//        let mimeTypeRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
+//        let mimeTypeOriginal = data.coverImage.originalB64 && data.originalB64.match(mimeTypeRegex)[1];
+//        let mimeTypeCropped = data.coverImage.croppedB64 && data.croppedB64.match(mimeTypeRegex)[1];
+//
+//        if (data.coverImage.delete){
+//          await promisify(mApi().workspace.workspaces.workspacefile
+//              .del(currentWorkspace.id, 'workspace-frontpage-image-cropped'), 'callback')();
+//        } else if (data.coverImage.croppedB64) {
+//          await promisify(mApi().workspace.workspaces.workspacefile
+//          .create(currentWorkspace.id, {
+//            fileIdentifier: 'workspace-frontpage-image-cropped',
+//            contentType: mimeTypeCropped,
+//            base64Data: data.coverImage.croppedB64
+//          }), 'callback')();
+//        }
+//        
+//        if (data.coverImage.delete) {
+//          await promisify(mApi().workspace.workspaces.workspacefile
+//            .del(currentWorkspace.id, 'workspace-frontpage-image-original'), 'callback')();
+//        } else if (data.coverImage.originalB64) {
+//          await promisify(mApi().workspace.workspaces.workspacefile
+//          .create(currentWorkspace.id, {
+//            fileIdentifier: 'workspace-frontpage-image-original',
+//            contentType: mimeTypeOriginal,
+//            base64Data: data.coverImage.originalB64
+//          }), 'callback')();
+//        }
+      
+      // All saved and stitched together again, dispatch to state 
       
       dispatch({
         type: 'UPDATE_WORKSPACE',
