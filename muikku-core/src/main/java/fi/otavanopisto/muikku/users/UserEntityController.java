@@ -77,7 +77,7 @@ public class UserEntityController implements Serializable {
   public UserEntityName getName(UserEntity userEntity) {
     for (SearchProvider searchProvider : searchProviders) {
       if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
-        SearchResult searchResult = searchProvider.findUser(userEntity.getId(), true);
+        SearchResult searchResult = searchProvider.findUser(userEntity.defaultSchoolDataIdentifier(), true);
         if (searchResult.getTotalHitCount() > 0) {
           List<Map<String, Object>> results = searchResult.getResults();
           // Settle for first match but prefer default identifier 
