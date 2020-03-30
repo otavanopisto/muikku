@@ -140,16 +140,16 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       let unloadedField;
       if  (this.props.readOnly){
          unloadedField = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" rows={parseInt(this.props.content.rows)}/> :
-           <div className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
+           <span className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
       } else {
         unloadedField = <textarea className="material-page__memofield" rows={parseInt(this.props.content.rows)}/>
       }
 
-      return <div ref="base" className="material-page__memofield-wrapper">
+      return <span ref="base" className="material-page__memofield-wrapper">
         {unloadedField}
-        <div className="material-page__counter-wrapper"/>
+        <span className="material-page__counter-wrapper"/>
         {answerExampleComponent}
-      </div>
+      </span>
     }
 
     //now we need the field
@@ -159,7 +159,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       //depending to whether rich edit or not we make it be with the value as inner html or just raw text
       field = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
           rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
-            <div className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
+            <span className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
     } else {
       //here we make it be a simple textarea or a rich text editor
       //note how somehow numbers come as string...
@@ -170,20 +170,20 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     }
 
     //and here the element itself
-    return <div className="material-page__memofield-wrapper">
+    return <span className="material-page__memofield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       {field}
-      <div className="material-page__counter-wrapper">
-        <div className="material-page__word-count-container">
-          <div className="material-page__word-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}</div>
-          <div className="material-page__word-count">{this.state.words}</div>
-        </div>
-        <div className="material-page__character-count-container">
-          <div className="material-page__character-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.characterCount")}</div>
-          <div className="material-page__character-count">{this.state.characters}</div>
-        </div>
-      </div>
+      <span className="material-page__counter-wrapper">
+        <span className="material-page__word-count-container">
+          <span className="material-page__word-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}</span>
+          <span className="material-page__word-count">{this.state.words}</span>
+        </span>
+        <span className="material-page__character-count-container">
+          <span className="material-page__character-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.characterCount")}</span>
+          <span className="material-page__character-count">{this.state.characters}</span>
+        </span>
+      </span>
       {answerExampleComponent}
-    </div>
+    </span>
   }
 }

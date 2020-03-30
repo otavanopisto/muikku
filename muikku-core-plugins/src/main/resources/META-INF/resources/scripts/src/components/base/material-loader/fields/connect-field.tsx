@@ -173,7 +173,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       } else if (connection && connection.counterpart === counterpart.name) {
         return "PASS";
       }
-      
+
       const allCounterpartsWithTheSameValue = this.state.counterparts.filter((cp) => cp.text.toLowerCase() === counterpart.text.toLowerCase());
       const allCounterpartsMatchingNameList = allCounterpartsWithTheSameValue.map((cp) => cp.name);
 
@@ -356,15 +356,15 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
   }
   render(){
     if (this.props.invisible){
-      return <div className="material-page__connectfield-wrapper">
-        <div className="material-page__connectfield">
-          <div className="material-page__connectfield-terms-container">
+      return <span className="material-page__connectfield-wrapper">
+        <span className="material-page__connectfield">
+          <span className="material-page__connectfield-terms-container">
             {this.state.fields.map((field, index)=>{
-              return <div key={index} className="material-page__connectfield-term"/>
+              return <span key={index} className="material-page__connectfield-term"/>
             })}
-          </div>
-        </div>
-      </div>
+          </span>
+        </span>
+      </span>
     }
 
     //the element class name matching the state on whether it passes or fails
@@ -376,10 +376,10 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     //if elements is disabled
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
-    return <div className="material-page__connectfield-wrapper">
+    return <span className="material-page__connectfield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
-      <div className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
-        <div className="material-page__connectfield-terms-container">
+      <span className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
+        <span className="material-page__connectfield-terms-container">
           {this.state.fields.map((field, index)=>{
             //the item answer
             let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
@@ -389,19 +389,19 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
             //so now we get the fields here
             //the fields cannot be dragged and they remain in order
             //they are simple things
-            return <div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
-              <div className={`material-page__connectfield-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
+            return <span key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
+              <span className={`material-page__connectfield-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
                   "material-page__connectfield-term--selected" : ""} ${this.state.editedIds.has(field.name) && !itemAnswer ? "material-page__connectfield-term--edited" : ""}
                   ${itemStateAfterCheck}`}>
-                <div className="material-page__connectfield-term-data-container">
+                <span className="material-page__connectfield-term-data-container">
                   <span className="material-page__connectfield-term-number">{index + 1}</span>
                   <span className="material-page__connectfield-term-label">{field.text}</span>
-                </div>
-              </div>
-            </div>
+                </span>
+              </span>
+            </span>
            })}
-        </div>
-        <div className="material-page__connectfield-counterparts-container">
+        </span>
+        <span className="material-page__connectfield-counterparts-container">
          {this.state.counterparts.map((field, index)=>{
            //the item answer
            let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
@@ -415,12 +415,12 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
 
            //if readonly we just add the classname in there
            if (this.props.readOnly){
-             return <div className={className} key={field.name}>
-               <div className="material-page__connectfield-counterpart-data-container">
+             return <span className={className} key={field.name}>
+               <span className="material-page__connectfield-counterpart-data-container">
                  <span className="material-page__connectfield-counterpart-icon icon-move"></span>
                  <span className="material-page__connectfield-counterpart-label">{field.text}</span>
-               </div>
-             </div>
+               </span>
+             </span>
            }
 
            //if we are asked for correct answers
@@ -448,15 +448,15 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
              onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".material-page__connectfield"
              onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
              className={className} key={field.name}>
-               <div className="material-page__connectfield-counterpart-data-container">
+               <span className="material-page__connectfield-counterpart-data-container">
                  <span className="material-page__connectfield-counterpart-icon icon-move"></span>
                  <span className="material-page__connectfield-counterpart-label">{field.text}</span>
                  {itemCorrectAnswerComponent}
-               </div>
+               </span>
              </Draggable>
          })}
-        </div>
-      </div>
-    </div>
+        </span>
+      </span>
+    </span>
   }
 }

@@ -32,7 +32,7 @@
   font-weight: 300;
   line-height: 1.75rem;
   margin: 15px 0 0;
-  padding: 0 20px;
+  padding: 0 10px;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.375rem;
@@ -701,6 +701,7 @@
 
 // Memo field
 .material-page__memofield-wrapper {
+  display: block;
   padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
   position: relative;
 
@@ -751,6 +752,7 @@
 .material-page__ckeditor-replacement { // This is for ckeditor replacement div
   @include taskfield-text;
   @include taskfield-defaults;
+  display: block;
   line-height: 1.25rem;
   margin: 4px 0 0;
   max-width: 100%;
@@ -767,17 +769,24 @@
 
 // File field
 .material-page__filefield-wrapper {
+  display: block;
   position: relative;
+}
+
+.material-page__filefield {
+  display: block;
 }
 
 // Audio field
 .material-page__audiofield-wrapper {
+  display: block;
   position: relative;
 }
 
 .material-page__audiofield {
   @include taskfield-text;
   @include taskfield-defaults;
+  display: block;
   margin: 4px 0 0;
   position: relative;
   width: 100%;
@@ -785,6 +794,7 @@
 
 .material-page__audiofield-files-container {
   border-top: 3px dotted lighten($taskfield-border-color, 20%);
+  display: block;
 }
 
 .material-page__audiofield-files-container--empty {
@@ -965,8 +975,9 @@
 
 // Sorter field
 .material-page__sorterfield-wrapper {
-  display: block;
+  display: inline-block;
   position: relative;
+  vertical-align: middle;
 }
 
 .material-page__sorterfield {
@@ -1050,10 +1061,12 @@
 
 // Organizer field
 .material-page__organizerfield-wrapper {
+  display: block;
   position: relative;
 }
 
 .material-page__organizerfield {
+  display: block;
 
   &.correct-answer {
 
@@ -1066,6 +1079,10 @@
       border-color: $color-correct-answer;
     }
   }
+}
+
+.material-page__organizerfield-terms {
+  display: block;
 }
 
 .material-page__organizerfield-terms-title { // Title of draggable terms
@@ -1206,6 +1223,7 @@
 
 .material-page__organizerfield-category-title { // Title of single category
   border-bottom: 3px dotted lighten($taskfield-border-color, 20%);
+  display: block;
   font-weight: 600;
   padding: 4px 6px;
 
@@ -1215,12 +1233,14 @@
 }
 
 .material-page__organizerfield-category-terms-container { // Container of single category where terms can be dragged
+  display: block;
   min-height: 100px;
   padding: 5px;
 }
 
 // Connectfield
 .material-page__connectfield-wrapper {
+  display: block;
   position: relative;
 }
 
@@ -1541,6 +1561,12 @@
 // Math field
 .material-page__mathfield-wrapper {
   position: relative;
+}
+
+// Iframe Wrapper
+.material-page__iframe-wrapper {
+  display: block;
+  max-width: 100%;
 }
 
 // Table Wrapper

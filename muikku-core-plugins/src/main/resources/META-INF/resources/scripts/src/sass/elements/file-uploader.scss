@@ -6,6 +6,7 @@
 .file-uploader {
   @include text;
   border: 2px solid $color-tertiary;
+  display: block;
 }
 
 .file-uploader--guider {
@@ -51,6 +52,7 @@
 }
 
 .file-uploader__field-container {
+  display: block;
   padding: 10px;
   position: relative;
 
@@ -77,6 +79,7 @@
 
 .file-uploader__items-container {
   border-top: 3px dotted lighten($taskfield-border-color, 20%);
+  display: block;
   position: relative;
 }
 

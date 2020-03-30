@@ -114,9 +114,9 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     }
 
     //and this is the container
-    return <div className="material-page__filefield-wrapper">
+    return <span className="material-page__filefield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
-      <div className={`material-page__filefield ${ElementDisabledState}`}>
+      <span className={`material-page__filefield ${ElementDisabledState}`}>
         <FileUploader emptyText={this.props.readOnly ? this.props.i18n.text.get("plugin.workspace.fileField.noFiles") : null}
          readOnly={this.props.readOnly} url={this.props.status.contextPath + '/tempFileUploadServlet'}
          displayNotificationOnError
@@ -130,7 +130,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
          deleteDialogElement={ConfirmRemoveDialog} deleteDialogElementProps={{onConfirm: this.removeFile}} modifier="taskfield"
          uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("plugin.workspace.fileField.statusUploading", percent)}
          invisible={this.props.invisible} notificationOfSuccessText={this.props.i18n.text.get("plugin.workspace.fileFieldUpload.uploadSuccessful")} displayNotificationOnSuccess/>
-      </div>
-    </div>
+      </span>
+    </span>
   }
 }

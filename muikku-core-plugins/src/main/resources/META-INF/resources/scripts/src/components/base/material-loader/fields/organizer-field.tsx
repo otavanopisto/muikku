@@ -283,30 +283,30 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
   }
   render(){
     if (this.props.invisible){
-      return <div className="material-page__organizerfield-wrapper">
-        <div className="material-page__organizerfield">
-          <div className="material-page__organizerfield-terms">
-            <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
-            <div className="material-page__organizerfield-terms-container">
+      return <span className="material-page__organizerfield-wrapper">
+        <span className="material-page__organizerfield">
+          <span className="material-page__organizerfield-terms">
+            <span className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</span>
+            <span className="material-page__organizerfield-terms-container">
               {this.state.order.map((id)=>{
-                return <div className="material-page__organizerfield-term" key={id}>
+                return <span className="material-page__organizerfield-term" key={id}>
                   <span className="material-page__organizerfield-term-icon icon-move"></span>
                   <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
-                </div>
+                </span>
               })}
-            </div>
-          </div>
-          <div className="material-page__organizerfield-categories">
+            </span>
+          </span>
+          <span className="material-page__organizerfield-categories">
             {this.props.content.categories.map((category)=>{
-              return <div className="material-page__organizerfield-category"
+              return <span className="material-page__organizerfield-category"
                 key={category.id}>
-                <div className="material-page__organizerfield-category-title">{category.name}</div>
-                <div className="material-page__organizerfield-category-terms-container"/>
-              </div>
+                <span className="material-page__organizerfield-category-title">{category.name}</span>
+                <span className="material-page__organizerfield-category-terms-container"/>
+              </span>
             })}
-          </div>
-        </div>
-      </div>
+          </span>
+        </span>
+      </span>
     }
 
     //The overall state if we got one and we check answers
@@ -319,21 +319,21 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     let elementDisabledStateClassName = this.props.readOnly ? "material-page__taskfield-disabled" : "";
 
     //we add that class name in our component
-    return <div className="material-page__organizerfield-wrapper">
+    return <span className="material-page__organizerfield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
-      <div className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
-        <div className="material-page__organizerfield-terms">
-          <div className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</div>
-          <div className="material-page__organizerfield-terms-container">
+      <span className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}>
+        <span className="material-page__organizerfield-terms">
+          <span className="material-page__organizerfield-terms-title">{this.props.content.termTitle}</span>
+          <span className="material-page__organizerfield-terms-container">
             {this.state.order.map((id)=>{
               //add the term in use class if in the uselist
               let className = `material-page__organizerfield-term ${this.state.useList.indexOf(id) !== -1 ? "material-page__organizerfield-term--in-use" : ""} ${this.state.selectedItemId === id ? "material-page__organizerfield-term--selected" : ""}`;
               if (this.props.readOnly){
                 //if readOnly we just return a non draggable thingy
-                return <div className={className} key={id}>
+                return <span className={className} key={id}>
                   <span className="material-page__organizerfield-term-icon icon-move"></span>
                   <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
-                </div>
+                </span>
               }
               //Otherwise we run a draggable, where the field itself is the parent container
               //the interaction group is only for this field, and it will clone the draggable instead of removing the entire thing
@@ -347,9 +347,9 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
                   <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
               </Draggable>
             })}
-          </div>
-        </div>
-        <div className="material-page__organizerfield-categories">
+          </span>
+        </span>
+        <span className="material-page__organizerfield-categories">
           {this.props.content.categories.map((category)=>{
             //we make a category class name for if the answer state is there, only worth it if the whole thing is not right
             //if the whole thing is right then every category is right
@@ -373,24 +373,24 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
             return <Droppable interactionGroup={this.props.content.name} onClick={this.selectBox.bind(this, category)}
               className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
               key={category.id} interactionData={category.id}>
-              <div className="material-page__organizerfield-category-title">{category.name}</div>
-              <div className="material-page__organizerfield-category-terms-container">{this.state.boxes[category.id].map((termId)=>{
+              <span className="material-page__organizerfield-category-title">{category.name}</span>
+              <span className="material-page__organizerfield-category-terms-container">{this.state.boxes[category.id].map((termId)=>{
                 //showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
                 //otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
                 let itemStateAfterCheck = this.props.displayCorrectAnswers && this.props.checkAnswers && !answerIsCheckedAndItisCorrect &&
                   this.state.answerState && this.state.answerState[category.id] ? this.state.answerState[category.id][termId] === "FAIL" ?
                     "incorrect-answer" : "correct-answer" : "";
 
-                return <div onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}>
+                return <span onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}>
                   <span className="material-page__organizerfield-term-label">{this.state.terms[termId]}</span>
                   {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-cross"></span>
                     : <span className="material-page__organizerfield-term-icon icon-cross"></span>}
-                </div>
-              })}{itemCorrectAnswerMissingTerms}</div>
+                </span>
+              })}{itemCorrectAnswerMissingTerms}</span>
             </Droppable>
           })}
-        </div>
-      </div>
-    </div>
+        </span>
+      </span>
+    </span>
   }
 }
