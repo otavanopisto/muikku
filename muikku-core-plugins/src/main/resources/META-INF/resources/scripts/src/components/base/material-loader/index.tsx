@@ -26,7 +26,7 @@ import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
 import Link from '~/components/general/link';
-
+  
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/material-page.scss';
 

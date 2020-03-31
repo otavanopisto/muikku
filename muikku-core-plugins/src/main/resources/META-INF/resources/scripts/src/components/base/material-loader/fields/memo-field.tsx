@@ -99,27 +99,28 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
   }
   //very simple this one is for only when raw input from the textarea changes
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>){
-    //we call the on change
-    this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
     //and update the count
     this.setState({
       value: e.target.value,
       words: wordCount(e.target.value),
       characters: characterCount(e.target.value)
     });
+
+    //we call the on change
+    this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
   }
   //this one is for a ckeditor change
   onCKEditorChange(value: string){
     //we need the raw text
     let rawText = $(value).text();
-    //call the update
-    this.props.onChange && this.props.onChange(this, this.props.content.name, value);
     //and update the state
     this.setState({
       value,
       words: wordCount(rawText),
       characters: characterCount(rawText)
     });
+    
+    this.props.onChange && this.props.onChange(this, this.props.content.name, value);
   }
   render(){
     //we have a right answer example for when
