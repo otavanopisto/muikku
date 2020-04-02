@@ -545,6 +545,22 @@
   padding: 3px;
 }
 
+.chat__online-indicator::before {
+  content: "\2022";
+}
+
+.chat__occupant-online {
+  color: green;
+}
+
+.chat__occupant-away {
+  color: yellow;
+}
+
+.chat__occupant-offline {
+  color: red;
+}
+
 .chat__message {
   margin: 0 0 20px;
 

@@ -612,8 +612,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let user: any;
         let userData: any;
         let chatSettings: any;
-        let tempStudentOccupants = [...this.state.studentOccupants];
-        let tempStaffOccupants = [...this.state.staffOccupants];
+        let tempStudentOccupants = new Array;
+//          [...this.state.studentOccupants];
+        let tempStaffOccupants = new Array;
+//          [...this.state.staffOccupants];
         for (const item of room.occupants.models) {
           if(typeof item.attributes.nick !== 'undefined'){
             if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
@@ -630,26 +632,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               userData = {id: item.attributes.nick, nick: nick, status: item.attributes.show, firstName: "", lastName: ""};
             }
           }
-
           if(typeof item.attributes.nick !== 'undefined'){
             if(item.attributes.nick.startsWith("PYRAMUS-STAFF-")){
-              let isExists = tempStaffOccupants.some(function(curr :any) {
-                if (curr.id === userData.id) {
-                    return true;
-                }
-              });
-              if (isExists !== true) {
-                tempStaffOccupants.push(userData);
-              }
-            } else{
-              let isExists = tempStudentOccupants.some(function(curr :any) {
-                if (curr.id === userData.id) {
-                    return true;
-                }
-              });
-              if (isExists !== true) {
-                tempStudentOccupants.push(userData);
-              }
+              tempStaffOccupants.push(userData);
+            }else {
+              tempStudentOccupants.push(userData);
             }
           }
         }
@@ -736,8 +723,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
 
     componentDidUpdate(){
-//      To have this here or not. That's the question.
-//      this.scrollToBottom();
     }
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
@@ -790,19 +775,22 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} ref={ (ref) => this.myRef=ref }>
-                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
+                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} removeMessage={this.removeMessage.bind(this)} 
+                    groupMessage={groupMessage} />)}
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
                   <div className="chat__occupants-staff">
+                    {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
                     {this.state.staffOccupants.map((occupant: any, i: any) => 
-                      <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>
-                        <div className={"chat__online-indicator chat__occupant-"+occupant.status}></div>{occupant.nick}</div>)}
+                    <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>
+                      <span className={"chat__online-indicator chat__occupant-"+occupant.status}></span>{occupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
+                    {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
                     {this.state.studentOccupants.map((occupant: any, i: any) => 
-                      <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>
-                        <div className={"chat_online-indicator chat__occupant-"+occupant.status}></div>{occupant.nick}</div>)}
+                    <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>
+                      <span className={"chat__online-indicator chat__occupant-"+occupant.status}></span>{occupant.nick}</div>)}
                   </div>
                 </div>}
               </div>
