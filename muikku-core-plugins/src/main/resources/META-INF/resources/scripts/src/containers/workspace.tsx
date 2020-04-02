@@ -149,7 +149,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     let state:StateType = this.props.store.getState();
 
     if (!newId){
-      history.pushState(null, null, '#');
+      history.pushState(null, null, location.origin + location.pathname + '#');
       if (state.workspaces.currentMaterials &&
           state.workspaces.currentMaterials[0] &&
           state.workspaces.currentMaterials[0].children[0]) {
@@ -174,7 +174,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
         if (element) {
           element.id = ""
         }
-        history.pushState(null, null, newHash);
+        history.pushState(null, null, location.origin + location.pathname + newHash);
         if (element) {
           element.id = 'p-' + newId;
         }

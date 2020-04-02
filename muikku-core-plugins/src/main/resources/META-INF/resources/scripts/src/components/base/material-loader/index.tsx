@@ -26,7 +26,7 @@ import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
 import Link from '~/components/general/link';
-
+  
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/material-page.scss';
 
@@ -184,6 +184,7 @@ export interface MaterialLoaderProps {
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
   compositeRepliesInState: MaterialCompositeRepliesType,
+  compositeRepliesInStateLoaded: boolean,
   
   //whether the answers are visible and checked
   answersVisible: boolean,
@@ -217,6 +218,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     //initial state has no composite replies and the answers are not visible or checked
     let state:MaterialLoaderState = {
       compositeRepliesInState: null,
+      compositeRepliesInStateLoaded: false,
+
       answersVisible: false,
       answersChecked: false,
       
@@ -330,7 +333,8 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
       }
 
       this.setState({
-        compositeRepliesInState
+        compositeRepliesInState,
+        compositeRepliesInStateLoaded: true,
       });
     }
   }
@@ -415,21 +419,26 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
   render(){
     //The modifiers in use
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
+    const compositeReplies = this.props.compositeReplies || this.state.compositeRepliesInState
 
     //Setting this up
     let isHidden = this.props.material.hidden || (this.props.folder && this.props.folder.hidden);
     
     const materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     let className = `material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`;
-    if (this.props.compositeReplies && this.props.compositeReplies.state) {
-      className += " material-page--" + this.props.compositeReplies.state;
+    if (compositeReplies && compositeReplies.state) {
+      className += " material-page--" + compositeReplies.state;
     }
     
-    return <article className={className} ref="root" id={this.props.id}>
-      {this.props.children(
+    let content = null;
+    if (
+      (this.props.loadCompositeReplies && this.state.compositeRepliesInStateLoaded) ||
+      !this.props.loadCompositeReplies
+    ) {
+      content = this.props.children(
         {
           ...this.props,
-          compositeReplies: this.props.compositeReplies || this.state.compositeRepliesInState,
+          compositeReplies,
           onAnswerChange: this.onAnswerChange,
           onAnswerCheckableChange: this.onAnswerCheckableChange,
           onPushAnswer: this.onPushAnswer,
@@ -437,7 +446,11 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         },
         this.state,
         this.stateConfiguration
-      )}
+      );
+    }
+    
+    return <article className={className} ref="root" id={this.props.id}>
+      {content}
     </article>
   }
 }

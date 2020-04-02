@@ -319,7 +319,9 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     });
 
     //And sometimes the value comes weird in a .value field so we pick that one if its there
-    parameters["initialValue"] = parameters["initialValue"] && parameters["initialValue"].value;
+    if (parameters["initialValue"] && parameters["initialValue"].value) {
+      parameters["initialValue"] = parameters["initialValue"].value;
+    }
 
     //We add the onChange function that will make us try to sync with the server
     parameters["onChange"] = this.onValueChange.bind(this);

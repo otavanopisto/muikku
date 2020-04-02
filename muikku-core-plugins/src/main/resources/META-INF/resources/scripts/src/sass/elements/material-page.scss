@@ -24,6 +24,20 @@
   border: 0;
 }
 
+// Studies View exeptions
+.material-page--studies-material-page {
+  border: 0;
+  padding: 0;
+
+  .material-page__content {
+    padding: 0;
+  }
+}
+
+.material-page__de-floater {
+  clear: both;
+}
+
 .material-page__title {
   align-items: flex-start;
   display: flex;
@@ -1655,7 +1669,7 @@ mark[data-muikku-word-definition] {
 }
 
 .material-page__assignment-assessment-literal {
-  flex-basis: 100;
+  flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 0;
 }

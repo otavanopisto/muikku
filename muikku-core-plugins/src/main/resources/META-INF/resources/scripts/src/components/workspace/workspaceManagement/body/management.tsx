@@ -232,9 +232,12 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     }
   }
   editCurrentImage(){
+    
+    let imageB64 = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: null;
+    
     if (this.state.newWorkspaceImageCombo){
       this.setState({
-        newWorkspaceImageSrc: null,
+        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
         isImageDialogOpen: true,
         newWorkspaceImageB64: this.state.newWorkspaceImageCombo.originalB64,
         newWorkspaceImageFile: this.state.newWorkspaceImageCombo.file
@@ -243,7 +246,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       this.setState({
         newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
         isImageDialogOpen: true,
-        newWorkspaceImageB64: null,
+        newWorkspaceImageB64: imageB64,
         newWorkspaceImageFile: null
       });
     }
