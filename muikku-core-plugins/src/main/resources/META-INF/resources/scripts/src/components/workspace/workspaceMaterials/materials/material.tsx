@@ -81,7 +81,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           material={this.props.materialContentNode} workspace={this.props.workspace}
           compositeReplies={this.props.compositeReplies} answerable={this.props.status.loggedIn}
           readOnly={
-            this.props.materialContentNode.assignmentType === "EVALUATED" ? 
+            this.props.materialContentNode.assignmentType === "EVALUATED" ?
               !this.props.status.loggedIn :
               false
           }
@@ -92,6 +92,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
               <MaterialLoaderEditorButtonSet {...props} {...state}/>
               <MaterialLoaderTitle {...props} {...state}/>
               <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
+              <div className="material-page__de-floater"></div>
               {!isEvaluatedAsPassed ?
                 <MaterialLoaderButtons {...props} {...state} stateConfiguration={stateConfiguration}/>
               : null}

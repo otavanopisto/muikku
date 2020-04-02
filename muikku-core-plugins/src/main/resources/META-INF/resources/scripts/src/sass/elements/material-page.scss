@@ -34,6 +34,10 @@
   }
 }
 
+.material-page__de-floater {
+  clear: both;
+}
+
 .material-page__title {
   align-items: flex-start;
   display: flex;
@@ -1096,6 +1100,7 @@
 }
 
 .material-page__organizerfield-terms-title { // Title of draggable terms
+  display: block;
   font-weight: 600;
   padding: 0 4px;
 
