@@ -322,7 +322,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     }
 
     //And sometimes the value comes weird in a .value field so we pick that one if its there
-    if (parameters["initialValue"] && parameters["initialValue"].value) {
+    if (parameters["initialValue"] && typeof parameters["initialValue"].value !== "undefined") {
       parameters["initialValue"] = parameters["initialValue"].value;
     }
 
