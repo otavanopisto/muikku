@@ -613,9 +613,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let userData: any;
         let chatSettings: any;
         let tempStudentOccupants = new Array;
-//          [...this.state.studentOccupants];
         let tempStaffOccupants = new Array;
-//          [...this.state.staffOccupants];
         for (const item of room.occupants.models) {
           if(typeof item.attributes.nick !== 'undefined'){
             if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
@@ -634,9 +632,23 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           }
           if(typeof item.attributes.nick !== 'undefined'){
             if(item.attributes.nick.startsWith("PYRAMUS-STAFF-")){
-              tempStaffOccupants.push(userData);
-            }else {
-              tempStudentOccupants.push(userData);
+              let isExists = tempStaffOccupants.some(function(curr :any) {
+                if (curr.id === userData.id) {
+                    return true;
+                }
+              });
+              if (isExists !== true) {
+                tempStaffOccupants.push(userData);
+              }
+            } else{
+              let isExists = tempStudentOccupants.some(function(curr :any) {
+                if (curr.id === userData.id) {
+                    return true;
+                }
+              });
+              if (isExists !== true) {
+                tempStudentOccupants.push(userData);
+              }
             }
           }
         }
