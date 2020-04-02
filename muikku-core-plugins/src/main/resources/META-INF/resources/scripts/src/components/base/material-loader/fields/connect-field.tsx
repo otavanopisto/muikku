@@ -442,7 +442,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
            //or any other field that had been selected before, and we pick this one
            //on click we just handle it the same way as the standard click
            //the parent container selector is the field on its own
-           return <Draggable interactionData={{field, index, isCounterpart: true}}
+           return <Draggable as="span" interactionData={{field, index, isCounterpart: true}}
              interactionGroup={this.props.content.name + "-counterparts-container"}
              onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
              onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".material-page__connectfield"
