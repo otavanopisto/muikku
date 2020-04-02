@@ -431,7 +431,10 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     }
     
     let content = null;
-    if (this.props.loadCompositeReplies && this.state.compositeRepliesInStateLoaded) {
+    if (
+      (this.props.loadCompositeReplies && this.state.compositeRepliesInStateLoaded) ||
+      !this.props.loadCompositeReplies
+    ) {
       content = this.props.children(
         {
           ...this.props,
