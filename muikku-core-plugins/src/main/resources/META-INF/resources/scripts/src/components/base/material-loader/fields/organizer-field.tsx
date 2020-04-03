@@ -339,7 +339,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
               //the interaction group is only for this field, and it will clone the draggable instead of removing the entire thing
               //on move, it has no interaction data so draggables won't interact with each other, and when it's dropped it
               //calls the on drop into function using its own termId binding and the argument will be the data of the droppables
-              return <Draggable parentContainerSelector=".material-page__organizerfield"
+              return <Draggable as="span" parentContainerSelector=".material-page__organizerfield"
                 className={className} interactionGroup={this.props.content.name}
                 clone key={id} onDropInto={this.onDropDraggableItem.bind(this, id)}
                 onDrag={this.selectItemId.bind(this, id)} onClick={this.selectItemId.bind(this, id)}>
@@ -370,7 +370,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
               });
             }
 
-            return <Droppable interactionGroup={this.props.content.name} onClick={this.selectBox.bind(this, category)}
+            return <Droppable as="span" interactionGroup={this.props.content.name} onClick={this.selectBox.bind(this, category)}
               className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
               key={category.id} interactionData={category.id}>
               <span className="material-page__organizerfield-category-title">{category.name}</span>
