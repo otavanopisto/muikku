@@ -57,14 +57,38 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
           <MaterialLoader material={this.props.material} workspace={this.props.workspace}
             readOnly loadCompositeReplies modifiers="studies-material-page">
             {(props, state, stateConfiguration) => {
+              let evalStateClassName:string = "";
+              let evalStateIcon:string = "";
+              let hasEvaluation = props.compositeReplies && (props.compositeReplies.state === "PASSED" || props.compositeReplies.state === "FAILED");
+              if (props.compositeReplies){
+                switch (props.compositeReplies.state){
+                  case "INCOMPLETE":
+                    evalStateClassName = "material-page__assignment-assessment--incomplete";
+                    evalStateIcon = "icon-thumb-down";
+                    break;
+                  case "FAILED":
+                    evalStateClassName = "material-page__assignment-assessment--failed";
+                    evalStateIcon = "icon-thumb-down";
+                    break;
+                  case "PASSED":
+                    evalStateClassName = "material-page__assignment-assessment--passed";
+                    evalStateIcon = "icon-thumb-up";
+                    break;
+                  case "WITHDRAWN":
+                    evalStateClassName = "material-page__assignment-assessment--withdrawn";
+                    evalStateIcon = "";
+                    break;
+                }
+              }
               return <div>
                 <MaterialLoaderContent {...props} {...state} stateConfiguration={stateConfiguration}/>
-                <div className={`material-page__assignment-assessment`}>
-                  <div className={`material-page__assignment-assessment-icon`}></div>
-                  <MaterialLoaderDate {...props} {...state}/>
-                  <MaterialLoaderGrade {...props} {...state}/>
-                  <MaterialLoaderAssesment {...props} {...state}/>
-                </div>
+                {hasEvaluation &&
+                  <div className={`material-page__assignment-assessment ${evalStateClassName}`}>
+                    <div className={`material-page__assignment-assessment-icon ${evalStateIcon}`}></div>
+                    <MaterialLoaderDate {...props} {...state}/>
+                    <MaterialLoaderGrade {...props} {...state}/>
+                    <MaterialLoaderAssesment {...props} {...state}/>
+                  </div>}
               </div>
             }}
           </MaterialLoader>
