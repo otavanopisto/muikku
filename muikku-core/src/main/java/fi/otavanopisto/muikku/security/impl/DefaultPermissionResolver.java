@@ -1,6 +1,11 @@
 package fi.otavanopisto.muikku.security.impl;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -9,9 +14,11 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -27,6 +34,8 @@ import fi.otavanopisto.security.User;
 @RequestScoped
 public class DefaultPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
+  private static final Set<String> HANDLED_SCOPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(PermissionScope.ENVIRONMENT, PermissionScope.WORKSPACE)));
+  
   @Inject
   private Logger logger;
   
@@ -46,7 +55,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   public boolean handlesPermission(String permission) {
     Permission perm = permissionController.findByName(permission);
     if (perm != null) {
-      return PermissionScope.ENVIRONMENT.equals(perm.getScope()) || PermissionScope.WORKSPACE.equals(perm.getScope()); 
+      return HANDLED_SCOPES.contains(perm.getScope());
     }
     return false;
   }
@@ -58,6 +67,12 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
       logger.severe(String.format("Reference to missing permission %s", permission));
       return false;
     }
+    
+    if (!HANDLED_SCOPES.contains(permissionEntity.getScope())) {
+      logger.severe(String.format("hasPermission called for permission %s which doesn't have correct scope", permission));
+      return false;
+    }
+    
     UserEntity userEntity = getUserEntity(user);
     if (userEntity == null) {
       return hasEveryonePermission(permission, contextReference);
@@ -65,17 +80,36 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
     
     SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
     
-    // Workspace access
-    if (permissionEntity.getScope().equals(PermissionScope.WORKSPACE) && contextReference != null) {
-      WorkspaceEntity workspaceEntity = resolveWorkspace(contextReference);
+    if (permissionEntity.getScope().equals(PermissionScope.WORKSPACE)) {
+      // Workspace access
+
+      WorkspaceEntity workspaceEntity = contextReference != null ? resolveWorkspace(contextReference) : null;
       if (workspaceEntity != null) {
         if (hasWorkspaceAccess(workspaceEntity, userIdentifier, permissionEntity)) {
           return true;
+        } else {
+          // No access from workspace permissions
+
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+
+          OrganizationEntity userOrganization = userSchoolDataIdentifier.getOrganization();
+          OrganizationEntity workspaceOrganization = workspaceEntity.getOrganizationEntity();
+
+          return 
+              userOrganization != null 
+              && workspaceOrganization != null 
+              && Objects.equals(userOrganization.getId(), workspaceOrganization.getId())
+              && hasEnvironmentAccess(userIdentifier, permissionEntity);
         }
+      } else {
+        // workspace is not defined
+        logger.severe(String.format("hasPermission called for workspace permission %s with undefined workspace", permission));
+        return false;
       }
+    } else {
+      // Environment access
+      return hasEnvironmentAccess(userIdentifier, permissionEntity);
     }
-    // Environment access
-    return hasEnvironmentAccess(userIdentifier, permissionEntity);
   }
   
   private boolean hasWorkspaceAccess(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier, Permission permission) {
