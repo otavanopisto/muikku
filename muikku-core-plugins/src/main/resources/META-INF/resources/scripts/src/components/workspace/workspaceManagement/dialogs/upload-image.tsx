@@ -12,6 +12,7 @@ import Button, { ButtonPill } from '~/components/general/button';
 import ImageEditor, { ImageEditorRetrieverType } from '~/components/general/image-editor';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { bindActionCreators } from 'redux';
+import {updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType} from "~/actions/workspaces";
 let Slider = require('react-rangeslider').default;
 import '~/sass/elements/rangeslider.scss';
 
@@ -19,6 +20,7 @@ interface UploadImageDialogProps {
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType,
   onImageChange: (croppedB64: string, originalB64?: string, file?: File)=>any
+  updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType,
   b64?: string,
   file?: File,
   src?: string,
@@ -36,13 +38,11 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   private retriever: ImageEditorRetrieverType;
   constructor(props: UploadImageDialogProps){
     super(props);
-
     this.acceptImage = this.acceptImage.bind(this);
     this.showLoadError = this.showLoadError.bind(this);
     this.rotate = this.rotate.bind(this);
     this.onChangeScale = this.onChangeScale.bind(this);
     this.getRetriever = this.getRetriever.bind(this);
-
     this.state = {
       scale: 100,
       angle: 0
@@ -50,12 +50,20 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   }
   acceptImage(closeDialog: ()=>any){
     closeDialog();
+    this.props.updateCurrentWorkspaceImagesB64({
+      originalB64: this.props.b64,
+      croppedB64: this.retriever.getAsDataURL(),
+      success: ()=>{
+        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
+        this.props.onImageChange(
+            this.retriever.getAsDataURL(),
+            !this.props.src ? this.props.b64 : null,
+            !this.props.src ? this.props.file : null
+        );
+      }
+    });
+      
 
-    this.props.onImageChange(
-      this.retriever.getAsDataURL(),
-      !this.props.src ? this.props.b64 : null,
-      !this.props.src ? this.props.file : null
-    );
   }
   rotate(){
     let nAngle = this.state.angle + 90;
@@ -115,7 +123,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({displayNotification}, dispatch);
+  return bindActionCreators({displayNotification, updateCurrentWorkspaceImagesB64}, dispatch);
 };
 
 export default connect(

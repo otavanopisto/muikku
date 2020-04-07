@@ -17,6 +17,7 @@ import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/change-image.scss';
 import { LicenseSelector } from "~/components/general/license-selector";
 import UploadImageDialog from '../dialogs/upload-image';
+import DeleteImageDialog from '../dialogs/delete-image';
 import AddProducer from '~/components/general/add-producer';
 import { updateWorkspace, UpdateWorkspaceTriggerType,
   updateWorkspaceProducersForCurrentWorkspace, UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
@@ -67,7 +68,8 @@ interface ManagementPanelState {
     croppedB64: string
   },
   isImageDialogOpen: boolean,
-
+  isDeleteImageDialogOpen: boolean,
+  
   locked: boolean
 }
 
@@ -89,6 +91,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspacePermissions: props.workspace && props.workspace.permissions ? props.workspace.permissions : [],
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
+      isDeleteImageDialogOpen: false,
       isImageDialogOpen: false,
       locked: false
     }
@@ -105,6 +108,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.removeCustomImage = this.removeCustomImage.bind(this);
     this.readNewImage = this.readNewImage.bind(this);
     this.acceptNewImage = this.acceptNewImage.bind(this);
+    this.imageDeleted = this.imageDeleted.bind(this);
     this.editCurrentImage = this.editCurrentImage.bind(this);
     this.updateCurrentWorkspaceProducerInputValue = this.updateCurrentWorkspaceProducerInputValue.bind(this);
     this.addProducer = this.addProducer.bind(this);
@@ -206,12 +210,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: newLicense
     });
   }
+  
   removeCustomImage(){
     this.setState({
-      newWorkspaceImageCombo: null,
-      workspaceHasCustomImage: false
+      isDeleteImageDialogOpen: true,
     });
   }
+  
   readNewImage(e: React.ChangeEvent<HTMLInputElement>){
     let file = e.target.files[0];
     let reader = new FileReader();
@@ -233,11 +238,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
   }
   editCurrentImage(){
     
-    let imageB64 = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: null;
+//    let imageSrc = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`;
     
     if (this.state.newWorkspaceImageCombo){
       this.setState({
-        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
+        newWorkspaceImageSrc: this.state.newWorkspaceImageCombo.originalB64,
         isImageDialogOpen: true,
         newWorkspaceImageB64: this.state.newWorkspaceImageCombo.originalB64,
         newWorkspaceImageFile: this.state.newWorkspaceImageCombo.file
@@ -246,11 +251,18 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       this.setState({
         newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
         isImageDialogOpen: true,
-        newWorkspaceImageB64: imageB64,
+        newWorkspaceImageB64: null,
         newWorkspaceImageFile: null
       });
     }
   }
+  imageDeleted() {
+    this.setState({
+      newWorkspaceImageCombo: null,
+      workspaceHasCustomImage: false
+    });
+  }
+  
   acceptNewImage(croppedB64: string, originalB64?: string, file?: File){
     this.setState({
       workspaceHasCustomImage: true,
@@ -259,7 +271,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         originalB64,
         croppedB64
       }
-    });
+  });
   }
   togglePermissionIn(permission: WorkspacePermissionsType, valueToToggle: string) {
     this.setState({
@@ -274,6 +286,27 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         return pte;
       })
     });
+  }
+  
+  saveImage(croppedB64: string, originalB64?: string, file?: File) {
+
+   this.props.updateCurrentWorkspaceImagesB64({
+      originalB64: originalB64,
+      croppedB64: croppedB64,
+      success: ()=>{
+        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
+      },
+    });
+    
+    this.setState({
+      workspaceHasCustomImage: true,
+      newWorkspaceImageCombo: {
+        file,
+        originalB64,
+        croppedB64
+      }
+    });
+    
   }
 
   save(){
@@ -293,7 +326,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       }
     }
     let payload: WorkspaceUpdateType = {};
-    
     let workspaceUpdate:WorkspaceUpdateType = {
       name: this.state.workspaceName,
       published: this.state.workspacePublished,
@@ -303,7 +335,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       description: this.state.workspaceDescription,
       hasCustomImage: this.state.workspaceHasCustomImage
     }
-
     let currentWorkspaceAsUpdate:WorkspaceUpdateType = {
       name: this.props.workspace.name,
       published: this.props.workspace.published,
@@ -393,7 +424,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
           onDone();
         },
         fail: onDone
-      })
+      });
     } else if (!workspaceImage && this.props.workspace.hasCustomImage && !this.state.workspaceHasCustomImage) {
       totals++;
       this.props.updateCurrentWorkspaceImagesB64({
@@ -468,6 +499,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                     </Button>
                     </div>: <div className="change-image__default-content">{this.props.i18n.text.get("plugin.workspace.management.changeImage.defaultImageInfo")}</div>}
                   </div>
+                  <DeleteImageDialog isOpen={this.state.isDeleteImageDialogOpen} onDelete={this.imageDeleted} onClose={()=>this.setState({isDeleteImageDialogOpen: false})} />
                   <UploadImageDialog isOpen={this.state.isImageDialogOpen}
                    b64={this.state.newWorkspaceImageB64} file={this.state.newWorkspaceImageFile}
                    onClose={()=>this.setState({isImageDialogOpen: false})} src={this.state.newWorkspaceImageSrc}
