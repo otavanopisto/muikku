@@ -442,7 +442,7 @@ export function repairContentNodes(base: MaterialContentNodeListType, pathRepair
     } else if (pathRepair && pathRepairId === parentNodeId) {
       const splitted = path.split("/");
       splitted.shift();
-      path = [pathRepairId, ...splitted].join("/");
+      path = [pathRepair, ...splitted].join("/");
     }
     const children = cn.children && cn.children.length ? repairContentNodes(cn.children, pathRepair, pathRepairId, cn.workspaceMaterialId) : cn.children;
 

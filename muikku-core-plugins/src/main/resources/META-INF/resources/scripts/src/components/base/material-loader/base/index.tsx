@@ -314,12 +314,17 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     parameters["readOnly"] = props.readOnly;
 
     //We set the value if we have one in composite replies
-    parameters["initialValue"] = props.compositeReplies && props.compositeReplies.answers && props.compositeReplies.answers.find((answer)=>{
-      return answer.fieldName === (parameters.content && parameters.content.name);
-    });
+    parameters["initialValue"] = null;
+    if (props.compositeReplies && props.compositeReplies.answers) {
+      parameters["initialValue"] = props.compositeReplies.answers.find((answer)=>{
+        return answer.fieldName === (parameters.content && parameters.content.name);
+      });
+    }
 
     //And sometimes the value comes weird in a .value field so we pick that one if its there
-    parameters["initialValue"] = parameters["initialValue"] && parameters["initialValue"].value;
+    if (parameters["initialValue"] && typeof parameters["initialValue"].value !== "undefined") {
+      parameters["initialValue"] = parameters["initialValue"].value;
+    }
 
     //We add the onChange function that will make us try to sync with the server
     parameters["onChange"] = this.onValueChange.bind(this);

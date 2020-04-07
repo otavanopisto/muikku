@@ -420,6 +420,13 @@ public class WorkspaceMaterialController {
   
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String title, String urlName, Integer index,
       Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    // #4927: If binary material filename has changed due to unique constraints, update workspace instance filename accordingly 
+    if (material instanceof BinaryMaterial) {
+      String oldFileName = generateUniqueUrlName(material.getTitle());
+      if (!StringUtils.equals(oldFileName, urlName)) {
+        title = urlName;
+      }
+    }
     WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), title, urlName, index, hidden, assignmentType, correctAnswers);
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
@@ -445,7 +452,7 @@ public class WorkspaceMaterialController {
   public List<WorkspaceMaterial> listWorkspaceMaterialsByMaterial(Material material) {
     return workspaceMaterialDAO.listByMaterialId(material.getId());
   }
-
+  
   public WorkspaceMaterial updateWorkspaceMaterialAssignmentType(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAssignmentType assignmentType) {
     return workspaceMaterialDAO.updateAssignmentType(workspaceMaterial, assignmentType);
   }

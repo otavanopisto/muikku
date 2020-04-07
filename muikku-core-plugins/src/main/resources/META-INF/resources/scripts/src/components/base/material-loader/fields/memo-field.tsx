@@ -4,6 +4,7 @@ import CKEditor from '~/components/general/ckeditor';
 import $ from '~/lib/jquery';
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
+import { escapeHTML } from "~/util/modifiers";
 
 interface MemoFieldProps {
   type: string,
@@ -129,11 +130,12 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     let answerExampleComponent = null;
     //it's simply set when we get it
     if (this.props.displayCorrectAnswers && this.props.content.example){
+      const escapedHTML = escapeHTML(this.props.content.example).replace("\n", "<br/>");
       answerExampleComponent = <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
         <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
         </span>
-        <span className="material-page__field-answer-example">{this.props.content.example}</span>
+        <span className="material-page__field-answer-example" dangerouslySetInnerHTML={{__html: escapedHTML}}/>
       </span>
     }
 

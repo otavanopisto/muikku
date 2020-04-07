@@ -24,6 +24,20 @@
   border: 0;
 }
 
+// Studies View exeptions
+.material-page--studies-material-page {
+  border: 0;
+  padding: 0;
+
+  .material-page__content {
+    padding: 0;
+  }
+}
+
+.material-page__de-floater {
+  clear: both;
+}
+
 .material-page__title {
   align-items: flex-start;
   display: flex;
@@ -1086,6 +1100,7 @@
 }
 
 .material-page__organizerfield-terms-title { // Title of draggable terms
+  display: block;
   font-weight: 600;
   padding: 0 4px;
 
@@ -1655,7 +1670,7 @@ mark[data-muikku-word-definition] {
 }
 
 .material-page__assignment-assessment-literal {
-  flex-basis: 100;
+  flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 0;
 }
@@ -1726,6 +1741,7 @@ mark[data-muikku-word-definition] {
 // MATERIAL PAGE FIELD ANSWER SYNCHRONIZER
 .material-page__field-answer-synchronizer {
   border-radius: 3px;
+  display: block;
   font-size: 0.8125rem;
   font-weight: 400;
   left: 4px;

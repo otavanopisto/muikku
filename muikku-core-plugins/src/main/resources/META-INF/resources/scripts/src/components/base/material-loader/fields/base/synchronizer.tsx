@@ -53,9 +53,9 @@ export default class Synchronizer extends React.PureComponent<SynchronizerProps,
     }
 
     return (
-      <div className={`material-page__field-answer-synchronizer material-page__field-answer-synchronizer--${modifier}`}>
+      <span className={`material-page__field-answer-synchronizer material-page__field-answer-synchronizer--${modifier}`}>
         {message}
-      </div>
+      </span>
     );
   }
 }
