@@ -54,7 +54,7 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
       originalB64: this.props.b64,
       croppedB64: this.retriever.getAsDataURL(),
       success: ()=>{
-        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
+        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage.saved"), "success");
         this.props.onImageChange(
             this.retriever.getAsDataURL(),
             !this.props.src ? this.props.b64 : null,
