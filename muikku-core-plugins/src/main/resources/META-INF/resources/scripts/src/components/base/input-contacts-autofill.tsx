@@ -4,7 +4,7 @@ import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
 import {filterHighlight, getName} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
-import {WorkspaceType} from '~/reducers/main-function/workspaces';
+import {WorkspaceType} from '~/reducers/workspaces';
 import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/main-function/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';

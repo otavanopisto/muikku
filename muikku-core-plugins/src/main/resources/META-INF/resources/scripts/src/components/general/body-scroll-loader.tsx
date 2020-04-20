@@ -5,13 +5,11 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
   public hasMorePropertyLocation:string;
   public loadMoreTriggerFunctionLocation:string;
   public cancellingLoadingPropertyLocation: string;
-  
   private lastTimeCalledLoadMore: number;
+
   constructor(props: T){
-    super(props);
-    
+    super(props);    
     this.lastTimeCalledLoadMore = 0;
-    
     this.checkCanLoadMore = this.checkCanLoadMore.bind(this);
     this.onScroll = this.onScroll.bind(this);
   }
@@ -21,6 +19,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     }
     if ((this.props as any)[this.statePropertyLocation] as string === "READY" &&
         (this.props as any)[this.hasMorePropertyLocation] as boolean){
+      
       let scrollBottomRemaining = document.documentElement.scrollHeight -
         ((document.body.scrollTop || document.documentElement.scrollTop) + document.documentElement.offsetHeight)
       if (scrollBottomRemaining <= 100){
@@ -29,7 +28,6 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
           return;
         }
         this.lastTimeCalledLoadMore = currentlyCalled;
-        
         (this.props as any)[this.loadMoreTriggerFunctionLocation]();
       }
     }

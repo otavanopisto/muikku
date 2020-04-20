@@ -9,14 +9,18 @@ import CoursepickerWorkspaces from './application/courses';
 import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 import '~/sass/elements/link.scss';
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
+
 import {StateType} from '~/reducers';
-import { CoursesType, CoursesBaseFilterType } from '~/reducers/main-function/courses';
+
+import { WorkspaceBaseFilterType, WorkspacesType } from '~/reducers/workspaces';
 import { StatusType } from '~/reducers/base/status';
 
 interface CoursepickerApplicationProps {
   aside: React.ReactElement<any>,
   i18n: i18nType,
-  courses: CoursesType,
+  workspaces: WorkspacesType
   status: StatusType
 }
 
@@ -42,13 +46,13 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
       "MY_COURSES": "plugin.coursepicker.owncourses",
       "AS_TEACHER": "plugin.coursepicker.teachercourses"
     }
-    
-    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.coursepicker.pageTitle')}</h2>
+
+    let title = this.props.i18n.text.get('plugin.coursepicker.pageTitle')
     let toolbar = <Toolbar/>
-    let primaryOption = <div className="form-element"> 
+    let primaryOption = <div className="form-element form-element--main-action"> 
       {this.props.status.loggedIn ?
-      <select className="form-element__select form-element__select--main-action" value={this.props.courses.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
-        {this.props.courses.avaliableFilters.baseFilters.map((filter: CoursesBaseFilterType)=>{
+      <select className="form-element__select form-element__select--main-action" value={this.props.workspaces.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
+        {this.props.workspaces.availableFilters.baseFilters.map((filter: WorkspaceBaseFilterType)=>{
           if (this.props.status.isStudent && filter === "AS_TEACHER"){
             return false
           } 
@@ -59,7 +63,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
       <select className="form-element__select form-element__select--main-action"><option>{this.props.i18n.text.get('plugin.coursepicker.opencourses')}</option></select> 
       }
     </div>
-    return (<div>
+    return (<div className="application-panel-wrapper">
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} asideBefore={this.props.aside} primaryOption={primaryOption}>
         <CoursepickerWorkspaces/>
       </ApplicationPanel>
@@ -70,7 +74,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    courses: state.courses,
+    workspaces: state.workspaces,
     status: state.status
   }
 };

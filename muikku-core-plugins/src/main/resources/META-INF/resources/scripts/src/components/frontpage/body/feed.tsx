@@ -14,7 +14,7 @@ interface FrontpageFeedState {
 export default class FrontpageFeed extends React.Component<FrontpageFeedProps, FrontpageFeedState> {
   constructor(props: FrontpageFeedProps){
     super(props);
-    
+
     this.state = {
       entries: []
     }

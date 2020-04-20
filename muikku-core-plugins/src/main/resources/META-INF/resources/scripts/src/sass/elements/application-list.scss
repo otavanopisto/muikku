@@ -191,11 +191,9 @@
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
-
     .label {
       background-color: $color-label-mobile-selected-background;
     }
-
     .glyph,
     .link,
     .application-list__header-primary,
@@ -238,6 +236,16 @@
         color: $color-announcement-workspace;
       }
     }
+  }
+}
+
+.application-list__item--user {
+  border-top: 1px solid $color-default-item-separator-border;
+  cursor: pointer;
+  padding: 10px;
+
+  &:first-child {
+    border-color: transparent;
   }
 }
 
@@ -476,7 +484,6 @@
 .application-list__item-header-main-content {
   display: inline-block;
 }
-
 .application-list__item-header-main-content--discussion-message-creator {
   font-size: 0.875rem;
   font-weight: 600;
@@ -489,7 +496,6 @@
 
 .application-list__item-header-main-content--communicator-sender {
   font-weight: 600;
-
   &::after {
     content: ">";
     margin: 0 10px;
@@ -536,6 +542,25 @@
   flex-grow: 1;
   flex-shrink: 1;
 }
+
+// User
+
+.application-list__item-content-aside--user {
+  padding: 0 16px 0 0;
+}
+
+.application-list__item-content-main--user {
+  align-self: center;
+}
+
+.application-list__item-content--secondary {
+  color: $color-text-secondary;
+}
+
+.application-list__item-content-wrapper--user {
+  padding: 10px 0;
+}
+
 
 // Discussion 
 
@@ -703,6 +728,16 @@
 
   @include breakpoint($breakpoint-pad) {
     padding: 0 0 15px;
+  }
+}
+
+.application-list__item-body-meta-content {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 10px;
+
+  label {
+    margin-right: 10px;
   }
 }
 

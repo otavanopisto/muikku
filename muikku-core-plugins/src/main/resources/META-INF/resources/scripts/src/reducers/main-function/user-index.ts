@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/main-function/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 
 export interface UserType {
   id: number,
@@ -21,6 +21,7 @@ export interface UserType {
   studyStartDate?: string,
   studyTimeEnd?: string
 }
+
 
 export interface UserWithSchoolDataType {
   curriculumIdentifier?: string,
@@ -176,5 +177,6 @@ export default function userIndex(state:UserIndexType={
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop)});
   }
+  
   return state;
 }

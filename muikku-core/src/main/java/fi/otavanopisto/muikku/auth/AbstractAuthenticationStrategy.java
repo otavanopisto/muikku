@@ -183,7 +183,19 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
       userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
       userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());
-      sessionController.login(schoolDataSource.getIdentifier(), user.getIdentifier(), user.getStudyEndDate() == null);
+      
+      boolean isActive;
+      
+      // TODO refactor isActive from sessionController so that it's not required on login
+      // system session is needed here because the activity needs to be known before login can go through
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        isActive = userSchoolDataController.isActiveUser(user);
+      } finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+
+      sessionController.login(schoolDataSource.getIdentifier(), user.getIdentifier(), isActive);
       userEntityController.updateLastLogin(userEntity);
       HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
       userLoggedInEvent.fire(new LoginEvent(userEntity.getId(), sessionController.getLoggedUser(), this, req.getRemoteAddr()));

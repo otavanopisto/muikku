@@ -19,12 +19,11 @@ public interface SearchProvider {
   public void init();
   public void deinit();
   
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults);
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, List<SchoolDataIdentifier> organizationIdentifiers, String freeText, List<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
-  public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults);
+  public WorkspaceSearchBuilder searchWorkspaces();
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, List<SchoolDataIdentifier> organizationIdentifiers, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
   public SearchResult searchWorkspaces(String schoolDataSource, String subject, int courseNumber);
 
-  public SearchResult findUser(Long userEntityId, boolean includeInactive);
+  public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
       Boolean onlyDefaultUsers, int start, int maxResults);

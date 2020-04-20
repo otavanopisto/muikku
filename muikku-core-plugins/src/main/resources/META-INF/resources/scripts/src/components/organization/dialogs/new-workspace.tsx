@@ -25,7 +25,7 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     let footer = (closePortal: ()=> any) => <div></div>;
     
     return(<JumboDialog modifier="new-message"
-        title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
+        title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.title')}
         content={content} footer={footer}>
         {this.props.children}
       </JumboDialog>

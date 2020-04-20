@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -58,6 +60,7 @@ import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -130,6 +133,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -393,7 +397,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (userIdentifier != null) {
         if (includeInactiveWorkspaces) {
           workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
-        } else {
+        } 
+        else {
           workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(userIdentifier);
         }
       }
@@ -404,9 +409,27 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_ALL_WORKSPACES)) {
           return Response.status(Status.FORBIDDEN).build();
         }
-        workspaceEntities = Boolean.TRUE.equals(includeUnpublished)
-          ? workspaceController.listWorkspaceEntities()
-          : workspaceController.listPublishedWorkspaceEntities();
+        workspaceEntities = Boolean.TRUE.equals(includeUnpublished) ? workspaceController.listWorkspaceEntities() : workspaceController.listPublishedWorkspaceEntities();
+      }
+   
+      // When querying workspaces of a student, plain teachers are limited to workspaces they are teaching
+      
+      if ((userIdentifier != null || userEntity != null) && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_STUDENT_WORKSPACES)) {
+        EnvironmentRoleEntity targetRole = userIdentifier != null
+            ? userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier)
+            : userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
+        if (targetRole != null && targetRole.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+          Predicate<WorkspaceEntity> isTeacher = new Predicate<WorkspaceEntity>() {
+            @Override
+            public boolean test(WorkspaceEntity workspaceEntity) {
+              return sessionController.hasWorkspacePermission(MuikkuPermissions.TEACH_WORKSPACE, workspaceEntity);
+            }
+          };
+          workspaceEntities = workspaceEntities.stream().filter(isTeacher).collect(Collectors.toList());
+          if (workspaceEntities.isEmpty()) {
+            return Response.noContent().build();
+          }
+        }
       }
     }
 
@@ -962,14 +985,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
         EnvironmentRoleArchetype.TEACHER);
     
-    // Get workspace staff members via Elastic
-
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
-    List<OrganizationEntity> organizations = Arrays.asList(organization);
+    // Get workspace staff members via Elastic (#4917: Should be shown across all organizations)
     
     SearchResult searchResult = elasticSearchProvider.searchUsers(
-        organizations,                                            // organizations
+        organizationEntityController.listUnarchived(),            // organizations
         null,                                                     // search string
         null,                                                     // fields
         environmentRoleArchetypes,                                // all staff archetypes
@@ -2072,7 +2091,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response deleteNode(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId,
-      @QueryParam("removeAnswers") Boolean removeAnswers,
+      @QueryParam("removeAnswers") @DefaultValue ("false") Boolean removeAnswers,
       @QueryParam("updateLinkedMaterials") @DefaultValue ("false") Boolean updateLinkedMaterials) {
     // TODO Our workspace?
     
@@ -3000,14 +3019,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   private WorkspaceJournalEntryRESTModel toRestModel(WorkspaceJournalEntry workspaceJournalEntry) {
     UserEntity entryUserEntity = userEntityController.findUserEntityById(workspaceJournalEntry.getUserEntityId());
-    User user = entryUserEntity == null ? null : userController.findUserByUserEntityDefaults(entryUserEntity);
+    UserEntityName userEntityName = entryUserEntity == null ? null : userEntityController.getName(entryUserEntity);
     
     WorkspaceJournalEntryRESTModel result = new WorkspaceJournalEntryRESTModel();
     result.setId(workspaceJournalEntry.getId());
     result.setWorkspaceEntityId(workspaceJournalEntry.getWorkspaceEntityId());
     result.setUserEntityId(workspaceJournalEntry.getUserEntityId());
-    result.setFirstName(user == null ? null : user.getFirstName());
-    result.setLastName(user == null ? null : user.getLastName());
+    result.setFirstName(userEntityName == null ? null : userEntityName.getFirstName());
+    result.setLastName(userEntityName == null ? null : userEntityName.getLastName());
     result.setContent(workspaceJournalEntry.getHtml());
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
@@ -3029,8 +3048,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         commentTreeAdd(comments, c, resultList);
       });
     return resultList;
-}  
-  
-  
+  }  
 
 }

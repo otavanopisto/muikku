@@ -59,8 +59,11 @@ public class SyncStudentEventHandler {
     
     WorkspaceEntity workspace = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
     
-    chatSyncController.removeChatRoomMembership(user, workspace);
+    WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspace.getId());
     
+    if (workspaceChatStatus != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
+      chatSyncController.removeChatRoomMembership(user, workspace);
+    }
   }
   
   public synchronized void onWorkspaceChatSettingsEnabledEvent (@Observes WorkspaceChatSettingsEnabledEvent event) {

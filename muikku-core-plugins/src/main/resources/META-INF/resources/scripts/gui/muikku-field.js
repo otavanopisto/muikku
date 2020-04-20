@@ -14,7 +14,7 @@
     options: {
       states: [{
         'assignment-type': 'EXERCISE',
-        'state': ['UNANSWERED', 'ANSWERED'],
+        'state': ['UNANSWERED', 'ANSWERED', 'WITHDRAWN'],
         'button-class': 'muikku-check-exercises',
         'button-text': "plugin.workspace.materialsLoader.sendExerciseButton",
         'button-check-text': "plugin.workspace.materialsLoader.checkExerciseButton",

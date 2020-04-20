@@ -2,10 +2,12 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
+import {WorkspaceListType, WorkspaceType} from '~/reducers/workspaces';
 import {StatusType} from '~/reducers/base/status';
-import {WorkspaceListType, WorkspaceType} from '~/reducers/main-function/workspaces';
 import {StateType} from '~/reducers';
 import Panel from '~/components/general/panel';
+
+import '~/sass/elements/panel.scss';
 
 interface WorkspacesPanelProps {
   i18n: i18nType,
@@ -66,7 +68,7 @@ function mapStateToProps(state: StateType){
   return {
     status: state.status,
     i18n: state.i18n,
-    workspaces: state.workspaces.workspaces
+    workspaces: state.workspaces.userWorkspaces
   }
 };
 

@@ -6,13 +6,13 @@ import * as queryString from 'query-string';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { CoursesType, CourseEducationFilterType, CourseCurriculumFilterType, CourseOrganizationFilterType } from '~/reducers/main-function/courses';
 import { StateType } from '~/reducers';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
+import { WorkspacesType, WorkspaceEducationFilterType, WorkspaceCurriculumFilterType, WorkspaceOrganizationFilterType } from '~/reducers/workspaces';
 
 interface NavigationAsideProps {
   i18n: i18nType,
-  courses: CoursesType
+  workspaces: WorkspacesType
 }
 
 interface NavigationAsideState {
@@ -24,31 +24,31 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
 
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
-        {this.props.courses.avaliableFilters.educationTypes.map( ( educationType: CourseEducationFilterType ) => {
-          let isActive = this.props.courses.activeFilters.educationFilters.includes( educationType.identifier );
+        {this.props.workspaces.availableFilters.educationTypes.map( ( educationType: WorkspaceEducationFilterType ) => {
+          let isActive = this.props.workspaces.activeFilters.educationFilters.includes( educationType.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).filter( ( i: string ) => i !== educationType.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).concat( educationType.identifier ) } ), { arrayFormat: 'bracket' } ) )
-          return <NavigationElement key={educationType.identifier} isActive={isActive} hash={hash}>{educationType.name}</NavigationElement>
+          return <NavigationElement modifiers="aside-navigation" key={educationType.identifier} isActive={isActive} hash={hash}>{educationType.name}</NavigationElement>
         })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
-        {this.props.courses.avaliableFilters.curriculums.map( ( curriculum: CourseCurriculumFilterType ) => {
-          let isActive = this.props.courses.activeFilters.curriculumFilters.includes( curriculum.identifier );
+        {this.props.workspaces.availableFilters.curriculums.map( ( curriculum: WorkspaceCurriculumFilterType ) => {
+          let isActive = this.props.workspaces.activeFilters.curriculumFilters.includes( curriculum.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).filter( ( c: string ) => c !== curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).concat( curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) );
-          return <NavigationElement key={curriculum.identifier} isActive={isActive} hash={hash}>{curriculum.name}</NavigationElement>
+          return <NavigationElement modifiers="aside-navigation" key={curriculum.identifier} isActive={isActive} hash={hash}>{curriculum.name}</NavigationElement>
         } )}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.organization')}>
-        {this.props.courses.avaliableFilters.organizations.map( ( organization: CourseOrganizationFilterType ) => {
-          let isActive = this.props.courses.activeFilters.organizationFilters.includes( organization.identifier );
+        {this.props.workspaces.availableFilters.organizations.map( ( organization: WorkspaceOrganizationFilterType ) => {
+          let isActive = this.props.workspaces.activeFilters.organizationFilters.includes( organization.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { o: ( locationData.o || [] ).filter( ( o: string ) => o !== organization.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { o: ( locationData.o || [] ).concat( organization.identifier ) } ), { arrayFormat: 'bracket' } ) );
-          return <NavigationElement key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
-        } )}
+          return <NavigationElement modifiers="aside-navigation" key={organization.identifier} isActive={isActive} hash={hash}>{organization.name}</NavigationElement>
+        })}
       </NavigationTopic>
     </Navigation>
   }
@@ -57,7 +57,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
 function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n,
-    courses: state.courses
+    workspaces: state.workspaces
   }
 };
 

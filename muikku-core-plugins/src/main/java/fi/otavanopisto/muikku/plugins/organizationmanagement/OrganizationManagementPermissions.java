@@ -16,9 +16,12 @@ import fi.otavanopisto.security.Scope;
 public class OrganizationManagementPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR} )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
   public static final String ORGANIZATION_VIEW = "ORGANIZATION_VIEW";
   
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
+  public static final String ORGANIZATION_MANAGE_WORKSPACES = "ORGANIZATION_MANAGE_WORKSPACES";
 
   @Override
   public List<String> listPermissions() {

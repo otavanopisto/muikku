@@ -8,7 +8,6 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.security.AbstractMuikkuPermissionCollection;
 import fi.otavanopisto.muikku.security.DefaultEnvironmentPermissionRoles;
-import fi.otavanopisto.muikku.security.DefaultPermissionRoles;
 import fi.otavanopisto.muikku.security.MuikkuPermissionCollection;
 import fi.otavanopisto.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
@@ -17,11 +16,7 @@ import fi.otavanopisto.security.Scope;
 public class MatriculationPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ( EVERYONE )
-  public static final String MATRICULATION_GET_EXAM = "MATRICULATION_GET_EXAM";
-
-  @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ( EVERYONE )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.STUDENT } )
   public static final String MATRICULATION_LIST_EXAMS = "MATRICULATION_LIST_EXAMS";
   
   @Scope (PermissionScope.ENVIRONMENT)
