@@ -374,7 +374,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
               <div className="chat__panel-header chat__panel-header--private">
                 <div className="chat__panel-header-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
                 <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-remove"></div>
-                <div onClick={() => this.props.onOpenPrivateChat(this.state.roomJid)} className="chat__button chat__button--close icon-close"></div>
+                <div onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="chat__button chat__button--close icon-close"></div>
               </div>
 
               <div className="chat__panel-body chat__panel-body--chatroom">

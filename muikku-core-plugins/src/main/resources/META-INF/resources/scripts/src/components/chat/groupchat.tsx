@@ -134,7 +134,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     } 
     
   }
-  async openMucConversation(room: string){
+  openMucConversation(room: string){
     let data = {
       jid: room,
       nick: this.props.nick
@@ -150,24 +150,22 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       result.push(room);
     }
 
-    this.setState({
-      nick: this.props.nick
-    });
-
     window.sessionStorage.setItem("openChats", JSON.stringify(result));
-
+    
     let nick: string;
     nick = this.props.nick;
-
     if (!nick) {
       throw new TypeError('join: You need to provide a valid nickname');
     }
+    this.setState({
+      nick: this.props.nick
+    });
 
     let jid = Strophe.getBareJidFromJid(data.jid);
     let roomJidAndNick = jid + (nick !== null ? "/" + nick : "");
 
     const stanza = $pres({
-      'from': this.state.converse.connection.jid,
+      'from': this.props.converse.connection.jid,
       'to': roomJidAndNick
     }).c("x", {'xmlns': Strophe.NS.MUC})
     .c("history", {'maxstanzas': this.state.converse.muc_history_max_stanzas}).up();
@@ -186,7 +184,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
     jid = data.jid;
     let __ = this;
-    this.state.converse.api.rooms.open(jid, _.extend(data,
+
+
+    this.props.converse.api.rooms.open(jid, _.extend(data,
       {
         'jid':jid,
         'maximize': true,
@@ -202,9 +202,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
         
         chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
-        
-      
-      //this.messageHandler(chat.messages.models);
       }).then(async function () {
           let userJid = __.state.converse.connection.jid;
           userJid = userJid.toLowerCase();
@@ -226,7 +223,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           
           __.sendAffiliationIQ(affiliation, dataForSetAffiliation);
       });
-
     }
   
   sendAffiliationIQ (affiliation: any, member: any) {
@@ -262,6 +258,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let nick: any;
         let userName: any;
         let deletedTime: any;
+        let realName: string;
         
         if (from){
           from = from.split("/").pop();
@@ -272,10 +269,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
               nick = chatSettings.nick;
               
+//            Does this slow things down alot? - petja
+              user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
+              realName = userName = user.firstName + " " + user.lastName;
+              
               if (nick == "" || nick == undefined) {
-                user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
-                userName = user.firstName + " " + user.lastName;
-                nick = userName;
+                nick = realName;
               }
           } else {
             nick = from;
@@ -288,8 +287,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         } else {
           messageId = "null";
         }
-
-        if (from === window.MUIKKU_LOGGED_USER) {
+      
+        let myNick: string = "";
+        if(!chatSettings){
+          chatSettings = (await promisify(mApi().chat.settings.read(window.MUIKKU_LOGGED_USER), 'callback')());        
+        }
+        myNick = chatSettings.nick;
+        
+        if (from === window.MUIKKU_LOGGED_USER || from === myNick) {
           senderClass = "sender-me";
         } else {
           senderClass = "sender-them";
@@ -301,7 +306,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         } else {
           stamp = new Date().toString();
         }
-        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass, timeStamp: stamp, messageId: messageId, deleted: false, deletedTime: "", userIdentifier: from};
+        let groupMessage: any = {from: nick, alt: userName, content: message, senderClass: senderClass,
+            timeStamp: stamp, messageId: messageId, deleted: false, deletedTime: "", userIdentifier: from, realName: realName};
 
 
         if (message !== "") {
@@ -329,11 +335,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
           this.setState({
             groupMessages: tempGroupMessages
-          }, this.scrollToBottom.bind(this, "auto"));
-
-          if (this.state.showOccupantsList === true) {
-            this.getOccupants();
-          }
+          }, this.scrollToBottom.bind(this, "smooth"));
           return;
         }
       } else {
@@ -370,7 +372,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         message = chat.messages.create(attrs);
       }
 
-      this.state.converse.api.send(chat.createMessageStanza(message));
+      this.props.converse.api.send(chat.createMessageStanza(message));
       this.getMUCMessages(message);
     }
     sendMessage(event: any){
@@ -405,10 +407,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       event.target.chatMessage.value = '';
 
       if (text !== null || text !== ""){
-        this.state.converse.api.send(chat.createMessageStanza(message));
+        this.props.converse.api.send(chat.createMessageStanza(message));
 //        this.getMUCMessages(message);
       }
+      this.scrollToBottom.bind(this, "smooth");
     }
+    
     //--- SETTINGS & INFOS
     openChatSettings(){
       if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false) {
@@ -542,7 +546,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       config.forEach((node: any) => iq.cnode(node).up());
 
-      return this.state.converse.api.sendIQ(iq).then(() =>
+      return this.props.converse.api.sendIQ(iq).then(() =>
         this.setState({
           isRoomConfigSavedSuccesfully: "Tallennettu onnistuneesti!",
           settingsInformBox: "settingsInform --success"
@@ -561,14 +565,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       */
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-      return this.state.converse.api.sendIQ(
+      return this.props.converse.api.sendIQ(
         $iq({'to': this.state.roomJid, 'type': "get"})
         .c("query", {xmlns: Strophe.NS.MUC_OWNER})
       );
     }
     minimizeChats(roomJid: string){
       // For some reason this.state.minimizedRoom is everytime empty when minimizeChats() is called, that's why we load list from sessionStorage instead
-      // let minimizedRoomList = this.state.minimizedRooms;
+
       let minimizedRoomList = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
       if (this.state.minimized === false) {
@@ -581,10 +585,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
           minimizedRoomList.push(roomJid);
 
-          this.setState({
-            minimizedRooms: minimizedRoomList
-          });
-
           window.sessionStorage.setItem("minimizedChats", JSON.stringify(minimizedRoomList));
         }
       } else {
@@ -596,25 +596,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         if (minimizedRoomList.includes(roomJid)) {
 
           const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJid);
-
-          this.setState({
-            minimizedRooms: filteredRooms
-          });
-
-          let result = JSON.parse(window.sessionStorage.getItem('minimizedChats')) || [];
-
-          const filteredChats = result.filter(function(item: any) {
-            return item !== roomJid;
-          });
-
-          window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredChats));
-
-          return;
+          
+          window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredRooms));
+//          return;
         }
+        this.openMucConversation(roomJid);
       }
     }
     async toggleOccupantsList(){
-      let room = await this.state.converse.api.rooms.get(this.state.roomJid);
+      let room = await this.props.converse.api.rooms.get(this.state.roomJid);
 
       // For some reason this.state.occupantsListOpened is everytime empty when toggleOccupantsList() is called, that's why we load list from sessionStorage instead
       // let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
@@ -651,18 +641,15 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
     }
     async getOccupants(){
-//      this.state.occupants cannot be enough to house members of different rooms in state.
-//      Something more on the lines of roomsAndOccupants[] > occupants[]
-//      It seems to work though... I am confused
       let roomJID = this.state.roomJid;
-      let room = await this.state.converse.api.rooms.get(this.state.roomJid);
+      let room = await this.props.converse.api.rooms.get(this.state.roomJid);
 
       if (room.occupants.models) {
         let user: any;
         let userData: any;
         let chatSettings: any;
-        let tempStudentOccupants = [...this.state.studentOccupants];
-        let tempStaffOccupants = [...this.state.staffOccupants];
+        let tempStudentOccupants = new Array;
+        let tempStaffOccupants = new Array;
         for (const item of room.occupants.models) {
           if(typeof item.attributes.nick !== 'undefined'){
             if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
@@ -679,7 +666,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               userData = {id: item.attributes.nick, nick: nick, status: item.attributes.show, firstName: "", lastName: ""};
             }
           }
-
           if(typeof item.attributes.nick !== 'undefined'){
             if(item.attributes.nick.startsWith("PYRAMUS-STAFF-")){
               let isExists = tempStaffOccupants.some(function(curr :any) {
@@ -708,10 +694,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
       }
     }
-    scrollToBottom(behavior: string = "smooth") {
-      const isAlreadyInBottom = this.myRef.scrollTop + this.myRef.offsetHeight === this.myRef.scrollHeight;
-      if (!isAlreadyInBottom && this.messagesEnd){
-        this.messagesEnd.scrollIntoView({ behavior });
+    scrollToBottom(method: string = "smooth") {
+      if (this.messagesEnd){
+        this.messagesEnd.scrollIntoView({ behavior: method });
       }
     }
     onEnterPress(e: any) {
@@ -735,13 +720,13 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
     }
     componentDidMount(){
-      let converse = this.props.converse;
+      const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-      if (converse) {
-        this.setState({
-          converse: converse
-        });
-      }
+//      if (converse) {
+//        this.setState({
+//          converse: converse
+//        });
+//      }
       let chat = this.props.chat;
 
       if (chat) {
@@ -763,7 +748,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             }
           })
         }
-
+//        this.getMUCMessages(somethingsomthing);
         this.openMucConversation(chat.jid);
         this.scrollToBottom.bind(this, "auto");
         this.isWorkspaceChatRoom(chat.jid);
@@ -772,10 +757,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
       if (minimizedChatsFromSessionStorage) {
-        this.setState({
-          minimizedRooms: minimizedChatsFromSessionStorage
-        });
-
         minimizedChatsFromSessionStorage.map((item: any) => {
           if (item === chat.jid) {
             this.setState({
@@ -784,12 +765,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           }
         })
       }
-      converse.api.listen.on('message', this.handleIncomingMessages);
-      converse.api.listen.on('membersFetched', () => { this.handleIncomingMessages });
+      
+      this.props.converse.api.listen.on('message', this.handleIncomingMessages);
+      this.props.converse.api.listen.on('membersFetched', this.getOccupants );
     }
 
     componentDidUpdate(){
-
     }
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
@@ -842,15 +823,22 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} ref={ (ref) => this.myRef=ref }>
-                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} removeMessage={this.removeMessage.bind(this)} groupMessage={groupMessage} />)}
+                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} removeMessage={this.removeMessage.bind(this)} 
+                    groupMessage={groupMessage} />)}
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
                   <div className="chat__occupants-staff">
-                    {this.state.staffOccupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</div>)}
+                    {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
+                    {this.state.staffOccupants.map((occupant: any, i: any) => 
+                    <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>
+                      <span className={"chat__online-indicator chat__occupant-"+occupant.status}></span>{occupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
-                    {this.state.studentOccupants.map((occupant: any, i: any) => <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>{occupant.nick}</div>)}
+                    {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
+                    {this.state.studentOccupants.map((occupant: any, i: any) => 
+                    <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(occupant)} key={i}>
+                      <span className={"chat__online-indicator chat__occupant-"+occupant.status}></span>{occupant.nick}</div>)}
                   </div>
                 </div>}
               </div>
