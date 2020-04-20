@@ -5,12 +5,15 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier_;
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity_;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -99,6 +102,28 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
       )
     );
 
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<UserSchoolDataIdentifier> listByOrganizationAndRoles(int i, List<String> roles){
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
+    Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
+    Join<UserSchoolDataIdentifier, EnvironmentRoleEntity> join = root.join(UserSchoolDataIdentifier_.role);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.or(
+          criteriaBuilder.equal((join.get(EnvironmentRoleEntity_.archetype)), EnvironmentRoleArchetype.ADMINISTRATOR),
+          criteriaBuilder.equal((join.get(EnvironmentRoleEntity_.archetype)), EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)
+        ),
+        
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.organization), 1)
+      )
+    );
+    
     return entityManager.createQuery(criteria).getResultList();
   }
   

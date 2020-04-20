@@ -9,6 +9,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,6 +32,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity_;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity_;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
@@ -46,6 +53,8 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.EnvironmentRoleEntityController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -89,6 +98,12 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject 
+  private OrganizationEntity organizationEntity;
+  
+  @Inject 
+  private EnvironmentRoleEntity environmentRoleEntity;
   
     
   @GET
@@ -377,4 +392,34 @@ public class ChatRESTService extends PluginRESTService {
       return Response.noContent().build();
     }
   }
+  
+  @GET
+  @Path("/affiliations/")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response chatUserAffiliations(String roomName) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    //SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    List<String> roles = new ArrayList<String>();
+    roles.add("ADMINISTRATOR");
+    roles.add("STYDY_PROGRAM_LEADER");
+
+
+    List<UserSchoolDataIdentifier> usersByAffiliations = chatController.listByOrganizationAndRoles(1, roles);
+    
+    for(UserSchoolDataIdentifier user: usersByAffiliations){
+        EnvironmentRoleEntity userRole = user.getRole();
+        
+        if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(userRole.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(userRole.getArchetype())) {
+          chatSyncController.syncRoomOwners(user, roomName);
+        } 
+      
+
+    }
+
+    return Response.ok(usersByAffiliations).build();
+  }
+  
 }
