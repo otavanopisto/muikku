@@ -1,6 +1,7 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { HTMLtoReactComponent } from "~/util/modifiers";
+import Zoom from "~/components/general/zoom";
 
 interface ImageProps {
   element: HTMLElement,
@@ -140,6 +141,15 @@ export default class Image extends React.Component<ImageProps, ImageState>{
         } else {
           elementProps.src = src;
         }
+        
+        return (
+          <Zoom
+            key={elementProps.key}
+            imgsrc={elementProps.src}
+          >
+            <Tag {...elementProps}>{children}</Tag>
+         </Zoom>
+        );
       }
 
       return <Tag {...elementProps}>{children}</Tag>

@@ -1,0 +1,47 @@
+.zoom-container {
+}
+
+.zoom-container-clickable-item {
+  cursor: pointer;
+}
+
+.zoom {
+  position: fixed;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0,0,0,0.75);
+}
+
+.zoom-children {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  
+  .zoom-image {
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+  }
+}
+
+.zoom-close {
+  cursor: pointer;
+  font-size: 30px;
+  height: 30px;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 30px;
+  color: white;
+}
