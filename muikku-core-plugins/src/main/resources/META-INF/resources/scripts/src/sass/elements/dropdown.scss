@@ -71,7 +71,6 @@
     text-align: left;
 
     @include breakpoint($breakpoint-pad) {
-      font-weight: 300;
       padding: 5px 10px;
     }
   }
@@ -122,10 +121,6 @@
     color: $color-default;
     min-width: 0;
     text-align: left;
-
-    @include breakpoint($breakpoint-pad) {
-      font-weight: 300;
-    }
   }
 
   .dropdown__arrow {
