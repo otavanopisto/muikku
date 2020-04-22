@@ -88,7 +88,6 @@ $color-grade-failed: #4c4c4c;
 $color-task-evaluation: #e2ffe2;
 
 // Wizard
-
 $color-wizard-todo: $color-grade-not-assessed;
 $color-wizard-doing: $color-grade-incomplete;
 $color-wizard-done: $color-grade-passed;
@@ -111,7 +110,6 @@ $color-taskfield-explanation-border: #5ed2ff;
 $color-taskfield-explanation-background: #fafeff;
 $color-taskfield-hint-border: #d6d823;
 $color-taskfield-hint-background: #ffffe1;
-
 $color-mobile-toc-default-shadow: rgba(0, 0, 0, 0.2);
 
 // Material management
@@ -233,7 +231,6 @@ $color-button-profile-image-edit-delete-background: rgba(0, 0, 0, 0.5);
 $color-button-profile-image-edit-delete-hover-background: rgba(0, 0, 0, 0.9);
 
 // Icon button theme
-
 $color-icon-button-text: #0fa5e4;
 
 // Button pill theme
@@ -259,7 +256,6 @@ $color-label-secondary: $color-secondary;
 $color-label-inverse: $color-default;
 
 // Text
-
 $color-text-default: $color-inverse;
 $color-text-secondary: #cecece;
 $color-text-link: $color-primary;
@@ -329,6 +325,9 @@ $color-dialog-default-title-text: #000;
 $color-dialog-default-shadow: rgba(0, 0, 0, 0.6);
 $color-dialog-wizard-desktop-text: $color-inverse;
 $color-dialog-wizard-desktop-background: $color-default;
+
+// Zoom
+$color-zoom-image-overlay-background: rgba(0, 0, 0, 0.75);
 
 // Background
 $color-background-container-default-background: #f5f5f5;

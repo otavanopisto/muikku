@@ -116,7 +116,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
 
   updateHeight(offset?: number) {
-    let heightOffset:number = offset? offset : 0;
+    let heightOffset:number = offset ? offset : 0;
     this.setState({height: window.innerHeight - heightOffset});
   }
 
@@ -308,7 +308,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
   }
 
   componentDidMount() {
-    let offset:number =  35;
+    let offset:number =  40;
     this.updateHeight(offset);
     window.addEventListener('resize', () => this.updateHeight(offset));
   }
@@ -429,7 +429,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
               )} onChange={this.updateContent} onDrop={this.refreshAttachments}>
               {this.props.editorState.currentDraftNodeValue.html}
             </CKEditor>
-          </div> : null}  
+          </div> : null}
         </div>
       }];
 
