@@ -103,6 +103,10 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String CREATE_STAFF_MEMBER = "CREATE_STAFF_MEMBER";
 
   @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
+  public static final String UPDATE_STAFF_MEMBER = "UPDATE_STAFF_MEMBER";
+
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
   public static final String CREATE_STUDENT = "CREATE_STUDENT";
   
@@ -213,7 +217,7 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
-  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT, WorkspaceRoleArchetype.TEACHER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String LIST_WORKSPACE_MEMBERS = "LIST_WORKSPACE_MEMBERS";
 
   @Scope (PermissionScope.WORKSPACE)
@@ -222,11 +226,20 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String MANAGE_WORKSPACE_MEMBERS = "MANAGE_WORKSPACE_MEMBERS";
 
   @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.STUDENT })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT, WorkspaceRoleArchetype.TEACHER })
+  public static final String LIST_WORKSPACE_STAFFMEMBERS = "LIST_WORKSPACE_STAFFMEMBERS";
+
+  @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
   public static final String ARCHIVE_ALL_WORKSPACE_STUDENTS = "ARCHIVE_ALL_WORKSPACE_STUDENTS";
   
   @Scope (PermissionScope.WORKSPACE)
   public static final String WORKSPACE_SIGNUP = "WORKSPACE_SIGNUP";
+  
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT })
+  public static final String IS_WORKSPACE_STUDENT = "IS_WORKSPACE_STUDENT";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })

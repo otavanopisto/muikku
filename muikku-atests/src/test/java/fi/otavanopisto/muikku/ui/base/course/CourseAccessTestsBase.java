@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.ui.base.course;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
+import static org.junit.Assert.assertTrue;
+
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.Test;
@@ -42,7 +44,17 @@ public class CourseAccessTestsBase extends AbstractUITest {
         updateWorkspaceAccess(WorkspaceAccess.ANYONE, workspace.getUrlName());
         logout();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        selectFinnishLocale();
+        assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Opiskelijaksi kurssille");
+        assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.");
+        assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Lue lisää");
+        selectEnglishLocale();
+        assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Attending this course");
+        assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Would you like to attend this course? You can checkout different studying options from the front page of Muikku.");
+        assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Read more");
+        click(".panel--workspace-signup .button--signup-read-more");
+        waitForPresent("#studying");
+        assertTrue("Read more button did not return to frontpage", getCurrentPath().equals("/"));
       }finally{
         deleteWorkspace(workspace.getId());  
       }

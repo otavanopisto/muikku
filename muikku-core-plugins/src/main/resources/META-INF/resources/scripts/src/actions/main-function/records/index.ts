@@ -2,10 +2,12 @@ import actions from '../../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {UserWithSchoolDataType, UserFileType} from '~/reducers/main-function/user-index';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentStateType } from 'reducers/workspaces';
-import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records';
 import { StateType } from '~/reducers';
+import { AllStudentUsersDataType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType,
+  CurrentStudentUserAndWorkspaceStatusType, CurrentRecordType, TransferCreditType, RecordGroupType } from '~/reducers/main-function/records';
+import { UserFileType, UserWithSchoolDataType } from '~/reducers/user-index';
+import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceStudentActivityType,
+  WorkspaceJournalListType, MaterialContentNodeType, MaterialEvaluationType, MaterialAssignmentType, WorkspaceStudentAssessmentsType } from '~/reducers/workspaces';
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS", AllStudentUsersDataStatusType>;
@@ -270,7 +272,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       })(),
       
       (async ()=>{
-        let journals = <JournalListType>await promisify(mApi().workspace.workspaces.journal.read(workspaceId, {
+        let journals = <WorkspaceJournalListType>await promisify(mApi().workspace.workspaces.journal.read(workspaceId, {
           userEntityId,
           firstResult: 0,
           maxResults: 512
@@ -283,7 +285,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
           assignmentType: "EVALUATED",
         }), 'callback')() || [];
         
-        let materials:Array<MaterialType>;
+        let materials:Array<MaterialContentNodeType>;
         let evaluations:Array<MaterialEvaluationType>;
         [materials, evaluations] = <any>await Promise.all([
           Promise.all(assignments.map((assignment)=>{
@@ -297,7 +299,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
         ]);
         
         return materials.map((material, index)=>{
-          return <MaterialType>Object.assign(material, {
+          return <MaterialContentNodeType>Object.assign(material, {
             evaluation: evaluations[index],
             assignment: assignments[index]
           });

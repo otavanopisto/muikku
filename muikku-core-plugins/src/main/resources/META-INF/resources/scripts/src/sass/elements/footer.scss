@@ -10,6 +10,17 @@
   width: 100%;
 }
 
+.footer--workspace {
+  @include text;
+  background-color: $color-workspace-footer-default-background;
+  margin: 0;
+  order: 3;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 10px;
+  }
+}
+
 .footer__container {
   display: flex;
   justify-content: center;
@@ -42,7 +53,7 @@
   justify-content: center;
   max-width: 100%;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     align-items: flex-start;
     max-width: 50%;
   }
@@ -59,13 +70,13 @@
   max-width: $breakpoint-max-usable-screen;
   padding: 20px 30px 15px;
 
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row wrap;
-  }
-
   img {
     height: 30px;
     width: auto;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
   }
 }
 
@@ -101,13 +112,13 @@
   max-width: 100%;
   text-align: center;
 
+  * {
+    margin-right: 0.625rem;
+  }
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
     text-align: left;
-  }
-
-  * {
-    margin-right: 0.625rem;
   }
 }
 
@@ -118,7 +129,7 @@
 .footer__item--logos {
   display: none;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     align-items: flex-end;
     display: flex;
     flex-flow: column nowrap;

@@ -2,7 +2,6 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
-import equals = require("deep-equal");
 import {StateType} from '~/reducers';
 
 import NewEditAnnouncement from '../../dialogs/new-edit-announcement';
@@ -16,15 +15,15 @@ import '~/sass/elements/announcement.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 
-import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
+import { AnnouncementsType, AnnouncementType } from '~/reducers/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';
 import { AddToAnnouncementsSelectedTriggerType, RemoveFromAnnouncementsSelectedTriggerType,
-  removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/main-function/announcements';
+  removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/announcements';
 import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemFooter, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
-import { UserIndexType } from '~/reducers/main-function/user-index';
+import { UserIndexType } from '~/reducers/user-index';
 
 interface AnnouncementsProps {
   i18n: i18nType,
@@ -89,7 +88,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     {announcement.userGroupEntityIds.map((userGroupId)=>{
                       if (this.props.userIndex.groups[userGroupId]){
                           return <span className="label" key={userGroupId}>
-                          <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
+                          <span className="label__icon label__icon--announcement-usergroup icon-users"></span>
                           <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
                         </span>
                       }

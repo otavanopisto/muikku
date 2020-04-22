@@ -47,9 +47,9 @@ enum Graph {
   FORUM_NEWMESSAGE = "forum-messages",
 }
 
-var ignoreZoomed: boolean = true;
-var zoomStartDate: Date = null;
-var zoomEndDate: Date = null;
+let ignoreZoomed: boolean = true;
+let zoomStartDate: Date = null;
+let zoomEndDate: Date = null;
 
 class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsProps, CurrentStudentStatisticsState> {
   constructor(props: CurrentStudentStatisticsProps){
@@ -60,16 +60,17 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
-      amChartsLoaded: (window as any).AmCharts != null,
+      amChartsLoaded: AmCharts !== null,
       filteredWorkspaces: [],
       filteredCompletedWorkspaces: [],
       filteredGraphs: [Graph.FORUM_NEWMESSAGE]
     };
     
-    if (!this.state.amChartsLoaded)
+    if (!this.state.amChartsLoaded){
       this.loadAmCharts();
-    else
+    } else {
       AmCharts = require("@amcharts/amcharts3-react");
+    }
   }
   
   loadAmCharts(){
@@ -93,7 +94,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     let filteredWorkspaces: number[] = [];
     if (workspaceId){
       filteredWorkspaces = this.state.filteredWorkspaces.slice();
-      var index = filteredWorkspaces.indexOf(workspaceId);
+      let index = filteredWorkspaces.indexOf(workspaceId);
       if (index > -1)
         filteredWorkspaces.splice(index, 1);
       else
@@ -112,7 +113,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     let filteredCompletedWorkspaces: number[] = [];
     if (workspaceId){
       filteredCompletedWorkspaces = this.state.filteredCompletedWorkspaces.slice();
-      var index = filteredCompletedWorkspaces.indexOf(workspaceId);
+      let index = filteredCompletedWorkspaces.indexOf(workspaceId);
       if (index > -1)
         filteredCompletedWorkspaces.splice(index, 1);
       else
@@ -130,7 +131,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
   
   GraphFilterHandler(graph: Graph){
     const filteredGraphs = this.state.filteredGraphs.slice();
-    var index = filteredGraphs.indexOf(graph);
+    let index = filteredGraphs.indexOf(graph);
     if(index > -1)
       filteredGraphs.splice(index, 1);
     else
@@ -143,13 +144,13 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       zoomStartDate = e.startDate;
       zoomEndDate = e.endDate;
     }
-  ignoreZoomed = false;
+    ignoreZoomed = false;
   }
   
   zoomApplyHandler(e:any){
-    if (zoomStartDate != null && zoomEndDate != null)
+    if (zoomStartDate !== null && zoomEndDate !== null) {
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
-    else {
+    } else {
       let prior: Date;
       let today: Date = new Date();
       if (today.getMonth() >= 3)
@@ -172,29 +173,19 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         let date = log.timestamp.slice(0, 10);
         let entry = chartDataMap.get(date) || {};
         switch(log.type){
-        case "SESSION_LOGGEDIN":
-          entry.SESSION_LOGGEDIN = entry.SESSION_LOGGEDIN + 1 || 1;
-          break;
-        case "FORUM_NEWMESSAGE":
-          entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
-          break;
-        case "FORUM_NEWTHREAD":
-          entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
-          break;
-        case "NOTIFICATION_ASSESMENTREQUEST":
-          entry.NOTIFICATION_ASSESMENTREQUEST = entry.NOTIFICATION_ASSESMENTREQUEST + 1|| 1;
-          break;
-        case "NOTIFICATION_NOPASSEDCOURSES":
-          entry.NOTIFICATION_NOPASSEDCOURSES = entry.NOTIFICATION_NOPASSEDCOURSES + 1|| 1;
-          break;
-        case "NOTIFICATION_SUPPLEMENTATIONREQUEST":
-          entry.NOTIFICATION_SUPPLEMENTATIONREQUEST = entry.NOTIFICATION_SUPPLEMENTATIONREQUEST + 1|| 1;
-          break;
-        case "NOTIFICATION_STUDYTIME":
-          entry.NOTIFICATION_STUDYTIME = entry.NOTIFICATION_STUDYTIME + 1|| 1;
-          break;
-        default:
-          break;
+          case "FORUM_NEWMESSAGE":
+          case "FORUM_NEWTHREAD":
+            entry.FORUM_NEWMESSAGE = entry.FORUM_NEWMESSAGE + 1|| 1;
+            break;
+          case "SESSION_LOGGEDIN":
+          case "NOTIFICATION_ASSESMENTREQUEST":
+          case "NOTIFICATION_NOPASSEDCOURSES":
+          case "NOTIFICATION_SUPPLEMENTATIONREQUEST":
+          case "NOTIFICATION_STUDYTIME":
+            entry[log.type] = (entry[log.type] + 1) || 1;
+            break;
+          default:
+            break;
         }
         chartDataMap.set(date, entry);
       });
@@ -207,29 +198,17 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
           let date = log.timestamp.slice(0, 10);
           let entry = chartDataMap.get(date) || {};
           switch(log.type){
-          case "EVALUATION_REQUESTED":
-            entry.EVALUATION_REQUESTED = entry.EVALUATION_REQUESTED + 1 || 1;
-            break;
-          case "EVALUATION_GOTINCOMPLETED":
-            entry.EVALUATION_GOTINCOMPLETED = entry.EVALUATION_GOTINCOMPLETED + 1|| 1;
-            break;
-          case "EVALUATION_GOTFAILED":
-            entry.EVALUATION_GOTFAILED = entry.EVALUATION_GOTFAILED + 1|| 1;
-            break;
-          case "EVALUATION_GOTPASSED":
-            entry.EVALUATION_GOTPASSED = entry.EVALUATION_GOTPASSED + 1|| 1;
-            break;
-          case "WORKSPACE_VISIT":
-            entry.WORKSPACE_VISIT = entry.WORKSPACE_VISIT + 1|| 1;
-            break;
-          case "MATERIAL_EXERCISEDONE":
-            entry.MATERIAL_EXERCISEDONE = entry.MATERIAL_EXERCISEDONE + 1|| 1;
-            break;
-          case "MATERIAL_ASSIGNMENTDONE":
-            entry.MATERIAL_ASSIGNMENTDONE = entry.MATERIAL_ASSIGNMENTDONE + 1|| 1;
-            break;
-          default:
-            break;
+            case "EVALUATION_REQUESTED":
+            case "EVALUATION_GOTINCOMPLETED":
+            case "EVALUATION_GOTFAILED":
+            case "EVALUATION_GOTPASSED":
+            case "WORKSPACE_VISIT":
+            case "MATERIAL_EXERCISEDONE":
+            case "MATERIAL_ASSIGNMENTDONE":
+              entry[log.type] = (entry[log.type] + 1) || 1;
+              break;
+            default:
+              break;
           }
           chartDataMap.set(date, entry);
         })

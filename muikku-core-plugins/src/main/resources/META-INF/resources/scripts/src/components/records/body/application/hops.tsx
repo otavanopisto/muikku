@@ -5,6 +5,8 @@ import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records';

@@ -11,7 +11,6 @@ import {i18nType} from '~/reducers/base/i18n';
 
 import {WorkspacesStateType, WorkspaceType, WorkspaceListType} from '~/reducers/workspaces';
 
-
 interface OrganizationWorkspacesProps {
   i18n: i18nType,
   workspacesState: WorkspacesStateType,
@@ -74,3 +73,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(OrganizationWorkspaces);
+

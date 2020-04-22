@@ -125,10 +125,43 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       }
     }
   }
-  
+
+  @PUT
+  @Path("/{id}/content")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateMaterialContent(@PathParam("id") Long id, HtmlRestMaterialContent entity) {
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
+
+    HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
+    if (htmlMaterial == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    try {
+      htmlMaterial = htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, entity.getContent(), entity.getRemoveAnswers());
+    }
+    catch (WorkspaceMaterialContainsAnswersExeption e) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
+        logger.log(Level.WARNING, String.format("Update material %d by user %d denied due to material containing answers", id, sessionController.getLoggedUserEntity().getId()));
+        return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
+      }
+      else {
+        return Response.status(Status.CONFLICT).entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
+      }
+    }
+    catch (Exception e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    return Response.ok(createRestModel(htmlMaterial)).build();
+  }
+
   @POST
   @Path("/{id}/publish/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @Deprecated
   public Response publishMaterial(@PathParam("id") Long id, HtmlRestMaterialPublish entity) {
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {
@@ -176,6 +209,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   @PUT
   @Path("/{id}/revert/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @Deprecated
   public Response revertMaterial(@PathParam("id") Long id, HtmlRestMaterialRevert entity) {
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.MANAGE_MATERIALS)) {

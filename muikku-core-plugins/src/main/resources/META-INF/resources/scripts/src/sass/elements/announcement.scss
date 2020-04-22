@@ -3,17 +3,17 @@
 @import "../base/breakpoints";
 
 .announcement {
-  border-top: 3px solid $color-message-border;
+  border-top: 2px solid $color-message-border;
   cursor: pointer;
   padding: 10px;
-  
+
   &:first-child {
-    border-color: transparent;
+    border-top-color: transparent;
   }
-  
+
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
-    padding: 15px 0;
+    padding: 15px 10px;
   }
 }
 
@@ -22,14 +22,14 @@
 }
 
 .announcement--environment {
-  
+
   .glyph {
     color: $color-announcement-environment;
   }
 }
 
 .announcement--workspace {
-   
+
   .glyph {
     color: $color-announcement-workspace;
   }

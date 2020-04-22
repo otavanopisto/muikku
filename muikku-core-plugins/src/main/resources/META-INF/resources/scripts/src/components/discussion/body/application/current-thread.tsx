@@ -1,6 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { DiscussionUserType, DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion";
+import { DiscussionType, DiscussionUserType, DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
@@ -45,8 +45,8 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       return null;
     }
     let areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussion.current.forumAreaId] || {};
-
-    let userCreator: DiscussionUserType = this.props.discussion.current.creator;
+    
+    let userCreator:DiscussionUserType = this.props.discussion.current.creator;
     let userCategory = this.props.discussion.current.creator.id > 10 ? this.props.discussion.current.creator.id % 10 + 1 : this.props.discussion.current.creator.id;
     let avatar;
     if (!userCreator){

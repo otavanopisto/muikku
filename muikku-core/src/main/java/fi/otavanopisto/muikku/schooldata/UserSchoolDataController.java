@@ -53,6 +53,10 @@ public class UserSchoolDataController {
     return getUserBridge(dataSource).createStaffMember(staffMember);
   }
   
+  public BridgeResponse<StaffMemberPayload> updateStaffMember(String dataSource, StaffMemberPayload staffMember) {
+    return getUserBridge(dataSource).updateStaffMember(staffMember);
+  }
+  
   public BridgeResponse<StudentPayload> createStudent(String dataSource, StudentPayload student) {
     return getUserBridge(dataSource).createStudent(student);
   }

@@ -12,8 +12,8 @@ import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/article.scss';
 import '~/sass/elements/glyph.scss';
-import { AnnouncementsType } from '~/reducers/main-function/announcements';
-import { UserIndexType } from '~/reducers/main-function/user-index';
+import { AnnouncementsType } from '~/reducers/announcements';
+import { UserIndexType } from '~/reducers/user-index';
 
 interface MessageViewProps {
   i18n: i18nType,
@@ -31,7 +31,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
     if (!this.props.announcements.current){
       return null;
     }
-    
+
     return (
       <div className="application-list application-list--open">
         <div className={`application-list__item ${this.props.announcements.current.workspaces.length ? "application-list__item--workspace-announcement" : "application-list__item--environment-announcement"}`}>
@@ -58,15 +58,15 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
                   return null;
                 }
                 return <span className="label" key={userGroupId}>
-                  <span className="label__icon label__icon--announcement-usergroup icon-members"></span>
+                  <span className="label__icon label__icon--announcement-usergroup icon-users"></span>
                   <span className="label__text label__text--announcement-usergroup">{this.props.userIndex.groups[userGroupId].name}</span>
                 </span>
               })}
             </div> : null }
           </div>
-          <div className="application-list__item-body article">
-            <header className="article__header">{this.props.announcements.current.caption}</header>
-            <section className="article__body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
+          <div className="application-list__item-body application-list__item-body--announcer-announcement">
+            <header className="application-list__item-content-header">{this.props.announcements.current.caption}</header>
+            <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>
           </div>
         </div>
       </div>

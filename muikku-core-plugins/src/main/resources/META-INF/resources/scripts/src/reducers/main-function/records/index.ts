@@ -1,8 +1,7 @@
-import { UserWithSchoolDataType, UserFileType } from "~/reducers/main-function/user-index";
+import { UserWithSchoolDataType, UserFileType } from "~/reducers/user-index";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
-//import { CourseCurriculumFilterListType } from "~/reducers/main-function/courses";
-import {WorkspaceCurriculumFilterListType} from '~/reducers/workspaces';
+import { WorkspaceCurriculumFilterListType, WorkspaceJournalListType, MaterialContentNodeListType } from "~/reducers/workspaces";
 
 export interface TransferCreditType {
   assessorIdentifier: string,
@@ -47,84 +46,10 @@ export interface RecordsGradesType {
   [key: string]: GradingScaleInfoType
 }
 
-export interface JournalType {
-  id: number,
-  workspaceEntityId: number,
-  userEntityId: number,
-  firstName: string,
-  lastName: string,
-  content: string,
-  title: string,
-  created: string
-}
-
-export type JournalListType = Array<JournalType>;
-
-export interface MaterialAssignmentType {
-  id: number,
-  materialId: number,
-  parentId: number,
-  nextSiblingId: number,
-  hidden: boolean,
-  assignmentType: string,
-  correctAnswers: string,
-  path: string,
-  title: string
-}
-
-export interface MaterialType {
-  id: number,
-  title: string,
-  licence: string,
-  viewRestrict: string,
-  html: string,
-  contentType: string,
-  currentRevision: number,
-  publishedRevision: number,
-  
-  evaluation?: MaterialEvaluationType,
-  assignment?: MaterialAssignmentType
-}
-
-export interface MaterialAnswerType {
-  embedId: string,
-  fieldName: string,
-  materialId: number,
-  value: string,
-  workspaceMaterialId: number
-}
-
-export interface MaterialCompositeRepliesType {
-  answers: Array<MaterialAnswerType>,
-  created: string,
-  lastModified: string,
-  state: string,
-  submitted: string,
-  withdrawn?: string
-}
-
-export interface MaterialEvaluationType {
-  id: number,
-  evaluated: string,
-  assessorEntityId: number,
-  studentEntityId: number,
-  workspaceMaterialId: number,
-  gradingScaleIdentifier: string,
-  gradingScaleSchoolDataSource: string,
-  grade: string,
-  gradeIdentifier: string,
-  gradeSchoolDataSource: string,
-  gradingScale: string,
-  verbalAssessment: string,
-  passed: boolean
-}
-
-export type MaterialListType = Array<MaterialType>;
-
 export interface CurrentRecordType {
   workspace: WorkspaceType,
-  journals: JournalListType,
-  materials: MaterialListType
+  journals: WorkspaceJournalListType,
+  materials: MaterialContentNodeListType
 }
 
 export type AllStudentUsersDataStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";

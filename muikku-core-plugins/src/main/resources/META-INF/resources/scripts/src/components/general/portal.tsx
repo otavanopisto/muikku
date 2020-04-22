@@ -8,6 +8,7 @@ const KEYCODES = {
 interface PortalProps {
   children?: any,
   openByClickOn?: React.ReactElement<any>,
+  openByHoverOn?: React.ReactElement<any>,
   closeOnEsc?: boolean,
   closeOnOutsideClick?: boolean,
   closeOnScroll?: boolean,
@@ -174,6 +175,11 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     if (this.props.openByClickOn) {
       return React.cloneElement(this.props.openByClickOn, {
         onClick: this.handleWrapperClick
+      });
+    } else if (this.props.openByHoverOn){
+      return React.cloneElement(this.props.openByHoverOn, {
+        onMouseEnter: this.handleWrapperClick,
+        onMouseLeave: this.handleOutsideMouseClick
       });
     }
     return null;

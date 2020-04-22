@@ -2,8 +2,10 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
+
 .dropdown {
   @include prefix(transition, moz ms o webkit, opacity 0.15s);
+  @include text;
   display: block;
   left: 0;
   max-width: 95%;
@@ -12,156 +14,124 @@
   top: 0;
   z-index: 9999;
 
-  .dropdown__container {
-    background-color: $color-dropdown-default-background;
-    border-radius: 5px;
-    box-shadow: 0 10px 20px $color-dropdown-default-shadow;
-    color: $color-dropdown-default-text;
-    display: block;
-    min-width: 100px;
-    opacity: 1;
-    overflow: auto;
-    position: relative;
-    text-align: center;
-    max-height: 350px;
-
-    .dropdown__container-item {
-      display: block;
-      height: 34px;
-      overflow: hidden;
-      position: relative;
-      min-width: 100px;
-    }
-  }
-  
-  .dropdown__arrow {
-    border: solid transparent;
-    border-bottom-color: $color-dropdown-default-background;
-    border-width: 4px;
-    bottom: 100%;
-    display: block;
-    height: 0;
-    pointer-events: none;
-    position: absolute;
-    width: 0;
-  }
-
   &.visible {
     opacity: 1;
   }
- 
-  &.dropdown--language-picker {
-    .dropdown__container {
-      background-color: $color-environment-dropdown-language-picker-background;
-      color: $color-environment-dropdown-language-picker-text;
-      box-shadow: 0 10px 20px $color-environment-dropdown-language-picker-shadow;
-    }
-    .dropdown__arrow {
-      border-bottom-color: $color-environment-dropdown-language-picker-background;
-    }
-  }
- 
-  &.dropdown--profile {
-  
-    .dropdown__container {
-      background-color: $color-environment-dropdown-profile-menu-background;
-      color: $color-environment-dropdown-profile-menu-text;
-      box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
-      padding: 5px;
-    
-      .dropdown__item:first-child {
-        border-bottom: solid 1px darken($color-environment-dropdown-profile-menu-background, 8);
-      }
-    
-      .dropdown__item {
-        border-bottom: solid 1px darken($color-environment-dropdown-profile-menu-background, 3);
-        height: 42px;
-      }
-    
-      .dropdown__item:last-child {
-        border-bottom: none;
-      }
-    }
-    .dropdown__arrow {
-      border-bottom-color: $color-environment-dropdown-profile-menu-background;
-    }
-  }
-  
-  &.dropdown--workspace-chart {
-  
-    .dropdown__container {
-      background-color: $color-environment-dropdown-profile-menu-background;
-      box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
-      color: $color-environment-dropdown-profile-menu-text;
-      padding: 5px;
-      text-align: left;
-      
-      .dropdown__container-item {
-        height: auto;
-      }
-      
-    }
-    
-    .dropdown__arrow {
-      border-bottom-color: $color-environment-dropdown-profile-menu-background;
-    }
-  }
-  
-  &.dropdown--graph-filter {
+}
 
-    .dropdown__container {
-      background-color: $color-environment-dropdown-profile-menu-background;
-      box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
-      color: $color-environment-dropdown-profile-menu-text;
-      padding: 5px;
-      text-align: left;
-    }
-    
-    .dropdown__arrow {
-      border-bottom-color: $color-environment-dropdown-profile-menu-background;
-    }
-  }
-  
-  &.dropdown--workspace-filter {
+.dropdown__container {
+  background-color: $color-dropdown-default-background;
+  border-radius: 5px;
+  box-shadow: 0 10px 20px $color-dropdown-default-shadow;
+  color: $color-dropdown-default-text;
+  display: block;
+  max-height: 350px;
+  min-width: 100px;
+  opacity: 1;
+  overflow: auto;
+  padding: 5px;
+  position: relative;
+  text-align: center;
+}
 
-    .dropdown__container {
-      background-color: $color-environment-dropdown-profile-menu-background;
-      box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
-      color: $color-environment-dropdown-profile-menu-text;
-      padding: 5px;
-      text-align: left;
-    }
-    
-    .dropdown__arrow {
-      border-bottom-color: $color-environment-dropdown-profile-menu-background;
+.dropdown__container-item {
+  display: block;
+  height: 2.5rem;
+  min-width: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.dropdown__arrow {
+  border: solid transparent;
+  border-bottom-color: $color-dropdown-default-background;
+  border-width: 4px;
+  bottom: 100%;
+  display: block;
+  height: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 0;
+}
+
+.dropdown--workspace-chart .dropdown__container .dropdown__container-item {
+  height: auto;
+}
+
+.dropdown--material-page-field-explanation,
+.dropdown--material-page-field-hint,
+.dropdown--word-definition {
+  max-width: 300px;
+
+  .dropdown__container {
+    border-radius: 2px;
+    color: $color-default-contrast;
+    min-width: 0;
+    padding: 3px 6px;
+    text-align: left;
+
+    @include breakpoint($breakpoint-pad) {
+      padding: 5px 10px;
     }
   }
- 
-  &.dropdown--communicator-labels .dropdown__container, 
-  &.dropdown--guider-labels .dropdown__container {
-    padding: 5px;
-    background-color: $color-main-function-dropdown-labels-background;
-    border: solid 1px $color-main-function-dropdown-labels-border;
-    
-    .embbed {
-      padding-top: 12px;
-      
-      &:after {
-        content: " ";
-        position: absolute;
-        top: 0;
-        height: 6.5px;
-        left: 0;
-        right: 0;
-        border-bottom: solid 1px #ccc;
-      }
-    }
+}
+
+.dropdown--word-definition {
+
+  .dropdown__container {
+    background: $color-material-word-definition-background-color;
+    border: 1px solid $color-material-word-definition-border-color;
   }
- 
-   
-  &.dropdown--communicator-settings .dropdown__container {
-    padding: 5px;
-    background-color: $color-main-function-dropdown-settings-background;
-    border: solid 1px $color-main-function-dropdown-settings-border;
+
+  .dropdown__arrow {
+    border-bottom-color: $color-material-word-definition-border-color;
   }
+}
+
+.dropdown--material-page-field-explanation {
+
+  .dropdown__container {
+    background: $color-taskfield-explanation-background;
+    border: 1px solid $color-taskfield-explanation-border;
+  }
+
+  .dropdown__arrow {
+    border-bottom-color: $color-taskfield-explanation-border;
+  }
+}
+
+.dropdown--material-page-field-hint {
+
+  .dropdown__container {
+    background: $color-taskfield-hint-background;
+    border: 1px solid $color-taskfield-hint-border;
+  }
+
+  .dropdown__arrow {
+    border-bottom-color: $color-taskfield-hint-border;
+  }
+}
+
+.dropdown--material-management,
+.dropdown--material-management-tooltip {
+
+  .dropdown__container {
+    background: $color-material-page-admin-panel-main-color;
+    border-radius: 2px;
+    color: $color-default;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .dropdown__arrow {
+    border-bottom-color: $color-material-page-admin-panel-main-color;
+  }
+}
+
+.dropdown--material-management .dropdown__container {
+  padding: 5px;
+}
+
+.dropdown--material-management-tooltip .dropdown__container {
+  padding: 5px 10px;
 }

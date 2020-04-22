@@ -3,6 +3,7 @@ import {Store} from 'react-redux';
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
 import { Action } from 'redux';
+import { WebsocketStateType } from '~/reducers/util/websocket';
 
 type ListenerType = {
     [name: string]: {
@@ -16,7 +17,12 @@ export default class MuikkuWebsocket {
   private ticket:any;
   private webSocket:WebSocket;
   private socketOpen:boolean;
-  private messagesPending:any[];
+  private messagesPending:{
+    eventType: string,
+    data: any,
+    onSent?: ()=>any,
+    stackId?: string
+  }[];
   private pingHandle:any;
   private pinging:boolean;
   private pingTime:number;
@@ -51,37 +57,62 @@ export default class MuikkuWebsocket {
         this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
       }
     });
+    
+    this.store.dispatch({
+      'type': 'INITIALIZE_WEBSOCKET',
+      'payload': this
+    });
 
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
-  sendMessage(eventType: any, data: any){
-    let message = {
-      eventType,
-      data
-    }
-    
+  sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
     if (this.socketOpen) {
       try {
-        this.webSocket.send(JSON.stringify(message));
-      } catch (e) {
-        this.messagesPending.push({
+        this.webSocket.send(JSON.stringify({
           eventType: eventType,
           data: data
-        });
+        }));
+        let websocketState:WebsocketStateType = this.store.getState().websocket;
+        this.messagesPending.length === 0 && !websocketState.synchronized && this.trigger("webSocketSync");
+        onSent && onSent();
+      } catch (e) {
+        this.queueMessage(eventType, data, onSent, stackId);
+        this.trigger("webSocketDesync");
         this.reconnect();
       }
+    } else {
+      this.queueMessage(eventType, data, onSent, stackId);
+      this.trigger("webSocketDesync");
+    }
+  }
+  queueMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
+    let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
+    let message = {
+      eventType,
+      data,
+      onSent,
+      stackId
+    };
+    if (typeof index === "number" && index !== -1){
+      this.messagesPending[index] = message
     } else {
       this.messagesPending.push(message);
     }
   }
-  addEventListener(event: string, action: Function){
+  addEventListener(event: string, actionCreator: Function){
     let evtListeners = this.listeners[event] || {
       actions: [],
       callbacks: []
     };
-    evtListeners.actions.push(action);
+    evtListeners.actions.push(actionCreator);
     this.listeners[event] = evtListeners;
     return this;
+  }
+  removeEventCallback(event: string, actionCreator: Function){
+    let index = this.listeners[event].callbacks.indexOf(actionCreator);
+    if (index !== -1){
+      this.listeners[event].callbacks.splice(index, 1);
+    }
   }
   addEventCallback(event: string, action: Function){
     let evtListeners = this.listeners[event] || {
@@ -171,7 +202,7 @@ export default class MuikkuWebsocket {
     
     while (this.socketOpen && this.messagesPending.length) {
       var message = this.messagesPending.shift();
-      this.sendMessage(message.eventType, message.data);
+      this.sendMessage(message.eventType, message.data, message.onSent);
     }
   }
   

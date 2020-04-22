@@ -71,7 +71,7 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
       locked: true
     });
     
-    var values = {
+    let values = {
       oldPassword: this.state.oldPassword,
       username: this.state.username,
       newPassword: this.state.newPassword

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
-import {UserWithSchoolDataType} from "~/reducers/main-function/user-index";
+import {UserWithSchoolDataType} from "~/reducers/user-index";
 import Avatar from "~/components/general/avatar";
 import {getName} from "~/util/modifiers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";

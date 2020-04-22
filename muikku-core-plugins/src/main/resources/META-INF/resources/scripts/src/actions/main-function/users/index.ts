@@ -1,8 +1,10 @@
 import mApi, {MApiError} from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import promisify from '~/util/promisify';
+
+
 import {UserStatusType} from 'reducers/main-function/users';
-import {UserType} from 'reducers/main-function/user-index';
+import {UserType} from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import {StateType} from '~/reducers';
 
@@ -10,6 +12,11 @@ import {StateType} from '~/reducers';
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UserType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UserType>
 export type UPDATE_USERS_STATE = SpecificActionType<"UPDATE_USERS_STATE", UserStatusType>
+
+
+
+//Do not delete this, this is for organization 
+
 
 
 export interface LoadUsersTriggerType {

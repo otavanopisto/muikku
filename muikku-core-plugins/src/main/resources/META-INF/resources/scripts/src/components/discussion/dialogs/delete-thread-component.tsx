@@ -1,19 +1,21 @@
 import '~/sass/elements/link.scss';
-
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 import '~/sass/elements/buttons.scss';
+
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
-import { DiscussionThreadType, DiscussionThreadReplyType } from '~/reducers/main-function/discussion';
+import { DiscussionThreadType, DiscussionThreadReplyType } from '~/reducers/discussion';
 import Link from '~/components/general/link';
 import Dialog from '~/components/general/dialog';
 import Button from '~/components/general/button';
 import {DeleteCurrentDiscussionThreadTriggerType,
   DeleteDiscussionThreadReplyFromCurrentTriggerType,
   deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent} from '~/actions/main-function/discussion';
+  deleteDiscussionThreadReplyFromCurrent} from '~/actions/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionDeleteThreadComponentProps {

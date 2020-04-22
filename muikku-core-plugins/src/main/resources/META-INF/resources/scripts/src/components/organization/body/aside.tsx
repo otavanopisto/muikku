@@ -3,13 +3,13 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
-import {AnnouncementType, AnnouncementsType} from '~/reducers/main-function/announcements';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import {StateType} from '~/reducers';
 import '~/sass/elements/toc.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/item-list.scss';
+import { AnnouncementsType } from 'reducers/announcements';
 
 
 interface OrganizationManagementAsideProps {

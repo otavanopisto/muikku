@@ -5,7 +5,7 @@ import Link from '~/components/general/link';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { connect, Dispatch } from 'react-redux';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType } from '~/reducers/main-function/user-index';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType } from '~/reducers/user-index';
 import { StatusType } from '~/reducers/base/status';
 import { colorIntToHex, getName } from '~/util/modifiers';
 

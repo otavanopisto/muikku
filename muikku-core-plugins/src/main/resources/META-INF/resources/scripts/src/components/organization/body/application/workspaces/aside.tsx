@@ -5,9 +5,6 @@ import { i18nType } from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-// import { CoursesType, CourseEducationFilterType, CourseCurriculumFilterType} from '~/reducers/main-function/courses';
-
-
 import { WorkspacesType, WorkspaceEducationFilterType, WorkspaceCurriculumFilterType } from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
@@ -32,7 +29,6 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
     }
   
   render() {
-    
     let locationData = queryString.parse( document.location.hash.split( "?" )[1] || "", { arrayFormat: 'bracket' } );
     // Moc data because the backend lacks this
     
@@ -57,7 +53,6 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
        label: "plugin.organization.filters.state.active.false"
      }
     ];
-
     
 //    These are waiting for backend works
 // 

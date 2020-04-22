@@ -9,7 +9,10 @@ import Button from '~/components/general/button';
 import { AnyActionType } from '~/actions';
 import { StateType } from '~/reducers';
 import { removeFileFromCurrentStudent, RemoveFileFromCurrentStudentTriggerType } from '~/actions/main-function/guider';
-import { UserFileType } from '~/reducers/main-function/user-index';
+import { UserFileType } from '~/reducers/user-index';
+
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 const KEYCODES = {
   ENTER: 13

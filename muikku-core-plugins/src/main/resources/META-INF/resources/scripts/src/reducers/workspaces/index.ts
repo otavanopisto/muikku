@@ -1,8 +1,6 @@
 import {ActionType} from '~/actions';
-// hacks to keep future imported functions
-type UserStaffType = any;
-type ShortWorkspaceUserWithActiveStatusType = any;
-const repairContentNodes: any = null
+import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
+import { repairContentNodes } from '~/util/modifiers';
 
 export interface OrganizationCourseTeacherType {
   firstName: string,
@@ -47,7 +45,7 @@ export interface WorkspaceForumStatisticsType {
   latestMessage: string //represents a date
 }
 
-export interface WorkspaceStudentAssessmentType {
+export interface WorkspaceStudentAssessmentType {
   assessorEntityId: number,
   evaluated: string,
   gradeIdentifier: string,
@@ -218,7 +216,6 @@ export interface WorkspaceType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
-  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
@@ -232,44 +229,7 @@ export interface WorkspaceType {
   studentCount? : number
 }
 
-export interface WorkspaceUpdateType {
-  archived?: boolean,
-  description?: string,
-  hasCustomImage?: boolean,
-  id?: number,
-  lastVisit?: string,
-  materialDefaultLicense?: string,
-  name?: string,
-  nameExtension?: string | null,
-  numVisits?: number,
-  published?: boolean,
-  urlName?: string,
-  access?: WorkspaceAccessType,
-  curriculumIdentifiers?: Array<string>,
-  subjectIdentifier?: string | number,
-
-  canSignup?: boolean,
-  isCourseMember?: boolean,
-  educationTypeName?: string,
-  studentActivity?: WorkspaceStudentActivityType,
-  forumStatistics?: WorkspaceForumStatisticsType,
-  studentAssessments?: WorkspaceStudentAssessmentsType,
-  studentAssessmentState?: WorkspaceStudentAssessmentStateType,
-  activityStatistics?: WorkspaceActivityStatisticsType,
-  feeInfo?: WorkspaceFeeInfoType,
-  assessmentRequests?: Array<WorkspaceAssessmentRequestType>,
-  additionalInfo?: WorkspaceAdditionalInfoType,
-  staffMembers?: Array<UserStaffType>,
-  producers?: Array<WorkspaceProducerType>,
-  contentDescription?: MaterialContentNodeType,
-  help?: MaterialContentNodeType,
-  activityLogs?: ActivityLogType[],
-  students?: Array<ShortWorkspaceUserWithActiveStatusType>,
-  details?: WorkspaceDetailsType,
-  permissions?: WorkspacePermissionsType[],
-      
-  journals?: WorkspaceJournalsType
-}
+export type WorkspaceUpdateType = Partial<WorkspaceType>;
 
 export interface WorkspaceMaterialReferenceType {
   workspaceName: string,
@@ -370,6 +330,8 @@ export interface WorkspaceMaterialEditorType {
   canSetTitle: boolean,
   showRemoveAnswersDialogForPublish: boolean,
   showRemoveAnswersDialogForDelete: boolean,
+  showUpdateLinkedMaterialsDialogForPublish: boolean,
+  showUpdateLinkedMaterialsDialogForPublishCount: number,
 }
 
 export interface WorkspacesType {
@@ -595,9 +557,11 @@ export default function workspaces(state: WorkspacesType={
     canEditContent: true,
     showRemoveAnswersDialogForPublish: false,
     showRemoveAnswersDialogForDelete: false,
+    showUpdateLinkedMaterialsDialogForPublish: false,
+    showUpdateLinkedMaterialsDialogForPublishCount: 0,
     canSetTitle: true,
   }
-}, action: any): WorkspacesType { // Notice all the extra functions that will be there, this action:any is a hack to keep it in sync with workspace redesign
+}, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_USER_WORKSPACES'){
     return <WorkspacesType>Object.assign({}, state, {
       userWorkspaces: action.payload
@@ -692,11 +656,6 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let newCurrentWorkspace = state.currentWorkspace;
-    if (!action.payload.isDraft && newCurrentWorkspace.help.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
-      found = true;
-      newCurrentWorkspace = {...newCurrentWorkspace};
-      newCurrentWorkspace.help = {...newCurrentWorkspace.help, ...action.payload.update};
-    }
     if (!action.payload.isDraft && !found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
       newCurrentWorkspace = {...newCurrentWorkspace};
@@ -738,6 +697,8 @@ export default function workspaces(state: WorkspacesType={
       newEditor.currentDraftNodeValue = {...newEditor.currentDraftNodeValue, ...action.payload.update};
     }
     newEditor.showRemoveAnswersDialogForPublish = action.payload.showRemoveAnswersDialogForPublish;
+    newEditor.showUpdateLinkedMaterialsDialogForPublish = action.payload.showUpdateLinkedMaterialsDialogForPublish;
+    newEditor.showUpdateLinkedMaterialsDialogForPublishCount = action.payload.showUpdateLinkedMaterialsDialogForPublishCount;
     
     return {
       ...state,
@@ -775,8 +736,9 @@ export default function workspaces(state: WorkspacesType={
     
     let newEditor = state.materialEditor;
     if (newEditor && (
-        newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
-        newEditor.parentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId)) {
+          newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
+          (newEditor.parentNodeValue && newEditor.parentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId)
+        )) {
       newEditor = {
         currentNodeValue: null,
         parentNodeValue: null,

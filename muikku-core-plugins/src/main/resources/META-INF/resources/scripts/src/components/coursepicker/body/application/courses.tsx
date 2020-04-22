@@ -5,7 +5,6 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/message.scss';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
-import SelectableList from '~/components/general/selectable-list';
 import {i18nType} from '~/reducers/base/i18n';
 import Course from './courses/course';
 import {StateType} from '~/reducers';
@@ -24,11 +23,10 @@ interface CoursepickerWorkspacesProps {
 interface CoursepickerWorkspacesState {
 }
 
-
 class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProps, CoursepickerWorkspacesState> {
   constructor(props: CoursepickerWorkspacesProps){
     super(props);
-    
+
     //once this is in state READY only then a loading more event can be triggered
     this.statePropertyLocation = "workspacesState";
     //it will only call the function if this is true
@@ -47,7 +45,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
     } else if (this.props.workspaces.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.coursepicker.searchResult.empty")}</span></div>
     }
-    
+
     return (<ApplicationList>
       {this.props.workspaces.map((workspace: WorkspaceType)=>{
         return <Course key={workspace.id} workspace={workspace}/>

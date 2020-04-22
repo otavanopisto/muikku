@@ -22,7 +22,7 @@ interface MenuProps {
   onClose: ()=>any,
   items: Array<React.ReactElement<any>>,
   modifier: string,
-  navigation?: React.ReactElement<any>,
+  navigation?: React.ReactElement<any> | Array<React.ReactElement<any>>,
   status: StatusType,
   i18n: i18nType,
   logout: LogoutTriggerType
@@ -83,7 +83,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
     if (diffX > 0) {
       diffX = 0;
     }
-    
+
     if (diffX >= -3){
       if (diffY >= 5 || diffY <= -5){
         diffX = 0;
@@ -92,7 +92,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
         this.preventXMovement = false;
       }
     }
-    
+
     if (!this.preventXMovement){
       this.setState({drag: diffX});
     }
@@ -102,11 +102,11 @@ class Menu extends React.Component<MenuProps, MenuState> {
     let width = $(this.refs["menuContainer"]).width();
     let diff = this.state.drag;
     let movement = this.touchMovementX;
-    
+
     let menuHasSlidedEnoughForClosing = Math.abs(diff) >= width*0.33;
     let youJustClickedTheOverlay = e.target === this.refs["menu"] && movement <= 5;
     let youJustClickedALink = checkLinkClicked(e.target as HTMLElement) && movement <= 5;
-    
+
     this.setState({dragging: false});
     setTimeout(()=>{
       this.setState({drag: null});
@@ -143,11 +143,15 @@ class Menu extends React.Component<MenuProps, MenuState> {
       onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu">
       <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
         <div className="menu__header">
-          <div className="menu__logo"></div>
-          <Link className={`menu__button-close menu__button-close--${this.props.modifier} icon-arrow-left-thin`}></Link>
+          <div className="menu__logo">
+            <Link href="/" className="menu__link"><img src={`${this.props.modifier == "frontpage" ? '/gfx/oo-branded-site-logo-text.png' : '/gfx/oo-branded-site-logo-text-white.png'}`} width="157" height="56" alt={this.props.i18n.text.get("plugin.site.logo.linkBackToFrontPage")}/></Link>
+          </div>
+          <Link className={`menu__button-close menu__button-close--${this.props.modifier} icon-arrow-left`}></Link>
         </div>
         <div className="menu__body">
-          {this.props.navigation ? <div className="menu__extras">{this.props.navigation}</div> : null}
+          {this.props.navigation ? (this.props.navigation instanceof Array ?
+              this.props.navigation.map((n, i)=><div className="menu__extras" key={i}>{n}</div>):
+              <div className="menu__extras">{this.props.navigation}</div>) : null}
           <ul className="menu__items">
             {this.props.items.map((item, index)=>{
               if (!item){
@@ -157,29 +161,30 @@ class Menu extends React.Component<MenuProps, MenuState> {
             })}
             {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu--profile" href="/profile">
-                {this.props.status.hasImage ? 
-                  <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
-                   <span className="link__icon icon-user"/>
-                 }
+              <Link className="link link--full link--menu link--menu-profile" href="/profile">
+                <object className="button-image"
+                  data={getUserImageUrl(this.props.status.userId)}
+                  type="image/jpeg">
+                  <span className="link__icon icon-user"></span>
+                </object>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
               </Link>
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu--instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
-                <span className="link__icon icon-forgotpassword"/>
+              <Link className="link link--full link--menu link--menu-instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
+                <span className="link__icon icon-question"/>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
               </Link>
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu--helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
-                <span className="link__icon icon-helpdesk"></span>
+              <Link className="link link--full link--menu link--menu-helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
+                <span className="link__icon icon-support"></span>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
               </Link>
             </li> : null}
             {this.props.status.loggedIn ? <li className="menu__item">
-              <Link className="link link--full link--menu link--menu--logout" onClick={this.props.logout}>
-                <span className="link__icon icon-signout"></span>
+              <Link className="link link--full link--menu link--menu-logout" onClick={this.props.logout}>
+                <span className="link__icon icon-sign-out"></span>
                 <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
               </Link>
             </li> : null}
@@ -187,6 +192,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
         </div>
       </div>
     </div>);
+
   }
 }
 
@@ -205,4 +211,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Menu);
-  
+

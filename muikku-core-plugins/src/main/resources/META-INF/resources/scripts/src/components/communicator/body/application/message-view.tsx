@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import equals = require("deep-equal");
 
 import Link from '~/components/general/link';
 import {MessageThreadExpandedType, MessageThreadLabelListType, MessagesType} from '~/reducers/main-function/messages';
@@ -9,7 +8,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import TouchPager from '~/components/general/touch-pager';
 import {StateType} from '~/reducers';
 import Message from './message-view/message';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/user-index';
 
 import '~/sass/elements/link.scss';
 

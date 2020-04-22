@@ -70,6 +70,11 @@ public class DefaultSchoolDataUserGroupListener {
   }  
 
   public void onSchoolDataUserGroupUpdatedEvent(@Observes SchoolDataUserGroupUpdatedEvent event) {
+    // #4913: Unarchive previously archived student groups if they happen to get updated again (i.e. they have been manually restored in Pyramus)
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier(), true);
+    if (userGroupEntity != null && Boolean.TRUE.equals(userGroupEntity.getArchived())) {
+      userGroupEntityController.unarchiveUserGroupEntity(userGroupEntity);
+    }
   }  
   
   public void onSchoolDataUserGroupUserDiscoveredEvent(@Observes SchoolDataUserGroupUserDiscoveredEvent event) {

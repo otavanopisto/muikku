@@ -1,5 +1,5 @@
 import { ActionType } from '~/actions';
-import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/main-function/user-index';
+import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/user-index';
 import { WorkspaceType, WorkspaceListType, ActivityLogType} from "~/reducers/workspaces";
 
 //TODO

@@ -264,7 +264,6 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let activity:WorkspaceStudentActivityType;
       let additionalInfo:WorkspaceAdditionalInfoType;
       let contentDescription:MaterialContentNodeType;
-      let help:MaterialContentNodeType;
       let producers:Array<WorkspaceProducerType>;
       let isCourseMember:boolean;
       let journals:WorkspaceJournalsType;
@@ -277,7 +276,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                      workspace && workspace.studentAssessments, ()=>promisify(mApi().workspace.workspaces
                                                      .students.assessments.cacheClear().read(data.workspaceId, status.userSchoolDataIdentifier), 'callback')()),
                                                  
-                                                 reuseExistantValue(true,
+                                                 reuseExistantValue(status.loggedIn,
                                                      workspace && workspace.feeInfo, ()=>promisify(mApi().workspace.workspaces.feeInfo.cacheClear().read(data.workspaceId), 'callback')()),
                                                  
                                                  reuseExistantValue(status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
@@ -637,20 +636,110 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
     delete actualOriginal["activityLogs"];
     delete actualOriginal["permissions"];
     
-    dispatch({
-      type: 'UPDATE_WORKSPACE',
-      payload: {
-        original: data.workspace,
-        update: data.update
-      }
-    });
-    
     try {
-      await promisify(mApi().workspace.workspaces.update(data.workspace.id,
-        Object.assign(actualOriginal, data.update)), 'callback')();
+      let newDetails = data.update.details;
+      let newPermissions = data.update.permissions;
+      let appliedProducers = data.update.producers;
+      let unchangedPermissions:WorkspacePermissionsType[]=[];
+      let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
       
-      data.success && data.success()
-    } catch (err){
+// I left the workspace image out of this, because it never is in the application state anyway
+
+     // These need to be removed from the object for the basic stuff to not fail      
+     
+      delete data.update["details"];
+      delete data.update["permissions"];
+      delete data.update["producers"];
+      
+      // First lets update the basic stuff - if any outside of details, producers or permissions
+      
+      if(data.update){
+        await promisify(mApi().workspace.workspaces.update(data.workspace.id,
+        Object.assign(actualOriginal, data.update)), 'callback')();
+      }
+
+      // Then the details - if any
+      
+      if(newDetails) {
+        await promisify(mApi().workspace.workspaces
+            .details.update(data.workspace.id, newDetails), 'callback')();
+        
+        // Add details back to the update object
+        data.update.details = newDetails;
+        
+        // Details affect additionalInfo, so I guess we load that too. It's not a "single source of truth" when there's duplicates in the model, is it?
+        
+        let additionalInfo  = <WorkspaceAdditionalInfoType>(await promisify(mApi().workspace.workspaces.additionalInfo.cacheClear().read(currentWorkspace.id), 'callback')()); 
+
+        data.update.additionalInfo = additionalInfo;
+        
+      }
+      
+      // Then permissions - if any
+      if(newPermissions) {
+        // Lets weed out the unchanged permissions for later
+        data.workspace.permissions.map(permission => {
+          if(!newPermissions.find(p => p.userGroupEntityId === permission.userGroupEntityId) ){
+            unchangedPermissions.push(permission);
+          }
+        });
+        await Promise.all(newPermissions.map(permission => {
+          let originalPermission = currentWorkspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
+           promisify(mApi().permission.workspaceSettings.userGroups
+              .update(currentWorkspace.id, originalPermission.userGroupEntityId, permission), 'callback')();
+          } 
+        ));
+        
+        // Here we have to combine the new permissions with old ones for dispatch, because otherwise there will be missing options in the app state
+        
+        // TODO: this mixes up the order of the checkboxes, maybe reload them or sort them here.  
+        
+        data.update.permissions = unchangedPermissions.concat(newPermissions);
+      }
+
+      // Then producers
+      if (appliedProducers){
+        
+        let existingProducers = currentWorkspace.producers;
+        let workspaceProducersToAdd = (existingProducers.length == 0) ? appliedProducers :
+          appliedProducers.filter(producer => {          
+            if (!producer.id) {
+              return producer;
+            }
+          });
+  
+        let workspaceProducersToDelete = existingProducers.filter(producer => {
+          if (producer.id) {
+            return !appliedProducers.find(keepProducer => keepProducer.id === producer.id)
+          }
+        });
+  
+        await Promise.all(workspaceProducersToAdd.map(p=>
+          promisify(mApi().workspace.workspaces
+              .materialProducers.create(currentWorkspace.id, p), 'callback')())
+          .concat(workspaceProducersToDelete.map(p=>promisify(mApi().workspace.workspaces
+              .materialProducers.del(currentWorkspace.id, p.id), 'callback')())));
+  
+        // For some reason the results of the request don't give the new workspace producers
+        // it's a mess but whatever
+        
+        data.update.producers = <Array<WorkspaceProducerType>>(await promisify(mApi().workspace.workspaces.materialProducers
+            .cacheClear().read(currentWorkspace.id), 'callback')())
+      }
+      
+      // All saved and stitched together again, dispatch to state 
+      
+      dispatch({
+        type: 'UPDATE_WORKSPACE',
+        payload: {
+          original: data.workspace,
+          update: data.update
+        }
+      });
+
+      data.success && data.success();
+      
+   } catch (err){
       dispatch({
         type: 'UPDATE_WORKSPACE',
         payload: {
@@ -1118,8 +1207,10 @@ let updateWorkspaceDetailsForCurrentWorkspace:UpdateWorkspaceDetailsForCurrentWo
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let state:StateType = getState();
+    
       await promisify(mApi().workspace.workspaces
           .details.update(state.workspaces.currentWorkspace.id, data.newDetails), 'callback')();
+
 
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
 
@@ -1514,7 +1605,10 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
 
       if (!data.isDraft) {
 
-        if (!data.updateLinked) {
+        // if we are not asked to update possibly linked materials
+        // and we actually have a material id because sections do not
+        // have a materialId
+        if (!data.updateLinked && data.material.materialId && !data.dontTriggerReducerActions) {
           const materialsAnswer: any[] =
             (await promisify(mApi().materials.material.workspaceMaterials.read(data.material.materialId), 'callback')()) as any;
         

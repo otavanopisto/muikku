@@ -1,4 +1,4 @@
-import { UserType } from "~/reducers/main-function/user-index";
+import { UserType } from "~/reducers/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
 import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider";

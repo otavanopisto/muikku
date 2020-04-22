@@ -5,7 +5,7 @@ import promisify from '~/util/promisify';
 import {filterHighlight, getName} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
 import {WorkspaceType} from '~/reducers/workspaces';
-import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/main-function/user-index';
+import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/user-index';
 import '~/sass/elements/autocomplete.scss';
 import '~/sass/elements/glyph.scss';
 
@@ -49,7 +49,7 @@ function checkHasPermission(which: boolean, defaultValue?: boolean){
   return which;
 }
 
-export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
+export default class c extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
   private blurTimeout:NodeJS.Timer;
   private selectedHeight:number;
   private activeSearchId:number;
@@ -208,7 +208,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
           node: <span className="autocomplete__selected-item">
             <span className="glyph glyph--selected-recipient icon-user"/>
             {
-              getName(item.value as UserType, this.props.showFullNames)
+              getName(item.value, this.props.showFullNames)
             } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
           </span>,
           value: item
@@ -216,7 +216,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       } else if (item.type === "usergroup"){
         return {
           node: <span className="autocomplete__selected-item">
-            <span className="glyph glyph--selected-recipient icon-members"/>{item.value.name}
+            <span className="glyph glyph--selected-recipient icon-users"/>{item.value.name}
                  {item.value.organization ? " (" + item.value.organization.name + ")" : ""}
           </span>,
           value: item
@@ -243,7 +243,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         </div>;
       } else if (item.type === "usergroup"){
         node = <div className="autocomplete__recipient">
-          <span className="glyph glyph--autocomplete-recipient icon-members"></span>
+          <span className="glyph glyph--autocomplete-recipient icon-users"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
           {item.value.organization ? " (" + item.value.organization.name + ")" : ""}
         </div>;

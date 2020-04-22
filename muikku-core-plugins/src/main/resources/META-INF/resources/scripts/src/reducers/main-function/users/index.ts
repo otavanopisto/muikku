@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
-import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
+import {UserWithSchoolDataType} from '~/reducers/user-index';
 
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type UsersListType = Array<UserWithSchoolDataType>;  
@@ -9,6 +9,9 @@ export interface UsersType {
   students: UsersListType ,
   staff: UsersListType
 }
+
+// Do not delete, this is for organization
+
 
 export default function users (state:UsersType={
   students: [],

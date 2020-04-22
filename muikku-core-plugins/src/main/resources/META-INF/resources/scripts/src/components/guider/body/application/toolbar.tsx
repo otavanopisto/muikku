@@ -105,13 +105,13 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
       return ( 
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            {this.props.guider.currentStudent ? <ButtonPill icon="goback" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock}/> : null}
-            <GuiderToolbarLabels/>          
+            {this.props.guider.currentStudent ? <ButtonPill icon="back" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock}/> : null}
+            <GuiderToolbarLabels/>
             {this.props.guider.currentStudent ? null : 
             <ApplicationPanelToolsContainer>              
               <div className="form-element form-element--guider-toolbar">
                 <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search"  placeholder={this.props.i18n.text.get('plugin.guider.search.placeholder')} value={this.state.searchquery} disabled={this.props.guider.toolbarLock} onChange={this.setSearchQuery}/>
-                <div className="form-element__input-decoration--main-function-search icon-search"></div>
+                <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>
               </div>
             </ApplicationPanelToolsContainer>}
           </ApplicationPanelToolbarActionsMain>

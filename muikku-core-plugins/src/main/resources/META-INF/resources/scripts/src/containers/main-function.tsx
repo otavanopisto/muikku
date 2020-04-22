@@ -9,46 +9,35 @@ import Websocket from '~/util/websocket';
 import * as queryString from 'query-string';
 import titleActions from '~/actions/base/title';
 import IndexBody from '../components/index/body';
-import { loadAnnouncementsAsAClient } from '~/actions/main-function/announcements';
+import { loadAnnouncementsAsAClient } from '~/actions/announcements';
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 import CousePickerBody from '../components/coursepicker/body';
-import { loadLoggedUser } from '~/actions/main-function/user-index';
-
-// New ones
+import { loadLoggedUser } from '~/actions/user-index';
+import { UserType } from '~/reducers/user-index';
 import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
-
-
-
-// Deprecating 
-//import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
-//import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
-
-
-
-import { UserType } from '~/reducers/main-function/user-index';
 import OrganizationAdministrationBody from '../components/organization/body';
 import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
 import DiscussionBody from '../components/discussion/body';
-import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer} from '~/actions/main-function/discussion';
-import {loadAnnouncement, loadAnnouncements} from '~/actions/main-function/announcements';
+import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId} from '~/actions/discussion';
+import {loadAnnouncement, loadAnnouncements} from '~/actions/announcements';
 import AnnouncementsBody from '../components/announcements/body';
-import { AnnouncementListType } from '~/reducers/main-function/announcements';
+import { AnnouncementListType } from '~/reducers/announcements';
 import AnnouncerBody from '../components/announcer/body';
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
-import { loadUsers } from '~/actions/main-function/users';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
 import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
-import { updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records';
+import { CKEDITOR_VERSION } from '~/lib/ckeditor';
+
+import { setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords } from '~/actions/main-function/records';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
-import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 interface MainFunctionProps {
   store: Store<StateType>,
@@ -64,7 +53,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
   constructor(props: MainFunctionProps){
     super(props);
-    
+
     this.renderIndexBody = this.renderIndexBody.bind(this);
     this.renderCoursePickerBody = this.renderCoursePickerBody.bind(this);
     this.renderCommunicatorBody = this.renderCommunicatorBody.bind(this);
@@ -77,7 +66,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.itsFirstTime = true;
     this.loadedLibs = [];
-    
+
     window.addEventListener("hashchange", this.onHashChange.bind(this));
   }
   loadlib(url: string){
@@ -85,12 +74,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       return;
     }
     this.loadedLibs.push(url);
-    
+
     let script = document.createElement("script");
     script.src = url;
     document.head.appendChild(script);
   }
-
   onHashChange(){
     if (window.location.pathname.includes("/coursepicker")){
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}), false);
@@ -155,10 +143,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
   }
 
   loadAnnouncerData(location: string[]){
-    if (location.length === 1){
-      this.props.store.dispatch(loadAnnouncements(location[0]) as Action);
+    const actualLocation = location.filter(l => !!l);
+    if (actualLocation.length === 1){
+      this.props.store.dispatch(loadAnnouncements(actualLocation[0]) as Action);
     } else {
-      this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1])) as Action);
+      this.props.store.dispatch(loadAnnouncement(actualLocation[0], parseInt(actualLocation[1])) as Action);
     }
   }
 
@@ -172,7 +161,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       //The link is expected to be like # none, in this case it will collapse to null, page 1
       //Else it can be #1 in that case it will collapse to area 1, page 1
       //Or otherwise #1/2 in that case it will collapse to area 1 page 2
-      
+
       this.props.store.dispatch(loadDiscussionThreadsFromServer({
         areaId: parseInt(location[0]) || null,
         page: parseInt(location[1]) || 1
@@ -211,7 +200,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
@@ -242,6 +230,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
             } else {
               this.loadCoursePickerData(currentLocationData, false);
             }
+          } else {
+            this.loadCoursePickerData(currentLocationData, false);
           }
         }) as Action);
       } else if (!currentLocationHasData) {
@@ -284,7 +274,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       let state:StateType = this.props.store.getState();
       
-      this.props.store.dispatch(loadUsers() as Action);
+      // this.props.store.dispatch(loadUsers() as Action);
 
       this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
         if (!currentLocationHasData) {
@@ -308,21 +298,21 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadNewlyReceivedMessage);
-      
+
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
-      
+
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.communicator.pageTitle')));
       this.props.store.dispatch(loadSignature() as Action);
-      
+
       let currentLocation = window.location.hash.replace("#","").split("/");
       this.props.store.dispatch(loadMessagesNavigationLabels(()=>{
         if (currentLocation[0].includes("label")){
           this.loadCommunicatorData(currentLocation);
         }
       }) as Action);
-      
+
       if (!window.location.hash){
         window.location.hash = "#inbox";
       } else {
@@ -331,7 +321,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
         }
       }
     }
-    
+
     return <CommunicatorBody/>
   }
 
@@ -339,13 +329,14 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-      
+
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
-      
+
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.forum.pageTitle')));
-      
+      this.props.store.dispatch(setDiscussionWorkpaceId(null) as Action);
+
       this.props.store.dispatch(loadDiscussionAreasFromServer(()=>{
         //here in the callback
         let currentLocation = window.location.hash.replace("#","").split("/");
@@ -359,7 +350,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-      
+
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.announcements.pageTitle')));
       this.props.store.dispatch(loadAnnouncementsAsAClient({hideWorkspaceAnnouncements: "false"}, (announcements:AnnouncementListType)=>{}) as Action);
       this.loadAnnouncementsData(parseInt(window.location.hash.replace("#","")));
     }
@@ -370,20 +362,20 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-      
+
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
-      
+
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.announcer.pageTitle')));
-      
+
       if (!window.location.hash){
         window.location.hash = "#active";
       } else {
         this.loadAnnouncerData(window.location.hash.replace("#","").split("/"));
       }
     }
-    
+
     return <AnnouncerBody/>
   }
 
@@ -391,11 +383,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-      
+
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.guider.guider')));
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
-      
+
       this.loadGuiderData();
     }
     return <GuiderBody/>
@@ -405,33 +397,27 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-      
+
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.profile.profile')));
-      
+
       this.props.store.dispatch(loadProfileUsername() as Action);
-      
+
       if (!this.props.store.getState().status.isStudent){
         this.props.store.dispatch(loadProfilePropertiesSet() as Action);
       } else {
         this.props.store.dispatch(loadProfileAddress() as Action);
       }
     }
-    
+
     return <ProfileBody/>
   }
 
   renderRecordsBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
-
-      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
-
-// This was changed due to the new workspace actions, check that it works
-      
+      this.props.websocket.restoreEventListeners();      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
       this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
-
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
     }
 
