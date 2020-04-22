@@ -1,41 +1,42 @@
-.zoom-container {
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.zoom__clickable-item {
+  cursor: zoom-in;
 }
 
-.zoom-container-clickable-item {
-  cursor: pointer;
-}
-
-.zoom {
-  position: fixed;
-  z-index: 9999;
-  width: 100%;
+.zoom__zoomed-item-overlay {
+  background-color: $color-zoom-image-overlay-background;
   height: 100%;
-  top: 0;
   left: 0;
-  background-color: rgba(0,0,0,0.75);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
 }
 
-.zoom-children {
+.zoom__zoomed-item-container {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  padding: 1rem;
   position: absolute;
   top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  
-  .zoom-image {
-    height: 100%;
-    width: 100%;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-  }
 }
 
-.zoom-close {
+.zoom__zoomed-item {
+  cursor: zoom-out;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.zoom__zoomed-item-close {
+  color: $color-default;
   cursor: pointer;
   font-size: 30px;
   height: 30px;
@@ -43,5 +44,4 @@
   right: 1rem;
   top: 1rem;
   width: 30px;
-  color: white;
 }
