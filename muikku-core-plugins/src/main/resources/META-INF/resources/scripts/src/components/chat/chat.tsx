@@ -228,7 +228,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     }
   }
   // Creating new chat room
-  joinRoom (event: any) {
+  async joinRoom (event: any) {
 
     event.preventDefault();
 
@@ -273,10 +273,8 @@ export class Chat extends React.Component<Iprops, Istate> {
         'roomdesc': roomDesc,
         'roomname': roomName
       }
-    }), true).then(async(chat: any) => {
+    }), true).then((chat: any) => {
 
-      let parsedJid = chat.attributes.jid.split("@");
-	  let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
 
       let availableMucRoom =  {
         name: chat.attributes.jid.split('@conference.dev.muikkuverkko.fi'),
@@ -290,6 +288,11 @@ export class Chat extends React.Component<Iprops, Istate> {
 
       this.setState({availableMucRooms: groupchats, chatBox: chat, showNewRoomForm: false});
     });
+	let parsedJid;
+	parsedJid = jid.split("@");
+	parsedJid = parsedJid[0];
+
+	let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
 
     event.target.reset();
   }

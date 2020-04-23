@@ -200,7 +200,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           isPersistentRoom: chat.features.attributes.persistent
         });
        	let parsedJid = chat.attributes.jid.split("@");
-		let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
+		       let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
 
         chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
       })

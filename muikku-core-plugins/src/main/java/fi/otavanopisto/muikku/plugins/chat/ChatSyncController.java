@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.openfire.rest.client.entity.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
@@ -71,6 +72,9 @@ public class ChatSyncController {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   public void syncStudent(SchoolDataIdentifier studentIdentifier) {
 
@@ -218,15 +222,22 @@ public class ChatSyncController {
       AuthenticationToken token = new AuthenticationToken(openfireToken);
       RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
       
-      User user = userController.findUserByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier()); 
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+    	User user = userController.findUserByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier()); 
 
-      String userSchoolDataSource = user.getSchoolDataSource();
-      String userIdentifier = user.getIdentifier();
+        String userSchoolDataSource = user.getSchoolDataSource();
+        String userIdentifier = user.getIdentifier();
+              
+        String jid = userSchoolDataSource + "-" + userIdentifier;
+          
+        client.addOwner(roomName, jid);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
       
       
-      String jid = userSchoolDataSource + "-" + userIdentifier;
-      
-      client.addOwner(roomName, jid);
 
   }
   public void removeChatRoomMembership(SchoolDataIdentifier studentIdentifier, WorkspaceEntity workspaceEntity) {
