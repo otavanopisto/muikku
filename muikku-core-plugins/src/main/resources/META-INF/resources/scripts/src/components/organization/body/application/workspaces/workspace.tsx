@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
-import '~/sass/elements/course-description.scss';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
