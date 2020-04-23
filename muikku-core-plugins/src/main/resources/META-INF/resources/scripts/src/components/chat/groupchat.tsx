@@ -120,7 +120,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
     this.getOccupants = this.getOccupants.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
-    // this.onEnterPress = this.onEnterPress.bind(this);
     this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
 
@@ -193,56 +192,20 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         'auto_configure': true,
         'nick': this.props.nick,
         'publicroom': true,
-      }), true).then((chat: any) => {
+      }), true).then(async(chat: any) => {
         this.setState({
           chatBox: chat,
           groupMessages: [],
           chatRoomOccupants: chat.occupants,
           isPersistentRoom: chat.features.attributes.persistent
         });
-        
+       	let parsedJid = chat.attributes.jid.split("@");
+		let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
+
         chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
-      }).then(async function () {
-          let userJid = __.state.converse.connection.jid;
-          userJid = userJid.toLowerCase();
-          
-          let affiliation: string;
-          
-          await promisify(mApi().chat.affiliations.read(__.state.roomName), 'callback')()
-          if (!window.MUIKKU_IS_STUDENT){
-            affiliation = "owner";
-          } else {
-            affiliation = "member";
-          }
-          
-          let dataForSetAffiliation = {
-              jid: userJid,
-              affiliation: __.state.chatBox.getOwnAffiliation(),
-              nick: __.state.nick
-           };
-          
-          __.sendAffiliationIQ(affiliation, dataForSetAffiliation);
-      });
+      })
     }
   
-  sendAffiliationIQ (affiliation: any, member: any) {
-    const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-    const iq = $iq({to: member.jid, type: "set"})
-          .c("query", {xmlns: Strophe.NS.MUC_ADMIN})
-          .c("item", {
-              'affiliation': member.affiliation || affiliation,
-              'nick': member.nick,
-              'jid': member.jid
-          });
-      if (member.reason !== undefined) {
-          iq.c("reason", member.reason);
-      }
-      return this.state.converse.api.sendIQ(iq);
-  }
-    //------- HANDLING INCOMING GROUPCHAT MESSAGES
-   // messageHandler(messages: any){
-   //   messages.map((msg:any) => this.getMUCMessages(msg));
-  //  }
     async getMUCMessages(stanza: any){
       
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;

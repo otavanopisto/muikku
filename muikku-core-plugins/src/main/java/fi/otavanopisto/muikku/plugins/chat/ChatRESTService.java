@@ -20,10 +20,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -396,7 +398,7 @@ public class ChatRESTService extends PluginRESTService {
   @GET
   @Path("/affiliations/")
   @RESTPermit(handling = Handling.INLINE)
-  public Response chatUserAffiliations(String roomName) {
+  public Response chatUserAffiliations(@QueryParam("roomName") String roomName) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
@@ -408,12 +410,12 @@ public class ChatRESTService extends PluginRESTService {
 
 
     List<UserSchoolDataIdentifier> usersByAffiliations = chatController.listByOrganizationAndRoles(1, roles);
-    
+    String roomNameWithoutSpaces = roomName.replaceAll("\\s+","");
     for(UserSchoolDataIdentifier user: usersByAffiliations){
         EnvironmentRoleEntity userRole = user.getRole();
         
         if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(userRole.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(userRole.getArchetype())) {
-          chatSyncController.syncRoomOwners(user, roomName);
+          chatSyncController.syncRoomOwners(user, roomNameWithoutSpaces);
         } 
       
 

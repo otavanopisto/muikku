@@ -5,6 +5,8 @@ import {Groupchat} from './groupchat';
 import {RoomsList} from './roomslist';
 import converse from '~/lib/converse';
 import {PrivateMessages} from './privatemessages';
+import mApi, { MApiError } from '~/lib/mApi';
+import promisify, { promisifyNewConstructor } from '~/util/promisify';
 
 interface Iprops {
   chat?: any,
@@ -271,7 +273,10 @@ export class Chat extends React.Component<Iprops, Istate> {
         'roomdesc': roomDesc,
         'roomname': roomName
       }
-    }), true).then((chat: any) => {
+    }), true).then(async(chat: any) => {
+
+      let parsedJid = chat.attributes.jid.split("@");
+	  let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
 
       let availableMucRoom =  {
         name: chat.attributes.jid.split('@conference.dev.muikkuverkko.fi'),
