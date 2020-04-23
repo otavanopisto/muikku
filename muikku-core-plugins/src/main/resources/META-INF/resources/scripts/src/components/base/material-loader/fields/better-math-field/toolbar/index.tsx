@@ -79,7 +79,7 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
             {(this.props.i18n as any)[c.label]}
           </div>
           <div className={this.props.className + "--symbol-group-content"}>
-            {c.characters.filter((s:SpecialCharacterType)=>!this.state.isExpanded ? s.popular: true)
+            {(c.characters as any).filter((s:SpecialCharacterType)=>!this.state.isExpanded ? s.popular: true)
               .map((s: SpecialCharacterType)=>
               <ToolbarButton key={s.character} className={this.props.className + "--symbol"} html={s.character}
                onTrigger={this.triggerCommandOn.bind(this, s)} tooltipClassName={this.props.className + "--symbol-latex-tooltip"}

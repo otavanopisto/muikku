@@ -27,7 +27,7 @@ interface HopsState {
 }
 
 class Hops extends React.Component<HopsProps, HopsState> {
-  timeout: number;
+  timeout: NodeJS.Timer;
   constructor(props: HopsProps){
     super(props);
     

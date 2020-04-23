@@ -127,7 +127,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       return <Redirect push to={this.props.to}/>
     }
     
-    let Element = this.props.as || 'a';
+    let Element: any = this.props.as || 'a';
     let elementProps:LinkProps  = Object.assign({}, this.props);
     delete elementProps["disablePropagation"];
     delete elementProps["disabled"];
