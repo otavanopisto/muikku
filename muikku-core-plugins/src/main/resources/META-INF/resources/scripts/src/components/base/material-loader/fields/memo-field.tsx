@@ -120,7 +120,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       words: wordCount(rawText),
       characters: characterCount(rawText)
     });
-    
+
     this.props.onChange && this.props.onChange(this, this.props.content.name, value);
   }
   render(){
