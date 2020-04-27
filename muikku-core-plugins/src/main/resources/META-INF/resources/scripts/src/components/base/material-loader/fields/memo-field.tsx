@@ -5,6 +5,7 @@ import $ from '~/lib/jquery';
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { escapeHTML } from "~/util/modifiers";
+import TextareaAutosize from 'react-textarea-autosize';
 
 interface MemoFieldProps {
   type: string,
@@ -160,14 +161,14 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     //if readonly
     if  (this.props.readOnly){
       //depending to whether rich edit or not we make it be with the value as inner html or just raw text
-      field = !this.props.content.richedit ? <textarea readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
-          rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
+      field = !this.props.content.richedit ? <TextareaAutosize readOnly className="material-page__memofield" cols={parseInt(this.props.content.columns)}
+          minRows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
             <span className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly" dangerouslySetInnerHTML={{__html: this.state.value}}/>
     } else {
       //here we make it be a simple textarea or a rich text editor
       //note how somehow numbers come as string...
-      field = !this.props.content.richedit ? <textarea className="material-page__memofield" cols={parseInt(this.props.content.columns)}
-          rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
+      field = !this.props.content.richedit ? <TextareaAutosize className="material-page__memofield" cols={parseInt(this.props.content.columns)}
+          minRows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
             <CKEditor configuration={ckEditorConfig}
              onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
     }
