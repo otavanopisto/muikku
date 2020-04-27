@@ -419,7 +419,7 @@ class MaterialEditor extends React.Component<MaterialEditorProps, MaterialEditor
                 <input className="material-editor__title" onChange={this.updateTitle} value={this.props.editorState.currentDraftNodeValue.title}></input>
             </div> : null
           }
-          {!this.props.editorState.section && this.props.editorState.canEditContent ? <div id="materialEditorContainer" className="material-editor__editor-container">
+          {!this.props.editorState.section && this.props.editorState.canEditContent && this.props.editorState.opened ? <div id="materialEditorContainer" className="material-editor__editor-container">
             <CKEditor ancestorSpacings={35} ancestorHeight={this.state.height} configuration={CKEditorConfig(
                 this.props.locale.current,
                 this.props.status.contextPath,
