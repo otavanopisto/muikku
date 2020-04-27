@@ -69,7 +69,7 @@ interface ManagementPanelState {
   },
   isImageDialogOpen: boolean,
   isDeleteImageDialogOpen: boolean,
-  
+
   locked: boolean
 }
 
@@ -210,13 +210,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: newLicense
     });
   }
-  
+
   removeCustomImage(){
     this.setState({
       isDeleteImageDialogOpen: true,
     });
   }
-  
+
   readNewImage(e: React.ChangeEvent<HTMLInputElement>){
     let file = e.target.files[0];
     let reader = new FileReader();
@@ -237,9 +237,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     }
   }
   editCurrentImage(){
-    
+
 //    let imageSrc = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`;
-    
+
     if (this.state.newWorkspaceImageCombo){
       this.setState({
         newWorkspaceImageSrc: this.state.newWorkspaceImageCombo.originalB64,
@@ -262,7 +262,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceHasCustomImage: false
     });
   }
-  
+
   acceptNewImage(croppedB64: string, originalB64?: string, file?: File){
     this.setState({
       workspaceHasCustomImage: true,
@@ -271,7 +271,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         originalB64,
         croppedB64
       }
-  });
+    });
   }
   togglePermissionIn(permission: WorkspacePermissionsType, valueToToggle: string) {
     this.setState({
@@ -287,17 +287,16 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       })
     });
   }
-  
   saveImage(croppedB64: string, originalB64?: string, file?: File) {
 
    this.props.updateCurrentWorkspaceImagesB64({
       originalB64: originalB64,
       croppedB64: croppedB64,
       success: ()=>{
-        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage"), "success");
+        this.props.displayNotification(this.props.i18n.text.get("plugin.workspace.management.notification.coverImage.saved"), "success");
       },
     });
-    
+
     this.setState({
       workspaceHasCustomImage: true,
       newWorkspaceImageCombo: {
@@ -306,9 +305,8 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         croppedB64
       }
     });
-    
-  }
 
+  }
   save(){
     this.setState({
       locked: true
@@ -347,12 +345,12 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)){
       totals++;
-      
+
       payload = Object.assign(workspaceUpdate, payload) ;
     }
 
     let workspaceMaterialProducers = this.state.workspaceProducers;
-    
+
     if (!equals(workspaceMaterialProducers, this.props.workspace.producers)){
       totals++;
       payload = Object.assign({producers: workspaceMaterialProducers}, payload);
@@ -383,11 +381,9 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       payload = Object.assign({details: workspaceDetails}, payload);
     }
 
-  
-    
     if (!equals(this.props.workspace.permissions, this.state.workspacePermissions)) {
       let permissionsArray:WorkspacePermissionsType[]=[];
-    
+
       this.state.workspacePermissions.forEach((permission) => {
         const originalPermission = this.props.workspace.permissions.find(p => p.userGroupEntityId === permission.userGroupEntityId);
         if (!equals(originalPermission, permission)) {
@@ -397,7 +393,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       });
       payload = Object.assign({permissions: permissionsArray}, payload);
     }
-    
+
     this.props.updateWorkspace({
       workspace: this.props.workspace,
       update: payload,
@@ -407,13 +403,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       },
       fail: onDone
     });
-    
+
     // Keep this out of the payload for now. I'd hate to put anything in the object that really does not need to be there.
     // It's following the workspaceType and to add the image data "just for the ride" is stupid.
     // The image never is in the application state
 
     let workspaceImage = this.state.workspaceHasCustomImage ? this.state.newWorkspaceImageCombo : null;
-    
+
     if (workspaceImage) {
       totals++;
       this.props.updateCurrentWorkspaceImagesB64({
@@ -436,7 +432,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         fail: onDone
       });
     }
-    
+
     onDone();
   }
 
