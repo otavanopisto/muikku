@@ -128,6 +128,7 @@
   text-align: center;
   width: 1.875rem;
 
+  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     background: $color-grade-passed;
   }
@@ -143,6 +144,7 @@
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
+  // scss-lint:enable SelectorFormat
 }
 
 .application-list__indicator-badge--course {

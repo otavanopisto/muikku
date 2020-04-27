@@ -481,6 +481,7 @@
 
 .application-sub-panel__text--course-evaluation {
 
+  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     border-left: 3px solid $color-grade-passed;
   }
@@ -492,6 +493,7 @@
   &.state-INCOMPLETE {
     border-left: 3px solid $color-grade-incomplete;
   }
+  // scss-lint:enable SelectorFormat
 }
 
 .application-sub-panel__body--labels {

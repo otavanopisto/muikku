@@ -120,7 +120,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
       words: wordCount(rawText),
       characters: characterCount(rawText)
     });
-    
+
     this.props.onChange && this.props.onChange(this, this.props.content.name, value);
   }
   render(){
@@ -130,7 +130,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     let answerExampleComponent = null;
     //it's simply set when we get it
     if (this.props.displayCorrectAnswers && this.props.content.example){
-      const escapedHTML = escapeHTML(this.props.content.example).replace("\n", "<br/>");
+      const escapedHTML = escapeHTML(this.props.content.example).replace(/\n/g, "<br/>");
       answerExampleComponent = <span className="material-page__field-answer-examples material-page__field-answer-examples--memofield">
         <span className="material-page__field-answer-examples-title material-page__field-answer-examples-title--memofield">
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
