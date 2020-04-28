@@ -47,8 +47,8 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
   render(){
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
-        let usersPrimaryAction = <AddUserDialog><ButtonPill buttonModifiers="organization" icon="add" /></AddUserDialog>;
-        let coursesPrimaryAction = <AddWorkspaceDialog><ButtonPill buttonModifiers="organization" icon="add" /></AddWorkspaceDialog>;
+        let usersPrimaryAction = <AddUserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></AddUserDialog>;
+        let coursesPrimaryAction = <AddWorkspaceDialog><ButtonPill buttonModifiers="organization" icon="plus" /></AddWorkspaceDialog>;
         let coursesToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">
