@@ -264,7 +264,7 @@ class Help extends React.Component<HelpProps, HelpState> {
       results.push(material);
     });
 
-    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.helpPage.title")} ref="content-panel">
+    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="help" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.helpPage.title")} ref="content-panel">
       {results}
       {emptyMessage}
       {lastCreatePageElement}
