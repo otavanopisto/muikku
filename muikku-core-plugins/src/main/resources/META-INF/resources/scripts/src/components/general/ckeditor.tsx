@@ -225,7 +225,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().instances[this.name].setData(data);
   }
   componentWillUnmount(){
-    if (this.props.configuration.baseHref) {
+    if (this.props.configuration && this.props.configuration.baseHref) {
       const base = document.getElementById("basehref") as HTMLBaseElement;
       if (base) {
         document.head.removeChild(base);
