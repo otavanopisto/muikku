@@ -77,6 +77,10 @@
   display: none;
   flex-basis: 100%;
   max-width: 100%;
+  
+  &.active {
+    display: block;
+  }
 }
 
 // Used when editing material page
