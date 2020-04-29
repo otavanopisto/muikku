@@ -9,7 +9,7 @@ interface TocProps {
 }
 
 interface TocState {
-  
+
 }
 
 export default class Toc extends React.Component<TocProps, TocState> {
@@ -32,7 +32,7 @@ interface TocTopicProps {
 }
 
 interface TocTopicState {
-  
+
 }
 
 export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
@@ -40,8 +40,7 @@ export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
     return <div className={this.props.className}>
       {this.props.name ? <Link
         className={`toc__section-title ${this.props.isHidden ? "hidden" : ""}`}
-        href={this.props.hash ? "#" + this.props.hash : null}
-      >
+        href={this.props.hash ? "#" + this.props.hash : null}>
         {this.props.name}
       </Link> : null}
       {this.props.children}
@@ -67,7 +66,7 @@ interface TocElementProps {
 }
 
 interface TocElementState {
-  
+
 }
 
 export class TocElement extends React.Component<TocElementProps, TocElementState> {
