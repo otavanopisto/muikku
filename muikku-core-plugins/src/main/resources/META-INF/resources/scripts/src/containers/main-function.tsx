@@ -16,6 +16,7 @@ import { loadLoggedUser } from '~/actions/user-index';
 import { UserType } from '~/reducers/user-index';
 import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
+import {loadUsers} from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
 import OrganizationAdministrationBody from '../components/organization/body';
 import CommunicatorBody from '../components/communicator/body';
@@ -274,7 +275,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       let state:StateType = this.props.store.getState();
       
-      // this.props.store.dispatch(loadUsers() as Action);
+      this.props.store.dispatch(loadUsers() as Action);
 
       this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
         if (!currentLocationHasData) {

@@ -9,6 +9,7 @@ import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {WorkspacesType, OrganizationWorkspacesType} from './workspaces';
+import {UsersType} from './organization/users';
 import {UserIndexType} from './user-index';
 import { DiscussionType } from './discussion';
 import { GuiderType } from './main-function/guider';
@@ -31,6 +32,7 @@ export interface StateType {
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
   organizationWorkspaces?: WorkspacesType,
+  organizationUsers?: UsersType,
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,

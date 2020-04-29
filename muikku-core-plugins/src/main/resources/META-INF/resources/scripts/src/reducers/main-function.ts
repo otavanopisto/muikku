@@ -8,7 +8,7 @@ import messages from './main-function/messages';
 import workspaces, {organizationWorkspaces} from './workspaces';
 import announcements from './announcements';
 import userIndex from './user-index';
-import users from './main-function/users';
+import organizationUsers from './main-function/users';
 import discussion from '~/reducers/discussion';
 import guider from './main-function/guider';
 import profile from './main-function/profile';
@@ -33,6 +33,7 @@ export default combineReducers({
   workspaces,
   messages,
   organizationWorkspaces,
+  organizationUsers,
   discussion,
   guider,
   profile
