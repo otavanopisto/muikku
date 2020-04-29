@@ -53,7 +53,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
   private blurTimeout:NodeJS.Timer;
   private selectedHeight:number;
   private activeSearchId:number;
-  private activeSearchTimeout:number;
+  private activeSearchTimeout:NodeJS.Timer;
 
   constructor(props: InputContactsAutofillProps){
     super(props);

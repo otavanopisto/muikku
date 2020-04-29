@@ -29,7 +29,7 @@ export default class MuikkuWebsocket {
   private listeners:ListenerType;
   private baseListeners:ListenerType;
   private store: Store<any>;
-  private reconnectTimeout: number;
+  private reconnectTimeout: NodeJS.Timer;
   
   constructor(store: Store<any>, listeners: ListenerType, options={
     reconnectInterval: 200,

@@ -47,7 +47,7 @@ export class Droppable extends React.Component<DroppableProps, DroppableState>{
     delete interactionData[this.id];
   }
   render(){
-    let Element = this.props.as || 'div';
+    let Element: any = this.props.as || 'div';
     let nProps = {...this.props};
     delete nProps["interactionData"];
     delete nProps["interactionGroup"];
@@ -93,7 +93,8 @@ interface DraggableState {
     marginLeft: string,
     marginRight: string,
     marginTop: string,
-    marginBottom: string
+    marginBottom: string,
+    verticalAlign: string,
   }
 }
 

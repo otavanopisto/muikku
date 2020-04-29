@@ -22,7 +22,7 @@ interface CoursepickerToolbarState {
 }
 
 class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, CoursepickerToolbarState> {
-  private searchTimer:number;
+  private searchTimer: NodeJS.Timer;
   private focused:boolean;
   constructor(props: CoursepickerToolbarProps){
     super(props);

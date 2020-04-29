@@ -47,7 +47,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     }
   }
   onOpen(DOMNode: HTMLElement){
-    let activator = this.refs["activator"];
+    let activator: any = this.refs["activator"];
     if (!(activator instanceof HTMLElement)){
       activator = findDOMNode(activator);
     }

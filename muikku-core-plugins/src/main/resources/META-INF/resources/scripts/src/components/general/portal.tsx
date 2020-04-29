@@ -137,6 +137,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     }
 
     const root = findDOMNode(this.portal);
+    if (root === null) {
+      e.stopPropagation();
+      this.closePortal();
+    }
     let node: Node = e.target as Node;
     if (root.contains(node)) {
       return;

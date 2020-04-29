@@ -46,7 +46,7 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
     
     reader.addEventListener("load", ()=>{
       this.setState({
-        b64: reader.result,
+        b64: reader.result as string,
         file,
         isImageDialogOpen: true,
         src: null

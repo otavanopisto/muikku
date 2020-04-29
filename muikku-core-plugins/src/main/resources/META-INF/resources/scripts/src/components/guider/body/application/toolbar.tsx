@@ -27,7 +27,7 @@ interface GuiderToolbarState {
 
 class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarState> {
   private focused: boolean;
-  private searchTimer:number;
+  private searchTimer: NodeJS.Timer;
   constructor(props: GuiderToolbarProps){
     super(props);
     
