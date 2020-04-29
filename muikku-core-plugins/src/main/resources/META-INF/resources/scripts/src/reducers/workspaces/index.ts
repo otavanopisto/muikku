@@ -213,6 +213,7 @@ export interface WorkspaceType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
+  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
@@ -252,6 +253,7 @@ export interface WorkspaceUpdateType {
   staffMembers?: Array<UserStaffType>,
   producers?: Array<WorkspaceProducerType>,
   contentDescription?: MaterialContentNodeType,
+  help?: MaterialContentNodeType,
   activityLogs?: ActivityLogType[],
   students?: Array<ShortWorkspaceUserWithActiveStatusType>,
   details?: WorkspaceDetailsType,
@@ -655,8 +657,12 @@ export default function workspaces(state: WorkspacesType={
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let newCurrentWorkspace = state.currentWorkspace;
-    if (!action.payload.isDraft && !found &&
-        newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+    if (!action.payload.isDraft && newCurrentWorkspace.help.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      found = true;
+      newCurrentWorkspace = {...newCurrentWorkspace};
+      newCurrentWorkspace.help = {...newCurrentWorkspace.help, ...action.payload.update};
+    }
+    if (!action.payload.isDraft && !found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
       newCurrentWorkspace = {...newCurrentWorkspace};
       newCurrentWorkspace.contentDescription = {...newCurrentWorkspace.contentDescription, ...action.payload.update};
