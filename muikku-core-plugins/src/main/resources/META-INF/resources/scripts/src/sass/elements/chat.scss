@@ -85,6 +85,10 @@
   background: $color-chat-private-main-color;
 }
 
+.chat__message-notification {
+    background: orange;
+}
+
 .chat__minimized-title {
   cursor: pointer;
   flex-basis: auto;
