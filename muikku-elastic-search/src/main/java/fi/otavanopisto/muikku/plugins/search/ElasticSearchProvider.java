@@ -56,6 +56,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
@@ -448,6 +449,7 @@ public class ElasticSearchProvider implements SearchProvider {
       Collection<WorkspaceAccess> accesses, 
       SchoolDataIdentifier accessUser, 
       boolean includeUnpublished, 
+      TemplateRestriction templateRestriction,
       int start, 
       int maxResults, 
       List<Sort> sorts) {
@@ -463,6 +465,18 @@ public class ElasticSearchProvider implements SearchProvider {
       
       if (!includeUnpublished) {
         query.must(termQuery("published", Boolean.TRUE));
+      }
+      
+      switch (templateRestriction) {
+        case ONLY_WORKSPACES:
+          query.must(termQuery("isTemplate", Boolean.FALSE));
+        break;
+        case ONLY_TEMPLATES:
+          query.must(termQuery("isTemplate", Boolean.TRUE));
+        break;
+        case LIST_ALL:
+          // No restrictions
+        break;
       }
       
       if (accesses != null) {
