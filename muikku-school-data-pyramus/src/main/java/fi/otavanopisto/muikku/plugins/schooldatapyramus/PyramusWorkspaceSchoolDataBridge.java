@@ -130,7 +130,8 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         course.getTypeId(),
         null, // variables are not copied
         copiedTags, // copy has its own tag list
-        course.getOrganizationId()); // TODO Organization probably needs to be specified
+        course.getOrganizationId(), // TODO Organization probably needs to be specified
+        course.isCourseTemplate()); // TODO Making a copy from template to course
     
     Course createdCourse = pyramusClient.post("/courses/courses/", courseCopy);
     if (createdCourse == null) {
