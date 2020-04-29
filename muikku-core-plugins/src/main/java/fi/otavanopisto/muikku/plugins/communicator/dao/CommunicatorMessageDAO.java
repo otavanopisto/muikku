@@ -257,20 +257,17 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     
     if (!trashedMessages.isEmpty()) {
       int i = 0;
-      while (true) {
+      while (i < trashedMessages.size()) {
         while (i < trashedMessages.size() - 1 && trashedMessages.get(i).getCommunicatorMessageId().getId().equals(trashedMessages.get(i + 1).getCommunicatorMessageId().getId())) {
           trashedMessages.remove(i + 1);
         }
         i++;
-        if (i == trashedMessages.size()) {
-          break;
-        }
       }
+      
+      // Sort by latest message
+      
+      trashedMessages.sort(Comparator.comparing(CommunicatorMessage::getCreated).reversed());
     }
-    
-    // Sort by latest message
-    
-    trashedMessages.sort(Comparator.comparing(CommunicatorMessage::getCreated).reversed());
     
     // Return requested subset
     
