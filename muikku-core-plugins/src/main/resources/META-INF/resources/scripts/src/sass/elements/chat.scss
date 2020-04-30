@@ -86,12 +86,12 @@
 }
 
 @-o-keyframes pulse {
-  0%   { background-color: black; }
-  100% { background-color: orange; }
+  0%   { background-color: $color-default-contrast; }
+  100% { background-color: $color-chat-message-notification; }
 }
 @keyframes pulse {
-  0%   { background-color: black; }
-  100% { background-color: orange; }
+  0%   { background-color: $color-default-contrast; }
+  100% { background-color: $color-chat-message-notification; }
 }
 
 .chat__message-notification{    
