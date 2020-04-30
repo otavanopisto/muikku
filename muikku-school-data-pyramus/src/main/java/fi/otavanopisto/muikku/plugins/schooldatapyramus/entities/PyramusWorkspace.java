@@ -18,10 +18,11 @@ public class PyramusWorkspace extends AbstractWorkspace {
       String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length,
       String lengthUnitIdentifier, OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived,
       boolean evaluationFeeApplicable, Set<SchoolDataIdentifier> curriculumIdentifiers, Integer courseNumber,
-      SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier) {
+      SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier,
+      boolean isTemplate) {
     super(identifier, name, nameExtension, viewLink, workspaceTypeId, courseIdentifierIdentifier, description,
         subjectIdentifier, educationTypeIdentifier, modified, length, lengthUnitIdentifier, beginDate, endDate, archived,
-        evaluationFeeApplicable, curriculumIdentifiers, courseNumber, educationSubtypeIdentifier, organizationIdentifier);
+        evaluationFeeApplicable, curriculumIdentifiers, courseNumber, educationSubtypeIdentifier, organizationIdentifier, isTemplate);
   }
 
   @Override
