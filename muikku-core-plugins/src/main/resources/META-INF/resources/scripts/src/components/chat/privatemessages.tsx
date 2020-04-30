@@ -88,7 +88,8 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     if (this.state.minimized === false) {
       this.setState({
         minimized: true,
-        minimizedClass: "order-minimized"
+        minimizedClass: "order-minimized",
+        messageNotification: false
       });
 
       if (!minimizedRoomList.includes(roomJid)) {
@@ -118,7 +119,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         minimized: false,
         minimizedClass: "",
         messageNotification: false
-      }, this.scrollToBottom.bind(this, "smooth"));
+      }, this.scrollToBottom.bind(this, "auto"));
     }
   }
   async sendMessage(event: any) {
@@ -235,7 +236,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       this.setState({
         messages: newArrFromOldMessages,
         roomJid: jid
-      }, this.scrollToBottom.bind(this, "smooth"));
+      }, this.scrollToBottom.bind(this, "auto"));
     });
     return;
   }

@@ -119,19 +119,24 @@ export class Chat extends React.Component<Iprops, Istate> {
     let userId: any;
     let from: any;
     let bareJid: any;
-    let hiddenChat: any;
     let tempPrivateChats: any;
     const { Strophe, sizzle } = converse.env;
     from = data.stanza.getAttribute('from');
     bareJid = Strophe.getBareJidFromJid(from);
     const is_me = bareJid === this.state.converse.bare_jid;
-    hiddenChat = this.isMessageToHiddenChat(data.stanza);
-    if(hiddenChat){
-      if(data.stanza.getAttribute('type') !== 'groupchat' &&
-       from !== null && 
-       !u.isOnlyChatStateNotification(data.stanza) && 
-       !u.isOnlyMessageDeliveryReceipt(data.stanza) && 
-       !is_me){
+    if(data.stanza.getAttribute('type') !== 'groupchat' &&
+      from !== null && 
+      !u.isOnlyChatStateNotification(data.stanza) && 
+      !u.isOnlyMessageDeliveryReceipt(data.stanza) && 
+      !is_me){
+
+      tempPrivateChats = this.state.privateChats;
+      let exists = tempPrivateChats.some(function(curr :any) {
+        if (curr.jid === bareJid) {
+          return true;
+        }
+      });
+      if(!exists){
         userId = data.stanza.getAttribute('from').split('@');
         userId = userId[0];
         chatSettings = (await promisify(mApi().chat.settings.read(userId), 'callback')());
@@ -141,49 +146,12 @@ export class Chat extends React.Component<Iprops, Istate> {
           nick = user.firstName + " " + user.lastName;
         }
         privateChatData = {id: userId, nick: nick, status: '', firstName: user.firstName, lastName: user.lastName, receivedMessageNotification: true};
-        
-        tempPrivateChats = this.state.privateChats;
-        let exists = tempPrivateChats.some(function(curr :any) {
-          if (curr.jid === bareJid) {
-            return true;
-          }
+        tempPrivateChats.push({jid: bareJid, info: privateChatData});
+        this.setState({
+          privateChats: tempPrivateChats
         });
-
-        if(!exists){
-          tempPrivateChats.push({jid: bareJid, info: privateChatData});
-          this.setState({
-            privateChats: tempPrivateChats
-          });
-        }
-
       }
     }
-
-  }
-  
-  /**
-   * Adapted from converse-notification
-   * https://m.conversejs.org/docs/html/api/converse-notification.js.html
-   * @param stanza message stanza 
-   */
-  isMessageToHiddenChat (stanza: any) {
-    const u = converse.env.utils;
-    const { Strophe, sizzle } = converse.env;
-    let something = this.state.converse.isUniView();
-    
-    let chatboxviews = converse.chatboxviews;
-    // if (this.state.converse.isUniView()) {
-        const jid = Strophe.getBareJidFromJid(stanza.getAttribute('from'));
-        if (typeof converse.chatboxviews !== 'undefined') {
-          const view = converse.chatboxviews.get(jid);
-          if (view) {
-            return view.model.get('hidden') || this.state.converse.windowState === 'hidden' || !u.isVisible(view.el);
-          }
-        }
-        
-        return true;
-    // }
-    // return this.state.converse.windowState === 'hidden';
   }
   
   handleSubmit(event: any) { // login

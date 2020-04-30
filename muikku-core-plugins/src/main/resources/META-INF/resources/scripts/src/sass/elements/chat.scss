@@ -85,8 +85,19 @@
   background: $color-chat-private-main-color;
 }
 
-.chat__message-notification {
-    background: orange;
+@-o-keyframes pulse {
+  0%   { background-color: black; }
+  100% { background-color: orange; }
+}
+@keyframes pulse {
+  0%   { background-color: black; }
+  100% { background-color: orange; }
+}
+
+.chat__message-notification{    
+  background-image:none !important; 
+  -o-animation: pulse 2s infinite; 
+  animation: pulse 2s infinite;
 }
 
 .chat__minimized-title {
