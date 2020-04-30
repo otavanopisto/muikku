@@ -1,10 +1,11 @@
 import Dialog from './dialog';
 import Portal from './portal';
+import Button from '~/components/general/button';
 import * as React from 'react';
-
+import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/environment-dialog.scss';
 
-export default class JumboDialog extends Dialog {
+export default class EnvironmentDialog extends Dialog {
 
   render(){
     return (
@@ -25,5 +26,87 @@ export default class JumboDialog extends Dialog {
             </div>
           </div>}}
       </Portal>);
+  }
+}
+
+interface EnvironmentDialogRowProps {
+  modifiers?: string | Array<string>,
+}
+
+interface EnvironmentDialogRowState {
+}
+
+export class EnvironmentDialogRow extends React.Component<EnvironmentDialogRowProps, EnvironmentDialogRowState> {
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    return ( 
+      <div className={`env-dialog__row ${this.props.modifiers ? modifiers.map( m => `env-dialog__row--${m}` ).join( " " ) : ""}`}>
+        {this.props.children}
+      </div>
+    );
+
+  }
+}
+
+interface EnvironmentDialogFormElementProps {
+  label: string,
+  i18n: i18nType
+  modifiers?: string | Array<string>,
+}
+
+interface EnvironmentDialogFormElementState {
+}
+
+export class EnvironmentDialogFormElement extends React.Component<EnvironmentDialogFormElementProps, EnvironmentDialogFormElementState> {
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    return(
+      <div className={`env-dialog__form-element-container ${this.props.modifiers ? modifiers.map( m => `env-dialog__form-element-container--${m}` ).join( " " ) : ""}`}>
+        <div className="env-dialog__label">{this.props.i18n.text.get(this.props.label)}</div>
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
+interface EnvironmentDialogActionsProps {
+  executeLabel: string;
+  cancelLabel: string;
+  executeClick: () => any;
+  cancelClick: () => any;
+  modifiers?: string | Array<string>,
+  customButton?: React.ReactElement<any>,
+  i18n: i18nType
+}
+
+interface EnvironmentDialogActionsState {
+  locked: boolean;
+}
+
+
+export class EnvironmentDialogActionsElement extends React.Component<EnvironmentDialogActionsProps, EnvironmentDialogActionsState> {
+  constructor(props: EnvironmentDialogActionsProps){
+    super(props);
+    this.state = {
+      locked: false
+    }
+
+  }
+
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    return ( 
+      <div className={`env-dialog__actions ${this.props.modifiers ? modifiers.map( m => `env-dialog__actions--${m}` ).join( " " ) : ""}`}>
+        <Button buttonModifiers="dialog-execute" onClick={this.props.executeClick}>
+          {this.props.i18n.text.get(this.props.executeLabel)}
+        </Button>
+        <Button buttonModifiers="dialog-cancel" onClick={this.props.cancelClick} disabled={this.state.locked}>
+          {this.props.i18n.text.get(this.props.cancelLabel)}
+        </Button>
+        {this.props.customButton}
+      </div>
+
+    );
+
   }
 }

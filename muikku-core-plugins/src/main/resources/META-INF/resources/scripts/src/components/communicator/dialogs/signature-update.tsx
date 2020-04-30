@@ -1,5 +1,5 @@
 import * as React from 'react';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import Link from '~/components/general/link';
 import CKEditor from '~/components/general/ckeditor';
 import {connect, Dispatch} from 'react-redux';
@@ -87,9 +87,9 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
           </div>
         </div>
     }
-    return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature" 
+    return <EnvironmentDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature" 
      title={this.props.i18n.text.get("plugin.communicator.settings.signature")}
-     content={content} footer={footer}>{this.props.children}</JumboDialog>
+     content={content} footer={footer}>{this.props.children}</EnvironmentDialog>
   }
 }
 

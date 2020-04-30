@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/user-index';
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/announcements';
@@ -317,14 +317,14 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       )
     }
     
-    return <JumboDialog modifier="new-edit-announcement"
+    return <EnvironmentDialog modifier="new-edit-announcement"
       onOpen={this.checkAgainstStoredState}
       title={this.props.announcement ?
         this.props.i18n.text.get('plugin.announcer.editannouncement.topic') :
         this.props.i18n.text.get('plugin.announcer.createannouncement.topic')}
       content={content} footer={footer}>
       {this.props.children}
-    </JumboDialog>
+    </EnvironmentDialog>
   }
 }
 

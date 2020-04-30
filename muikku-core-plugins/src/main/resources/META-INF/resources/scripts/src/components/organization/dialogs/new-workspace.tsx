@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
@@ -24,11 +24,11 @@ class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceP
     let content = (closePortal: ()=> any) => <div></div>;
     let footer = (closePortal: ()=> any) => <div></div>;
     
-    return(<JumboDialog modifier="new-message"
+    return(<EnvironmentDialog modifier="new-message"
         title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.title')}
         content={content} footer={footer}>
         {this.props.children}
-      </JumboDialog>
+      </EnvironmentDialog>
     )
   }
 }

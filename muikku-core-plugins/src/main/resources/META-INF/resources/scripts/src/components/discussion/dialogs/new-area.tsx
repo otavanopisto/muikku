@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import SessionStateComponent from '~/components/general/session-state-component';
@@ -113,11 +113,11 @@ class DiscussionNewArea extends SessionStateComponent<DiscussionNewAreaProps, Di
       )
     }
 
-    return <JumboDialog modifier="new-area"
+    return <EnvironmentDialog modifier="new-area"
       title={this.props.i18n.text.get('plugin.discussion.createarea.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
-    </JumboDialog>
+    </EnvironmentDialog>
   }
 }
 

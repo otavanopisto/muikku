@@ -6,7 +6,7 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import Link from "~/components/general/link";
-import JumboDialog from "~/components/general/environment-dialog";
+import EnvironmentDialog from "~/components/general/environment-dialog";
 import { replyToCurrentDiscussionThread, ReplyToCurrentDiscussionThreadTriggerType } from "~/actions/discussion";
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
@@ -119,11 +119,11 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
       )
     }
 
-    return <JumboDialog modifier="reply-thread"
+    return <EnvironmentDialog modifier="reply-thread"
       title={this.props.i18n.text.get('plugin.discussion.reply.topic')}
       content={content} footer={footer} onOpen={this.onDialogOpen}>
       {this.props.children}
-    </JumboDialog>
+    </EnvironmentDialog>
   }
 }
 
