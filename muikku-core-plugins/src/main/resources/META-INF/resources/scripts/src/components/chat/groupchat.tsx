@@ -201,7 +201,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         });
        	let parsedJid = chat.attributes.jid.split("@");
 		       let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
-
+        chat.listenTo(chat.occupants, 'add', this.getOccupants);
+        chat.listenTo(chat.occupants, 'destroy', this.getOccupants);
         chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
       })
     }
@@ -598,8 +599,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           showOccupantsList: true
         });
 
-        this.getOccupants();
-
+	    
+      this.getOccupants();
+		
         window.sessionStorage.setItem("showOccupantsList", JSON.stringify(roomsWithOpenOccupantsList));
       }
     }
@@ -734,6 +736,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
 
     componentDidUpdate(){
+	
     }
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
