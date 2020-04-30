@@ -33,7 +33,7 @@ class HelpMaterial extends React.Component<HelpMaterialProps, HelpMaterialState>
       {(loaded: boolean) => {
         return <MaterialLoader editable={this.props.workspaceEditMode.active}
         modifiers="workspace-help" material={this.props.materialContentNode} workspace={this.props.workspace}
-        canHide readOnly disablePlugins canRevert={!isBinary} canCopy={!isBinary}
+        canHide readOnly disablePlugins canRevert canCopy={!isBinary}
         canDelete canRestrictView canSetLicense={!isBinary} canSetProducers={!isBinary}
         canAddAttachments={!isBinary} canEditContent={!isBinary}
         invisible={!loaded} canPublish>
