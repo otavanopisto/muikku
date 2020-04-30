@@ -125,6 +125,8 @@ public interface Workspace extends SchoolDataEntity {
   public String getViewLink();
   
   public Integer getCourseNumber();
+  
+  public boolean isTemplate();
 
   @IndexId
   public String getSearchId();
