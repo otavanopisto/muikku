@@ -4,7 +4,6 @@ import MultiSelectField from '../fields/multiselect-field';
 import MemoField from '../fields/memo-field';
 import * as React from 'react';
 import $ from '~/lib/jquery';
-import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
 import { i18nType } from '~/reducers/base/i18n';
 import FileField from '../fields/file-field';
 import ConnectField from '../fields/connect-field';
@@ -16,13 +15,13 @@ import Image from '../static/image';
 import WordDefinition from '../static/word-definition';
 import IFrame from '../static/iframe';
 import { extractDataSet, guidGenerator } from '~/util/modifiers';
-import { processMathInPage } from '~/lib/mathjax';
 import MathField from '../fields/math-field';
 import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } from '~/reducers/workspaces';
 import { WebsocketStateType } from '~/reducers/util/websocket';
 import Link from '~/components/base/material-loader/static/link';
 import { HTMLtoReactComponent } from "~/util/modifiers";
 import Table from '~/components/base/material-loader/static/table';
+import MathJAX from '~/components/base/material-loader/static/mathjax';
 
 //These are all our supported objects as for now
 const objects: {[key: string]: any} = {
@@ -226,9 +225,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (this.props.onAnswerCheckableChange && originalAnswerCheckable !== this.answerCheckable){
       this.props.onAnswerCheckableChange(this.answerCheckable);
     }
-
-    //this is some mathjax weirdness we need to have here
-    processMathInPage();
   }
   //When we mount we need to register the websocket event for the answer saved
   componentWillMount(){
@@ -398,6 +394,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           Tag === "iframe" ||
           (Tag === "mark" && element.dataset.muikkuWordDefinition) ||
           (Tag === "figure" && element.classList.contains("image")) ||
+          (Tag === "span" && element.classList.contains("math-tex")) ||
           (Tag === "a" && (element as HTMLAnchorElement).href) ||
           Tag === "table"
         ) {
@@ -414,6 +411,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
             return <WordDefinition key={elementProps.key} invisible={invisible} dataset={dataset} i18n={i18n}>{children}</WordDefinition>
           } else if (Tag === "figure") {
             return <Image key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} processingFunction={processingFunction.bind(this)}/>
+          } else if (Tag === "span") {
+            return <MathJAX key={elementProps.key} invisible={invisible} children={children}/>
           } else {
             return <Link key={elementProps.key} element={element} path={path} dataset={dataset} i18n={i18n}/>
           }

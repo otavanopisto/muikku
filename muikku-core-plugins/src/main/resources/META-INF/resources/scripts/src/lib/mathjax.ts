@@ -4,39 +4,32 @@ export function queueJax(){
 
 let queue:Array<Function> = [];
 
-export function loadMathJax(triggerOnLoad: boolean){
+export const MATHJAXCONFIG = {
+  jax: ["input/TeX", "output/SVG"],
+  extensions: ["toMathML.js", "tex2jax.js", "MathMenu.js", "MathZoom.js", "fast-preview.js", "AssistiveMML.js"],
+  TeX: {
+    extensions: ["AMSmath.js", "AMSsymbols.js", "noErrors.js", "noUndefined.js", "mhchem.js"]
+  },
+  SVG: {useFontCache: true, useGlobalCache: false, EqnChunk: 1000000, EqnDelay: 0, font: 'STIX-Web', scale: '80', lineBreaks: {automatic: true}}
+};
+
+export const MATHJAXSRC = "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG";
+
+export function loadMathJax(){
   if  ((window as any).MathJax){
     return;
   }
   let script = document.createElement('script');
-  script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_SVG';
+  script.src = MATHJAXSRC;
   script.async = true;
   script.onload = ()=>{
-    (window as any).MathJax.Hub.Config({
-      jax: ["input/TeX", "output/SVG"],
-      extensions: ["toMathML.js", "tex2jax.js", "MathMenu.js", "MathZoom.js", "fast-preview.js", "AssistiveMML.js"],
-      TeX: {
-        extensions: ["AMSmath.js", "AMSsymbols.js", "noErrors.js", "noUndefined.js", "mhchem.js"]
-      },
-      SVG: {useFontCache: true, useGlobalCache: false, EqnChunk: 1000000, EqnDelay: 0, font: 'STIX-Web', scale: '80', lineBreaks: {automatic: true}}
-    });
+    (window as any).MathJax.Hub.Config(MATHJAXCONFIG);
     if (queue.length){
       queue.forEach(q=>q());
       queue = [];
     }
-    if (triggerOnLoad){
-      processMathInPage();
-    }
   }
   document.head.appendChild(script);
-}
-
-export function processMathInPage(){
-  if ((window as any).MathJax){
-    queueJax();
-  } else {
-    loadMathJax(true);
-  }
 }
 
 export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTMLImageElement)=>any, placeholderSrc?: string, placeholderCb?: (element: HTMLImageElement)=>any){

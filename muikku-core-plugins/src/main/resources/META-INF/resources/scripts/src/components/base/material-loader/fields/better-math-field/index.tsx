@@ -3,7 +3,6 @@ import { HTMLtoReactComponent, guidGenerator } from "~/util/modifiers";
 import $ from '~/lib/jquery';
 import Toolbar, { MathFieldCommandType } from './toolbar';
 import equals = require("deep-equal");
-import { processMathInPage } from "~/lib/mathjax";
 import Field from './field';
 
 interface MathFieldProps {

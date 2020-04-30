@@ -77,7 +77,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   componentDidMount(){
     //we want to load mathjax and create the markup from the property value of the field
-    loadMathJax(false);
+    loadMathJax();
     this.createMarkup();
 
     document.execCommand("enableObjectResizing", false);

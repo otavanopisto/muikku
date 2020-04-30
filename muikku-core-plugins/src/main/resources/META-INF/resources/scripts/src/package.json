@@ -43,6 +43,7 @@
     "react-color": "^2.14.1",
     "react-datepicker": "^0.61.0",
     "react-dom": "^16.13.1",
+    "react-mathjax-preview": "^1.2.4",
     "react-progressbar.js": "^0.2.0",
     "react-rangeslider": "^2.2.0",
     "react-redux": "^5.0.6",
