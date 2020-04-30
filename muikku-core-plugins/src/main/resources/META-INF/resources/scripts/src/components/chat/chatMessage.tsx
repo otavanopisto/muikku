@@ -66,16 +66,16 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
   }
   async showRealName (userIdentifier: Object){
     let user: any;
-//    let userName;
+    let userName;
     
     if (this.state.showName === false && window.MUIKKU_IS_STUDENT === false){
-//      if (userIdentifier){
-//        user = (await promisify(mApi().user.users.basicinfo.read(userIdentifier,{}), 'callback')());
-//        userName = user.firstName + " " + user.lastName;
-//      }
+      if (userIdentifier){
+        user = (await promisify(mApi().user.users.basicinfo.read(userIdentifier,{}), 'callback')());
+        userName = user.firstName + " " + user.lastName;
+      }
       this.setState({
-        showName: true
-//        realName: userName
+        showName: true,
+        realName: userName
       });
     } else{
       this.setState({
@@ -120,7 +120,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
     return  (<div className={`chat__message chat__message--${this.props.groupMessage.senderClass}`}>
       <div className="chat__message-meta">
         <span className="chat__message-meta-sender" onClick={() => this.showRealName(this.props.groupMessage.userIdentifier)}>
-          {this.props.groupMessage.from} {(this.state.showName === true) && <span className="chat__message-meta-sender-real-name">({this.props.groupMessage.realName}) </span>}
+          {this.props.groupMessage.from} {(this.state.showName === true) && <span className="chat__message-meta-sender-real-name">({this.state.realName}) </span>}
         </span>
         <span className="chat__message-meta-timestamp">
           {new Intl.DateTimeFormat('fi-FI', {
