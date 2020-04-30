@@ -39,15 +39,15 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
     type: "SET_CURRENT_MESSAGE_THREAD",
     payload: null
   });
-  
+
   let state = getState();
   let actualLocation:string = location || state.messages.location;
-  
+
   //Avoid loading messages again for the first time if it's the same location
   if (initial && actualLocation === state.messages.location && state.messages.state === "READY"){
     return;
   }
-  
+
   //If it's for the first time
   if (initial){
     //We set this state to loading
@@ -62,7 +62,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       payload: <MessagesStateType>"LOADING_MORE"
     });
   }
-  
+
   //We get the navigation location item
   let item = state.messages.navigation.find((item)=>{
     return item.location === actualLocation;
@@ -73,12 +73,12 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       payload: <MessagesStateType>"ERROR"
     });
   }
-  
+
   //Generate the api query, our first result in the messages that we have loaded
-  let firstResult = initial ? 0 : state.messages.threads.length+1;
+  let firstResult = initial ? 0 : state.messages.threads.length + 1;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
-  
+
   let params;
   //If we got a folder
   if (item.type === 'folder'){
@@ -109,7 +109,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       payload: <MessagesStateType>"ERROR"
     });
   }
-  
+
   let threads:MessageThreadListType;
   try {
     if (item.type !== "label"){
@@ -118,7 +118,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       threads = <MessageThreadListType>await promisify(mApi().communicator.userLabels.messages.read(item.id, params), 'callback' )();
     }
     let hasMore:boolean = threads.length === MAX_LOADED_AT_ONCE + 1;
-    
+
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
     let actualThreads = threads.concat([]);
@@ -126,7 +126,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       //we got to get rid of that extra loaded message
       actualThreads.pop();
     }
-    
+
     //Create the payload for updating all the communicator properties
     let properLocation = location || item.location;
     let payload:MessagesPatchType = {
@@ -139,7 +139,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       payload.selectedThreads = [];
       payload.selectedThreadsIds = [];
     }
-    
+
     //And there it goes
     dispatch({
       type: "UPDATE_MESSAGES_ALL_PROPERTIES",
@@ -159,7 +159,7 @@ export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType
   let state = getState();
   let messageLabel = state.messages.currentThread.labels.find((mlabel:MessageThreadLabelType)=>mlabel.labelId === label.id);
   let communicatorMessageId = state.messages.currentThread.messages[0].communicatorMessageId;
-  
+
   try {
     if (isToAddLabel && !messageLabel){
       let serverProvidedLabel:MessageThreadLabelType = <MessageThreadLabelType>await promisify(mApi().communicator.messages.labels.create(communicatorMessageId, {
@@ -193,10 +193,10 @@ export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType
 
 export function setLabelStatusSelectedMessages(label:MessageThreadLabelType, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state = getState();
-  
+
   state.messages.selectedThreads.forEach(async (thread:MessageThreadType)=>{
     let threadLabel = thread.labels.find(mlabel=>mlabel.labelId === label.id);
-    
+
     try {
       if (isToAddLabel && !threadLabel){
         let serverProvidedLabel:MessageThreadLabelType = <MessageThreadLabelType>await promisify(mApi().communicator.messages.labels.create(thread.communicatorMessageId, {

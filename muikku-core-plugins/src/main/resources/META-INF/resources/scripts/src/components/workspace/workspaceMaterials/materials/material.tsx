@@ -74,7 +74,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
     return <LazyLoader useChildrenAsLazy={true} className="material-lazy-loader-container">
       {(loaded: boolean) => {
         return <MaterialLoader canPublish
-          canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
+          canRevert canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
           canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
           canAddAttachments={!isBinary} canEditContent={!isBinary} folder={this.props.folder}
           editable={this.props.workspaceEditMode.active}
