@@ -90,6 +90,10 @@ public class PyramusIdentifierMapper {
     return null;
   }
   
+  public boolean isStudentIdentifier(String identifier) {
+    return StringUtils.startsWith(identifier, STUDENT_PREFIX);
+  }
+  
   public String getStudentIdentifier(Long id) {
     return STUDENT_PREFIX + id.toString();
   }
