@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -61,6 +63,8 @@ import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriod;
+import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriodType;
 
 @Dependent
 public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
@@ -909,6 +913,48 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     } catch (PyramusRestClientUnauthorizedException purr) {
       throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
     }
+  }
+
+  @Override
+  public boolean isActiveUser(User user) {
+    // Student with set study end date has ended studies
+    if (user.getStudyEndDate() != null) {
+      return false;
+    }
+    
+    // Student on a temporary study suspension/break is not active either
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+    StudentStudyPeriod[] studyPeriods = listStudentStudyPeriods(pyramusStudentId);
+    if (ArrayUtils.isNotEmpty(studyPeriods)) {
+      LocalDate now = LocalDate.now();
+      
+      for (StudentStudyPeriod period : studyPeriods) {
+        if (period.getType() == StudentStudyPeriodType.TEMPORARILY_SUSPENDED) {
+          LocalDate periodBegin = period.getBegin();
+          LocalDate periodEnd = period.getEnd();
+          
+          if (periodBegin != null) {
+            if (periodBegin.equals(now) || periodBegin.isBefore(now)) {
+              if ((periodEnd == null) || periodEnd.equals(now) || periodEnd.isAfter(now)) {
+                // When period has started before current date and period is ending after current date or is null
+                // the student is considered inactive.
+                return false;
+              }
+            }
+          } else {
+            // Start date of temporary suspension is undefined so consider the student inactive
+            return false;
+          }
+        }
+      }
+    }
+    
+    // Student is active if above steps are not triggered
+    return true;
+  }
+  
+  private StudentStudyPeriod[] listStudentStudyPeriods(Long pyramusStudentId) {
+    return pyramusClient.get(String.format("/students/students/%d/studyPeriods", pyramusStudentId), StudentStudyPeriod[].class);
   }
 
 }

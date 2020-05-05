@@ -223,6 +223,17 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
     return this;
   }
   
+  @Override
+  public TemplateRestriction getTemplateRestriction() {
+    return templateRestriction;
+  }
+  
+  @Override
+  public WorkspaceSearchBuilder setTemplateRestriction(TemplateRestriction templateRestriction) {
+    this.templateRestriction = templateRestriction;
+    return this;
+  }
+  
   private String freeText;
   private String schoolDataSource;
   private List<String> workspaceIdentifiers = null;
@@ -236,4 +247,5 @@ public abstract class AbstractWorkspaceSearchBuilder implements WorkspaceSearchB
   private int firstResult;
   private int maxResults;
   private List<Sort> sorts = null;
+  private TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
 }

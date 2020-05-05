@@ -251,4 +251,6 @@ public interface UserSchoolDataBridge {
   
   public BridgeResponse<CredentialResetPayload> resetCredentials(CredentialResetPayload payload);
 
+  public boolean isActiveUser(User user);
+
 }

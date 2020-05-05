@@ -44,6 +44,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
@@ -254,9 +255,10 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       
       List<OrganizationEntity> organizations = organizationEntityController.listLoggedUserOrganizations();
       List<SchoolDataIdentifier> organizationIdentifiers = organizations.stream().map(org -> new SchoolDataIdentifier(org.getIdentifier(), org.getDataSource().getIdentifier())).collect(Collectors.toList());
+      TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
       
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes,
-          curriculumIdentifiers, organizationIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, firstResult, maxResults, sorts);
+          curriculumIdentifiers, organizationIdentifiers, searchString, accesses, sessionController.getLoggedUser(), includeUnpublished, templateRestriction, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
