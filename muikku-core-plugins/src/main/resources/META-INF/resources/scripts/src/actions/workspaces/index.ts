@@ -1324,18 +1324,6 @@ let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentW
 
       data.success && data.success("initial-copy", cloneWorkspace);
 
-      cloneWorkspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
-          .details.read(cloneWorkspace.id), 'callback')());
-
-      cloneWorkspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
-          .details.update(cloneWorkspace.id, {
-            ...cloneWorkspace.details,
-            beginDate: data.beginDate,
-            endDate: data.endDate
-          }), 'callback')());
-
-      data.success && data.success("change-date", cloneWorkspace);
-
       if (data.copyDiscussionAreas){
         await promisify(mApi().workspace.workspaces
             .forumAreas.create(cloneWorkspace.id, {}, {sourceWorkspaceEntityId: currentWorkspace.id}), 'callback')();
@@ -1352,6 +1340,18 @@ let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentW
           }), 'callback')()
           data.success && data.success("copy-materials", cloneWorkspace);
       }
+
+      cloneWorkspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+          .details.read(cloneWorkspace.id), 'callback')());
+
+      cloneWorkspace.details = <WorkspaceDetailsType>(await promisify(mApi().workspace.workspaces
+          .details.update(cloneWorkspace.id, {
+            ...cloneWorkspace.details,
+            beginDate: data.beginDate,
+            endDate: data.endDate
+          }), 'callback')());
+
+      data.success && data.success("change-date", cloneWorkspace);
 
       if (data.copyBackgroundPicture){
         await promisify(
