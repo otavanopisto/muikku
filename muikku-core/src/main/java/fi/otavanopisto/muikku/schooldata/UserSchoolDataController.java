@@ -47,6 +47,10 @@ public class UserSchoolDataController {
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
 
+  public boolean isActiveUser(User user) {
+    return getUserBridge(user.getSchoolDataSource()).isActiveUser(user);
+  }
+  
   /* User */
 
   public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {

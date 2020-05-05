@@ -67,7 +67,7 @@ export default class Step extends React.Component<StepProps, StepState> {
       </div>
       {this.props.step === "done" && this.props.resultingWorkspace ? <div className="wizard__summary-row">
         <Button className="button button--primary-function-content" onClick={this.props.onDone}>{this.props.i18n.text.get("plugin.workspacecopywizard.closeWizardButton.label")}</Button>
-        <Button className="button button--primary-function-content" href={`/workspace/${this.props.resultingWorkspace.urlName}`} to={`/workspace/${this.props.resultingWorkspace.urlName}`}>
+        <Button className="button button--primary-function-content" href={`/workspace/${this.props.resultingWorkspace.urlName}`}>
           {this.props.i18n.text.get("plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label")}
         </Button>
         <Button className="button button--primary-function-content" href={this.props.resultingWorkspace.details.externalViewUrl} openInNewTab="_blank">

@@ -1348,7 +1348,7 @@ let copyCurrentWorkspace:CopyCurrentWorkspaceTriggerType = function copyCurrentW
             sourceWorkspaceEntityId: currentWorkspace.id, 
             targetWorkspaceEntityId: cloneWorkspace.id, 
             copyOnlyChildren: true,
-            cloneMaterials: (data.copyMaterials as any) === "COPY"
+            cloneMaterials: data.copyMaterials === "CLONE"
           }), 'callback')()
           data.success && data.success("copy-materials", cloneWorkspace);
       }

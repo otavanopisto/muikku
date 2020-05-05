@@ -322,7 +322,8 @@ public class PyramusSchoolDataEntityFactory {
         curriculumIdentifiers,
         course.getCourseNumber(),
         educationSubtypeIdentifier,
-        identifierMapper.getOrganizationIdentifier(course.getOrganizationId()));
+        identifierMapper.getOrganizationIdentifier(course.getOrganizationId()),
+        course.isCourseTemplate());
   }
 
   public WorkspaceType createEntity(CourseType courseType) {
