@@ -292,9 +292,9 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                      
                                                  reuseExistantValue(true, workspace && workspace.journals, ()=>null),
                                                  
-                                                 data.loadDetails ? reuseExistantValue(true, workspace && workspace.details,
-                                                     ()=>promisify(mApi().workspace.workspaces
-                                                         .details.read(data.workspaceId), 'callback')()) : null,
+                                                 (data.loadDetails || workspace && workspace.details) ? reuseExistantValue(true, workspace && workspace.details,
+                                                   ()=>promisify(mApi().workspace.workspaces
+                                                       .details.read(data.workspaceId), 'callback')()) : null,
                                                      
                                                   ]) as any
       workspace.studentAssessments = assesments;
