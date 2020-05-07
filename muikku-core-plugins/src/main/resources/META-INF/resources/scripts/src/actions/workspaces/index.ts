@@ -1674,6 +1674,21 @@ let updateWorkspaceMaterialContentNode:UpdateWorkspaceMaterialContentNodeTrigger
                 isDraft: false,
               }
             });
+            // we need to update the draft as well because the old
+            // producers don't have a id
+            dispatch({
+              type: "UPDATE_MATERIAL_CONTENT_NODE",
+              payload: {
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
+                showRemoveAnswersDialogForPublish: false,
+                material: data.material,
+                update: {
+                  producers: newProducers,
+                },
+                isDraft: true,
+              }
+            });
           }
 
           const deletedProducers = data.material.producers.filter((p) => !newProducers.find((p2) => p2.id === p.id));
