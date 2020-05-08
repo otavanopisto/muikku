@@ -40,7 +40,9 @@ export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
     return <div className={this.props.className}>
       {this.props.name ? <Link
         className={`toc__section-title ${this.props.isHidden ? "hidden" : ""}`}
-        href={this.props.hash ? "#" + this.props.hash : null}>
+        href={this.props.hash ? "#" + this.props.hash : null}
+        disableSmoothScroll={true}
+      >
         {this.props.name}
       </Link> : null}
       {this.props.children}

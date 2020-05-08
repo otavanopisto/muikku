@@ -121,27 +121,34 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       this.loadWorkspaceAnnouncerData(window.location.hash.replace("#","").split("/"));
     } else if (window.location.pathname.includes("/materials")){
       const hashvalue = window.location.hash.replace("#", "");
-      const supposedLoadedSection = hashvalue &&
+      // the scroll can be buggy and it can attempt to load sections
+      // like usual browser scrolling that is very unpredictable
+      if (!hashvalue.startsWith("s-")) {
+        const supposedLoadedSection = hashvalue &&
         parseInt(window.location.hash.replace("#", "").replace("p-", ""));
-      const signupDialogOn = hashvalue === "signup";
-      if (signupDialogOn) {
-        this.setState({
-          signupDialogOpen: true,
-        });
-      } else if (supposedLoadedSection){
-        this.loadWorkspaceMaterialsData(supposedLoadedSection);
-      } else if (this.props.store.getState().workspaces.currentMaterials &&
-          this.props.store.getState().workspaces.currentMaterials[0] &&
-          this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
-        this.loadWorkspaceMaterialsData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+        const signupDialogOn = hashvalue === "signup";
+        if (signupDialogOn) {
+          this.setState({
+            signupDialogOpen: true,
+          });
+        } else if (supposedLoadedSection){
+          this.loadWorkspaceMaterialsData(supposedLoadedSection);
+        } else if (this.props.store.getState().workspaces.currentMaterials &&
+            this.props.store.getState().workspaces.currentMaterials[0] &&
+            this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
+          this.loadWorkspaceMaterialsData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+        }
       }
     } else if (window.location.pathname.includes("/help")){
-      if (window.location.hash.replace("#", "")){
-        this.loadWorkspaceHelpData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
-      } else if (this.props.store.getState().workspaces.currentMaterials &&
-          this.props.store.getState().workspaces.currentMaterials[0] &&
-          this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
-        this.loadWorkspaceHelpData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+      const hashvalue = window.location.hash.replace("#", "");
+      if (!hashvalue.startsWith("s-")) {
+        if (window.location.hash.replace("#", "")){
+          this.loadWorkspaceHelpData(parseInt(window.location.hash.replace("#", "").replace("p-", "")));
+        } else if (this.props.store.getState().workspaces.currentMaterials &&
+            this.props.store.getState().workspaces.currentMaterials[0] &&
+            this.props.store.getState().workspaces.currentMaterials[0].children[0]) {
+          this.loadWorkspaceHelpData(this.props.store.getState().workspaces.currentMaterials[0].children[0].workspaceMaterialId);
+        }
       }
     }
   }

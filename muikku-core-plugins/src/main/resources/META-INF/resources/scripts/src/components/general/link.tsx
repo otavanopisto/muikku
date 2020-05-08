@@ -18,7 +18,8 @@ interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<H
   openInNewTab?: string,
   onScrollToSection?: ()=>any,
   scrollPadding?: number,
-  disableScroll?: boolean
+  disableScroll?: boolean,
+  disableSmoothScroll?: boolean,
 }
 
 interface LinkState {
@@ -61,7 +62,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
         if (this.props.disableScroll){
           window.location.hash = this.props.href;
         } else {
-          scrollToSection(this.props.href, this.props.onScrollToSection, this.props.scrollPadding);
+          scrollToSection(this.props.href, this.props.onScrollToSection, this.props.scrollPadding, this.props.disableSmoothScroll);
         }
       } else if (this.props.href){
         if (this.props.openInNewTab){
