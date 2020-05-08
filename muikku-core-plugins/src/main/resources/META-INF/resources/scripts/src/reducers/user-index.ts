@@ -1,6 +1,26 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
 
+
+export interface ManipulateStudentType {
+  id?: string,
+  firstName: string,
+  lastName: string,
+  studyProgrammeName: string,
+  email: string,
+  gender: "MALE" | "FEMALE" | "OTHER",
+  ssn?: string
+}
+
+export interface ManipulateStaffmemberType {
+  id? : string
+  firstName: string,
+  lastName: string,
+  email: string,
+  role: string
+ }
+
+
 export interface UserType {
   id: number,
   firstName: string,
@@ -11,7 +31,6 @@ export interface UserType {
   hasEvaluationFees?: false,
   curriculumIdentifier?: string,
   organizationIdentifier?: string,
- 
   //EXTENDED VALUES, may or may not be available
   email?: string,
   language?: string,

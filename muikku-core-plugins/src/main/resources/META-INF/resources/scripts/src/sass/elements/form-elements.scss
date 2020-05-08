@@ -86,6 +86,13 @@
   width: 100%;
 }
 
+.form-element--new-user {
+  flex-grow: 1;
+  &:not(:first-child){
+    margin-left: 20px; 
+  }
+}
+
 .form-element__copy-workspace-start-date {
   flex-basis: 100%;
   flex-grow: 1;
@@ -198,6 +205,13 @@
     font-size: $text-desktop-font-size;
     height: 2.5rem;
   }
+
+  &.INVALID {
+    border-color: $color-fatal;
+  }
+  &.VALID {
+    border-color: $color-success;
+  }
 }
 
 .form-element__input--workspace-management {
@@ -216,9 +230,11 @@
 .form-element__input--profile,
 .form-element__input--workspace-name,
 .form-element__input--workspace-name-extension,
-.form-element__input--profile {
+.form-element__input--profile,
+.form-element__input--new-user {
   width: 100%;
 }
+
 
 .form-element__input--profile-wrong {
   color: $color-fatal;
