@@ -105,8 +105,8 @@ public class WorkspaceController {
     return workspaceSchoolDataController.listWorkspaces(schoolDataSource);
   }
   
-  public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description) {
-    return workspaceSchoolDataController.copyWorkspace(workspaceIdentifier, name, nameExtension, description);
+  public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description, SchoolDataIdentifier destinationOrganizationIdentifier) {
+    return workspaceSchoolDataController.copyWorkspace(workspaceIdentifier, name, nameExtension, description, destinationOrganizationIdentifier);
   }
 
   public Workspace updateWorkspace(Workspace workspace) {

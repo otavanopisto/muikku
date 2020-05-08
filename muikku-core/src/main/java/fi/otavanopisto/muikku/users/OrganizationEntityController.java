@@ -110,6 +110,10 @@ public class OrganizationEntityController {
     return findByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
   }
   
+  public OrganizationEntity findById(Long organizationEntityId) {
+    return organizationEntityDAO.findById(organizationEntityId);
+  }
+
   public OrganizationEntity findByDataSourceAndIdentifier(String dataSource, String identifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
