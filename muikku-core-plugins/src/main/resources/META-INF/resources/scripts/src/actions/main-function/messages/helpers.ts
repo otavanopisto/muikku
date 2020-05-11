@@ -75,7 +75,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
   }
 
   //Generate the api query, our first result in the messages that we have loaded
-  let firstResult = initial ? 0 : state.messages.threads.length + 1;
+  let firstResult = initial ? 0 : state.messages.threads.length;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
 

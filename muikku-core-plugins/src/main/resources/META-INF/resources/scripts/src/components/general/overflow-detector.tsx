@@ -24,7 +24,7 @@ export default class OverflowDetector extends React.Component<OverflowDetectorPr
   componentDidMount(){
     this.checkOverflown();
   }
-  componentDidReceiveProps(){
+  componentDidUpdate(){
     this.checkOverflown();
   }
   checkOverflown(){
