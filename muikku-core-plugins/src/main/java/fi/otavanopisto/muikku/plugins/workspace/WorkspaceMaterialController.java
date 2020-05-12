@@ -307,24 +307,23 @@ public class WorkspaceMaterialController {
     return nodes;
   }
 
-  public void deleteAllWorkspaceNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialContainsAnswersExeption {
-    WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-    deleteAllChildNodes(rootFolder);
-  }
-
-  private void deleteAllChildNodes(WorkspaceNode node) throws WorkspaceMaterialContainsAnswersExeption {
+  private void deleteChildNodesAndSelf(WorkspaceNode node) {
     List<WorkspaceNode> childNodes = listWorkspaceNodesByParent(node);
     for (WorkspaceNode childNode : childNodes) {
-      deleteAllChildNodes(childNode);
+      deleteChildNodesAndSelf(childNode);
     }
-
     switch (node.getType()) {
     case FRONT_PAGE_FOLDER:
     case FOLDER:
       deleteWorkspaceFolder((WorkspaceFolder) node);
       break;
     case MATERIAL:
-      deleteWorkspaceMaterial((WorkspaceMaterial) node, true);
+      try {
+        deleteWorkspaceMaterial((WorkspaceMaterial) node, true);
+      }
+      catch (WorkspaceMaterialContainsAnswersExeption e) {
+        // Ignored since removeAnswers flag has been explicitly set to true
+      }
       break;
     case ROOT_FOLDER:
       deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
@@ -354,14 +353,12 @@ public class WorkspaceMaterialController {
       Material clonedMaterial = cloneMaterials && !overrideCloneMaterials ? materialController.cloneMaterial(material)
           : material;
 
-      // Implementation of feature #1232 (front and help pages should always be
-      // copies)
+      // Implementation of feature #1232 (front and help pages should always be copies)
       if (isHtmlMaterial && !cloneMaterials) {
         WorkspaceNode parentNode = workspaceMaterial.getParent();
         if (parentNode instanceof WorkspaceFolder) {
           WorkspaceFolder parentFolder = (WorkspaceFolder) parentNode;
-          if (parentFolder.getFolderType() == WorkspaceFolderType.FRONT_PAGE
-              || parentFolder.getFolderType() == WorkspaceFolderType.HELP_PAGE) {
+          if (parentFolder.getFolderType() == WorkspaceFolderType.FRONT_PAGE || parentFolder.getFolderType() == WorkspaceFolderType.HELP_PAGE) {
             clonedMaterial = materialController.cloneMaterial(material);
           }
         }
@@ -372,9 +369,21 @@ public class WorkspaceMaterialController {
           workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers());
     }
     else if (workspaceNode instanceof WorkspaceFolder) {
-      newNode = createWorkspaceFolder(parent, ((WorkspaceFolder) workspaceNode).getTitle(),
+      WorkspaceFolder folder = (WorkspaceFolder) workspaceNode;
+      // When copying front page or help page folders and the target already has them, remove
+      // the existing ones first since all workspaces should only have one set 
+      if (folder.getFolderType() == WorkspaceFolderType.FRONT_PAGE || folder.getFolderType() == WorkspaceFolderType.HELP_PAGE) {
+        WorkspaceEntity workspaceEntity = findWorkspaceEntityByNode(parent);
+        WorkspaceNode existingFolder = folder.getFolderType() == WorkspaceFolderType.FRONT_PAGE ?
+            findWorkspaceFrontPageFolder(workspaceEntity) :
+            findWorkspaceHelpPageFolder(workspaceEntity);
+        if (existingFolder != null && !(existingFolder.getId().equals(folder.getId()))) {
+          deleteChildNodesAndSelf(existingFolder);
+        }
+      }
+      newNode = createWorkspaceFolder(parent, folder.getTitle(),
           generateUniqueUrlName(parent, workspaceNode.getUrlName()), index, workspaceNode.getHidden(),
-          ((WorkspaceFolder) workspaceNode).getFolderType(), ((WorkspaceFolder) workspaceNode).getViewRestrict());
+          folder.getFolderType(), folder.getViewRestrict());
     }
     else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
@@ -644,6 +653,10 @@ public class WorkspaceMaterialController {
       throw new IllegalArgumentException("WorkspaceNode " + workspaceNode.getId() + " has not root folder");
     }
     return ((WorkspaceRootFolder) rootFolder).getWorkspaceEntityId();
+  }
+  
+  public WorkspaceEntity findWorkspaceEntityByNode(WorkspaceNode node) {
+    return workspaceEntityController.findWorkspaceEntityById(getWorkspaceEntityId(node));
   }
 
   /* Root Folder */
