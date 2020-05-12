@@ -1,5 +1,7 @@
 export function queueJax(){
-  (window as any).MathJax.Hub.Queue(["Typeset",(window as any).MathJax.Hub]);
+  if ((window as any).MathJax) {
+    (window as any).MathJax.Hub.Queue(["Typeset",(window as any).MathJax.Hub]);
+  }
 }
 
 let queue:Array<Function> = [];
