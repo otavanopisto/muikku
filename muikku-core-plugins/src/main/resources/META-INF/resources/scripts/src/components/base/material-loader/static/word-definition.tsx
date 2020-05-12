@@ -19,7 +19,7 @@ export default class WordDefinition extends React.Component<WordDefinitionProps,
     if (this.props.invisible){
       return <mark data-muikku-word-definition={this.props.dataset.muikkuWordDefinition}>{this.props.children}</mark>
     }
-    return <Dropdown openByHover modifier="word-definition" content={this.props.dataset.muikkuWordDefinition}>
+    return <Dropdown openByHover openByHoverIsClickToo modifier="word-definition" content={this.props.dataset.muikkuWordDefinition}>
       <mark data-muikku-word-definition={this.props.dataset.muikkuWordDefinition}>{this.props.children}</mark>
     </Dropdown>
   }

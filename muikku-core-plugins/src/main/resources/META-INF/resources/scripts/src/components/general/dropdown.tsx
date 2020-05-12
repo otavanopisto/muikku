@@ -13,6 +13,7 @@ interface DropdownProps {
   items?: Array<(React.ReactElement<any> | itemType2)>,
   content?: any,
   openByHover?: boolean,
+  openByHoverIsClickToo?: boolean,
   persistent?:boolean,
   onOpen?: ()=>any,
   onClose?: ()=>any,
@@ -118,6 +119,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
         elementCloned = React.cloneElement(this.props.children, { ref: "activator", onClick: this.props.onClick });
       }
       portalProps.openByHoverOn = elementCloned;
+      portalProps.openByHoverIsClickToo = this.props.openByHoverIsClickToo;
     }
     
     portalProps.closeOnEsc = true;
