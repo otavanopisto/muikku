@@ -1,9 +1,15 @@
 import { ActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/workspaces";
 import {UserWithSchoolDataType} from '~/reducers/user-index';
 
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type UsersListType = Array<UserWithSchoolDataType>;  
+export type StudyprogrammeListType= Array<EducationType>;
+
+
+export interface EducationType {
+  identifier: string,
+  name: string
+}
 
 export interface UsersType {
   students: UsersListType ,

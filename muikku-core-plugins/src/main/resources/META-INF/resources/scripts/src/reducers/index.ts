@@ -8,8 +8,8 @@ import { AnnouncementsType } from './announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
-import {WorkspacesType, OrganizationWorkspacesType} from './workspaces';
-import {UsersType} from './organization/users';
+import {WorkspacesType} from './workspaces';
+import {UsersType, StudyprogrammeTypes} from './main-function/users';
 import {UserIndexType} from './user-index';
 import { DiscussionType } from './discussion';
 import { GuiderType } from './main-function/guider';
@@ -28,6 +28,7 @@ export interface StateType {
   announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
+  studyprogrammes?: StudyprogrammeTypes,
   messages?: MessagesType,
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,

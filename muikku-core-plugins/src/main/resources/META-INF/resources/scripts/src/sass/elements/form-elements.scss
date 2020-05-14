@@ -87,10 +87,11 @@
 }
 
 .form-element--new-user {
-  flex-grow: 1;
-  &:not(:first-child){
+  flex-grow: 1; 
+}
+
+.form-element--new-user:not(:first-child) {
     margin-left: 20px; 
-  }
 }
 
 .form-element__copy-workspace-start-date {
@@ -365,6 +366,11 @@
     max-width: 250px;
   }
 }
+
+.form-element__select--new-user {
+  width: 100%;
+}
+
 
 .form-element__textarea {
   background-color: transparent;

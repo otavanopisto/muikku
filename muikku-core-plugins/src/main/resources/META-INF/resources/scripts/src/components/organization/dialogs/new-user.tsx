@@ -1,20 +1,21 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import Dialog, {DialogRow, DialogFormElement, DialogEmailFormElement, DialogActionsElement} from '~/components/general/dialog';
+import Dialog, {DialogRow} from '~/components/general/dialog';
+import {FormActionsElement, EmailFormElement, InputFormElement, SelectFormElement} from '~/components/general/form-element';
 import {createStudent, createStaffmember, CreateStaffmemberTriggerType, CreateStudentTriggerType} from '~/actions/main-function/users';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
-import Button from '~/components/general/button';
 import { StatusType } from '~/reducers/base/status';
-import { throws } from 'assert';
 import {bindActionCreators} from 'redux';
+import { StudyprogrammeTypes } from '~/reducers/main-function/users';
 
 
 interface OrganizationNewUserProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   status: StatusType,
+  studyprogrammes: StudyprogrammeTypes;
   createStudent: CreateStudentTriggerType,
   createStaffmember: CreateStaffmemberTriggerType
 }
@@ -29,26 +30,12 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
   constructor(props: OrganizationNewUserProps) {
     super(props);
     this.state = {firstName: "", lastName: "", email: "", role: "STUDENT"};
-
-    this.updateInputField = this.updateInputField.bind(this);
-    this.updateLocalInputField = this.updateLocalInputField.bind(this);
-    this.updateRoleField = this.updateRoleField.bind(this);
+    this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
   }
 
-
-  updateLocalInputField(e: React.ChangeEvent<HTMLInputElement>){
-    const name = e.target.name;
-    const value = e.target.value;
-    this.updateInputField(name, value);
-  }
-
-  updateInputField(name:string, value:string){
+  updateField(name:string, value:string){
     this.setState({[name] : value});
-  }
-
-  updateRoleField(e: React.ChangeEvent<HTMLSelectElement>){
-    this.setState({role : e.target.value});
   }
 
   saveUser(closeDialog: ()=>any) {
@@ -57,9 +44,9 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
         firstName: this.state.firstName,
         lastName: this.state.lastName,
         email: this.state.email,
-        studyProgrammeIdentifier: this.state.studyprogramme
+        studyprogramme: this.state.studyprogramme
       }
-      alert("Student add");
+      alert("Student added with studyprogramme" + this.state.studyprogramme);
     } else {
 
       let data = {
@@ -79,37 +66,37 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
     }
   }
 
-
   render(){
     let content =  (closePortal: ()=> any) => 
-    <div>
-      <DialogRow modifiers="new-user">
-        <DialogFormElement label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')}>
-          <select name="role" onChange={this.updateRoleField}>
+      <div>
+        <DialogRow modifiers="new-user">
+          <SelectFormElement name="role" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')} updateField={this.updateField} >
             <option value="STUDENT">{this.props.i18n.text.get('plugin.organization.users.addUser.role.student')}</option>
             <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
             <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
-          </select>
-        </DialogFormElement>
-        <DialogFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')}>
-          <input type="text" className="form-element__input form-element__input--new-user" name="firstName" onChange={this.updateLocalInputField} value={this.state.firstName} />
-        </DialogFormElement>
-        <DialogFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} >
-          <input type="text" className="form-element__input form-element__input--new-user" name="lastName" onChange={this.updateLocalInputField} value={this.state.lastName} />
-        </DialogFormElement>
-        <DialogEmailFormElement modifiers="new-user" updateField={this.updateInputField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
-      </DialogRow>
-      <DialogRow>
+          </SelectFormElement>
+          <InputFormElement name="firstName" modifiers="new-user" mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement name="lastName" modifiers="new-user" mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
+          <EmailFormElement modifiers="new-user" updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
+        </DialogRow>
+        {this.state.role == "STUDENT" ? 
+        <DialogRow modifiers="new-user">
+          <InputFormElement name="SSN" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
+          <SelectFormElement name="studyprogramme" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
+            {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme)=>{
+                return <option value={studyprogramme.identifier}>{studyprogramme.name}</option>
+              })
+            }
+          </SelectFormElement>
+        </DialogRow> : null}
+      </div>;
 
-      </DialogRow>
-     </div>;
-
-    let footer = (closePortal: ()=> any) => <DialogActionsElement executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
+    let footer = (closePortal: ()=> any) => <FormActionsElement executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
     cancelClick={closePortal} />;
     
     return(<Dialog modifier="new-user"
         title={this.props.i18n.text.get('plugin.organization.users.addUser.title')}
-        codntent={content} footer={footer}>
+        content={content} footer={footer}>
         {this.props.children}
       </Dialog  >
     )
@@ -119,7 +106,8 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
+    studyprogrammes: state.studyprogrammes
   }
 };
 
