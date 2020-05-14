@@ -73,7 +73,8 @@ interface DraggableProps extends React.DetailedHTMLProps<React.HTMLAttributes<HT
   denyWidth?: boolean,
   denyHeight?: boolean,
   handleSelector?: string,
-      
+  enableTouch?: boolean,
+
   __debugVoidStyle?: boolean
 }
 
@@ -138,6 +139,12 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     document.body.addEventListener("mousedown", this.onRootSelectStart);
     document.body.addEventListener("mousemove", this.onMove);
     document.body.addEventListener("mouseup", this.onRootSeletEnd);
+
+    if (this.props.enableTouch) {
+      document.body.addEventListener("touchstart", this.onRootSelectStart);
+      document.body.addEventListener("touchmove", this.onMove);
+      document.body.addEventListener("touchend", this.onRootSeletEnd);
+    }
     
     if (this.props.interactionData){
       this.selfId = (this.refs.root as Droppable).id + "";
@@ -148,14 +155,21 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     document.body.removeEventListener("mousedown", this.onRootSelectStart);
     document.body.removeEventListener("mousemove", this.onMove);
     document.body.removeEventListener("mouseup", this.onRootSeletEnd);
+
+    document.body.removeEventListener("touchstart", this.onRootSelectStart);
+    document.body.removeEventListener("touchmove", this.onMove);
+    document.body.removeEventListener("touchend", this.onRootSeletEnd);
   }
-  onRootSelectStart(e: MouseEvent, force?: boolean){
+  onRootSelectStart(e: MouseEvent | TouchEvent, force?: boolean){
     let rootElement:HTMLElement;
     if (this.props.interactionData){
       rootElement = (this.refs.root as Droppable).getDOMComponent();
     } else {
       rootElement = this.refs.root as HTMLDivElement;
     }
+
+    const pageX = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageX : (e as TouchEvent).touches[0].pageX;
+    const pageY = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageY : (e as TouchEvent).touches[0].pageY;
     
     let handleElement:Element = rootElement;
     if (this.props.handleSelector) {
@@ -172,8 +186,8 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     let clientRect = rootElement.getBoundingClientRect();
     let style = getComputedStyle(rootElement);
     
-    this.originalPageX = force ? lastHackedDraggableX : e.pageX;
-    this.originalPageY = force ? lastHackedDraggableY : e.pageY;
+    this.originalPageX = force ? lastHackedDraggableX : pageX;
+    this.originalPageY = force ? lastHackedDraggableY : pageY;
     
     this.rootFixedY = clientRect.top - parseFloat(style.marginTop);
     this.rootFixedX = clientRect.left - parseFloat(style.marginLeft);
@@ -214,9 +228,12 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       display: style.display
     }, queueJax);
   }
-  onMove(e: MouseEvent){
-    lastHackedDraggableX = e.pageX;
-    lastHackedDraggableY = e.pageY;
+  onMove(e: MouseEvent | TouchEvent){
+    const pageX = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageX : (e as TouchEvent).touches[0].pageX;
+    const pageY = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageY : (e as TouchEvent).touches[0].pageY;
+
+    lastHackedDraggableX = pageX;
+    lastHackedDraggableY = pageY;
     
     if (this.props.__debugVoidStyle){
       return;
@@ -229,8 +246,8 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
         this.props.onDrag && this.props.onDrag(e as any);
       }
       
-      let newX = e.pageX - this.originalPageX;
-      let newY = e.pageY - this.originalPageY;
+      let newX = pageX - this.originalPageX;
+      let newY = pageY - this.originalPageY;
       
       if (this.minX !== null && newX < this.minX){
         newX = this.minX;
@@ -251,7 +268,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       this.props.interactionGroup && this.props.onInteractionWith && this.detectCollisions(false);
     }
   }
-  onRootSeletEnd(e: MouseEvent){
+  onRootSeletEnd(e: MouseEvent | TouchEvent){
     if (this.props.__debugVoidStyle){
       return;
     }

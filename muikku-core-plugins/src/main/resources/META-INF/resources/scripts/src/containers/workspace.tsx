@@ -7,7 +7,6 @@ import { Store } from 'react-redux';
 import { StateType } from '~/reducers';
 import {Action} from 'redux';
 import Websocket from '~/util/websocket';
-import * as queryString from 'query-string';
 
 import titleActions from '~/actions/base/title';
 
@@ -17,6 +16,7 @@ import WorkspaceDiscussionBody from '~/components/workspace/workspaceDiscussions
 import WorkspaceAnnouncementsBody from '~/components/workspace/workspaceAnnouncements';
 import WorkspaceAnnouncerBody from '~/components/workspace/workspaceAnnouncer';
 import WorkspaceMaterialsBody from '~/components/workspace/workspaceMaterials';
+import WorkspaceMaterialsSorter from '~/components/workspace/workspaceMaterialsSorter';
 import WorkspaceJournalBody from '~/components/workspace/workspaceJournal';
 import WorkspaceManagementBody from '~/components/workspace/workspaceManagement';
 import WorkspaceUsersBody from '~/components/workspace/workspaceUsers';
@@ -69,6 +69,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
     this.renderWorkspaceAnnouncements = this.renderWorkspaceAnnouncements.bind(this);
     this.renderWorkspaceAnnouncer = this.renderWorkspaceAnnouncer.bind(this);
     this.renderWorkspaceMaterials = this.renderWorkspaceMaterials.bind(this);
+    this.renderWorkspaceMaterialsSorter = this.renderWorkspaceMaterialsSorter.bind(this);
     this.renderWorkspaceUsers = this.renderWorkspaceUsers.bind(this);
     this.renderWorkspaceJournal = this.renderWorkspaceJournal.bind(this);
     this.renderWorkspaceManagement = this.renderWorkspaceManagement.bind(this);
@@ -440,6 +441,19 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       onCloseSignupDialog={this.closeSignupDialog}
       onCloseEnrollmentDialog={this.closeEnrollmentDialog}/>
   }
+  renderWorkspaceMaterialsSorter(props: RouteComponentProps<any>){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+
+      let state = this.props.store.getState();
+      this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.materials.pageTitle')));
+      this.props.store.dispatch(setCurrentWorkspace({workspaceId: state.status.currentWorkspaceId, loadDetails: state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS}) as Action);
+      this.props.store.dispatch(loadWholeWorkspaceMaterials(state.status.currentWorkspaceId, state.status.permissions.WORKSPACE_MANAGE_WORKSPACE) as Action);
+    }
+
+    return <WorkspaceMaterialsSorter workspaceUrl={props.match.params["workspaceUrl"]}/>
+  }
   renderWorkspaceUsers(props: RouteComponentProps<any>){
     this.updateFirstTime();
     if (this.itsFirstTime){
@@ -548,6 +562,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       <Route path="/workspace/:workspaceUrl/announcements" render={this.renderWorkspaceAnnouncements}/>
       <Route path="/workspace/:workspaceUrl/announcer" render={this.renderWorkspaceAnnouncer}/>
       <Route path="/workspace/:workspaceUrl/materials" render={this.renderWorkspaceMaterials}/>
+      <Route path="/workspace/:workspaceUrl/materials-sorter" render={this.renderWorkspaceMaterialsSorter}/>
       <Route path="/workspace/:workspaceUrl/users" render={this.renderWorkspaceUsers}/>
       <Route path="/workspace/:workspaceUrl/journal" render={this.renderWorkspaceJournal}/>
       <Route path="/workspace/:workspaceUrl/workspace-management" render={this.renderWorkspaceManagement}/>

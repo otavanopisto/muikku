@@ -25,6 +25,8 @@ interface ContentProps {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
   setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType,
   workspaceEditMode: WorkspaceEditModeStateType,
+  doNotSetHashes?: boolean,
+  enableTouch?: boolean,
 }
 
 interface ContentState {
@@ -36,8 +38,14 @@ function isScrolledIntoView(el: HTMLElement) {
   let elemTop = rect.top;
   let elemBottom = rect.bottom;
 
-  let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= (document.querySelector(".content-panel__navigation") as HTMLElement).offsetTop + 50;
-  return isVisible;
+  const element = (document.querySelector(".content-panel__navigation") as HTMLElement);
+
+  if (element) {
+    let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= element.offsetTop + 50;
+    return isVisible;
+  } else {
+    return true;
+  }
 }
 
 class ContentComponent extends React.Component<ContentProps, ContentState> {
@@ -178,7 +186,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           name={node.title}
           isHidden={node.hidden}
           key={node.workspaceMaterialId}
-          hash={"s-" + node.workspaceMaterialId}
+          hash={this.props.doNotSetHashes ? null : "s-" + node.workspaceMaterialId}
           className="toc__section-container"
         >
           {node.children.map((subnode)=>{
@@ -234,7 +242,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             const pageElement = <TocElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId}
               isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} isHidden={subnode.hidden || node.hidden}
               disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
-              hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>;
+              hash={this.props.doNotSetHashes ? null : "p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>;
 
             if (!isEditable) {
               if (subnode.hidden) {
@@ -250,6 +258,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                 handleSelector=".toc__item--drag-handle"
                 onInteractionWith={this.onInteractionBetweenSubnodes.bind(this, subnode)}
                 ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
+                enableTouch={this.props.enableTouch}
               >
                 <div className="toc__item--drag-handle icon-move"></div>
                 {pageElement}
@@ -274,6 +283,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             className="toc__section--drag-container"
             handleSelector=".toc__section--drag-handle"
             onInteractionWith={this.onInteractionBetweenSections.bind(this, node)}
+            enableTouch={this.props.enableTouch}
           >
           <div className="toc__section--drag-handle icon-move"></div>
             {topic}

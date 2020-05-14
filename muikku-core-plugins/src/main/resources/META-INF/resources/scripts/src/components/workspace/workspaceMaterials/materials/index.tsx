@@ -5,7 +5,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType, MaterialCompositeRepliesListType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
-import equals = require("deep-equal");
 
 import WorkspaceMaterial from './material';
 import { ButtonPill } from "~/components/general/button";
@@ -14,6 +13,7 @@ import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode, CreateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from "~/actions/workspaces";
+import { Redirect } from "react-router-dom";
 
 interface WorkspaceMaterialsProps {
   i18n: i18nType,
@@ -32,16 +32,8 @@ interface WorkspaceMaterialsProps {
 }
 
 interface WorkspaceMaterialsState {
-  defaultOffset: number
-}
-
-function isScrolledIntoView(el: HTMLElement) {
-  let rect = el.getBoundingClientRect();
-  let elemTop = rect.top;
-  let elemBottom = rect.bottom;
-
-  let isVisible = elemTop < window.innerHeight && elemBottom >= (document.querySelector("#stick") as HTMLElement).offsetHeight;
-  return isVisible;
+  defaultOffset: number;
+  redirect: string;
 }
 
 const DEFAULT_OFFSET = 67;
@@ -52,7 +44,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     super(props);
 
     this.state = {
-      defaultOffset: DEFAULT_OFFSET
+      defaultOffset: DEFAULT_OFFSET,
+      redirect: null,
     }
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
@@ -220,7 +213,21 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     });
   }
   onOpenNavigation(){
-    this.props.onOpenNavigation();
+    if (this.props.workspaceEditMode && 'ontouchstart' in window) {
+      const splitted = location.pathname.split("/");
+      splitted.pop();
+      splitted.push("materials-sorter");
+      const newPath = splitted.join("/");
+      if (history.pushState) {
+        this.setState({
+          redirect: newPath,
+        });
+      } else {
+        location.href = newPath;
+      }
+    } else {
+      this.props.onOpenNavigation();
+    }
   }
   onScroll(){
     let newActive:number = this.getActive();
@@ -277,6 +284,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     return winner;
   }
   render(){
+    if (this.state.redirect) {
+      return <Redirect push to={this.state.redirect}/>
+    }
+
     if (!this.props.materials || !this.props.workspace){
       return null;
     }
