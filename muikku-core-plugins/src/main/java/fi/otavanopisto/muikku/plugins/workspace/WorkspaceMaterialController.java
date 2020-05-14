@@ -306,7 +306,12 @@ public class WorkspaceMaterialController {
 
     return nodes;
   }
-
+  
+  public void deleteAllWorkspaceNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialContainsAnswersExeption {
+    WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    deleteChildNodesAndSelf(rootFolder);
+  }
+  
   private void deleteChildNodesAndSelf(WorkspaceNode node) {
     List<WorkspaceNode> childNodes = listWorkspaceNodesByParent(node);
     for (WorkspaceNode childNode : childNodes) {
