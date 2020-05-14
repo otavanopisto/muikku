@@ -15,7 +15,7 @@ export default class WorkspaceMaterialsSorter extends React.Component<WorkspaceM
     super(props);
   }
   componentDidMount() {
-    document.body.style.overflow = "";
+    document.body.style.overflow = "hidden";
   }
   render(){
     let navigationComponent = <TableOfContentsComponent doNotSetHashes enableTouch/>;

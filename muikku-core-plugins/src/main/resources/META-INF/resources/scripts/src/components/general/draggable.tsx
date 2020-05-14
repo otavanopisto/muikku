@@ -144,6 +144,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       document.body.addEventListener("touchstart", this.onRootSelectStart);
       document.body.addEventListener("touchmove", this.onMove);
       document.body.addEventListener("touchend", this.onRootSeletEnd);
+      document.body.addEventListener("touchcancel", this.onRootSeletEnd);
     }
     
     if (this.props.interactionData){
@@ -159,6 +160,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     document.body.removeEventListener("touchstart", this.onRootSelectStart);
     document.body.removeEventListener("touchmove", this.onMove);
     document.body.removeEventListener("touchend", this.onRootSeletEnd);
+    document.body.removeEventListener("touchcancel", this.onRootSeletEnd);
   }
   onRootSelectStart(e: MouseEvent | TouchEvent, force?: boolean){
     let rootElement:HTMLElement;
@@ -168,8 +170,8 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       rootElement = this.refs.root as HTMLDivElement;
     }
 
-    const pageX = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageX : (e as TouchEvent).touches[0].pageX;
-    const pageY = typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageY : (e as TouchEvent).touches[0].pageY;
+    const pageX = !force && (typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageX : (e as TouchEvent).touches[0].pageX);
+    const pageY = !force && (typeof (e as MouseEvent).pageX !== "undefined" ? (e as MouseEvent).pageY : (e as TouchEvent).touches[0].pageY);
     
     let handleElement:Element = rootElement;
     if (this.props.handleSelector) {
