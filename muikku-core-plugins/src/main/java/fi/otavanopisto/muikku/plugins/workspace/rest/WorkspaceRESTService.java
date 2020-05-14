@@ -127,8 +127,8 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
-import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
@@ -2415,7 +2415,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         null,                                                     // user groups
         null,                                                     // workspace
         Collections.singletonList(schoolDataIdentifier),          // user identifiers
-        false,                                                    // include inactive students
+        true,                                                     // include inactive students
         false,                                                    // include hidden
         false,                                                    // only default users 
         0,                                                        // first result
