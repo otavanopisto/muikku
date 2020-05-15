@@ -2,6 +2,7 @@ import * as React from 'react';
 import Button from '~/components/general/button';
 import '~/sass/elements/dialog.scss';
 import '~/sass/elements/form-elements.scss';
+import { isNullOrUndefined } from 'util';
 
 interface FormElementProps {
   modifiers?: string | Array<string>,
@@ -90,7 +91,7 @@ interface InputFormElementProps {
   value?: string,
   type?: string,
   mandatory?: boolean,
-  validationNotifier?: string, 
+  valid?: number,
   modifiers?: string | Array<string>,
 }
 
@@ -101,9 +102,11 @@ interface InputFormElementState {
 
 export class InputFormElement extends React.Component<InputFormElementProps, InputFormElementState> {
 
+
   constructor(props: InputFormElementProps){
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
+    
     // 0 = invalid, 1 = valid, 2 = neutral
     this.state = {value : "", valid : 2}
   }
@@ -113,19 +116,24 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     let name = e.target.name;
 
     if(this.props.mandatory !== undefined || this.props.mandatory == true) {
-        if(value.trim().length == 0) {
-          this.setState({valid: 0}); 
-        } else {
-          this.setState({valid: 1}); 
-          this.props.updateField(name, value);
-        }
-    } else {
-      this.props.updateField(name, value);
+      if(value.trim().length == 0) {
+        this.setState({valid: 0});
+      } else {
+        this.setState({valid: 1})
+      }
+    }
+    this.props.updateField(name, value);
+  }
+
+  componentDidUpdate(prevProps:any) {
+    if(this.props.valid !== prevProps.valid){
+      this.setState({valid: this.props.valid})
     }
   }
 
   render() {
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];   
+    
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>

@@ -21,15 +21,16 @@ interface OrganizationNewUserProps {
 }
 
 interface OrganizationNewUserState {
-  [field:string]: string,
-  role: string
+  [field:string]: any,
+  role: string,
+  lastNameValid: number
 }
 
 class OrganizationNewUser extends React.Component<OrganizationNewUserProps, OrganizationNewUserState> {
 
   constructor(props: OrganizationNewUserProps) {
     super(props);
-    this.state = {firstName: "", lastName: "", email: "", role: "STUDENT"};
+    this.state = {firstName: "", lastName: "", email: "", role: "STUDENT", lastNameValid: 2};
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
   }
@@ -40,13 +41,18 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
 
   saveUser(closeDialog: ()=>any) {
     if(this.state.role == "STUDENT") {
-      let data = {
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        email: this.state.email,
-        studyprogramme: this.state.studyprogramme
+      if(this.state.lastName == "") {
+        this.setState({lastNameValid: 0});
       }
-      alert("Student added with studyprogramme" + this.state.studyprogramme);
+      else {
+        let data = {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          email: this.state.email,
+          studyprogramme: this.state.studyprogramme
+        }
+        alert("Student added with studyprogramme" + this.state.studyprogramme);
+      }
     } else {
 
       let data = {
@@ -75,8 +81,8 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
             <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
             <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
           </SelectFormElement>
-          <InputFormElement name="firstName" modifiers="new-user" mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
-          <InputFormElement name="lastName" modifiers="new-user" mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
+          <InputFormElement name="firstName" modifiers="new-user" valid={0} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
           <EmailFormElement modifiers="new-user" updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
         {this.state.role == "STUDENT" ? 
