@@ -286,8 +286,27 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (StringUtils.isBlank(payload.getName())) {
       return Response.status(Status.BAD_REQUEST).entity("Name is required").build();
     }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    SchoolDataIdentifier userOrganizationIdentifier = userSchoolDataIdentifier.getOrganization().schoolDataIdentifier();
+    Workspace sourceWorkspace = workspaceController.findWorkspace(workspaceIdentifier);
+
+    // Source workspace needs to be a template or belong to the same organization with the user
+    if (!sourceWorkspace.isTemplate() && !sourceWorkspace.getOrganizationIdentifier().equals(userOrganizationIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
-    Workspace workspace = workspaceController.copyWorkspace(workspaceIdentifier, payload.getName(), payload.getNameExtension(), payload.getDescription());
+    OrganizationEntity organizationEntity = payload.getOrganizationEntityId() != null ?
+        organizationEntityController.findById(payload.getOrganizationEntityId()) : null;
+    SchoolDataIdentifier destinationOrganizationIdentifier = organizationEntity != null ? 
+        organizationEntity.schoolDataIdentifier() : userOrganizationIdentifier;
+
+    // Users can only create workspaces to the organization they belong to
+    if (!destinationOrganizationIdentifier.equals(userOrganizationIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    Workspace workspace = workspaceController.copyWorkspace(workspaceIdentifier, payload.getName(), payload.getNameExtension(), payload.getDescription(), destinationOrganizationIdentifier);
     if (workspace == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create copy of workspace %s", sourceWorkspaceId)).build();
     }
