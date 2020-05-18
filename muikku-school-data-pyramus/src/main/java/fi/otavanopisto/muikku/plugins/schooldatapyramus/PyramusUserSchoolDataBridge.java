@@ -575,6 +575,18 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     return result;
   }
+  
+  @Override
+  public List<fi.otavanopisto.muikku.schooldata.entity.StudyProgramme> listStudyProgrammes() {
+    List<fi.otavanopisto.muikku.schooldata.entity.StudyProgramme> studyProgrammeEntities = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.StudyProgramme>();
+    StudyProgramme[] studyProgrammes = pyramusClient.get("/students/studyProgrammes", StudyProgramme[].class);
+    if (studyProgrammes != null && studyProgrammes.length > 0) {
+      for (int i = 0; i < studyProgrammes.length; i++) {
+        studyProgrammeEntities.add(entityFactory.createEntity(studyProgrammes[i]));
+      }
+    }
+    return studyProgrammeEntities;
+  }
 
   @Override
   public Role findUserEnvironmentRole(String userIdentifier) {

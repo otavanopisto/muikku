@@ -79,6 +79,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -735,6 +736,14 @@ public class UserRESTService extends AbstractRESTService {
     });
     
     return Response.ok(createRestModel(phoneNumbers.toArray(new UserPhoneNumber[0]))).build();
+  }
+  
+  @GET
+  @Path("/studyProgrammes")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudyProgrammes() {
+    List<StudyProgramme> studyProgrammes = userController.listStudyProgrammes();
+    return Response.ok(createRestModel(studyProgrammes.toArray(new StudyProgramme[0]))).build();
   }
   
   @GET
@@ -1828,6 +1837,14 @@ public class UserRESTService extends AbstractRESTService {
       }
     }
     return null;
+  }
+  
+  private List<fi.otavanopisto.muikku.rest.model.StudyProgramme> createRestModel(StudyProgramme[] entities) {
+    List<fi.otavanopisto.muikku.rest.model.StudyProgramme> result = new ArrayList<>();
+    for (StudyProgramme entity : entities) {
+      result.add(new fi.otavanopisto.muikku.rest.model.StudyProgramme(entity.getIdentifier(), entity.getName()));
+    }
+    return result;
   }
 
   private List<StudentPhoneNumber> createRestModel(UserPhoneNumber[] entities) {
