@@ -74,15 +74,15 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public Workspace copyWorkspace(SchoolDataIdentifier identifier, String name, String nameExtension, String description) {
-    if (!getSchoolDataSource().equals(identifier.getDataSource())) {
-      logger.severe(String.format("Invalid workspace identfier for Pyramus bridge", identifier));
+  public Workspace copyWorkspace(SchoolDataIdentifier sourceWorkspaceIdentifier, String name, String nameExtension, String description, SchoolDataIdentifier destinationOrganizationIdentifier) {
+    if (!getSchoolDataSource().equals(sourceWorkspaceIdentifier.getDataSource())) {
+      logger.severe(String.format("Invalid workspace identfier for Pyramus bridge", sourceWorkspaceIdentifier));
       return null;
     }
     
-    Long pyramusCourseId = identifierMapper.getPyramusCourseId(identifier.getIdentifier());
+    Long pyramusCourseId = identifierMapper.getPyramusCourseId(sourceWorkspaceIdentifier.getIdentifier());
     if (pyramusCourseId == null) {
-      logger.severe(String.format("Workspace identifier %s is not valid", identifier));
+      logger.severe(String.format("Workspace identifier %s is not valid", sourceWorkspaceIdentifier));
       return null;
     }
     
@@ -99,12 +99,20 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         copiedTags.add(tag);
       }
     }
+
+    Long pyramusOrganizationId = identifierMapper.getPyramusOrganizationId(destinationOrganizationIdentifier.getIdentifier());
+    if (pyramusOrganizationId == null) {
+      logger.severe(String.format("Organization identifier %s is not valid", destinationOrganizationIdentifier));
+      return null;
+    }
+    
+    OffsetDateTime now = OffsetDateTime.now();
     
     Course courseCopy = new Course(
         null, // copy has no id
         name, // copy has new name
-        course.getCreated(),
-        course.getLastModified(),
+        now, // Created
+        now, // Last modified
         description, // copy has new description
         course.getArchived(),
         course.getCourseNumber(),
@@ -130,8 +138,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         course.getTypeId(),
         null, // variables are not copied
         copiedTags, // copy has its own tag list
-        course.getOrganizationId(), // TODO Organization probably needs to be specified
-        course.isCourseTemplate()); // TODO Making a copy from template to course
+        pyramusOrganizationId,
+        false // CourseTemplate - never a template when created from Muikku
+    ); // 
     
     Course createdCourse = pyramusClient.post("/courses/courses/", courseCopy);
     if (createdCourse == null) {
