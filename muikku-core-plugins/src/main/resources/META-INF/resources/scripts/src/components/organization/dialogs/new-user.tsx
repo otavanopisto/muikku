@@ -23,14 +23,16 @@ interface OrganizationNewUserProps {
 interface OrganizationNewUserState {
   [field:string]: any,
   role: string,
-  lastNameValid: number
+  firstNameValid: number,
+  lastNameValid: number,
+  emailValid: number
 }
 
 class OrganizationNewUser extends React.Component<OrganizationNewUserProps, OrganizationNewUserState> {
 
   constructor(props: OrganizationNewUserProps) {
     super(props);
-    this.state = {firstName: "", lastName: "", email: "", role: "STUDENT", lastNameValid: 2};
+    this.state = {firstName: "", lastName: "", email: "", role: "STUDENT", firstNameValid: 2, lastNameValid: 2, emailValid: 2};
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
   }
@@ -40,35 +42,45 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
   }
 
   saveUser(closeDialog: ()=>any) {
-    if(this.state.role == "STUDENT") {
-      if(this.state.lastName == "") {
-        this.setState({lastNameValid: 0});
-      }
-      else {
+
+    if(this.state.firstName == "") {
+      this.setState({firstNameValid: 0});
+    }
+    if(this.state.lastName == "") {
+      this.setState({lastNameValid: 0});
+    }
+    if(this.state.email == "") {
+      this.setState({emailValid: 0});
+    } else {
+
+      if(this.state.role == "STUDENT") {
+
+        
+          let data = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            email: this.state.email,
+            studyprogramme: this.state.studyprogramme
+          }
+          alert("Student added with studyprogramme" + this.state.studyprogramme);
+        
+      } else {
+
         let data = {
           firstName: this.state.firstName,
           lastName: this.state.lastName,
           email: this.state.email,
-          studyprogramme: this.state.studyprogramme
+          role: this.state.role
         }
-        alert("Student added with studyprogramme" + this.state.studyprogramme);
-      }
-    } else {
 
-      let data = {
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        email: this.state.email,
-        role: this.state.role
+        this.props.createStaffmember({
+          staffmember: data,
+          success: () => { 
+            closeDialog();
+            alert("Sasses")},
+          fail: () =>{alert("Failz")}
+        });
       }
-
-      this.props.createStaffmember({
-        staffmember: data,
-        success: () => { 
-          closeDialog();
-          alert("Sasses")},
-        fail: () =>{alert("Failz")}
-      });
     }
   }
 

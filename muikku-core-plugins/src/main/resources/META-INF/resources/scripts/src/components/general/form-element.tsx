@@ -102,7 +102,6 @@ interface InputFormElementState {
 
 export class InputFormElement extends React.Component<InputFormElementProps, InputFormElementState> {
 
-
   constructor(props: InputFormElementProps){
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
@@ -153,10 +152,7 @@ interface SelectFormElementProps {
 }
 
 interface SelectFormElementState {
-
 }
-
-
 
 export class SelectFormElement extends React.Component<SelectFormElementProps, SelectFormElementState> {
 
@@ -165,9 +161,12 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
     this.updateSelectField = this.updateSelectField.bind(this);
   }
 
+  
+
   updateSelectField(e: React.ChangeEvent<HTMLSelectElement>){
     const name = e.target.name;
     const value = e.target.value;
+    
     this.props.updateField(name, value);
   }
 
@@ -188,6 +187,8 @@ interface EmailFormElementProps {
   label: string,
   modifiers?: string | Array<string>,
   updateField: (fieldName:string, fieldValue: string)=> any;
+  mandatory?: boolean,
+  valid?: number,
 }
 
 interface EmailFormElementState {
@@ -209,11 +210,98 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
     let value = e.target.value;
     const emailRegExp = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 
-    if (!value || value.trim().length == 0 || !value.match(emailRegExp)) {
+    if (!value || value.trim().length == 0 || !value.match(emailRegExp) || this.props.mandatory !== undefined || this.props.mandatory == true) {
       this.setState({valid: 0});      
     } else {
       this.setState({valid: 1});
-      this.props.updateField(e.target.name, value);
+    }
+    this.props.updateField(e.target.name, value);
+  }
+
+  componentDidUpdate(prevProps:any) {
+    if(this.props.valid !== prevProps.valid){
+      this.setState({valid: this.props.valid})
+    }
+  }
+
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    return(
+      <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
+        <div className="form-element__label">{this.props.label}</div>
+        <input name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map( m => `form-element__input--${m}`).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+      </div>
+    );
+  }
+}
+
+interface SSNFormElementProps {
+  label: string,
+  modifiers?: string | Array<string>,
+  updateField: (fieldName:string, fieldValue: string)=> any;
+  mandatory?: boolean,
+  valid?: number,
+}
+
+interface SSNFormElementState {
+  valid: number
+}
+
+export class SSNFormElement extends React.Component<SSNFormElementProps, SSNFormElementState> {
+
+  constructor(props: SSNFormElementProps){
+    super(props);
+    this.updateInputField = this.updateInputField.bind(this);
+
+    // 0 = invalid, 1 = valid, 2 = neutral
+
+    this.state = {valid : 2};
+  }
+
+  updateInputField(e: React.ChangeEvent<HTMLInputElement>){
+    let value = e.target.value;
+    const regExp =  /^[0-9]{3}[a-zA-Z0-9]{1}/;
+    const date = value.substring(0,5);
+    const post = value.substring(5,10);
+  
+    var valid = value != '' && value.length == 11 && /^[0-9]{3}[a-zA-Z0-9]{1}/.test(post);
+
+    if(valid) {var
+      valid = false;
+      let num = Number(date + post.substring(1,3));
+      if(!isNaN(num)) {
+        var checksumChars = '0123456789ABCDEFHJKLMNPRSTUVWXY';
+        valid = checksumChars[num % 31] == value.substring(3, 4).toUpperCase();
+      }
+    }
+
+    return valid;
+
+    // if (valid) {
+    //   valid = false;
+    //   var num = $('#field-birthday').val();
+    //   if (num) {
+    //     num = moment(num, "D.M.YYYY").format('DDMMYY') + value.substring(0, 3);
+    //     if (!isNaN(num)) {
+    //       var checksumChars = '0123456789ABCDEFHJKLMNPRSTUVWXY';
+    //       valid = checksumChars[num % 31] == value.substring(3, 4).toUpperCase();
+    //     }
+    //   }
+    // }
+
+
+
+    // if (!value || value.trim().length == 0 || !value.match(emailRegExp) || this.props.mandatory !== undefined || this.props.mandatory == true) {
+    //   this.setState({valid: 0});      
+    // } else {
+    //   this.setState({valid: 1});
+    // }
+    // this.props.updateField(e.target.name, value);
+  }
+
+  componentDidUpdate(prevProps:any) {
+    if(this.props.valid !== prevProps.valid){
+      this.setState({valid: this.props.valid})
     }
   }
 
