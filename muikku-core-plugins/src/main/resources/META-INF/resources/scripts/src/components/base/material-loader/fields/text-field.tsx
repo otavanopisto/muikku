@@ -183,6 +183,21 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       </span>
     }
 
+    const Component = (props: any) => {
+      if (this.props.content.autogrow) {
+        return <AutosizeInput {...props}/>
+      } else {
+        const newProps = {...props};
+        delete newProps.injectStyles;
+        delete newProps.minWidth;
+        delete newProps.className;
+        delete newProps.style;
+        return <div className={props.className} style={props.style}>
+          <input {...newProps}/>
+        </div>
+      }
+    }
+
     const doNotInjectStyles = {
       injectStyles: false,
       minWidth: this.props.content.columns && parseInt(this.props.content.columns) ? parseInt(this.props.content.columns) * 9 : 200,
@@ -193,10 +208,17 @@ export default class TextField extends React.Component<TextFieldProps, TextField
         (this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer") : "";
 
     if (this.props.readOnly){
+      const component = 
+        this.props.content.autogrow ?
+          <AutosizeInput {...doNotInjectStyles} readOnly className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+           size={this.props.content.columns && parseInt(this.props.content.columns)}/> :
+          <div className={`material-page__textfield ${fieldStateAfterCheck}`}>
+            <input type="text" value={this.state.value} readOnly
+              size={this.props.content.columns && parseInt(this.props.content.columns)}/>
+          </div>;
       //Read only version
       return <span className="material-page__textfield-wrapper">
-      <AutosizeInput {...doNotInjectStyles} readOnly className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
-        size={this.props.content.columns && parseInt(this.props.content.columns)}/>
+        {component}
         {correctAnswersummaryComponent}
       </span>
     }
@@ -205,14 +227,36 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       display: 'inherit'
     };
 
+    let component: React.ReactNode;
+    if (this.props.content.hint) {
+      component = <AutosizeInput
+        {...doNotInjectStyles}
+        style={wrapperStyle}
+        placeholderIsMinWidth={true}
+        className={`material-page__textfield ${fieldStateAfterCheck}`}
+        type="text"
+        value={this.state.value}
+        size={this.props.content.columns && parseInt(this.props.content.columns)}
+        placeholder={this.props.content.hint}
+        onChange={this.onInputChange}
+      />
+    } else {
+      component = <div className={`material-page__textfield ${fieldStateAfterCheck}`}>
+        <input
+          type="text"
+          value={this.state.value}
+          size={this.props.content.columns && parseInt(this.props.content.columns)}
+          placeholder={this.props.content.hint}
+          onChange={this.onInputChange}/>
+      </div>
+    }
+
     //Standard modifiable version
     return <span className="material-page__textfield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       {this.props.content.hint ? <Dropdown modifier="material-page-field-hint" content={this.props.content.hint}>
-        <AutosizeInput {...doNotInjectStyles} style={wrapperStyle} placeholderIsMinWidth={true} className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
-          size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
-      </Dropdown> : <AutosizeInput {...doNotInjectStyles} style={wrapperStyle} placeholderIsMinWidth={true} className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
-          size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>}
+        {component}
+      </Dropdown> : component}
       {correctAnswersummaryComponent}
     </span>
   }

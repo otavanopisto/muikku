@@ -9,8 +9,8 @@ type itemType2 = (closeDropdown: ()=>any)=>any
 
 interface DropdownProps {
   modifier?: string,
-  children?: React.ReactElement<any>,
-  items?: Array<(React.ReactElement<any> | itemType2)>,
+  children?: React.ReactNode,
+  items?: Array<(React.ReactNode | itemType2)>,
   content?: any,
   openByHover?: boolean,
   openByHoverIsClickToo?: boolean,
