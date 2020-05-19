@@ -121,13 +121,13 @@ export default class Image extends React.Component<ImageProps, ImageState>{
           elementProps.style.float = img.style.float;
         }
 
-        // If we have floating image with or without caption we add padding to the opposing side
-        // ie. left float adds right padding and vise versa
+        // If we have floating image with or without caption we add margin to the opposing side
+        // ie. left float adds right margin and vise versa
         if (img.style.float === 'left' || elementProps.style.float === 'left') {
-          elementProps.style.paddingRight = "15px";
+          elementProps.style.marginRight = "15px";
         }
         if (img.style.float === 'right' || elementProps.style.float === 'right') {
-          elementProps.style.paddingLeft = "15px";
+          elementProps.style.margingLeft = "15px";
         }
       }
 
