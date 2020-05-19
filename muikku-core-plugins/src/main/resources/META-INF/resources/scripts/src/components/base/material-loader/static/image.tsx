@@ -124,10 +124,10 @@ export default class Image extends React.Component<ImageProps, ImageState>{
         // If we have floating image with or without caption we add margin to the opposing side
         // ie. left float adds right margin and vise versa
         if (img.style.float === 'left' || elementProps.style.float === 'left') {
-          elementProps.style.marginRight = "15px";
+          elementProps.style.margin = "10px 15px 10px 0";
         }
         if (img.style.float === 'right' || elementProps.style.float === 'right') {
-          elementProps.style.margingLeft = "15px";
+          elementProps.style.margin = "10px 0 10px 15px";
         }
       }
 
