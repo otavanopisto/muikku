@@ -264,11 +264,12 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
     const date = value.substring(0,5);
     const post = value.substring(5,10);
   
-    var valid = value != '' && value.length == 11 && /^[0-9]{3}[a-zA-Z0-9]{1}/.test(post);
+    var valid = value != '' && value.length == 11 && regExp.test(post);
 
-    if(valid) {var
+    if(valid) {
       valid = false;
-      let num = Number(date + post.substring(1,3));
+      let string = date + post.substring(1,3)
+      let num = Number(string);
       if(!isNaN(num)) {
         var checksumChars = '0123456789ABCDEFHJKLMNPRSTUVWXY';
         valid = checksumChars[num % 31] == value.substring(3, 4).toUpperCase();
