@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.Optionality;
+import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -149,6 +150,12 @@ public class PyramusSchoolDataEntityFactory {
         studyTimeEnd,
         evaluationFees,
         hidden);
+  }
+  
+  public StudyProgramme createEntity(fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme) {
+    return new PyramusStudyProgramme(
+        identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()),
+        studyProgramme.getName());
   }
 
   public EnvironmentRole createEntity(fi.otavanopisto.pyramus.rest.model.UserRole role) {
@@ -322,7 +329,8 @@ public class PyramusSchoolDataEntityFactory {
         curriculumIdentifiers,
         course.getCourseNumber(),
         educationSubtypeIdentifier,
-        identifierMapper.getOrganizationIdentifier(course.getOrganizationId()));
+        identifierMapper.getOrganizationIdentifier(course.getOrganizationId()),
+        course.isCourseTemplate());
   }
 
   public WorkspaceType createEntity(CourseType courseType) {

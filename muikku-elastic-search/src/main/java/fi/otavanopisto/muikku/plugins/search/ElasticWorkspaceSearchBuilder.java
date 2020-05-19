@@ -22,6 +22,7 @@ public class ElasticWorkspaceSearchBuilder extends AbstractWorkspaceSearchBuilde
         getAccesses(),
         getAccessUser(),
         isIncludeUnpublished(),
+        getTemplateRestriction(),
         getFirstResult(),
         getMaxResults(),
         getSorts()
