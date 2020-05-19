@@ -491,6 +491,7 @@
   align-items: center;
   display: inline-flex;
   flex-flow: row wrap;
+  max-width: 100%;
   position: relative;
 
   &:hover {
@@ -508,10 +509,14 @@
 }
 
 .material-page__textfield {
+  max-width: 100%;
+
   input {
     @include taskfield-text;
     @include taskfield-defaults;
+    display: inline-flex;
     margin: 4px;
+    max-width: 100%;
     padding: 4px 6px;
   }
 

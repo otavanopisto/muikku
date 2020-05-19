@@ -201,13 +201,17 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       </span>
     }
 
+    const wrapperStyle = {
+      display: 'inherit'
+    };
+
     //Standard modifiable version
     return <span className="material-page__textfield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       {this.props.content.hint ? <Dropdown modifier="material-page-field-hint" content={this.props.content.hint}>
-          <AutosizeInput {...doNotInjectStyles} placeholderIsMinWidth={true} className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+        <AutosizeInput {...doNotInjectStyles} style={wrapperStyle} placeholderIsMinWidth={true} className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
           size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
-        </Dropdown> : <AutosizeInput {...doNotInjectStyles} placeholderIsMinWidth={true} className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+      </Dropdown> : <AutosizeInput {...doNotInjectStyles} style={wrapperStyle} placeholderIsMinWidth={true} className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
           size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>}
       {correctAnswersummaryComponent}
     </span>
