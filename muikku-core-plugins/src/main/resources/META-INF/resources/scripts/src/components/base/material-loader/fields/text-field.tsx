@@ -228,7 +228,7 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     };
 
     let component: React.ReactNode;
-    if (this.props.content.hint) {
+    if (this.props.content.autogrow) {
       component = <AutosizeInput
         {...doNotInjectStyles}
         style={wrapperStyle}
