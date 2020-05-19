@@ -135,6 +135,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
@@ -303,8 +304,27 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (StringUtils.isBlank(payload.getName())) {
       return Response.status(Status.BAD_REQUEST).entity("Name is required").build();
     }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    SchoolDataIdentifier userOrganizationIdentifier = userSchoolDataIdentifier.getOrganization().schoolDataIdentifier();
+    Workspace sourceWorkspace = workspaceController.findWorkspace(workspaceIdentifier);
+
+    // Source workspace needs to be a template or belong to the same organization with the user
+    if (!sourceWorkspace.isTemplate() && !sourceWorkspace.getOrganizationIdentifier().equals(userOrganizationIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
-    Workspace workspace = workspaceController.copyWorkspace(workspaceIdentifier, payload.getName(), payload.getNameExtension(), payload.getDescription());
+    OrganizationEntity organizationEntity = payload.getOrganizationEntityId() != null ?
+        organizationEntityController.findById(payload.getOrganizationEntityId()) : null;
+    SchoolDataIdentifier destinationOrganizationIdentifier = organizationEntity != null ? 
+        organizationEntity.schoolDataIdentifier() : userOrganizationIdentifier;
+
+    // Users can only create workspaces to the organization they belong to
+    if (!destinationOrganizationIdentifier.equals(userOrganizationIdentifier)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    Workspace workspace = workspaceController.copyWorkspace(workspaceIdentifier, payload.getName(), payload.getNameExtension(), payload.getDescription(), destinationOrganizationIdentifier);
     if (workspace == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create copy of workspace %s", sourceWorkspaceId)).build();
     }
@@ -516,8 +536,9 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
+      TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
-          curriculums, organizations, searchString, null, null, includeUnpublished, firstResult, maxResults, sorts);
+          curriculums, organizations, searchString, null, null, includeUnpublished, templateRestriction, firstResult, maxResults, sorts);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
@@ -2683,7 +2704,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         null,                                                     // user groups
         null,                                                     // workspace
         Collections.singletonList(schoolDataIdentifier),          // user identifiers
-        false,                                                    // include inactive students
+        true,                                                     // include inactive students
         false,                                                    // include hidden
         false,                                                    // only default users 
         0,                                                        // first result

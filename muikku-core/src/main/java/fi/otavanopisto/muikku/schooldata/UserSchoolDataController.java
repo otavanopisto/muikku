@@ -19,6 +19,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
+import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
@@ -221,6 +222,14 @@ public class UserSchoolDataController {
       result.addAll(userBridge.listRoles());
     }
 
+    return result;
+  }
+  
+  public List<StudyProgramme> listStudyProgrammes() {
+    List<StudyProgramme> result = new ArrayList<>();
+    for (UserSchoolDataBridge userBridge : getUserBridges()) {
+      result.addAll(userBridge.listStudyProgrammes());
+    }
     return result;
   }
 

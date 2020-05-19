@@ -80,6 +80,7 @@ public class WorkspaceIndexer {
       Map<String, Object> extra = new HashMap<>();
       extra.put("published", workspaceEntity.getPublished());
       extra.put("access", workspaceEntity.getAccess());
+      extra.put("isTemplate", Boolean.valueOf(workspace.isTemplate()));
 
       if (workspace.getSubjectIdentifier() != null) {
         Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
