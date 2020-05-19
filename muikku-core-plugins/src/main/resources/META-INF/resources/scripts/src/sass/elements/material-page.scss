@@ -504,12 +504,12 @@
   }
 }
 
-.material-page__textfield input::-ms-clear {
-  display: none;
-}
-
 .material-page__textfield {
   max-width: 100%;
+
+  &::-ms-clear {
+    display: none;
+  }
 
   input {
     @include taskfield-text;
