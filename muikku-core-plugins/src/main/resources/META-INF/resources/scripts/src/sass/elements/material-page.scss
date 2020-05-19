@@ -264,7 +264,7 @@
 }
 
 // DISABLED & READONLY FORM FIELDS
-.material-page__textfield[readonly],
+.material-page__textfield input[readonly],
 .material-page__selectfield[disabled],
 .material-page__memofield[readonly],
 .material-page__ckeditor-replacement.material-page__ckeditor-replacement--readonly {
@@ -503,17 +503,23 @@
   }
 }
 
-.material-page__textfield {
-  @include taskfield-text;
-  @include taskfield-defaults;
-  margin: 4px;
-  padding: 4px 6px;
+.material-page__textfield input::-ms-clear {
+  display: none;
+}
 
-  &.correct-answer {
+.material-page__textfield {
+  input {
+    @include taskfield-text;
+    @include taskfield-defaults;
+    margin: 4px;
+    padding: 4px 6px;
+  }
+
+  &.correct-answer input {
     border-color: $color-correct-answer;
   }
 
-  &.incorrect-answer {
+  &.incorrect-answer input {
     border-color: $color-incorrect-answer;
   }
 }

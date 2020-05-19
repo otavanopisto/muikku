@@ -213,21 +213,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     });
   }
   onOpenNavigation(){
-    if (this.props.workspaceEditMode && 'ontouchstart' in window) {
-      const splitted = location.pathname.split("/");
-      splitted.pop();
-      splitted.push("materials-sorter");
-      const newPath = splitted.join("/");
-      if (history.pushState) {
-        this.setState({
-          redirect: newPath,
-        });
-      } else {
-        location.href = newPath;
-      }
-    } else {
-      this.props.onOpenNavigation();
-    }
+    this.props.onOpenNavigation();
   }
   onScroll(){
     let newActive:number = this.getActive();

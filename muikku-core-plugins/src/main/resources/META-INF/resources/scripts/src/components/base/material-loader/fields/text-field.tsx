@@ -3,6 +3,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
+import AutosizeInput from "react-input-autosize";
 
 interface TextFieldProps {
   type: string,
@@ -29,8 +30,6 @@ interface TextFieldProps {
 
   invisible: boolean,
 }
-
-const uuidv4 = require('uuid/v4');
 
 interface TextFieldState {
   value: string,
@@ -177,11 +176,17 @@ export default class TextField extends React.Component<TextFieldProps, TextField
 
     if (this.props.invisible){
       return <span ref="base" className="material-page__textfield-wrapper">
-        <input readOnly className="material-page__textfield"
-          size={this.props.content.columns && parseInt(this.props.content.columns)}/>
+        <div className="material-page__textfield">
+          <input readOnly/>
+        </div>
         {correctAnswersummaryComponent}
       </span>
     }
+
+    const doNotInjectStyles = {
+      injectStyles: false,
+      minWidth: this.props.content.columns && parseInt(this.props.content.columns) ? parseInt(this.props.content.columns) * 9 : 200,
+    } as any;
 
     //The state of the whole field
     let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.displayCorrectAnswers && this.props.checkAnswers ?
@@ -190,7 +195,7 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     if (this.props.readOnly){
       //Read only version
       return <span className="material-page__textfield-wrapper">
-      <input readOnly className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+      <AutosizeInput {...doNotInjectStyles} readOnly className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
         size={this.props.content.columns && parseInt(this.props.content.columns)}/>
         {correctAnswersummaryComponent}
       </span>
@@ -200,9 +205,9 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     return <span className="material-page__textfield-wrapper">
       <Synchronizer synced={this.state.synced} syncError={this.state.syncError} i18n={this.props.i18n}/>
       {this.props.content.hint ? <Dropdown modifier="material-page-field-hint" content={this.props.content.hint}>
-          <input className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+          <AutosizeInput {...doNotInjectStyles} placeholderIsMinWidth={true} className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
           size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>
-        </Dropdown> : <input className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+        </Dropdown> : <AutosizeInput {...doNotInjectStyles} placeholderIsMinWidth={true} className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
           size={this.props.content.columns && parseInt(this.props.content.columns)} placeholder={this.props.content.hint} onChange={this.onInputChange}/>}
       {correctAnswersummaryComponent}
     </span>
