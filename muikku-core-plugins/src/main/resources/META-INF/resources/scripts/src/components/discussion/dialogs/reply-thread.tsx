@@ -61,7 +61,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
       locked: true
     });
     this.props.replyToCurrentDiscussionThread({
-      replyId: this.props.reply && this.props.reply.id,
+      parentId: this.props.reply && (this.props.reply.parentReplyId || this.props.reply.id),
       message: this.state.text,
       success: ()=>{
         closeDialog();

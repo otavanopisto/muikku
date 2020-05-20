@@ -58,7 +58,7 @@ export interface LoadDiscussionThreadFromServerTriggerType {
 export interface ReplyToCurrentDiscussionThreadTriggerType {
   (data:{
     message: string,
-    replyId?: number,
+    parentId?: number,
     success?: ()=>any,
     fail?: ()=>any
   }):AnyActionType
@@ -375,8 +375,8 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
       message: data.message
     }
     
-    if (data.replyId){
-      payload.parentReplyId = data.replyId;
+    if (data.parentId){
+      payload.parentReplyId = data.parentId;
     }
   
     let state = getState();
