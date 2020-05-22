@@ -203,14 +203,22 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       minWidth: this.props.content.columns && parseInt(this.props.content.columns) ? parseInt(this.props.content.columns) * 9 : 200,
     } as any;
 
+    const wrapperStyle = {
+      'display': 'inherit'
+    };
+
+    const objectStyle = {
+      'box-sizing': 'border-box'
+    };
+
     //The state of the whole field
     let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.displayCorrectAnswers && this.props.checkAnswers ?
         (this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer") : "";
 
     if (this.props.readOnly){
-      const component = 
+      const component =
         this.props.content.autogrow ?
-          <AutosizeInput {...doNotInjectStyles} readOnly className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
+          <AutosizeInput style={wrapperStyle} inputStyle={objectStyle} {...doNotInjectStyles} readOnly className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
            size={this.props.content.columns && parseInt(this.props.content.columns)}/> :
           <div className={`material-page__textfield ${fieldStateAfterCheck}`}>
             <input type="text" value={this.state.value} readOnly
@@ -223,15 +231,12 @@ export default class TextField extends React.Component<TextFieldProps, TextField
       </span>
     }
 
-    const wrapperStyle = {
-      display: 'inherit'
-    };
-
     let component: React.ReactNode;
     if (this.props.content.autogrow) {
       component = <AutosizeInput
         {...doNotInjectStyles}
         style={wrapperStyle}
+        inputStyle={objectStyle}
         placeholderIsMinWidth={true}
         className={`material-page__textfield ${fieldStateAfterCheck}`}
         type="text"
