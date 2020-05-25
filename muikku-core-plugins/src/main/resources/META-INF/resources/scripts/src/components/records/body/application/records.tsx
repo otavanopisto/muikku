@@ -25,7 +25,7 @@ import { MatriculationLink } from './matriculation-link';
 import { StatusType } from '~/reducers/base/status';
 import moment from '~/lib/moment';
 
-let ProgressBarLine = require('react-progressbar.js').Line;
+let ProgressBarLine = require('react-progress-bar.js').Line;
 
 interface RecordsProps {
   i18n: i18nType,

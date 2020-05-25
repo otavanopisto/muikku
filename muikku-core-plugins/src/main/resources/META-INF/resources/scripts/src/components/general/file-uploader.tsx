@@ -6,7 +6,7 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
-const ProgressBarLine = require('react-progressbar.js').Line;
+const ProgressBarLine = require('react-progress-bar.js').Line;
 
 interface FileUploaderProps {
   // Default uploading process

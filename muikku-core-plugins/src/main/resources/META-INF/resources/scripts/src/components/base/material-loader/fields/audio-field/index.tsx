@@ -2,7 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 import $ from '~/lib/jquery';
-let ProgressBarLine = require('react-progressbar.js').Line;
+let ProgressBarLine = require('react-progress-bar.js').Line;
 import moment from '~/lib/moment';
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");

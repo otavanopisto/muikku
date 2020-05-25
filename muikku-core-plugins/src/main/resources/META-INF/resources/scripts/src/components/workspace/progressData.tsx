@@ -2,7 +2,7 @@ import { WorkspaceStudentActivityType } from "~/reducers/workspaces";
 import { i18nType } from "reducers/base/i18n";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
-let ProgressBarCircle = require('react-progressbar.js').Circle;
+let ProgressBarCircle = require('react-progress-bar.js').Circle;
 
 export default class ProgressData extends React.Component<{
   activity: WorkspaceStudentActivityType,

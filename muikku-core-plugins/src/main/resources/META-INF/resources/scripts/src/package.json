@@ -46,7 +46,7 @@
     "react-dom": "^16.13.1",
     "react-input-autosize": "^2.2.2",
     "react-mathjax-preview": "^1.2.4",
-    "react-progressbar.js": "^0.2.0",
+    "react-progress-bar.js": "^0.2.3",
     "react-rangeslider": "^2.2.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.3.1",
