@@ -25,6 +25,7 @@ interface WorkspaceMaterialsProps {
   workspaceEditMode: WorkspaceEditModeStateType,
   onActiveNodeIdChange: (activeNodeId: number)=>any,
   onOpenNavigation: ()=>any,
+  isLoggedIn: boolean,
 
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType,
@@ -295,6 +296,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     const results: any = [];
     this.props.materials.forEach((section, index)=>{
 
+      if (section.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn) {
+        return;
+      }
+
       if (index === 0 && isEditable) {
         results.push(<div key={"sectionfunctions-" + section.workspaceMaterialId} className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown openByHover modifier="material-management-tooltip" content={this.props.i18n.text.get("plugin.workspace.materialsManagement.createChapterTooltip")}>
@@ -329,7 +334,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
 
       const sectionSpecificContentData: any = [];
 
-      section.children.forEach((node, index)=>{
+      section.children.forEach((node)=>{
+        if (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn) {
+          return;
+        }
+
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
         if (isEditable) {
@@ -413,6 +422,7 @@ function mapStateToProps(state: StateType){
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
+    isLoggedIn: state.status.loggedIn,
   }
 };
 
