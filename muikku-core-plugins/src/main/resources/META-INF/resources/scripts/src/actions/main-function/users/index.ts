@@ -39,7 +39,7 @@ export interface LoadUsersTriggerType {
 let createStudent: CreateStudentTriggerType = function createStudent (data) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      await promisify(mApi().user.students(data.student), 'callback')().then((staffMember: ManipulateStaffmemberType) => {
+      await promisify(mApi().user.students.create(data.student), 'callback')().then(() => {
         promisify(mApi().user.students.read(), 'callback')()
         .then((students:UserType) => {
           dispatch({
@@ -48,12 +48,13 @@ let createStudent: CreateStudentTriggerType = function createStudent (data) {
           });
         });
       });
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.success"), 'success'));    
       data.success && data.success();
     } catch (err) {
       if (!(err instanceof MApiError)){
         throw err;
       }
-        dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));    
+        dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.error"), 'error'));    
       }
       data.fail && data.fail();
   }
@@ -70,13 +71,14 @@ let createStaffmember: CreateStaffmemberTriggerType = function createStaffmember
             payload: users
           });
         })
-      })
+      });
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.success"), 'success'));    
       data.success && data.success();
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.error"), 'error'));    
       data.fail && data.fail();
     }
   }
@@ -87,7 +89,7 @@ let loadStudyprogrammes: loadStudyprogrammesTriggerType = function loadStudyprog
     try {
       dispatch({
         type: "UPDATE_STUDYPROGRAMME_TYPES",
-        payload: <StudyprogrammeListType>(await promisify(mApi().user.studyprogrammes.read(), 'callback')())
+        payload: <StudyprogrammeListType>(await promisify(mApi().user.studyProgrammes.read(), 'callback')())
       });
       dispatch({
         type: "UPDATE_STUDYPROGRAMME_STATUS_TYPE",

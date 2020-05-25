@@ -6,9 +6,9 @@ export interface ManipulateStudentType {
   id?: string,
   firstName: string,
   lastName: string,
-  studyProgrammeName: string,
+  studyProgrammeIdentifier: string,
   email: string,
-  gender: "MALE" | "FEMALE" | "OTHER",
+  gender?: "MALE" | "FEMALE" | "OTHER",
   ssn?: string
 }
 

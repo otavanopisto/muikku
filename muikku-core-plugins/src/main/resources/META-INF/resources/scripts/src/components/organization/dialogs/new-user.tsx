@@ -4,6 +4,7 @@ import Dialog, {DialogRow} from '~/components/general/dialog';
 import {FormActionsElement, EmailFormElement, InputFormElement, SelectFormElement} from '~/components/general/form-element';
 import {createStudent, createStaffmember, CreateStaffmemberTriggerType, CreateStudentTriggerType} from '~/actions/main-function/users';
 import {AnyActionType} from '~/actions';
+import notificationActions from '~/actions/base/notifications';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import { StatusType } from '~/reducers/base/status';
@@ -21,8 +22,9 @@ interface OrganizationNewUserProps {
 }
 
 interface OrganizationNewUserState {
-  [field:string]: any,
-  role: string,
+  user: {
+    [field: string] : string,
+  },
   firstNameValid: number,
   lastNameValid: number,
   emailValid: number
@@ -32,57 +34,79 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
 
   constructor(props: OrganizationNewUserProps) {
     super(props);
-    this.state = {firstName: "", lastName: "", email: "", role: "STUDENT", firstNameValid: 2, lastNameValid: 2, emailValid: 2};
+    this.state = {
+      user: {role: "STUDENT"},
+      firstNameValid: 2, 
+      lastNameValid: 2, 
+      emailValid: 2
+    };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
   }
 
-  updateField(name:string, value:string){
-    this.setState({[name] : value});
+  updateField(name:string, value:string, valid: boolean ) {
+    let fieldName = name;
+    let fieldValue = valid ? value : "";
+    let newState = Object.assign(this.state.user, {[fieldName] : fieldValue});
+
+    this.setState({user: newState});
+
   }
 
   saveUser(closeDialog: ()=>any) {
 
-    if(this.state.firstName == "") {
+    if(this.state.user.firstName == "") {
       this.setState({firstNameValid: 0});
     }
-    if(this.state.lastName == "") {
+    if(this.state.user.lastName == "") {
       this.setState({lastNameValid: 0});
     }
-    if(this.state.email == "") {
+    if(this.state.user.email == "") {
       this.setState({emailValid: 0});
     } else {
 
-      if(this.state.role == "STUDENT") {
-
-        
-          let data = {
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            email: this.state.email,
-            studyprogramme: this.state.studyprogramme
+      if(this.state.user.role == "STUDENT") {
+          
+        let data = {
+            firstName: this.state.user.firstName,
+            lastName: this.state.user.lastName,
+            email: this.state.user.email,
+            ssn: this.state.user.ssn ? this.state.user.ssn : "",
+            studyProgrammeIdentifier: this.state.user.studyProgramme
           }
-          alert("Student added with studyprogramme" + this.state.studyprogramme);
+
+          this.props.createStudent({
+            student: data,
+            success: () => { 
+              closeDialog();
+              this.setState({user: {role: "STUDENT"}});
+            },
+            fail: () =>{
+            }
+          });
         
       } else {
 
         let data = {
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          email: this.state.email,
-          role: this.state.role
+          firstName: this.state.user.firstName,
+          lastName: this.state.user.lastName,
+          email: this.state.user.email,
+          role: this.state.user.role
         }
 
         this.props.createStaffmember({
           staffmember: data,
           success: () => { 
             closeDialog();
-            alert("Sasses")},
-          fail: () =>{alert("Failz")}
+          },
+          fail: () => {
+          }
         });
       }
     }
   }
+
+  // <InputFormElement name="SSN" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
 
   render(){
     let content =  (closePortal: ()=> any) => 
@@ -97,10 +121,10 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
           <InputFormElement name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
           <EmailFormElement modifiers="new-user" updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
-        {this.state.role == "STUDENT" ? 
+        {this.state.user.role == "STUDENT" ? 
         <DialogRow modifiers="new-user">
-          <InputFormElement name="SSN" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
-          <SelectFormElement name="studyprogramme" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
+          <SelectFormElement name="studyProgramme" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
+            <option value="">{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')}</option>
             {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme)=>{
                 return <option value={studyprogramme.identifier}>{studyprogramme.name}</option>
               })

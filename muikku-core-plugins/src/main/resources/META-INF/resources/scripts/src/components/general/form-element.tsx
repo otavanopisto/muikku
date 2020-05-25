@@ -87,7 +87,7 @@ export class FormActionsElement extends React.Component<FormActionsProps, FormAc
 interface InputFormElementProps {
   label: string,
   name: string,
-  updateField: (fieldName:string, fieldValue: string)=> any;
+  updateField: (fieldName:string, fieldValue: string, valid: boolean)=> any;
   value?: string,
   type?: string,
   mandatory?: boolean,
@@ -113,15 +113,18 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
   updateInputField(e: React.ChangeEvent<HTMLInputElement>){
     let value = e.target.value;
     let name = e.target.name;
+    let valid = false;
 
     if(this.props.mandatory !== undefined || this.props.mandatory == true) {
       if(value.trim().length == 0) {
         this.setState({valid: 0});
+        valid = false;
       } else {
         this.setState({valid: 1})
+        valid = true;
       }
     }
-    this.props.updateField(name, value);
+    this.props.updateField(name, value, valid);
   }
 
   componentDidUpdate(prevProps:any) {
@@ -147,8 +150,10 @@ interface SelectFormElementProps {
   name: string,
   value?: string,
   type?: string
+  mandatory?: boolean,
+  valid?: number,
   modifiers?: string | Array<string>,
-  updateField: (fieldName:string, fieldValue: string)=> any;
+  updateField: (fieldName:string, fieldValue: string, valid: boolean)=> any;
 }
 
 interface SelectFormElementState {
@@ -161,13 +166,21 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
     this.updateSelectField = this.updateSelectField.bind(this);
   }
 
-  
-
   updateSelectField(e: React.ChangeEvent<HTMLSelectElement>){
     const name = e.target.name;
     const value = e.target.value;
-    
-    this.props.updateField(name, value);
+    let valid =  false;
+
+    if(this.props.mandatory !== undefined || this.props.mandatory == true) {
+      if(value.trim().length == 0) {
+        this.setState({valid: 0});
+        valid = false;
+      } else {
+        this.setState({valid: 1})
+        valid = true;
+      }
+    }
+    this.props.updateField(name, value, valid);
   }
 
   render() {
@@ -175,7 +188,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
-        <select name="role" className={`form-element__select ${this.props.modifiers ? modifiers.map( m => `form-element__select--${m}` ).join( " " ) : ""}`} onChange={this.updateSelectField}>
+        <select name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map( m => `form-element__select--${m}` ).join( " " ) : ""}`} onChange={this.updateSelectField}>
           {this.props.children}
         </select>        
       </div>
@@ -186,7 +199,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 interface EmailFormElementProps {
   label: string,
   modifiers?: string | Array<string>,
-  updateField: (fieldName:string, fieldValue: string)=> any;
+  updateField: (fieldName:string, fieldValue: string, valid: boolean)=> any;
   mandatory?: boolean,
   valid?: number,
 }
@@ -209,13 +222,16 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
   updateInputField(e: React.ChangeEvent<HTMLInputElement>){
     let value = e.target.value;
     const emailRegExp = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+    let valid = false;
 
     if (!value || value.trim().length == 0 || !value.match(emailRegExp) || this.props.mandatory !== undefined || this.props.mandatory == true) {
       this.setState({valid: 0});      
+      valid = false;
     } else {
       this.setState({valid: 1});
+      valid = true;
     }
-    this.props.updateField(e.target.name, value);
+    this.props.updateField(e.target.name, value, valid);
   }
 
   componentDidUpdate(prevProps:any) {
