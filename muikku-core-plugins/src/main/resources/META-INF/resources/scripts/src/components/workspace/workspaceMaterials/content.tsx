@@ -27,6 +27,7 @@ interface ContentProps {
   workspaceEditMode: WorkspaceEditModeStateType,
   doNotSetHashes?: boolean,
   enableTouch?: boolean,
+  isLoggedIn: boolean,
 }
 
 interface ContentState {
@@ -182,6 +183,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
       {this.state.materials.map((node, nodeIndex)=>{
+        if (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn) {
+          return null;
+        }
         const topic = <TocTopic
           name={node.title}
           isHidden={node.hidden}
@@ -190,6 +194,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           className="toc__section-container"
         >
           {node.children.map((subnode)=>{
+            if (subnode.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn) {
+              return null;
+            }
+
             let isAssignment = subnode.assignmentType === "EVALUATED";
             let isExercise = subnode.assignmentType === "EXERCISE";
             let isNormalPage = subnode.assignmentType === null;
@@ -302,6 +310,7 @@ function mapStateToProps(state: StateType){
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
+    isLoggedIn: state.status.loggedIn,
   }
 };
 
