@@ -83,5 +83,7 @@ public interface User extends SchoolDataEntity {
   
   public void setNickName(String nickName);
 
-  public String getNickName();  
+  public String getNickName();
+  
+  public boolean isActive();
 }

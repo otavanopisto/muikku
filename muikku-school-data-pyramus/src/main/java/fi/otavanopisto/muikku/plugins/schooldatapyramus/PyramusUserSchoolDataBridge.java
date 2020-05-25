@@ -150,6 +150,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       String school = null;
       String ssn = null;
       boolean hidden = false;
+      boolean isActive = student.getStudyEndDate() == null;
       
       if (student.getStudyProgrammeId() != null) {
         if (!studyProgrammeMap.containsKey(student.getStudyProgrammeId())) {
@@ -208,6 +209,35 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         }
       }
       
+      if (isActive) {
+        // For student that doesn't have studyEndDate set, we check the studyperiods
+        
+        StudentStudyPeriod[] studyPeriods = listStudentStudyPeriods(student.getId());
+        if (ArrayUtils.isNotEmpty(studyPeriods)) {
+          LocalDate now = LocalDate.now();
+          
+          for (StudentStudyPeriod period : studyPeriods) {
+            if (period.getType() == StudentStudyPeriodType.TEMPORARILY_SUSPENDED) {
+              LocalDate periodBegin = period.getBegin();
+              LocalDate periodEnd = period.getEnd();
+              
+              if (periodBegin != null) {
+                if (periodBegin.equals(now) || periodBegin.isBefore(now)) {
+                  if ((periodEnd == null) || periodEnd.equals(now) || periodEnd.isAfter(now)) {
+                    // When period has started before current date and period is ending after current date or is null
+                    // the student is considered inactive.
+                    isActive = false;
+                  }
+                }
+              } else {
+                // Start date of temporary suspension is undefined so consider the student inactive
+                isActive = false;
+              }
+            }
+          }
+        }
+      }
+      
       String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
       SchoolDataIdentifier organizationIdentifier = (studyProgramme != null && studyProgramme.getOrganizationId() != null) ? identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()) : null;
       
@@ -227,7 +257,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           hidden,
           curriculumIdentifier,
           ssn,
-          organizationIdentifier));
+          organizationIdentifier,
+          isActive));
     }
     
     return users;
