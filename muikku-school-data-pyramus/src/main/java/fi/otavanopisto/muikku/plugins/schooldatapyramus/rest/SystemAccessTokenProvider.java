@@ -19,7 +19,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginD
 @ApplicationScoped
 public class SystemAccessTokenProvider {
 
-  private static final int EXPIRE_SLACK = 3;
+  private static final int EXPIRE_SLACK = 60; // refresh one minute before token would expire
 
   @Inject
   private PluginSettingsController pluginSettingsController;
@@ -32,28 +32,42 @@ public class SystemAccessTokenProvider {
     accessToken = null;
     refreshToken = null;
     accessTokenExpires = null;
-    authCode = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "system.authCode");
-    if(StringUtils.isEmpty(authCode)){
+    authCode = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME,
+        "system.authCode");
+    if (StringUtils.isEmpty(authCode)) {
       logger.log(Level.SEVERE, "SystemAuthCode is missing!");
     }
   }
-  
+
   public String getAccessToken(PyramusRestClient restClient, Client client) {
+    AccessToken accessTokenEntity = null;
     if (accessToken == null) {
-      AccessToken createdAccessToken = restClient.createAccessToken(client, authCode);
-      accessToken = createdAccessToken.getAccessToken();
-      refreshToken = createdAccessToken.getRefreshToken();
-      accessTokenExpires = OffsetDateTime.now().plusSeconds(createdAccessToken.getExpiresIn());
-    } else if (accessTokenExpires == null || System.currentTimeMillis() > accessTokenExpires.toInstant().toEpochMilli()) {
-      AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, refreshToken);
-      accessToken = refreshedAccessToken.getAccessToken();
-      accessTokenExpires = OffsetDateTime.now().plusSeconds(refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK);
+      accessTokenEntity = restClient.createAccessToken(client, authCode);
+      accessToken = accessTokenEntity.getAccessToken();
+      refreshToken = accessTokenEntity.getRefreshToken();
+      accessTokenExpires = OffsetDateTime.now().plusSeconds(accessTokenEntity.getExpiresIn());
+    }
+    else if (accessTokenExpires == null || System.currentTimeMillis() > accessTokenExpires.toInstant().toEpochMilli()) {
+      try {
+        accessTokenEntity = restClient.refreshAccessToken(client, refreshToken);
+        accessToken = accessTokenEntity.getAccessToken();
+        refreshToken = accessTokenEntity.getRefreshToken();
+        accessTokenExpires = OffsetDateTime.now().plusSeconds(accessTokenEntity.getExpiresIn() - EXPIRE_SLACK);
+      }
+      catch (Exception e) {
+        logger.log(Level.SEVERE, "System access token refresh failure, creating new token", e);
+        accessTokenEntity = restClient.createAccessToken(client, authCode);
+        accessToken = accessTokenEntity.getAccessToken();
+        refreshToken = accessTokenEntity.getRefreshToken();
+        accessTokenExpires = OffsetDateTime.now().plusSeconds(accessTokenEntity.getExpiresIn());
+      }
     }
     return accessToken;
   }
-  
+
   private String accessToken;
   private String refreshToken;
   private OffsetDateTime accessTokenExpires;
   private String authCode;
+
 }

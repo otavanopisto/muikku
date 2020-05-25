@@ -41,7 +41,7 @@ class SystemPyramusClient implements PyramusClient {
   public <T> T post(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.post(client, getAccessToken(), path, entity, type);
+      return restClient.post(client, getAccessToken(client), path, entity, type);
     } finally {
       releaseClient(client);
     }
@@ -51,7 +51,7 @@ class SystemPyramusClient implements PyramusClient {
   public <T> T post(String path, T entity) {
     Client client = obtainClient();
     try {
-      return restClient.post(client, getAccessToken(), path, entity);
+      return restClient.post(client, getAccessToken(client), path, entity);
     } finally {
       releaseClient(client);
     }
@@ -61,7 +61,7 @@ class SystemPyramusClient implements PyramusClient {
   public <T> T put(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.put(client, getAccessToken(), path, entity, type);
+      return restClient.put(client, getAccessToken(client), path, entity, type);
     } finally {
       releaseClient(client);
     }
@@ -71,7 +71,7 @@ class SystemPyramusClient implements PyramusClient {
   public <T> T put(String path, T entity) {
     Client client = obtainClient();
     try {
-      return restClient.put(client, getAccessToken(), path, entity);
+      return restClient.put(client, getAccessToken(client), path, entity);
     } finally {
       releaseClient(client);
     }
@@ -87,7 +87,7 @@ class SystemPyramusClient implements PyramusClient {
         return cachedEntity.getData();
       }
       
-      T result = restClient.get(client, getAccessToken(), path, type);
+      T result = restClient.get(client, getAccessToken(client), path, type);
       if (result != null) {
         entityCache.put(path, result);
       }
@@ -102,7 +102,7 @@ class SystemPyramusClient implements PyramusClient {
   public void delete(String path) {
     Client client = obtainClient();
     try {
-      restClient.delete(client, getAccessToken(), path);      
+      restClient.delete(client, getAccessToken(client), path);      
     } finally {
       releaseClient(client);
     }
@@ -112,7 +112,7 @@ class SystemPyramusClient implements PyramusClient {
   public <T> BridgeResponse<T> responseGet(String path, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.responseGet(client, getAccessToken(), path, type);
+      return restClient.responseGet(client, getAccessToken(client), path, type);
     }
     finally {
       releaseClient(client);
@@ -123,7 +123,7 @@ class SystemPyramusClient implements PyramusClient {
   public <T> BridgeResponse<T> responsePut(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.responsePut(client, getAccessToken(), path, entity, type);
+      return restClient.responsePut(client, getAccessToken(client), path, entity, type);
     }
     finally {
       releaseClient(client);
@@ -134,20 +134,15 @@ class SystemPyramusClient implements PyramusClient {
   public <T> BridgeResponse<T> responsePost(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.responsePost(client, getAccessToken(), path, entity, type);
+      return restClient.responsePost(client, getAccessToken(client), path, entity, type);
     }
     finally {
       releaseClient(client);
     }
   }
   
-  private String getAccessToken() {
-    Client client = obtainClient();
-    try {
-      return systemAccessTokenProvider.getAccessToken(restClient, client);
-    } finally {
-      releaseClient(client);
-    }
+  private String getAccessToken(Client client) {
+    return systemAccessTokenProvider.getAccessToken(restClient, client);
   }
 
   private Client obtainClient() {
