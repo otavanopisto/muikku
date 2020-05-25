@@ -1,5 +1,8 @@
 package fi.otavanopisto.muikku.session;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -12,20 +15,24 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 public class CurrentUserSession {
 
   @Inject
+  private transient Logger logger;
+  
+  @Inject
   private transient SessionController sessionController;
   
   @Inject
   private transient UserSchoolDataController userSchoolDataController;
   
   public boolean isActive() {
-    System.out.println(String.format("isActive loaded=%b, active=%b, user=%s", isActiveLoaded, isActive, sessionController.getLoggedUser()));
     if (!isActiveLoaded) {
       if (sessionController.isLoggedIn()) {
-        User user = userSchoolDataController.findUser(sessionController.getLoggedUser());
-        isActive = userSchoolDataController.isActiveUser(user);
-        isActiveLoaded = true;
-        
-        System.out.println(String.format("isActive LOADED active=%b, user=%s", isActive, sessionController.getLoggedUser()));
+        try {
+          User user = userSchoolDataController.findUser(sessionController.getLoggedUser());
+          isActive = userSchoolDataController.isActiveUser(user);
+          isActiveLoaded = true;
+        } catch (Exception ex) {
+          logger.log(Level.SEVERE, "Failed to resolve user activity information.", ex);
+        }
       }
     }
     
