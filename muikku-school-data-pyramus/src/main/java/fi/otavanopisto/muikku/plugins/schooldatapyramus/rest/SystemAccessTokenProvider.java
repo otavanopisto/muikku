@@ -45,7 +45,7 @@ public class SystemAccessTokenProvider {
       accessTokenEntity = restClient.createAccessToken(client, authCode);
       accessToken = accessTokenEntity.getAccessToken();
       refreshToken = accessTokenEntity.getRefreshToken();
-      accessTokenExpires = OffsetDateTime.now().plusSeconds(accessTokenEntity.getExpiresIn());
+      accessTokenExpires = OffsetDateTime.now().plusSeconds(accessTokenEntity.getExpiresIn() - EXPIRE_SLACK);
     }
     else if (accessTokenExpires == null || System.currentTimeMillis() > accessTokenExpires.toInstant().toEpochMilli()) {
       try {
@@ -59,7 +59,7 @@ public class SystemAccessTokenProvider {
         accessTokenEntity = restClient.createAccessToken(client, authCode);
         accessToken = accessTokenEntity.getAccessToken();
         refreshToken = accessTokenEntity.getRefreshToken();
-        accessTokenExpires = OffsetDateTime.now().plusSeconds(accessTokenEntity.getExpiresIn());
+        accessTokenExpires = OffsetDateTime.now().plusSeconds(accessTokenEntity.getExpiresIn() - EXPIRE_SLACK);
       }
     }
     return accessToken;
