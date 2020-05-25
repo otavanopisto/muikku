@@ -6,10 +6,12 @@ interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
   stateConfiguration: any,
   answerCheckable: boolean,
   answersVisible: boolean,
+  forceOnRequestShowAnswersButton: boolean,
 }
 
 export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
-  if (!props.answerable || !props.stateConfiguration) {
+  const noAnswerOrStateConfig = !props.answerable || !props.stateConfiguration;
+  if ((noAnswerOrStateConfig) && !props.forceOnRequestShowAnswersButton) {
     return null;
   }
   
@@ -20,11 +22,11 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
   }
   
   return (<div className="material-page__buttonset">
-    {!props.stateConfiguration['button-disabled'] ? <Button buttonModifiers={props.stateConfiguration['button-class']}
+    {!noAnswerOrStateConfig && !props.stateConfiguration['button-disabled'] ? <Button buttonModifiers={props.stateConfiguration['button-class']}
       onClick={props.onPushAnswer}>{props.i18n.text.get(props.answerCheckable && props.material.assignmentType === "EXERCISE" && (props.material.correctAnswers || "ALWAYS") === "ALWAYS" ?
       props.stateConfiguration['button-check-text'] : props.stateConfiguration['button-text'])}</Button> : null}
-    {props.stateConfiguration['displays-hide-show-answers-on-request-button-if-allowed'] &&
-      props.material.correctAnswers === "ON_REQUEST" ? <Button 
+    {(!noAnswerOrStateConfig && props.stateConfiguration['displays-hide-show-answers-on-request-button-if-allowed'] &&
+      props.material.correctAnswers === "ON_REQUEST") || props.forceOnRequestShowAnswersButton ? <Button 
      buttonModifiers="muikku-show-correct-answers-button" onClick={props.onToggleAnswersVisible}>
        {props.i18n.text.get(props.answersVisible ? "plugin.workspace.materialsLoader.hideAnswers" : "plugin.workspace.materialsLoader.showAnswers")}
      </Button> : null}

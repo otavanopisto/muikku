@@ -55,7 +55,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             readOnly={props.readOnly || (props.answerable && props.stateConfiguration && props.stateConfiguration['fields-read-only'])}
             compositeReplies={props.compositeReplies} displayCorrectAnswers={props.answersVisible}
             checkAnswers={props.answersChecked} onAnswerChange={props.onAnswerChange} onAnswerCheckableChange={props.onAnswerCheckableChange}
-            invisible={props.invisible}/>
+            invisible={props.invisible} answerable={props.answerable}/>
        }
     </div>
     {

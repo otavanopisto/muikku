@@ -72,6 +72,7 @@ interface BaseProps {
   status: StatusType,
   workspace: WorkspaceType,
   websocket: WebsocketStateType,
+  answerable: boolean,
 
   compositeReplies?: MaterialCompositeRepliesType,
   readOnly?: boolean,
@@ -337,12 +338,15 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   //Ok so this is what the element calls every time that changes
   onValueChange(context: React.Component<any, any>, name: string, newValue: any){
-
     //the context is basically the react component, the name the fieldName, and the newValue the value we use
 
     //so we check if it's not modified and if it is, we mark it as modified
     if (!context.state.modified){
       context.setState({modified: true});
+    }
+    if (!this.props.answerable) {
+      context.setState({synced: true});
+      return;
     }
     context.setState({synced: false});
 
