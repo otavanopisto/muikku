@@ -516,7 +516,7 @@
     @include taskfield-defaults;
     display: inline-flex;
     margin: 4px;
-    max-width: 100%;
+    max-width: calc(100% - 8px);
     padding: 4px 6px;
   }
 
