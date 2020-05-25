@@ -184,9 +184,6 @@ interface MaterialLoaderState {
   answersVisible: boolean,
   answersChecked: boolean,
 
-  //Whether to force an on request show answers for exercises
-  forceOnRequestShowAnswersButton: boolean,
-
   //whether the material can be checked at all
   answerCheckable: boolean,
 
@@ -219,8 +216,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
 
       answersVisible: false,
       answersChecked: false,
-
-      forceOnRequestShowAnswersButton: false,
 
       //assume true, as it is usually true; this is
       //basically only in used for exercises to show button-check-text instead
@@ -260,9 +255,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           state.answersVisible = true;
         }
       }
-    } else if (!this.props.answerable && props.material.assignmentType === "EXERCISE") {
-      const canswers = (props.material.correctAnswers || "ALWAYS");
-      state.forceOnRequestShowAnswersButton = canswers === "ALWAYS" || canswers === "ON_REQUEST";
     }
 
     //set the state
@@ -314,17 +306,6 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
             answersChecked: false
           });
         }
-      }
-    } else if (
-      !nextProps.answerable &&
-      nextProps.material.assignmentType === "EXERCISE"
-    ) {
-      const canswers = (nextProps.material.correctAnswers || "ALWAYS");
-      const forceOnRequestShowAnswersButton = canswers === "ALWAYS" || canswers === "ON_REQUEST";
-      if (forceOnRequestShowAnswersButton !== nextState.forceOnRequestShowAnswersButton) {
-        this.setState({
-          forceOnRequestShowAnswersButton: canswers === "ALWAYS" || canswers === "ON_REQUEST",
-        });
       }
     }
   }
