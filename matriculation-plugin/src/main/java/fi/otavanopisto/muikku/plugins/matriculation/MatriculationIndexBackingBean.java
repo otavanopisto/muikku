@@ -10,7 +10,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
-import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -20,17 +20,17 @@ import fi.otavanopisto.security.LoggedIn;
 public class MatriculationIndexBackingBean {
 
   @Inject
-  private SessionController sessionController;
-
-  @Inject
   private MatriculationSchoolDataController matriculationController;
 
+  @Inject
+  private CurrentUserSession currentUserSession;
+  
   @Parameter
   private Long examId;
 
   @RequestAction
   public String init() {
-    if (!sessionController.isActiveUser()) {
+    if (!currentUserSession.isActive()) {
       return NavigationRules.ACCESS_DENIED;
     }
     

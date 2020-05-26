@@ -70,6 +70,10 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).findUser(userIdentifier);
   }
 
+  public User findUser(SchoolDataIdentifier userIdentifier) {
+    return getUserBridge(userIdentifier.getDataSource()).findUser(userIdentifier.getIdentifier());
+  }
+
   public User findUser(String schoolDataSource, String userIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource == null) {

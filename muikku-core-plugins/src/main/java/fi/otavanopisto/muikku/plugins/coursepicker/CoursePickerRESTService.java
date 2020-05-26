@@ -69,6 +69,7 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
+import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -139,6 +140,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityFileController workspaceEntityFileController;
+  
+  @Inject
+  private CurrentUserSession currentUserSession;
   
   @Inject
   @Any
@@ -562,7 +566,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   }
   
   private boolean getCanSignup(WorkspaceEntity workspaceEntity) {
-    if (sessionController.isLoggedIn() && sessionController.isActiveUser()) {
+    if (sessionController.isLoggedIn() && currentUserSession.isActive()) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
       return workspaceUserEntity == null && sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
     }
