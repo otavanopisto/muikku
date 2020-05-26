@@ -90,6 +90,16 @@
   }
 }
 
+.material-page__content--view-restricted {
+  align-items: center;
+  color: darken($color-disabled, 30%);
+  display: flex;
+  font-size: 1rem;
+  font-style: italic;
+  justify-content: center;
+  min-height: 70px;
+}
+
 .material-page__content--binary-pdf {
   margin: 15px 0 0;
   padding: 0;

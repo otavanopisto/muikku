@@ -186,15 +186,16 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       {this.state.materials.map((node, nodeIndex)=>{
         const isSectionViewRestricted = (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
         const isSectionViewRestrictedVisible = node.viewRestrict === "LOGGED_IN" && !this.props.isStudent;
-        let icon:string = isSectionViewRestrictedVisible ? "closed-material" : null;
+        let icon: string = isSectionViewRestrictedVisible ? "restriction" : null;
         let iconTitle:string = isSectionViewRestrictedVisible ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
-        
+        let className: string = isSectionViewRestrictedVisible ? "toc__section-container--view-restricted" : "toc__section-container";
+
         const topic = <TocTopic
           name={node.title}
           isHidden={node.hidden}
           key={node.workspaceMaterialId}
           hash={this.props.doNotSetHashes ? null : "s-" + node.workspaceMaterialId}
-          className="toc__section-container"
+          className={className}
           iconAfter={icon}
           iconAfterTitle={iconTitle}
         >
@@ -209,7 +210,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
             //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
             let modifier = isAssignment ? "assignment" : (isExercise ? "exercise" : null);
-            let icon:string = isViewRestrictedVisible ? "closed-material" : null;
+            let icon: string = isViewRestrictedVisible ? "restriction" : null;
             let iconTitle:string = isViewRestrictedVisible ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
             let className:string = isViewRestrictedVisible ? "toc__item--view-restricted" : null;
 
