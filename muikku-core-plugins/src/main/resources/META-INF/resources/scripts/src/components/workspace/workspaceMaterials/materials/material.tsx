@@ -26,6 +26,7 @@ interface WorkspaceMaterialProps {
   materialContentNode: MaterialContentNodeType,
   folder: MaterialContentNodeType,
   compositeReplies: MaterialCompositeRepliesType,
+  isViewRestricted: boolean,
   workspace: WorkspaceType,
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType,
 }
@@ -82,7 +83,7 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
           compositeReplies={this.props.compositeReplies} answerable={this.props.status.loggedIn}
           readOnly={!this.props.status.loggedIn}
           onAssignmentStateModified={this.updateWorkspaceActivity}
-          invisible={!loaded}>
+          invisible={!loaded} isViewRestricted={this.props.isViewRestricted}>
           {(props, state, stateConfiguration) => {
             return <div>
               <MaterialLoaderEditorButtonSet {...props} {...state}/>

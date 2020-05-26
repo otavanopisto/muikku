@@ -295,10 +295,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
 
     const results: any = [];
     this.props.materials.forEach((section, index)=>{
-
-      if (section.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn) {
-        return;
-      }
+      const isSectionViewRestricted = (section.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
 
       if (index === 0 && isEditable) {
         results.push(<div key={"sectionfunctions-" + section.workspaceMaterialId} className="material-admin-panel material-admin-panel--master-functions">
@@ -335,9 +332,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       const sectionSpecificContentData: any = [];
 
       section.children.forEach((node)=>{
-        if (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn) {
+        if (isSectionViewRestricted) {
           return;
         }
+        const materialIsViewRestricted =  (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
 
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
@@ -373,6 +371,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               materialContentNode={node}
               workspace={this.props.workspace}
               compositeReplies={compositeReplies}
+              isViewRestricted={materialIsViewRestricted}
              />
           </ContentPanelItem>;
         sectionSpecificContentData.push(material);
@@ -401,6 +400,9 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           : null}
           <div className="content-panel__chapter-title-text">{section.title}</div>
         </h2>
+        {isSectionViewRestricted ? <div className="workspace-section-view-restricted">
+          {this.props.i18n.text.get("plugin.workspace.materialViewRestricted")}
+        </div> : null}
         {sectionSpecificContentData}
         {lastManagementOptionsWithinSectionItem}
       </section>);

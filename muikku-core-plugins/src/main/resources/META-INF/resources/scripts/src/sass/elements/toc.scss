@@ -135,6 +135,13 @@
   }
 }
 
+.toc__item--view-restricted {
+
+  .toc__icon {
+    background: $color-view-restricted;
+  }
+}
+
 .toc__item--withdrawn {
 
   .toc__icon {

@@ -168,6 +168,8 @@ export interface MaterialLoaderProps {
   onToggleAnswersVisible?: () => any,
   invisible?: boolean,
 
+  isViewRestricted?: boolean,
+
   children?: (
     props: MaterialLoaderProps,
     state: MaterialLoaderState,

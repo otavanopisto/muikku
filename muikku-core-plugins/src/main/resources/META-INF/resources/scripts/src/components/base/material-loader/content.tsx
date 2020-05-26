@@ -45,6 +45,13 @@ function onModification(props: MaterialLoaderContentProps){
 }
 
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
+  if (props.isViewRestricted) {
+    return (<div className="react-required-container">
+    <div className="workspace-material-view-restricted" onClick={stopPropagation}>
+      {props.i18n.text.get("plugin.workspace.materialViewRestricted")}
+    </div>
+  </div>);
+  }
   return (<div className="react-required-container">
     <div className="react-required-container" onClick={stopPropagation}>
       {
