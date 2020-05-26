@@ -28,6 +28,7 @@ interface ContentProps {
   doNotSetHashes?: boolean,
   enableTouch?: boolean,
   isLoggedIn: boolean,
+  isStudent: boolean,
 }
 
 interface ContentState {
@@ -184,8 +185,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
       {this.state.materials.map((node, nodeIndex)=>{
         const isSectionViewRestricted = (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
-        let icon:string = node.viewRestrict === "LOGGED_IN" ? "closed-material" : null;
-        let iconTitle:string = node.viewRestrict === "LOGGED_IN" ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
+        const isSectionViewRestrictedVisible = node.viewRestrict === "LOGGED_IN" && !this.props.isStudent;
+        let icon:string = isSectionViewRestrictedVisible ? "closed-material" : null;
+        let iconTitle:string = isSectionViewRestrictedVisible ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
         
         const topic = <TocTopic
           name={node.title}
@@ -200,16 +202,16 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             if (isSectionViewRestricted) {
               return null;
             }
-            // const isViewRestricted = (subnode.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
+            const isViewRestrictedVisible = (subnode.viewRestrict === "LOGGED_IN" && !this.props.isStudent);
 
             let isAssignment = subnode.assignmentType === "EVALUATED";
             let isExercise = subnode.assignmentType === "EXERCISE";
 
             //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
             let modifier = isAssignment ? "assignment" : (isExercise ? "exercise" : null);
-            let icon:string = subnode.viewRestrict === "LOGGED_IN" ? "closed-material" : null;
-            let iconTitle:string = subnode.viewRestrict === "LOGGED_IN" ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
-            let className:string = subnode.viewRestrict === "LOGGED_IN" ? "toc__item--view-restricted" : null;
+            let icon:string = isViewRestrictedVisible ? "closed-material" : null;
+            let iconTitle:string = isViewRestrictedVisible ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
+            let className:string = isViewRestrictedVisible ? "toc__item--view-restricted" : null;
 
             let compositeReplies = this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === subnode.workspaceMaterialId);
             if (compositeReplies){
@@ -314,6 +316,7 @@ function mapStateToProps(state: StateType){
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
     isLoggedIn: state.status.loggedIn,
+    isStudent: state.status.loggedIn && state.status.isStudent,
   }
 };
 
