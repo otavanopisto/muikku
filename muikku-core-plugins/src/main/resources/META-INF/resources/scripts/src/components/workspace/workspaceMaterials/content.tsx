@@ -184,8 +184,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
       {this.state.materials.map((node, nodeIndex)=>{
         const isSectionViewRestricted = (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
-        let icon:string = isSectionViewRestricted ? "closed-material" : null;
-        let iconTitle:string = isSectionViewRestricted ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
+        let icon:string = node.viewRestrict === "LOGGED_IN" ? "closed-material" : null;
+        let iconTitle:string = node.viewRestrict === "LOGGED_IN" ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
         
         const topic = <TocTopic
           name={node.title}
@@ -200,16 +200,16 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             if (isSectionViewRestricted) {
               return null;
             }
-            const isViewRestricted = (subnode.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
+            // const isViewRestricted = (subnode.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
 
             let isAssignment = subnode.assignmentType === "EVALUATED";
             let isExercise = subnode.assignmentType === "EXERCISE";
 
             //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
             let modifier = isAssignment ? "assignment" : (isExercise ? "exercise" : null);
-            let icon:string = isViewRestricted ? "closed-material" : null;
-            let iconTitle:string = isViewRestricted ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
-            let className:string = isViewRestricted ? "toc__item--view-restricted" : null;
+            let icon:string = subnode.viewRestrict === "LOGGED_IN" ? "closed-material" : null;
+            let iconTitle:string = subnode.viewRestrict === "LOGGED_IN" ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
+            let className:string = subnode.viewRestrict === "LOGGED_IN" ? "toc__item--view-restricted" : null;
 
             let compositeReplies = this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === subnode.workspaceMaterialId);
             if (compositeReplies){
