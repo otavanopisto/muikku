@@ -8,9 +8,7 @@ public interface RestAuthentication {
   
   public String getActiveUserSchoolDataSource();
   
-  public boolean isActiveUser();
-  
-  public void setActiveUser(String dataSource, String identifier, boolean isActive); 
+  public void setActiveUser(String dataSource, String identifier); 
 
   public void logout();
 

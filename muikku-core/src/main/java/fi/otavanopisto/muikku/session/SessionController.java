@@ -51,7 +51,7 @@ public interface SessionController {
    * @param identifier user identifier
    * @param isActive is the user active (e.g. not having ended studies)
    */
-  public void login(String dataSource, String identifier, boolean isActive);
+  public void login(String dataSource, String identifier);
   
   boolean hasPermission(String permission, ContextReference contextReference);
   
@@ -104,10 +104,4 @@ public interface SessionController {
   
   public UserEntity getLoggedUserEntity();
   
-  /**
-   * Returns whether the logged in user is active, e.g. staff or a student whose studies have not yet ended.
-   * 
-   * @return <code>true</code> if the logged in user is active, otherwise <code>false</code>
-   */
-  public boolean isActiveUser();
 }
