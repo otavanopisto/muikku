@@ -19,7 +19,7 @@ export default class FormElement extends React.Component<FormElementProps, FormE
   }
 
   render(){
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         {this.props.label? <div className="form-element__label">{this.props.label}</div> : null}
@@ -38,7 +38,7 @@ interface FormElementRowState {
 
 export class formElementRow extends React.Component<FormElementRowProps, FormElementRowState> {
   render() {
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return ( 
       <div className={`form-element__row ${this.props.modifiers ? modifiers.map( m => `form-element__row--${m}` ).join( " " ) : ""}`}>
         {this.props.children}
@@ -69,7 +69,7 @@ export class FormActionsElement extends React.Component<FormActionsProps, FormAc
   }
 
   render() {
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return ( 
       <div className={`env-dialog__actions ${this.props.modifiers ? modifiers.map( m => `env-dialog__actions--${m}` ).join( " " ) : ""}`}>
         <Button buttonModifiers="dialog-execute" onClick={this.props.executeClick} disabled={this.state.locked}>
@@ -87,7 +87,7 @@ export class FormActionsElement extends React.Component<FormActionsProps, FormAc
 interface InputFormElementProps {
   label: string,
   name: string,
-  updateField: (fieldName:string, fieldValue: string, valid: boolean)=> any;
+  updateField: (fieldName:string, fieldValue: string, valid: boolean)=> any,
   value?: string,
   type?: string,
   mandatory?: boolean,
@@ -107,15 +107,17 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     this.updateInputField = this.updateInputField.bind(this);
     
     // 0 = invalid, 1 = valid, 2 = neutral
-    this.state = {value : "", valid : 2}
-  }
+    this.state = {
+      value: this.props.value ? this.props.value : "", 
+      valid: this.props.valid !== undefined ? this.props.valid : 2}
+    }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>){
     let value = e.target.value;
     let name = e.target.name;
     let valid = false;
-
-    if(this.props.mandatory !== undefined || this.props.mandatory == true) {
+    this.setState({value:  value});
+    if(this.props.mandatory !== undefined && this.props.mandatory == true) {
       if(value.trim().length == 0) {
         this.setState({valid: 0});
         valid = false;
@@ -124,7 +126,7 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
         valid = true;
       }
     }
-    this.props.updateField(name, value, valid);
+    this.props.updateField(name, this.state.value, valid);
   }
 
   componentDidUpdate(prevProps:any) {
@@ -134,12 +136,12 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
   }
 
   render() {
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];   
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];   
     
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
-        <input name={this.props.name} type={this.props.type? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map( m => `form-element__input--${m}`).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <input value={this.state.value} name={this.props.name} type={this.props.type? this.props.type : "text"} className={`form-element__input ${this.props.modifiers ? modifiers.map( m => `form-element__input--${m}`).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
      </div>
     );
   }
@@ -157,6 +159,7 @@ interface SelectFormElementProps {
 }
 
 interface SelectFormElementState {
+  valid: number
 }
 
 export class SelectFormElement extends React.Component<SelectFormElementProps, SelectFormElementState> {
@@ -164,14 +167,18 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
   constructor(props: InputFormElementProps){
     super(props);
     this.updateSelectField = this.updateSelectField.bind(this);
+
+      // 0 = invalid, 1 = valid, 2 = neutral
+
+      this.state = {valid : this.props.valid !== undefined ? this.props.valid : 2}
   }
 
   updateSelectField(e: React.ChangeEvent<HTMLSelectElement>){
     const name = e.target.name;
     const value = e.target.value;
-    let valid =  false;
+    let valid =  true;
 
-    if(this.props.mandatory !== undefined || this.props.mandatory == true) {
+    if(this.props.mandatory !== undefined && this.props.mandatory == true) {
       if(value.trim().length == 0) {
         this.setState({valid: 0});
         valid = false;
@@ -183,12 +190,18 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
     this.props.updateField(name, value, valid);
   }
 
+  componentDidUpdate(prevProps:any) {
+    if(this.props.valid !== prevProps.valid){
+      this.setState({valid: this.props.valid})
+    }
+  }
+
   render() {
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
-        <select name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map( m => `form-element__select--${m}` ).join( " " ) : ""}`} onChange={this.updateSelectField}>
+        <select name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map( m => `form-element__select--${m}` ).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
           {this.props.children}
         </select>        
       </div>
@@ -198,14 +211,16 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 
 interface EmailFormElementProps {
   label: string,
+  value?: string, 
   modifiers?: string | Array<string>,
   updateField: (fieldName:string, fieldValue: string, valid: boolean)=> any;
-  mandatory?: boolean,
+  mandatory? :  boolean,
   valid?: number,
 }
 
 interface EmailFormElementState {
-  valid: number
+  valid: number,
+  value: string
 }
 
 export class EmailFormElement extends React.Component<EmailFormElementProps, EmailFormElementState> {
@@ -214,23 +229,110 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
 
-    // 0 = invalid, 1 = valid, 2 = neutral
+      // 0 = invalid, 1 = valid, 2 = neutral
+      // this.props.mandatory !== undefined || this.props.mandatory == true
 
-    this.state = {valid : 2};
+      this.state = {
+        value: this.props.value ? this.props.value : "", 
+        valid : this.props.valid !== undefined ? this.props.valid : 2
+      }
   }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>){
     let value = e.target.value;
     const emailRegExp = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     let valid = false;
+    this.setState({value: value});
 
-    if (!value || value.trim().length == 0 || !value.match(emailRegExp) || this.props.mandatory !== undefined || this.props.mandatory == true) {
-      this.setState({valid: 0});      
-      valid = false;
-    } else {
-      this.setState({valid: 1});
-      valid = true;
+   if(this.props.mandatory !== undefined && this.props.mandatory == true) {
+      if (!value || value.trim().length == 0 || !value.match(emailRegExp)) {
+        this.setState({valid: 0});      
+        valid = false;
+      } else {
+        this.setState({valid: 1});
+        valid = true;
+      }
+   }
+    this.props.updateField(e.target.name, value, valid);
+  }
+
+
+  componentDidUpdate (prevProps:any) {
+    if(this.props.valid !== prevProps.valid){
+      this.setState({valid: this.props.valid})
     }
+  }
+
+  render() {
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    return(
+      <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
+        <div className="form-element__label">{this.props.label}</div>
+        <input value={this.state.value} name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map( m => `form-element__input--${m}`).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+      </div>
+    );
+  }
+}
+
+interface SSNFormElementProps {
+  label: string,
+  value?: string,
+  modifiers?: string | Array<string>,
+  updateField: (fieldName:string, fieldValue: string, valid: boolean)=> any;
+  mandatory?: boolean,
+  valid?: number,
+}
+
+interface SSNFormElementState {
+  valid: number,
+  value: string
+}
+
+export class SSNFormElement extends React.Component<SSNFormElementProps, SSNFormElementState> {
+
+  constructor(props: SSNFormElementProps){
+    super(props);
+    this.updateInputField = this.updateInputField.bind(this);
+
+      // 0 = invalid, 1 = valid, 2 = neutral
+
+      this.state = {
+        value: this.props.value ? this.props.value : "",
+        valid : this.props.valid !== undefined ? this.props.valid : 2
+      }
+  }
+
+  updateInputField(e: React.ChangeEvent<HTMLInputElement>){
+    let valid = false;
+    const value = e.target.value.trim();
+    const regExp =  /^[0-9]{3}[a-zA-Z0-9]{1}/;
+    // We split the ssn string to date, post and century so we can check them differently
+    const date = value.substring(0,6);
+    const post = value.substring(7,11);
+    const century = value.substring(6,7);
+
+    this.setState({value: value});
+
+    if(value !== '' && value.length == 11 && regExp.test(post)) {
+      // Century in finnish SSN is maked with "+"" (1800), "-" (1900) or "A" (2000), I think we can safely invalidate "+"
+      if(century == "A" || century == "-") {
+        const string = date + post.substring(1,4)
+        const num = Number(string);
+        if(!isNaN(num)) {
+
+          // The last thing to check if the "post" solution is correct.
+          const checksumChars = '0123456789ABCDEFHJKLMNPRSTUVWXY';
+          valid = checksumChars[num % 31] == post.substring(3, 4).toUpperCase();
+        }
+      }
+    }
+
+    if(valid) {
+      this.setState({valid: 1});
+    } else {
+      this.setState({valid: 0});
+    }
+
     this.props.updateField(e.target.name, value, valid);
   }
 
@@ -241,93 +343,11 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
   }
 
   render() {
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
-        <input name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map( m => `form-element__input--${m}`).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
-      </div>
-    );
-  }
-}
-
-interface SSNFormElementProps {
-  label: string,
-  modifiers?: string | Array<string>,
-  updateField: (fieldName:string, fieldValue: string)=> any;
-  mandatory?: boolean,
-  valid?: number,
-}
-
-interface SSNFormElementState {
-  valid: number
-}
-
-export class SSNFormElement extends React.Component<SSNFormElementProps, SSNFormElementState> {
-
-  constructor(props: SSNFormElementProps){
-    super(props);
-    this.updateInputField = this.updateInputField.bind(this);
-
-    // 0 = invalid, 1 = valid, 2 = neutral
-
-    this.state = {valid : 2};
-  }
-
-  updateInputField(e: React.ChangeEvent<HTMLInputElement>){
-    let value = e.target.value;
-    const regExp =  /^[0-9]{3}[a-zA-Z0-9]{1}/;
-    const date = value.substring(0,5);
-    const post = value.substring(5,10);
-  
-    var valid = value != '' && value.length == 11 && regExp.test(post);
-
-    if(valid) {
-      valid = false;
-      let string = date + post.substring(1,3)
-      let num = Number(string);
-      if(!isNaN(num)) {
-        var checksumChars = '0123456789ABCDEFHJKLMNPRSTUVWXY';
-        valid = checksumChars[num % 31] == value.substring(3, 4).toUpperCase();
-      }
-    }
-
-    return valid;
-
-    // if (valid) {
-    //   valid = false;
-    //   var num = $('#field-birthday').val();
-    //   if (num) {
-    //     num = moment(num, "D.M.YYYY").format('DDMMYY') + value.substring(0, 3);
-    //     if (!isNaN(num)) {
-    //       var checksumChars = '0123456789ABCDEFHJKLMNPRSTUVWXY';
-    //       valid = checksumChars[num % 31] == value.substring(3, 4).toUpperCase();
-    //     }
-    //   }
-    // }
-
-
-
-    // if (!value || value.trim().length == 0 || !value.match(emailRegExp) || this.props.mandatory !== undefined || this.props.mandatory == true) {
-    //   this.setState({valid: 0});      
-    // } else {
-    //   this.setState({valid: 1});
-    // }
-    // this.props.updateField(e.target.name, value);
-  }
-
-  componentDidUpdate(prevProps:any) {
-    if(this.props.valid !== prevProps.valid){
-      this.setState({valid: this.props.valid})
-    }
-  }
-
-  render() {
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
-    return(
-      <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input name="email" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map( m => `form-element__input--${m}`).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
+        <input value={this.state.value} name="SSN" type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map( m => `form-element__input--${m}`).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateInputField} />
       </div>
     );
   }

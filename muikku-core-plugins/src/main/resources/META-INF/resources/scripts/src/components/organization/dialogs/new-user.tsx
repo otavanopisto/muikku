@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Dialog, {DialogRow} from '~/components/general/dialog';
-import {FormActionsElement, EmailFormElement, InputFormElement, SelectFormElement} from '~/components/general/form-element';
+import {FormActionsElement, EmailFormElement, InputFormElement, SSNFormElement, SelectFormElement} from '~/components/general/form-element';
 import {createStudent, createStaffmember, CreateStaffmemberTriggerType, CreateStudentTriggerType} from '~/actions/main-function/users';
 import {AnyActionType} from '~/actions';
 import notificationActions from '~/actions/base/notifications';
@@ -27,66 +27,89 @@ interface OrganizationNewUserState {
   },
   firstNameValid: number,
   lastNameValid: number,
-  emailValid: number
+  emailValid: number,
+  studyProgrammeIdentifierValid: number
 }
 
 class OrganizationNewUser extends React.Component<OrganizationNewUserProps, OrganizationNewUserState> {
 
+  private defaultState = {
+    user: {role: "STUDENT", studyProgrammeIdentifier: ""},
+    firstNameValid: 2, 
+    lastNameValid: 2, 
+    emailValid: 2,
+    studyProgrammeIdentifierValid: 2
+  };
+
+
   constructor(props: OrganizationNewUserProps) {
     super(props);
-    this.state = {
-      user: {role: "STUDENT"},
-      firstNameValid: 2, 
-      lastNameValid: 2, 
-      emailValid: 2
-    };
+    this.state = this.defaultState;
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
   }
 
-  updateField(name:string, value:string, valid: boolean ) {
+  updateField (name:string, value:string, valid: boolean ) {
     let fieldName = name;
     let fieldValue = valid ? value : "";
     let newState = Object.assign(this.state.user, {[fieldName] : fieldValue});
-
     this.setState({user: newState});
+  }
 
+  cancelDialog (closeDialog: ()=> any) {
+    this.setState(this.defaultState);
+    closeDialog();
   }
 
   saveUser(closeDialog: ()=>any) {
 
-    if(this.state.user.firstName == "") {
+    let valid = true;
+
+    if (this.state.user.firstName == "" || this.state.user.firstName == undefined) {
       this.setState({firstNameValid: 0});
+      valid = false;
     }
-    if(this.state.user.lastName == "") {
+
+    if (this.state.user.lastName == ""  || this.state.user.lastName == undefined) {
       this.setState({lastNameValid: 0});
+      valid = false;
     }
-    if(this.state.user.email == "") {
+    
+    if (this.state.user.email == ""  || this.state.user.email == undefined) {
       this.setState({emailValid: 0});
-    } else {
+      valid = false;
+    } 
 
-      if(this.state.user.role == "STUDENT") {
-          
-        let data = {
-            firstName: this.state.user.firstName,
-            lastName: this.state.user.lastName,
-            email: this.state.user.email,
-            ssn: this.state.user.ssn ? this.state.user.ssn : "",
-            studyProgrammeIdentifier: this.state.user.studyProgramme
-          }
-
-          this.props.createStudent({
-            student: data,
-            success: () => { 
-              closeDialog();
-              this.setState({user: {role: "STUDENT"}});
-            },
-            fail: () =>{
-            }
-          });
+    if(this.state.user.role == "STUDENT") {
         
-      } else {
+      if(this.state.user.studyProgrammeIdentifier == "" || this.state.user.studyProgrammeIdentifier == undefined) {
+        this.setState({studyProgrammeIdentifierValid: 0});
+        valid = false;
+      } 
 
+      // SSN for user is optional at this point, so we don't validate. Only we do is set it to "" if it's not a valid SSN
+
+      if (valid) {
+        let data = {
+          firstName: this.state.user.firstName,
+          lastName: this.state.user.lastName,
+          email: this.state.user.email,
+          ssn: this.state.user.ssn ? this.state.user.ssn : "",
+          studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier
+        }
+
+        this.props.createStudent({
+          student: data,
+          success: () => { 
+            closeDialog();
+            this.setState({user: {role: "STUDENT"}});
+          },
+          fail: () =>{
+          }
+        });
+      }
+    } else {
+      if (valid) {
         let data = {
           firstName: this.state.user.firstName,
           lastName: this.state.user.lastName,
@@ -104,9 +127,10 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
         });
       }
     }
+    
   }
 
-  // <InputFormElement name="SSN" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
+
 
   render(){
     let content =  (closePortal: ()=> any) => 
@@ -117,16 +141,17 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
             <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
             <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
           </SelectFormElement>
-          <InputFormElement name="firstName" modifiers="new-user" valid={0} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement value="whatsmyname" name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
           <InputFormElement name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
-          <EmailFormElement modifiers="new-user" updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
+          <EmailFormElement modifiers="new-user" valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
         {this.state.user.role == "STUDENT" ? 
-        <DialogRow modifiers="new-user">
-          <SelectFormElement name="studyProgramme" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
-            <option value="">{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')}</option>
+        <DialogRow modifiers="new-user">        
+          <SSNFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />  
+          <SelectFormElement valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
+            <option value="">{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme.emptyOption')}</option>
             {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme)=>{
-                return <option value={studyprogramme.identifier}>{studyprogramme.name}</option>
+                return <option key={studyprogramme.identifier} value={studyprogramme.identifier}>{studyprogramme.name}</option>
               })
             }
           </SelectFormElement>
@@ -134,7 +159,7 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
       </div>;
 
     let footer = (closePortal: ()=> any) => <FormActionsElement executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
-    cancelClick={closePortal} />;
+    cancelClick={this.cancelDialog.bind(this, closePortal)} />;
     
     return(<Dialog modifier="new-user"
         title={this.props.i18n.text.get('plugin.organization.users.addUser.title')}

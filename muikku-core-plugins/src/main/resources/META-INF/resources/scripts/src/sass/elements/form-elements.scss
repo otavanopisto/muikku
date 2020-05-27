@@ -329,6 +329,14 @@
     font-size: $text-desktop-font-size;
     height: 2.5rem;
   }
+
+  &.INVALID {
+    border-color: $color-fatal;
+  }
+  &.VALID {
+    border-color: $color-success;
+  }
+
 }
 
 .form-element__select--hops-selector {
