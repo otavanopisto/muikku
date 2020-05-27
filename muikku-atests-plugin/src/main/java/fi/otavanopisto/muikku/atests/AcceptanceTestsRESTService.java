@@ -197,19 +197,19 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     switch (role) {
       case "ENVIRONMENT-STUDENT":
-        localSessionController.login("PYRAMUS", "STUDENT-1", true);
+        localSessionController.login("PYRAMUS", "STUDENT-1");
       break;
       case "ENVIRONMENT-TEACHER":
-        localSessionController.login("PYRAMUS", "STAFF-2", true);
+        localSessionController.login("PYRAMUS", "STAFF-2");
       break;
       case "ENVIRONMENT-MANAGER":
-        localSessionController.login("PYRAMUS", "STAFF-3", true);
+        localSessionController.login("PYRAMUS", "STAFF-3");
       break;
       case "ENVIRONMENT-ADMINISTRATOR":
-        localSessionController.login("PYRAMUS", "STAFF-4", true);
+        localSessionController.login("PYRAMUS", "STAFF-4");
       break;
       case "ENVIRONMENT-TRUSTED_SYSTEM":
-        localSessionController.login("PYRAMUS", "STAFF-5", true);
+        localSessionController.login("PYRAMUS", "STAFF-5");
       break;
       
       case "PSEUDO-EVERYONE":
