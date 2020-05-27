@@ -45,7 +45,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       return null;
     }
     let areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussion.current.forumAreaId] || {};
-    
+
     let userCreator:DiscussionUserType = this.props.discussion.current.creator;
     let userCategory = this.props.discussion.current.creator.id > 10 ? this.props.discussion.current.creator.id % 10 + 1 : this.props.discussion.current.creator.id;
     let avatar;
@@ -88,7 +88,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
               </ReplyThread> : null}
             {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
-            {canRemoveThread ? 
+          {canRemoveThread && !student ?
             <DeleteThreadComponent>
               <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
             </DeleteThreadComponent> : null}
@@ -118,10 +118,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           return (
             <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar}>
               <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(reply.created)}</span>}>
-                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span> 
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span>
               </DiscussionThreadHeader>
               <DiscussionThreadBody>
-                {reply.deleted ? 
+                {reply.deleted ?
                   <article className="rich-text">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
                   <article className="rich-text" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
                 {reply.created !== reply.lastModified ? <span className="application-list__item-edited">
@@ -143,7 +143,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 </ModifyThreadReply> : null}
                 {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
                   <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
-                </DeleteThreadComponent> : null} 
+                </DeleteThreadComponent> : null}
               </DiscussionThreadFooter> : null}
             </DiscussionCurrentThreadElement>
           )})
