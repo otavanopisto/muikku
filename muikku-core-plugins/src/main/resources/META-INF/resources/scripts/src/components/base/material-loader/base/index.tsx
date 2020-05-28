@@ -406,7 +406,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           const invisible = this.props.invisible;
           const i18n = this.props.i18n;
           const dataset = extractDataSet(element);
-          const key = elementProps.key;
           if (Tag === "iframe") {
             return <IFrame key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n}/>
           } else if (Tag === "table") {

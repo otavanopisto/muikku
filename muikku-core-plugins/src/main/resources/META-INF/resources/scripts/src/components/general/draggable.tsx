@@ -386,7 +386,9 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
   }
   render(){
     let RootElement:any = this.props.as || 'div';
-    let rootElementProps:any = {};
+    let rootElementProps:any = {
+      key: "root-element-draggable",
+    };
     if (this.props.interactionData){
       RootElement = Droppable;
       rootElementProps.as = this.props.as;

@@ -4,6 +4,7 @@ import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
+import { StrMathJAX } from "../static/mathjax";
 
 interface FieldType {
   name: string,
@@ -291,7 +292,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
               {this.state.order.map((id)=>{
                 return <span className="material-page__organizerfield-term" key={id}>
                   <span className="material-page__organizerfield-term-icon icon-move"></span>
-                  <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
+                  <span className="material-page__organizerfield-term-label"><StrMathJAX invisible={true}>{this.state.terms[id]}</StrMathJAX></span>
                 </span>
               })}
             </span>
@@ -332,7 +333,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
                 //if readOnly we just return a non draggable thingy
                 return <span className={className} key={id}>
                   <span className="material-page__organizerfield-term-icon icon-move"></span>
-                  <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
+                  <span className="material-page__organizerfield-term-label"><StrMathJAX>{this.state.terms[id]}</StrMathJAX></span>
                 </span>
               }
               //Otherwise we run a draggable, where the field itself is the parent container
@@ -344,7 +345,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
                 clone key={id} onDropInto={this.onDropDraggableItem.bind(this, id)}
                 onDrag={this.selectItemId.bind(this, id)} onClick={this.selectItemId.bind(this, id)}>
                   <span className="material-page__organizerfield-term-icon icon-move"></span>
-                  <span className="material-page__organizerfield-term-label">{this.state.terms[id]}</span>
+                  <span className="material-page__organizerfield-term-label"><StrMathJAX>{this.state.terms[id]}</StrMathJAX></span>
               </Draggable>
             })}
           </span>
@@ -366,7 +367,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
             if (this.props.displayCorrectAnswers && !wecheckAnswersAndCategoryisCorrect){
               itemCorrectAnswerMissingTerms = this.state.answerStateMissingTerms &&
                 this.state.answerStateMissingTerms[category.id] && this.state.answerStateMissingTerms[category.id].map((missingTermId)=>{
-                return <div key={missingTermId} className="material-page__organizerfield-term material-page__organizerfield-term--missing">{this.state.terms[missingTermId]}</div>;
+                return <div key={missingTermId} className="material-page__organizerfield-term material-page__organizerfield-term--missing"><StrMathJAX>{this.state.terms[missingTermId]}</StrMathJAX></div>;
               });
             }
 
@@ -382,7 +383,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
                     "incorrect-answer" : "correct-answer" : "";
 
                 return <span onClick={this.preventPropagation} key={termId} className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}>
-                  <span className="material-page__organizerfield-term-label">{this.state.terms[termId]}</span>
+                  <span className="material-page__organizerfield-term-label"><StrMathJAX>{this.state.terms[termId]}</StrMathJAX></span>
                   {!this.props.readOnly ? <span onClick={this.deleteTermFromBox.bind(this, category.id, termId)} className="material-page__organizerfield-term-icon icon-cross"></span>
                     : <span className="material-page__organizerfield-term-icon icon-cross"></span>}
                 </span>

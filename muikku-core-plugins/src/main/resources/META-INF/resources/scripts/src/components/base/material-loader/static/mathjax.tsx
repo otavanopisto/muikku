@@ -1,6 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
-import Dropdown from "~/components/general/dropdown";
 import { MATHJAXSRC, MATHJAXCONFIG } from "~/lib/mathjax";
 const MathJax = require("react-mathjax-preview");
 
@@ -13,6 +11,9 @@ export default class MathJAX extends React.Component<MathJaxProps, {}>{
   constructor(props: MathJaxProps){
     super(props);
   }
+  public shouldComponentUpdate(nextProps: MathJaxProps) {
+    return (nextProps.children !== this.props.children);
+  }
   render(){
     //TODO remove the data-muikku-word-definition thing, it's basically used for styling alone
     if (this.props.invisible){
@@ -20,4 +21,19 @@ export default class MathJAX extends React.Component<MathJaxProps, {}>{
     }
     return <span className="math-tex"><MathJax.default script={MATHJAXSRC} config={MATHJAXCONFIG} math={this.props.children}/></span>
   }
+}
+
+export function StrMathJAX(props: {
+  children: string,
+  invisible?: boolean,
+}) {
+  if (!props.children || typeof props.children !== "string") {
+    return null;
+  }
+  const trimmed = props.children.trim();
+  if (trimmed.indexOf("`") === 0 || trimmed.indexOf("\\(") === 0) {
+    return <MathJAX invisible={props.invisible}>{props.children}</MathJAX>
+  }
+
+  return <>{trimmed}</>;
 }
