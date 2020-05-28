@@ -26,6 +26,7 @@
     display: inline-flex;
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 0.1em; // This prevents unnecessary scrollbars to be rendered
     vertical-align: middle;
   }
