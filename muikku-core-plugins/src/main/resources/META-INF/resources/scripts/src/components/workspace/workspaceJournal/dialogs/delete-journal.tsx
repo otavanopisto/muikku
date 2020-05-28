@@ -29,9 +29,9 @@ interface DeleteJournalState {
 class DeleteJournal extends React.Component<DeleteJournalProps, DeleteJournalState> {
   constructor(props: DeleteJournalProps){
     super(props);
-    
+
     this.deleteJournal = this.deleteJournal.bind(this);
-    
+
     this.state = {
       locked: false
     }
@@ -55,9 +55,9 @@ class DeleteJournal extends React.Component<DeleteJournalProps, DeleteJournalSta
         this.props.i18n.text.get('plugin.workspace.journal.deleteEntry.dialog.description')
       }
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
          <div className="dialog__button-set">
           <Button buttonModifiers={["fatal", "standard-ok"]}
             onClick={this.deleteJournal.bind(this, closeDialog)} disabled={this.state.locked}>
@@ -69,7 +69,7 @@ class DeleteJournal extends React.Component<DeleteJournalProps, DeleteJournalSta
         </div>
       )
     }
-    
+
     return <Dialog modifier="delete-journal"
       title={
         this.props.i18n.text.get('plugin.workspace.journal.deleteEntry.dialog.description')
