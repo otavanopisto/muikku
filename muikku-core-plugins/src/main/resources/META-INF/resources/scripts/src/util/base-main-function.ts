@@ -20,7 +20,6 @@ export default function(store: Store<StateType>, options: {
   setupMessages?: boolean
 } = {}){
   let state:StateType = store.getState();
-  
 
   let actionsAndCallbacks = {};
   if (getOptionValue(options.setupMessages)){
@@ -41,10 +40,10 @@ export default function(store: Store<StateType>, options: {
   }
 
   let websocket = new Websocket(store, actionsAndCallbacks);
-  
+
   if (state.status.isActiveUser){
     getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
-    
+
     if (state.status.loggedIn && getOptionValue(options.setupChat)){
       mApi().chat.status.read().callback(function(err:Error, result:{mucNickName:string,enabled:boolean}) {
         if (result && result.enabled) {
@@ -69,10 +68,10 @@ export default function(store: Store<StateType>, options: {
       });
     }
   }
-  
+
   $.ajax({type:"HEAD", url: `/rest/user/files/user/${state.status.userId}/identifier/profile-image-96`}).done(()=>{
     store.dispatch(<Action>updateStatusHasImage(true));
   });
-  
+
   return websocket;
 }
