@@ -88,10 +88,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
               </ReplyThread> : null}
             {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
-          {canRemoveThread && !student ?
-            <DeleteThreadComponent>
-              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
-            </DeleteThreadComponent> : null}
+            {canRemoveThread && !student ?
+              <DeleteThreadComponent>
+                <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
+              </DeleteThreadComponent> : null}
           </DiscussionThreadFooter>
         </DiscussionCurrentThreadElement>
 
