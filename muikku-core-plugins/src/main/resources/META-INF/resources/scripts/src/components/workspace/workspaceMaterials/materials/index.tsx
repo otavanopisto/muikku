@@ -400,8 +400,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           : null}
           <div className="content-panel__chapter-title-text">{section.title}</div>
         </h2>
-        {isSectionViewRestricted ? <div className="workspace-section-view-restricted">
-          {this.props.i18n.text.get("plugin.workspace.materialViewRestricted")}
+        {isSectionViewRestricted ? <div className="content-panel__item">
+          <article className="material-page">
+            <div className="material-page__content material-page__content--view-restricted">{this.props.i18n.text.get("plugin.workspace.materialViewRestricted")}</div>
+          </article>
         </div> : null}
         {sectionSpecificContentData}
         {lastManagementOptionsWithinSectionItem}

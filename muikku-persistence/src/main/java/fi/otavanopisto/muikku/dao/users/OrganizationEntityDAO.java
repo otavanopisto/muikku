@@ -1,16 +1,20 @@
 package fi.otavanopisto.muikku.dao.users;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.dao.CoreDAO;
+import fi.otavanopisto.muikku.model.base.Archived;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity_;
+import fi.otavanopisto.muikku.model.users.OrganizationWorkspaceVisibility;
 
 public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
 
@@ -26,11 +30,12 @@ public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
     return persist(organizationEntity);
   }
 
-  public OrganizationEntity create(SchoolDataSource dataSource, String identifier, String name) {
+  public OrganizationEntity create(SchoolDataSource dataSource, String identifier, String name, OrganizationWorkspaceVisibility workspaceVisibility) {
     OrganizationEntity organizationEntity = new OrganizationEntity();
     organizationEntity.setDataSource(dataSource);
     organizationEntity.setIdentifier(identifier);
     organizationEntity.setName(name);
+    organizationEntity.setWorkspaceVisibility(workspaceVisibility);
     return persist(organizationEntity);
   }
   
@@ -109,6 +114,27 @@ public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.equal(root.get(OrganizationEntity_.dataSource), schoolDataSource)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<OrganizationEntity> listByWorkspaceVisibility(OrganizationWorkspaceVisibility workspaceVisibility, Archived archived) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<OrganizationEntity> criteria = criteriaBuilder.createQuery(OrganizationEntity.class);
+    Root<OrganizationEntity> root = criteria.from(OrganizationEntity.class);
+    
+    List<Predicate> predicates = new ArrayList<>();
+    predicates.add(criteriaBuilder.equal(root.get(OrganizationEntity_.workspaceVisibility), workspaceVisibility));
+    if (archived.isBoolean()) {
+      predicates.add(criteriaBuilder.equal(root.get(OrganizationEntity_.archived), archived.booleanValue()));
+    }
+
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(predicates.toArray(new Predicate[0]))
     );
 
     return entityManager.createQuery(criteria).getResultList();

@@ -24,7 +24,7 @@
 .toc__section-title {
   @include text;
   display: flex;
-  margin: 12px 10px;
+  margin: 12px 8px 12px 10px;
   text-transform: uppercase;
   user-select: none; // This is to prevent select-by-panting when drag 'n dropping toc items
 
@@ -123,7 +123,6 @@
 
   .toc__icon {
     background: transparent;
-    border: 0;
     color: $color-submitted;
   }
 
@@ -135,6 +134,7 @@
   }
 }
 
+.toc__section-container--view-restricted .toc__section-title,
 .toc__item--view-restricted {
 
   .toc__icon {
@@ -184,7 +184,6 @@
 
 .toc__icon {
   align-items: center;
-  border: 1px solid $color-default;
   border-radius: 100%;
   color: $color-default;
   display: inline-flex;

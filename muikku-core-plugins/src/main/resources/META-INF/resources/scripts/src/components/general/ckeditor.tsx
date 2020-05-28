@@ -74,8 +74,8 @@ const extraConfig = (props: CKEditorProps) => ({
     { name: 'tools', items: [ 'Maximize' ] }
   ],
   resize_enabled: false,
-  uploadUrl: '/communicatorAttachmentUploadServlet',
-  extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea',
+  uploadUrl: "/communicatorAttachmentUploadServlet",
+  extraPlugins: "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea",
 });
 
 export default class CKEditor extends React.Component<CKEditorProps, CKEditorState> {

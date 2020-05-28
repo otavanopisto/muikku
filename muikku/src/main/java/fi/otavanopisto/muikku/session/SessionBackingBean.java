@@ -75,6 +75,9 @@ public class SessionBackingBean {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
+  private CurrentUserSession currentUserSession;
 
   @PostConstruct
   public void init() {
@@ -118,7 +121,7 @@ public class SessionBackingBean {
       this.loggedUser = sessionController.getLoggedUser().toId();
 
       if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM)
-          || !sessionController.isActiveUser()) {
+          || !currentUserSession.isActive()) {
         this.areaPermissions = null;
       }
       else {
@@ -247,7 +250,7 @@ public class SessionBackingBean {
   }
 
   public boolean getIsActiveUser() {
-    return sessionController.isActiveUser();
+    return currentUserSession.isActive();
   }
 
   public Long getLoggedUserId() {

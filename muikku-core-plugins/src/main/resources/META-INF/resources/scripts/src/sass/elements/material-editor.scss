@@ -766,4 +766,12 @@
     margin: 0;
   }
 }
+
+// CKE HIDPI overrides
+.cke_dialog.cke_hidpi * {
+
+  .cke_dialog_close_button {
+    background: none;
+  }
+}
 // scss-lint:enable SelectorFormat, ImportantRule

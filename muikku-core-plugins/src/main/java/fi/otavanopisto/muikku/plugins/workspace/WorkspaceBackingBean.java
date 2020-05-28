@@ -1,8 +1,13 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -13,9 +18,9 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
@@ -43,7 +48,8 @@ public class WorkspaceBackingBean {
   private WorkspaceToolSettingsController workspaceToolSettingsController;
 
   @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  @Any
+  private Instance<SearchProvider> searchProviders;
   
   @PostConstruct
   public void init() {
@@ -103,15 +109,19 @@ public class WorkspaceBackingBean {
     else {
       this.assessmentState = null;
     }
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace != null) {
-        this.workspaceName = workspace.getName();
-        this.workspaceNameExtension = workspace.getNameExtension();
+    
+    // Workspace name and extension via Elastic
+
+    for (SearchProvider searchProvider : searchProviders) {
+      if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
+        SearchResult searchResult = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
+        if (searchResult.getTotalHitCount() > 0) {
+          List<Map<String, Object>> results = searchResult.getResults();
+          Map<String, Object> match = results.get(0);
+          this.workspaceName = (String) match.get("name");
+          this.workspaceNameExtension = (String) match.get("nameExtension");
+        }
       }
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
     }
   }
 
