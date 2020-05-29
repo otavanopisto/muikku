@@ -21,9 +21,9 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
   constructor(props: UserPanelProps){
     super(props);
   }
-    
+
   render() {
-    
+
     return(
      <ApplicationSubPanel i18n={this.props.i18n} modifier="organization-users" bodyModifier="organization-users" title={this.props.i18n.text.get(this.props.title)}>
         <ApplicationList>
@@ -41,5 +41,4 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
       </ApplicationSubPanel>
     )
   }
-  
 }

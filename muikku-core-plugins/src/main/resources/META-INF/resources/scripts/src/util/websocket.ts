@@ -201,7 +201,7 @@ export default class MuikkuWebsocket {
     this.trigger("webSocketConnected");
 
     while (this.socketOpen && this.messagesPending.length) {
-      var message = this.messagesPending.shift();
+      let message = this.messagesPending.shift();
       this.sendMessage(message.eventType, message.data, message.onSent);
     }
   }
@@ -273,7 +273,7 @@ export default class MuikkuWebsocket {
   }
 
   reconnect() {
-    var wasOpen = this.socketOpen;
+    let wasOpen = this.socketOpen;
     this.socketOpen = false;
     clearTimeout(this.reconnectTimeout);
 
@@ -303,8 +303,8 @@ export default class MuikkuWebsocket {
   }
 
   onWebSocketMessage(event: any) {
-    var message = JSON.parse(event.data);
-    var eventType = message.eventType;
+    let message = JSON.parse(event.data);
+    let eventType = message.eventType;
 
     if (eventType == "ping:pong") {
       this.pinging = false;

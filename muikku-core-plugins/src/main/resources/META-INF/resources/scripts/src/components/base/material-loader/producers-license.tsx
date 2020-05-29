@@ -9,10 +9,10 @@ export function MaterialLoaderProducersLicense(props: MaterialLoaderProducersLic
   if (!((props.material.producers && props.material.producers.length) || props.material.license)) {
     return null;
   }
-  
-  let license = props.material.license; 
+
+  let license = props.material.license;
   let hasLink = props.material.license ?  props.material.license.indexOf("http://") === 0 || props.material.license.indexOf("https://") === 0 : false;
- 
+
   return (<div className="material-page__metadata-container">
     {props.material.producers && props.material.producers.length ?
       <div className="material-page__producers">
@@ -25,7 +25,7 @@ export function MaterialLoaderProducersLicense(props: MaterialLoaderProducersLic
         <div className="material-page__license-label">{props.i18n.text.get("plugin.workspace.materials.licenseLabel")}:</div>
          {hasLink ? <Link className="material-page__license-item" href={props.material.license} openInNewTab="_blank">{props.material.license}</Link>
           : <span>{props.material.license}</span>}
-      </div> 
+      </div>
     : null}
   </div>);
 }

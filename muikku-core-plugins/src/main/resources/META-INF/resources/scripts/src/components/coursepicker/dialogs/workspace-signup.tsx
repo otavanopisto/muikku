@@ -38,7 +38,7 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
       locked: false,
       message: ""
     }
-    
+
     this.updateMessage = this.updateMessage.bind(this);
     this.signup = this.signup.bind(this);
   }
@@ -77,17 +77,17 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
         </div>
       </div>
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "info"]} onClick={this.signup.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.workspaceSignUp.signupButtonLabel')}
-          </Button>  
+          </Button>
         </div>
       )
     }
-    
+
     return <Dialog modifier="workspace-signup-dialog"
       title={this.props.i18n.text.get('plugin.workspaceSignUp.title')}
       content={content} footer={footer} isOpen={this.props.isOpen} onClose={this.props.onClose}>

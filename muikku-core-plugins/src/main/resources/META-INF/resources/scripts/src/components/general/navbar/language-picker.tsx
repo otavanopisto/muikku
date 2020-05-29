@@ -17,7 +17,7 @@ interface LanguagePickerProps {
 }
 
 interface LanguagePickerState {
-  
+
 }
 
 class LanguagePicker extends React.Component<LanguagePickerProps, LanguagePickerState> {

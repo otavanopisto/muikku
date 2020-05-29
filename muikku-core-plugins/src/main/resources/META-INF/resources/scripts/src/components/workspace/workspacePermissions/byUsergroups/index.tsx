@@ -23,7 +23,7 @@ const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 class PermissionsByUsergroups extends React.Component<PermissionsByUsergroupsProps, PermissionsByUsergroupsState> {
   constructor(props: PermissionsByUsergroupsProps){
     super(props);
-    
+
     this.togglePermissionIn = this.togglePermissionIn.bind(this);
   }
   togglePermissionIn(permission: WorkspacePermissionsType, valueToToggle: string) {

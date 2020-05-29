@@ -21,7 +21,6 @@ interface DeleteImageDialogProps {
   onClose: ()=>any
 }
 
-
 interface DeleteImageDialogState {
 }
 
@@ -30,7 +29,7 @@ class DeleteImageDialog extends React.Component<DeleteImageDialogProps, DeleteIm
     super(props);
     this.deleteImage = this.deleteImage.bind(this);
   }
-  
+
   deleteImage(closeDialog: ()=>any){
     closeDialog();
     this.props.updateCurrentWorkspaceImagesB64({

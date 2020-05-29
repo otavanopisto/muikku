@@ -71,7 +71,7 @@ class WorkspaceTeachers extends React.Component<WorkspaceTeachersProps, Workspac
                 // if it's before or it's today then we display, otherwise nope
                 displayVacationPeroid = vacationEndsAt.isAfter(today, "day") || vacationEndsAt.isSame(today, "day");
               }
-              
+
               return <div className="item-list__item item-list__item--teacher" key={teacher.userEntityId}>
                 <div className="item-list__profile-picture">
                   <object data={getUserImageUrl(teacher.userEntityId)} type="image/jpeg" className="avatar-container">

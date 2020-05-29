@@ -21,7 +21,7 @@ interface UpdateAddressDialogProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
   profile: ProfileType,
-  
+
   displayNotification: DisplayNotificationTriggerType,
   updateProfileAddress: UpdateProfileAddressTriggerType
 }
@@ -38,10 +38,10 @@ interface UpdateAddressDialogState {
 class UpdateAddressDialog extends React.Component<UpdateAddressDialogProps, UpdateAddressDialogState> {
   constructor(props: UpdateAddressDialogProps){
     super(props);
-    
+
     this.update = this.update.bind(this);
     this.updateField = this.updateField.bind(this);
-    
+
     this.state = {
       street: "",
       postalCode: "",
@@ -66,7 +66,7 @@ class UpdateAddressDialog extends React.Component<UpdateAddressDialogProps, Upda
         });
       }
     }
-    
+
     if (nextProps.profile.student && JSON.stringify(nextProps.profile.student) !== JSON.stringify(this.props.profile.student)){
       this.setState({
         municipality: nextProps.profile.student.municipality || ""
@@ -84,7 +84,7 @@ class UpdateAddressDialog extends React.Component<UpdateAddressDialogProps, Upda
         closeDialog();
       },
       fail: ()=>{
-        
+
       }
     })
   }
@@ -98,7 +98,7 @@ class UpdateAddressDialog extends React.Component<UpdateAddressDialogProps, Upda
         <p>{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.desription')}</p>
         <form>
           <div className="form-element form-element--profile">
-            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.streetField.label')}</label>    
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.streetField.label')}</label>
             <input type="text" className="form-element__input form-element__input--profile" value={this.state.street} onChange={this.updateField.bind(this, "street")} autoComplete="address-line1"/>
           </div>
           <div className="form-element form-element--profile">

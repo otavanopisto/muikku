@@ -39,12 +39,12 @@ interface CommunicatorSignatureUpdateDialogState {
 class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSignatureUpdateDialogProps, CommunicatorSignatureUpdateDialogState> {
   constructor(props: CommunicatorSignatureUpdateDialogProps){
     super(props);
-    
+
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
     this.resetState = this.resetState.bind(this);
     this.update = this.update.bind(this);
-    
+
     this.state = {
       signature: props.signature ? props.signature.signature : ""
     }
@@ -77,7 +77,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
             {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
           </Button>
         </div>
-      )    
+      )
     }
     let content = (closeDialog: ()=>any)=>{
       return <div className="env-dialog__row">
@@ -87,7 +87,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
           </div>
         </div>
     }
-    return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature" 
+    return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature"
      title={this.props.i18n.text.get("plugin.communicator.settings.signature")}
      content={content} footer={footer}>{this.props.children}</JumboDialog>
   }

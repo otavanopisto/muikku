@@ -65,7 +65,7 @@ export default class ImageEditor extends React.Component<ImageEditorProps, Image
       state.displayBoxWidth = this.props.displayBoxHeight;
       state.displayBoxHeight = state.displayBoxWidth*(this.props.ratio);
     }
-    
+
     this.state = state;
 
     this.onTouchStart = this.onTouchStart.bind(this);
@@ -83,7 +83,7 @@ export default class ImageEditor extends React.Component<ImageEditorProps, Image
   componentWillMount(){
     document.body.addEventListener('mouseup', this.onMouseUp as any);
     document.body.addEventListener('mousemove', this.onMouseMove as any);
-    
+
     this.props.onInitializedGetRetriever && this.props.onInitializedGetRetriever({
       getAsBlob: this.getAsBlob.bind(this),
       getAsDataURL: this.getAsDataURL.bind(this)
@@ -144,7 +144,7 @@ export default class ImageEditor extends React.Component<ImageEditorProps, Image
     if (props.angle === 270 || props.angle === 180){
       drawPositionX = -this.image.width;
     }
-    
+
     let radians = props.angle * (Math.PI/180);
     this.canvasContext.rotate(radians);
     this.canvasContext.drawImage(this.image, drawPositionX, drawPositionY);

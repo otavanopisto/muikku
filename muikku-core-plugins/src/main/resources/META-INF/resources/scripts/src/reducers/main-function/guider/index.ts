@@ -96,7 +96,7 @@ export interface GuiderStudentUserProfileLabelType {
   studentIdentifier: string
 }
 
-function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType){ 
+function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType){
   let labelAUpperCase = labelA.name.toUpperCase();
   let labelBUpperCase = labelB.name.toUpperCase();
   return (labelAUpperCase < labelBUpperCase) ? -1 : (labelAUpperCase > labelBUpperCase) ? 1 : 0;

@@ -116,7 +116,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
                 <ButtonPill buttonModifiers="delete" icon="trash" />
               </DeleteAnnouncementDialog>
             : null}
-            {this.props.announcements.location === "archived" ? 
+            {this.props.announcements.location === "archived" ?
                 <ButtonPill buttonModifiers="restore" icon="undo" onClick={this.restoreCurrentAnnouncement}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
@@ -139,7 +139,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
                 <ButtonPill buttonModifiers="delete" disabled={this.props.announcements.selected.length === 0} icon="trash"/>
               </DeleteAnnouncementDialog>
             : null }
-            {this.props.announcements.location === "archived" ? 
+            {this.props.announcements.location === "archived" ?
               <ButtonPill buttonModifiers="restore" icon="undo" disabled={this.props.announcements.selected.length === 0} onClick={this.restoreSelectedAnnouncements}/> : null}
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
@@ -163,4 +163,4 @@ function mapDispatchToProps( dispatch: Dispatch<any> ) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( AnnouncerToolbar );
+)(AnnouncerToolbar);

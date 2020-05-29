@@ -38,7 +38,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   constructor(props: CurrentStudentProps){
     super(props);
   }
-  
+
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   render(){
     if (this.props.guider.currentStudent === null){
@@ -77,21 +77,21 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyStartDate ? 
+          <span>{this.props.guider.currentStudent.basic.studyStartDate ?
               this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyStartDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyEndDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyEndDate ? 
+          <span>{this.props.guider.currentStudent.basic.studyEndDate ?
               this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyEndDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyTimeEndTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyTimeEnd ? 
+          <span>{this.props.guider.currentStudent.basic.studyTimeEnd ?
               this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyTimeEnd) : "-"}</span>
         </div>
       </div>
@@ -134,7 +134,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       {this.props.guider.currentStudent.lastLogin && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.lastLogin.time ? 
+          <span>{this.props.guider.currentStudent.lastLogin.time ?
               this.props.i18n.time.format(this.props.guider.currentStudent.lastLogin.time, "LLL") : "-"}</span>
         </div>
       </div>}
@@ -159,7 +159,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
 
     let studentWorkspaces = <Workspaces/>;
-    
+
     let formDataGenerator = (file: File, formData: FormData) => {
       formData.append("upload", file);
       formData.append("title", file.name);

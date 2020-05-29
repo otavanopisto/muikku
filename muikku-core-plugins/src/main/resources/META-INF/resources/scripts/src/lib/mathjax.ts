@@ -48,7 +48,7 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
   //console.log(container.textContent);
   container.style.visibility = "hidden";
   document.body.appendChild(container);
-  
+
   let actualUsedElementInTheDOM = element;
   const actualParentElement = element.parentElement;
   if (placeholderSrc && !(element as HTMLImageElement).src){
@@ -56,35 +56,35 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
     placeholderImage.alt = formula;
     placeholderImage.className = element.className;
     placeholderImage.src = placeholderSrc
-    
+
     actualParentElement.replaceChild(placeholderImage, element);
     actualUsedElementInTheDOM = placeholderImage;
-    
+
     placeholderCb && placeholderCb(placeholderImage);
   }
   (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub, container]);
   (window as any).MathJax.Hub.Queue(()=>{
     document.body.removeChild(container);
-    
+
     let mjOut = container.getElementsByTagName("svg")[0];
     let newImage = (element as HTMLImageElement).alt ? element as HTMLImageElement : document.createElement("img");
     newImage.alt = formula;
     newImage.className = element.className;
-    
+
     if (mjOut){
       mjOut.setAttribute("xmlns", "http://www.w3.org/2000/svg");
       newImage.src = 'data:image/svg+xml;base64,' + window.btoa(decodeURIComponent(encodeURIComponent(mjOut.outerHTML)));
     } else {
       newImage.src = errorSrc;
     }
-    
+
     try {
       actualParentElement.replaceChild(newImage, actualUsedElementInTheDOM);
     } catch {
       // TODO there shouldn't be a try cactch here this is a bug
       // fix the bug properly later
     }
-    
+
     cb && cb(newImage);
   });
 }

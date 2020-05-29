@@ -33,9 +33,9 @@ interface DiscussionDeleteThreadComponentState {
 class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteThreadComponentProps, DiscussionDeleteThreadComponentState> {
   constructor(props: DiscussionDeleteThreadComponentProps){
     super(props);
-    
+
     this.deleteComponent = this.deleteComponent.bind(this);
-    
+
     this.state = {
       locked: false
     }
@@ -68,14 +68,14 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
   render(){
     let content = (closeDialog: ()=>any) => <div>
       {
-        this.props.reply ? 
+        this.props.reply ?
         this.props.i18n.text.get('plugin.discussion.removeReply.text') :
         this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.text')
       }
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
          <div className="dialog__button-set">
           <Button buttonModifiers={["fatal", "standard-ok"]} onClick={this.deleteComponent.bind(this, closeDialog)} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.confirmButton')}
@@ -86,10 +86,10 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
         </div>
       )
     }
-    
+
     return <Dialog modifier="delete-area"
       title={
-        this.props.reply ? 
+        this.props.reply ?
         this.props.i18n.text.get('plugin.discussion.removeReply') :
         this.props.i18n.text.get('plugin.discussion.removeThread')
       }

@@ -64,7 +64,7 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     if (diffX < 0) {
       diffX = 0;
     }
-    
+
     if (diffX <= 3){
       if (diffY >= 5 || diffY <= -5){
         diffX = 0;
@@ -75,7 +75,7 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
         this.preventXMovement = false;
       }
     }
-    
+
     if (!this.preventXMovement){
       this.setState({drag: diffX});
     }
@@ -85,11 +85,11 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     let width = (document.querySelector(".content-panel__navigation-content") as HTMLElement).offsetWidth;
     let diff = this.state.drag;
     let movement = this.touchMovementX;
-    
+
     let menuHasSlidedEnoughForClosing = Math.abs(diff) >= width*0.33;
     let youJustClickedTheOverlay = e.target === this.refs["menu-overlay"] && movement <= 5;
     let youJustClickedALink = checkLinkClicked(e.target as HTMLElement) && movement <= 5;
-    
+
     this.setState({dragging: false});
     setTimeout(()=>{
       this.setState({drag: null});

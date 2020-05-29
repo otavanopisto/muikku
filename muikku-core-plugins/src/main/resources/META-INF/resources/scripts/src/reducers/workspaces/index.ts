@@ -360,10 +360,10 @@ export interface MaterialContentNodeType {
   currentRevision: number,
   publishedRevision: number,
   contentType: string,
-  
+
   //Standard Fields (only available when loaded through materials rest endpoint)
   id?: number,
-  
+
   //Extended Fields (only available when loaded via content node rest endpoint)
   type?: string,
   children?: Array<MaterialContentNodeType>,
@@ -377,7 +377,7 @@ export interface MaterialContentNodeType {
   nextSiblingId?: number,
   path?: string,
   producers?: MaterialContentNodeProducerType[],
-  
+
   //Assigned fields
   childrenAttachments?: Array<MaterialContentNodeType>, // this is usually missing and has to be manually retrieved
   evaluation?: MaterialEvaluationType,
@@ -396,7 +396,7 @@ export type MaterialCompositeRepliesStateType = "UNANSWERED" | "ANSWERED" | "SUB
 export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>,
   state: MaterialCompositeRepliesStateType,
-  
+
   //Available sometimes
   evaluationInfo?: {
     type: MaterialCompositeRepliesStateType,
@@ -404,13 +404,13 @@ export interface MaterialCompositeRepliesType {
     grade: string,
     date: string,
   }
-  
+
   //Available when loaded specifically (eg. via records)
   created: string,
   lastModified: string,
   submitted: string,
   withdrawn?: string,
-      
+
   //Available when loaded generically (eg. via workspace material)
   workspaceMaterialId: number,
   workspaceMaterialReplyId: number
@@ -469,7 +469,7 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(id: number, assessmentS
       }
     }
   }
-  
+
   return replacement;
 }
 
@@ -547,7 +547,7 @@ export default function workspaces(state: WorkspacesType={
        availableWorkspaces: state.availableWorkspaces.map(processWorkspaceToHaveNewAssessmentStateAndDate.bind(this, action.payload.workspace.id, action.payload.newState,
           action.payload.newDate, action.payload.newAssessmentRequest)),
        userWorkspaces: state.userWorkspaces.map(processWorkspaceToHaveNewAssessmentStateAndDate.bind(this, action.payload.workspace.id, action.payload.newState,
-          action.payload.newDate, action.payload.newAssessmentRequest)) 
+          action.payload.newDate, action.payload.newAssessmentRequest))
     })
   } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"){
     return Object.assign({}, state, {
@@ -630,23 +630,23 @@ export default function workspaces(state: WorkspacesType={
       if (action.payload.isDraft) {
         return m;
       }
-      
+
       if (found) {
         return m;
       }
-      
+
       if (m.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
         found = true;
         return {...m, ...action.payload.update};
       }
-      
+
       const newM:MaterialContentNodeType = {...m, children: m.children ? m.children.map(mapMaterial) : m.children};
       if (newM.childrenAttachments) {
         newM.childrenAttachments = newM.childrenAttachments.map(mapMaterial);
       }
       return newM;
     }
-    
+
     let newEditor = state.materialEditor;
     if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue &&
         newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
@@ -664,7 +664,7 @@ export default function workspaces(state: WorkspacesType={
     newEditor.showRemoveAnswersDialogForPublish = action.payload.showRemoveAnswersDialogForPublish;
     newEditor.showUpdateLinkedMaterialsDialogForPublish = action.payload.showUpdateLinkedMaterialsDialogForPublish;
     newEditor.showUpdateLinkedMaterialsDialogForPublishCount = action.payload.showUpdateLinkedMaterialsDialogForPublishCount;
-    
+
     return {
       ...state,
       currentWorkspace: newCurrentWorkspace,
@@ -683,7 +683,7 @@ export default function workspaces(state: WorkspacesType={
           m.workspaceMaterialId === action.payload.workspaceMaterialId) {
         return false;
       }
-      
+
       return true;
     }
     let mapMaterial = (m: MaterialContentNodeType, index: number, arr: Array<MaterialContentNodeType>) => {
@@ -698,7 +698,7 @@ export default function workspaces(state: WorkspacesType={
       }
       return newM;
     }
-    
+
     let newEditor = state.materialEditor;
     if (newEditor && (
           newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
@@ -727,7 +727,7 @@ export default function workspaces(state: WorkspacesType={
     let insertedContentNode: MaterialContentNodeType = action.payload;
     let newCurrentMaterials = state.currentMaterials ? [...state.currentMaterials] : state.currentMaterials;
     let newHelpMaterials = state.currentHelp ? [...state.currentHelp] : state.currentHelp;
-    
+
     // so the target depends, if it's the parent id of the help folder then the target is help
     // however otherwise is current materials
     let targetArray = insertedContentNode.parentId === state.currentWorkspace.details.helpFolderId ? newHelpMaterials : newCurrentMaterials;

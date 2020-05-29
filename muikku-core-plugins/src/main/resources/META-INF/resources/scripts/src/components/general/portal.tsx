@@ -29,7 +29,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   private node: HTMLElement | null;
   private isUnmounted: boolean;
   private isClosing: boolean;
-  
+
   constructor(props: PortalProps) {
     super(props);
     this.state = { active: false };
@@ -52,11 +52,11 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       document.addEventListener('mouseup', this.handleOutsideMouseClick);
       document.addEventListener('touchstart', this.handleOutsideMouseClick);
     }
-    
+
     if (this.props.closeOnScroll) {
       document.addEventListener('scroll', this.handleOutsideMouseClick);
     }
-    
+
     if (this.props.isOpen === true){
       this.openPortal();
     }
@@ -81,7 +81,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       document.removeEventListener('mouseup', this.handleOutsideMouseClick);
       document.removeEventListener('touchstart', this.handleOutsideMouseClick);
     }
-    
+
     if (this.props.closeOnScroll) {
       document.removeEventListener('scroll', this.handleOutsideMouseClick);
     }
@@ -106,7 +106,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
 
   closePortal() {
     this.isClosing = true;
-    
+
     const resetPortalState = () => {
       if (this.node) {
         unmountComponentAtNode(this.node);
@@ -115,7 +115,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       this.portal = null;
       this.node = null;
       this.isClosing = false;
-      
+
       if (!this.isUnmounted) {
         this.setState({ active: false });
       }
@@ -170,7 +170,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       typeof props.children === "function" ? props.children(this.closePortal) : props.children,
       this.node
     );
-    
+
     if (isOpening) {
       this.props.onOpen && this.props.onOpen(this.node);
     }

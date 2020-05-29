@@ -38,7 +38,7 @@ class EnrollmentDialog extends React.Component<EnrollmentDialogProps, Enrollment
       closeOnOverlayClick={false}
       isOpen={this.props.isOpen}
       onClose={this.props.onClose}
-      modifier="enrollment" 
+      modifier="enrollment"
       title={this.props.i18n.text.get('plugin.workspace.logInGuidingTitle')}
       content={content} footer={footer}/>)
   }

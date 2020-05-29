@@ -16,7 +16,7 @@ import StudiesEnded from './body/studies-ended';
 
 import CheckContactInfoDialog from '~/components/base/check-contact-info-dialog';
 
-//TODO css get rid of ordered container 
+//TODO css get rid of ordered container
 class IndexBody extends React.Component<{
   status: StatusType
 },{}> {
