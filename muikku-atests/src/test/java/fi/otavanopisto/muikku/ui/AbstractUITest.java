@@ -1504,14 +1504,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void addTextToCKEditor(String text) {
-    waitForPresent(".cke_wysiwyg_frame");
+    waitForPresent(".cke_contents");
     if (StringUtils.equals(getBrowser(), "phantomjs") ) {
       waitForCKReady("textContent");
       ((JavascriptExecutor) getWebDriver()).executeScript("CKEDITOR.instances.textContent.setData('"+ text +"');");
     } else {
       waitAndClick(".cke_contents");
-      getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
-      sendKeys(".cke_contents_ltr", text);
+      sendKeys(".cke_wysiwyg_div", text);
       getWebDriver().switchTo().defaultContent();
     }
   }
