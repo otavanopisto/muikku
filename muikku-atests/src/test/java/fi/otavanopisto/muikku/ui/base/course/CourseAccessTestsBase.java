@@ -41,16 +41,18 @@ public class CourseAccessTestsBase extends AbstractUITest {
       long courseId = 1l;
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        updateWorkspaceAccess(WorkspaceAccess.ANYONE, workspace.getUrlName());
+        updateWorkspaceAccessInUI("anyone", workspace);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         logout();
+        mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         selectFinnishLocale();
         assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Opiskelijaksi kurssille");
         assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.");
         assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Lue lisää");
         selectEnglishLocale();
-        assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Attending this course");
-        assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Would you like to attend this course? You can checkout different studying options from the front page of Muikku.");
+        assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Sign up to this workspace");
+        assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Would you like to enroll to this workspace? See your options to do so on the front page of Muikku.");
         assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Read more");
         click(".panel--workspace-signup .button--signup-read-more");
         waitForPresent("#studying");
@@ -82,7 +84,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccess(WorkspaceAccess.ANYONE, workspace.getUrlName());
+        updateWorkspaceAccessInUI("anyone", workspace);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -118,7 +120,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccess(WorkspaceAccess.ANYONE, workspace.getUrlName());
+        updateWorkspaceAccessInUI("anyone", workspace);
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
@@ -149,7 +151,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccess(WorkspaceAccess.LOGGED_IN, workspace.getUrlName());
+        updateWorkspaceAccessInUI("loggedin", workspace);
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
@@ -181,7 +183,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccess(WorkspaceAccess.LOGGED_IN, workspace.getUrlName());
+        updateWorkspaceAccessInUI("loggedin", workspace);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -217,7 +219,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccess(WorkspaceAccess.LOGGED_IN, workspace.getUrlName());
+        updateWorkspaceAccessInUI("loggedin", workspace);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -249,7 +251,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccess(WorkspaceAccess.MEMBERS_ONLY, workspace.getUrlName());
+        updateWorkspaceAccessInUI("members", workspace);
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
@@ -281,7 +283,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccess(WorkspaceAccess.MEMBERS_ONLY, workspace.getUrlName());
+        updateWorkspaceAccessInUI("members", workspace);
         logout();
         mockBuilder.clearLoginMock();
         mockBuilder.mockLogin(student);
@@ -318,7 +320,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccess(WorkspaceAccess.MEMBERS_ONLY, workspace.getUrlName());
+        updateWorkspaceAccessInUI("members", workspace);
         logout();
         mockBuilder.mockLogin(student);
         login();
