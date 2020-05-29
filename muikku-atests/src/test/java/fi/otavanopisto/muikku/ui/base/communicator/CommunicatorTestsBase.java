@@ -80,7 +80,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresentAndVisible("div.message");
         scrollToEnd();
         waitForMoreThanSize("div.message", 30);
-        assertCount("div.message", 39);
+        assertCount("div.message", 40);
       }finally{
         deleteCommunicatorMessages(); 
       }
