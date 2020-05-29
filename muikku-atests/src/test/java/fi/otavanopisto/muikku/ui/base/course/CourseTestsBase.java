@@ -92,8 +92,8 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-materials");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-materials")).size() > 0;
+      waitForPresent(".navbar .navbar__item .icon-leanpub");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-leanpub")).size() > 0;
       assertTrue(elementExists);
     }finally{
       WireMock.reset();
@@ -110,8 +110,8 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-discussion");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-discussion")).size() > 0;
+      waitForPresent(".navbar .navbar__item .icon-bubbles");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-bubbles")).size() > 0;
       assertTrue(elementExists);
     }finally{
       WireMock.reset();
@@ -128,8 +128,8 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-members");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-members")).size() > 0;
+      waitForPresent(".navbar .navbar__item .icon-users");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-users")).size() > 0;
       assertTrue(elementExists);
     }finally{
       WireMock.reset();
@@ -146,8 +146,8 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-journal");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-journal")).size() > 0;
+      waitForPresent(".navbar .navbar__item .icon-book");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-book")).size() > 0;
       assertTrue(elementExists);
     }finally{
       WireMock.reset();
@@ -163,14 +163,16 @@ public class CourseTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".workspace-title");
-      assertVisible(".workspace-unpublish-button");
-      assertNotVisible(".workspace-publish-button");
-      click(".workspace-unpublish-button");
-      waitForPresent(".workspace-title");
-      assertNotVisible(".workspace-unpublish-button");
-      assertVisible(".workspace-publish-button");      
+      navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+      waitForPresent(".application-sub-panel__item--workspace-publicity #unpublish");
+      scrollIntoView(".application-sub-panel__item--workspace-publicity #unpublish");
+      sleep(300);
+      click(".application-sub-panel__item--workspace-publicity #unpublish");
+      scrollIntoView(".button--primary-function-save");
+      sleep(500);
+      waitAndClick(".button--primary-function-save");
+      waitForPresent(".notification-queue__item--success");
+//      TODO: Petja täällä menossa
     }finally{
       WireMock.reset();
       deleteWorkspace(workspace.getId());  
