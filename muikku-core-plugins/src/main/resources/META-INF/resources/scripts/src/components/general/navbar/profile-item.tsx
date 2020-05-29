@@ -22,7 +22,7 @@ interface ProfileItemProps {
 }
 
 interface ProfileItemState {
-  
+
 }
 
 class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
@@ -64,7 +64,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       })}>
       <Link className="button-pill button-pill--profile">
         {
-          this.props.status.hasImage ? 
+          this.props.status.hasImage ?
             <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
               <div className="button-image"><span className="button-pill__icon icon-user"/></div>
         }

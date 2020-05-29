@@ -25,6 +25,6 @@ export default function BinaryMaterialLoader(props: {
       Element = (registry as any)[matchKey];
     }
   });
-  
+
   return <Element {...props}/>
 }

@@ -139,7 +139,7 @@ let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFil
     payload: file
   }
 }
-  
+
 let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = function removeFileFromCurrentStudent(file){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
@@ -160,7 +160,7 @@ let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = funct
 let loadStudents:LoadStudentsTriggerType = function loadStudents(filters){
   return loadStudentsHelper.bind(this, filters, true);
 }
-  
+
 let loadMoreStudents:LoadMoreStudentsTriggerType = function loadMoreStudents(){
   return loadStudentsHelper.bind(this, null, false);
 }
@@ -183,17 +183,17 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
-      
+
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null
       });
-      
+
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD",
         payload: null
       });
-      
+
       await Promise.all([
         promisify(mApi().guider.students.read(id), 'callback')()
           .then((basic:GuiderStudentType)=>{
@@ -399,7 +399,7 @@ let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilte
     }
   }
 }
-  
+
 let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWorkspaceFilters(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let currentUser = getState().status.userSchoolDataIdentifier;
@@ -437,7 +437,7 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
       description: "",
       ownerIdentifier: currentUserSchoolDataIdentifier
     };
-    
+
     try {
       let newLabel:GuiderUserLabelType = <GuiderUserLabelType>await promisify(mApi().user.flags.create(label), 'callback')();
       dispatch({
@@ -459,13 +459,13 @@ let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function update
       data.fail && data.fail();
       return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
-    
+
     let newLabel:GuiderUserLabelType = Object.assign({}, data.label, {
       name: data.name,
       description: data.description,
       color: data.color
     });
-  
+
     try {
       await promisify(mApi().user.flags.update(data.label.id, newLabel), 'callback')();
       dispatch({

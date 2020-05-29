@@ -39,14 +39,14 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
         </div>);
       this.props.completedWorkspaces.map((workspace)=>{
       let ifChecked = !this.props.filteredCompletedWorkspaces.includes(workspace.id);
-      let modificator = workspace.isEmpty ? "-empty" : ""; 
+      let modificator = workspace.isEmpty ? "-empty" : "";
       items.push(<div className={"filter-item filter-item--workspaces" + modificator} key={workspace.name}>
         <input type='checkbox' onClick={()=>{this.props.completedWorkspaceHandler(workspace.id)}} checked={ifChecked}/>
         <span className="filter-item__label">{workspace.name}</span>
       </div>)
       });
     }
-    
+
     return <div className="filter filter--workspace-filter">
       <Dropdown persistent modifier="workspace-filter" items={items}>
         <span className="icon-books filter__activator filter__activator--workspace-filter"></span>

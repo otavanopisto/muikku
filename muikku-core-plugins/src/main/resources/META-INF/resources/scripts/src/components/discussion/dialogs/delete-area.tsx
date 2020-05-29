@@ -52,13 +52,13 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
     if (!area){
       return this.props.children;
     }
-    
+
     let content = (closeDialog: ()=>any) => <div>
       {this.props.i18n.text.get('plugin.discussion.deletearea.info')}
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
          <div className="dialog__button-set">
           <Button buttonModifiers={["fatal", "standard-ok"]} onClick={this.deleteArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.deletearea.send')}
@@ -69,7 +69,7 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
         </div>
       )
     }
-    
+
     return <Dialog modifier="delete-area"
       title={this.props.i18n.text.get('plugin.discussion.deletearea.topic')}
       content={content} footer={footer}>

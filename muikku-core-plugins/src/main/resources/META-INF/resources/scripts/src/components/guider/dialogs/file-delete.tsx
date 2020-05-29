@@ -34,7 +34,7 @@ interface FileDeleteDialogState {
 class FileDeleteDialog extends React.Component<FileDeleteDialogProps, FileDeleteDialogState> {
   constructor(props: FileDeleteDialogProps){
     super(props);
-    
+
     this.deleteFile = this.deleteFile.bind(this);
   }
   deleteFile(closeDialog: ()=>any){
@@ -53,16 +53,16 @@ class FileDeleteDialog extends React.Component<FileDeleteDialogProps, FileDelete
       </div>
     }
     let content = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div>
           {this.props.i18n.text.get('plugin.guider.flags.deleteAttachmentDialog.description')}
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} modifier="guider" 
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} modifier="guider"
      title={this.props.i18n.text.get('plugin.guider.flags.deleteAttachmentDialog.title')}
      content={content} footer={footer}>{this.props.children}</Dialog>
-  } 
+  }
 }
 
 function mapStateToProps(state: StateType){

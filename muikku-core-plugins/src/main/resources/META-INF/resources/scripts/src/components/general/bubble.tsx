@@ -8,7 +8,7 @@ interface BubbleProps {
 }
 
 interface BubbleState {
-  
+
 }
 
 export default class Bubble extends React.Component<BubbleProps, BubbleState> {

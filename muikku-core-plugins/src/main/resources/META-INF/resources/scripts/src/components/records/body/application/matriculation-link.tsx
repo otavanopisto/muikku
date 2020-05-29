@@ -73,7 +73,7 @@ interface CurrentExam {
 
 export class MatriculationLink extends React.Component<MatriculationLinkProps, MatriculationLinkState> {
   private _isMounted: boolean;
-  
+
   constructor(props: MatriculationLinkProps) {
     super(props);
     this._isMounted = false;
@@ -98,16 +98,16 @@ export class MatriculationLink extends React.Component<MatriculationLinkProps, M
       });
     }
   }
-  
+
   public componentWillUnmount() {
     this._isMounted = false;
   }
-  
+
   public render() {
     if (!this.state.enabled) {
       return null;
     }
-    
+
     return <div className="application-sub-panel application-sub-panel--matriculation-enrollment">
     {
       this.state.exams

@@ -30,29 +30,29 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
   private searchTimer: NodeJS.Timer;
   constructor(props: GuiderToolbarProps){
     super(props);
-    
+
     this.state = {
       searchquery: this.props.guider.activeFilters.query || ""
     }
-    
+
     this.setSearchQuery = this.setSearchQuery.bind(this);
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
     this.getBackByHash = this.getBackByHash.bind(this);
-    
+
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
-    
+
     this.searchTimer = null;
   }
-  
+
   getBackByHash(): string{
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     delete locationData.c;
     let newHash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
     return newHash;
   }
-  
+
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
@@ -68,23 +68,23 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
       location.hash = this.getBackByHash();
     }
   }
-  
+
   updateSearchWithQuery(query: string){
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     locationData.q = query;
     window.location.hash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
   }
-  
+
   setSearchQuery(e: React.ChangeEvent<HTMLInputElement>){
     clearTimeout(this.searchTimer);
-    
+
     this.setState({
       searchquery: e.target.value
     });
-    
+
     this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400);
   }
-  
+
   componentWillReceiveProps(nextProps: GuiderToolbarProps){
     if (!this.focused && (nextProps.guider.activeFilters.query || "") !== this.state.searchquery){
       this.setState({
@@ -92,23 +92,23 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
       });
     }
   }
-  
+
   onInputFocus(){
     this.focused = true;
   }
-  
+
   onInputBlur(){
     this.focused = false;
   }
 
   render(){
-      return ( 
+      return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             {this.props.guider.currentStudent ? <ButtonPill icon="back" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock}/> : null}
             <GuiderToolbarLabels/>
-            {this.props.guider.currentStudent ? null : 
-            <ApplicationPanelToolsContainer>              
+            {this.props.guider.currentStudent ? null :
+            <ApplicationPanelToolsContainer>
               <div className="form-element form-element--guider-toolbar">
                 <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search"  placeholder={this.props.i18n.text.get('plugin.guider.search.placeholder')} value={this.state.searchquery} disabled={this.props.guider.toolbarLock} onChange={this.setSearchQuery}/>
                 <div className="form-element__input-decoration form-element__input-decoration--main-function-search icon-search"></div>

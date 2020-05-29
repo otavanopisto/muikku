@@ -31,7 +31,7 @@ interface NewEditAnnouncementProps {
   createAnnouncement: CreateAnnouncementTriggerType,
   updateAnnouncement: UpdateAnnouncementTriggerType,
   status: StatusType,
-  
+
   workspaceId: number,
   workspaces: WorkspacesType
 }
@@ -49,14 +49,14 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
   private baseAnnouncementCurrentTarget: TargetItemsListType;
   constructor(props: NewEditAnnouncementProps){
     super(props, "new-edit-announcement");
-    
+
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setTargetItems = this.setTargetItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-    
+
     this.baseAnnouncementCurrentTarget = props.announcement ? props.announcement.workspaces.map((w)=>{
       //NOTE this workspace type is incomplete, but should do the job regardless
       return {
@@ -69,7 +69,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         value: props.userIndex.groups[id]
       } as UserGroupRecepientType;
     }) as any) : this.getPredefinedWorkspaceByIdToConcat(props);
-    
+
     this.state = this.getRecoverStoredState({
       text: props.announcement ? props.announcement.content : "",
       currentTarget: this.baseAnnouncementCurrentTarget,
@@ -87,10 +87,10 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         startDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
         endDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
       }, this.props.announcement.id + "-" + (this.props.workspaceId || ""));
-      
+
       let userGroupEntityIds = this.state.currentTarget.filter(w=>w.type==="usergroup").map(w=>(w.value as any).id);
       let workspaceEntityIds = this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id);
-      
+
       if (JSON.stringify(this.props.announcement.userGroupEntityIds) !== JSON.stringify(userGroupEntityIds) ||
           JSON.stringify(this.props.announcement.workspaceEntityIds) !== JSON.stringify(workspaceEntityIds)){
         this.forceRecovered();
@@ -134,24 +134,24 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     if (!props.workspaces || !props.workspaceId || props.announcement){
       return [];
     }
-    
-    let workpaceFound = props.workspaces && props.workspaces.currentWorkspace && props.workspaces.currentWorkspace.id === props.workspaceId 
+
+    let workpaceFound = props.workspaces && props.workspaces.currentWorkspace && props.workspaces.currentWorkspace.id === props.workspaceId
     ? props.workspaces.currentWorkspace :
     (props.workspaces && props.workspaces.availableWorkspaces.concat(props.workspaces.userWorkspaces).find(w=>w.id === props.workspaceId));
-  
+
     if (workpaceFound){
       return [{
         type: "workspace",
         value: workpaceFound
       } as WorkspaceRecepientType];
     }
-    
+
     return [];
   }
   componentWillReceiveProps(nextProps: NewEditAnnouncementProps){
     if ((this.props.announcement && nextProps.announcement && nextProps.announcement.id !== this.props.announcement.id) ||
         (!this.props.announcement && nextProps.announcement) || (nextProps.userIndex !== this.props.userIndex && nextProps.announcement)){
-      
+
       let prevBaseAnnouncementCurrentTarget = this.baseAnnouncementCurrentTarget;
       this.baseAnnouncementCurrentTarget = nextProps.announcement.workspaces.map(w=>{
         //NOTE this workspace type is incomplete, but should do the job regardless
@@ -165,12 +165,12 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           value: nextProps.userIndex.groups[id]
         } as UserGroupRecepientType;
       }) as any);
-      
+
       if (equals(prevBaseAnnouncementCurrentTarget, this.baseAnnouncementCurrentTarget) &&
           equals(this.props.announcement, nextProps.announcement)){
         return;
       }
-      
+
       this.setState(this.getRecoverStoredState({
         subject: nextProps.announcement.caption,
         text: nextProps.announcement.content,
@@ -180,7 +180,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       }, nextProps.announcement.id + "-" + (nextProps.workspaceId || "")));
     } else if (this.props.announcement && !nextProps.announcement){
       this.baseAnnouncementCurrentTarget = this.getPredefinedWorkspaceByIdToConcat(nextProps);
-      
+
       this.setState(this.getRecoverStoredState({
         subject: "",
         text: "",
@@ -191,7 +191,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     } else if (nextProps.workspaceId !== this.props.workspaceId || nextProps.workspaces !== this.props.workspaces && !nextProps.announcement){
       //Searching for the workspace in current workspace, available workspaces and user workspaces, anywhere possible to find it
       this.baseAnnouncementCurrentTarget = this.getPredefinedWorkspaceByIdToConcat(nextProps);
-      
+
       this.setState(this.getRecoverStoredState({
         currentTarget: this.baseAnnouncementCurrentTarget,
       }, nextProps.workspaceId || ""));
@@ -270,7 +270,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
            <DatePicker className="env-dialog__input env-dialog__input--date-picker" selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
              locale={this.props.i18n.time.getLocale()}/>
          </div>
-         <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">  
+         <div className="env-dialog__form-element-container env-dialog__form-element-container--datepicker">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</div>
            <DatePicker className="env-dialog__input env-dialog__input--date-picker" selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
@@ -285,7 +285,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           showFullNames={false}/>),
       (
       <div className="env-dialog__row" key="3">
-       <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">  
+       <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>
          <input type="text" className="env-dialog__input" value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
        </div>
@@ -316,7 +316,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         </div>
       )
     }
-    
+
     return <JumboDialog modifier="new-edit-announcement"
       onOpen={this.checkAgainstStoredState}
       title={this.props.announcement ?
@@ -333,7 +333,7 @@ function mapStateToProps(state: StateType){
     i18n: state.i18n,
     userIndex: state.userIndex,
     status: state.status,
-    
+
     //For use with workspaces when announcement gives a workspace
     //it needs to be fetched from somewhere, this is set by default
     //when loading

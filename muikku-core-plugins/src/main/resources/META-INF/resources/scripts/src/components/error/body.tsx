@@ -16,7 +16,7 @@ interface ErrorBodyProps {
 }
 
 interface ErrorBodyState {
-  
+
 }
 
 class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {

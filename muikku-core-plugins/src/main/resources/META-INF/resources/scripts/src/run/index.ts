@@ -17,13 +17,13 @@ export default function runApp(reducer: Reducer<any>, App: any, beforeCreateApp?
   } else {
     store = createStore(reducer, applyMiddleware(thunk));
   }
-  
+
   let newStore:Store<StateType> = {
     dispatch(action: any){
       if (typeof action === 'function') {
         return action(store.dispatch, store.getState);
       }
-      
+
       return store.dispatch(action);
     },
     subscribe(...args: any[]){
@@ -36,22 +36,22 @@ export default function runApp(reducer: Reducer<any>, App: any, beforeCreateApp?
       return (store.replaceReducer as any)(...args);
     }
   }
-  
+
   let preApp: HTMLElement = <HTMLElement>document.querySelector("#loading");
   if (preApp){
     preApp.style.display = "none";
   }
-  
+
   if (process.env["NODE_ENV"] !== "production"){
     (window as any).STORE_DEBUG = store;
   }
-  
+
   let props:any = beforeCreateApp ? beforeCreateApp(newStore) : {};
   render(React.createElement(
       Provider,
       { store: store },
       React.createElement(App, { store: store, ...props })
   ), document.querySelector("#app"));
-  
+
   return newStore;
 }

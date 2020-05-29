@@ -42,7 +42,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
                   <span className="item-list__announcement-date">
                     {this.props.i18n.time.format(announcement.startDate)}
                   </span>
-                  {announcement.workspaces && announcement.workspaces.length ? 
+                  {announcement.workspaces && announcement.workspaces.length ?
                     <div className="labels item-list__announcement-workspaces">
                       <span className="label">
                         <span className="label__icon label__icon--announcement-workspace icon-books"></span>
