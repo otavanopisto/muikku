@@ -54,9 +54,9 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         onClick: this.props.logout
       }
     ]
-    return <Dropdown modifier="navigation" items={items.map((item)=>{
+    return <Dropdown modifier="profile" items={items.map((item)=>{
         return (closeDropdown: ()=>any)=>{return <Link href={item.href} to={item.to ? item.href : null}
-         className={`link link--full link--navigation-dropdown`}
+          className={`link link--full link--profile-dropdown`}
          onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}} openInNewTab={item.openInNewTab}>
           <span className={`link__icon icon-${item.icon}`}></span>
           <span>{this.props.i18n.text.get(item.text)}</span>
