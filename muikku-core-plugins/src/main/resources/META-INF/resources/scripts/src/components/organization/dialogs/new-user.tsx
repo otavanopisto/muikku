@@ -2,29 +2,33 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Dialog, {DialogRow} from '~/components/general/dialog';
 import {FormActionsElement, EmailFormElement, InputFormElement, SSNFormElement, SelectFormElement} from '~/components/general/form-element';
-import {createStudent, createStaffmember, CreateStaffmemberTriggerType, CreateStudentTriggerType} from '~/actions/main-function/users';
+import {applyStudent, applyStaffmember, ApplyStaffmemberTriggerType, ApplyStudentTriggerType} from '~/actions/main-function/users';
 import {AnyActionType} from '~/actions';
 import notificationActions from '~/actions/base/notifications';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import { StatusType } from '~/reducers/base/status';
 import {bindActionCreators} from 'redux';
-import { StudyprogrammeTypes } from '~/reducers/main-function/users';
+import { StudyprogrammeTypes, } from '~/reducers/main-function/users';
+import { ManipulateType } from '~/reducers/user-index';
+
 
 
 interface OrganizationNewUserProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   status: StatusType,
+  mode: ManipulateType,
   studyprogrammes: StudyprogrammeTypes;
-  createStudent: CreateStudentTriggerType,
-  createStaffmember: CreateStaffmemberTriggerType
+  applyStudent: ApplyStudentTriggerType,
+  applyStaffmember: ApplyStaffmemberTriggerType
 }
 
 interface OrganizationNewUserState {
   user: {
     [field: string] : string,
   },
+  editUser: boolean,
   firstNameValid: number,
   lastNameValid: number,
   emailValid: number,
@@ -33,18 +37,16 @@ interface OrganizationNewUserState {
 
 class OrganizationNewUser extends React.Component<OrganizationNewUserProps, OrganizationNewUserState> {
 
-  private defaultState = {
-    user: {role: "STUDENT", studyProgrammeIdentifier: ""},
-    firstNameValid: 2, 
-    lastNameValid: 2, 
-    emailValid: 2,
-    studyProgrammeIdentifierValid: 2
-  };
-
-
   constructor(props: OrganizationNewUserProps) {
     super(props);
-    this.state = this.defaultState;
+    this.state = {
+      user: {role: "STUDENT", studyProgrammeIdentifier: ""},
+      editUser : false,
+      firstNameValid: 2, 
+      lastNameValid: 2, 
+      emailValid: 2,
+      studyProgrammeIdentifierValid: 2
+    };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
   }
@@ -57,12 +59,12 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
   }
 
   cancelDialog (closeDialog: ()=> any) {
-    this.setState(this.defaultState);
+    this.setState({user: {role: "STUDENT", studyProgrammeIdentifier: ""}});
     closeDialog();
   }
 
   saveUser(closeDialog: ()=>any) {
-
+    const mode = this.props.mode;
     let valid = true;
 
     if (this.state.user.firstName == "" || this.state.user.firstName == undefined) {
@@ -98,7 +100,8 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
           studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier
         }
 
-        this.props.createStudent({
+        this.props.applyStudent({
+          mode : this.props.mode,
           student: data,
           success: () => { 
             closeDialog();
@@ -117,7 +120,8 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
           role: this.state.user.role
         }
 
-        this.props.createStaffmember({
+        this.props.applyStaffmember({
+          mode : this.props.mode,
           staffmember: data,
           success: () => { 
             closeDialog();
@@ -130,8 +134,6 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
     
   }
 
-
-
   render(){
     let content =  (closePortal: ()=> any) => 
       <div>
@@ -141,7 +143,7 @@ class OrganizationNewUser extends React.Component<OrganizationNewUserProps, Orga
             <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
             <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
           </SelectFormElement>
-          <InputFormElement value="whatsmyname" name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
           <InputFormElement name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
           <EmailFormElement modifiers="new-user" valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
@@ -179,7 +181,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({createStudent, createStaffmember}, dispatch);
+  return bindActionCreators({applyStudent, applyStaffmember}, dispatch);
 };
 
 export default connect(

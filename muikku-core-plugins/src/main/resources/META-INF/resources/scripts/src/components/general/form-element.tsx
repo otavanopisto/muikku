@@ -256,7 +256,6 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
     this.props.updateField(e.target.name, value, valid);
   }
 
-
   componentDidUpdate (prevProps:any) {
     if(this.props.valid !== prevProps.valid){
       this.setState({valid: this.props.valid})
@@ -319,7 +318,6 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
         const string = date + post.substring(1,4)
         const num = Number(string);
         if(!isNaN(num)) {
-
           // The last thing to check if the "post" solution is correct.
           const checksumChars = '0123456789ABCDEFHJKLMNPRSTUVWXY';
           valid = checksumChars[num % 31] == post.substring(3, 4).toUpperCase();
