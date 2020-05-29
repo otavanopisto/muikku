@@ -87,7 +87,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        assertPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -122,7 +122,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        assertPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -153,7 +153,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        assertNotPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        assertNotPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -186,7 +186,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        assertPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -222,7 +222,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        assertPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -253,7 +253,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertNotPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        assertNotPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -287,7 +287,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertNotPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        assertNotPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -323,8 +323,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
-        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        waitForPresent(".hero--workspace h1.hero__workspace-title");
+        assertPresent(".hero--workspace h1.hero__workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
