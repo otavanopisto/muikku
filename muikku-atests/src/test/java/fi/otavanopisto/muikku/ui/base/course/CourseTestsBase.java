@@ -73,8 +73,8 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-explanation");
-      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-explanation")).size() > 0;
+      waitForPresent(".navbar .navbar__item .icon-question");
+      boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-question")).size() > 0;
 
       assertTrue(elementExists);
     }finally{

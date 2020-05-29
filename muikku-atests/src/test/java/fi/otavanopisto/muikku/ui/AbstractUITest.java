@@ -68,6 +68,7 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.WorkspaceAccess;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
 import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
@@ -698,21 +699,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void selectFinnishLocale() {
-    waitForPresent("a.button-pill--current-language>span");
+    waitForPresent("a.button-pill--current-language");
     String localeText = getElementText("a.button-pill--current-language>span");
     if(localeText.equalsIgnoreCase("EN")) {
       waitAndClick(".button-pill--current-language");
-      waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
+      waitAndClick(".link--language-picker-dropdown .link__locale--fi");
       waitUntilContentChanged("a.button-pill--current-language>span", "EN");
     }  
   }
   
   protected void selectEnglishLocale() {
-    waitForPresent("a.button-pill--current-language>span");
+    waitForPresent("a.button-pill--current-language");
     String localeText = getElementText("a.button-pill--current-language>span");
     if(localeText.equalsIgnoreCase("FI")) {
       waitAndClick(".button-pill--current-language");
-      waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
+      waitAndClick(".link--language-picker-dropdown .link__locale--en");
       waitUntilContentChanged("a.button-pill--current-language>span", "FI");
     }  
   }
@@ -972,8 +973,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void logout() {
     navigate("/", false);
     selectFinnishLocale();
-    waitAndClickXPath("//span[@class='button-pill__icon icon-user']");
-    waitAndClickXPath("//a[@class='link link--full link--navigation-dropdown']//span[contains(text(),'Kirjaudu ulos')]");
+    waitAndClick(".button-pill--profile");
+    waitAndClick(".link--profile-dropdown .icon-sign-out");
     waitForPresent("body");
   }
   @Deprecated
@@ -1495,11 +1496,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void addToEndCKEditor(String text) {
       waitForPresentAndVisible(".cke_contents");
-      getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
       String gotoEnd = Keys.chord(Keys.CONTROL, Keys.END);
-      waitForPresentAndVisible(".cke_contents_ltr");
-      getWebDriver().findElement(By.cssSelector(".cke_contents_ltr")).sendKeys(gotoEnd);
-      sendKeys(".cke_contents_ltr", text);
+      waitForPresentAndVisible(".cke_contents");
+      getWebDriver().findElement(By.cssSelector(".cke_contents")).sendKeys(gotoEnd);
+      sendKeys(".cke_wysiwyg_div", text);
       getWebDriver().switchTo().defaultContent();
   }
   
@@ -1567,6 +1567,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void switchToDefaultFrame() {
     getWebDriver().switchTo().defaultContent();
+  }
+    
+  protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
+    navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+    scrollIntoView("input#access-" + workspaceAccess);
+    sleep(500);
+    waitAndClick("input#access-" + workspaceAccess);
+    scrollIntoView(".button--primary-function-save");
+    sleep(500);
+    waitAndClick(".button--primary-function-save");
+    waitForPresent(".notification-queue__item--success");
+    sleep(500);
   }
   
   enum RoleType {
