@@ -152,12 +152,9 @@ public class FlagTestsBase extends AbstractUITest {
       click("textarea.form-element__textarea");
       selectAllAndClear("textarea.form-element__textarea");
       sendKeys("textarea.form-element__textarea", "Edited description");
-      /* TODO:
-       * Clicking the standard-ok button does not seem to work, element is present but click won't go through
-      */
-      waitAndClick(".button--standard-ok");
+      click(".button--standard-ok");
       
-      waitForNotVisible(".dialog--guider");
+      waitForNotVisible(".dialog--guider-edit-label");
       waitForPresentAndVisible(".application-panel__helper-container .icon-flag");
       waitForPresentAndVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
       assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");
@@ -256,9 +253,6 @@ public class FlagTestsBase extends AbstractUITest {
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       waitForPresentAndVisible(".button--guider-share-label");
-      /* TODO:
-       * Clicking the guider-share-label button does not seem to work, element is present but click won't go through
-      */
       click(".button--guider-share-label");
       waitForPresentAndVisible(".autocomplete--guider .env-dialog__input");
       click(".autocomplete--guider .env-dialog__input");
@@ -266,11 +260,11 @@ public class FlagTestsBase extends AbstractUITest {
       waitForPresentAndVisible(".glyph--autocomplete-recipient");
       waitAndClick(".glyph--autocomplete-recipient");
 
-      waitAndClick("body > div:nth-child(12) div.dialog__footer > div > a.button.button--success.button--standard-ok");
+      waitAndClick(".dialog--guider-share-label .button--standard-ok");
       waitForPresentAndVisible(".button--guider-share-label");
-      waitForNotVisible("body > div:nth-child(12)");
-      waitAndClick("body > div:nth-child(11) > div > div > div.dialog__footer > div > a.button.button--success.button--standard-ok");    
-      waitForNotVisible("body > div:nth-child(11)");
+      waitForNotVisible(".dialog--guider-share-label");
+      waitAndClick(".dialog--guider-edit-label .button--standard-ok");
+      waitForNotVisible(".dialog--guider-edit-label");
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
       logout();
@@ -326,9 +320,9 @@ public class FlagTestsBase extends AbstractUITest {
 
       waitAndClick(".button--guider-remove-label");
       waitClassPresent(".button--guider-remove-label", "disabled");
-      // TODO: Clicking the standard-ok button does not seem to work, element is present but click won't go through
-      click(".button--standard-ok");
-      waitForNotVisible(".dialog--guider");
+
+      waitAndClick(".button--standard-ok");
+      waitForNotVisible(".dialog--guider-edit-label");
       waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
       assertNotPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
