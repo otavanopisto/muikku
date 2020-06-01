@@ -59,7 +59,7 @@ class FileDeleteDialog extends React.Component<FileDeleteDialogProps, FileDelete
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} modifier="guider"
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} modifier="guider-delete-file"
      title={this.props.i18n.text.get('plugin.guider.flags.deleteAttachmentDialog.title')}
      content={content} footer={footer}>{this.props.children}</Dialog>
   }

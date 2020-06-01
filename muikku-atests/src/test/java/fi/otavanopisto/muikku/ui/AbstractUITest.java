@@ -1496,11 +1496,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void addToEndCKEditor(String text) {
       waitForPresentAndVisible(".cke_contents");
-      getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
       String gotoEnd = Keys.chord(Keys.CONTROL, Keys.END);
-      waitForPresentAndVisible(".cke_contents_ltr");
-      getWebDriver().findElement(By.cssSelector(".cke_contents_ltr")).sendKeys(gotoEnd);
-      sendKeys(".cke_contents_ltr", text);
+      waitForPresentAndVisible(".cke_contents");
+      waitAndClick(".cke_contents");
+      getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")).sendKeys(gotoEnd);
+      sendKeys(".cke_wysiwyg_div", text);
       getWebDriver().switchTo().defaultContent();
   }
   

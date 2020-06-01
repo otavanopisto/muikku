@@ -34,7 +34,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         sendKeys(".env-dialog__body .autocomplete--new-message input.env-dialog__input", "Test");
         waitAndClick(".autocomplete__recipient");
         waitForPresentAndVisible(".env-dialog__input--new-message-title");
-//      TODO: Recipient input hijacks input after first letter. What do?  
+//      TODO: Recipient input hijacks input after first letter. What do?
         sendKeys(".env-dialog__input--new-message-title", "T");
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
@@ -284,9 +284,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".form-element__input--communicator-label-name");
         clearElement(".form-element__input--communicator-label-name");
         sendKeys(".form-element__input--communicator-label-name", "Dun dun duun");
-        /* TODO:
-         * Clicking the guider-share-label button does not seem to work, element is present but click won't go through
-        */
+        // TODO: Clicking the guider-share-label button does not seem to work, element is present but click won't go through
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--communicator");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
@@ -318,9 +316,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".dialog--communicator.dialog--visible");
         waitAndClick(".button--communicator-remove-label");
         assertClassPresent(".button--communicator-remove-label", "disabled");
-        /* TODO:
-         * Clicking the guider-share-label button does not seem to work, element is present but click won't go through
-        */
+        // TODO: Clicking the guider-share-label button does not seem to work, element is present but click won't go through
         waitAndClick(".button--standard-ok");
         waitForNotVisible("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         assertNotPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] ");
