@@ -65,7 +65,7 @@ env:
 #  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="safari" browser_version="9.0" browser_resolution="1024x768" platform="OS X 10.11" package=course/materials
 #  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="firefox" browser_version="43.0" browser_resolution="1280x1024" platform="Windows 8.1" package=course/materials
 #  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=communicator
-#  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course
 ##  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/discussions
 #  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
 #  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="latest" browser_resolution="1280x1024" platform="Windows 10" package=course/management
@@ -84,7 +84,7 @@ env:
       
 # Headless
 #  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=communicator
-#  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course
+  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course
 ##  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/discussions
 #  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/materials
 #  - goals=verify suite=headless it_profile=ui-it findbugs_skip=true use_sc=false browser="chrome_headless" browser_resolution="" platform="Linux" package=course/management
