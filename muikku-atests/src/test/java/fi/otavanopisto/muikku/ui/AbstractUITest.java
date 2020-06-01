@@ -974,7 +974,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     navigate("/", false);
     selectFinnishLocale();
     waitAndClick(".button-pill--profile");
-    waitAndClick(".link--profile-dropdown .icon-sign-out");
+    waitAndClick(".icon-sign-out");
     waitForPresent("body");
   }
   @Deprecated

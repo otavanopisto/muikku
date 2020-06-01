@@ -35,23 +35,19 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     .build();
     try{
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
-      waitAndClick(".an-new-announcement");
-      
-      waitForPresent(".cke_wysiwyg_frame");
-      waitForPresent("*[name='endDate']");
-      clearElement("*[name='endDate']");
-      sendKeys("*[name='endDate']", "21.12.2025");
-      
-      sendKeys(".mf-textfield-subject", "Test title");
-      click(".mf-form-header");
-      waitForPresent("#ui-datepicker-div");
-      waitForNotVisible("#ui-datepicker-div");
+      waitAndClick(".button--primary-function");
+      waitForPresent(".cke_contents");
+      waitForPresent(".env-dialog__input--date-picker");
+      click(".env-dialog__input--date-picker");
+      waitForPresent(".react-datepicker-popper");
+      click(".env-dialog__header");
+      waitForNotVisible(".react-datepicker-popper");
+      sendKeys(".env-dialog__form-element-container--title>input", "Test title");
       addTextToCKEditor("Announcer test announcement");
-      waitAndClick(".mf-toolbar input[name='send']");
+      waitAndClick(".button--dialog-execute");
       
-      waitForPresent(".an-announcement-topic");
-      assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
-      assertTextIgnoreCase(".an-announcement-content>p", "Announcer test announcement"); 
+      waitForPresent(".application-list-document-short-header");
+      assertTextIgnoreCase(".application-list-document-short-header", "Test title");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -73,24 +69,31 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     .build();
     try{
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
-      waitAndClick(".an-new-announcement");
       
-      waitForPresent("*[name='endDate']");
-      clearElement("*[name='endDate']");
-      sendKeys("*[name='endDate']", "21.12.2025");
-      
-      sendKeys(".mf-textfield-subject", "Test title");
-      click(".mf-form-header h3");
-      waitForNotVisible("#ui-datepicker-div");
+      waitAndClick(".button--primary-function");
+      waitForPresent(".cke_contents");
+      waitForPresent(".env-dialog__input--date-picker");
+      click(".env-dialog__input--date-picker");
+      waitForPresent(".react-datepicker-popper");
+      click(".env-dialog__header");
+      waitForNotVisible(".react-datepicker-popper");
+      sendKeys(".env-dialog__form-element-container--title>input", "Test title");
       addTextToCKEditor("Announcer test announcement");
-      waitAndClick(".mf-toolbar input[name='send']");
+      waitAndClick(".button--dialog-execute");
       
-      waitForPresent(".an-announcement-topic");
-      waitAndClick(".an-announcement-select input");
-      waitAndClick(".mf-items-toolbar .icon-delete");
-      waitAndClick(".mf-toolbar input[name='send']");
+      waitForPresent(".application-list-document-short-header");
+      waitAndClick(".announcement__select-container input");
+      waitAndClick(".application-panel__toolbar .button-pill--delete");
+      waitAndClick(".button--standard-ok");
+      
       reloadCurrentPage();
-      assertTrue("Element found even though it shouldn't be there", isElementPresent(".an-announcement-topic>span") == false);
+      reloadCurrentPage();
+      
+      waitForPresent(".application-list");
+      scrollToEnd();
+
+      
+      assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-footer") == false);
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -120,8 +123,8 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     try {
       login();
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".workspace-announcement-title");
-      assertTextIgnoreCase(".workspace-announcement-title", "Test title");
+      waitForPresent(".item-list__announcement-caption");
+      assertTextIgnoreCase(".item-list__announcement-caption", "Test title");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -153,13 +156,13 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       login();
       
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".workspace-announcement-title");
-      click(".workspace-announcement-title");
-      waitForPresent("#announcements .announcement-article h2");
-      assertTextIgnoreCase("#announcements .announcement-article h2", "Test title");
-      assertTextIgnoreCase("#announcements .announcement-article .article-datetime", "12.11.2015");
-      waitForPresent("#announcements .announcement-article .article-context");
-      assertTextIgnoreCase("#announcements .announcement-article .article-context", "announcer test announcement");
+      waitForPresent(".item-list__announcement-caption");
+      click(".item-list__announcement-caption");
+      waitForPresent(".reading-panel__main-container ");
+      assertTextIgnoreCase(".reading-panel__main-container .article__header", "Test title");
+      assertTextIgnoreCase(".reading-panel__main-container .article .article-date", "12.11.2015");
+      waitForPresent(".reading-panel__main-container .article .article__body");
+      assertTextIgnoreCase(".reading-panel__main-container .article .article__body", "announcer test announcement");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
