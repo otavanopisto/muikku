@@ -1278,7 +1278,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{ID}/staffMembers")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE)
   public Response listWorkspaceStaffMembers(
       @PathParam("ID") Long workspaceEntityId, 
       @QueryParam("properties") String properties,
@@ -1355,7 +1355,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEID}/staffMembers/{STAFFMEMBERID}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE)
   public Response findWorkspaceStaffMember(
       @PathParam("WORKSPACEID") Long workspaceEntityId, 
       @PathParam("STAFFMEMBERID") String workspaceStaffMemberIdentifier,
@@ -1676,11 +1676,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     List<ContentNode> workspaceMaterials;
-	try {
-		workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
-	} catch (WorkspaceMaterialException e) {
-		return Response.noContent().build();
-	}
+    try {
+      workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
+    } catch (WorkspaceMaterialException e) {
+      return Response.noContent().build();
+    }
     
     if (workspaceMaterials.isEmpty()) {
       return Response.noContent().build();
