@@ -12,7 +12,7 @@ export default class BodyScrollKeeper extends React.Component<BodyScrollKeeperPr
   private lastPosition:number;
   constructor(props: BodyScrollKeeperProps){
     super(props);
-    
+
     this.lastPosition = 0;
   }
   componentWillReceiveProps(nextProps: BodyScrollKeeperProps){

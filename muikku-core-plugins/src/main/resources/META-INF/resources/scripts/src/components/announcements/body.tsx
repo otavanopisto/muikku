@@ -14,10 +14,10 @@ interface AnnouncementsBodyState {
 export default class AnnouncementsBody extends React.Component<AnnouncementsBodyProps,AnnouncementsBodyState> {
 
   render(){
-    let aside = <Aside />  
+    let aside = <Aside />
     return (<div>
-        <MainFunctionNavbar navigation={aside} activeTrail="index"/>
-        <ScreenContainer>
+        <MainFunctionNavbar navigation={aside} activeTrail="announcements"/>
+        <ScreenContainer viewModifiers="announcements">
           <Application aside={aside} />
         </ScreenContainer>
     </div>);

@@ -27,7 +27,7 @@ class Notifications extends React.Component<NotificationsProps, NotificationsSta
             {this.props.notifications.map((notification: NotificationType)=>{
               return (
                 <div key={notification.id} className={"notification-queue__item notification-queue__item--" + notification.severity}>
-                  <span>{notification.message}</span>
+                  <span dangerouslySetInnerHTML={{__html: notification.message}}/>
                   <a className="notification-queue__close" onClick={this.props.hideNotification.bind(this, notification)}></a>
                 </div>
               );
@@ -38,7 +38,7 @@ class Notifications extends React.Component<NotificationsProps, NotificationsSta
     );
   }
 }
-  
+
 function mapStateToProps(state: StateType){
   return {
     notifications: state.notifications

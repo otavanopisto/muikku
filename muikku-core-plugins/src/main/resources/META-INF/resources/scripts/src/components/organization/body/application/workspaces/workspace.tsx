@@ -7,13 +7,12 @@ import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
-import { WorkspaceCourseType } from '~/reducers/main-function/courses';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
 
 interface CourseProps {
   i18n: i18nType,
   status: StatusType,
-  course: WorkspaceCourseType
+  course: any, // why any this should be a workspace courseprop????
 }
 
 interface CourseState {
@@ -23,24 +22,24 @@ interface CourseState {
 class Workspace extends React.Component<CourseProps, CourseState>{
   constructor(props: CourseProps){
     super(props);
-    
+
     this.state = {
       expanded: false
     }
-    
+
     this.toggleExpanded = this.toggleExpanded.bind(this);
   }
   toggleExpanded(){
     this.setState({expanded: !this.state.expanded})
   }
   render(){
-    let teachers = this.props.course.teachers.map((teacher, index) => {
+    let teachers = this.props.course.teachers.map((teacher: any, index: any) => {
       let teacherCount = this.props.course.teachers.length;
       let teacherFullName = teacherCount > 1 && teacherCount != index + 1 ? teacher.firstName +" "+ teacher.lastName + ", " : teacher.firstName +" "+ teacher.lastName;
         return <span key={teacher.lastName + index}>
           {teacherFullName}
          </span>
-      
+
      });
     return   <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>

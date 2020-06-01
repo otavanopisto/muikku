@@ -10,6 +10,7 @@
 
 .tabs--material-editor {
   margin: 0;
+  padding: 1px 0 0;
 }
 
 .tabs__tab-labels {
@@ -65,8 +66,43 @@
   @include breakpoint($breakpoint-pad) {
     cursor: default;
     margin: 0;
+  }
+}
+
+.tabs__tab-data-container {
+  display: flex;
+}
+
+.tabs__tab-data {
+  display: none;
+  flex-basis: 100%;
+  max-width: 100%;
+}
+
+// Used when editing material page
+.tabs__tab-labels--material-editor {
+  padding: 0 40px 0 2px;
+}
+
+.tabs__tab-data--material-editor {
+
+  &.active {
+    display: flex;
+  }
+}
+
+// Used when viewing workspace students
+.tabs__tab--workspace-students {
+  flex-basis: 50%;
+
+  @include breakpoint($breakpoint-pad) {
+    background: $color-default;
+    border: 0;
+    color: $color-text-default;
+    font-weight: 600;
 
     &.active {
+      margin: 0;
       padding: 10px;
     }
 
@@ -78,26 +114,15 @@
       padding: 10px 0 10px 10px;
     }
   }
-}
-
-.tabs__tab-data-container {
-  display: flex;
-}
-
-.tabs__tab-data {
-  display: none;
-  flex-basis: 100%;
 
   &.active {
     display: block;
   }
 }
 
-
 // Holy de viera this border thing is a mess will deal with it some day
 
 // Application-panel tabs
-
 .tabs__tab-labels--application-panel {
   align-items: center;
   border-bottom: solid 1px $color-application-panel-box-border;
@@ -172,6 +197,19 @@
 .tabs__tab-data--workspace-students {
   padding: 0;
 
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 50%;
+
+    &:first-child {
+      padding: 0 10px 0 0;
+    }
+
+    &:last-child {
+      padding: 0 0 0 10px;
+    }
+  }
+
   &.active {
     display: flex;
   }
@@ -189,23 +227,3 @@
     flex-basis: 50%;
   }
 }
-
-// Used when editing material page
-
-.tabs__tab-labels--material-editor {
-  padding: 0 40px 0 2px;
-}
-
-.tabs__tab-data--material-editor {
-
-  &.active {
-    display: flex;
-  }
-}
-
-// Used when viewing workspace students
-.tabs__tab--workspace-students {
-  flex-basis: 50%;
-}
-
-

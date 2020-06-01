@@ -11,9 +11,8 @@ import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/discussion.scss';
 import '~/sass/elements/avatar.scss';
 
-
-import { DiscussionUserType, DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
-import { UserType } from '~/reducers/main-function/user-index';
+import { DiscussionType, DiscussionThreadType, DiscussionUserType } from '~/reducers/discussion';
+import { UserType } from '~/reducers/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
@@ -92,11 +91,11 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
                 <div className={`discussion-category discussion-category--category-${threadCategory}`}>
                   <span>{thread.title}</span>
                 </div>
-              </DiscussionThreadHeader>                                   
+              </DiscussionThreadHeader>
               {thread.sticky ?
                 <DiscussionThreadBody>
-                  <OverflowDetector as="div" classNameWhenOverflown="application-list__item-body--discussion-message-overflow"
-                    className="application-list__item-body--discussion-message rich-text" dangerouslySetInnerHTML={{ __html: thread.message }} />
+                  <OverflowDetector as="div" classNameWhenOverflown="application-list__item-text-body--discussion-message-overflow"
+                    className="application-list__item-text-body--discussion-message rich-text" dangerouslySetInnerHTML={{ __html: thread.message }} />
                 </DiscussionThreadBody> : null
               }
               <DiscussionThreadFooter>

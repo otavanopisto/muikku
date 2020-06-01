@@ -4,12 +4,12 @@
 @import "../base/breakpoints";
 
 .navbar {
-  background-color: $color-navbar-default-background;
-  box-shadow: 0 0 10px $color-navbar-default-shadow;
+  background-color: $color-default-navbar-background;
+  box-shadow: 0 0 10px $color-default-navbar-shadow;
   box-sizing: border-box;
-  color: $color-navbar-default-text;
+  color: $color-default-navbar-text;
   font-family: $navbar-font;
-  font-size: .9375rem;
+  font-size: 0.9375rem;
   left: 0;
   position: fixed;
   right: 0;
@@ -27,41 +27,41 @@
   margin: 0 auto;
   max-width: $breakpoint-max-usable-screen;
   padding: 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: $navbar-desktop-height;
   }
 }
-  
+
 // NAVBAR LOGO
 .navbar__logo {
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: contain;
   display: none;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   height: $navbar-mobile-height;
-  width: 175px;
 
   @include breakpoint($breakpoint-pad) {
+    display: inline-flex;
+    height: $navbar-desktop-height;
+    width: 175px;
+  }
+}
+
+// NAVBAR LOGO LINK
+.navbar__logo-link {
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    display: flex;
     height: $navbar-desktop-height;
   }
 }
 
 .navbar--frontpage .navbar__logo {
-
-  @include breakpoint($breakpoint-desktop-xl) {
-    background-image: url("/gfx/oo-branded-site-logo-text.png");
-    display: inline-block;
-  }
-}
-
-.navbar--main-function .navbar__logo {
+  display: none;
 
   @include breakpoint($breakpoint-desktop) {
-    background-image: url("/gfx/oo-branded-site-logo-text-white.png");
     display: inline-block;
   }
 }
@@ -78,7 +78,7 @@
   position: absolute;
   text-overflow: ellipsis;
   top: 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: $navbar-desktop-height;
     line-height: $navbar-desktop-height;
@@ -99,14 +99,14 @@
   padding: 0;
   position: relative;
   white-space: nowrap;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-grow: 1;
     height: $navbar-desktop-height;
     line-height: $navbar-desktop-height;
   }
 }
- 
+
 // NAVBAR ITEMS
 .navbar__item {
   display: none;
@@ -115,7 +115,7 @@
   line-height: $navbar-mobile-height;
   margin: 0;
   vertical-align: top;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: $navbar-desktop-height;
     line-height: $navbar-desktop-height;
@@ -128,18 +128,20 @@
 
 // NAVBAR ITEMS BREAKPOINTS
 @include breakpoint($breakpoint-pad) {
-  
   .navbar--main-function .navbar__item--menu-button,
+  .navbar--workspace .navbar__item--menu-button,
+  .navbar--workspace-edit-mode .navbar__item--menu-button,
   .navbar__mobile-title {
     display: none;
   }
-  
+
   .navbar__item--studying,
   .navbar__item--contact,
   .navbar__item--open-materials {
     display: inline-block;
   }
-  
+
+  .navbar__item--settings,
   .navbar__item--home,
   .navbar__item--coursepicker,
   .navbar__item--communicator,
@@ -147,7 +149,13 @@
   .navbar__item--guider,
   .navbar__item--records,
   .navbar__item--evaluation,
-  .navbar__item--announcer  {
+  .navbar__item--announcer,
+  .navbar__item--help,
+  .navbar__item--materials,
+  .navbar__item--journal,
+  .navbar__item--users,
+  .navbar__item--assessment-request,
+  .navbar__item--workspace-management {
     display: inline-block;
     width: $navbar-desktop-item-width;
   }
@@ -164,14 +172,32 @@
     display: inline-block;
   }
 }
-  
+
 // NAVBAR IN MAIN-FUNCTIONS
 .navbar--main-function {
   background-color: $color-environment-navbar-background;
- 
- .navbar__item--menu-button .link {
+
+  .navbar__item--menu-button .link {
     color: $color-environment-navbar-item-menu-button;
-  }  
+  }
+}
+
+// NAVBAR IN WORKSPACES
+.navbar--workspace {
+  background-color: $color-workspace-navbar-background;
+
+  .navbar__item--menu-button .link {
+    color: $color-environment-navbar-item-menu-button;
+  }
+}
+
+// NAVBAR EDITMODE IN WORKSPACES
+.navbar--workspace-edit-mode {
+  background-color: $color-workspace-edit-mode-navbar-background;
+
+  .navbar__item--menu-button .link {
+    color: $color-environment-navbar-item-menu-button;
+  }
 }
 
 // NAVBAR LOGIN, FORGOTPASSWORD, AVATAR, LANGUAGE
@@ -183,19 +209,18 @@
   flex-shrink: 0;
   height: $navbar-mobile-height;
   justify-content: flex-end;
-  
+
   @include breakpoint($breakpoint-mobile-xl) {
     flex-grow: 1;
   }
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-grow: 0;
     height: $navbar-desktop-height;
   }
-  
+
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
     flex-grow: 1;
   }
-  
 }
