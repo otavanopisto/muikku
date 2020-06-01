@@ -14,6 +14,7 @@ import fi.otavanopisto.muikku.model.security.WorkspaceGroupPermission;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 
 public class PermissionController {
 
@@ -75,4 +76,11 @@ public class PermissionController {
     workspaceGroupPermissionDAO.delete(workspaceGroupPermission);
   }
 
+  public void removeWorkspaceGroupPermissions(WorkspaceEntity workspaceEntity) {
+    List<WorkspaceGroupPermission> workspaceGroupPermissions = workspaceGroupPermissionDAO.listByWorkspaceEntity(workspaceEntity);
+    for (WorkspaceGroupPermission workspaceGroupPermission : workspaceGroupPermissions) {
+      workspaceGroupPermissionDAO.delete(workspaceGroupPermission);
+    }
+  }
+  
 }

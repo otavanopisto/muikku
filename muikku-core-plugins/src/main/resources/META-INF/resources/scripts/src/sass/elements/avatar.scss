@@ -3,28 +3,37 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.avatar {
+  align-items: center;
+  border-radius: 100%;
+  color: $color-environment-link-icon-color;
+  display: flex;
+  font-size: $avatar-mobile-font-size;
+  height: $avatar-mobile-size;
+  justify-content: center;
+  width: $avatar-mobile-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-font-size;
+    height: $avatar-desktop-size;
+    width: $avatar-desktop-size;
+  }
+}
 
 .avatar-container {
   align-items: center;
   border-radius: 100%;
   color: $color-default;
   display: flex;
-  font-family: $text-font-family;
-  height: $avatar-size;
+  font-family: $text-avatar-font-family;
+  height: $avatar-mobile-size;
   justify-content: center;
-  width: $avatar-size;
-}
+  width: $avatar-mobile-size;
 
-
-.avatar {
-  align-items: center;
-  border-radius: 100%;
-  color: $color-environment-link-icon-color;
-  display: flex;
-  font-size: $avatar-font-size;
-  height: $avatar-size;
-  justify-content: center;
-  width: $avatar-size;
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-desktop-size;
+    width: $avatar-desktop-size;
+  }
 }
 
 .avatar--category-1 {

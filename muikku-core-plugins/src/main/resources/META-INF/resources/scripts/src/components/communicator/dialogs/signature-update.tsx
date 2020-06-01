@@ -10,26 +10,18 @@ import {MessageSignatureType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
-
 import Button from '~/components/general/button';
+
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 const KEYCODES = {
   ENTER: 13
 }
 
 const CKEDITOR_CONFIG = {
-  toolbar: [
-    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-    { name: 'links', items: [ 'Link' ] },
-    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
-    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-    { name: 'styles', items: [ 'Format' ] },
-    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-    { name: 'tools', items: [ 'Maximize' ] }
-  ]
+  extraPlugins: "divarea"
 }
-
-const CKEDITOR_PLUGINS = {};
 
 interface CommunicatorSignatureUpdateDialogProps {
   children?: React.ReactElement<any>,
@@ -47,12 +39,12 @@ interface CommunicatorSignatureUpdateDialogState {
 class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSignatureUpdateDialogProps, CommunicatorSignatureUpdateDialogState> {
   constructor(props: CommunicatorSignatureUpdateDialogProps){
     super(props);
-    
+
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
     this.resetState = this.resetState.bind(this);
     this.update = this.update.bind(this);
-    
+
     this.state = {
       signature: props.signature ? props.signature.signature : ""
     }
@@ -85,13 +77,17 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
             {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
           </Button>
         </div>
-      )    
+      )
     }
     let content = (closeDialog: ()=>any)=>{
-      return <CKEditor width="100%" height="210" configuration={CKEDITOR_CONFIG} extraPlugins={CKEDITOR_PLUGINS}
-      onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
+      return <div className="env-dialog__row">
+        <div className="env-dialog__form-element-container">
+          <CKEditor configuration={CKEDITOR_CONFIG}
+            onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
+          </div>
+        </div>
     }
-    return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature" 
+    return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature"
      title={this.props.i18n.text.get("plugin.communicator.settings.signature")}
      content={content} footer={footer}>{this.props.children}</JumboDialog>
   }

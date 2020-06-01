@@ -62,12 +62,13 @@
               uiElement.append(titleContainer);
               
               var optionLabel = new CKEDITOR.dom.element('label');
+              optionLabel.addClass('items-label');
               optionLabel.setText(this.label);
               titleContainer.append(optionLabel);
               
               var _this = this;
               var addLink = new CKEDITOR.dom.element('a');
-              addLink.addClass('icon-add');
+              addLink.addClass('icon-plus');
               addLink.on('click', function() {
                 _this.addOption();
               });
@@ -77,7 +78,7 @@
               addLink.append(addLinkTooltip);
               
               var correctLabel = new CKEDITOR.dom.element('label');
-              correctLabel.addClass('icon-checkmark');
+              correctLabel.addClass('icon-check');
               titleContainer.append(correctLabel);
               var correctTooltip = new CKEDITOR.dom.element('span');
               correctTooltip.setText(editor.lang['muikku-selection'].propertiesDialogCorrectTooltip);
@@ -124,9 +125,11 @@
             this.optionNames.push(optionName);
           optionNameField.setValue(optionName ? optionName : this.getUniqueOptionName());
           var optionTextField = new CKEDITOR.dom.element('input');
+          optionTextField.addClass('cke_dialog_ui_input_text');
           optionTextField.setAttribute('name', 'optionText');
           optionTextField.setAttribute('type', 'text');
           var optionCorrectField = new CKEDITOR.dom.element('input');
+          optionCorrectField.addClass('cke_dialog_ui_checkbox_input');
           optionCorrectField.setAttribute('name', 'optionCorrect');
           optionCorrectField.setAttribute('type', 'checkbox');
           optionsContainer.append(optionContainer);
@@ -137,7 +140,7 @@
           // Deletion
           var deleteLink = new CKEDITOR.dom.element('a');
           var _this = this;
-          deleteLink.addClass('icon-delete');
+          deleteLink.addClass('icon-trash');
           deleteLink.on('click', function() {
             // TODO how do you find a parent with class name in CKEditor?!
             var option = this.getParent(); 

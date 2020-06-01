@@ -44,14 +44,14 @@ export function filterHighlight(string: string, filter: string){
     } else if (element.toLocaleLowerCase() === filter.toLocaleLowerCase()) {
       accumulator[accumulator.length - 1].push(React.createElement(
           "span",
-          { key: index, className: 'form-element__autocomplete-highlight'},         
+          { key: index, className: 'form-element__autocomplete-highlight'},
           element
       ))
     } else {
       accumulator[accumulator.length - 1].push(element);
     }
   });
-  
+
   let spans = accumulator.map((childMap, index)=>React.createElement("span",{key: index},...childMap));
   let newChild:Array<any> = [];
   spans.forEach((s, index)=>{
@@ -71,7 +71,7 @@ export function colorIntToHex(color: number) {
   let rStr = r.length == 1 ? "0" + r : r;
   let gStr = g.length == 1 ? "0" + g : g;
   let bStr = b.length == 1 ? "0" + b : b;
-	    
+
   return "#" + rStr + gStr + bStr;
 }
 
@@ -84,12 +84,12 @@ export function hexToColorInt(hexColor: string) {
     if (hexColor.length == 7){
       hexColor = hexColor.slice(1);
     }
-    
+
     r = parseInt(hexColor.slice(0, 2), 16);
     g = parseInt(hexColor.slice(2, 4), 16);
     b = parseInt(hexColor.slice(4, 6), 16);
   }
-    
+
   return (r << 16) + (g << 8) + b;
 }
 
@@ -97,7 +97,7 @@ export function intersect(...elements:any[]){
   if (elements.length === 1){
     return elements[0];
   }
-  
+
   return elements.reduce(intersectTwo);
 }
 
@@ -105,7 +105,7 @@ export function difference(...elements:any[]){
   if (elements.length === 1){
     return [];
   }
-  
+
   return elements.reduce(differenceTwo);
 }
 
@@ -115,7 +115,7 @@ export function flatten(...elements:any[]){
   } else if (elements.length === 0){
     return [];
   }
-  
+
   return elements.reduce((a, b)=>{
     return a.concat(b);
   });
@@ -139,21 +139,21 @@ export function getName(user: any, hasFullNamePermission: boolean){
     return "";
   }
   let userText = "";
-  
+
   if (user.firstName && (hasFullNamePermission || !user.nickName)){
     userText += user.firstName;
   }
-  
+
   if (user.nickName && hasFullNamePermission){
     userText += (userText ? ' "' : '"') + user.nickName + '"';
   } else if (user.nickName) {
     userText += (userText ? ' ' : '') + user.nickName;
   }
-  
+
   if (user.lastName){
     userText += (userText ? ' ' : '') + user.lastName;
   }
-  
+
   return userText;
 }
 
@@ -201,7 +201,7 @@ export function hashCode(str: string) {
 export function resize(img: HTMLImageElement, width: number, mimeType?: string, quality?: number) {
   let canvas = document.createElement('canvas');
   let ctx = canvas.getContext("2d");
-  
+
   // set size proportional to image
   canvas.width = width;
   canvas.height = canvas.width * (img.height / img.width);
@@ -209,13 +209,13 @@ export function resize(img: HTMLImageElement, width: number, mimeType?: string, 
   // step 3, resize to final size
   ctx.drawImage(img, 0, 0, img.width, img.height,
   0, 0, canvas.width, canvas.height);
-  
+
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);
 }
 
 export function shuffle(oArray: Array<any>) {
   let array = [...oArray];
-  
+
   let currentIndex = array.length;
   let temporaryValue;
   let randomIndex;
@@ -244,24 +244,87 @@ export function arrayToObject(array: Array<any>, propertyName: string, propertyV
 const translations:any = {
   "width": "width",
   "class": "className",
+  "id": "id",
+  "name": "name",
   "src": "src",
   "height": "height",
   "href": "href",
+  "target": "target",
+  "alt": "alt",
+  "title": "title",
+  "dir": "dir",
+  "lang": "lang",
+  "hreflang": "hrefLang",
+  "charset": "charSet",
+  "download": "download",
+  "rel": "rel",
+  "type": "type",
+  "media": "media",
+  "wrap": "wrap",
+  "start": "start",
+  "reversed": "reversed",
+
+  // Iframe  specific
+  "scrolling": "scrolling",
+  "frameborder": "frameBorder",
+  "allowfullscreen": "allowFullScreen",
+
+  // Table specefic
+  "cellspacing": "cellSpacing", // Deprecated, Table
+  "cellpadding": "cellPadding", // Deprecated, Table
+  "span": "span",
+  "summary": "summary", // Deprecated, Table
+  "colspan": "colSpan",
+  "rowspan": "rowSpan",
+  "scope": "scope",
+  "headers": "headers",
+
+  // Audio/video specific
+  "autoplay": "autoPlay",
+  "capture": "capture",
+  "controls": "controls",
+  "loop": "loop",
+  "role": "role",
+  "label": "label",
+  "default": "default",
+  "kind": "kind",
+  "srclang": "srcLang",
+  "controlsList": "controlsList",
+
+  // Form specific
+  "required": "required",
+  "rows": "rows",
+  "cols": "cols",
+  "tabindex": "tabIndex",
+  "hidden": "hidden",
+  "list": "list",
+  "value": "value",
+  "selected": "selected",
+  "checked": "checked",
+  "disabled": "disabled",
+  "readonly": "readOnly",
+  "size": "size",
+  "placeholder": "placeholder",
+  "multiple": "multiple",
+  "accept": "accept",
 }
 
 export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
-  let result:any = {};
-  Object.keys(declaraion).forEach((key: string)=>{
-    if (key !== "cssText" && key !== "length" || parseInt(key) === NaN){
-      result[key] = (declaraion as any)[key];
-    }
-  });
+  const result:any = {};
+  for (let i = 0; i < declaraion.length; i++) {
+    const item = declaraion.item(i);
+    result[item] = (declaraion as any)[item];
+  }
+  return result;
 }
 
 export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: string, props: any, children: Array<any>, element: HTMLElement)=>any, key?: number):any {
   let defaultProcesser = processer ? processer : (a:any, b:any, c:any)=>React.createElement(a,b,c);
   let props:any = {
     key
+  }
+  if (element.nodeType === 3) {
+    return element.textContent;
   }
   Array.from(element.attributes).forEach((attr:Attr)=>{
     if (translations[attr.name]){
@@ -300,7 +363,7 @@ export function extractDataSet(element: HTMLElement):any{
       }
     }
   });
-  
+
   return finalThing;
 }
 
@@ -335,9 +398,9 @@ export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scr
     }
     return;
   }
-  
+
   console.log("scrolling is being sucessful");
-  
+
   let topOffset = scrollPadding || 90;
   let scrollTop = $(actualAnchor).offset().top - topOffset;
 
@@ -352,7 +415,7 @@ export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scr
       easing : "easeInOutQuad"
     });
   }
-  
+
   if (!disableAnchorSet){
     setTimeout(()=>{
       if (anchor[0] === "#"){
@@ -379,10 +442,10 @@ export function repairContentNodes(base: MaterialContentNodeListType, pathRepair
     } else if (pathRepair && pathRepairId === parentNodeId) {
       const splitted = path.split("/");
       splitted.shift();
-      path = [pathRepairId, ...splitted].join("/");
+      path = [pathRepair, ...splitted].join("/");
     }
     const children = cn.children && cn.children.length ? repairContentNodes(cn.children, pathRepair, pathRepairId, cn.workspaceMaterialId) : cn.children;
-    
+
     return {
       ...cn,
       nextSiblingId,
@@ -395,10 +458,10 @@ export function repairContentNodes(base: MaterialContentNodeListType, pathRepair
 
 export function validURL(str: string) {
   var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-    return !!pattern.test(str);
-  }
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return !!pattern.test(str);
+}

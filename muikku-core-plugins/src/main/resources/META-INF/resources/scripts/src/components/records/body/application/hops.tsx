@@ -5,6 +5,8 @@ import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records';
@@ -25,10 +27,10 @@ interface HopsState {
 }
 
 class Hops extends React.Component<HopsProps, HopsState> {
-  timeout: number;
+  timeout: NodeJS.Timer;
   constructor(props: HopsProps){
     super(props);
-    
+
     this.setHopsToWithDelay = this.setHopsToWithDelay.bind(this);
   }
   setHopsToWithDelay(hops: HOPSDataType){
@@ -45,7 +47,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
     } else if (this.props.hops.status !== "READY"){
       return null;
     }
-    
+
     return <HopsGraph onHopsChange={this.setHopsToWithDelay}/>
   }
 }

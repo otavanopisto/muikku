@@ -15,7 +15,7 @@ interface LoginButtonProps {
 }
 
 interface LoginButtonState {
-  
+
 }
 
 class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {

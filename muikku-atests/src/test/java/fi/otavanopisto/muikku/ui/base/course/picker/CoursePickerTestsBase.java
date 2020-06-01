@@ -107,7 +107,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         scrollToEnd();
         waitForMoreThanSize(".application-list__item.course", 27);
-        assertCount(".application-list__item.course", 34);
+        assertCount(".application-list__item.course", 35);
       } finally {
         for(Workspace w : workspaces) {
           deleteWorkspace(w.getId());        

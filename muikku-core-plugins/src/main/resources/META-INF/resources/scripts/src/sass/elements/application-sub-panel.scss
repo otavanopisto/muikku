@@ -4,28 +4,58 @@
 @import "../base/breakpoints";
 
 .application-sub-panel {
-  border-bottom: 1px solid $color-default-contrast;
+  border-bottom: 1px solid $color-subpanel-border;
   margin: 0 0 20px;
 
   &:last-child {
     border: 0;
-    padding: 0;
     margin: 0;
   }
 }
 
+.application-sub-panel--workspace-settings {
+  margin: 0;
+  padding: 10px;
+
+  .cke {
+    border: 2px solid $color-form-element-border;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 20px;
+  }
+}
+
+.application-sub-panel--workspace-image-settings {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: block;
+    padding: 20px 5px;
+  }
+}
+
+.application-sub-panel--workspace-users {
+  margin: 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 20px;
+  }
+}
+
+// Subpanel header
 .application-sub-panel__header {
   align-items: center;
   display: flex;
   flex-flow: row wrap;
   font-size: 1.1875rem;
   font-weight: 400;
+  line-height: 1;
   padding: 0 10px;
   text-transform: uppercase;
-  width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.375rem;
     margin: 0 0 10px;
     padding: 0;
   }
@@ -36,7 +66,18 @@
   font-size: 1.1875rem;
   font-weight: 400;
   text-transform: uppercase;
-  width: 100%;
+}
+
+.application-sub-panel__header--workspace-settings {
+  padding: 0;
+}
+
+.application-sub-panel__header--workspace-image-settings {
+  margin: 0 20px 10px;
+}
+
+.application-sub-panel__header--workspace-users {
+  padding: 0;
 }
 
 .application-sub-panel__header-main-container {
@@ -107,9 +148,53 @@
   }
 }
 
+// Subpanel body
+
 .application-sub-panel__body {
   padding: 10px 0;
 }
+
+.application-sub-panel__body--workspace-settings {
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+  }
+}
+
+.application-sub-panel__body--workspace-staff-members {
+  padding: 0;
+}
+
+.application-sub-panel__body--workspace-students {
+  padding: 10px 0 0;
+}
+
+// Subpanel Item Split Container
+
+.application-sub-panel__item-split-container {
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 50%;
+
+    &:first-child {
+      padding: 0 10px 0 0;
+    }
+
+    &:last-child {
+      padding: 0 0 0 10px;
+    }
+  }
+}
+
+// Subpanel Item
 
 .application-sub-panel__item {
   align-items: center;
@@ -122,31 +207,124 @@
 
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
-  } 
+  }
 
   @include breakpoint($breakpoint-pad) {
     padding: 10px 0;
-  } 
+  }
 
   @include breakpoint($breakpoint-desktop) {
     flex-flow: row nowrap;
   }
 }
 
+.application-sub-panel__item--workspace-management {
+  align-items: flex-start;
+  border: 0;
+  display: flex;
+  flex-basis: 100%;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0;
+
+  &:not(:last-child) {
+    border: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    padding: 0 20px 0 0;
+
+    &:last-child {
+      padding: 0;
+    }
+  }
+}
+
+.application-sub-panel__item--workspace-publicity,
+.application-sub-panel__item--workspace-access {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.application-sub-panel__item--workspace-name-extension {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    min-width: 400px;
+  }
+}
+
+.application-sub-panel__item--workspace-type {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.application-sub-panel__item--workspace-description {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+
+  .cke {
+    flex-basis: 210px;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}
+
+.application-sub-panel__item--workspace-start-date {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.application-sub-panel__item--workspace-end-date {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.application-sub-panel__item--workspace-permissions {
+  flex-flow: row nowrap;
+  padding: 10px 0 0;
+
+  &:not(:last-child) {
+    border: 0;
+  }
+}
+
+.application-sub-pane__button-container {
+  display: flex;
+}
+
+.application-sub-panel__image {
+  width: 100%;
+}
+
+// Subpanel item header
+
 .application-sub-panel__item--empty {
   font-style: italic;
   padding: 0 0 10px;
 }
 
- .application-sub-panel__item-header {
-   padding: 10px 0 0;
- }
+.application-sub-panel__item-header {
+  font-weight: 600;
+  padding: 10px 0;
+}
 
 .application-sub-panel__item-header--hops {
   font-weight: 600;
   margin: 2px 5px 2px 0;
   padding: 0;
 }
+
+// Subpanel item title & label
 
 .application-sub-panel__item-title {
   flex-basis: 100%;
@@ -166,6 +344,8 @@
   padding: 0;
 }
 
+// Subpanel item inline value
+
 .application-sub-panel__item-inline-value {
   background-color: $color-hops-readable-inline-background;
   border-radius: 3px;
@@ -174,6 +354,15 @@
   margin-right: 5px;
   padding: 2px 5px;
 }
+
+// Subpanel item actions
+
+.application-sub-panel__item-actions {
+  padding: 10px 0;
+}
+
+
+// Subpanel item data
 
 .application-sub-panel__item-data {
   align-items: center;
@@ -187,17 +376,19 @@
     flex-grow: 1;
     flex-shrink: 1;
   }
+}
 
-  span {
-    background-color: $color-hops-readable-inline-background;
-    border-radius: 3px;
-    display: inline-block;
-    margin: 2px 5px 2px 0;
-    padding: 4px;
+.application-sub-panel__item-data--workspace-management {
+  align-items: flex-start;
+  flex-flow: column nowrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
   }
 }
 
 // HOPS in Guider in readable state
+
 .application-sub-panel__item--hops-readable {
   flex-flow: row wrap;
 
@@ -248,14 +439,14 @@
 
 .application-sub-panel__header--studies-hops,
 .application-sub-panel__header--studies-vops {
-  padding: 10px;
   font-size: 1.1875rem;
+  padding: 10px;
   text-transform: uppercase;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    padding: 0;
     font-size: 1.375rem;
+    padding: 0;
   }
 }
 
@@ -268,10 +459,11 @@
 }
 
 // Guider
+
 .application-sub-panel--guider-student-header {
   border: 0;
-  padding: 10px 0 0;
   margin: 0;
+  padding: 10px 0 0;
 
   @include breakpoint($breakpoint-pad) {
     padding: 0;
@@ -284,11 +476,12 @@
 
 .application-sub-panel__text--task-evaluation {
   background: $color-task-evaluation;
-  border-radius: 3px; 
+  border-radius: 3px;
 }
 
 .application-sub-panel__text--course-evaluation {
 
+  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     border-left: 3px solid $color-grade-passed;
   }
@@ -300,6 +493,7 @@
   &.state-INCOMPLETE {
     border-left: 3px solid $color-grade-incomplete;
   }
+  // scss-lint:enable SelectorFormat
 }
 
 .application-sub-panel__body--labels {
@@ -314,9 +508,7 @@
   display: flex;
   flex-basis: auto;
   flex-shrink: 1;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-right: 10px;
+  margin: 5px 10px 5px 0;
 }
 
 .application-sub-panel__item--course-activity {
@@ -324,6 +516,7 @@
 }
 
 // This is related to matriculation enrollment and needs to be done different when Studies view gets integrated to devel
+
 .application-sub-panel--matriculation-enrollment {
   border: 0;
   margin: 0;

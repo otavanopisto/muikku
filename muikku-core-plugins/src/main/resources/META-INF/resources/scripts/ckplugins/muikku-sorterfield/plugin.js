@@ -59,12 +59,13 @@
               uiElement.append(titleContainer);
               
               var itemLabel = new CKEDITOR.dom.element('label');
+              itemLabel.addClass('items-label');
               itemLabel.setText(this.label);
               titleContainer.append(itemLabel);
               
               var _this = this;
               var addLink = new CKEDITOR.dom.element('a');
-              addLink.addClass('icon-add');
+              addLink.addClass('icon-plus');
               addLink.on('click', function() {
                 _this.addItem(_this.getUniqueItemId());
               });
@@ -104,6 +105,7 @@
           sortHandle.addClass('icon-move');
           itemContainer.setAttribute('data-item-id', id);
           var itemTextField = new CKEDITOR.dom.element('input');
+          itemTextField.addClass('cke_dialog_ui_input_text');
           itemTextField.setAttribute('name', 'itemText');
           itemTextField.setAttribute('type', 'text');
           itemsContainer.append(itemContainer);
@@ -112,7 +114,7 @@
           // Deletion
           var deleteLink = new CKEDITOR.dom.element('a');
           var _this = this;
-          deleteLink.addClass('icon-delete');
+          deleteLink.addClass('icon-trash');
           deleteLink.on('click', function() {
             this.getParent().remove();
           });

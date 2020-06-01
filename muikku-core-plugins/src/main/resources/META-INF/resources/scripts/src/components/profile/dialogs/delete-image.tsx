@@ -10,21 +10,21 @@ import Button from '~/components/general/button';
 
 interface DeleteImageDialogProps {
   i18n: i18nType,
-  
+
   deleteProfileImage: DeleteProfileImageTriggerType,
-  
+
   isOpen: boolean,
   onClose: ()=>any
 }
 
 interface DeleteImageDialogState {
-  
+
 }
 
 class DeleteImageDialog extends React.Component<DeleteImageDialogProps, DeleteImageDialogState> {
   constructor(props: DeleteImageDialogProps){
     super(props);
-    
+
     this.delete = this.delete.bind(this);
   }
   delete(closeDialog: ()=>any){

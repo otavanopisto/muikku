@@ -7,5 +7,5 @@ tslint:
    enabled: true
    config_file: .tslintrc.json
 scss:
-  config_file: .scss-style.yml
-  version: 0.57.1 
+  config_file: .scss-lint.yml
+  version: 0.57.1

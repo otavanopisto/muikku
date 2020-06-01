@@ -5,11 +5,11 @@ import Aside from './body/aside';
 import * as React from 'react';
 
 interface GuiderBodyProps {
-  
+
 }
 
 interface GuiderBodyState {
-  
+
 }
 
 export default class GuiderBody extends React.Component<GuiderBodyProps, GuiderBodyState> {

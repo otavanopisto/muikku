@@ -6,7 +6,7 @@ import ApplicationPanel from '~/components/general/application-panel/application
 import HoverButton from '~/components/general/hover-button';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
-import {DiscussionType} from '~/reducers/main-function/discussion';
+import {DiscussionType} from '~/reducers/discussion';
 import {StateType} from '~/reducers';
 import DiscussionThreads from './application/discussion-threads';
 import CurrentThread from './application/current-thread';
@@ -25,18 +25,19 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
     super(props);
   }
   render(){
-    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.forum.pageTitle')}</h2>
+    let title = this.props.i18n.text.get('plugin.forum.pageTitle')
     let toolbar = <Toolbar/>
-    let primaryOption = !this.props.discussion.current ? <NewThread><Link className="button button--primary-function">    
-    {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
-    </Link></NewThread> : null;
+    let primaryOption = !this.props.discussion.current && this.props.discussion.areas.length > 0 ? <NewThread><Link className="button button--primary-function">
+      {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
+      </Link></NewThread> : null;
+    let primaryOptionMobile = this.props.discussion.areas.length > 0 ? <NewThread><HoverButton icon="plus" modifier="new-message" /></NewThread> : null;
 
-    return <div>
+    return <div className="application-panel-wrapper">
       <ApplicationPanel title={title} modifier="discussion" primaryOption={primaryOption} toolbar={toolbar}>
         <DiscussionThreads/>
         <CurrentThread/>
       </ApplicationPanel>
-      <NewThread><HoverButton icon="edit" modifier="new-message"/></NewThread>
+      {primaryOptionMobile}
     </div>
   }
 }

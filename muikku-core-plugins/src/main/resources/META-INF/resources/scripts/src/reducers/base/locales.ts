@@ -3,6 +3,9 @@
 import $ from '~/lib/jquery';
 import {ActionType} from "~/actions";
 
+//TODO remove this, it's because of the digiabi text editor
+(window as any).locale = undefined;
+
 export interface LocaleListType {
   available: {
     name: string,

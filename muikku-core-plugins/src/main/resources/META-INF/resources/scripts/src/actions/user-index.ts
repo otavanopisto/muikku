@@ -39,16 +39,16 @@ let fetchingStateUser:{[index: number]: boolean} = {};
 let fetchingStateUserBySchoolData:{[index: string]: boolean} = {};
 let fetchingStateUserGroup:{[index: number]: boolean} = {};
 
-let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId, callback) { 
+let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId, callback) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let currentUserInfo = state.userIndex.users[userId];
     if (currentUserInfo || fetchingStateUser[userId]){
       return;
     }
-    
+
     fetchingStateUser[userId] = true;
-    
+
     try {
       let user:UserType = <UserType>(await (promisify(mApi().user.users.basicinfo.read(userId), 'callback')()) || 0);
       dispatch({
@@ -67,16 +67,16 @@ let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId, cal
   }
 }
 
-let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function loadUserIndexBySchoolData(userId, callback) { 
+let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function loadUserIndexBySchoolData(userId, callback) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let currentUserInfo = state.userIndex.usersBySchoolData[userId];
     if (currentUserInfo || fetchingStateUserBySchoolData[userId]){
       return;
     }
-    
+
     fetchingStateUserBySchoolData[userId] = true;
-    
+
     try {
       let user:UserType = <UserType>(await (promisify(mApi().user.users.basicinfo.read(userId), 'callback')()) || 0);
       dispatch({
@@ -95,19 +95,19 @@ let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function l
   }
 }
 
-let loadLoggedUser:LoadLoggedUserTriggerType =  function loadLoggedUser(callback) { 
+let loadLoggedUser:LoadLoggedUserTriggerType =  function loadLoggedUser(callback) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
-    
+
     if (state.status.loggedIn) {
       let userId = state.status.userSchoolDataIdentifier;
       let currentUserInfo = state.userIndex.usersBySchoolData[userId];
       if (currentUserInfo || fetchingStateUserBySchoolData[userId]){
         return;
       }
-      
+
       fetchingStateUserBySchoolData[userId] = true;
-      
+
       try {
         let user:UserType = <UserType>(await (promisify(mApi().user.whoami.read(), 'callback')()) || 0);
         dispatch({
@@ -130,16 +130,16 @@ let loadLoggedUser:LoadLoggedUserTriggerType =  function loadLoggedUser(callback
   }
 }
 
-let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIndex(groupId) { 
+let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIndex(groupId) {
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let currentGroupInfo = state.userIndex.groups[groupId];
     if (currentGroupInfo || fetchingStateUser[groupId]){
       return;
     }
-    
+
     fetchingStateUser[groupId] = true;
-    
+
     try {
       dispatch({
         type: "SET_USER_GROUP_INDEX",

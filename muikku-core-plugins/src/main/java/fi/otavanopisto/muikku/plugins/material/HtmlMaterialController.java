@@ -82,21 +82,17 @@ public class HtmlMaterialController {
     htmlMaterialDAO.delete(htmlMaterial);
   }
 
-  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) {
+  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) throws WorkspaceMaterialContainsAnswersExeption {
     return updateHtmlMaterialHtml(htmlMaterial, html, false);
   }
   
-  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html, boolean removeAnswers) {
-    HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, removeAnswers);
-    materialUpdateEvent.fire(event);
-    return htmlMaterialDAO.updateData(htmlMaterial, html);
-  }
-  
-  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String html, Long revisionNumber, boolean removeNewerRevisions, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
-    // TODO: WorkspaceMaterialContainsAnswersExeption quick fix should be removed
+  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
     try {
-      updateHtmlMaterialHtml(htmlMaterial, html, removeAnswers);
-    } catch (Exception e) {
+      HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, removeAnswers);
+      materialUpdateEvent.fire(event);
+      return htmlMaterialDAO.updateData(htmlMaterial, html);
+    }
+    catch (Exception e) {
       Throwable cause = e;
       while (cause != null) {
         cause = cause.getCause();
@@ -106,15 +102,16 @@ public class HtmlMaterialController {
       }
       throw e;
     }
-    
+  }
+  
+  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String html, Long revisionNumber, boolean removeNewerRevisions, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
+    updateHtmlMaterialHtml(htmlMaterial, html, removeAnswers);
     htmlMaterialDAO.updateRevisionNumber(htmlMaterial, revisionNumber);
-    
     if (removeNewerRevisions) {
       for (HtmlMaterialRevision revision : listRevisionsAfter(htmlMaterial, revisionNumber)) {
         deleteRevision(revision);
       }
     }
-    
     return htmlMaterial;
   }
 

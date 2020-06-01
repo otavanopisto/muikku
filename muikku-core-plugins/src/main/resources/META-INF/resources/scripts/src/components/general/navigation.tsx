@@ -26,6 +26,7 @@ interface NavigationTopicProps {
 }
 
 interface NavigationTopicState {
+
 }
 
 export class NavigationTopic extends React.Component<NavigationTopicProps, NavigationTopicState> {
@@ -64,21 +65,24 @@ interface NavigationElementProps {
 }
 
 interface NavigationElementState {
+
 }
 
 export class NavigationElement extends React.Component<NavigationElementProps, NavigationElementState> {
   render() {
     let editableComponent = null;
+
     let modifiers:Array<string> = typeof this.props.modifiers === "string" ? [this.props.modifiers] : this.props.modifiers;
+
     if ( this.props.isEditable && this.props.editableWrapper ) {
       let EditableWrapper = this.props.editableWrapper;
       let args = this.props.editableWrapperArgs || {};
       editableComponent = <EditableWrapper {...this.props.editableWrapperArgs}>
-        <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label" icon="edit" />
+        <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label" icon="pencil" />
       </EditableWrapper>
     } else if ( this.props.isEditable ) {
       editableComponent = <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label"
-        icon="edit" onClick={this.props.editableAction} />
+        icon="pencil" onClick={this.props.editableAction} />
     }
 
     return <Link className={`item-list__item ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`item-list__item--${s}`).join(" ")}`}

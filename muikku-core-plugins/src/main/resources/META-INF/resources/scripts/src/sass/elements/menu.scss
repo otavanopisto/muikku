@@ -15,12 +15,7 @@
   right: 0;
   top: 0;
   z-index: 9999;
-  
-  @include breakpoint($breakpoint-pad) {
-    left: -$menu-width-pad;
-    width: $menu-width-pad;
-  }
-  
+
   &.displayed {
     display: block;
   }
@@ -40,6 +35,11 @@
       transition: none;
     }
   }
+
+  @include breakpoint($breakpoint-desktop) {
+    left: -$menu-width-pad;
+    width: $menu-width-pad;
+  }
 }
 
 .menu--hidden {
@@ -47,18 +47,22 @@
 }
 
 .menu__logo {
-  background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
-  background-size: contain;
   display: inline-block;
   height: $navbar-mobile-height;
   width: 175px;
+}
+
+.menu__link {
+  display: block;
+  height: $navbar-mobile-height;
+  position: relative;
+  z-index: 99;
 }
 
 .menu__container {
   @include prefix(transition, webkit moz o ms, left 0.3s);
   align-items: center;
   background-color: $color-menu-default-background;
-  border-right: solid 1px darken($color-menu-default-background, 30%);
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -70,11 +74,11 @@
 }
 
 .menu__extras {
+  border-bottom: solid 5px $color-default-separator-border;
+  margin: 0 0 10px;
   padding: 0 10px 10px;
   width: 100%;
-  border-bottom: solid 5px $color-default-separator-border;
-  margin: 0 0 20px;
-  
+
   &:empty {
     display: none;
   }
@@ -96,40 +100,46 @@
 
 .menu__button-close {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-  position: absolute;
-  height: $navbar-mobile-height;
-  width: 45px;
-  right: 0;
-  top: 0;
-  vertical-align: middle;
-  line-height: $navbar-mobile-height;
-  transition: background-color .3s;
+  cursor: pointer;
   font-size: 24px;
   font-weight: 600;
-  text-align: center;
+  height: $navbar-mobile-height;
+  line-height: $navbar-mobile-height;
   padding-right: 5px;
-  cursor: pointer;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  transition: background-color 0.3s;
+  vertical-align: middle;
+  width: 45px;
 
-  &:active, &.active {
+  &:active,
+  &.active {
     background-color: $color-menu-default-header-button-close-background-active;
   }
 }
 
 .menu__button-close--main-function {
-  color: $color-menu-default-header-button-close;
+  color: $color-menu-environment-header-button-close;
+}
+
+.menu__button-close--workspace,
+.menu__button-close--workspace-edit-mode {
+  color: $color-menu-workspace-header-button-close;
 }
 
 .menu__button-close--frontpage {
-  color: $color-menu-main-function-header-button-close;
+  color: $color-menu-default-header-button-close;
 }
 
 .menu__items {
   list-style-type: none;
-  margin: 0;
+  margin: 0 0 10px;
   padding: 0;
   width: 100%;
 }
- 
+
 .menu__item {
   display: block;
   height: 50px;
@@ -150,11 +160,19 @@
     background-color: $color-environment-menu-header-background;
   }
 
-  .menu__logo {
-    background: url("/gfx/oo-branded-site-logo-text-white.png") no-repeat center center;
+  .menu__item {
+    text-transform: none;
+  }
+}
+
+.menu--workspace,
+.menu--workspace-edit-mode {
+
+  .menu__header {
+    background-color: $color-workspace-menu-header-background;
   }
 
   .menu__item {
-    text-transform: none;  
+    text-transform: none;
   }
 }

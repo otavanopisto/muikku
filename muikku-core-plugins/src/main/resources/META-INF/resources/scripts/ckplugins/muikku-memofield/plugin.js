@@ -105,12 +105,11 @@
 
         var newJson = {
           'name': name,
-          'columns': this.getContentElement('info', 'cols').getValue(),
           'rows': this.getContentElement('info', 'rows').getValue(),
           'example': this.getContentElement('info', 'example').getValue(),
           'richedit': this.getContentElement('info', 'richedit').getValue()
         };
-        
+
         var object = new CKEDITOR.dom.element('object');
         object.setAttribute('type', 'application/vnd.muikku.field.memo');
         var paramType = new CKEDITOR.dom.element('cke:param');
@@ -130,14 +129,6 @@
         id : 'info',
         label : editor.lang.common.generalTab,
         elements : [
-          {
-            id: 'cols',
-            type: 'text',
-            label: editor.lang['muikku-memofield'].propertiesDialogCols,
-            setup: function(json) {
-              this.setValue(json.columns);
-            }
-          },
           {
             id: 'rows',
             type: 'text',
