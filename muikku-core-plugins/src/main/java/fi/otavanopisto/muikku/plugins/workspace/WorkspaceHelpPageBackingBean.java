@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +17,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 
 @Named
@@ -57,7 +59,8 @@ public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
     workspaceEntityId = workspaceEntity.getId();
     
     try {
-      contentNodes = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
+      WorkspaceMaterial helpPage = workspaceMaterialController.ensureWorkspaceHelpPageExists(workspaceEntity);
+      contentNodes = Arrays.asList(workspaceMaterialController.createContentNode(helpPage));
     }
     catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Error loading materials", e);

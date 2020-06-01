@@ -24,14 +24,14 @@ export default class TouchPager extends React.Component<TouchPagerProps, TouchPa
 
   constructor(props: TouchPagerProps){
     super(props);
-
+    
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.initialXPos = null;
     this.initialYPos = null;
     this.closeInterval = null;
-
+    
     this.state = {
       drag: 0
     }
@@ -58,7 +58,7 @@ export default class TouchPager extends React.Component<TouchPagerProps, TouchPa
     let allDrag = Math.abs(this.state.drag);
     let totalDrag = (this.refs["centerContainer"] as HTMLElement).offsetWidth;
     let sign = Math.sign(this.state.drag);
-
+    
     let closeToNext = allDrag >= totalDrag/3;
     this.closeInterval = setInterval(()=>{
       let absoluteDrag = Math.abs(this.state.drag);
@@ -71,7 +71,7 @@ export default class TouchPager extends React.Component<TouchPagerProps, TouchPa
             this.props.goBackwards();
           }
         }
-
+        
       }
       let newValue = closeToNext ? (absoluteDrag + (absoluteDrag/10)) : (absoluteDrag - (allDrag/10));
       if (!closeToNext && newValue < 0){
@@ -95,4 +95,5 @@ export default class TouchPager extends React.Component<TouchPagerProps, TouchPa
       <div className="touch-pager__next-page" style={{position: "absolute", top: 0, height: "100%", left: "100%", width: "100%", transform: `translateX(${this.state.drag}px)`}}>{this.props.next}</div>
     </div>
   }
+  
 }

@@ -8,12 +8,10 @@ import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
-import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
 
-import { deleteDiscussionArea, DeleteDiscussionAreaTriggerType } from '~/actions/discussion';
-import { DiscussionAreaType, DiscussionType } from '~/reducers/discussion';
+import '~/sass/elements/buttons.scss';
+import { deleteDiscussionArea, DeleteDiscussionAreaTriggerType } from '~/actions/main-function/discussion';
+import { DiscussionAreaType, DiscussionType } from '~/reducers/main-function/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionDeleteAreaProps {
@@ -52,13 +50,13 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
     if (!area){
       return this.props.children;
     }
-
+    
     let content = (closeDialog: ()=>any) => <div>
       {this.props.i18n.text.get('plugin.discussion.deletearea.info')}
     </div>
-
+       
     let footer = (closeDialog: ()=>any)=>{
-      return (
+      return (          
          <div className="dialog__button-set">
           <Button buttonModifiers={["fatal", "standard-ok"]} onClick={this.deleteArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.deletearea.send')}
@@ -69,7 +67,7 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
         </div>
       )
     }
-
+    
     return <Dialog modifier="delete-area"
       title={this.props.i18n.text.get('plugin.discussion.deletearea.topic')}
       content={content} footer={footer}>

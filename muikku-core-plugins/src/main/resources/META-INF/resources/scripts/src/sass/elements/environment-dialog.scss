@@ -6,6 +6,7 @@
 .env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   @include text;
+  background-color: $color-overlay-background;
   bottom: 0;
   display: block;
   left: 0;
@@ -15,10 +16,6 @@
   right: 0;
   top: 0;
   z-index: 9999;
-
-  * {
-    outline: none;
-  }
 
   &.visible {
     opacity: 1;
@@ -41,12 +38,11 @@
 .env-dialog__wrapper {
   background-color: $color-application-dialog-background-color;
   border-top: 1px solid $color-application-dialog-border-color;
-  bottom: -100%;
-  box-shadow: $env-dialog-box-shadow;
   display: flex;
   justify-content: center;
-  left: 0;
   position: absolute;
+  bottom: -100%;
+  left: 0;
   right: 0;
   top: 0;
 
@@ -62,14 +58,14 @@
   font-family: $text-font-family;
   height: 100%;
   overflow: auto;
-  width: 100%;
+  width: 100%; 
 
   @include breakpoint($breakpoint-desktop) {
     max-width: 760px;
     overflow: initial;
   }
 
-  @include breakpoint($breakpoint-desktop-xl) {
+  @include breakpoint($breakpoint-desktop-xl) { 
     max-width: 830px;
   }
 }
@@ -90,16 +86,14 @@
 }
 
 .env-dialog__body {
-  display: flex;
   flex-basis: auto;
-  flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
   padding: 0 10px;
 }
 
 .env-dialog__footer {
-  padding: 0 10px 10px;
+  padding: 10px;
 }
 
 .env-dialog__actions {
@@ -137,15 +131,7 @@
 }
 
 .env-dialog__row {
-  margin-bottom: 10px;
-}
-
-.env-dialog__row--ckeditor {
-  display: flex;
-  flex-basis: auto;
-  flex-direction: column;
-  flex-grow: 1;
-  flex-shrink: 1;
+  margin-top: 10px;
 }
 
 .env-dialog__row--communicator-signature,
@@ -156,7 +142,7 @@
   padding: 10px 0;
 }
 
-.env-dialog__row--new-discussion-options {
+.env-dialog__row---new-discussion-options {
   display: flex;
   flex-flow: column wrap;
 
@@ -167,7 +153,7 @@
 
 .env-dialog__row--new-announcement-options {
   display: flex;
-  flex-direction: row nowrap;
+  flex-direction: column;
 
   @include breakpoint($breakpoint-pad) {
     flex-direction: initial;
@@ -177,7 +163,7 @@
 .env-dialog__form-element-container {
   display: flex;
   flex-basis: auto;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
   position: relative;
@@ -185,13 +171,12 @@
   .cke {
     border: 2px solid $color-env-dialog-form-element-border;
     border-radius: 3px;
-    flex-basis: 100%;
     flex-grow: 1;
-    flex-shrink: 1;
+  }
 
-    @include breakpoint($breakpoint-pad) {
-      flex-basis: 210px;
-    }
+  textarea {
+    // This is needed for the bottom margins to work on main functions
+    min-height: 210px;
   }
 
   &:not(:first-child) {
@@ -206,24 +191,8 @@
   flex-grow: 0;
 
   &:not(:first-child) {
-    margin-left: 10px;
-
     @include breakpoint($breakpoint-pad) {
-      margin-left: 20px;
-    }
-  }
-}
-
-.env-dialog__form-element-container--pinned-thread,
-.env-dialog__form-element-container--locked-thread {
-  flex-direction: row;
-  flex-grow: 0;
-
-  &:not(:first-child) {
-    margin-left: 10px;
-
-    @include breakpoint($breakpoint-pad) {
-      margin-left: 20px;
+      margin-left: 0;
     }
   }
 }
@@ -232,11 +201,13 @@
   align-items: center;
   color: $color-text-default;
   display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
-  height: 1.45rem;
-  padding: 0 0 5px;
+  padding: 5px 10px 5px 0;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -246,7 +217,7 @@
 .env-dialog__selected-item {
   align-items: center;
   background-color: $color-form-element-selected-item-background;
-  border-radius: 4px;
+  border-radius: 4px; 
   color: $color-form-element-selected-item-text;
   display: inline-flex;
   font-weight: 300;
@@ -260,6 +231,10 @@
     height: 32px;
     margin: 2px 4px 2px 0;
   }
+}
+
+.env-dialog__selected-item-label {
+ 
 }
 
 .env-dialog__selected-item-action {
@@ -281,9 +256,9 @@
 }
 
 .env-dialog__input--new-discussion-thread-area {
-  flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  flex-basis: auto;
 }
 
 .env-dialog__input {
@@ -298,7 +273,7 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 0;
-  margin: 0 0 0 5px;
+  margin: 0 0 0 3px;
 }
 
 .env-dialog__input-description {
@@ -311,9 +286,9 @@
 }
 
 .env-dialog__input[type="checkbox"] {
-  align-items: center;
-  -moz-appearance: none;
   -webkit-appearance: none;
+  -moz-appearance: none;
+  align-items: center;
   appearance: none;
   border: solid 2px $color-env-dialog-form-element-border;
   border-radius: 3px;
@@ -333,7 +308,7 @@
   color: $color-default;
   content: "\e639";
   font-family: muikku;
-  font-size: 0.875rem;
+  font-size: .875rem;
 }
 
 .env-dialog__input--date-picker {

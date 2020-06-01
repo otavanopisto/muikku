@@ -4,18 +4,19 @@ import Aside from './body/aside';
 
 import * as React from 'react';
 
-interface CommunicatorBodyProps {
 
+interface CommunicatorBodyProps {
+  
 }
 
 interface CommunicatorBodyState {
-
+  
 }
 
 export default class CommunicatorBody extends React.Component<CommunicatorBodyProps,CommunicatorBodyState> {
   constructor(props: CommunicatorBodyProps){
     super(props);
-
+    
     this.openSignatureDialog = this.openSignatureDialog.bind(this);
   }
   openSignatureDialog(){

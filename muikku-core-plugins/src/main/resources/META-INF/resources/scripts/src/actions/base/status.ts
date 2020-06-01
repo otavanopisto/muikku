@@ -23,7 +23,7 @@ let logout:LogoutTriggerType = function logout(){
     payload: null
   }
 }
-
+  
 let updateStatusProfile:UpdateStatusProfileTriggerType = function updateStatusProfile(profile){
   return {
     type: 'UPDATE_STATUS_PROFILE',

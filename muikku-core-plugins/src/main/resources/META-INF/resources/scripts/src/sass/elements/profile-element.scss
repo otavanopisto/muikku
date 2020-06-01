@@ -20,13 +20,18 @@
 
 .profile-element__user-picture {
   align-items: center;
-  background-color: $color-profile-empty-image-base;
+  background-color: $color-profile-empty-image-base;  
   background-size: contain;
   display: flex;
   height: 180px;
   justify-content: center;
   position: relative;
   width: 180px;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 250px;
+    width: 250px;
+  }
 
   input {
     cursor: pointer;
@@ -37,19 +42,15 @@
     top: 0;
     width: 100%;
   }
-
-  @include breakpoint($breakpoint-pad) {
-    height: 250px;
-    width: 250px;
-  }
-
 }
 
 .profile-element__user-picture--empty {
 
   &::before {
-    color: $color-default;
     content: "\e114";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: $color-default;
     font-family: "muikku";
     font-size: 65px;
     font-style: normal;
@@ -57,6 +58,7 @@
     font-weight: normal;
     height: 65px;
     line-height: 1;
+    speak: none;
     text-transform: none;
     width: 65px;
   }
@@ -72,8 +74,7 @@
   padding-bottom: 20px;
 }
 
-.profile-element__label {
-  display: block;
+.profile_element-label {
   font-weight: 600;
   padding-bottom: 2px;
 }

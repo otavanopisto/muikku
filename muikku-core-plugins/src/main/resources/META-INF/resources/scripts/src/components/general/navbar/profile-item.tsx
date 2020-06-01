@@ -17,12 +17,11 @@ interface ProfileItemProps {
   modifier: string,
   i18n: i18nType,
   status: StatusType,
-  logout: LogoutTriggerType,
-  isProfileContainedInThisApp: boolean,
+  logout: LogoutTriggerType
 }
 
 interface ProfileItemState {
-
+  
 }
 
 class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
@@ -35,28 +34,28 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         icon: "user",
         text: 'plugin.profileBadge.links.personalInfo',
         href: "/profile",
-        to: this.props.isProfileContainedInThisApp,
+        to: true
       },
       {
-        icon: "question",
+        icon: "forgotpassword",
         text: 'plugin.profileBadge.links.userGuide',
         href: "https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials",
         openInNewTab: "_blank"
       },
       {
-        icon: "support",
+        icon: "helpdesk",
         text: 'plugin.profileBadge.links.helpdesk',
         href: "mailto:helpdesk@muikkuverkko.fi"
       },
       {
-        icon: "sign-out",
+        icon: "signout",
         text: 'plugin.profileBadge.links.logout',
         onClick: this.props.logout
       }
     ]
     return <Dropdown modifier="profile" items={items.map((item)=>{
         return (closeDropdown: ()=>any)=>{return <Link href={item.href} to={item.to ? item.href : null}
-          className={`link link--full link--profile-dropdown`}
+         className={`link link--full link--profile`}
          onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}} openInNewTab={item.openInNewTab}>
           <span className={`link__icon icon-${item.icon}`}></span>
           <span>{this.props.i18n.text.get(item.text)}</span>
@@ -64,7 +63,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       })}>
       <Link className="button-pill button-pill--profile">
         {
-          this.props.status.hasImage ?
+          this.props.status.hasImage ? 
             <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
               <div className="button-image"><span className="button-pill__icon icon-user"/></div>
         }

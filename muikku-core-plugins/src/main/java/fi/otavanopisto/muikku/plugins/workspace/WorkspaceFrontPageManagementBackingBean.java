@@ -74,7 +74,7 @@ public class WorkspaceFrontPageManagementBackingBean extends AbstractWorkspaceBa
     
     try {
       WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
-      contentNodes = Arrays.asList(workspaceMaterialController.createContentNode(frontPage, null));
+      contentNodes = Arrays.asList(workspaceMaterialController.createContentNode(frontPage));
     }
     catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Error loading materials", e);

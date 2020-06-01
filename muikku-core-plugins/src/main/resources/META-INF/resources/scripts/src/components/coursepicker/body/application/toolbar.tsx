@@ -22,40 +22,40 @@ interface CoursepickerToolbarState {
 }
 
 class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, CoursepickerToolbarState> {
-  private searchTimer: NodeJS.Timer;
+  private searchTimer:number;
   private focused:boolean;
   constructor(props: CoursepickerToolbarProps){
     super(props);
-
+    
     this.state = {
       searchquery: this.props.workspaces.activeFilters.query || ""
     }
-
+    
     this.setSearchQuery = this.setSearchQuery.bind(this);
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
-
+    
     this.searchTimer = null;
     this.focused = false;
   }
-
+  
   updateSearchWithQuery(query: string){
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     locationData.q = query;
     window.location.hash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
   }
-
+  
   setSearchQuery(e: React.ChangeEvent<HTMLInputElement>){
     clearTimeout(this.searchTimer);
-
+    
     this.setState({
       searchquery: e.target.value
     });
-
+    
     this.searchTimer = setTimeout(this.updateSearchWithQuery.bind(this, e.target.value), 400);
   }
-
+  
   componentWillReceiveProps(nextProps: CoursepickerToolbarProps){
     if (!this.focused && (nextProps.workspaces.activeFilters.query || "") !== this.state.searchquery){
       this.setState({
@@ -63,17 +63,17 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
       });
     }
   }
-
+  
   onInputFocus(){
     this.focused = true;
   }
-
+  
   onInputBlur(){
     this.focused = false;
   }
 
   render(){
-      return (
+      return ( 
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">

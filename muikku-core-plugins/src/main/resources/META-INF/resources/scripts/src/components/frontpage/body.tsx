@@ -33,7 +33,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
     return (<div>
       <FrontpageNavbar />
       <FrontpageHero i18n={this.props.i18n}/>
-      <ScreenContainer viewModifiers="frontpage">
+      <ScreenContainer fullHeight={false}>
         <FrontpageStudying i18n={this.props.i18n}/>
         <FrontpageVideos/>
         <FrontpageNews i18n={this.props.i18n}/>

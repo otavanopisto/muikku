@@ -1,4 +1,4 @@
-import { UserType } from "~/reducers/user-index";
+import { UserType } from "~/reducers/main-function/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
 import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider";
@@ -15,7 +15,7 @@ interface StudentProps {
 }
 
 interface StudentState {
-
+  
 }
 
 export default class Student extends React.Component<StudentProps, StudentState> {
@@ -27,7 +27,7 @@ export default class Student extends React.Component<StudentProps, StudentState>
         <span className="application-list__header-primary"><span>{getName(this.props.student as any as UserType, true)}</span> <span className="application-list__header-helper">{this.props.student.email}</span></span>
         <span className="application-list__header-secondary">{this.props.student.studyProgrammeName}</span>
       </ApplicationListItemHeader>
-
+        
       {this.props.student.flags.length ? <ApplicationListItemFooter modifiers="student">
         <div className="labels">
         {this.props.student.flags.map((flag: GuiderStudentUserProfileLabelType)=>{

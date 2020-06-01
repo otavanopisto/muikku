@@ -121,10 +121,6 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.listByWorkspaceEntityAndRoleArchetypeAndActiveAndArchived(workspaceEntity, WorkspaceRoleArchetype.STUDENT, Boolean.TRUE, Boolean.FALSE);
   }
 
-  public List<WorkspaceUserEntity> listWorkspaceStudents(WorkspaceEntity workspaceEntity) {
-    return workspaceUserEntityDAO.listByWorkspaceEntityAndRoleArchetypeAndArchived(workspaceEntity, WorkspaceRoleArchetype.STUDENT, Boolean.FALSE);
-  }
-
   public List<WorkspaceUserEntity> listInactiveWorkspaceStudents(WorkspaceEntity workspaceEntity) {
     return workspaceUserEntityDAO.listByWorkspaceEntityAndRoleArchetypeAndActiveAndArchived(workspaceEntity, WorkspaceRoleArchetype.STUDENT, Boolean.FALSE, Boolean.FALSE);
   }

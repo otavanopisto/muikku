@@ -9,7 +9,7 @@ import '~/sass/elements/rich-text.scss';
 
 
 interface PlaygroundProps {
-
+  
 }
 
 interface PlaygroundState {
@@ -20,18 +20,18 @@ interface PlaygroundState {
 export default class Playground extends React.Component<PlaygroundProps, PlaygroundState> {
   constructor(props: PlaygroundProps){
     super(props);
-
+    
     this.onChange = this.onChange.bind(this);
     this.reloadStylesheets = this.reloadStylesheets.bind(this);
     this.showURLEncoded = this.showURLEncoded.bind(this);
-
+    
     let data = window.location.hash.replace("#","").split("?")[1];
     let def;
     if (data){
       let url = new ((window as any).URL)("http://__playground?" + data);
       def = url.searchParams.get("__playground");
     }
-
+    
     this.state = {
       html: def || localStorage.getItem('HTML') || "",
       codeDisplayed: true

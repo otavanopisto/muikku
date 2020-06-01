@@ -2,59 +2,59 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
+
+// Should be flattened
+
 .autocomplete {
+  width: 100%;
   display: block;
   position: relative;
-  width: 100%;
   z-index: 99;
-}
 
-.autocomplete__input {
-  display: block;
-  width: 100%;
-}
-
-.autocomplete__list {
-  background-color: $color-autocomplete-list-background-color;
-  border: solid 1px $color-autocomplete-list-border;
-  border-top: 0;
-  left: 0;
-  max-height: 350px;
-  overflow: auto;
-  position: absolute;
-  top: 100%;
-  width: 100%;
-  z-index: 10;
-}
-
-.autocomplete__list-item {
-  @include prefix(transition, moz o ms webkit, background-color 0.3s);
-  background-color: $color-autocomplete-list-background-color;
-  border-top: solid 1px $color-autocomplete-list-border;
-  cursor: pointer;
-  padding: 10px;
-
-  &:hover,
-  &.hover {
-    background-color: $color-autocomplete-list-item-hover;
+  .autocomplete__input {
+    display: block;
+    width: 100%;
   }
 
-  &:active,
-  &.active {
-    background-color: $color-autocomplete-list-item-active;
+  .autocomplete__list {
+    position: absolute;
+    overflow: auto;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 350px;
+    background-color: $color-autocomplete-list-background-color;
+    border: solid 1px $color-autocomplete-list-border;
+    border-top: none;
+    z-index: 10;
+
+    .autocomplete__list__item {
+      @include prefix(transition, moz o ms webkit, background-color 0.3s);
+      border-top: solid 1px $color-autocomplete-list-border;
+      background-color: $color-autocomplete-list-background-color;
+      padding: 10px;
+
+      &:hover, &.hover {
+        background-color: $color-autocomplete-list-item-hover;
+      }
+
+      &:active, &.active {
+        background-color: $color-autocomplete-list-item-active;
+      }
+
+      &.selected {
+        background-color: $color-autocomplete-list-item-selected;
+      }
+    }
   }
 
-  &.selected {
-    background-color: $color-autocomplete-list-item-selected;
+  &.autocomplete--new-message {
+    margin-bottom: 10px;
   }
-}
-
-.autocomplete--new-message {
-  margin-bottom: 10px;
 }
 
 .autocomplete--new-announcement-recipients {
-  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .autocomplete__recipient {
@@ -64,10 +64,10 @@
     opacity: 0.6;
   }
 
-  > span {
+  span {
     margin-right: 5px;
   }
-}
+} 
 
 .autocomplete__selected-item {
   align-items: center;
@@ -84,3 +84,4 @@
     opacity: 0.6;
   }
 }
+ 

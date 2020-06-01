@@ -23,7 +23,7 @@ class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNav
     super(props);
   }
   render(){
-    return <Navbar modifier="frontpage" isProfileContainedInThisApp={false} navbarItems={[
+    return <Navbar modifier="frontpage" navbarItems={[
       {
         modifier: "studying",
         item: (<Link href="#studying" className="link link--frontpage link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.studying')}</span></Link>)

@@ -1,15 +1,15 @@
 import * as React from 'react';
 import Dialog from '~/components/general/dialog';
+import Link from '~/components/general/link';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import {ColorResult} from 'react-color';
 //Another weird typescript bug, won't import properly
-import { ChromePicker, ColorState } from "react-color";
+const ChromePicker:any = require('react-color').ChromePicker;
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 
 import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
-
 import { GuiderUserLabelType } from '~/reducers/main-function/guider';
 import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
 import GuiderLabelShareDialog from './label-share';
@@ -88,7 +88,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       description: props.label.description
     });
   }
-  onColorChange(color: ColorState){
+  onColorChange(color: ColorResult){
     if (this.state.removed){
       return;
     }
@@ -165,7 +165,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
       return (
-        <div className="dialog__content-row dialog__content-row--label" style={{opacity: this.state.removed ? 0.5 : null}}>
+        <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
             <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
               <span className={`glyph icon-flag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
@@ -175,17 +175,15 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
               {sliderPicker}
             </div> : null}
           </div>
-          <div className="dialog__container dialog__container--label-form">
-            <div className="form-element form-element--edit-label">
-              <label htmlFor="guider-label-name">{this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')}</label>
-              <input id="guider-label-name" placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
-                className="form-element__input form-element__input--guider-label-name"
-                disabled={this.state.removed}
-                onChange={this.onNameChange}/>
+          <div className="dialog__container dialog__container--form">
+            <div className="form-element">
+            <input placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
+              className="form-element__input form-element__input--guider-label-name"
+              disabled={this.state.removed}
+              onChange={this.onNameChange}/>
             </div>
-            <div className="form-element form-element--edit-label">
-              <label htmlFor="guider-label-description">{this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')}</label>
-              <textarea id="guider-label-description" placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')} className="form-element__textarea form-element__textarea--edit-label"
+            <div className="form-element">
+              <textarea placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')} className="form-element__textarea"
               value={this.state.description}
               disabled={this.state.removed}
               onChange={this.onDescriptionChange}/>
@@ -194,10 +192,10 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider-edit-label"
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider" 
      title={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.title')}
      content={content} footer={footer}>{this.props.children}</Dialog>
-  }
+  } 
 }
 
 function mapStateToProps(state: StateType){

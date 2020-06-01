@@ -13,14 +13,14 @@
       if (this.options.text) {
         this._content.html(this.options.text.replace(/\u00A0/g, ' ').replace(/(?:\r\n|\r|\n)/g, '<br/>')).hide();
         if ((typeof MathJax) != 'undefined') {
-//          MathJax.Hub.Config({
-//            "HTML-CSS": {
-//              scale: 90
-//            },
-//            NativeMML: {
-//              scale: 90
-//            }
-//          });
+          MathJax.Hub.Config({
+            "HTML-CSS": {
+              scale: 90
+            },
+            NativeMML: {
+              scale: 90
+            }
+          });
           MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(this._content)[0]]);
         }
       }

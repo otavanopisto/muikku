@@ -3,7 +3,6 @@ import {Store} from 'react-redux';
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
 import { Action } from 'redux';
-import { WebsocketStateType } from '~/reducers/util/websocket';
 
 type ListenerType = {
     [name: string]: {
@@ -17,27 +16,22 @@ export default class MuikkuWebsocket {
   private ticket:any;
   private webSocket:WebSocket;
   private socketOpen:boolean;
-  private messagesPending:{
-    eventType: string,
-    data: any,
-    onSent?: ()=>any,
-    stackId?: string
-  }[];
+  private messagesPending:any[];
   private pingHandle:any;
   private pinging:boolean;
   private pingTime:number;
   private listeners:ListenerType;
   private baseListeners:ListenerType;
   private store: Store<any>;
-  private reconnectTimeout: NodeJS.Timer;
-
+  private reconnectTimeout: number;
+  
   constructor(store: Store<any>, listeners: ListenerType, options={
     reconnectInterval: 200,
     pingTimeStep: 1000,
     pingTimeout: 10000
   }) {
     this.options = options;
-
+    
     this.ticket = null;
     this.webSocket = null;
     this.socketOpen = false;
@@ -48,7 +42,7 @@ export default class MuikkuWebsocket {
     this.listeners = listeners;
     this.baseListeners = listeners;
     this.store = store;
-
+    
     this.getTicket((ticket: any)=> {
       if (this.ticket) {
         this.openWebSocket();
@@ -58,61 +52,36 @@ export default class MuikkuWebsocket {
       }
     });
 
-    this.store.dispatch({
-      'type': 'INITIALIZE_WEBSOCKET',
-      'payload': this
-    });
-
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
-  sendMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
-    if (this.socketOpen) {
-      try {
-        this.webSocket.send(JSON.stringify({
-          eventType: eventType,
-          data: data
-        }));
-        let websocketState:WebsocketStateType = this.store.getState().websocket;
-        this.messagesPending.length === 0 && !websocketState.synchronized && this.trigger("webSocketSync");
-        onSent && onSent();
-      } catch (e) {
-        this.queueMessage(eventType, data, onSent, stackId);
-        this.trigger("webSocketDesync");
-        this.reconnect();
-      }
-    } else {
-      this.queueMessage(eventType, data, onSent, stackId);
-      this.trigger("webSocketDesync");
-    }
-  }
-  queueMessage(eventType: string, data: any, onSent?: ()=>any, stackId?: string){
-    let index = stackId && this.messagesPending.findIndex((m)=>m.stackId === stackId);
+  sendMessage(eventType: any, data: any){
     let message = {
       eventType,
-      data,
-      onSent,
-      stackId
-    };
-    if (typeof index === "number" && index !== -1){
-      this.messagesPending[index] = message
+      data
+    }
+    
+    if (this.socketOpen) {
+      try {
+        this.webSocket.send(JSON.stringify(message));
+      } catch (e) {
+        this.messagesPending.push({
+          eventType: eventType,
+          data: data
+        });
+        this.reconnect();
+      }
     } else {
       this.messagesPending.push(message);
     }
   }
-  addEventListener(event: string, actionCreator: Function){
+  addEventListener(event: string, action: Function){
     let evtListeners = this.listeners[event] || {
       actions: [],
       callbacks: []
     };
-    evtListeners.actions.push(actionCreator);
+    evtListeners.actions.push(action);
     this.listeners[event] = evtListeners;
     return this;
-  }
-  removeEventCallback(event: string, actionCreator: Function){
-    let index = this.listeners[event].callbacks.indexOf(actionCreator);
-    if (index !== -1){
-      this.listeners[event].callbacks.splice(index, 1);
-    }
   }
   addEventCallback(event: string, action: Function){
     let evtListeners = this.listeners[event] || {
@@ -135,7 +104,7 @@ export default class MuikkuWebsocket {
         data
       }
     });
-
+    
     if (this.listeners[event]){
       let listeners = this.listeners[event].actions;
       if (listeners){
@@ -147,7 +116,7 @@ export default class MuikkuWebsocket {
           }
         }
       }
-
+      
       let otherListeners = this.listeners[event].callbacks;
       if (otherListeners){
         for (let callback of otherListeners){
@@ -156,7 +125,7 @@ export default class MuikkuWebsocket {
       }
     }
   }
-
+  
   getTicket(callback: Function) {
     try {
       if (this.ticket) {
@@ -184,7 +153,7 @@ export default class MuikkuWebsocket {
       this.store.dispatch(actions.displayNotification("Ticket creation failed on an internal error", 'error') as Action);
     }
   }
-
+  
   createTicket(callback: Function) {
     mApi().websocket.ticket.create()
       .callback((err: Error, ticket: any)=>{
@@ -195,31 +164,31 @@ export default class MuikkuWebsocket {
         }
       });
   }
-
+  
   onWebSocketConnected() {
     this.socketOpen = true;
-    this.trigger("webSocketConnected");
-
+    this.trigger("webSocketConnected"); 
+    
     while (this.socketOpen && this.messagesPending.length) {
-      let message = this.messagesPending.shift();
-      this.sendMessage(message.eventType, message.data, message.onSent);
+      var message = this.messagesPending.shift();
+      this.sendMessage(message.eventType, message.data);
     }
   }
-
+  
   onWebSocketError() {
     this.reconnect();
   }
-
+  
   onWebSocketClose() {
-    this.trigger("webSocketDisconnected");
+    this.trigger("webSocketDisconnected"); 
     this.reconnect();
   }
-
+  
   openWebSocket() {
     let host = window.location.host;
     let secure = location.protocol == 'https:';
     this.webSocket = this.createWebSocket((secure ? 'wss://' : 'ws://') + host + '/ws/socket/' + this.ticket);
-
+    
     if (this.webSocket) {
       this.webSocket.onmessage = this.onWebSocketMessage.bind(this);
       this.webSocket.onerror = this.onWebSocketError.bind(this);
@@ -239,17 +208,17 @@ export default class MuikkuWebsocket {
       this.store.dispatch(actions.displayNotification("Could not open WebSocket connection", 'error') as Action);
     }
   }
-
+  
   createWebSocket(url: string) {
     if ((typeof (<any>window).WebSocket) !== 'undefined') {
       return new WebSocket(url);
     } else if ((typeof (<any>window).MozWebSocket) !== 'undefined') {
       return new (<any>window).MozWebSocket(url);
     }
-
+    
     return null;
   }
-
+  
   startPinging() {
     this.pingHandle = setInterval(()=>{
       if (this.socketOpen === false) {
@@ -260,23 +229,23 @@ export default class MuikkuWebsocket {
         this.pinging = true;
       } else {
         this.pingTime += this.options.pingTimeStep;
-
+        
         if (this.pingTime > this.options.pingTimeout) {
           if (console) console.log("ping failed, reconnecting...");
           this.pinging = false;
           this.pingTime = 0;
-
+          
           this.reconnect();
         }
       }
     }, this.options.pingTimeStep);
   }
-
+  
   reconnect() {
-    let wasOpen = this.socketOpen;
+    var wasOpen = this.socketOpen; 
     this.socketOpen = false;
     clearTimeout(this.reconnectTimeout);
-
+    
     this.reconnectTimeout = setTimeout(()=>{
       try {
         if (this.webSocket) {
@@ -288,9 +257,9 @@ export default class MuikkuWebsocket {
           }
         }
       } catch (e) {
-        // Ignore exceptions related to discarding a WebSocket
+        // Ignore exceptions related to discarding a WebSocket 
       }
-
+      
       this.getTicket((ticket: any)=>{
         if (this.ticket) {
           this.openWebSocket();
@@ -298,14 +267,14 @@ export default class MuikkuWebsocket {
           this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
         }
       });
-
+      
     }, this.options.reconnectInterval);
   }
-
+  
   onWebSocketMessage(event: any) {
-    let message = JSON.parse(event.data);
-    let eventType = message.eventType;
-
+    var message = JSON.parse(event.data);
+    var eventType = message.eventType;
+    
     if (eventType == "ping:pong") {
       this.pinging = false;
       this.pingTime = 0;
@@ -313,7 +282,7 @@ export default class MuikkuWebsocket {
       this.trigger(eventType, message.data);
     }
   }
-
+  
   onBeforeWindowUnload() {
     if (this.webSocket) {
       this.webSocket.onmessage = ()=>{};

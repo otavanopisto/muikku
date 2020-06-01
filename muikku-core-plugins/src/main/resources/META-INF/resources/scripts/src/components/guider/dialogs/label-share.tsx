@@ -9,12 +9,10 @@ import mApi from '~/lib/mApi';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
-
 import { GuiderUserLabelType } from '~/reducers/main-function/guider';
 
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import { StaffRecepientType, UserIndexType, UserType } from '~/reducers/user-index';
+import { StaffRecepientType, UserIndexType, UserType } from '~/reducers/main-function/user-index';
 import promisify from '~/util/promisify';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import {StateType} from '~/reducers';
@@ -38,18 +36,19 @@ interface GuiderLabelShareDialogState {
   selectedItems: StaffRecepientType[]
 }
 
+
 class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps, GuiderLabelShareDialogState> {
   sharesResult: any;
   constructor(props: GuiderLabelShareDialogProps){
     super(props);
-
+    
     this.share = this.share.bind(this);
     this.getShares = this.getShares.bind(this);
     this.onSharedMembersChange = this.onSharedMembersChange.bind(this);
     this.updateSharesState = this.updateSharesState.bind(this);
-
+    
     this.sharesResult = [];
-
+    
     this.state = {
       selectedItems: []
     }
@@ -132,10 +131,10 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
           hasWorkspacePermission={false} hasStaffPermission autofocus showEmails={false} showFullNames/>
       )
     }
-
+    
     //TODO UKKONEN
     //PLEASE MAKE THIS DIALOG LARGER, IT HAS AN INPUT CONTACTS AUTOFILL AND ITS A PAIN
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onOpen={this.getShares} modifier="guider-share-label"
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onOpen={this.getShares} modifier="guider" 
      title={this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.title', this.props.label.name)}
      content={content} footer={footer}>{this.props.children}</Dialog>
   }

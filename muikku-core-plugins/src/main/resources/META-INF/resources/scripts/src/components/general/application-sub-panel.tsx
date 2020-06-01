@@ -10,7 +10,7 @@ interface SubPanelProps {
 }
 
 interface SubPanelState {
-
+  
 }
 
 export default class ApplicationSubPanel extends React.Component<SubPanelProps, SubPanelState> {
@@ -39,3 +39,4 @@ export  class ApplicationSubPanelItem extends React.Component<SubPanelItemProps,
     </div>
   }
 }
+

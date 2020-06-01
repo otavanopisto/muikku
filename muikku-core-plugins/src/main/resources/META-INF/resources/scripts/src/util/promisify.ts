@@ -9,7 +9,7 @@ export default function promisify(fn: any, opts: string | PromisifyOptions){
         if (err){
           return reject(err);
         }
-
+        
         return resolve(result);
       }]);
       realFn.apply(actualOpts.context || fn, realArgs);
@@ -27,7 +27,7 @@ export function promisifyNewConstructor(Constructor: any, onload: string, onerro
       obj[onerror] = (err:any)=>{
         reject(err);
       }
-
+      
       if (setupAttributes){
         Object.keys(setupAttributes).forEach((attr)=>{
           obj[attr] = setupAttributes[attr];

@@ -5,7 +5,7 @@ import Link from '~/components/general/link';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { connect, Dispatch } from 'react-redux';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType } from '~/reducers/user-index';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType } from '~/reducers/main-function/user-index';
 import { StatusType } from '~/reducers/base/status';
 import { colorIntToHex, getName } from '~/util/modifiers';
 
@@ -34,7 +34,7 @@ class Message extends React.Component<MessageProps, MessageState> {
       type: "user",
       value: this.props.message.sender
     };
-
+  
     //These are the receipients of the message
     let recipientsObject: Array<UserRecepientType> = this.props.message.recipients.map(( r ): UserRecepientType => ( {
       type: "user",
@@ -45,17 +45,17 @@ class Message extends React.Component<MessageProps, MessageState> {
         nickName: r.nickName
       }
     })).filter(user => user.value.id !== this.props.status.userId); //we are filtering the sender from the recepient, just in case
-
+  
     //These are the usergroup recepients
     let userGroupObject: Array<UserGroupRecepientType> = this.props.message.userGroupRecipients.map((ug: any): UserGroupRecepientType => ( {
       type: "usergroup",
       value: ug
     }));
-
+    
     let workspaceRecepientsFiltered = this.props.message.workspaceRecipients.filter((w, pos, self)=>{
       return self.findIndex((w2)=>w2.workspaceEntityId === w.workspaceEntityId) === pos;
     });
-
+  
     //And the workspace recepients, sadly has to force it
     let workspaceObject: Array<WorkspaceRecepientType> = workspaceRecepientsFiltered.map((w): WorkspaceRecepientType => ({
       type: "workspace",
@@ -64,7 +64,7 @@ class Message extends React.Component<MessageProps, MessageState> {
         name: w.workspaceName,
       } as WorkspaceType)
     }));
-
+  
     //The basic reply target is the sender
     let replytarget = [senderObject];
     if (senderObject.value.id === this.props.status.userId) {
@@ -120,7 +120,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
               <span className="label__text">{label.labelName}</span>
             </span>
-          })}
+          })} 
         </div> : null}
       </div>
       <div className="application-list__item-body application-list__item-body--communicator-message-thread">
@@ -157,4 +157,4 @@ function mapDispatchToProps( dispatch: Dispatch<any> ) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Message);
+)( Message );

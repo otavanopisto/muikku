@@ -36,6 +36,6 @@ public class WorkspaceEntityFileController {
   }
 
   public boolean getHasCustomImage(WorkspaceEntity workspaceEntity) {
-    return findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-cropped") != null;
+    return findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-original") != null;
   }
 }

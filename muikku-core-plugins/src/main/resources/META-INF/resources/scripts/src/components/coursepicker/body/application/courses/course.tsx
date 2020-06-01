@@ -29,11 +29,11 @@ interface CourseState {
 class Course extends React.Component<CourseProps, CourseState>{
   constructor(props: CourseProps){
     super(props);
-
+    
     this.state = {
       expanded: false
     }
-
+    
     this.toggleExpanded = this.toggleExpanded.bind(this);
   }
   toggleExpanded(){

@@ -20,10 +20,10 @@ interface OrganizationNewWorkspaceState {
 
 class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceProps, OrganizationNewWorkspaceState> {
   render(){
-
+    
     let content = (closePortal: ()=> any) => <div></div>;
     let footer = (closePortal: ()=> any) => <div></div>;
-
+    
     return(<JumboDialog modifier="new-message"
         title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.title')}
         content={content} footer={footer}>

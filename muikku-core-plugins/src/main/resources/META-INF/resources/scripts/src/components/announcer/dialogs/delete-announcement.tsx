@@ -10,8 +10,8 @@ import Link from '~/components/general/link';
 import Button from '~/components/general/button';
 import Dialog from '~/components/general/dialog';
 import { deleteSelectedAnnouncements, deleteAnnouncement,
-  DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/announcements';
-import { AnnouncementType } from 'reducers/announcements';
+  DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/main-function/announcements';
+import { AnnouncementType } from 'reducers/main-function/announcements';
 import {StateType} from '~/reducers';
 
 interface DeleteAnnouncementDialogProps {
@@ -30,9 +30,9 @@ interface DeleteAnnouncementDialogState {
 class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogProps, DeleteAnnouncementDialogState> {
   constructor(props: DeleteAnnouncementDialogProps){
     super(props);
-
+    
     this.deleteAnnouncement = this.deleteAnnouncement.bind(this);
-
+    
     this.state = {
       locked: false
     }
@@ -44,7 +44,7 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
         announcement: this.props.announcement,
         success: ()=>{
           this.props.onDeleteAnnouncementSuccess && this.props.onDeleteAnnouncementSuccess();
-
+          
           //announcement is deleted, which is its parent, setState triggers an error
           if (this.props.announcement){
             return;
@@ -68,9 +68,9 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
        this.props.i18n.text.get('plugin.announcer.deleteDialog.description') :
        this.props.i18n.text.get('plugin.announcer.deleteDialog.description')}
     </div>
-
+       
     let footer = (closeDialog: ()=>any)=>{
-      return (
+      return (          
          <div className="dialog__button-set">
           <Button buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteAnnouncement.bind(this, closeDialog)} disabled={this.state.locked}>
@@ -82,7 +82,7 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
         </div>
       )
     }
-
+    
     return <Dialog modifier="delete-announcement"
       title={this.props.i18n.text.get('plugin.announcer.deleteDialog.title')}
       content={content} footer={footer}>

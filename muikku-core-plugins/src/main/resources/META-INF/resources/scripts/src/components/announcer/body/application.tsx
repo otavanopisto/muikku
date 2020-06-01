@@ -27,27 +27,27 @@ interface AnnouncerApplicationState {
 
 class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
   render(){
-        let title = this.props.i18n.text.get('plugin.announcer.pageTitle')
-//        let icon = <Dropdown modifier="main-functions-settings" items={[
-//          closeDropdown=><Link className="link link--full link--main-functions-settings-dropdown" >
+        let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.announcer.pageTitle')}</h2>
+//        let icon = <Dropdown modifier="communicator-settings" items={[
+//          closeDropdown=><Link className="link link--full" >
 //          </Link>
 //        ]}>
 //          <Link className="button-pill button-pill--settings">
-//            <span className="button-pill__icon icon-cog"></span>
+//            <span className="button-pill__icon icon-settings"></span>
 //          </Link>
 //        </Dropdown>
         let primaryOption = <NewEditAnnouncement><Link className="button button--primary-function">
           {this.props.i18n.text.get('plugin.announcer.button.create')}
         </Link></NewEditAnnouncement>
         let toolbar = <Toolbar />
-
+ 
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
-        return (<div className="application-panel-wrapper">
+        return (<div>
           <ApplicationPanel modifier="announcer" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
             <Announcements/>
             <AnnouncementView/>
           </ApplicationPanel>
-          <NewEditAnnouncement><HoverButton icon="plus" modifier="new-announcement"/></NewEditAnnouncement>
+          <NewEditAnnouncement><HoverButton icon="edit" modifier="new-announcement"/></NewEditAnnouncement>
         </div>);
   }
 }

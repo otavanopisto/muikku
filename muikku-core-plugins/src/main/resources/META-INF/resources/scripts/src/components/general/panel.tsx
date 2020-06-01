@@ -6,7 +6,7 @@ interface PanelProps {
 }
 
 interface PanelState {
-
+  
 }
 
 export default class Panel extends React.Component<PanelProps, PanelState> {

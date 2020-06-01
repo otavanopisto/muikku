@@ -1,6 +1,11 @@
-.image-editor {
-  align-items: center;
-  cursor: move;
+.image-editor--profile {
   display: flex;
+  align-items: center;
   justify-content: center;
+  cursor: move;
+  
+  div {
+  	border: solid 3px #ccc;
+  	border-radius: 2px;
+  }
 }

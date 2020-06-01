@@ -27,17 +27,17 @@
       fieldOptions.trackInput = true;
       this.element.muikkuField(fieldOptions);
 
-//      MathJax.Hub.Config({
-//        jax: ["input/TeX", "output/SVG"],
-//        extensions: ["toMathML.js", "tex2jax.js", "MathMenu.js", "MathZoom.js", "fast-preview.js", "AssistiveMML.js", "a11y/accessibility-menu.js"],
-//        TeX: {
-//          extensions: ["AMSmath.js", "AMSsymbols.js", "noErrors.js", "noUndefined.js"]
-//        },
-//        tex2jax: {
-//          inlineMath: [["$$","$$"],["\\(","\\)"]]
-//        },
-//        SVG: {useFontCache: true, useGlobalCache: false, EqnChunk: 1000000, EqnDelay: 0}
-//      });
+      MathJax.Hub.Config({
+        jax: ["input/TeX", "output/SVG"],
+        extensions: ["toMathML.js", "tex2jax.js", "MathMenu.js", "MathZoom.js", "fast-preview.js", "AssistiveMML.js", "a11y/accessibility-menu.js"],
+        TeX: {
+          extensions: ["AMSmath.js", "AMSsymbols.js", "noErrors.js", "noUndefined.js"]
+        },
+        tex2jax: {
+          inlineMath: [["$$","$$"],["\\(","\\)"]]
+        },
+        SVG: {useFontCache: true, useGlobalCache: false, EqnChunk: 1000000, EqnDelay: 0}
+      });
 
       if (this._readonly) {
         this._initializeReadonly();

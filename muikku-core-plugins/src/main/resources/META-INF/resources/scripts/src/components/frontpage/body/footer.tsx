@@ -29,7 +29,7 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
             <span>044 794 3552</span>
           </p>
           <p className="footer__subitem">
-            <span className="glyph icon-envelope-alt"></span>
+            <span className="glyph icon-envelope"></span>
             <b>{this.props.i18n.text.get( 'plugin.footer.emailAddress.label' )}</b>
             <span>info@otavia.fi</span>
           </p>

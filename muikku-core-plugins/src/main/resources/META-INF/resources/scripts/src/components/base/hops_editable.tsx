@@ -1,14 +1,11 @@
 import * as React from "react";
 
+import '~/sass/elements/hops.scss';
 import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from '~/reducers';
-
-import '~/sass/elements/hops.scss';
-import '~/sass/elements/form-elements.scss';
-import '~/sass/elements/form.scss';
 
 interface HopsProps {
   data?: HOPSDataType,
@@ -32,7 +29,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       hops: props.data || props.defaultData
     }
   }
-
+  
   set( property: string, value: any ) {
     let nProp: any = {};
     nProp[property] = value || null;
@@ -61,14 +58,14 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return null;
     }
     return <div className="application-sub-panel text">
-
-    <div className="application-sub-panel__header application-sub-panel__header--studies-hops">{this.props.i18n.text.get("plugin.records.hops.title")}</div>
+    
+    <div className="application-sub-panel__header application-sub-panel__header--studies-hops">{this.props.i18n.text.get("plugin.records.hops.title")}</div>  
     <div className="application-sub-panel__body">
 
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title">
           {this.props.i18n.text.get( "plugin.records.hops.goals.upperSecondary" )}
-        </div>
+        </div>    
         <div className="application-sub-panel__item-data form-element">
           {["yes", "no", "maybe"].map( ( option: string ) => {
               let onEvent = this.set.bind( this, "goalSecondarySchoolDegree", option );
@@ -166,12 +163,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
               </div>
             } )}
         </div>
-      </div>
+      </div>          
       <div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           {this.props.i18n.text.get( "plugin.records.hops.languages.mandatory.additionalInfo" )}
         </div>
-      </div>
+      </div>          
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title">
           {this.props.i18n.text.get( "plugin.records.hops.languages.optional.title" )}
@@ -196,7 +193,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
             </span>
           </div>
           <div className="form-element__check-option-container">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.languages.spanish" )}</label>
+            <label>{this.props.i18n.text.get( "plugin.records.hops.languages.spanish" )}</label>            
             <span>
               <input type="checkbox" checked={this.state.hops.spanish} onChange={this.set.bind( this, "spanish", !this.state.hops.spanish )} />
             </span>
@@ -217,12 +214,12 @@ class Hops extends React.Component<HopsProps, HopsState> {
             </div>
           } )}
         </div>
-
+          
       </div>
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title">
           {this.props.i18n.text.get( "plugin.records.hops.science.title" )}
-        </div>
+        </div>          
         <div className="application-sub-panel__item-data form-element">
           {["BI", "FY", "KE", "GE"].map( ( option: string ) => {
             let onEvent = this.set.bind( this, "science", option );
@@ -276,4 +273,4 @@ function mapDispatchToProps( dispatch: Dispatch<any> ) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Hops);
+)( Hops );

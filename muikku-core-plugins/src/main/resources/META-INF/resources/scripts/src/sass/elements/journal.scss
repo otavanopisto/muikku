@@ -4,18 +4,39 @@
 @import "../base/breakpoints";
 
 .journal {
-  border-top: 3px solid $color-message-border;
-  padding: 10px;
-
+  border-top: 5px solid $color-message-border;
+  margin: 0 0 1px;
+  padding: 14px 0;
+  
   &:first-child {
-    border-color: transparent;
-  }
+    border-top: 1px solid $color-default;
+  }  
+}
 
+.journal__entry-title {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1.125rem;
+  font-weight: 400;
+  
   @include breakpoint($breakpoint-pad) {
-    padding: 15px 10px;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
   }
 }
 
-.journal--studies {
-  padding: 15px 0;
+.journal__entry-time {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  font-size: 0.825rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    text-align: right;
+  }  
 }

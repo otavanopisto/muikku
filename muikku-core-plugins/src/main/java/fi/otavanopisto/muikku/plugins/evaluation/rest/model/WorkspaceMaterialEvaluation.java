@@ -134,11 +134,11 @@ public class WorkspaceMaterialEvaluation {
   }
 
   public String getGradingScale() {
-	return gradingScale;
+  return gradingScale;
   }
 
   public void setGradingScale(String gradingScale) {
-	this.gradingScale = gradingScale;
+  this.gradingScale = gradingScale;
   }
 
   private Long id;

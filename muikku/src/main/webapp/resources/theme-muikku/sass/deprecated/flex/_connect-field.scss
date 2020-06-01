@@ -78,10 +78,12 @@
   background: $taskBoxColor;
   margin: 0 4px 8px 4px;
   border-radius: 3px;
+  transition: background 0.3s ease-in-out;
   box-sizing: border-box;
   height: 56px;
   line-height: 20px;
   font-size: 16px;
+  transition: height 0.2s ease-in-out;
   color: $taskBoxTextColor;
   
   &:hover {

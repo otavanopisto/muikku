@@ -12,11 +12,15 @@
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
+  vertical-align: middle;
   position: relative;
   text-align: center;
   text-decoration: none;
-  vertical-align: middle;
   white-space: nowrap;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 
   .link__icon {
     display: inline-block;
@@ -25,15 +29,20 @@
   &:not(.link--icon) .link__icon {
     margin-right: 10px;
   }
-
-  &.disabled,
-  &:disabled {
-    cursor: default;
-    opacity: 0.5;
+  
+  &:hover,
+  &.hover {
+    color: darken($color-link-default-text, 20%);
   }
 
-  @include breakpoint($breakpoint-pad) {
-    font-size: $text-desktop-font-size;
+  &:active,
+  &.active {
+    color: darken($color-link-default-text, 20%);
+  }
+
+  &.disabled, &:disabled {
+    cursor: default;
+    opacity: 0.5;
   }
 }
 
@@ -41,10 +50,6 @@
   color: $color-link-frontpage-text;
   font-size: 0.9375rem;
   text-transform: uppercase;
-
-  .link__icon {
-    color: $color-environment-link-menu-navicon-icon-color;
-  }
 
   &:hover,
   &.hover,
@@ -66,10 +71,6 @@
   white-space: normal;
   word-spacing: 75px;
 
-  &.link--forgot-password-main-function {
-    color: $color-main-function-label-forgot-password;
-  }
-
   @include breakpoint($breakpoint-mobile-xl) {
     flex-basis: auto;
   }
@@ -81,6 +82,10 @@
   @include breakpoint($breakpoint-desktop) {
     flex-basis: auto;
   }
+
+  &.link--forgot-password-main-function {
+  	color: $color-main-function-label-forgot-password;
+  }
 }
 
 .link--privacy-policy {
@@ -89,13 +94,13 @@
   text-transform: uppercase;
   white-space: normal;
 
+  @include breakpoint($breakpoint-pad) {
+    text-align: left;
+  }
+
   &:hover,
   &:active {
     color: $color-default;
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    text-align: left;
   }
 }
 
@@ -113,37 +118,14 @@
 }
 
 .link--icon {
-  color: $color-environment-link-icon-color;
+  @include prefix(font-smoothing, webkit moz o ms, antialiased);
   font-family: muikku;
   font-size: $link-icon-font-size;
   font-style: normal;
   font-variant: none;
   font-weight: normal;
+  speak: none;
   text-transform: none;
-
-  @include breakpoint($breakpoint-pad) {
-
-    &:hover,
-    &.hover {
-      background-color: $color-environment-link-icon-border-top-color-active;
-      color: $color-environment-link-icon-color-hover;
-    }
-
-    &:active,
-    &.active {
-      color: $color-environment-link-icon-color-active;
-
-      &::before {
-        background-color: $color-environment-link-icon-border-top-color-active;
-        content: " ";
-        height: $main-function-link-icon-active-border-size;
-        left: 0;
-        position: absolute;
-        top: 0;
-        width: 100%;
-      }
-    }
-  }
 }
 
 .link--highlight {
@@ -179,6 +161,27 @@
 
 .link--menu {
   justify-content: flex-start;
+}
+ 
+.link--language {
+  background-color: $color-environment-link-language-background;
+  color: $color-environment-link-language-text;
+  justify-content: flex-start;
+
+  &:hover,
+  &.hover {
+    background-color: opacify($color-environment-link-language-hover-background, 0.6);
+    color: $color-environment-link-language-text;
+  }
+
+  &:active,
+  &.active {
+    background-color: opacify($color-environment-link-language-hover-background, 0.6);
+    color: $color-environment-link-language-text;
+  }
+}
+
+.link--menu {
   overflow: hidden;
 
   &.active,
@@ -190,14 +193,14 @@
 
   .link__icon {
     background-color: $color-environment-link-menu-icon-background;
-    border-radius: 100%;
     color: $color-environment-link-menu-icon-color;
-    font-size: 20px;
-    height: 35px;
-    line-height: 35px;
-    text-align: center;
-    vertical-align: middle;
     width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    font-size: 20px;
+    line-height: 35px;
+    vertical-align: middle;
+    text-align: center;
   }
 }
 
@@ -206,7 +209,7 @@
   text-overflow: ellipsis;
 }
 
-.link--menu-instructions {
+.link--menu--instructions {
 
   .link__icon {
     background: $color-environment-link-menu-instructions-icon-background;
@@ -214,7 +217,7 @@
   }
 }
 
-.link--menu-helpdesk {
+.link--menu--helpdesk {
 
   .link__icon {
     background: $color-environment-link-menu-heldesk-icon-background;
@@ -222,7 +225,13 @@
   }
 }
 
-.link--menu-logout {
+.link--frontpage {
+  .link__icon {
+    color: $color-environment-link-menu-navicon-icon-color;
+  }
+}
+
+.link--menu--logout {
 
   .link__icon {
     background: $color-environment-link-menu-logout-icon-background;
@@ -230,7 +239,34 @@
   }
 }
 
-.link--language-picker-dropdown {
+.link--icon {
+  color: $color-environment-link-icon-color;
+
+  @include breakpoint($breakpoint-pad) {
+
+    &:hover, &.hover {
+      color: $color-environment-link-icon-color-hover;
+    }
+
+    &:active, &.active {
+      color: $color-environment-link-icon-color-active;
+
+      &::before {
+        content: " ";
+        height: $main-function-link-icon-active-border-size;
+        background-color: $color-environment-link-icon-border-top-color-active;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+      }
+    }
+  }
+}
+
+.link--profile {
+  font-size: 14px;
+  background-color: $color-environment-link-profile-menu-background;
   color: $color-default-contrast;
   justify-content: flex-start;
 
@@ -238,82 +274,23 @@
   &.hover,
   &:active,
   &.active {
-    background-color: $color-environment-dropdown-link-hover-background;
-    color: $color-default-contrast;
-  }
-
-  .link__icon {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    min-width: 16px;
-  }
-}
-
-.link--profile-dropdown {
-  color: $color-default-contrast;
-  justify-content: flex-start;
-
-  &:hover,
-  &.hover,
-  &:active,
-  &.active {
-    background-color: $color-environment-dropdown-link-hover-background;
-    color: $color-default-contrast;
-  }
-
-  .link__icon {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    min-width: 16px;
-  }
-}
-
-.link--material-management-dropdown {
-  color: $color-default;
-  justify-content: flex-start;
-
-  input[type="file"] {
-    bottom: 0;
-    cursor: pointer;
-    left: 0;
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-
-  &:hover,
-  &.hover,
-  &:active,
-  &.active {
-    background-color: $color-material-page-admin-panel-main-hover-color;
-    color: $color-default;
-  }
-}
-
-.link--main-functions-settings-dropdown {
-  color: $color-default-contrast;
-  justify-content: flex-start;
-
-  &:hover,
-  &.hover,
-  &:active,
-  &.active {
-    background-color: $color-environment-dropdown-link-hover-background;
+    background-color: $color-environment-link-profile-menu-hover-background;
     color: $color-default-contrast;
   }
 }
 
-.link--communicator-label-dropdown,
-.link--guider-label-dropdown {
-  color: $color-default-contrast;
+.link--communicator-label,
+.link--guider-label {
+  border-top: 1px solid $color-default;
   justify-content: flex-start;
+  text-transform: none;
+  max-width: 204.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover,
   &.hover {
-    background-color: $color-environment-dropdown-link-hover-background;
+    background-color: $color-main-function-label-link-hover-background;
   }
 
   &:active,
@@ -331,10 +308,10 @@
   }
 
   &.semi-selected {
-    background-color: lighten($color-main-function-label-link-selected-background, 20%);
+     background-color: lighten($color-main-function-label-link-selected-background, 20%);
 
     .link__text {
-      color: $color-text-link-selected;
+       color: $color-text-link-selected;
       font-weight: 600;
     }
   }
@@ -351,11 +328,6 @@
   }
 }
 
-.link--workspace-management {
-  margin-right: 20px;
-}
-
-
 // This has to be think differently as the element is not <Link> component currently
 .link--matriculation-enrollment {
   display: flex;
@@ -363,53 +335,4 @@
   padding: 5px 0;
 }
 
-.link--workspace-assessment {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  padding: 0 10px;
-  width: 100%;
 
-  &::before {
-    border-radius: 100%;
-    box-shadow: $color-assessment-box-shadow;
-    padding: 8px;
-  }
-}
-
-.link--workspace-assessment-pending {
-
-  &::before {
-    background: $color-assessment-pending;
-  }
-}
-
-.link--workspace-assessment-failed {
-
-  &::before {
-    background: $color-assessment-failed;
-  }
-}
-
-.link--workspace-assessment-passed {
-
-  &::before {
-    background: $color-assessment-passed;
-  }
-}
-
-.link--workspace-assessment-incomplete {
-
-  &::before {
-    background: $color-assessment-incomplete;
-  }
-}
-
-.link--workspace-assessment-unassessed {
-
-  &::before {
-    background: transparent;
-    box-shadow: none;
-  }
-}
