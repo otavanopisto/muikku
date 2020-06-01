@@ -20,17 +20,11 @@ public class LocalSessionRestAuthentication implements RestAuthentication {
   }
   
   @Override
-  public void setActiveUser(String dataSource, String identifier, boolean isActive) {
+  public void setActiveUser(String dataSource, String identifier) {
     activeUserSchoolDataSource = dataSource;
     activeUserIdentifier = identifier;
-    this.isActive = isActive;
   }
   
-  @Override
-  public boolean isActiveUser() {
-    return isActive;
-  }
-
   @Override
   public boolean isLoggedIn() {
     return !StringUtils.isBlank(activeUserIdentifier) && !StringUtils.isBlank(activeUserSchoolDataSource);
@@ -44,5 +38,4 @@ public class LocalSessionRestAuthentication implements RestAuthentication {
 
   private String activeUserIdentifier;
   private String activeUserSchoolDataSource;
-  private boolean isActive;
 }

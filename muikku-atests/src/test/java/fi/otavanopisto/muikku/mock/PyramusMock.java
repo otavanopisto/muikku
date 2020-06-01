@@ -994,7 +994,7 @@ public class PyramusMock {
             .withBody(pmock.objectMapper.writeValueAsString(whoAmI))
             .withStatus(200)));
         
-        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:" + System.getProperty("it.port.https")))
+        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=http://dev.muikku.fi:" + System.getProperty("it.port.http")))
           .willReturn(aResponse()
             .withStatus(302)
             .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));

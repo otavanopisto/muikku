@@ -7,12 +7,15 @@ public class WorkspaceDetails {
   public WorkspaceDetails() {
   }
 
-  public WorkspaceDetails(String typeId, OffsetDateTime beginDate, OffsetDateTime endDate, String externalViewUrl) {
+  public WorkspaceDetails(String typeId, OffsetDateTime beginDate, OffsetDateTime endDate, String externalViewUrl, Long rootFolderId, Long helpFolderId, Long indexFolderId) {
     super();
     this.typeId = typeId;
     this.beginDate = beginDate;
     this.endDate = endDate;
     this.externalViewUrl = externalViewUrl;
+    this.rootFolderId = rootFolderId;
+    this.helpFolderId = helpFolderId;
+    this.indexFolderId = indexFolderId;
   }
 
   public String getTypeId() {
@@ -39,8 +42,35 @@ public class WorkspaceDetails {
     return endDate;
   }
 
+  public Long getRootFolderId() {
+    return rootFolderId;
+  }
+
+  public void setRootFolderId(Long rootFolderId) {
+    this.rootFolderId = rootFolderId;
+  }
+
+  public Long getHelpFolderId() {
+    return helpFolderId;
+  }
+
+  public void setHelpFolderId(Long helpFolderId) {
+    this.helpFolderId = helpFolderId;
+  }
+
+  public Long getIndexFolderId() {
+    return indexFolderId;
+  }
+
+  public void setIndexFolderId(Long indexFolderId) {
+    this.indexFolderId = indexFolderId;
+  }
+
   private String typeId;
   private String externalViewUrl;
   private OffsetDateTime beginDate;
   private OffsetDateTime endDate;
+  private Long rootFolderId;
+  private Long helpFolderId;
+  private Long indexFolderId;
 }

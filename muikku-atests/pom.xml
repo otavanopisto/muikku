@@ -215,7 +215,7 @@
       <artifactId>timed-notifications-plugin-persistence</artifactId>
     </dependency>
     
-		<dependency>
+    <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>matriculation-plugin-persistence</artifactId>
     </dependency>

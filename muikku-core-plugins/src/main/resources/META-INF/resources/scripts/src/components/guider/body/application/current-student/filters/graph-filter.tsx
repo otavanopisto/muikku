@@ -16,7 +16,7 @@ class GraphFilter extends React.Component<GraphFilterProps> {
   constructor(props:GraphFilterProps) {
     super(props);
   }
-  
+
   dropdownFilter(){
     let modificator = this.props.modificator || "";
     if (modificator == "-dropdown-only" || modificator == ""){
@@ -31,7 +31,7 @@ class GraphFilter extends React.Component<GraphFilterProps> {
       </Dropdown>
     }
   }
-  
+
   listFilter(){
     let modificator = this.props.modificator || "";
     if (modificator == "-list-only" || modificator == ""){
@@ -46,7 +46,7 @@ class GraphFilter extends React.Component<GraphFilterProps> {
     </div>
     }
   }
-  
+
   render(){
     return <div className="filter filter--graph-filter">
       {this.dropdownFilter()}

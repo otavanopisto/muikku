@@ -83,7 +83,7 @@ public class DiscussionTestsBase extends AbstractUITest {
     login();
     try{
       navigate("/discussion", false);
-      waitAndClick(".application-panel__toolbar .button-pill__icon.icon-add");
+      waitAndClick(".application-panel__toolbar .button-pill__icon.icon-plus");
       waitAndSendKeys("input.env-dialog__input--new-discussion-area-name", "Test area");
       waitAndClick(".env-dialog__textarea");
       waitAndSendKeys(".env-dialog__textarea", "Description of test area");

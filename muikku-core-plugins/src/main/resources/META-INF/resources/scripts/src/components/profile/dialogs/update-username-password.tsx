@@ -56,32 +56,32 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
   update(closeDialog: ()=>any){
     let newPassword1 = this.state.newPassword;
     let newPassword2 = this.state.newPasswordConfirm;
-    
+
     if (newPassword1 && newPassword2 == "") {
       this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.emptypass"), "error");
       return;
     }
-    
+
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.failconfirm"), "error");
       return;
     }
-    
+
     this.setState({
       locked: true
     });
-    
-    var values = {
+
+    let values = {
       oldPassword: this.state.oldPassword,
       username: this.state.username,
       newPassword: this.state.newPassword
     };
-    
+
     mApi().userplugin.credentials.update(values).callback((err: any, result: any)=>{
       this.setState({
         locked: false
       });
-      
+
       if (err) {
         if (result.status === 403) {
           this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.unauthorized"), "error");
@@ -103,18 +103,18 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
         } else {
           this.props.displayNotification(this.props.i18n.text.get("plugin.profile.changePassword.dialog.notif.successful"), "success");
         }
-        
+
         this.props.loadProfileUsername();
       }
     });
   }
-  
+
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>){
     let nField:any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
-  
+
   render(){
     let content = (closeDialog: ()=>any)=><div>
         <p>{this.props.i18n.text.get('plugin.profile.changePassword.dialog.desription')}</p>
@@ -124,15 +124,15 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
             <input type="text" className="form-element__input form-element__input--profile" value={this.state.username} onChange={this.updateField.bind(this, "username")}/>
           </div>
           <div className="form-element form-element--profile">
-            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.oldPasswordField.label')}</label>    
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.oldPasswordField.label')}</label>
             <input type="password" className="form-element__input form-element__input--profile" value={this.state.oldPassword} onChange={this.updateField.bind(this, "oldPassword")}/>
-          </div>          
+          </div>
           <div className="form-element form-element--profile">
-            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField1.label')}</label>            
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField1.label')}</label>
             <input type="password" className="form-element__input form-element__input--profile" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")}/>
           </div>
           <div className="form-element form-element--profile">
-            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>            
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>
             <input type="password" className={`form-element__input form-element__input--profile ${this.state.newPassword !== this.state.newPasswordConfirm ? "form-element__input--profile-wrong" : ""}`}
               value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")}/>
           </div>

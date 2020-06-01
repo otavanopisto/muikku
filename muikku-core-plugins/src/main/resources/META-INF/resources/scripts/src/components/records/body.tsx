@@ -13,11 +13,11 @@ function loadNecessaryLibs() {
     return;
   }
   hasLoadedNecessaryLibs = true;
-  
+
   $.fn.muikkuWebSocket = function(...args: any[]){
     return this;
   }
-  
+
   const libraries = [
     "/scripts/gui/environment.js",
     "//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js",
@@ -54,24 +54,24 @@ function loadNecessaryLibs() {
     "//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js",
     "/scripts/gui/locales.js",
   ];
-  
+
   const css = ["/css/deprecated/flex/records.css"];
-  
+
   libraries.forEach((lib) => {
     const script = document.createElement("script");
     script.src = lib;
     script.type = "text/javascript";
     script.defer = true;
-    
+
     document.head.appendChild(script);
   });
-  
+
   css.forEach((css) => {
     const link = document.createElement("link");
     link.href = css;
     link.type = "text/css";
     link.rel = "stylesheet";
-    
+
     document.head.appendChild(link);
   });
 }

@@ -17,7 +17,7 @@ interface StudiesPrimaryOptionState {
 class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, StudiesPrimaryOptionState> {
   constructor(props: StudiesPrimaryOptionProps){
     super(props);
-    
+
     this.onSelectChange = this.onSelectChange.bind(this);
 
   }
@@ -43,7 +43,7 @@ class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, St
         hash: "vops",
         enabled: this.props.isHopsEnabled
       }
-    ]    
+    ]
     return <div className="application-panel__toolbar">
       <div className="form-element form-element--studies-toolbar">
         <select className="form-element__select form-element__select--main-action" onChange={this.onSelectChange} value={this.props.location || ""}>

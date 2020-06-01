@@ -5,6 +5,7 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import mApi, { MApiError } from '~/lib/mApi';
+
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 import '~/sass/elements/buttons.scss';
@@ -28,11 +29,11 @@ const emailRegexValidator = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)
 class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, ForgotPasswordDialogState> {
   constructor(props: ForgotPasswordDialogProps){
     super(props);
-    
+
     this.state = {
       email: ''
     }
-    
+
     this.resetPassword = this.resetPassword.bind(this);
     this.updateEmail = this.updateEmail.bind(this);
   }
@@ -43,7 +44,7 @@ class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, Fo
     if (!e.isDefaultPrevented()){
       e.preventDefault();
     }
-    
+
     if (!this.state.email){
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.forgotPasswordDialog.email.required"), "error");
       return;
@@ -51,7 +52,7 @@ class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, Fo
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.forgotPasswordDialog.email.invalid"), "error");
       return;
     }
-    
+
     try {
       let result = await promisify(mApi().forgotpassword.reset.read({email: this.state.email}), 'callback')();
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotPassword.forgotPasswordDialog.mailSent", this.state.email), "success");

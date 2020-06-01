@@ -29,7 +29,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
     } else if (this.props.vops.status !== "READY"){
       return null;
     }
-    
+
     return <VopsGraph />;
   }
 }

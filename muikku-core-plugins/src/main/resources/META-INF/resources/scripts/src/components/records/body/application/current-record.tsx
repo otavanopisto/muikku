@@ -85,11 +85,17 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
           <div className="application-list_item-wrapper">
             {this.props.records.current.journals.map((journal)=>{
               return <ApplicationListItem className="journal journal--studies" key={journal.id}>
-                <ApplicationListItemHeader modifiers="journal">
-                  <div className="journal__entry-title">{journal.title}</div>
-                  <div className="journal__entry-time">{this.props.i18n.time.format(journal.created, "L LT")}</div>
+                <ApplicationListItemHeader className="application-list__item-header--journal-entry">
+                  <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
+                    <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">{journal.title}</span>
+                  </div>
+                  <div className="application-list__item-header-aside">
+                    <span>{this.props.i18n.time.format(journal.created, "L LT")}</span>
+                  </div>
                 </ApplicationListItemHeader>
-                <ApplicationListItemBody className="application-list__item-body application-list__item-body--journal rich-text" dangerouslySetInnerHTML={{__html: journal.content}}></ApplicationListItemBody>
+                <ApplicationListItemBody className="application-list__item-body">
+                  <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text" dangerouslySetInnerHTML={{__html: journal.content}}></article>
+                </ApplicationListItemBody>
               </ApplicationListItem>
             })}
           </div>

@@ -20,7 +20,7 @@ import '~/sass/elements/loaders.scss';
 
 
 const tabNames = ["summary", "users", "courses", "reports"];
- 
+
 interface OrganizationManagementApplicationProps {
   aside: React.ReactElement<any>,
   i18n: i18nType
@@ -57,7 +57,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
             </div>
           </ApplicationPanelToolbarActionsMain>
           </ApplicationPanelToolbar>;
-          
+
         let usersToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">
@@ -66,26 +66,26 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
             </div>
           </ApplicationPanelToolbarActionsMain>
           </ApplicationPanelToolbar>;
-        
+
         return (
           <ApplicationPanel modifier="organization" title={title} onTabChange={this.onTabChange} activeTab={this.state.activeTab} panelTabs={[
           {
             id: "SUMMARY",
             name: this.props.i18n.text.get('plugin.organization.tab.title.summary'),
             component: ()=> { return <ApplicationPanelBody modifier="tabs" children={<Summary />}/>}
-            
+
           },
           {
             id: "USERS",
             name: this.props.i18n.text.get('plugin.organization.tab.title.users'),
             component: ()=> { return <ApplicationPanelBody primaryOption={usersPrimaryAction} toolbar={usersToolbar} modifier="tabs" children={<Users />}/>}
-            
+
           },
           {
             id: "COURSES",
             name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
             component: ()=> { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<OrganizationWorkspaces />}/>}
-            
+
           },
           {
             id: "REPORTS",

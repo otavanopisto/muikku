@@ -121,6 +121,30 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
+  public SearchResult findWorkspace(SchoolDataIdentifier identifier) {
+    SearchRequestBuilder requestBuilder = elasticClient.prepareSearch("muikku").setTypes("Workspace");
+    BoolQueryBuilder query = boolQuery();
+    query.must(termQuery("identifier", identifier.getIdentifier()));
+    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHits searchHits = response.getHits();
+    long totalHitCount = searchHits.getTotalHits();
+    SearchHit[] results = searchHits.getHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      if (hitSource == null){
+        hitSource = new HashMap<>();
+        for(String key : hit.getFields().keySet()){
+          hitSource.put(key, hit.getFields().get(key).getValue().toString());
+        }
+      }
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
+    return new SearchResult(0, searchResults.size(), searchResults, totalHitCount);
+  }
+  
+  @Override
   public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive) {
 
     // Query that checks activity based on user having a study end date set
