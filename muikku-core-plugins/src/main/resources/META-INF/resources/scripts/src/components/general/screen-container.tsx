@@ -4,7 +4,7 @@ import '~/sass/elements/screen-container.scss';
 
 interface ScreenContainerProps {
   children?: any,
-  fullHeight?: boolean
+  viewModifiers?: string | Array<string>
 }
 
 interface ScreenContainerState {
@@ -16,8 +16,8 @@ export default class ScreenContainer extends React.Component<ScreenContainerProp
     super(props);
   }
   render(){
-    let isFullHeight = typeof this.props.fullHeight === "undefined" ? true : this.props.fullHeight;
-    return <div className={`screen-container ${isFullHeight ? "screen-container--full-height" : ""}`}>
-    <div className="screen-container__wrapper">{this.props.children}</div></div>
+    let modifiers:Array<string> = typeof this.props.viewModifiers === "string" ? [this.props.viewModifiers] : this.props.viewModifiers;
+    return <div className="screen-container">
+    <div className={`screen-container__wrapper ${(modifiers || []).map(s=>`screen-container__wrapper--${s}`).join(" ")}`}>{this.props.children}</div></div>
   }
 }

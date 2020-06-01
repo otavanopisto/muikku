@@ -1,8 +1,10 @@
 import mApi, {MApiError} from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import promisify from '~/util/promisify';
+
+
 import {UserStatusType} from 'reducers/main-function/users';
-import {UserType} from 'reducers/main-function/user-index';
+import {UserType} from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import {StateType} from '~/reducers';
 
@@ -12,6 +14,11 @@ export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UserTy
 export type UPDATE_USERS_STATE = SpecificActionType<"UPDATE_USERS_STATE", UserStatusType>
 
 
+
+//Do not delete this, this is for organization
+
+
+
 export interface LoadUsersTriggerType {
   (): AnyActionType
 }
@@ -19,26 +26,26 @@ export interface LoadUsersTriggerType {
 let loadUsers:LoadUsersTriggerType = function loadUserst(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      
+
       let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
 
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null
       });
-      
+
       await Promise.all([
         promisify(mApi().user.students.read(), 'callback')()
           .then((users:UserType)=>{
             dispatch({
-              type: "UPDATE_STUDENT_USERS", 
+              type: "UPDATE_STUDENT_USERS",
               payload: users
             });
           }),
         promisify(mApi().user.staffMembers.read(), 'callback')()
           .then((users:UserType)=>{
             dispatch({
-              type: "UPDATE_STAFF_USERS", 
+              type: "UPDATE_STAFF_USERS",
               payload: users
             });
           }),
@@ -67,7 +74,5 @@ let loadUsers:LoadUsersTriggerType = function loadUserst(){
      }
   }
 }
-
-
 
 export {loadUsers};

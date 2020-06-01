@@ -106,19 +106,19 @@ public class WorkspaceAssessment {
   }
 
   public String getGrade() {
-  return grade;
+	return grade;
   }
 
   public void setGrade(String grade) {
-  this.grade = grade;
+	this.grade = grade;
   }
 
   public String getGradingScale() {
-  return gradingScale;
+	return gradingScale;
   }
 
   public void setGradingScale(String gradingScale) {
-  this.gradingScale = gradingScale;
+	this.gradingScale = gradingScale;
   }
 
   private String identifier;

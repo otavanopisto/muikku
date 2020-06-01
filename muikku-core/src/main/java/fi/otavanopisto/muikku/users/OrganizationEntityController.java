@@ -9,8 +9,10 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.OrganizationEntityDAO;
+import fi.otavanopisto.muikku.model.base.Archived;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationWorkspaceVisibility;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -33,17 +35,17 @@ public class OrganizationEntityController {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
-  public OrganizationEntity createOrganizationEntity(String dataSource, String identifier, String name) {
+  public OrganizationEntity createOrganizationEntity(String dataSource, String identifier, String name, OrganizationWorkspaceVisibility workspaceVisibility) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find datasource " + dataSource);
       return null;
     }
-    return createOrganizationEntity(schoolDataSource, identifier, name);
+    return createOrganizationEntity(schoolDataSource, identifier, name, workspaceVisibility);
   }
   
-  public OrganizationEntity createOrganizationEntity(SchoolDataSource dataSource, String identifier, String name) {
-    return organizationEntityDAO.create(dataSource, identifier, name);
+  public OrganizationEntity createOrganizationEntity(SchoolDataSource dataSource, String identifier, String name, OrganizationWorkspaceVisibility workspaceVisibility) {
+    return organizationEntityDAO.create(dataSource, identifier, name, workspaceVisibility);
   }
   
   public OrganizationEntity archive(OrganizationEntity organizationEntity) {
@@ -72,6 +74,10 @@ public class OrganizationEntityController {
     } else {
       return Collections.emptyList();
     }
+  }
+  
+  public List<OrganizationEntity> listByWorkspaceVisibility(OrganizationWorkspaceVisibility visibility, Archived archived) {
+    return organizationEntityDAO.listByWorkspaceVisibility(visibility, archived);
   }
   
   public List<OrganizationEntity> listUnarchived() {
@@ -110,6 +116,10 @@ public class OrganizationEntityController {
     return findByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
   }
   
+  public OrganizationEntity findById(Long organizationEntityId) {
+    return organizationEntityDAO.findById(organizationEntityId);
+  }
+
   public OrganizationEntity findByDataSourceAndIdentifier(String dataSource, String identifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {

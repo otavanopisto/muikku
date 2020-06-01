@@ -9,7 +9,10 @@ import Button from '~/components/general/button';
 import { AnyActionType } from '~/actions';
 import { StateType } from '~/reducers';
 import { removeFileFromCurrentStudent, RemoveFileFromCurrentStudentTriggerType } from '~/actions/main-function/guider';
-import { UserFileType } from '~/reducers/main-function/user-index';
+import { UserFileType } from '~/reducers/user-index';
+
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 const KEYCODES = {
   ENTER: 13
@@ -31,7 +34,7 @@ interface FileDeleteDialogState {
 class FileDeleteDialog extends React.Component<FileDeleteDialogProps, FileDeleteDialogState> {
   constructor(props: FileDeleteDialogProps){
     super(props);
-    
+
     this.deleteFile = this.deleteFile.bind(this);
   }
   deleteFile(closeDialog: ()=>any){
@@ -50,16 +53,16 @@ class FileDeleteDialog extends React.Component<FileDeleteDialogProps, FileDelete
       </div>
     }
     let content = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div>
           {this.props.i18n.text.get('plugin.guider.flags.deleteAttachmentDialog.description')}
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} modifier="guider" 
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} modifier="guider-delete-file"
      title={this.props.i18n.text.get('plugin.guider.flags.deleteAttachmentDialog.title')}
      content={content} footer={footer}>{this.props.children}</Dialog>
-  } 
+  }
 }
 
 function mapStateToProps(state: StateType){

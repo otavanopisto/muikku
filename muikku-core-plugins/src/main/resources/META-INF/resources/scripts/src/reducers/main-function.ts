@@ -6,17 +6,11 @@ import title from './base/title';
 import websocket from './util/websocket';
 
 import messages from './main-function/messages';
-import announcements from './main-function/announcements';
+import announcements from './announcements';
 import workspaces from './workspaces';
+import userIndex from './user-index';
 
-import courses, {organizationCourses} from './main-function/courses';
-
-import users from './main-function/users';
-import userIndex from './main-function/user-index';
-
-
-import discussion from '~/reducers/main-function/discussion';
-
+import discussion from '~/reducers/discussion';
 import guider from './main-function/guider';
 
 import profile from './main-function/profile';
@@ -34,7 +28,6 @@ export default combineReducers({
   status,
   websocket,
   title,
-  users,
   userIndex,
   records,
   vops,
@@ -42,8 +35,6 @@ export default combineReducers({
   announcements,
   workspaces,
   messages,
-  courses,
-  organizationCourses,
   discussion,
   guider,
   profile

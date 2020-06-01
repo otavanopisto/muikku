@@ -15,7 +15,7 @@ public abstract class AbstractWorkspace implements Workspace {
       SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
       String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length, String lengthUnitIdentifier,
       OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, boolean evaluationFeeApplicable, Set<SchoolDataIdentifier> curriculumIdentifiers, Integer courseNumber,
-      SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier) {
+      SchoolDataIdentifier educationSubtypeIdentifier, SchoolDataIdentifier organizationIdentifier, boolean isTemplate) {
     super();
     this.identifier = identifier;
     this.name = name;
@@ -37,6 +37,7 @@ public abstract class AbstractWorkspace implements Workspace {
     this.courseNumber = courseNumber;
     this.educationSubtypeIdentifier = educationSubtypeIdentifier;
     this.organizationIdentifier = organizationIdentifier;
+    this.isTemplate = isTemplate;
   }
   
   @Override
@@ -171,6 +172,11 @@ public abstract class AbstractWorkspace implements Workspace {
   public Integer getCourseNumber() {
     return courseNumber;
   }
+
+  @Override
+  public boolean isTemplate() {
+    return isTemplate;
+  }
   
   private String identifier;
   private String name;
@@ -192,4 +198,5 @@ public abstract class AbstractWorkspace implements Workspace {
   private boolean evaluationFeeApplicable;
   private Set<SchoolDataIdentifier> curriculumIdentifiers;
   private Integer courseNumber;
+  private boolean isTemplate;
 }

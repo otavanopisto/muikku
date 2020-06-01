@@ -9,6 +9,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationWorkspaceVisibility;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 
 public class DefaultSchoolDataOrganizationListener {
@@ -33,7 +34,7 @@ public class DefaultSchoolDataOrganizationListener {
     
     OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (organizationEntity == null) {
-      organizationEntity = organizationEntityController.createOrganizationEntity(event.getDataSource(), event.getIdentifier(), event.getName());
+      organizationEntity = organizationEntityController.createOrganizationEntity(event.getDataSource(), event.getIdentifier(), event.getName(), OrganizationWorkspaceVisibility.PRIVATE);
       discoveredOrganizations.put(discoverId, organizationEntity.getId());
       event.setDiscoveredOrganizationEntityId(organizationEntity.getId());
     }
@@ -54,7 +55,7 @@ public class DefaultSchoolDataOrganizationListener {
     }
     else {
       // If organization create event was missed, do it here 
-      organizationEntity = organizationEntityController.createOrganizationEntity(event.getDataSource(), event.getIdentifier(), event.getName());
+      organizationEntity = organizationEntityController.createOrganizationEntity(event.getDataSource(), event.getIdentifier(), event.getName(), OrganizationWorkspaceVisibility.PRIVATE);
       String discoverId = "ORG-" + event.getDataSource() + "/" + event.getIdentifier();
       discoveredOrganizations.put(discoverId, organizationEntity.getId());
     }

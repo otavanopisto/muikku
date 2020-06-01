@@ -29,7 +29,7 @@
 }
 
 .workspace-activity__progressbar--studies {
-  
+
   svg {
     @include prefix(transition, webkit ms o moz, opacity 0.2s ease-in-out);
     opacity: 0.3;
@@ -43,7 +43,7 @@
   border-radius: 3px;
   font-size: 0.75rem;
   font-weight: 600;
-  line-height: 1; 
+  line-height: 1;
   padding: 2px 4px;
   position: absolute;
   text-align: center;
@@ -54,7 +54,7 @@
   font-size: 0.9rem;
   padding: 0 5px 0 0;
 }
- 
+
 .workspace-activity__exercise-done-percent {
   color: $color-exercise;
   font-size: 0.9rem;

@@ -32,7 +32,7 @@ let loadCredentials:LoadCrendentialsTriggerType = function loadCredentials(secre
         if (!(err instanceof MApiError)){
           return dispatch(notificationActions.displayNotification(err.message, 'error'));
         }
-        return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed", err.message), 'error'));  
+        return dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed", err.message), 'error'));
       }
   }
 }
@@ -48,8 +48,8 @@ let updateCredentials:UpdateCredentialsTriggerType = function updateCredentials(
        })
        dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"), 'success'));
     } catch (err) {
-       if (err) { 
-         return dispatch(notificationActions.displayNotification(err.message, 'error'));  
+       if (err) {
+         return dispatch(notificationActions.displayNotification(err.message, 'error'));
       }
     }
   }

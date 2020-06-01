@@ -213,75 +213,65 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
   }
   
   public List<CommunicatorMessage> listThreadsInTrash(UserEntity user, Integer firstResult, Integer maxResults) {
-    EntityManager entityManager = getEntityManager(); 
+    EntityManager entityManager = getEntityManager();
     
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<CommunicatorMessage> criteria = criteriaBuilder.createQuery(CommunicatorMessage.class);
-
-    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
-    Join<CommunicatorMessageRecipient, CommunicatorMessage> messageJoin = root.join(CommunicatorMessageRecipient_.communicatorMessage);
-    Join<CommunicatorMessage, CommunicatorMessageId> threadJoin = messageJoin.join(CommunicatorMessage_.communicatorMessageId);
+    // Trashed sent messages
     
-    // SubQuery finds the latest date in a thread when linked to the main query 
-    // and thus allows finding the latest message in the thread.
-    Subquery<Date> subQuery = criteria.subquery(Date.class);
-    Root<CommunicatorMessageRecipient> subQueryRoot = subQuery.from(CommunicatorMessageRecipient.class);
-    Join<CommunicatorMessageRecipient, CommunicatorMessage> subMessageJoin = subQueryRoot.join(CommunicatorMessageRecipient_.communicatorMessage);
-
-    subQuery.select(criteriaBuilder.greatest(subMessageJoin.get(CommunicatorMessage_.created)));
+    CriteriaBuilder messageCriteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessage> messageCriteria = messageCriteriaBuilder.createQuery(CommunicatorMessage.class);
+    Root<CommunicatorMessage> messageRoot = messageCriteria.from(CommunicatorMessage.class);
+    messageCriteria.select(messageRoot);
+    List<Predicate> messagePredicates = new ArrayList<Predicate>();
+    messagePredicates.add(messageCriteriaBuilder.equal(messageRoot.get(CommunicatorMessage_.sender), user.getId()));
+    messagePredicates.add(messageCriteriaBuilder.equal(messageRoot.get(CommunicatorMessage_.trashedBySender), Boolean.TRUE));
+    messagePredicates.add(messageCriteriaBuilder.equal(messageRoot.get(CommunicatorMessage_.archivedBySender), Boolean.FALSE));
+    messageCriteria.where(messageCriteriaBuilder.and(messagePredicates.toArray(new Predicate[0])));
+    List<CommunicatorMessage> trashedMessages = entityManager.createQuery(messageCriteria).getResultList();
     
-    subQuery.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(subMessageJoin.get(CommunicatorMessage_.communicatorMessageId), messageJoin.get(CommunicatorMessage_.communicatorMessageId)),
-        
-        criteriaBuilder.or(
-          criteriaBuilder.and(
-            criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.recipient), user.getId()),
-            criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.TRUE),
-            criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
-          ),
-          criteriaBuilder.and(
-            criteriaBuilder.equal(subMessageJoin.get(CommunicatorMessage_.sender), user.getId()),
-            criteriaBuilder.equal(subMessageJoin.get(CommunicatorMessage_.trashedBySender), Boolean.TRUE),
-            criteriaBuilder.equal(subMessageJoin.get(CommunicatorMessage_.archivedBySender), Boolean.FALSE)
-          )
-        )
-      )
-    );
+    // Trashed received messages
     
-    criteria.select(messageJoin);
-
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.created), subQuery),
-        
-        criteriaBuilder.or(
-          criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), user.getId()),
-            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.TRUE),
-            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
-          ),
-          criteriaBuilder.and(
-            criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.sender), user.getId()),
-            criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.trashedBySender), Boolean.TRUE),
-            criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.archivedBySender), Boolean.FALSE)
-          )
-        )
-      )
-    );
+    CriteriaBuilder recipientCriteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessage> recipientCriteria = recipientCriteriaBuilder.createQuery(CommunicatorMessage.class);
+    Root<CommunicatorMessageRecipient> recipientRoot = recipientCriteria.from(CommunicatorMessageRecipient.class);
+    recipientCriteria.select(recipientRoot.get(CommunicatorMessageRecipient_.communicatorMessage));
+    List<Predicate> recipientPredicates = new ArrayList<Predicate>();
+    recipientPredicates.add(recipientCriteriaBuilder.equal(recipientRoot.get(CommunicatorMessageRecipient_.recipient), user.getId()));
+    recipientPredicates.add(recipientCriteriaBuilder.equal(recipientRoot.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE));
+    recipientPredicates.add(recipientCriteriaBuilder.equal(recipientRoot.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.TRUE));
+    recipientCriteria.where(recipientCriteriaBuilder.and(recipientPredicates.toArray(new Predicate[0])));
+    List<CommunicatorMessage> trashedReceivedMessages = entityManager.createQuery(recipientCriteria).getResultList();
+    trashedMessages.addAll(trashedReceivedMessages);
     
-    criteria.groupBy(threadJoin);
-
-    criteria.orderBy(criteriaBuilder.desc(
-      messageJoin.get(CommunicatorMessage_.created)
-    ));
+    // Sort by thread, latest message in thread first
     
-    TypedQuery<CommunicatorMessage> query = entityManager.createQuery(criteria);
+    Comparator<CommunicatorMessage> comparator = new Comparator<CommunicatorMessage>() {
+      @Override
+      public int compare(CommunicatorMessage o1, final CommunicatorMessage o2) {
+        int result = o1.getCommunicatorMessageId().getId().compareTo(o2.getCommunicatorMessageId().getId());
+        return result == 0 ? o2.getCreated().compareTo(o1.getCreated()) : result;
+      }
+    };
+    trashedMessages.sort(comparator);
     
-    query.setFirstResult(firstResult);
-    query.setMaxResults(maxResults);
+    // Filter to only the latest message in each thread
     
-    return query.getResultList();
+    if (!trashedMessages.isEmpty()) {
+      int i = 0;
+      while (i < trashedMessages.size()) {
+        while (i < trashedMessages.size() - 1 && trashedMessages.get(i).getCommunicatorMessageId().getId().equals(trashedMessages.get(i + 1).getCommunicatorMessageId().getId())) {
+          trashedMessages.remove(i + 1);
+        }
+        i++;
+      }
+      
+      // Sort by latest message
+      
+      trashedMessages.sort(Comparator.comparing(CommunicatorMessage::getCreated).reversed());
+    }
+    
+    // Return requested subset
+    
+    return trashedMessages.subList(firstResult, Math.min(trashedMessages.size(), firstResult + maxResults));
   }
   
   public List<CommunicatorMessage> listThreadsInLabelFolder(UserEntity user, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
