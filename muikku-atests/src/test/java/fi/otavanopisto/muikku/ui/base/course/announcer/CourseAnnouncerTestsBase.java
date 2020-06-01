@@ -218,7 +218,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      assertNotPresent("#announcements ul>li>div>a");
+      assertNotPresent(".item-list--panel-announcements a");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
