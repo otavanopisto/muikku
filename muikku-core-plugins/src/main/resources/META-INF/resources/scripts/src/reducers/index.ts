@@ -4,15 +4,13 @@ import {NotificationListType} from './base/notifications';
 import {CredentialsType} from './base/credentials';
 import {StatusType} from './base/status';
 import {WebsocketStateType} from './util/websocket';
-import { AnnouncementsType } from './main-function/announcements';
+import { AnnouncementsType } from './announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
-import {UserIndexType} from './main-function/user-index';
-import {UsersType} from './main-function/users';
+import {UserIndexType} from './user-index';
 import {WorkspacesType} from './workspaces';
-import { CoursesType } from './main-function/courses';
-import { DiscussionType } from './main-function/discussion';
+import { DiscussionType } from './discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records';
 import { ErrorType } from './base/error';
@@ -30,11 +28,8 @@ export interface StateType {
   hops?: HOPSType,
   vops?: VOPSType,
   messages?: MessagesType,
-  users: UsersType;
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
-  courses?: CoursesType,
-  organizationCourses: CoursesType,
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,

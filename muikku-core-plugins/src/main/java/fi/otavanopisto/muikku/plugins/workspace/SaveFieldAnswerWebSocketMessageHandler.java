@@ -141,7 +141,7 @@ public class SaveFieldAnswerWebSocketMessageHandler {
         workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(reply);
       }
       
-      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
+      if (workspaceMaterial.getAssignmentType() != null && workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
         switch (reply.getState()) {
           case PASSED:
           case FAILED:

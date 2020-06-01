@@ -12,55 +12,36 @@ import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messa
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import {MessageSignatureType} from '~/reducers/main-function/messages';
-import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
+import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, ContactRecepientType } from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
 import { StatusType } from '~/reducers/base/status';
-import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
-const ckEditorConfig = {
-  uploadUrl: '/communicatorAttachmentUploadServlet',
-  toolbar: [
-    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-    { name: 'links', items: [ 'Link' ] },
-    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
-    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-    { name: 'styles', items: [ 'Format' ] },
-    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-    { name: 'tools', items: [ 'Maximize' ] }
-  ],
-  resize_enabled: false
-}
-const extraPlugins = {
-  'widget': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/${CKEDITOR_VERSION}/`,
-  'lineutils': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/${CKEDITOR_VERSION}/`,
-  'filetools' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/${CKEDITOR_VERSION}/`,
-  'notification' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/${CKEDITOR_VERSION}/`,
-  'notificationaggregator' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/${CKEDITOR_VERSION}/`,
-  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
-  'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`
-}
-
-type SelectedItemListType = Array<WorkspaceRecepientType | UserRecepientType | UserGroupRecepientType>;
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 interface CommunicatorNewMessageProps {
-  children: React.ReactElement<any>,
+  children?: React.ReactElement<any>,
   replyThreadId?: number,
   replyToAll?: boolean,
   messageId?: number,
-  initialSelectedItems?: SelectedItemListType,
+  extraNamespace?: string,
+  initialSelectedItems?: Array<ContactRecepientType>,
   i18n: i18nType,
   signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType,
   initialSubject?: string,
-  status: StatusType
+  initialMessage?: string,
+  status: StatusType,
+  onOpen?: ()=>any,
+  onClose?: ()=>any,
+  isOpen?: boolean
 }
 
 interface CommunicatorNewMessageState {
   text: string,
-  selectedItems: SelectedItemListType,
+  selectedItems: Array<ContactRecepientType>,
   subject: string,
   locked: boolean,
   includesSignature: boolean
@@ -75,8 +56,9 @@ function getStateIdentifier(props: CommunicatorNewMessageProps){
 }
 
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
+  private avoidCKEditorTriggeringChangeForNoReasonAtAll: boolean;
   constructor(props: CommunicatorNewMessageProps){
-    super(props, "communicator-new-message");
+    super(props, "communicator-new-message" + (props.extraNamespace ? "-" + props.extraNamespace : ""));
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setSelectedItems = this.setSelectedItems.bind(this);
@@ -87,7 +69,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
 
     this.state = this.getRecoverStoredState({
-      text: "",
+      text: props.initialMessage || "",
       selectedItems: props.initialSelectedItems || [],
       subject: props.initialSubject || "",
       locked: false,
@@ -96,17 +78,23 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
   }
   checkAgainstStoredState(){
     this.checkStoredAgainstThisState({
-      text: "",
+      text: this.props.initialMessage || "",
       selectedItems: this.props.initialSelectedItems || [],
-      subject: "",
+      subject: this.props.initialSubject || "",
       locked: false,
       includesSignature: true
     }, getStateIdentifier(this.props));
+    
+    this.props.onOpen && this.props.onOpen();
   }
   onCKEditorChange(text: string){
+    if (this.avoidCKEditorTriggeringChangeForNoReasonAtAll){
+      this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
+      return;
+    }
     this.setStateAndStore({text}, getStateIdentifier(this.props));
   }
-  setSelectedItems(selectedItems: SelectedItemListType){
+  setSelectedItems(selectedItems: Array<ContactRecepientType>){
     this.setStateAndStore({selectedItems}, getStateIdentifier(this.props));
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
@@ -124,8 +112,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         this.state.text),
       success: ()=>{
         closeDialog();
+        this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
+        setTimeout(()=>{
+          this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
+        }, 100);
         this.setStateAndClear({
-          text: "",
+          text: this.props.initialMessage || "",
           selectedItems: this.props.initialSelectedItems || [],
           subject: this.props.initialSubject || "",
           locked: false
@@ -143,8 +135,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     this.setState({includesSignature: !this.state.includesSignature});
   }
   clearUp(){
+    this.avoidCKEditorTriggeringChangeForNoReasonAtAll = true;
+    setTimeout(()=>{
+      this.avoidCKEditorTriggeringChangeForNoReasonAtAll = false;
+    }, 100);
     this.setStateAndClear({
-      text: "",
+      text: this.props.initialMessage || "",
       selectedItems: this.props.initialSelectedItems || [],
       subject: this.props.initialSubject || "",
       locked: false
@@ -171,19 +167,18 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           showFullNames={!this.props.status.isStudent}/>),
       (
        <div className="env-dialog__row" key="2">
-        <div className="env-dialog__form-element-container">  
+        <div className="env-dialog__form-element-container">
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
-          <input type="text" className="env-dialog__input env-dialog__input--new-message-title"         
+          <input type="text" className="env-dialog__input env-dialog__input--new-message-title"
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
-        </div> 
         </div>
-        ),        
+        </div>
+        ),
       (
-      <div className="env-dialog__row" key="3">     
-        <div className="env-dialog__form-element-container">  
+      <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
+        <div className="env-dialog__form-element-container">
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>
-          <CKEditor width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+          <CKEditor onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div> 
       </div>
       ),
@@ -196,7 +191,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       </div> : null)
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
          <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
@@ -213,7 +208,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     
     return <JumboDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
-      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}
+      onClose={this.props.onClose} isOpen={this.props.isOpen}>
       {this.props.children}
     </JumboDialog>
   }
@@ -222,7 +218,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    signature: state.messages.signature,
+    signature: state.messages && state.messages.signature,
     status: state.status
   }
 };

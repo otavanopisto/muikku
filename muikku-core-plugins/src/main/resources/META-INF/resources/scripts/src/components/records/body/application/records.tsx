@@ -16,8 +16,8 @@ import '~/sass/elements/file-uploader.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
-import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
+import { UserWithSchoolDataType } from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
@@ -25,7 +25,7 @@ import { MatriculationLink } from './matriculation-link';
 import { StatusType } from '~/reducers/base/status';
 import moment from '~/lib/moment';
 
-let ProgressBarLine = require('react-progressbar.js').Line;
+let ProgressBarLine = require('react-progress-bar.js').Line;
 
 interface RecordsProps {
   i18n: i18nType,
@@ -48,7 +48,7 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
     assesmentState = workspace.studentActivity.assessmentState.state;
     assesmentDate = workspace.studentActivity.assessmentState.date;
   }
-  
+
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
     return <div className="application-list__header-secondary">
       <span>{props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}</span>
@@ -61,6 +61,11 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
 }
 
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
+  // this shouldn't come to this, but just in case
+  if (transferCredit === null) {
+    return <div className="application-list__header-secondary"/>
+  }
+
   return <div className="application-list__header-secondary">
     <span>{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
     <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
@@ -78,7 +83,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
         getShortenGradeExtension(workspace.studentAssessmentState.grade)}
         className={`application-list__indicator-badge application-list__indicator-badge--course ${
           workspace.studentAssessmentState.state === "pass" || workspace.studentAssessmentState.state === "pending_pass" ? "state-PASSED" : "state-FAILED"}`}>
-        {shortenGrade(workspace.studentAssessmentState.grade)}
+          {shortenGrade(workspace.studentAssessmentState.grade)}
       </span>
     </span>
   } else if (workspace.studentAssessmentState && workspace.studentAssessmentState.state === "incomplete"){
@@ -88,9 +93,9 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
       <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
         className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
-      {status[0].toLocaleUpperCase()}
+        {status[0].toLocaleUpperCase()}
+      </span>
     </span>
-  </span>
   } else {
     return null;
   }
@@ -105,7 +110,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
     let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
     return <div className="workspace-activity workspace-activity--studies">
-    
+
       {workspace.studentActivity.evaluablesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
         strokeWidth: 1,
         duration: 1000,
@@ -125,7 +130,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
       trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={evaluablesCompleted + "/" + workspace.studentActivity.evaluablesTotal}
       progress={workspace.studentActivity.evaluablesDonePercent/100}/> : null}
-    
+
       {workspace.studentActivity.exercisesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
         strokeWidth: 1,
         duration: 1000,
@@ -151,30 +156,30 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
 class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps){
     super(props);
-    
+
     this.goToWorkspace = this.goToWorkspace.bind(this);
   }
-  
+
   goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
     window.location.hash = "#?u=" + user.userEntityId + "&i=" + encodeURIComponent(user.id) + "&w=" + workspace.id;
   }
-    
+
   render(){
-    
+
     if (this.props.records.userDataStatus === "LOADING"){
       return null;
     } else if (this.props.records.userDataStatus === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    }    
-    
+    }
+
     if (!Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
       this.props.records.curriculums.forEach((curriculum)=>{
         storedCurriculumIndex[curriculum.identifier] = curriculum.name;
       });
     }
-    
+
     let studentBasicInfo = <div className="application-sub-panel__body text">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
@@ -192,7 +197,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         </div>
       </div>
     </div>
-    
+
     let studentRecords = <div className="application-sub-panel">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
@@ -203,7 +208,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <div className="application-sub-panel__body">
             {records.length ? records.map((record, index)=>{
               return <ApplicationList key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <div className="application-list__header-container"><h3 className="application-list__header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}  
+                {record.groupCurriculumIdentifier ? <div className="application-list__header"><h3 className="application-list__title">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}
                   {record.workspaces.map((workspace)=>{
                     //Do we want an special way to display all these different states? passed is very straightforward but failed and
                     //incomplete might be difficult to understand
@@ -218,15 +223,15 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <ApplicationListItemHeader modifiers="course" key={workspace.id}>
                         <span className="application-list__header-icon icon-books"></span>
-                        <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
+                        <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span>
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
                         {getAssessments(this.props, workspace)}
                         {getActivity(this.props, workspace)}
                       </ApplicationListItemHeader>
                     </ApplicationListItem>
                   })}
-                {record.transferCredits.length ? 
-                  <div className="application-list__header-container"><h3 className="application-list__header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
+                {record.transferCredits.length ?
+                  <div className="application-list__header"><h3 className="application-list__title">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
                     {record.transferCredits.map((credit)=>{
                       return <ApplicationListItem className="course course--credits" key={credit.identifier}>
                         <ApplicationListItemHeader modifiers="course">
@@ -244,16 +249,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       </div>
 
     // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
-    
+
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
 
     <MatriculationLink i18n={this.props.i18n} />
-    
+
     <div className="application-sub-panel application-sub-panel--basic">
       {studentBasicInfo}
     </div>
     {studentRecords}
-    
+
     <div className="application-sub-panel">
       <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
       <div className="application-sub-panel__body">

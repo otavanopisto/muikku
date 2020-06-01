@@ -20,7 +20,7 @@ import MainChart from './current-student/main-chart';
 import {AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
   addFileToCurrentStudent} from '~/actions/main-function/guider';
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
-import {UserFileType} from '~/reducers/main-function/user-index';
+import {UserFileType} from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import {GuiderType, GuiderStudentUserProfileLabelType} from '~/reducers/main-function/guider';
 
@@ -38,7 +38,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   constructor(props: CurrentStudentProps){
     super(props);
   }
-  
+
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   render(){
     if (this.props.guider.currentStudent === null){
@@ -65,33 +65,33 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
            {this.props.guider.currentStudent.basic.studyProgrammeName}
         </div>
       </div>
-   
+
     let studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType)=>{
       return <span className="label" key={label.id}>
         <span className="label__icon icon-flag" style={{color: label.flagColor}}></span>
         <span className="label__text">{label.flagName}</span>
       </span>
     });
-    
+
     let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyStartDate ? 
+          <span>{this.props.guider.currentStudent.basic.studyStartDate ?
               this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyStartDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyEndDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyEndDate ? 
+          <span>{this.props.guider.currentStudent.basic.studyEndDate ?
               this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyEndDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyTimeEndTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.basic.studyTimeEnd ? 
+          <span>{this.props.guider.currentStudent.basic.studyTimeEnd ?
               this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyTimeEnd) : "-"}</span>
         </div>
       </div>
@@ -134,7 +134,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       {this.props.guider.currentStudent.lastLogin && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">
-          <span>{this.props.guider.currentStudent.lastLogin.time ? 
+          <span>{this.props.guider.currentStudent.lastLogin.time ?
               this.props.i18n.time.format(this.props.guider.currentStudent.lastLogin.time, "LLL") : "-"}</span>
         </div>
       </div>}
@@ -152,37 +152,31 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //later once a pattern is defined
     let studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
         <Hops data={this.props.guider.currentStudent.hops}/> : null;
-    
+
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
     let studentVops = (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
         <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
-  
+
     let studentWorkspaces = <Workspaces/>;
-    
+
+    let formDataGenerator = (file: File, formData: FormData) => {
+      formData.append("upload", file);
+      formData.append("title", file.name);
+      formData.append("description", "");
+      formData.append("userIdentifier", this.props.guider.currentStudent.basic.id);
+    }
+
     let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
-      <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guider.currentStudent.basic.id}
-        onFileError={(file: File, err: Error)=>{
-          this.props.displayNotification(err.message, "error");
-        }} onFileSuccess={(file: File, data: UserFileType)=>{
+      <FileUploader url="/transcriptofrecordsfileupload/" formDataGenerator={formDataGenerator}
+        displayNotificationOnError onFileSuccess={(file: File, data: UserFileType)=>{
           this.props.addFileToCurrentStudent(data);
-        }}>
-        <span className="file-uploader__hint">{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
-      </FileUploader>
-      {this.props.guider.currentStudent.files && (this.props.guider.currentStudent.files.length ?
-        <div className="uploaded-files uploaded-files--guider application-list">
-          {this.props.guider.currentStudent.files.map((file)=>{
-            return <div className="uploaded-files__item application-list__item" key={file.id}>
-              <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
-              <Link className="uploaded-files__item-title" key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
-              <FileDeleteDialog file={file}>
-                <Link disablePropagation as="span" className="uploaded-files__item-delete-icon icon-delete"/>
-              </FileDeleteDialog>
-            </div>
-          })}
-        </div> :
-        <div className="file-uploader__files-container">{this.props.i18n.text.get("plugin.guider.user.details.files.empty")}</div>
-      )}
+        }} hintText={this.props.i18n.text.get("plugin.guider.user.details.files.hint")}
+        fileTooLargeErrorText={this.props.i18n.text.get("plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge")}
+        files={this.props.guider.currentStudent.files} fileIdKey="id" fileNameKey="title" fileUrlGenerator={(f)=>`/rest/guider/files/${f.id}/content`}
+        deleteDialogElement={FileDeleteDialog} modifier="guider" emptyText={this.props.i18n.text.get("plugin.guider.user.details.files.empty")}
+        uploadingTextProcesser={(percent: number) => this.props.i18n.text.get("plugin.guider.user.details.files.uploading", percent)}
+        notificationOfSuccessText={this.props.i18n.text.get("plugin.guider.fileUpload.successful")} displayNotificationOnSuccess/>
     </div>
 
     return <div className="react-required-container">

@@ -26,13 +26,13 @@ class StudiesToolbar extends React.Component<StudiesToolbarProps, StudiesToolbar
   private searchTimer:number;
   constructor(props: StudiesToolbarProps){
     super(props);
-    this.onGoBackClick = this.onGoBackClick.bind(this);   
+    this.onGoBackClick = this.onGoBackClick.bind(this);
   }
-  
+
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
-    
+
     if (history.replaceState){
       let canGoBack = (!document.referrer || document.referrer.indexOf(window.location.host) !== -1) && (history.length);
       if (canGoBack){
@@ -45,14 +45,14 @@ class StudiesToolbar extends React.Component<StudiesToolbarProps, StudiesToolbar
       location.hash = "#";
     }
   }
-  
+
   render(){
-      return ( 
+      return (
         <div className="application-panel__toolbar">
           <div className="application-panel__toolbar-actions-main">
             {this.props.records.current ? <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
-              <span className="button-pill__icon icon-goback"></span>
-            </Link> : null} 
+              <span className="button-pill__icon icon-back"></span>
+            </Link> : null}
           </div>
         </div>
       )

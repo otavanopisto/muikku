@@ -1,0 +1,41 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// ADMIN PANEL
+.material-admin-panel {
+  box-sizing: content-box;
+  height: 1.75rem;
+  line-height: 1;
+}
+
+.material-admin-panel--page-functions {
+  border-bottom: 1px dashed $color-default-separator-border;
+  padding: 10px 0;
+  text-align: left;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px;
+  }
+}
+
+.material-admin-panel--chapter-functions {
+  border-bottom: 1px dashed $color-default-separator-border;
+  margin: 0;
+  padding: 10px 0;
+  text-align: left;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px;
+  }
+}
+
+.material-admin-panel--master-functions {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  margin: 30px 0;
+  position: relative;
+}
