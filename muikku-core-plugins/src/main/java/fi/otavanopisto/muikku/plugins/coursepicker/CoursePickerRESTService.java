@@ -210,6 +210,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
+        @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
         @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
@@ -235,6 +236,13 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     }
 
+    templateRestriction = templateRestriction != null ? templateRestriction : TemplateRestriction.ONLY_WORKSPACES;
+    if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
+        return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
+      }
+    }
+    
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
@@ -322,7 +330,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         .setAccesses(accesses)
         .setAccessUser(sessionController.getLoggedUser())
         .setIncludeUnpublished(includeUnpublished)
-        .setTemplateRestriction(TemplateRestriction.ONLY_WORKSPACES)
+        .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
         .setSorts(sorts)
@@ -384,6 +392,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
 
     if (workspaces.isEmpty()) {
+      // TODO: return 200 & empty list instead of 204
       return Response.noContent().build();
     }
     
