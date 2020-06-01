@@ -34,7 +34,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         sendKeys(".env-dialog__body .autocomplete--new-message input.env-dialog__input", "Test");
         waitAndClick(".autocomplete__recipient");
         waitForPresentAndVisible(".env-dialog__input--new-message-title");
-//      TODO: Recipient input hijacks input after first letter. What do?  
+//      TODO: Recipient input hijacks input after first letter. What do?
         sendKeys(".env-dialog__input--new-message-title", "T");
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
@@ -167,7 +167,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick(".application-list__item-content-aside .message__select-container input");
         
-        waitAndClick(".icon-delete");
+        waitAndClick(".icon-trash");
         waitForPresent(".application-panel__main-container .empty");
         assertPresent(".application-panel__main-container .empty");
       }finally{
@@ -192,7 +192,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
       createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
       navigate("/communicator#sent", false);
       waitAndClick(".application-list__item-content-aside .message__select-container input");
-      waitAndClick(".icon-delete");
+      waitAndClick(".icon-trash");
       
       waitForPresent(".application-panel__main-container .empty");
       String currentUrl = getWebDriver().getCurrentUrl();
@@ -246,7 +246,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
 
         waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
         waitAndClick(".button-pill--label");
-        waitAndClick("a.link--communicator-label");
+        waitAndClick("a.link--communicator-label-dropdown");
         waitAndClick(".button-pill--label");
         waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
         assertTextIgnoreCase(".application-list__item-footer--communicator-message-labels .label__text", "test");
@@ -279,11 +279,12 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
-        waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-edit");
+        waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
 
         waitForPresentAndVisible(".form-element__input--communicator-label-name");
         clearElement(".form-element__input--communicator-label-name");
         sendKeys(".form-element__input--communicator-label-name", "Dun dun duun");
+        // TODO: Clicking the guider-share-label button does not seem to work, element is present but click won't go through
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--communicator");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
@@ -311,10 +312,11 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
-        waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-edit");
+        waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
         waitForPresentAndVisible(".dialog--communicator.dialog--visible");
         waitAndClick(".button--communicator-remove-label");
         assertClassPresent(".button--communicator-remove-label", "disabled");
+        // TODO: Clicking the guider-share-label button does not seem to work, element is present but click won't go through
         waitAndClick(".button--standard-ok");
         waitForNotVisible("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         assertNotPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] ");
@@ -350,13 +352,13 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
         sleep(500);
         waitAndClick(".button-pill--label");
-        waitAndClick("a.link--communicator-label");
+        waitAndClick("a.link--communicator-label-dropdown");
         sleep(500);
         waitAndClick(".button-pill--label");
         waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
         sleep(500);
         waitAndClick(".button-pill--label");
-        waitAndClick(".dropdown--communicator-labels .dropdown__container .link--communicator-label.selected");
+        waitAndClick(".dropdown--communicator-labels .dropdown__container .link--communicator-label-dropdown.selected");
         assertGoesAway(".application-list__item-footer--communicator-message-labels .label__text", 5);
       }finally{
         deleteCommunicatorUserLabels(admin.getId());
@@ -382,7 +384,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
         
-        waitAndClick(".button-pill__icon.icon-delete");
+        waitAndClick(".button-pill__icon.icon-trash");
         assertGoesAway(".application-list__item-content-aside .message__select-container input:first-child", 5);
         navigate("/communicator#trash", false);
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
