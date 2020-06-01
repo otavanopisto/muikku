@@ -154,15 +154,12 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".item-list__announcement-caption");
       click(".item-list__announcement-caption");
-      waitForPresent(".reading-panel__main-container ");
-      assertTextIgnoreCase(".reading-panel__main-container .article__header", "Test title");
-      assertTextIgnoreCase(".reading-panel__main-container .article .article-date", "12.11.2015");
-      waitForPresent(".reading-panel__main-container .article .article__body");
-      assertTextIgnoreCase(".reading-panel__main-container .article .article__body", "announcer test announcement");
+      waitForPresent(".item-list__item--has-workspaces");
+      assertTextIgnoreCase(".item-list__item--has-workspaces .item-list__announcement-caption", "Test title");
+      assertTextIgnoreCase(".item-list__item--has-workspaces .item-list__announcement-date", "12.11.2015");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -191,7 +188,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      waitForPresent(".ordered-container__item--basic-announcements .item-list--panel-announcements .item-list__item--announcements");
+      waitForPresent(".ordered-container__item--basic-announcements .item-list--panel-announcements .item-list__item--has-workspaces");
       assertTextIgnoreCase(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-caption", "Test title");
       waitForPresent(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-workspaces .label__text--announcement-workspace");
       assertTextIgnoreCase(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-workspaces .label__text--announcement-workspace", "testcourse (test extension)");
@@ -221,7 +218,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      assertNotPresent("#announcements ul>li>div>a");
+      assertNotPresent(".item-list--panel-announcements a");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
