@@ -158,11 +158,9 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".item-list__announcement-caption");
       click(".item-list__announcement-caption");
-      waitForPresent(".reading-panel__main-container ");
-      assertTextIgnoreCase(".reading-panel__main-container .article__header", "Test title");
-      assertTextIgnoreCase(".reading-panel__main-container .article .article-date", "12.11.2015");
-      waitForPresent(".reading-panel__main-container .article .article__body");
-      assertTextIgnoreCase(".reading-panel__main-container .article .article__body", "announcer test announcement");
+      waitForPresent(".item-list__item--has-workspaces");
+      assertTextIgnoreCase(".item-list__item--has-workspaces .item-list__announcement-caption", "Test title");
+      assertTextIgnoreCase(".item-list__item--has-workspaces .item-list__announcement-date", "12.11.2015");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
