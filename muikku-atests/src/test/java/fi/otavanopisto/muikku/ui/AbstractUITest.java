@@ -973,7 +973,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void logout() {
     navigate("/", false);
     waitAndClick(".button-pill--profile");
-    waitAndClick(".link--profile-dropdown .icon-sign-out");
+    waitAndClick(".dropdown__container .icon-sign-out");
     waitForPresent("body");
   }
   @Deprecated
