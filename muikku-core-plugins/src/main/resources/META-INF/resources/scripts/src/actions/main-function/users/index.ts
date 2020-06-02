@@ -30,9 +30,11 @@ export interface ApplyStaffmemberTriggerType {
   }): AnyActionType
 }
 
+
 export interface LoadStudyprogrammesTriggerType {
   (): AnyActionType
 }
+
 
 export interface LoadUsersTriggerType {
   (): AnyActionType
@@ -132,26 +134,26 @@ let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprog
 let loadUsers:LoadUsersTriggerType = function loadUsers (){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      
+
       let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
 
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null
       });
-      
+
       await Promise.all([
         promisify(mApi().user.students.read(), 'callback')()
           .then((users:UserType)=>{
             dispatch({
-              type: "UPDATE_STUDENT_USERS", 
+              type: "UPDATE_STUDENT_USERS",
               payload: users
             });
           }),
         promisify(mApi().user.staffMembers.read(), 'callback')()
           .then((users:UserType)=>{
             dispatch({
-              type: "UPDATE_STAFF_USERS", 
+              type: "UPDATE_STAFF_USERS",
               payload: users
             });
           }),
@@ -181,7 +183,5 @@ let loadUsers:LoadUsersTriggerType = function loadUsers (){
      }
   }
 }
-
-
 
 export {loadUsers, loadStudyprogrammes, applyStaffmember, applyStudent};

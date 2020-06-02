@@ -28,12 +28,12 @@ interface ProfilePictureState {
 class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePictureState> {
   constructor(props: ProfilePictureProps){
     super(props);
-    
+
     this.state = {
       isImageDialogOpen: false,
       deleteImageDialogOpen: false
     }
-    
+
     this.readFile = this.readFile.bind(this);
     this.editCurrentImage = this.editCurrentImage.bind(this);
     this.deleteCurrentImage = this.deleteCurrentImage.bind(this);
@@ -41,12 +41,12 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
   readFile(e: React.ChangeEvent<HTMLInputElement>){
     let file = e.target.files[0];
     let reader = new FileReader();
-    
+
     e.target.value = "";
-    
+
     reader.addEventListener("load", ()=>{
       this.setState({
-        b64: reader.result,
+        b64: reader.result as string,
         file,
         isImageDialogOpen: true,
         src: null
@@ -60,7 +60,7 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
   editCurrentImage(e: React.MouseEvent<HTMLAnchorElement>){
     e.stopPropagation();
     e.preventDefault();
-    
+
     this.setState({
       src: getUserImageUrl(this.props.status.userId, "original", this.props.status.imgVersion),
       isImageDialogOpen: true,
@@ -71,7 +71,7 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
   deleteCurrentImage(e: React.MouseEvent<HTMLAnchorElement>){
     e.stopPropagation();
     e.preventDefault();
-    
+
     this.setState({
       deleteImageDialogOpen: true
     });

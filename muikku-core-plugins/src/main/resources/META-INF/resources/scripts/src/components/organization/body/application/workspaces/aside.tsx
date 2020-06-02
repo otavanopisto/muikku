@@ -20,6 +20,7 @@ interface NavigationAsideState {
 }
 
 class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAsideState> {
+  
   constructor(props: NavigationAsideProps){
     super(props);
       this.state = {
@@ -27,11 +28,11 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
           active: false
       }
     }
-  
+
   render() {
     let locationData = queryString.parse( document.location.hash.split( "?" )[1] || "", { arrayFormat: 'bracket' } );
     // Moc data because the backend lacks this
-    
+
     let published = [
       {
         name: "published",
@@ -42,7 +43,7 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
         label: "plugin.organization.filters.published.false"
       }
     ];
-    
+
     let active =  [
      {
        name: "active",
@@ -53,9 +54,9 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
        label: "plugin.organization.filters.state.active.false"
      }
     ];
-    
+
 //    These are waiting for backend works
-// 
+//
 //  <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.published.title')}>
 //    {published.map( ( element ) => {
 //      let isActive = this.state.published;
@@ -74,7 +75,7 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
 //      return <NavigationElement key={element.name} isActive={isActive} hash={hash}>{this.props.i18n.text.get(element.label)}</NavigationElement>
 //    })}
 //  </NavigationTopic>   
-    
+
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
         {this.props.workspaces.availableFilters.educationTypes.map( ( educationType: WorkspaceEducationFilterType ) => {

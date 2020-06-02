@@ -15,11 +15,6 @@
   font-weight: 400;
   line-height: 1.25rem;
 
-  // This prevents float problems with images and following block elments
-  * {
-    clear: both;
-  }
-
   // This will prevent ckeditor to screw up toolbar (and other elements) rendering becouse of previous rule
   .cke * {
     clear: unset;
@@ -30,7 +25,9 @@
     align-items: center;
     display: inline-flex;
     max-width: 100%;
-    overflow-y: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.1em; // This prevents unnecessary scrollbars to be rendered
     vertical-align: middle;
   }
 

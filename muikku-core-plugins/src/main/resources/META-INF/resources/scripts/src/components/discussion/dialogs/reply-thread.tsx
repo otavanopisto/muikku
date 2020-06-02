@@ -41,7 +41,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
 
     this.state = this.getRecoverStoredState({
       locked: false,
-      text: (props.quote && props.quoteAuthor ? 
+      text: (props.quote && props.quoteAuthor ?
           "<blockquote><p><strong>" + props.quoteAuthor + "</strong></p>" + props.quote + "</blockquote> <p></p>" :
             "")
     }, props.currentId + (props.quote ? "-q" : "") + (props.reply ? "-" + props.reply.id : ""));
@@ -51,7 +51,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
   }
   clearUp(){
     this.setStateAndClear({
-      text: (this.props.quote && this.props.quoteAuthor ? 
+      text: (this.props.quote && this.props.quoteAuthor ?
           "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
       ""),
     }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
@@ -61,12 +61,12 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
       locked: true
     });
     this.props.replyToCurrentDiscussionThread({
-      replyId: this.props.reply && this.props.reply.id,
+      parentId: this.props.reply && (this.props.reply.parentReplyId || this.props.reply.id),
       message: this.state.text,
       success: ()=>{
         closeDialog();
         this.setStateAndClear({
-          text: this.props.quote && this.props.quoteAuthor ? 
+          text: this.props.quote && this.props.quoteAuthor ?
               "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
                 "",
           locked: false
@@ -87,7 +87,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
       }, this.props.currentId + "-q" + (this.props.reply ? "-" + this.props.reply.id : "")))
     } else {
       this.checkStoredAgainstThisState({
-        text: this.props.quote && this.props.quoteAuthor ? 
+        text: this.props.quote && this.props.quoteAuthor ?
             "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>" :
               "",
       }, this.props.currentId + (this.props.quote ? "-q" : "") + (this.props.reply ? "-" + this.props.reply.id : ""));
@@ -97,7 +97,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     let content = (closeDialog: ()=>any) => [
     <div className="env-dialog__row env-dialog__row--ckeditor" key="1">
       <div className="env-dialog__form-element-container">
-        <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div> 
+        <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
         <CKEditor autofocus key="1"
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
       </div>

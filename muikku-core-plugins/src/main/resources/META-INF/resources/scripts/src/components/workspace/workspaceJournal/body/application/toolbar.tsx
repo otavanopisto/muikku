@@ -16,7 +16,7 @@ interface WorkspaceJournalsToolbarState {
 
 class WorkspaceJournalsToolbar extends React.Component<WorkspaceJournalsToolbarProps, WorkspaceJournalsToolbarState> {
   render(){
-      return ( 
+      return (
         <ApplicationPanelToolbar/>
       )
   }

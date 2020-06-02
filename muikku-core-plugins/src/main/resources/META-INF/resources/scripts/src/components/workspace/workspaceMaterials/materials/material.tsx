@@ -26,6 +26,7 @@ interface WorkspaceMaterialProps {
   materialContentNode: MaterialContentNodeType,
   folder: MaterialContentNodeType,
   compositeReplies: MaterialCompositeRepliesType,
+  isViewRestricted: boolean,
   workspace: WorkspaceType,
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType,
 }
@@ -74,19 +75,15 @@ class WorkspaceMaterial extends React.Component<WorkspaceMaterialProps, Workspac
     return <LazyLoader useChildrenAsLazy={true} className="material-lazy-loader-container">
       {(loaded: boolean) => {
         return <MaterialLoader canPublish
-          canRevert={!isBinary} canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
+          canRevert canCopy={!isBinary} canHide canDelete canRestrictView canChangePageType={!isBinary}
           canChangeExerciseType={!isBinary} canSetLicense={!isBinary} canSetProducers={!isBinary}
           canAddAttachments={!isBinary} canEditContent={!isBinary} folder={this.props.folder}
           editable={this.props.workspaceEditMode.active}
           material={this.props.materialContentNode} workspace={this.props.workspace}
           compositeReplies={this.props.compositeReplies} answerable={this.props.status.loggedIn}
-          readOnly={
-            this.props.materialContentNode.assignmentType === "EVALUATED" ?
-              !this.props.status.loggedIn :
-              false
-          }
+          readOnly={!this.props.status.loggedIn}
           onAssignmentStateModified={this.updateWorkspaceActivity}
-          invisible={!loaded}>
+          invisible={!loaded} isViewRestricted={this.props.isViewRestricted}>
           {(props, state, stateConfiguration) => {
             return <div>
               <MaterialLoaderEditorButtonSet {...props} {...state}/>

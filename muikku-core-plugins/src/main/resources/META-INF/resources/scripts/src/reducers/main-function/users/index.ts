@@ -16,6 +16,8 @@ export interface StudyprogrammeType {
   name: string
 }
 
+
+
 export interface UsersType {
   students: UsersListType ,
   staff: UsersListType
@@ -59,3 +61,4 @@ export function studyprogrammes (state:StudyprogrammeTypes={
   } 
   return state;
 }
+

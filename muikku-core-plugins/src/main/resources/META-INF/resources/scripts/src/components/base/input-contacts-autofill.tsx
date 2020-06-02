@@ -13,7 +13,7 @@ export interface InputContactsAutofillLoaders {
   studentsLoader?: (searchString: string) => any,
   staffLoader?: (searchString: string) => any,
   userGroupsLoader?: (searchString: string) => any,
-  workspacesLoader?: (searchString: string) => any  
+  workspacesLoader?: (searchString: string) => any
 }
 
 export interface InputContactsAutofillProps {
@@ -53,11 +53,11 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
   private blurTimeout:NodeJS.Timer;
   private selectedHeight:number;
   private activeSearchId:number;
-  private activeSearchTimeout:number;
+  private activeSearchTimeout:NodeJS.Timer;
 
   constructor(props: InputContactsAutofillProps){
     super(props);
-    
+
     this.state = {
       autocompleteSearchItems: [],
       selectedItems: props.selectedItems || [],
@@ -66,7 +66,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
 
       isFocused: this.props.autofocus === true
     }
-    
+
     this.blurTimeout = null;
     this.selectedHeight= null;
     this.onInputChange = this.onInputChange.bind(this);
@@ -76,7 +76,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     this.onInputFocus = this.onInputFocus.bind(this);
     this.setBodyMargin = this.setBodyMargin.bind(this);
     this.onDelete = this.onDelete.bind(this);
-    
+
     this.activeSearchId = null;
     this.activeSearchTimeout = null;
   }
@@ -85,15 +85,15 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       this.setState({selectedItems: nextProps.selectedItems})
     }
   }
-    
+
   setBodyMargin() {
     let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
     let prevSelectedHeight= this.selectedHeight;
-    let currentBodyMargin = parseFloat(document.body.style.marginBottom);       
+    let currentBodyMargin = parseFloat(document.body.style.marginBottom);
     let defaultBodyMargin = currentBodyMargin - prevSelectedHeight;
-    
+
     if (selectedHeight !== this.selectedHeight){
-      let bodyMargin = defaultBodyMargin + selectedHeight + "px";        
+      let bodyMargin = defaultBodyMargin + selectedHeight + "px";
         document.body.style.marginBottom = bodyMargin;
         this.selectedHeight = selectedHeight;
       }
@@ -121,30 +121,30 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
     let searchId = (new Date()).getTime();
     this.activeSearchId = searchId;
     let loaders = this.props.loaders || {};
-      
+
     let getStudentsLoader = () =>  {
       return loaders.studentsLoader ? loaders.studentsLoader(textInput) : promisify(mApi().user.users.read({
         q: textInput,
         onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
       }), 'callback');
     }
-    let getUserGroupsLoader = () => { 
+    let getUserGroupsLoader = () => {
       return loaders.userGroupsLoader ? loaders.userGroupsLoader(textInput) : promisify(mApi().usergroup.groups.read({
         q: textInput
       }), 'callback');
     }
-    let getWorkspacesLoader = () => { 
+    let getWorkspacesLoader = () => {
       return loaders.workspacesLoader ? loaders.workspacesLoader(textInput) : promisify(mApi().coursepicker.workspaces.read({
         q: textInput,
         myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces)
       }), 'callback');
     }
-    let getStaffLoader = () => { 
+    let getStaffLoader = () => {
       return loaders.staffLoader ? loaders.staffLoader(textInput) : promisify(mApi().user.staffMembers.read({
          q: textInput
       }), 'callback');
     }
-      
+
     let searchResults = await Promise.all(
       [
         checkHasPermission(this.props.hasUserPermission) ? getStudentsLoader()().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
@@ -153,13 +153,13 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
         checkHasPermission(this.props.hasStaffPermission, false) ? getStaffLoader()().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
       ]
     );
-      
+
     let userItems:ContactRecepientType[] = searchResults[0].map((item: UserType)=>({type: "user", value: item} as any as UserRecepientType));
     let userGroupItems:ContactRecepientType[] = searchResults[1].map((item: UserGroupType)=>({type: "usergroup", value: item} as any as UserGroupRecepientType));
     let workspaceItems:ContactRecepientType[] = searchResults[2].map((item: WorkspaceType)=>({type: "workspace", value: item} as any as WorkspaceRecepientType))
     let staffItems:ContactRecepientType[] = searchResults[3].map((item: UserStaffType)=>({type: "staff", value: item} as any as StaffRecepientType))
     let allItems:ContactRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
-      
+
     //ensuring that the current search is the last search
     if (this.activeSearchId === searchId){
       this.setState({
@@ -195,14 +195,14 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
       this.setState({isFocused: true});
     }
   }
-  
+
   componentDidMount () {
     let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
-    this.selectedHeight = selectedHeight;        
+    this.selectedHeight = selectedHeight;
   }
-  
+
   render(){
-    let selectedItems = this.state.selectedItems.map((item)=>{      
+    let selectedItems = this.state.selectedItems.map((item)=>{
       if (item.type === "user" || item.type === "staff"){
         return {
           node: <span className="autocomplete__selected-item">
@@ -229,9 +229,9 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
           value: item
         };
       }
-      
+
     });
-    
+
     let autocompleteItems = this.state.autocompleteSearchItems.map((item)=>{
       let node;
       if (item.type === "user" || item.type === "staff"){
@@ -259,7 +259,7 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
         node
       }
     });
-    
+
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
       opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
       <TagInput ref="taginput" modifier={this.props.modifier}
@@ -267,6 +267,5 @@ export default class c extends React.Component<InputContactsAutofillProps, Input
         placeholder={this.props.placeholder}
         tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete}/>
     </Autocomplete>
-      
   }
 }

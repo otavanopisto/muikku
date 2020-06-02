@@ -37,14 +37,14 @@ interface WorkspaceUsersState {
 class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsersState> {
   constructor(props: WorkspaceUsersProps){
     super(props);
-    
+
     this.state = {
       studentCurrentlyBeingSentMessage: null,
       activeTab: "ACTIVE",
       currentSearch: "",
       studentCurrentBeingToggledStatus: null
     }
-    
+
     this.onSendMessageTo = this.onSendMessageTo.bind(this);
     this.removeStudentBeingSentMessage = this.removeStudentBeingSentMessage.bind(this);
     this.updateSearch = this.updateSearch.bind(this);
@@ -95,7 +95,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
     return (<div className="application-panel-wrapper">
       <div className="application-panel application-panel--workspace-users">
         <div className="application-panel__container">
-          <div className="application-panel__header"> 
+          <div className="application-panel__header">
             <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.workspace.users.pageTitle')}</h2>
           </div>
           <div className="application-panel__body">
@@ -152,7 +152,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                         .map(s=><WorkspaceUser highlight={this.state.currentSearch}
                           onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
                           key={s.workspaceUserEntityId} student={s} onSendMessage={this.onSendMessageTo.bind(this, s)} {...this.props}/>);
-  
+
                           return <div className="application-list application-list--workspace-users">
                             {this.props.workspace && this.props.workspace.students ? (
                               activeStudents.length ? activeStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.activeStudents.empty')}</div>
@@ -171,7 +171,7 @@ class WorkspaceUsers extends React.Component<WorkspaceUsersProps, WorkspaceUsers
                         .filter(s=>filterMatch(getName(s, true), this.state.currentSearch))
                         .map(s=><WorkspaceUser onSetToggleStatus={this.setStudentBeingToggledStatus.bind(this, s)}
                           highlight={this.state.currentSearch} key={s.workspaceUserEntityId} student={s} {...this.props}/>);
-  
+
                         return <div className="application-list application-list--workspace-users">
                           {this.props.workspace && this.props.workspace.students ? (
                             inactiveStudents.length ? inactiveStudents : <div className="loaded-empty">{this.props.i18n.text.get('plugin.workspaces.users.inActiveStudents.empty')}</div>

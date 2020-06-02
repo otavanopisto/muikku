@@ -45,6 +45,13 @@ function onModification(props: MaterialLoaderContentProps){
 }
 
 export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
+  if (props.isViewRestricted) {
+    return (<div className="react-required-container">
+      <div className="material-page__content material-page__content--view-restricted" onClick={stopPropagation}>
+      {props.i18n.text.get("plugin.workspace.materialViewRestricted")}
+    </div>
+  </div>);
+  }
   return (<div className="react-required-container">
     <div className="react-required-container" onClick={stopPropagation}>
       {
@@ -55,7 +62,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             readOnly={props.readOnly || (props.answerable && props.stateConfiguration && props.stateConfiguration['fields-read-only'])}
             compositeReplies={props.compositeReplies} displayCorrectAnswers={props.answersVisible}
             checkAnswers={props.answersChecked} onAnswerChange={props.onAnswerChange} onAnswerCheckableChange={props.onAnswerCheckableChange}
-            invisible={props.invisible}/>
+            invisible={props.invisible} answerable={props.answerable}/>
        }
     </div>
     {

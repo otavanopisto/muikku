@@ -54,7 +54,7 @@ function startupEditor(props: EditorButtonSetProps){
 function copyPage(props: EditorButtonSetProps) {
   localStorage.setItem("workspace-material-copied-id", props.material.workspaceMaterialId.toString(10));
   localStorage.setItem("workspace-copied-id", props.workspace.id.toString(10));
-  
+
   props.displayNotification(
     props.i18n.text.get("plugin.workspace.materialsManagement.materialCopiedToClipboardMessage", props.material.title),
     "success"
@@ -65,13 +65,13 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
   if (!props.editable) {
     return null;
   }
-  
+
   if (props.invisible) {
     return (<div className="material-admin-panel"></div>);
   }
-  
+
   const viewForAdminPanel = props.isInFrontPage ? "workspace-description" : "workspace-materials";
-  
+
   return (<div className={`material-admin-panel material-admin-panel--page-functions material-admin-panel--${viewForAdminPanel}`}>
     <Dropdown openByHover modifier="material-management-tooltip" content={props.i18n.text.get("plugin.workspace.materialsManagement.editPageTooltip")}>
       <ButtonPill buttonModifiers="material-management-page" icon="pencil" onClick={startupEditor.bind(this, props)}/>

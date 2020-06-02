@@ -4,6 +4,7 @@ import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
+import { StrMathJAX } from "../static/mathjax";
 
 interface FieldType {
   name: string,
@@ -395,7 +396,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
                   ${itemStateAfterCheck}`}>
                 <span className="material-page__connectfield-term-data-container">
                   <span className="material-page__connectfield-term-number">{index + 1}</span>
-                  <span className="material-page__connectfield-term-label">{field.text}</span>
+                  <span className="material-page__connectfield-term-label"><StrMathJAX>{field.text}</StrMathJAX></span>
                 </span>
               </span>
             </span>
@@ -418,7 +419,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
              return <span className={className} key={field.name}>
                <span className="material-page__connectfield-counterpart-data-container">
                  <span className="material-page__connectfield-counterpart-icon icon-move"></span>
-                 <span className="material-page__connectfield-counterpart-label">{field.text}</span>
+                 <span className="material-page__connectfield-counterpart-label"><StrMathJAX>{field.text}</StrMathJAX></span>
                </span>
              </span>
            }
@@ -450,7 +451,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
              className={className} key={field.name}>
                <span className="material-page__connectfield-counterpart-data-container">
                  <span className="material-page__connectfield-counterpart-icon icon-move"></span>
-                 <span className="material-page__connectfield-counterpart-label">{field.text}</span>
+                 <span className="material-page__connectfield-counterpart-label"><StrMathJAX>{field.text}</StrMathJAX></span>
                  {itemCorrectAnswerComponent}
                </span>
              </Draggable>

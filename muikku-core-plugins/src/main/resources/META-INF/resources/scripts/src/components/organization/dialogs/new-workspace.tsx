@@ -20,7 +20,7 @@ interface OrganizationNewWorkspaceState {
 
 class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceProps, OrganizationNewWorkspaceState> {
   render(){
-    
+
     let content = (closePortal: ()=> any) => <div></div>;
     let footer = (closePortal: ()=> any) => <div></div>;
     

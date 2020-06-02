@@ -27,16 +27,17 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
   render(){
     let title = this.props.i18n.text.get('plugin.forum.pageTitle')
     let toolbar = <Toolbar/>
-    let primaryOption = !this.props.discussion.current ? <NewThread><Link className="button button--primary-function">    
-    {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
-    </Link></NewThread> : null;
+    let primaryOption = !this.props.discussion.current && this.props.discussion.areas.length > 0 ? <NewThread><Link className="button button--primary-function">
+      {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
+      </Link></NewThread> : null;
+    let primaryOptionMobile = this.props.discussion.areas.length > 0 ? <NewThread><HoverButton icon="plus" modifier="new-message" /></NewThread> : null;
 
     return <div className="application-panel-wrapper">
       <ApplicationPanel title={title} modifier="discussion" primaryOption={primaryOption} toolbar={toolbar}>
         <DiscussionThreads/>
         <CurrentThread/>
       </ApplicationPanel>
-      <NewThread><HoverButton icon="plus" modifier="new-message"/></NewThread>
+      {primaryOptionMobile}
     </div>
   }
 }

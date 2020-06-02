@@ -25,6 +25,10 @@ interface ContentProps {
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
   setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType,
   workspaceEditMode: WorkspaceEditModeStateType,
+  doNotSetHashes?: boolean,
+  enableTouch?: boolean,
+  isLoggedIn: boolean,
+  isStudent: boolean,
 }
 
 interface ContentState {
@@ -36,8 +40,14 @@ function isScrolledIntoView(el: HTMLElement) {
   let elemTop = rect.top;
   let elemBottom = rect.bottom;
 
-  let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= (document.querySelector(".content-panel__navigation") as HTMLElement).offsetTop + 50;
-  return isVisible;
+  const element = (document.querySelector(".content-panel__navigation") as HTMLElement);
+
+  if (element) {
+    let isVisible = elemTop < (window.innerHeight - 100) && elemBottom >= element.offsetTop + 50;
+    return isVisible;
+  } else {
+    return true;
+  }
 }
 
 class ContentComponent extends React.Component<ContentProps, ContentState> {
@@ -174,23 +184,35 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
       {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
       {this.state.materials.map((node, nodeIndex)=>{
+        const isSectionViewRestricted = (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
+        const isSectionViewRestrictedVisible = node.viewRestrict === "LOGGED_IN" && !this.props.isStudent;
+        let icon: string = isSectionViewRestrictedVisible ? "restriction" : null;
+        let iconTitle:string = isSectionViewRestrictedVisible ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
+        let className: string = isSectionViewRestrictedVisible ? "toc__section-container--view-restricted" : "toc__section-container";
+
         const topic = <TocTopic
           name={node.title}
           isHidden={node.hidden}
           key={node.workspaceMaterialId}
-          hash={"s-" + node.workspaceMaterialId}
-          className="toc__section-container"
+          hash={this.props.doNotSetHashes ? null : "s-" + node.workspaceMaterialId}
+          className={className}
+          iconAfter={icon}
+          iconAfterTitle={iconTitle}
         >
           {node.children.map((subnode)=>{
+            if (isSectionViewRestricted) {
+              return null;
+            }
+            const isViewRestrictedVisible = (subnode.viewRestrict === "LOGGED_IN" && !this.props.isStudent);
+
             let isAssignment = subnode.assignmentType === "EVALUATED";
             let isExercise = subnode.assignmentType === "EXERCISE";
-            let isNormalPage = subnode.assignmentType === null;
 
             //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
             let modifier = isAssignment ? "assignment" : (isExercise ? "exercise" : null);
-            let icon:string = null;
-            let iconTitle:string = null;
-            let className:string = null;
+            let icon: string = isViewRestrictedVisible ? "restriction" : null;
+            let iconTitle:string = isViewRestrictedVisible ? this.props.i18n.text.get("plugin.workspace.materialViewRestricted") : null;
+            let className:string = isViewRestrictedVisible ? "toc__item--view-restricted" : null;
 
             let compositeReplies = this.props.materialReplies && this.props.materialReplies.find((reply)=>reply.workspaceMaterialId === subnode.workspaceMaterialId);
             if (compositeReplies){
@@ -234,7 +256,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             const pageElement = <TocElement modifier={modifier} ref={subnode.workspaceMaterialId + ""} key={subnode.workspaceMaterialId}
               isActive={this.props.activeNodeId === subnode.workspaceMaterialId} className={className} isHidden={subnode.hidden || node.hidden}
               disableScroll iconAfter={icon} iconAfterTitle={iconTitle}
-              hash={"p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>;
+              hash={this.props.doNotSetHashes ? null : "p-" + subnode.workspaceMaterialId}>{subnode.title}</TocElement>;
 
             if (!isEditable) {
               if (subnode.hidden) {
@@ -250,6 +272,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                 handleSelector=".toc__item--drag-handle"
                 onInteractionWith={this.onInteractionBetweenSubnodes.bind(this, subnode)}
                 ref={`draggable-${nodeIndex}-${subnode.workspaceMaterialId}`}
+                enableTouch={this.props.enableTouch}
               >
                 <div className="toc__item--drag-handle icon-move"></div>
                 {pageElement}
@@ -274,6 +297,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
             className="toc__section--drag-container"
             handleSelector=".toc__section--drag-handle"
             onInteractionWith={this.onInteractionBetweenSections.bind(this, node)}
+            enableTouch={this.props.enableTouch}
           >
           <div className="toc__section--drag-handle icon-move"></div>
             {topic}
@@ -292,6 +316,8 @@ function mapStateToProps(state: StateType){
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
+    isLoggedIn: state.status.loggedIn,
+    isStudent: state.status.loggedIn && state.status.isStudent,
   }
 };
 

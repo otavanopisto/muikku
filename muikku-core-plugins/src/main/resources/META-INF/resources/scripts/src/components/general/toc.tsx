@@ -9,7 +9,7 @@ interface TocProps {
 }
 
 interface TocState {
-  
+
 }
 
 export default class Toc extends React.Component<TocProps, TocState> {
@@ -29,10 +29,13 @@ interface TocTopicProps {
   className?: string,
   isHidden: boolean,
   hash?: number | string,
+  iconAfter?: string,
+  iconAfterTitle?: string,
+  iconAfterColor?: string,
 }
 
 interface TocTopicState {
-  
+
 }
 
 export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
@@ -41,8 +44,12 @@ export class TocTopic extends React.Component<TocTopicProps, TocTopicState> {
       {this.props.name ? <Link
         className={`toc__section-title ${this.props.isHidden ? "hidden" : ""}`}
         href={this.props.hash ? "#" + this.props.hash : null}
+        disableSmoothScroll={true}
       >
-        {this.props.name}
+        <span className="toc__text-body">
+          {this.props.name}
+        </span>
+        {this.props.iconAfter ? <span title={this.props.iconAfterTitle} className={`toc__icon icon-${this.props.iconAfter}`} style={{color: this.props.iconAfterColor}}></span> : null}
       </Link> : null}
       {this.props.children}
     </div>
@@ -67,7 +74,7 @@ interface TocElementProps {
 }
 
 interface TocElementState {
-  
+
 }
 
 export class TocElement extends React.Component<TocElementProps, TocElementState> {

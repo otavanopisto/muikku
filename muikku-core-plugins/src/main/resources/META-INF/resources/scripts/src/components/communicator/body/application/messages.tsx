@@ -31,11 +31,11 @@ interface CommunicatorMessagesProps {
   selectedThreadsIds: Array<number>,
   currentThread: MessageThreadExpandedType,
   messages: MessagesType,
-  
+
   loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType,
   removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType,
   addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType,
-  
+
   i18n: i18nType,
   status: StatusType
 }
@@ -46,10 +46,10 @@ interface CommunicatorMessagesState {
 class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, CommunicatorMessagesState> {
   constructor(props: CommunicatorMessagesProps){
     super(props);
-    
+
     this.getThreadUserNames = this.getThreadUserNames.bind(this);
     this.setCurrentThread = this.setCurrentThread.bind(this);
-    
+
     //once this is in state READY only then a loading more event can be triggered
     this.statePropertyLocation = "state";
     //it will only call the function if this is true
@@ -66,7 +66,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
       }
       return getName(thread.sender, !this.props.status.isStudent);
     }
-    
+
     return thread.recipients.map((recipient)=>{
       if (recipient.userId === userId){
         return this.props.i18n.text.get("plugin.communicator.sender.self");
@@ -92,7 +92,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     } else if (this.props.threads.length === 0 && !this.props.currentThread){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
-    
+
     //DO NOT DELETE
     //VERY CRITICAL CODE
     //REMOVAL WILL CAUSE EXPLOSION
@@ -124,7 +124,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                   </div> : null}
                   <div className="application-list__header-item-date">
                     {this.props.i18n.time.format(thread.threadLatestMessageDate)}
-                  </div> 
+                  </div>
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
                   <span className="application-list__header-item-body">{thread.caption}</span>

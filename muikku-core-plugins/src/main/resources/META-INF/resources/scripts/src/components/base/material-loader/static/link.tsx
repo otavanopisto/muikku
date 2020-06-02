@@ -21,7 +21,7 @@ export default class Link extends React.Component<LinkProps, {}>{
       if (Tag === "a" && elementProps.href && !elementProps.href.includes("//") && elementProps.href[0] !== "#"){
         elementProps.href = this.props.path + "/" + elementProps.href;
       }
-      
+
       return <Tag {...elementProps}>{children}</Tag>
     });
   }

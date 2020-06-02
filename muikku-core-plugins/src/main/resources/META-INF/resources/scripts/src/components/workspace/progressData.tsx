@@ -2,7 +2,7 @@ import { WorkspaceStudentActivityType } from "~/reducers/workspaces";
 import { i18nType } from "reducers/base/i18n";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
-let ProgressBarCircle = require('react-progressbar.js').Circle;
+let ProgressBarCircle = require('react-progress-bar.js').Circle;
 
 export default class ProgressData extends React.Component<{
   activity: WorkspaceStudentActivityType,
@@ -12,10 +12,10 @@ export default class ProgressData extends React.Component<{
     if (!this.props.activity){
       return null;
     }
-    
+
     let evaluablesDone = this.props.activity.evaluablesPassed + this.props.activity.evaluablesSubmitted +
       this.props.activity.evaluablesFailed + this.props.activity.evaluablesIncomplete;
-    
+
     return <div>
       {this.props.activity.evaluablesTotal ? <Dropdown modifier="workspace-progress" content={<div>
         <div className="workspace-progress-menu-title">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.title')}</div>

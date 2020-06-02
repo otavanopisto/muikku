@@ -4,7 +4,6 @@ import MultiSelectField from '../fields/multiselect-field';
 import MemoField from '../fields/memo-field';
 import * as React from 'react';
 import $ from '~/lib/jquery';
-import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
 import { i18nType } from '~/reducers/base/i18n';
 import FileField from '../fields/file-field';
 import ConnectField from '../fields/connect-field';
@@ -16,13 +15,13 @@ import Image from '../static/image';
 import WordDefinition from '../static/word-definition';
 import IFrame from '../static/iframe';
 import { extractDataSet, guidGenerator } from '~/util/modifiers';
-import { processMathInPage } from '~/lib/mathjax';
 import MathField from '../fields/math-field';
 import { MaterialCompositeRepliesType, WorkspaceType, MaterialContentNodeType } from '~/reducers/workspaces';
 import { WebsocketStateType } from '~/reducers/util/websocket';
 import Link from '~/components/base/material-loader/static/link';
 import { HTMLtoReactComponent } from "~/util/modifiers";
 import Table from '~/components/base/material-loader/static/table';
+import MathJAX from '~/components/base/material-loader/static/mathjax';
 
 //These are all our supported objects as for now
 const objects: {[key: string]: any} = {
@@ -73,6 +72,7 @@ interface BaseProps {
   status: StatusType,
   workspace: WorkspaceType,
   websocket: WebsocketStateType,
+  answerable: boolean,
 
   compositeReplies?: MaterialCompositeRepliesType,
   readOnly?: boolean,
@@ -123,7 +123,7 @@ function preprocessor($html: any): any{
       }
     }
   });
-  
+
   const $newHTML = $html.map(function() {
     if (this.tagName === "TABLE") {
       let elem = document.createElement("div");
@@ -133,15 +133,15 @@ function preprocessor($html: any): any{
     }
     return this;
   });
-  
+
   $newHTML.find("table").each(function(){
     if ($(this).parent().attr("class") === "material-page__table-wrapper") {
       return;
     }
-    
+
     let elem = document.createElement("div");
     elem.className = "material-page__table-wrapper";
-    
+
     $(this).replaceWith(elem);
     elem.appendChild(this);
   });
@@ -202,7 +202,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       this.setState({
         elements,
       });
-      
+
       this.setupEverything(this.props, elements);
     }
   }
@@ -226,9 +226,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (this.props.onAnswerCheckableChange && originalAnswerCheckable !== this.answerCheckable){
       this.props.onAnswerCheckableChange(this.answerCheckable);
     }
-
-    //this is some mathjax weirdness we need to have here
-    processMathInPage();
   }
   //When we mount we need to register the websocket event for the answer saved
   componentWillMount(){
@@ -341,12 +338,15 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   //Ok so this is what the element calls every time that changes
   onValueChange(context: React.Component<any, any>, name: string, newValue: any){
-
     //the context is basically the react component, the name the fieldName, and the newValue the value we use
 
     //so we check if it's not modified and if it is, we mark it as modified
     if (!context.state.modified){
       context.setState({modified: true});
+    }
+    if (!this.props.answerable) {
+      context.setState({synced: true});
+      return;
     }
     context.setState({synced: false});
 
@@ -398,6 +398,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           Tag === "iframe" ||
           (Tag === "mark" && element.dataset.muikkuWordDefinition) ||
           (Tag === "figure" && element.classList.contains("image")) ||
+          (Tag === "span" && element.classList.contains("math-tex")) ||
           (Tag === "a" && (element as HTMLAnchorElement).href) ||
           Tag === "table"
         ) {
@@ -405,7 +406,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           const invisible = this.props.invisible;
           const i18n = this.props.i18n;
           const dataset = extractDataSet(element);
-          const key = elementProps.key;
           if (Tag === "iframe") {
             return <IFrame key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n}/>
           } else if (Tag === "table") {
@@ -414,6 +414,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
             return <WordDefinition key={elementProps.key} invisible={invisible} dataset={dataset} i18n={i18n}>{children}</WordDefinition>
           } else if (Tag === "figure") {
             return <Image key={elementProps.key} element={element} path={path} invisible={invisible} dataset={dataset} i18n={i18n} processingFunction={processingFunction.bind(this)}/>
+          } else if (Tag === "span") {
+            return <MathJAX key={elementProps.key} invisible={invisible} children={children}/>
           } else {
             return <Link key={elementProps.key} element={element} path={path} dataset={dataset} i18n={i18n}/>
           }
@@ -429,7 +431,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           }
         }
       }
-      
+
       if (reprocessFunction) {
         return reprocessFunction(Tag, elementProps, children, element);
       }

@@ -189,7 +189,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization) as Action);
   }
 
-  
+
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
       this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
@@ -225,7 +225,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
             if (user.organizationIdentifier) {
               defaultSelections["o"] = [ user.organizationIdentifier ];
             }
-            
+
             if (defaultSelections.c || defaultSelections.o) {
               location.hash = "#?" + queryString.stringify(defaultSelections, { arrayFormat: 'bracket' });
             } else {
@@ -270,11 +270,13 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       let currentLocationHasData = Object.keys(currentLocationData).length;
 
       if (currentLocationHasData) {
+        
+        // Todo: this is not for coursepicker anymore
+        
         this.loadCoursePickerData(currentLocationData, true);
       }
 
-      let state:StateType = this.props.store.getState();
-      
+      let state:StateType = this.props.store.getState();      
       this.props.store.dispatch(loadUsers() as Action);
       this.props.store.dispatch(loadStudyprogrammes() as Action);
 

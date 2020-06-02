@@ -5,9 +5,7 @@ import {updateMessagesNavigationLabel, removeMessagesNavigationLabel, UpdateMess
 import { MessagesType, MessagesNavigationItemType } from '~/reducers/main-function/messages';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {ColorResult} from 'react-color';
-//Another weird typescript bug, won't import properly
-const ChromePicker:any = require('react-color').ChromePicker;
+import { ChromePicker, ColorState } from "react-color";
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
@@ -81,7 +79,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
   resetState(e:HTMLElement, props=this.props):void{
     this.setState({color: props.label.color, removed: false, name: props.label.text(props.i18n)});
   }
-  onColorChange(color: ColorResult){
+  onColorChange(color: ColorState){
     if (this.state.removed){
       return;
     }
@@ -169,7 +167,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="communicator" 
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="communicator"
      title={this.props.i18n.text.get('plugin.communicator.label.edit.caption')}
      content={content} footer={footer}>{this.props.children}</Dialog>
   }

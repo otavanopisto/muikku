@@ -4,6 +4,7 @@ import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
+import { StrMathJAX } from "../static/mathjax";
 
 interface SorterFieldItemType {
   id: string,
@@ -194,7 +195,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
           {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
         </span>
         {this.props.content.items.map((answer, index)=>
-          <span key={answer.id} className="material-page__field-answer-example">{answer.name}</span>
+          <span key={answer.id} className="material-page__field-answer-example"><StrMathJAX>{answer.name}</StrMathJAX></span>
         )}
       </span>
     }
@@ -207,7 +208,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
         }
         return <span className="material-page__sorterfield-item" key={i.id}>
           <span className="material-page__sorterfield-item-icon icon-move"></span>
-          <span className="material-page__sorterfield-item-label">{text}</span>
+          <span className="material-page__sorterfield-item-label"><StrMathJAX invisible={true}>{text}</StrMathJAX></span>
         </span>
       })
       return <span ref="base" className="material-page__sorterfield-wrapper">
@@ -247,7 +248,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
            //readonly component
            return <span className={`material-page__sorterfield-item ${itemStateAfterCheck}`} key={item.id}>
              <span className="material-page__sorterfield-item-icon icon-move"></span>
-             <span className="material-page__sorterfield-item-label">{text}</span>
+             <span className="material-page__sorterfield-item-label"><StrMathJAX>{text}</StrMathJAX></span>
            </span>
          }
 
@@ -261,7 +262,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
            onClick={this.selectItem.bind(this, item)} onDrag={this.selectItem.bind(this, item)}
            onDropInto={this.cancelSelectedItem}>
            <span className="material-page__sorterfield-item-icon icon-move"></span>
-           <span className="material-page__sorterfield-item-label">{text}</span>
+           <span className="material-page__sorterfield-item-label"><StrMathJAX>{text}</StrMathJAX></span>
          </Draggable>
        })}
       </span>

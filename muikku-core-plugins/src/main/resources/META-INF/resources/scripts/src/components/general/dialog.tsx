@@ -51,12 +51,14 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       });
     }, 10);
     this.props.onOpen && this.props.onOpen(element);
-    let el = element.childNodes[0].firstChild as HTMLElement;
-    let marginOffset = 20;
     if(this.props.disableScroll == true ) {
       document.body.style.overflow = "hidden";
     }
-    document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";
+    if (element.childNodes && element.childNodes[0]) {
+      let el = element.childNodes[0].firstChild as HTMLElement;
+      let marginOffset = 20;
+      document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";
+    }
   }
 
   beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
@@ -102,6 +104,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     </Portal>);
   }
 }
+
 
 
 interface DialogRowProps {
@@ -175,46 +178,6 @@ export class DialogActionsElement extends React.Component<DialogActionsProps, Di
           {this.props.cancelLabel}
         </Button>
         {this.props.customButton}
-      </div>
-    );
-  }
-}
-
-interface DialogEmailFormElementProps {
-  label: string,
-  modifiers?: string | Array<string>,
-  updateField: (fieldName:string, fieldValue: string)=> any;
-}
-
-interface DialogEmailFormElementState {
-  valid: boolean;
-}
-
-export class DialogEmailFormElement extends React.Component<DialogEmailFormElementProps, DialogEmailFormElementState> {
-  constructor(props: DialogEmailFormElementProps){
-    super(props);
-    this.state = {valid: false};
-    this.updateInputField = this.updateInputField.bind(this);
-  }
-
-  updateInputField(e: React.ChangeEvent<HTMLInputElement>){
-    let value = e.target.value;
-    const emailRegExp = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-
-    if (!value || value.trim().length == 0 || !value.match(emailRegExp)) {
-      this.setState({valid: false});      
-    } else {
-      this.setState({valid: true});
-      this.props.updateField(e.target.name, value);
-    }
-  }
-
-  render() {
-    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
-    return(
-      <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
-        <div className="form-element__label">{this.props.label}</div>
-        <input type="text" className={`form-element__input ${this.props.modifiers ? modifiers.map( m => `form-element__input--${m}`).join( " " ) : ""} ${this.state.valid ? "VALID" : "INVALID"}`} name="email" onChange={this.updateInputField} />
       </div>
     );
   }

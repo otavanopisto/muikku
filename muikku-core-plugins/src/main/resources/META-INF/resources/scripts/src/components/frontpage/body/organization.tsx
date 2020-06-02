@@ -32,10 +32,7 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
               <h2 className="ordered-container__subcontainer-header--social-media">
                 {this.props.i18n.text.get( 'plugin.organization.some.title' )}
               </h2>
-              <ButtonSocial openInNewTab="_blank"  className="icon-facebook" href="https://www.facebook.com/otavanopisto"/>
               <ButtonSocial openInNewTab="_blank" className="icon-twitter" href="https://twitter.com/OtavanOpisto"/>
-              <ButtonSocial openInNewTab="_blank" className="icon-instagram" href="https://www.instagram.com/otavanopisto/"/>
-              <ButtonSocial openInNewTab="_blank" className="icon-pinterest" href="https://fi.pinterest.com/otavanopisto/"/>
               <ButtonSocial openInNewTab="_blank" className="icon-linkedin" href="https://www.linkedin.com/company/106028"/>
             </div>
           </div>

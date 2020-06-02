@@ -4,9 +4,7 @@
 //please remove it
 
 import * as React from 'react';
-import Base from './base';
 
-import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
 import { WorkspaceType, MaterialContentNodeType, MaterialCompositeRepliesType } from '~/reducers/workspaces';
 import promisify from '~/util/promisify';
@@ -16,17 +14,13 @@ import { StatusType } from '~/reducers/base/status';
 import { StateType } from '~/reducers';
 import { Dispatch, connect } from 'react-redux';
 import { WebsocketStateType } from '~/reducers/util/websocket';
-import Button, { ButtonPill } from '~/components/general/button';
 import { bindActionCreators } from 'redux';
 import { UpdateAssignmentStateTriggerType, updateAssignmentState,
   setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments, RequestWorkspaceMaterialContentNodeAttachmentsTriggerType } from '~/actions/workspaces';
-import equals = require("deep-equal");
-import Dropdown from "~/components/general/dropdown"; 
 import { DisplayNotificationTriggerType, displayNotification } from '~/actions/base/notifications';
-import Link from '~/components/general/link';
-  
+
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/material-page.scss';
 
@@ -36,32 +30,32 @@ const STATES = [{
   //usually exercises cannot be withdrawn but they might be in extreme cases when a evaluated has
   //been modified
   'state': ['UNANSWERED', 'ANSWERED', 'WITHDRAWN'],
-  
+
   //when an exercise is in the state unanswered answered or withdrawn then it doesn't
   //display this button
   'displays-hide-show-answers-on-request-button-if-allowed': false,
   'button-class': 'muikku-check-exercises',
-  
+
   //This is what by default appears on the button
   'button-text': "plugin.workspace.materialsLoader.sendExerciseButton",
-  
+
   //This is what appears when the answer can be checked
   //this appears when at least one of the entry fields are checkable
   //in the page
   'button-check-text': "plugin.workspace.materialsLoader.checkExerciseButton",
-  
+
   //Buttons are not disabled
   'button-disabled': false,
-  
+
   //When the button is pressed, the composite reply will change state to this one
   'success-state': 'SUBMITTED',
-  
+
   //Whether or not the fields are read only
   'fields-read-only': false
 }, {
   'assignment-type': 'EXERCISE',
   'state': ['SUBMITTED', 'PASSED', 'FAILED', 'INCOMPLETE'],
-  
+
   //With this property active whenever in this state the answers will be checked
   'checks-answers': true,
   'displays-hide-show-answers-on-request-button-if-allowed': true,
@@ -69,7 +63,7 @@ const STATES = [{
   'button-text': "plugin.workspace.materialsLoader.exerciseSentButton",
   'button-check-text': "plugin.workspace.materialsLoader.exerciseCheckedButton",
   'button-disabled': false,
-  
+
   //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
   'modify-state': 'ANSWERED'
 }, {
@@ -121,7 +115,7 @@ const STATES = [{
 export interface MaterialLoaderProps {
   material: MaterialContentNodeType,
   folder?: MaterialContentNodeType,
-  
+
   workspace: WorkspaceType,
   i18n: i18nType,
   status: StatusType,
@@ -129,12 +123,12 @@ export interface MaterialLoaderProps {
   id?: string,
   websocket: WebsocketStateType,
   isInFrontPage?: boolean,
-  
+
   //Whether or not the thing can be answered
   //and then it will use the state configuration
   answerable?: boolean,
-  
-  //Edition mode, should only be available to admins
+
+  //Editing mode, should only be available to admins
   editable?: boolean,
   canDelete?: boolean,
   canHide?: boolean,
@@ -150,7 +144,7 @@ export interface MaterialLoaderProps {
   canAddAttachments?: boolean,
   canEditContent?: boolean,
   canSetTitle?: boolean,
-  
+
   //When the assignment state has changed, this triggers
   onAssignmentStateModified?: ()=>any
 
@@ -159,21 +153,23 @@ export interface MaterialLoaderProps {
   //used
   loadCompositeReplies?: boolean,
   compositeReplies?: MaterialCompositeRepliesType,
-      
+
   readOnly?: boolean,
-  
+
   updateAssignmentState: UpdateAssignmentStateTriggerType,
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType,
   displayNotification: DisplayNotificationTriggerType,
   requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
-  
+
   onAnswerChange?: (name: string, value?: boolean) => any,
   onAnswerCheckableChange?: (answerCheckable: boolean) => any,
   onPushAnswer?: () => any,
   onToggleAnswersVisible?: () => any,
   invisible?: boolean,
-  
+
+  isViewRestricted?: boolean,
+
   children?: (
     props: MaterialLoaderProps,
     state: MaterialLoaderState,
@@ -185,14 +181,14 @@ interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
   compositeRepliesInState: MaterialCompositeRepliesType,
   compositeRepliesInStateLoaded: boolean,
-  
+
   //whether the answers are visible and checked
   answersVisible: boolean,
   answersChecked: boolean,
-  
+
   //whether the material can be checked at all
   answerCheckable: boolean,
-  
+
   //A registry for the right and wrong answers as told by the material
   answerRegistry: {[name: string]: any}
 }
@@ -211,7 +207,7 @@ let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
   private stateConfiguration:any;
   private answerRegistrySync: {[name: string]: any};
-  
+
   constructor(props: MaterialLoaderProps){
     super(props);
 
@@ -222,25 +218,25 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
 
       answersVisible: false,
       answersChecked: false,
-      
+
       //assume true, as it is usually true; this is
       //basically only in used for exercises to show button-check-text instead
       //of just the normal text that doesn't check
       answerCheckable: true,
-      
+
       //The rightness registry start empty
       answerRegistry: {}
     };
-    
+
     //A sync version of the answer registry, it can change so fast
     //setStates might stack
     this.answerRegistrySync = {};
-    
+
     this.onPushAnswer = this.onPushAnswer.bind(this);
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
-    
+
     //if it is answerable
     if (props.answerable && props.material){
       //lets try and get the state configuration
@@ -253,7 +249,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         let statesInIt = state['state'];
         return statesInIt === stateRequired || ((statesInIt instanceof Array) && statesInIt.includes(stateRequired));
       });
-      
+
       //If checks answers, make it with answersChecked and answersVisible starting as true
       if (this.stateConfiguration && this.stateConfiguration['checks-answers']){
         state.answersChecked = true;
@@ -262,7 +258,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         }
       }
     }
-    
+
     //set the state
     this.state = state;
   }
@@ -285,7 +281,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         let statesInIt = state['state'];
         return statesInIt === stateRequired || ((statesInIt instanceof Array) && statesInIt.includes(stateRequired));
       });
-      
+
       //There should be one but add this check just in case
       if (this.stateConfiguration){
         //if the thing has the flag to checks-answers but they are not going to be
@@ -358,7 +354,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
           this.props.workspace.id, this.props.material.workspaceMaterialId, compositeReplies && compositeReplies.workspaceMaterialReplyId,
           this.stateConfiguration['success-text'] && this.props.i18n.text.get(this.stateConfiguration['success-text']), this.props.onAssignmentStateModified);
     }
-    
+
     this.props.onPushAnswer && this.props.onPushAnswer();
   }
   //Toggles answers visible or not
@@ -366,7 +362,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.setState({
       answersVisible: !this.state.answersVisible
     });
-    
+
     this.props.onToggleAnswersVisible && this.props.onToggleAnswersVisible();
   }
   //This function gets called every time a field answer state changes
@@ -391,7 +387,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     this.setState({
       answerRegistry: newObj
     })
-    
+
     this.props.onAnswerChange && this.props.onAnswerChange(name, value);
 
     //NOTE if you would rather have 3 answer states here in order
@@ -413,7 +409,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
     if (answerCheckable !== this.state.answerCheckable){
       this.setState({answerCheckable});
     }
-    
+
     this.props.onAnswerCheckableChange && this.props.onAnswerCheckableChange(answerCheckable);
   }
   render(){
@@ -423,13 +419,13 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
 
     //Setting this up
     let isHidden = this.props.material.hidden || (this.props.folder && this.props.folder.hidden);
-    
+
     const materialPageType = this.props.material.assignmentType ? (this.props.material.assignmentType === "EXERCISE" ? "exercise" : "assignment") : "textual";
     let className = `material-page material-page--${materialPageType} ${(modifiers || []).map(s=>`material-page--${s}`).join(" ")} ${isHidden ? "material-page--hidden" : ""}`;
     if (compositeReplies && compositeReplies.state) {
       className += " material-page--" + compositeReplies.state;
     }
-    
+
     let content = null;
     if (
       (this.props.loadCompositeReplies && this.state.compositeRepliesInStateLoaded) ||
@@ -448,7 +444,7 @@ class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoader
         this.stateConfiguration
       );
     }
-    
+
     return <article className={className} ref="root" id={this.props.id}>
       {content}
     </article>

@@ -16,7 +16,7 @@ interface StepProps {
 }
 
 interface StepState {
-  
+
 }
 
 export default class Step extends React.Component<StepProps, StepState> {
@@ -30,7 +30,7 @@ export default class Step extends React.Component<StepProps, StepState> {
     const nameExtension = this.props.getStore().nameExtension;
     return <div className="wizard__content">
       <h2>{this.props.i18n.text.get("plugin.workspacecopywizard.summaryPage.title")}</h2>
-      
+
       <div className="wizard__summary-row">
         <label>{this.props.i18n.text.get("plugin.workspacecopywizard.doCopyButton.label")}</label>
         <p>{this.props.i18n.text.get(
@@ -48,10 +48,10 @@ export default class Step extends React.Component<StepProps, StepState> {
       </div>
       <div className="wizard__summary-row">
         <ul>
-        {this.props.getStore().copyDiscussionAreas ? 
+        {this.props.getStore().copyDiscussionAreas ?
           <li>{this.props.i18n.text.get("plugin.workspacecopywizard.summarySteps.copyDiscussionAreas")}</li>
        : null}
-        {copyMaterials !== "NO" ? 
+        {copyMaterials !== "NO" ?
           <li>
             {
               this.props.i18n.text.get(copyMaterials === "CLONE" ?
@@ -60,14 +60,14 @@ export default class Step extends React.Component<StepProps, StepState> {
             }
            </li>
         : null}
-        {this.props.getStore().copyBackgroundPicture ? 
+        {this.props.getStore().copyBackgroundPicture ?
           <li>{this.props.i18n.text.get("plugin.workspacecopywizard.summarySteps.copyFiles")}</li>
         : null}
         </ul>
       </div>
       {this.props.step === "done" && this.props.resultingWorkspace ? <div className="wizard__summary-row">
         <Button className="button button--primary-function-content" onClick={this.props.onDone}>{this.props.i18n.text.get("plugin.workspacecopywizard.closeWizardButton.label")}</Button>
-        <Button className="button button--primary-function-content" href={`/workspace/${this.props.resultingWorkspace.urlName}`} to={`/workspace/${this.props.resultingWorkspace.urlName}`}>
+        <Button className="button button--primary-function-content" href={`/workspace/${this.props.resultingWorkspace.urlName}`}>
           {this.props.i18n.text.get("plugin.workspacecopywizard.gotToWorkspaceMuikkuButton.label")}
         </Button>
         <Button className="button button--primary-function-content" href={this.props.resultingWorkspace.details.externalViewUrl} openInNewTab="_blank">

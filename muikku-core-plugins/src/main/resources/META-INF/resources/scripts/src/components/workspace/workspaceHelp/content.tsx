@@ -42,11 +42,11 @@ function isScrolledIntoView(el: HTMLElement) {
 class ContentComponent extends React.Component<ContentProps, ContentState> {
   constructor(props: ContentProps) {
     super(props);
-    
+
     this.state = {
       materials: props.materials
     };
-    
+
     this.hotInsertBefore = this.hotInsertBefore.bind(this);
     this.onInteractionBetweenNodes = this.onInteractionBetweenNodes.bind(this);
   }
@@ -74,10 +74,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     newMaterialState.splice(baseIndex, 1);
     newMaterialState.splice(targetBeforeIndex, 0, this.state.materials[baseIndex]);
     const contentNodesRepaired = repairContentNodes(newMaterialState);
-    
+
     const material = this.state.materials[baseIndex];
     const update = contentNodesRepaired.find((cn) => cn.workspaceMaterialId === material.workspaceMaterialId);
-    
+
     this.setState({
       materials: contentNodesRepaired,
     }, () => {
@@ -105,7 +105,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     if (!this.props.materials || !this.props.materials.length){
       return null;
     }
-    
+
     const isEditable = this.props.workspaceEditMode.active;
 
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>

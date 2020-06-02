@@ -9,10 +9,11 @@ type itemType2 = (closeDropdown: ()=>any)=>any
 
 interface DropdownProps {
   modifier?: string,
-  children?: React.ReactElement<any>,
-  items?: Array<(React.ReactElement<any> | itemType2)>,
+  children?: React.ReactNode,
+  items?: Array<(React.ReactNode | itemType2)>,
   content?: any,
   openByHover?: boolean,
+  openByHoverIsClickToo?: boolean,
   persistent?:boolean,
   onOpen?: ()=>any,
   onClose?: ()=>any,
@@ -47,7 +48,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     }
   }
   onOpen(DOMNode: HTMLElement){
-    let activator = this.refs["activator"];
+    let activator: any = this.refs["activator"];
     if (!(activator instanceof HTMLElement)){
       activator = findDOMNode(activator);
     }
@@ -109,15 +110,16 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     (this.refs["portal"] as Portal).closePortal();
   }
   render(){
-    let elementCloned : React.ReactElement<any> = React.cloneElement(this.props.children, { ref: "activator"});
+    let elementCloned : React.ReactElement<any> = React.cloneElement(this.props.children as any, { ref: "activator"});
     let portalProps:any = {};
     if (!this.props.openByHover){
       portalProps.openByClickOn = elementCloned;
     } else {
       if (this.props.onClick) {
-        elementCloned = React.cloneElement(this.props.children, { ref: "activator", onClick: this.props.onClick });
+        elementCloned = React.cloneElement(this.props.children as any, { ref: "activator", onClick: this.props.onClick });
       }
       portalProps.openByHoverOn = elementCloned;
+      portalProps.openByHoverIsClickToo = this.props.openByHoverIsClickToo;
     }
     
     portalProps.closeOnEsc = true;

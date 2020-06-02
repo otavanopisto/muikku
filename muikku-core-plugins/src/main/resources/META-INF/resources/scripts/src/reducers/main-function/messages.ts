@@ -196,7 +196,7 @@ function sortNavigationItems(itemA: MessagesNavigationItemType, itemB: MessagesN
   } else if (itemA.type !== "label" && itemB.type === "label"){
     return -1;
   }
-  
+
   let labelAUpperCase = itemA.text(null).toUpperCase();
   let labelBUpperCase = itemB.text(null).toUpperCase();
   return (labelAUpperCase < labelBUpperCase) ? -1 : (labelAUpperCase > labelBUpperCase) ? 1 : 0;
@@ -212,7 +212,7 @@ export default function messages(state: MessagesType = {
   toolbarLock: false,
   currentThread: null,
   signature: null,
-  
+
   unreadThreadCount: 0,
   navigation: defaultNavigation
 }, action: ActionType): MessagesType {
@@ -288,7 +288,7 @@ export default function messages(state: MessagesType = {
     if (newCurrent && newCurrent.messages[0].communicatorMessageId === action.payload.communicatorMessageId){
       newCurrent = Object.assign(newCurrent, {labels: newCurrent.labels.concat([action.payload.label])});
     }
-  
+
     return Object.assign({}, state, {selectedThreads: state.selectedThreads.map((selectedThread: MessageThreadType)=>{
       if (selectedThread.communicatorMessageId === action.payload.communicatorMessageId){
         if (!selectedThread.labels.find(label=>label.labelId === action.payload.label.labelId)){
@@ -312,14 +312,14 @@ export default function messages(state: MessagesType = {
       }
       return thread;
     }), currentThread: newCurrent});
-  } else if (action.type === "UPDATE_MESSAGE_THREAD_DROP_LABEL"){   
+  } else if (action.type === "UPDATE_MESSAGE_THREAD_DROP_LABEL"){
     let newCurrent = state.currentThread;
     if (newCurrent && newCurrent.messages[0].communicatorMessageId === action.payload.communicatorMessageId){
       newCurrent = Object.assign(newCurrent, {
         labels: newCurrent.labels.filter(label=>label.labelId !== action.payload.label.labelId)
       });
     }
-  
+
     return Object.assign({}, state, {selectedThreads: state.selectedThreads.map((selectedThread: MessageThreadType)=>{
       if (selectedThread.communicatorMessageId === action.payload.communicatorMessageId){
         return Object.assign({}, selectedThread, {

@@ -36,7 +36,7 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     guider: state.guider,
-    locale: state.locales.current 
+    locale: state.locales.current
   }
 };
 

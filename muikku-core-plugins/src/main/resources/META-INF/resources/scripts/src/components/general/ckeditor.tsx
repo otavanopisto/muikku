@@ -74,8 +74,8 @@ const extraConfig = (props: CKEditorProps) => ({
     { name: 'tools', items: [ 'Maximize' ] }
   ],
   resize_enabled: false,
-  uploadUrl: '/communicatorAttachmentUploadServlet',
-  extraPlugins: 'widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea',
+  uploadUrl: "/communicatorAttachmentUploadServlet",
+  extraPlugins: "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea",
 });
 
 export default class CKEditor extends React.Component<CKEditorProps, CKEditorState> {
@@ -91,20 +91,20 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   private timeout: NodeJS.Timer;
   private timeoutProps: CKEditorProps;
   private previouslyAppliedConfig: any;
-  
+
   constructor(props: CKEditorProps){
     super(props);
-    
+
     this.name = "ckeditor-" + (new Date()).getTime();
     this.currentData = props.children || "";
-    
+
     this.width = null;
     this.height = null;
-    
+
     //CKeditor tends to trigger change on setup for no reason at all
     //we don't expect the user to type anything at all when ckeditor is starting up
     this.cancelChangeTrigger = true;
-    
+
     this.onDataChange = this.onDataChange.bind(this);
   }
   componentDidMount(){
@@ -114,7 +114,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     if (this.cancelChangeTrigger){
       return;
     }
-    
+
     const instance = getCKEDITOR().instances[this.name];
     if (!instance) {
       return;
@@ -134,10 +134,10 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       }, 10);
       return;
     }
-    
+
     this.timeoutProps = null;
     this.previouslyAppliedConfig = configObj;
-    
+
     let allPlugins = configObj.extraPlugins.split(",");
     for (let plugin of allPlugins){
       if (!pluginsLoaded[plugin]){
@@ -147,7 +147,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
         }
       }
     }
-    
+
     if (configObj.baseHref) {
       const base = document.getElementById("basehref") as HTMLBaseElement;
       if (base) {
@@ -160,7 +160,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
         document.head.appendChild(newBase);
       }
     }
-    
+
     getCKEDITOR().replace(this.name, configObj);
     getCKEDITOR().instances[this.name].on('change', () => {
       this.onDataChange();
@@ -168,13 +168,13 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().instances[this.name].on('key', ()=>{
       this.cancelChangeTrigger = false;
     })
-    
-      
+
+
     const height = (this.refs.ckeditor as HTMLTextAreaElement).getBoundingClientRect().height;
     getCKEDITOR().instances[this.name].on('instanceReady', (ev: any)=>{
       ev.editor.document.on('drop', () => {
         this.props.onDrop && this.props.onDrop();
-        
+
         // CKEditor bug, the event of dropping doesn't generate any change
         // to the get data, so I need to wait, I can't tell
         // how much time so, 1, 2, 3 seconds are a guess
@@ -185,39 +185,39 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       });
       let instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
-      
+
       const style = window.getComputedStyle(instance.container.$, null);
       const borderTop = parseInt(style.getPropertyValue("border-top")) || 0;
       const borderBottom = parseInt(style.getPropertyValue("border-bottom")) || 0;
-      
-      // Height can be given from the ancestor or from instance container. 
+
+      // Height can be given from the ancestor or from instance container.
       // Instance container is "unstable" and changes according to the content it seems, so for example
       // material editor is given the ancestorHeight - the dialog height, which is stable.
-      
+
       const height = this.props.ancestorHeight ? this.props.ancestorHeight : instance.container.$.getBoundingClientRect().height;
-      
+
       // CKE content-element id
-      
+
       const contentElementId:string  = instance.id  + "_contents";
-      
+
       // CKeditor offset from top when ancestor height is given, when there's no ancestor height provided, it is supposed no offset is needed
-      
+
       let contentElementOffset:number = this.props.ancestorHeight ?  document.getElementById(contentElementId).offsetTop : 0;
-      
+
       // Calculate the height
-      
+
       let contentHeight:number = height - contentElementOffset;
-      
+
       // Resize
       instance.resize("100%", contentHeight, true);
-      
+
       instance.setData(props.children || "");
-        
+
       //TODO somehow, the autofocus doesn't focus in the last row but in the first
       //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
     });
   }
-  
+
   updateCKEditor(data: string){
     if (!getCKEDITOR()){
       return;
@@ -225,6 +225,13 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().instances[this.name].setData(data);
   }
   componentWillUnmount(){
+    if (this.props.configuration && this.props.configuration.baseHref) {
+      const base = document.getElementById("basehref") as HTMLBaseElement;
+      if (base) {
+        document.head.removeChild(base);
+      }
+    }
+
     if (!getCKEDITOR()){
       clearTimeout(this.timeout);
       return;
@@ -242,9 +249,9 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       this.timeoutProps = nextProps;
       return;
     }
-    
+
     let configObj = {...extraConfig(nextProps), ...(nextProps.configuration || {})};
-    
+
     if (!equals(configObj, this.previouslyAppliedConfig)) {
       getCKEDITOR().instances[this.name].destroy();
       this.setupCKEditor(nextProps);

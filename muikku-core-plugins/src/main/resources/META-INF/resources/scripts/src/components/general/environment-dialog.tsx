@@ -29,8 +29,6 @@ export default class EnvironmentDialog extends Dialog {
   }
 }
 
-
-
 // TODO: this needs to be made to use the dialog versions of these using these classnames
 
 
@@ -115,3 +113,4 @@ export class EnvironmentDialogActionsElement extends React.Component<Environment
 
   }
 }
+

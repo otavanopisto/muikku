@@ -1,11 +1,9 @@
 import * as React from 'react';
 import Dialog from '~/components/general/dialog';
-import Link from '~/components/general/link';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {ColorResult} from 'react-color';
 //Another weird typescript bug, won't import properly
-const ChromePicker:any = require('react-color').ChromePicker;
+import { ChromePicker, ColorState } from "react-color";
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 
@@ -90,7 +88,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       description: props.label.description
     });
   }
-  onColorChange(color: ColorResult){
+  onColorChange(color: ColorState){
     if (this.state.removed){
       return;
     }
@@ -196,10 +194,10 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider" 
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider-edit-label"
      title={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.title')}
      content={content} footer={footer}>{this.props.children}</Dialog>
-  } 
+  }
 }
 
 function mapStateToProps(state: StateType){

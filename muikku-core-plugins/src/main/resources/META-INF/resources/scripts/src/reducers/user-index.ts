@@ -33,6 +33,7 @@ export interface UserType {
   hasEvaluationFees?: false,
   curriculumIdentifier?: string,
   organizationIdentifier?: string,
+
   //EXTENDED VALUES, may or may not be available
   email?: string,
   language?: string,
@@ -116,7 +117,7 @@ export interface UserRecepientType {
 
 export interface UserGroupRecepientType {
   type: "usergroup",
-  value: UserGroupType 
+  value: UserGroupType
 }
 
 export interface StaffRecepientType {
@@ -199,6 +200,6 @@ export default function userIndex(state:UserIndexType={
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop)});
   }
-  
+
   return state;
 }

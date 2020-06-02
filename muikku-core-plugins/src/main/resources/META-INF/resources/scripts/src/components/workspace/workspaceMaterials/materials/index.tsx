@@ -5,7 +5,6 @@ import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType, MaterialCompositeRepliesListType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
-import equals = require("deep-equal");
 
 import WorkspaceMaterial from './material';
 import { ButtonPill } from "~/components/general/button";
@@ -14,6 +13,7 @@ import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
 import { setWorkspaceMaterialEditorState, SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode, CreateWorkspaceMaterialContentNodeTriggerType, updateWorkspaceMaterialContentNode, UpdateWorkspaceMaterialContentNodeTriggerType } from "~/actions/workspaces";
+import { Redirect } from "react-router-dom";
 
 interface WorkspaceMaterialsProps {
   i18n: i18nType,
@@ -25,6 +25,7 @@ interface WorkspaceMaterialsProps {
   workspaceEditMode: WorkspaceEditModeStateType,
   onActiveNodeIdChange: (activeNodeId: number)=>any,
   onOpenNavigation: ()=>any,
+  isLoggedIn: boolean,
 
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType,
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType,
@@ -32,16 +33,8 @@ interface WorkspaceMaterialsProps {
 }
 
 interface WorkspaceMaterialsState {
-  defaultOffset: number
-}
-
-function isScrolledIntoView(el: HTMLElement) {
-  let rect = el.getBoundingClientRect();
-  let elemTop = rect.top;
-  let elemBottom = rect.bottom;
-
-  let isVisible = elemTop < window.innerHeight && elemBottom >= (document.querySelector("#stick") as HTMLElement).offsetHeight;
-  return isVisible;
+  defaultOffset: number;
+  redirect: string;
 }
 
 const DEFAULT_OFFSET = 67;
@@ -52,7 +45,8 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     super(props);
 
     this.state = {
-      defaultOffset: DEFAULT_OFFSET
+      defaultOffset: DEFAULT_OFFSET,
+      redirect: null,
     }
 
     this.onOpenNavigation = this.onOpenNavigation.bind(this);
@@ -277,6 +271,10 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     return winner;
   }
   render(){
+    if (this.state.redirect) {
+      return <Redirect push to={this.state.redirect}/>
+    }
+
     if (!this.props.materials || !this.props.workspace){
       return null;
     }
@@ -297,6 +295,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
 
     const results: any = [];
     this.props.materials.forEach((section, index)=>{
+      const isSectionViewRestricted = (section.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
 
       if (index === 0 && isEditable) {
         results.push(<div key={"sectionfunctions-" + section.workspaceMaterialId} className="material-admin-panel material-admin-panel--master-functions">
@@ -332,7 +331,12 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
 
       const sectionSpecificContentData: any = [];
 
-      section.children.forEach((node, index)=>{
+      section.children.forEach((node)=>{
+        if (isSectionViewRestricted) {
+          return;
+        }
+        const materialIsViewRestricted =  (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
+
         // this is the next sibling for the content node that is to be added, aka the current
         const nextSibling = node;
         if (isEditable) {
@@ -367,6 +371,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
               materialContentNode={node}
               workspace={this.props.workspace}
               compositeReplies={compositeReplies}
+              isViewRestricted={materialIsViewRestricted}
              />
           </ContentPanelItem>;
         sectionSpecificContentData.push(material);
@@ -395,10 +400,15 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
           : null}
           <div className="content-panel__chapter-title-text">{section.title}</div>
         </h2>
+        {isSectionViewRestricted ? <div className="content-panel__item">
+          <article className="material-page">
+            <div className="material-page__content material-page__content--view-restricted">{this.props.i18n.text.get("plugin.workspace.materialViewRestricted")}</div>
+          </article>
+        </div> : null}
         {sectionSpecificContentData}
         {lastManagementOptionsWithinSectionItem}
-       </section>);
-     });
+      </section>);
+    });
 
     return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
       {results}
@@ -416,6 +426,7 @@ function mapStateToProps(state: StateType){
     materialReplies: state.workspaces.currentMaterialsReplies,
     activeNodeId: state.workspaces.currentMaterialsActiveNodeId,
     workspaceEditMode: state.workspaces.editMode,
+    isLoggedIn: state.status.loggedIn,
   }
 };
 

@@ -211,4 +211,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Menu);
-
