@@ -69,7 +69,7 @@ export default class FileField extends React.Component<FileFieldProps, FileField
     }, this.checkDoneAndRunOnChange);
   }
   checkDoneAndRunOnChange(){
-    if (!this.props.onChange){
+    if (!this.props.onChange || !this.props.content){
       return;
     }
 

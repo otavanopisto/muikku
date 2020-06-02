@@ -71,7 +71,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
   }
   checkAnswers(){
     //if we are not allowed we return
-    if (!this.props.checkAnswers){
+    if (!this.props.checkAnswers || !this.props.content){
       return;
     }
 
@@ -127,6 +127,9 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     this.checkAnswers();
   }
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
+    if (!this.props.content) {
+      return;
+    }
     //toggles the value of a select field
 
     //the new value will be a copy of the current values so we make a copy
@@ -152,6 +155,10 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     }, this.checkAnswers);
   }
   render(){
+    if (!this.props.content) {
+      return null;
+    }
+
     let markcorrectAnswers = false;
     //the summary component if necessary
     let correctAnswersummaryComponent = null;

@@ -59,7 +59,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     if (props.initialValue){
       value = JSON.parse(props.initialValue);
       //We set it up properly
-      items = value.map((v:string)=>this.props.content.items.find(i=>i.id === v));
+      items = value.map((v:string)=>this.props.content && this.props.content.items.find(i=>i.id === v));
       let itemsSuffled = shuffle(props.content.items) || [];
       itemsSuffled.forEach((i) => {
         if (!items.find((si) => si.id === i.id)) {
@@ -68,7 +68,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
       })
     } else {
       //if we don't have a value, we
-      items = shuffle(props.content.items) || [];
+      items = shuffle(props.content ? props.content.items : []) || [];
     }
 
     this.state = {
@@ -119,7 +119,7 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
   }
   checkAnswers(){
     //if not set to actually do we cancel
-    if (!this.props.checkAnswers){
+    if (!this.props.checkAnswers || this.props.content){
       return;
     }
 
@@ -182,6 +182,9 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
     });
   }
   render(){
+    if (!this.props.content) {
+      return null;
+    }
     let elementClassName = this.props.content.orientation === "vertical" ? 'vertical' : 'horizontal';
 
     //The summary for the correct answers

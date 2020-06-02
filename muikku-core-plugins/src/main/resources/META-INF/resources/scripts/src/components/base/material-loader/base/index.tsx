@@ -53,13 +53,13 @@ const parentObjects: {[key: string]: any} = {
 // Wheteher the object can check or not for an answer
 const answerCheckables: {[key: string]: (params:any)=>boolean} = {
   "application/vnd.muikku.field.text": (params: any)=>{
-    return params.content.rightAnswers.filter((option:any)=>option.correct).lenght;
+    return params.content && params.content.rightAnswers.filter((option:any)=>option.correct).lenght;
   },
   "application/vnd.muikku.field.select": (params: any)=>{
-    return params.content.options.filter((option:any)=>option.correct).lenght;
+    return params.content && params.content.options.filter((option:any)=>option.correct).lenght;
   },
   "application/vnd.muikku.field.multiselect": (params: any)=>{
-    return params.content.options.filter((option:any)=>option.correct).lenght;
+    return params.content && params.content.options.filter((option:any)=>option.correct).lenght;
   },
   "application/vnd.muikku.field.connect": ()=>true,
   "application/vnd.muikku.field.organizer": ()=>true,
@@ -287,14 +287,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
     //So now we get the parameters of that thing, due to all the updates we gotta unify here
     let parameters: {[key: string]: any} = {};
-    //basically we go thru all the childnodes and get all the things with a tagName of param
-    for (let i = 0; i < element.childNodes.length; i++){
-      let node:HTMLElement = element.childNodes[i] as HTMLElement;
-      if (node.tagName === "PARAM"){
-        //and add the value to a list of parameters
-        parameters[node.getAttribute("name")] = node.getAttribute("value");
-      }
-    }
+    //basically we need to get all the params
+    element.querySelectorAll("param").forEach((node) => {
+      //and add the value to a list of parameters
+      parameters[node.getAttribute("name")] = node.getAttribute("value");
+    });
 
     //if the type of json
     if (parameters["type"] === "application/json"){
@@ -303,6 +300,14 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         //some fields come differently but hey this works out
         parameters["content"] = parameters["content"] && JSON.parse(parameters["content"]);
       } catch (e){}
+    }
+
+    if (!parameters["type"]) {
+      parameters["type"] = "application/json";
+    }
+
+    if (!parameters["content"]) {
+      parameters["content"] = null;
     }
 
     //we add our default parameters form redux

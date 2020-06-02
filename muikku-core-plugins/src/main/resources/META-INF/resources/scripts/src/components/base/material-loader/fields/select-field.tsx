@@ -74,7 +74,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
   }
   checkAnswers(){
     //if we are allowed to check answers
-    if (!this.props.checkAnswers){
+    if (!this.props.checkAnswers || !this.props.content){
       return;
     }
 
@@ -126,6 +126,9 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
     this.checkAnswers();
   }
   render(){
+    if (!this.props.content) {
+      return null;
+    }
     if (this.props.invisible){
       if (this.props.content.listType === "dropdown" || this.props.content.listType === "list"){
         return <span className="material-page__selectfield-wrapper">

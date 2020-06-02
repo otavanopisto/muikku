@@ -153,11 +153,13 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       newValue[field.name] = counterpart.name;
     });
     //and trigger the change
-    this.props.onChange(this, this.props.content.name, JSON.stringify(newValue));
+    if (this.props.content && this.props.content.name) {
+      this.props.onChange(this, this.props.content.name, JSON.stringify(newValue));
+    }
   }
   checkAnswers(){
     //if we are not allowed to check for rightness then return
-    if (!this.props.checkAnswers){
+    if (!this.props.checkAnswers || !this.props.content){
       return;
     }
 
@@ -404,6 +406,9 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
         </span>
         <span className="material-page__connectfield-counterparts-container">
          {this.state.counterparts.map((field, index)=>{
+           if (!this.props.content) {
+             return null;
+           }
            //the item answer
            let itemAnswer = this.props.checkAnswers && this.state.answerState && this.state.answerState[index];
            //the classname state if necessary
