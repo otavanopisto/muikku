@@ -6,6 +6,7 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { escapeHTML } from "~/util/modifiers";
 import TextareaAutosize from 'react-textarea-autosize';
+import { isNumber } from "util";
 
 interface MemoFieldProps {
   type: string,
@@ -159,7 +160,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
 
     //now we need the field
     let field;
-    let minRows: number = this.props.content.rows && this.props.content.rows.trim() !== "" ? parseInt(this.props.content.rows) : 3;
+    let minRows = this.props.content.rows && this.props.content.rows !== "" && !isNaN(Number(this.props.content.rows)) ? Number(this.props.content.rows) : 3;
     //if readonly
     if  (this.props.readOnly){
       //depending to whether rich edit or not we make it be with the value as inner html or just raw text
