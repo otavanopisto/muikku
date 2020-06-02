@@ -71,6 +71,9 @@ export default class TextField extends React.Component<TextFieldProps, TextField
   }
   //when the input change
   onInputChange(e: React.ChangeEvent<HTMLInputElement>){
+    if (!this.props.content) {
+      return;
+    }
     //we call the on change function with the context and the name
     this.props.onChange && this.props.onChange(this, this.props.content.name, e.target.value);
     this.setState({
@@ -79,12 +82,12 @@ export default class TextField extends React.Component<TextFieldProps, TextField
   }
   checkAnswers(){
     //if the property is not there we cancel
-    if (!this.props.checkAnswers){
+    if (!this.props.checkAnswers || !this.props.content){
       return;
     }
 
     //Check for all the correct answers and filter which ones are set to be correct
-    let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(a=>a.correct);
+    let actuallyCorrectAnswers = this.props.content ? this.props.content.rightAnswers.filter(a=>a.correct) : [];
 
     //If there's not a single one that has the flag of being the correct answer
     if (!actuallyCorrectAnswers.length){
@@ -145,13 +148,16 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     this.checkAnswers();
   }
   render(){
+    if (!this.props.content) {
+      return null;
+    }
     //This is the component that provides the summary of the correct answers
     let correctAnswersummaryComponent = null;
     //a boolean representing whether the answer is correct and we are actually checking for it
     let checkAnswersAndAnswerIsCorrect = this.props.checkAnswers && this.state.answerState === "PASS";
     //If we are told to display the correct answers (we don't do that if the answer is checked and right because it's pointless)
     //UNKNOWN also gets there, so the correct answers will be shown even if the state is unknown
-    if (this.props.displayCorrectAnswers && this.props.content.rightAnswers && !checkAnswersAndAnswerIsCorrect){
+    if (this.props.displayCorrectAnswers && this.props.content && this.props.content.rightAnswers && !checkAnswersAndAnswerIsCorrect){
       //find the actually correct answers
       let actuallyCorrectAnswers = this.props.content.rightAnswers.filter(a=>a.correct);
       //answers are example is for language, this happens if we have no correct answers

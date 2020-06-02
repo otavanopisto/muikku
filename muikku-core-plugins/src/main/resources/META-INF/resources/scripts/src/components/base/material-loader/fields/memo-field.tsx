@@ -79,7 +79,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
     //get the initial value
     let value = props.initialValue || '';
     //and get the raw text if it's richedit
-    let rawText = this.props.content.richedit ? $(value).text() : value;
+    let rawText = this.props.content ? (this.props.content.richedit ? $(value).text() : value) : value;
 
     //set the state with the counts
     this.state = {
