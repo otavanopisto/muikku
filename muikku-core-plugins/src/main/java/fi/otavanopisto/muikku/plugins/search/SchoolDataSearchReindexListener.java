@@ -106,12 +106,12 @@ public class SchoolDataSearchReindexListener {
     try {
       boolean allDone = true;
      
-      if (tasks.contains(Task.USERS)) {
-        allDone = allDone && reindexUsers();
-      }
-      
       if (allDone && tasks.contains(Task.WORKSPACES)) {
         allDone = allDone && reindexWorkspaceEntities();
+      }
+      
+      if (tasks.contains(Task.USERS)) {
+        allDone = allDone && reindexUsers();
       }
       
       if (allDone && tasks.contains(Task.USER_GROUPS)) {
