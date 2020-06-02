@@ -7,30 +7,28 @@
   border-top: 1px solid $color-message-border;
   margin: 0 0 1px;
   padding: 14px 0;
-
+  
   &:first-child {
     border-top: 1px solid $color-default;
   }
-
+  
   &.assignment--open {
     background: $color-default;
     border-bottom: solid 1px $color-application-list-item-course-border-selected;
     border-top: solid 1px $color-application-list-item-course-border-selected;
   }
-
-  // scss-lint:disable SelectorFormat
+  
   &.state-NO-ASSESSMENT {
     cursor: auto;
   }
-  // scss-lint:enable SelectorFormat
-
-  &.assignment--open:hover {
+  
+  &.assignment---open:hover {
     background: $color-default;
   }
 }
 
 .assignment--open .text--list-item-title {
-  font-weight: 600;
+  font-weight: 600;  
 }
 
 .assignment__content {
@@ -39,5 +37,5 @@
 }
 
 .assignment__title {
-  padding-left: 5px;
+  padding-left: 5px;   
 }

@@ -8,43 +8,28 @@ import { Store } from 'redux';
 import $ from '~/lib/jquery';
 import { updateStatusHasImage } from '~/actions/base/status';
 
-function getOptionValue(option: boolean){
-  if (typeof option === "undefined"){
-    return true;
-  }
-  return option;
-}
-
-export default function(store: Store<StateType>, options: {
-  setupChat?: boolean,
-  setupMessages?: boolean
-} = {}){
+export default function(store: Store<StateType>){
   let state:StateType = store.getState();
-
-  let actionsAndCallbacks = {};
-  if (getOptionValue(options.setupMessages)){
-    actionsAndCallbacks = {
-        "Communicator:newmessagereceived": {
-          actions: [updateUnreadMessageThreadsCount],
-          callbacks: [()=>mApi().communicator.cacheClear()]
-        },
-        "Communicator:messageread": {
-          actions: [updateUnreadMessageThreadsCount],
-          callbacks: [()=>mApi().communicator.cacheClear()]
-        },
-        "Communicator:threaddeleted": {
-          actions: [updateUnreadMessageThreadsCount],
-          callbacks: [()=>mApi().communicator.cacheClear()]
-        }
-      };
-  }
-
-  let websocket = new Websocket(store, actionsAndCallbacks);
-
+  
+  let websocket = new Websocket(store, {
+    "Communicator:newmessagereceived": {
+      actions: [updateUnreadMessageThreadsCount],
+      callbacks: [()=>mApi().communicator.cacheClear()]
+    },
+    "Communicator:messageread": {
+      actions: [updateUnreadMessageThreadsCount],
+      callbacks: [()=>mApi().communicator.cacheClear()]
+    },
+    "Communicator:threaddeleted": {
+      actions: [updateUnreadMessageThreadsCount],
+      callbacks: [()=>mApi().communicator.cacheClear()]
+    }
+  });
+  
   if (state.status.isActiveUser){
-    getOptionValue(options.setupMessages) && store.dispatch(<Action>updateUnreadMessageThreadsCount());
-
-    if (state.status.loggedIn && getOptionValue(options.setupChat)){
+    store.dispatch(<Action>updateUnreadMessageThreadsCount());
+    
+    if (state.status.loggedIn){
       mApi().chat.status.read().callback(function(err:Error, result:{mucNickName:string,enabled:boolean}) {
         if (result && result.enabled) {
           converse.initialize({
@@ -68,10 +53,10 @@ export default function(store: Store<StateType>, options: {
       });
     }
   }
-
+  
   $.ajax({type:"HEAD", url: `/rest/user/files/user/${state.status.userId}/identifier/profile-image-96`}).done(()=>{
     store.dispatch(<Action>updateStatusHasImage(true));
   });
-
+  
   return websocket;
 }

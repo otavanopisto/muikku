@@ -12,7 +12,7 @@ interface FrontpageHeroProps {
   i18n: i18nType
 }
 
-interface FrontpageHeroState {
+interface FrontpageHeroState {  
 }
 
 export default class FrontpageHero extends React.Component<FrontpageHeroProps, FrontpageHeroState> {

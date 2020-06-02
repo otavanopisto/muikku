@@ -19,7 +19,6 @@ import { LoadMoreStudentsTriggerType, loadMoreStudents, addToGuiderSelectedStude
   RemoveFromGuiderSelectedStudentsTriggerType } from '~/actions/main-function/guider';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Student from './students/student';
-import { UserType } from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import { GuiderStudentsStateType, GuiderStudentUserProfileType, GuiderStudentType, GuiderType } from '~/reducers/main-function/guider';
 import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';

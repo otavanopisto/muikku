@@ -24,6 +24,7 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
     this.authentication = authentication;
     this.activeUserIdentifier = authentication.getActiveUserIdentifier();
     this.activeUserSchoolDataSource = authentication.getActiveUserSchoolDataSource();
+    this.isActive = authentication.isActiveUser();
   }
 
   @Override
@@ -99,13 +100,20 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
   
   @Override
-  public void login(String dataSource, String identifier) {
+  public void login(String dataSource, String identifier, boolean isActive) {
     this.activeUserIdentifier = identifier;
     this.activeUserSchoolDataSource = dataSource;
+    this.isActive = isActive;
   }
 
+  @Override
+  public boolean isActiveUser() {
+    return isActive;
+  }
+  
   private RestAuthentication authentication;
   private String activeUserIdentifier;
   private String activeUserSchoolDataSource;
+  private boolean isActive;
   private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
 }

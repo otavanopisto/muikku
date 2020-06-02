@@ -152,12 +152,13 @@ public class FlagTestsBase extends AbstractUITest {
       click("textarea.form-element__textarea");
       selectAllAndClear("textarea.form-element__textarea");
       sendKeys("textarea.form-element__textarea", "Edited description");
-      click(".button--standard-ok");
+
+      waitAndClick(".button--standard-ok");
       
-      waitForNotVisible(".dialog--guider-edit-label");
+      waitForNotVisible(".dialog--guider");
       waitForPresentAndVisible(".application-panel__helper-container .icon-flag");
       waitForPresentAndVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
-      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");
+      assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");      
     } finally {
       deleteFlags();
       deleteWorkspace(workspace.getId());
@@ -201,8 +202,8 @@ public class FlagTestsBase extends AbstractUITest {
       click("div.application-panel__main-container .application-list__item.user:nth-child(1) input");
       waitAndClick(".application-panel__main-container--actions .icon-flag");
       
-      waitForPresentAndVisible(".dropdown--guider-labels.visible .link--guider-label-dropdown.selected");
-      click(".dropdown--guider-labels.visible .link--guider-label-dropdown.selected");
+      waitForPresentAndVisible(".dropdown--guider-labels.visible .link--guider-label.selected");
+      click(".dropdown--guider-labels.visible .link--guider-label.selected");
       
       waitAndClick(".application-panel__helper-container .icon-flag");
       waitForPresentAndVisible(".application-panel__helper-container .item-list__item.active");
@@ -257,14 +258,14 @@ public class FlagTestsBase extends AbstractUITest {
       waitForPresentAndVisible(".autocomplete--guider .env-dialog__input");
       click(".autocomplete--guider .env-dialog__input");
       sendKeys(".autocomplete--guider .env-dialog__input", "test");
-      waitForPresentAndVisible(".glyph--autocomplete-recipient");
+      waitForPresentAndVisible(".glyph--autocomplete-recipient");      
       waitAndClick(".glyph--autocomplete-recipient");
 
-      waitAndClick(".dialog--guider-share-label .button--standard-ok");
+      waitAndClick("body > div:nth-child(12) div.dialog__footer > div > a.button.button--success.button--standard-ok");
       waitForPresentAndVisible(".button--guider-share-label");
-      waitForNotVisible(".dialog--guider-share-label");
-      waitAndClick(".dialog--guider-edit-label .button--standard-ok");
-      waitForNotVisible(".dialog--guider-edit-label");
+      waitForNotVisible("body > div:nth-child(12)");
+      waitAndClick("body > div:nth-child(11) > div > div > div.dialog__footer > div > a.button.button--success.button--standard-ok");    
+      waitForNotVisible("body > div:nth-child(11)");
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
       logout();
@@ -320,9 +321,9 @@ public class FlagTestsBase extends AbstractUITest {
 
       waitAndClick(".button--guider-remove-label");
       waitClassPresent(".button--guider-remove-label", "disabled");
-
-      waitAndClick(".button--standard-ok");
-      waitForNotVisible(".dialog--guider-edit-label");
+      
+      click(".button--standard-ok");
+      waitForNotVisible(".container--dialog");
       waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
       assertNotPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");

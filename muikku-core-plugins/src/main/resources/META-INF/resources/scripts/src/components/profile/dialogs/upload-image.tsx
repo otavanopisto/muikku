@@ -20,18 +20,18 @@ interface UploadImageDialogProps {
   i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType,
   uploadProfileImage: UploadProfileImageTriggerType,
-
+  
   b64?: string,
   file?: File,
   src?: string,
-
+  
   isOpen: boolean,
   onClose: ()=>any
 }
 
 interface UploadImageDialogState {
   locked: boolean,
-
+  
   scale: number,
   angle: number
 }
@@ -40,13 +40,13 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   private retriever: ImageEditorRetrieverType;
   constructor(props: UploadImageDialogProps){
     super(props);
-
+    
     this.upload = this.upload.bind(this);
     this.showLoadError = this.showLoadError.bind(this);
     this.rotate = this.rotate.bind(this);
     this.onChangeScale = this.onChangeScale.bind(this);
     this.getRetriever = this.getRetriever.bind(this);
-
+    
     this.state = {
       locked: false,
       scale: 100,
@@ -73,11 +73,11 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
     if (nAngle === 360){
       nAngle = 0;
     }
-
+    
     this.setState({angle: nAngle})
   }
   showLoadError(){
-    this.props.displayNotification(this.props.i18n.text.get("plugin.profile.errormessage.profileImage.loadFailed"), 'error');
+    this.props.displayNotification(this.props.i18n.text.get("TODO ERRORMSG image failed to load"), 'error');
   }
   onChangeScale(newValue: number){
     this.setState({
@@ -89,7 +89,7 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-      <ImageEditor className="image-editor image-editor--profile" onInitializedGetRetriever={this.getRetriever}
+      <ImageEditor className="image-editor--profile" onInitializedGetRetriever={this.getRetriever}
        dataURL={this.props.src || this.props.b64} onLoadError={this.showLoadError} ratio={1}
        scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={250}/>
       <div className="dialog__image-tools">
@@ -102,12 +102,12 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
             onChange={this.onChangeScale}
           />
         </div>
-        <ButtonPill icon="spinner" onClick={this.rotate}/>
+        <ButtonPill icon="loading" onClick={this.rotate}/>
       </div>
     </div>;
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Button buttonModifiers={["execute","standard-ok"]} onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changeImage.dialog.saveButton.label')}
         </Button>
         <Button buttonModifiers={["cancel","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>

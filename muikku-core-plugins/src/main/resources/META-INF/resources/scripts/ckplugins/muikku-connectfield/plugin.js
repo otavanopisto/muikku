@@ -93,13 +93,12 @@
                   uiElement.append(titleContainer);
 
                   var optionLabel = new CKEDITOR.dom.element('label');
-                  optionLabel.addClass('items-label');
                   optionLabel.setText(this.label);
                   titleContainer.append(optionLabel);
 
                   var _this = this;
                   var addLink = new CKEDITOR.dom.element('a');
-                  addLink.addClass('icon-plus');
+                  addLink.addClass('icon-add');
                   addLink.on('click', function() {
                     _this.addPair('', '');
                   });
@@ -125,14 +124,12 @@
               optionContainer.addClass('connectfield-element-container');
 
               var optionLeftField = new CKEDITOR.dom.element('input');
-              optionLeftField.addClass('cke_dialog_ui_input_text');
               optionLeftField.setAttribute('name', 'left');
               optionLeftField.setAttribute('type', 'text');
               optionLeftField.setAttribute('value', left);
               optionContainer.append(optionLeftField);
 
               var optionRightField = new CKEDITOR.dom.element('input');
-              optionRightField.addClass('cke_dialog_ui_input_text');
               optionRightField.setAttribute('name', 'right');
               optionRightField.setAttribute('type', 'text');
               optionRightField.setAttribute('value', right);
@@ -140,7 +137,7 @@
 
               var deleteLink = new CKEDITOR.dom.element('a');
               var _this = this;
-              deleteLink.addClass('icon-trash');
+              deleteLink.addClass('icon-delete');
               deleteLink.on('click', (function() {
                 var _optionContainer = optionContainer;
 

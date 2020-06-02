@@ -1,10 +1,10 @@
 import {ActionType} from "~/actions";
 
-export type NotificationSeverityType = "error" | "warning" | "loading" | "default" | "notice" | "info" | "fatal" | "success" | "secondary" | "inverse";
+export type NotificationSeverityType = "error" | "warning" | "loading" | "default" | "warning" | "info" | "fatal" | "success" | "secondary" | "inverse";
 
 export interface NotificationType {
   id: number,
-  severity: NotificationSeverityType,
+  severity: NotificationSeverityType, 
   message: string
 }
 

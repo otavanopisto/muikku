@@ -8,7 +8,7 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
-import fi.otavanopisto.muikku.session.CurrentUserSession;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -18,11 +18,11 @@ import fi.otavanopisto.security.LoggedIn;
 public class CommunicatorIndexBackingBean {
 
   @Inject
-  private CurrentUserSession currentUserSession;
-  
+  private SessionController sessionController;
+
   @RequestAction
   public String init() {
-    if (!currentUserSession.isActive()) {
+    if (!sessionController.isActiveUser()) {
       return NavigationRules.ACCESS_DENIED;
     }
     return null;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UserWithSchoolDataType, StudentUserAddressType } from "~/reducers/user-index";
+import { UserWithSchoolDataType, StudentUserAddressType } from "~/reducers/main-function/user-index";
 import { StateType } from "reducers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
@@ -30,13 +30,13 @@ const FORCE_OPEN = false;
 class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps, CheckContactInfoDialogState> {
   constructor(props: CheckContactInfoDialogProps){
     super(props);
-
+    
     this.state = {
       user: null,
       address: null,
       isOpen: false
     }
-
+    
     this.closeDialog = this.closeDialog.bind(this);
     this.confirmContactInfo = this.confirmContactInfo.bind(this);
   }
@@ -46,7 +46,7 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
       if (!user || (user.updatedByStudent && !FORCE_OPEN)){
         return;
       }
-
+    
       let addresses:Array<StudentUserAddressType> = await promisify(mApi().user.students.addresses.read(this.props.status.userSchoolDataIdentifier), 'callback')() as Array<StudentUserAddressType>;
       let address = null;
       for (let i = 0; i < addresses.length; i++) {
@@ -55,15 +55,15 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
           break;
         }
       }
-
+    
       if (!address){
         address = addresses[0];
       }
-
+      
       if (!address){
         return;
       }
-
+    
       this.setState({
         user,
         address,
@@ -103,7 +103,7 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
         <dd>{this.state.user.municipality ? this.state.user.municipality : "-"}</dd>
         </dl>
       </div>;
-
+      
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
         <Link className="button button--success button--standard-ok" onClick={this.confirmContactInfo}>

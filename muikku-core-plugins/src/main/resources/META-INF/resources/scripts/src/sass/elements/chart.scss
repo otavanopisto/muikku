@@ -141,7 +141,7 @@
 
   input[type="checkbox"]:checked::after {
     color: $color-default;
-    content: "\e639";
+    content: "\E639";
     font-family: muikku;
     font-size: $text-desktop-font-size;
   }

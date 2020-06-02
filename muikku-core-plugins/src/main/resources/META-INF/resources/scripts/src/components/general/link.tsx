@@ -18,8 +18,7 @@ interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<H
   openInNewTab?: string,
   onScrollToSection?: ()=>any,
   scrollPadding?: number,
-  disableScroll?: boolean,
-  disableSmoothScroll?: boolean,
+  disableScroll?: boolean
 }
 
 interface LinkState {
@@ -33,17 +32,17 @@ export default class Link extends React.Component<LinkProps, LinkState> {
 
   constructor(props: LinkProps){
     super(props);
-
+    
     this.onClick = this.onClick.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
-
+    
     this.state = {
       active: false,
       redirect: false
     }
-
+    
     this.touchCordX = null;
     this.touchCordY = null;
   }
@@ -52,17 +51,17 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     if (this.props.disablePropagation){
       e.stopPropagation();
     }
-
+    
     if (this.props.disabled){
       return;
     }
-
+    
     if (!this.props.to){
       if (this.props.href && this.props.href[0] === '#'){
         if (this.props.disableScroll){
           window.location.hash = this.props.href;
         } else {
-          scrollToSection(this.props.href, this.props.onScrollToSection, this.props.scrollPadding, this.props.disableSmoothScroll);
+          scrollToSection(this.props.href, this.props.onScrollToSection, this.props.scrollPadding);
         }
       } else if (this.props.href){
         if (this.props.openInNewTab){
@@ -76,7 +75,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     } else {
       location.href = this.props.to;
     }
-
+    
     if (this.props.onClick){
       this.props.onClick(e);
     }
@@ -86,27 +85,27 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     if (this.props.disablePropagation){
       e.stopPropagation();
     }
-
+    
     this.touchCordX = e.changedTouches[0].pageX;
     this.touchCordY = e.changedTouches[0].pageY;
-
+    
     if (!this.props.disabled){
       this.setState({active: true});
       if (this.props.onTouchStart){
         this.props.onTouchStart(e);
       }
-    }
+    } 
   }
   onTouchMove(e: React.TouchEvent<HTMLAnchorElement>){
     if (this.state.active){
       let X = e.changedTouches[0].pageX;
       let Y = e.changedTouches[0].pageY;
-
+      
       if (Math.abs(X - this.touchCordX) >= 5 || Math.abs(X - this.touchCordY) >= 5){
         this.setState({active: false});
       }
     }
-
+    
     if (!this.props.disabled && this.props.onTouchMove){
       this.props.onTouchMove(e);
     }
@@ -115,7 +114,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     if (!this.props.disabled){
       this.setState({active: false});
     }
-
+    
     if (this.state.active){
       this.onClick(e as any);
     }
@@ -127,8 +126,8 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     if (this.state.redirect){
       return <Redirect push to={this.props.to}/>
     }
-
-    let Element: any = this.props.as || 'a';
+    
+    let Element = this.props.as || 'a';
     let elementProps:LinkProps  = Object.assign({}, this.props);
     delete elementProps["disablePropagation"];
     delete elementProps["disabled"];
@@ -137,7 +136,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["openInNewTab"];
     delete elementProps["scrollPadding"];
     delete elementProps["disableScroll"];
-
+    
     return <Element ref="element" {...elementProps}
       className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchMove={this.onTouchMove}/>

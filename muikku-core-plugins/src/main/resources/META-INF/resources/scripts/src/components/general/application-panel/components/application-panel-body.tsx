@@ -4,7 +4,7 @@ interface ApplicationPanelBodyProps {
   modifier? : string,
   primaryOption?: React.ReactElement<any>,
   toolbar?: React.ReactElement<any>,
-  asideBefore?: React.ReactElement<any>,
+  asideBefore?: React.ReactElement<any>,   
   asideAfter?: React.ReactElement<any>,
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
   disableStickyScrolling?: boolean
@@ -41,19 +41,19 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
       extraPaddingLeft: null,
       extraPaddingRight: null,
       asideBeforeWidth: null
-
+      
     }
     this.onScroll = this.onScroll.bind(this);
     this.calculate = this.calculate.bind(this);
     this.calculateSides = this.calculateSides.bind(this);
-
+    
   }
 
   calculateSides(){
     this.extraPaddingLeft = (this.refs["body"] as HTMLElement).getBoundingClientRect().left + this.borderWidth;
 
     let root:Element = document.querySelector("#root");
-    this.extraPaddingRight = root.getBoundingClientRect().width -
+    this.extraPaddingRight = root.getBoundingClientRect().width - 
       ((this.refs["body"] as HTMLElement).getBoundingClientRect().width + this.extraPaddingLeft) + (this.borderWidth*2);
 
     this.setState({
@@ -101,7 +101,7 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     })
 
 
-    // offsetBorderAgainstBottom is lacking at the moment. before the change it used "panel" ref, I changed it to body. Maybe it works, maybe not.
+    // offsetBorderAgainstBottom is lacking at the moment. before the change it used "panel" ref, I changed it to body. Maybe it works, maybe not. 
 
      let panelComputedStyle = document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement);
      this.offsetBorderAgainstBottom = parseInt(panelComputedStyle.getPropertyValue("padding-bottom"));
@@ -138,13 +138,13 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
     if (!this.props.asideBefore){
      return;
     }
-
-
+    
+  
     let top = (document.documentElement.scrollTop || document.body.scrollTop);
     let height = document.documentElement.offsetHeight;
     let scrollHeight = document.documentElement.scrollHeight;
-    let offsetTopHeight = isSticky ?
-      this.offsetElementAgainstTop + (this.refs["sticky"] as HTMLElement).offsetHeight :
+    let offsetTopHeight = isSticky ? 
+      this.offsetElementAgainstTop + (this.refs["sticky"] as HTMLElement).offsetHeight : 
       (this.refs["sticky"] as HTMLElement).offsetHeight + (this.refs["sticky"] as HTMLElement).offsetTop - top;
     let bottom = Math.round(scrollHeight - top) - height;
     let borderBottomSize = this.offsetBorderAgainstBottom - bottom + this.borderWidth;
@@ -195,6 +195,6 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
           {this.props.asideAfter ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.asideAfter}</div> : null}
         </div>
       </div>
-    )
+    ) 
   };
 }

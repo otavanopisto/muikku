@@ -1,6 +1,9 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import ApplicationPanel from '~/components/general/application-panel/application-panel';
+import HoverButton from '~/components/general/hover-button';
+import Dropdown from '~/components/general/dropdown';
+import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
 import CoursepickerWorkspaces from './application/courses';
 import {i18nType} from '~/reducers/base/i18n';
@@ -27,7 +30,7 @@ interface CoursepickerApplicationState {
 class CoursepickerApplication extends React.Component<CoursepickerApplicationProps, CoursepickerApplicationState> {
   constructor(props: CoursepickerApplicationProps){
     super(props);
-
+    
     this.onCoursepickerFilterChange = this.onCoursepickerFilterChange.bind(this);
   }
 
@@ -36,7 +39,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
     locationData.b = e.target.value;
     window.location.hash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
   }
-
+  
   render(){
     let filterTranslationString = {
       "ALL_COURSES": "plugin.coursepicker.allcourses",
@@ -46,19 +49,18 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
 
     let title = this.props.i18n.text.get('plugin.coursepicker.pageTitle')
     let toolbar = <Toolbar/>
-    let primaryOption = <div className="form-element form-element--main-action">
-
+    let primaryOption = <div className="form-element form-element--main-action"> 
       {this.props.status.loggedIn ?
       <select className="form-element__select form-element__select--main-action" value={this.props.workspaces.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
         {this.props.workspaces.availableFilters.baseFilters.map((filter: WorkspaceBaseFilterType)=>{
           if (this.props.status.isStudent && filter === "AS_TEACHER"){
             return false
-          }
+          } 
           return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option>
         })}
       </select>
-      :
-      <select className="form-element__select form-element__select--main-action"><option>{this.props.i18n.text.get('plugin.coursepicker.opencourses')}</option></select>
+      : 
+      <select className="form-element__select form-element__select--main-action"><option>{this.props.i18n.text.get('plugin.coursepicker.opencourses')}</option></select> 
       }
     </div>
     return (<div className="application-panel-wrapper">

@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 
 public class WorkspaceCompositeReply {
@@ -45,18 +44,8 @@ public class WorkspaceCompositeReply {
     return answers;
   }
   
-  public RestAssignmentEvaluation getEvaluationInfo() {
-    return evaluationInfo;
-  }
-
-  public void setEvaluationInfo(RestAssignmentEvaluation evaluationInfo) {
-    this.evaluationInfo = evaluationInfo;
-  }
-
   private Long workspaceMaterialId;
   private Long workspaceMaterialReplyId;
   private WorkspaceMaterialReplyState state;
   private List<WorkspaceMaterialFieldAnswer> answers;
-  private RestAssignmentEvaluation evaluationInfo;
-
 }

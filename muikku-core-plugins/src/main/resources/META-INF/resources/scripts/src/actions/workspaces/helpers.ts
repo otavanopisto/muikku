@@ -46,7 +46,7 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
   });
 
   //Generate the api query, our first result in the messages that we have loaded
-  let firstResult = initial ? 0 : workspaces.availableWorkspaces.length;
+  let firstResult = initial ? 0 : workspaces.availableWorkspaces.length + 1;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;

@@ -15,7 +15,7 @@ interface ApplicationPanelProps {
   activeTab? : string;
   primaryOption?: React.ReactElement<any>,
   toolbar?: React.ReactElement<any>,
-  asideBefore?: React.ReactElement<any>,
+  asideBefore?: React.ReactElement<any>,   
   asideAfter?: React.ReactElement<any>,
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
   disableStickyScrolling?: boolean
@@ -42,10 +42,10 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
   private asideBeforeWidth: number;
   private borderWidth: number;
   private disabled: boolean;
-
+  
   constructor(props: ApplicationPanelProps){
     super(props);
-
+    
     this.state = {
       sticky: false,
       remainingHeight: null,
@@ -55,7 +55,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       extraPaddingRight: null,
       asideBeforeWidth: null
     }
-
+    
     this.onScroll = this.onScroll.bind(this);
     this.calculate = this.calculate.bind(this);
     this.calculateSides = this.calculateSides.bind(this);
@@ -71,11 +71,11 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
 
   calculateSides(){
     this.extraPaddingLeft = (this.refs["body"] as HTMLElement).getBoundingClientRect().left + this.borderWidth;
-
+    
     let root:Element = document.querySelector("#root");
-    this.extraPaddingRight = root.getBoundingClientRect().width -
+    this.extraPaddingRight = root.getBoundingClientRect().width - 
       ((this.refs["body"] as HTMLElement).getBoundingClientRect().width + this.extraPaddingLeft) + (this.borderWidth*2);
-
+    
     this.setState({
       extraPaddingLeft: this.extraPaddingLeft,
       extraPaddingRight: this.extraPaddingRight
@@ -112,10 +112,10 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     this.setState({
       offsetElementAgainstTop: this.offsetElementAgainstTop
     })
-
+    
     let panelComputedStyle = document.defaultView.getComputedStyle(this.refs["panel"] as HTMLElement);
     this.offsetBorderAgainstBottom = parseInt(panelComputedStyle.getPropertyValue("padding-bottom"));
-
+    
     let asideBefore:HTMLElement = (this.refs["asideBefore"] as HTMLElement);
     if (asideBefore){
       this.asideBeforeWidth = asideBefore.offsetWidth;
@@ -123,9 +123,9 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
         asideBeforeWidth: this.asideBeforeWidth
       });
     }
-
+    
     this.borderWidth = parseInt(document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement).getPropertyValue("border-left-width"));
-
+    
     this.calculateSides();
     this.setRemainingHeight(false);
   }
@@ -144,8 +144,8 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     let top = (document.documentElement.scrollTop || document.body.scrollTop);
     let height = document.documentElement.offsetHeight;
     let scrollHeight = document.documentElement.scrollHeight;
-    let offsetTopHeight = isSticky ?
-      this.offsetElementAgainstTop + (this.refs["sticky"] as HTMLElement).offsetHeight :
+    let offsetTopHeight = isSticky ? 
+      this.offsetElementAgainstTop + (this.refs["sticky"] as HTMLElement).offsetHeight : 
       (this.refs["sticky"] as HTMLElement).offsetHeight + (this.refs["sticky"] as HTMLElement).offsetTop - top;
     let bottom = Math.round(scrollHeight - top) - height;
     let borderBottomSize = this.offsetBorderAgainstBottom - bottom + this.borderWidth;
@@ -153,8 +153,8 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       borderBottomSize = 0;
     }
     let remainingUsableWindow = height - offsetTopHeight - borderBottomSize;
-
-
+    
+    
     this.setState({remainingHeight: remainingUsableWindow});
   }
   onScroll(e: Event){
@@ -163,7 +163,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     let isSticky = (diff < this.offsetElementAgainstTop);
     if (isSticky !== this.state.sticky){
       this.setState({sticky: isSticky});
-
+      
       if (isSticky){
         this.calculateSides();
       }
@@ -177,14 +177,14 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       <div className={`application-panel application-panel--${this.props.modifier}`} ref="panel">
         <div className="application-panel__container">
           <div className="application-panel__header">
-          {this.props.title ?
-            <div className="application-panel__header-title">{this.props.title}</div>
+          {this.props.title ? 
+            <div className="application-panel__header-title-container">{this.props.title}</div>
           : null}
-          {this.props.icon ?
+          {this.props.icon ? 
             <div className="application-panel__header-actions">{this.props.icon}</div>
           : null}
           </div>
-          {this.props.panelTabs ? <Tabs tabs={this.props.panelTabs} onTabChange={this.props.onTabChange} activeTab={this.props.activeTab} /> :
+          {this.props.panelTabs ? <Tabs tabs={this.props.panelTabs} onTabChange={this.props.onTabChange} activeTab={this.props.activeTab} /> : 
             <div className="application-panel__body" ref="body">
               <div style={{display: this.state.sticky ? "block" : "none", height: this.state.stickyHeight}}></div>
               <div className="application-panel__actions" ref="sticky" style={this.state.sticky ? {
@@ -217,11 +217,11 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
 }
 
 interface ApplicationPanelToolbarProps {
-
+  
 }
 
 interface ApplicationPanelToolbarState {
-
+  
 }
 
 export class ApplicationPanelToolbar extends React.Component<ApplicationPanelToolbarProps, ApplicationPanelToolbarState> {
@@ -231,11 +231,11 @@ export class ApplicationPanelToolbar extends React.Component<ApplicationPanelToo
 }
 
 interface ApplicationPanelToolbarActionsMainProps {
-
+  
 }
 
 interface ApplicationPanelToolbarActionsMainState {
-
+  
 }
 
 export class ApplicationPanelToolbarActionsMain extends React.Component<ApplicationPanelToolbarActionsMainProps, ApplicationPanelToolbarActionsMainState> {
@@ -245,11 +245,11 @@ export class ApplicationPanelToolbarActionsMain extends React.Component<Applicat
 }
 
 interface ApplicationPanelToolbarActionsAsideProps {
-
+  
 }
 
 interface ApplicationPanelToolbarActionsAsideState {
-
+  
 }
 
 export class ApplicationPanelToolbarActionsAside extends React.Component<ApplicationPanelToolbarActionsAsideProps, ApplicationPanelToolbarActionsAsideState> {
@@ -259,11 +259,11 @@ export class ApplicationPanelToolbarActionsAside extends React.Component<Applica
 }
 
 interface ApplicationPanelToolsContainerProps {
-
+  
 }
 
 interface ApplicationPanelToolsContainerState {
-
+  
 }
 
 export class ApplicationPanelToolsContainer extends React.Component<ApplicationPanelToolsContainerProps, ApplicationPanelToolsContainerState>{

@@ -5,7 +5,8 @@ import * as React from 'react';
 import '~/sass/elements/environment-dialog.scss';
 
 export default class JumboDialog extends Dialog {
-
+  
+ 
   render(){
     return (
       <Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen} openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>

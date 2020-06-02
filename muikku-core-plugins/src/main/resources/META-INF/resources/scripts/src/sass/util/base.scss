@@ -2,9 +2,11 @@
 @import "../base/mixins";
 @import "../base/vars";
 
-*,
-*::before,
-*::after {
+@import url('https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&subset=cyrillic');
+
+*, *::before, *::after {
+  @include prefix(drag, webkit ms o moz, none);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -16,24 +18,30 @@ html {
 }
 
 body {
-  background-color: $color-default-body;
   overflow-y: auto;
 }
 
-ul,
-ol {
-  list-style-type: none;
+body {
+  background-color: $color-default-body;
+}
+
+ul, ol {
   padding: 0;
+  list-style-type: none;
 }
 
 li {
-  display: inline-block;
   padding: 0;
+  display: inline-block;
 }
 
 a {
   color: $color-link-default-text;
   text-decoration: none;
+}
+
+dl {
+
 }
 
 dt {
@@ -46,7 +54,12 @@ dd {
 }
 
 // Webkit (Chrome, Opera, Safari)
-::-webkit-input-placeholder {
+::-webkit-input-placeholder { 
+  font-style: italic;
+}
+
+// > FF19
+::-moz-placeholder {
   font-style: italic;
 }
 
@@ -55,7 +68,12 @@ dd {
   font-style: italic;
 }
 
+// < FF18-
+:-moz-placeholder {
+  font-style: italic;
+}
+
 // Standard
-::placeholder {
+::placeholder { 
   font-style: italic;
 }

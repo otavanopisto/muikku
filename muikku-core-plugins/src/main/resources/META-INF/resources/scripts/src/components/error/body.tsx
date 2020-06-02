@@ -16,21 +16,24 @@ interface ErrorBodyProps {
 }
 
 interface ErrorBodyState {
-
+  
 }
 
 class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {
   render(){
     return (<div>
       <MainFunctionNavbar/>
-      <ScreenContainer viewModifiers="error">
-        <div className="panel panel--error">
-          <div className="panel__header">
-            <div className="panel__header-icon panel__header-icon--error icon-error"></div>
-            <div className="panel__header-title">{this.props.error.title}</div>
-          </div>
-          <div className="panel__body panel__body--error">
-            {this.props.error.description}
+        
+      <ScreenContainer fullHeight={true}>
+        <div className="ordered-container ordered-container--error-panels">
+          <div className="ordered-container__item ordered-container__item--error">
+            <div className="ordered-container__error-title">
+              <span className="ordered-container__item-header-icon ordered-container__item-header-icon--error icon-error"></span>
+              <span>{this.props.error.title}</span>
+            </div>
+            <div className="panel panel--error">
+              <div className="panel__error-body ">{this.props.error.description}</div>
+            </div>
           </div>
         </div>
       </ScreenContainer>

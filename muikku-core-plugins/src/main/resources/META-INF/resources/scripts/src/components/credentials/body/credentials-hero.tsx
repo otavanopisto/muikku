@@ -14,15 +14,15 @@ interface CredentialsHeroState {
 }
 
 export default class CredentialsHero extends React.Component<CredentialsHeroProps, CredentialsHeroState> {
-
+  
   constructor(props: CredentialsHeroProps){
     super(props);
     }
-
+ 
   render(){
     return (
       <div className="credentials__hero">
       </div>
-    )
+    ) 
   }
 }

@@ -13,10 +13,10 @@ interface AnnouncerBodyState {
 export default class AnnouncerBody extends React.Component<AnnouncerBodyProps,AnnouncerBodyState> {
 
   render(){
-    let aside = <Aside />
-    return (<div>
+    let aside = <Aside />  
+    return (<div className="embbed embbed-full">
       <MainFunctionNavbar activeTrail="announcer" navigation={aside}/>
-      <Application aside={aside} />
+      <Application aside={aside} />        
     </div>);
   }
 }

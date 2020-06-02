@@ -15,12 +15,10 @@
 }
 
 .glyph--selected-recipient {
-  align-items: center;
-  display: flex;
+  display: inline-block;
   flex-basis: 0;
   flex-grow: 0;
   flex-shrink: 0;
-  justify-content: center;
   margin-right: 5px;
   min-width: 15px;
 }

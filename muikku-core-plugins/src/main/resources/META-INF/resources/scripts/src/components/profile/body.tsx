@@ -16,7 +16,7 @@ class ProfileBody extends React.Component<{
     return (<div>
       <MainFunctionNavbar/>
       <Application/>
-    </div>);
+    </div>); 
   }
 }
 

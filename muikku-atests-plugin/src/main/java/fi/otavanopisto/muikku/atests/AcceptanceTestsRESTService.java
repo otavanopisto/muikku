@@ -29,13 +29,11 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
-import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.dao.users.FlagDAO;
 import fi.otavanopisto.muikku.dao.users.FlagStudentDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.model.base.Tag;
-import fi.otavanopisto.muikku.model.security.WorkspaceGroupPermission;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
@@ -127,9 +125,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private UserEntityController userEntityController;
-
-  @Inject
-  private PermissionController permissionController;
   
   @Inject
   private PyramusUpdater pyramusUpdater;
@@ -197,19 +192,19 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     switch (role) {
       case "ENVIRONMENT-STUDENT":
-        localSessionController.login("PYRAMUS", "STUDENT-1");
+        localSessionController.login("PYRAMUS", "STUDENT-1", true);
       break;
       case "ENVIRONMENT-TEACHER":
-        localSessionController.login("PYRAMUS", "STAFF-2");
+        localSessionController.login("PYRAMUS", "STAFF-2", true);
       break;
       case "ENVIRONMENT-MANAGER":
-        localSessionController.login("PYRAMUS", "STAFF-3");
+        localSessionController.login("PYRAMUS", "STAFF-3", true);
       break;
       case "ENVIRONMENT-ADMINISTRATOR":
-        localSessionController.login("PYRAMUS", "STAFF-4");
+        localSessionController.login("PYRAMUS", "STAFF-4", true);
       break;
       case "ENVIRONMENT-TRUSTED_SYSTEM":
-        localSessionController.login("PYRAMUS", "STAFF-5");
+        localSessionController.login("PYRAMUS", "STAFF-5", true);
       break;
       
       case "PSEUDO-EVERYONE":
@@ -406,7 +401,6 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(404).entity("Not found").build();
     }
     try{
-      permissionController.removeWorkspaceGroupPermissions(workspaceEntity);
       List<WorkspaceMaterialProducer> workspaceMaterialProducers = workspaceController.listWorkspaceMaterialProducers(workspaceEntity);
       for (WorkspaceMaterialProducer workspaceMaterialProducer : workspaceMaterialProducers) {
         workspaceController.deleteWorkspaceMaterialProducer(workspaceMaterialProducer);

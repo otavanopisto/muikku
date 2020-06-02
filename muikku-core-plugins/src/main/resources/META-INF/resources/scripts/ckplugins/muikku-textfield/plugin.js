@@ -114,13 +114,12 @@
           uiElement.append(titleContainer);
 
           var optionLabel = new CKEDITOR.dom.element('label');
-          optionLabel.addClass('items-label');
           optionLabel.setText(this.label);
           titleContainer.append(optionLabel);
 
           var _this = this;
           var addLink = new CKEDITOR.dom.element('a');
-          addLink.addClass('icon-plus');
+          addLink.addClass('icon-add');
           addLink.on('click', function() {
             _this.addAnswer('', false);
           });
@@ -130,7 +129,7 @@
           addLink.append(addLinkTooltip);
 
           var correctLabel = new CKEDITOR.dom.element('label');
-          correctLabel.addClass('icon-check');
+          correctLabel.addClass('icon-checkmark');
           titleContainer.append(correctLabel);
           var correctTooltip = new CKEDITOR.dom.element('span');
           correctTooltip.setText(this.correctTooltip);
@@ -159,14 +158,12 @@
         optionContainer.append(sortHandle);
 
         var optionTextField = new CKEDITOR.dom.element('input');
-        optionTextField.addClass('cke_dialog_ui_input_text');
         optionTextField.setAttribute('name', 'text');
         optionTextField.setAttribute('type', 'text');
         optionTextField.setAttribute('value', text);
         optionContainer.append(optionTextField);
 
         var optionCorrectField = new CKEDITOR.dom.element('input');
-        optionCorrectField.addClass('cke_dialog_ui_checkbox_input');
         optionCorrectField.setAttribute('name', 'correct');
         optionCorrectField.setAttribute('type', 'checkbox');
         optionCorrectField.$.checked = correct;
@@ -174,7 +171,7 @@
         optionsContainer.append(optionContainer);
 
         var deleteLink = new CKEDITOR.dom.element('a');
-        deleteLink.addClass('icon-trash');
+        deleteLink.addClass('icon-delete');
         deleteLink.on('click', (function() {
           var _optionContainer = optionContainer;
           return (function() {

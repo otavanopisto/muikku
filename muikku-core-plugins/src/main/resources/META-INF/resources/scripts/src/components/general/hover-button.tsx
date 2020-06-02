@@ -11,7 +11,7 @@ interface HoverButtonProps {
 }
 
 interface HoverButtonState {
-
+  
 }
 
 export default class HoverButton extends React.Component<HoverButtonProps, HoverButtonState> {

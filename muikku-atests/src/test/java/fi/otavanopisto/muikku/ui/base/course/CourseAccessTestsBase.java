@@ -1,8 +1,6 @@
 package fi.otavanopisto.muikku.ui.base.course;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertTrue;
-
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.Test;
@@ -41,22 +39,10 @@ public class CourseAccessTestsBase extends AbstractUITest {
       long courseId = 1l;
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("anyone", workspace);
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        updateWorkspaceAccess(WorkspaceAccess.ANYONE, workspace.getUrlName());
         logout();
-        mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        selectFinnishLocale();
-        assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Opiskelijaksi kurssille");
-        assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.");
-        assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Lue lisää");
-        selectEnglishLocale();
-        assertTextIgnoreCase(".panel--workspace-signup .panel__header-title", "Sign up to this workspace");
-        assertTextIgnoreCase(".panel--workspace-signup .panel__body-content--signup", "Would you like to enroll to this workspace? See your options to do so on the front page of Muikku.");
-        assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Read more");
-        click(".panel--workspace-signup .button--signup-read-more");
-        waitForPresent("#studying");
-        assertTrue("Read more button did not return to frontpage", getCurrentPath().equals("/"));
+        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -84,12 +70,12 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("anyone", workspace);
+        updateWorkspaceAccess(WorkspaceAccess.ANYONE, workspace.getUrlName());
         logout();
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertPresent(".hero--workspace h1.hero__workspace-title");
+        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -120,11 +106,11 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccessInUI("anyone", workspace);
+        updateWorkspaceAccess(WorkspaceAccess.ANYONE, workspace.getUrlName());
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertPresent(".hero--workspace h1.hero__workspace-title");
+        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -151,11 +137,11 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("loggedin", workspace);
+        updateWorkspaceAccess(WorkspaceAccess.LOGGED_IN, workspace.getUrlName());
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        assertNotPresent(".hero--workspace h1.hero__workspace-title");
+        assertNotPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -183,12 +169,12 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("loggedin", workspace);
+        updateWorkspaceAccess(WorkspaceAccess.LOGGED_IN, workspace.getUrlName());
         logout();
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertPresent(".hero--workspace h1.hero__workspace-title");
+        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -219,12 +205,12 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccessInUI("loggedin", workspace);
+        updateWorkspaceAccess(WorkspaceAccess.LOGGED_IN, workspace.getUrlName());
         logout();
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertPresent(".hero--workspace h1.hero__workspace-title");
+        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -251,11 +237,11 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("members", workspace);
+        updateWorkspaceAccess(WorkspaceAccess.MEMBERS_ONLY, workspace.getUrlName());
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertNotPresent(".hero--workspace h1.hero__workspace-title");
+        assertNotPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -283,13 +269,13 @@ public class CourseAccessTestsBase extends AbstractUITest {
       login();
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try{
-        updateWorkspaceAccessInUI("members", workspace);
+        updateWorkspaceAccess(WorkspaceAccess.MEMBERS_ONLY, workspace.getUrlName());
         logout();
         mockBuilder.clearLoginMock();
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        
-        assertNotPresent(".hero--workspace h1.hero__workspace-title");
+        assertNotPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
@@ -320,13 +306,13 @@ public class CourseAccessTestsBase extends AbstractUITest {
       MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, courseId, student.getId());
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
-        updateWorkspaceAccessInUI("members", workspace);
+        updateWorkspaceAccess(WorkspaceAccess.MEMBERS_ONLY, workspace.getUrlName());
         logout();
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".hero--workspace h1.hero__workspace-title");
-        assertPresent(".hero--workspace h1.hero__workspace-title");
+        waitForPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
+        assertPresent(".workspace-header-wrapper .workspace-header-container h1.workspace-title");
       }finally{
         deleteWorkspace(workspace.getId());  
       }

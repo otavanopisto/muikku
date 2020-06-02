@@ -1,32 +1,16 @@
-import {ActionType, SpecificActionType} from '~/actions';
-import MuikkuWebsocket from '~/util/websocket';
-
-export interface WEBSOCKET_EVENT extends SpecificActionType<"WEBSOCKET_EVENT", {event: string}> {};
-export interface INITIALIZE_WEBSOCKET extends SpecificActionType<"INITIALIZE_WEBSOCKET", MuikkuWebsocket> {};
+import {ActionType} from '~/actions';
 
 export interface WebsocketStateType {
-  connected: boolean,
-  synchronized: boolean,
-  websocket: MuikkuWebsocket
+  connected: boolean
 }
 
 export default function websocket(state: WebsocketStateType={
-  connected: false,
-  synchronized: true,
-  websocket: null
+  connected: false
 }, action: ActionType): WebsocketStateType{
-  if (action.type === "WEBSOCKET_EVENT" && action.payload.event === "webSocketConnected" && !state.connected){
+  if (action.type === "WEBSOCKET_EVENT" && action.payload.event === "webSocketConnected"){
     return Object.assign({}, state, {connected: true});
-  } else if (action.type === "WEBSOCKET_EVENT" && action.payload.event === "webSocketDisconnected" && state.connected){
+  } else if (action.type === "WEBSOCKET_EVENT" && action.payload.event === "webSocketDisconnected"){
     return Object.assign({}, state, {connected: false});
-  } else if (action.type === "WEBSOCKET_EVENT" && action.payload.event === "webSocketDesync" && state.synchronized){
-    return Object.assign({}, state, {synchronized: false});
-  } else if (action.type === "WEBSOCKET_EVENT" && action.payload.event === "webSocketSync" && !state.synchronized){
-    return Object.assign({}, state, {synchronized: true});
-  } else if (action.type === "WEBSOCKET_EVENT" && action.payload.event === "webSocketSync" && !state.synchronized){
-    return Object.assign({}, state, {synchronized: true});
-  } else if (action.type === "INITIALIZE_WEBSOCKET"){
-    return Object.assign({}, state, {websocket: action.payload});
   }
   return state;
 }

@@ -65,13 +65,13 @@ export class DiscussionCurrentThread extends React.Component<{
 },{}> {
   render(){
     return <ApplicationList>
-      <div className="application-list__header application-list__header--discussion">
+      <div className="application-list__header-container application-list__header-container--discussion">
         {this.props.locked ?
           <div className="discussion__icon icon-lock"/> : null
         }
         {this.props.sticky ?
           <div className="discussion__icon icon-pin"/> : null
-        }
+        } 
         {this.props.title}
       </div>
       {this.props.children}
@@ -90,7 +90,7 @@ export class DiscussionCurrentThreadElement extends React.Component<{
         this.props.isReplyOfReply ?  "discussion-reply-of-reply" :
           "discussion-reply"
     );
-
+    
     return <ApplicationListItem modifiers={baseMod}>
       <ApplicationListItemContentWrapper asideModifiers="discussion" mainModifiers="discussion" aside={this.props.avatar}>
         {this.props.children}

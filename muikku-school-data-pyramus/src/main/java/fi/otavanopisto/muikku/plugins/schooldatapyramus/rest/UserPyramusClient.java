@@ -22,29 +22,28 @@ import fi.otavanopisto.muikku.session.local.LocalSession;
 class UserPyramusClient implements PyramusClient, Serializable {
 
   private static final long serialVersionUID = -2643693371146903250L;
-
-  private static final int EXPIRE_SLACK = 60; // refresh one minute before token would expire
-
+  
+  private static final int EXPIRE_SLACK = 3;
+  
   @Inject
   private ClientPool clientPool;
-
+  
   @Inject
   private UserEntityCache entityCache;
-
+  
   @Inject
   @LocalSession
   private SessionController sessionController;
 
   @Inject
   private PyramusRestClient restClient;
-
+  
   @Override
   public <T> T post(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.post(client, getAccessToken(client), path, entity, type);
-    }
-    finally {
+      return restClient.post(client, getAccessToken(), path, entity, type);
+    } finally {
       releaseClient(client);
     }
   }
@@ -53,20 +52,18 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> T post(String path, T entity) {
     Client client = obtainClient();
     try {
-      return restClient.post(client, getAccessToken(client), path, entity);
-    }
-    finally {
+      return restClient.post(client, getAccessToken(), path, entity);
+    } finally {
       releaseClient(client);
     }
   }
-
+  
   @Override
   public <T> T put(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.put(client, getAccessToken(client), path, entity, type);
-    }
-    finally {
+      return restClient.put(client, getAccessToken(), path, entity, type);
+    } finally {
       releaseClient(client);
     }
   }
@@ -75,9 +72,8 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> T put(String path, T entity) {
     Client client = obtainClient();
     try {
-      return restClient.put(client, getAccessToken(client), path, entity);
-    }
-    finally {
+      return restClient.put(client, getAccessToken(), path, entity);
+    } finally {
       releaseClient(client);
     }
   }
@@ -91,34 +87,32 @@ class UserPyramusClient implements PyramusClient, Serializable {
         return cachedEntity.getData();
       }
 
-      T result = restClient.get(client, getAccessToken(client), path, type);
+      T result = restClient.get(client, getAccessToken(), path, type);
       if (result != null) {
         entityCache.put(path, result);
       }
-
+      
       return result;
-    }
-    finally {
+    } finally {
       releaseClient(client);
     }
   }
-
+  
   @Override
   public void delete(String path) {
     Client client = obtainClient();
     try {
-      restClient.delete(client, getAccessToken(client), path);
-    }
-    finally {
+      restClient.delete(client, getAccessToken(), path);
+    } finally {
       releaseClient(client);
     }
   }
-
+  
   @Override
   public <T> BridgeResponse<T> responseGet(String path, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.responseGet(client, getAccessToken(client), path, type);
+      return restClient.responseGet(client, getAccessToken(), path, type);
     }
     finally {
       releaseClient(client);
@@ -129,7 +123,7 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> BridgeResponse<T> responsePut(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.responsePut(client, getAccessToken(client), path, entity, type);
+      return restClient.responsePut(client, getAccessToken(), path, entity, type);
     }
     finally {
       releaseClient(client);
@@ -140,47 +134,51 @@ class UserPyramusClient implements PyramusClient, Serializable {
   public <T> BridgeResponse<T> responsePost(String path, Entity<?> entity, Class<T> type) {
     Client client = obtainClient();
     try {
-      return restClient.responsePost(client, getAccessToken(client), path, entity, type);
+      return restClient.responsePost(client, getAccessToken(), path, entity, type);
     }
     finally {
       releaseClient(client);
     }
   }
-
-  private String getAccessToken(Client client) {
+  
+  private String getAccessToken() {
     fi.otavanopisto.muikku.session.AccessToken accessToken = sessionController.getOAuthAccessToken("pyramus");
-    if (accessToken == null) {
+    if (accessToken == null){
       return null;
     }
-    Date expires = accessToken.getExpires();
-    if (expires.before(new Date())) {
-      synchronized (this) {
-        accessToken = sessionController.getOAuthAccessToken("pyramus");
-        if (accessToken == null) {
-          return null;
+    Date expires = accessToken.getExpires();   
+    if(expires.before(new Date())){
+      Client client = obtainClient();
+      try {
+        synchronized (this) {
+          accessToken = sessionController.getOAuthAccessToken("pyramus");
+          if (accessToken == null){
+            return null;
+          }
+          expires = accessToken.getExpires();
+          if (expires.before(new Date())) {
+            AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, accessToken.getRefreshToken());
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.SECOND, (refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK));
+            sessionController.addOAuthAccessToken("pyramus", calendar.getTime(), refreshedAccessToken.getAccessToken(), refreshedAccessToken.getRefreshToken());
+            return refreshedAccessToken.getAccessToken();
+          }
+          else {
+            return accessToken.getToken();
+          }
         }
-        expires = accessToken.getExpires();
-        if (expires.before(new Date())) {
-          AccessToken refreshedAccessToken = restClient.refreshAccessToken(client, accessToken.getRefreshToken());
-          Calendar calendar = new GregorianCalendar();
-          calendar.setTime(new Date());
-          calendar.add(Calendar.SECOND, (refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK));
-          sessionController.addOAuthAccessToken("pyramus", calendar.getTime(), refreshedAccessToken.getAccessToken(),
-              refreshedAccessToken.getRefreshToken());
-          return refreshedAccessToken.getAccessToken();
-        }
-        else {
-          return accessToken.getToken();
-        }
+      } finally {
+        releaseClient(client);
       }
     }
     return accessToken.getToken();
   }
-
+  
   private Client obtainClient() {
     return clientPool.obtainClient();
   }
-
+  
   private void releaseClient(Client client) {
     clientPool.releaseClient(client);
   }

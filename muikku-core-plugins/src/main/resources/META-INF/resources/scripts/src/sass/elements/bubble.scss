@@ -10,20 +10,19 @@
   border-radius: 10px;
   box-shadow: 0 20px 60px $color-bubble-default-shadow;
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: column nowrap; 
   font-family: $bubble-font;
-  font-size: 0.875rem;
+  font-size: .875rem;
   justify-content: flex-start;
-  padding: 0.625rem;
+  padding: .625rem;
   position: relative;
   text-align: center;
   width: 100%;
 
-  &:hover,
-  &.hover {
+  &:hover, &.hover {
     border-color: $color-bubble-default-highlight-border;
   }
-
+  
   @include breakpoint($breakpoint-pad) {
     @include prefix(transition, webkit ms o moz, border-color 0.5s ease-in-out);
     background-color: $color-bubble-default-background;
@@ -34,7 +33,7 @@
     padding: 1.7rem;
     width: $bubble-size-small;
   }
-
+  
   @include breakpoint($breakpoint-desktop) {
     height: $bubble-size-normal;
     padding: 2.25rem;
@@ -52,20 +51,20 @@
   @include breakpoint($breakpoint-pad) {
     font-size: 1.3rem;
     line-height: 1.3rem;
-    padding: 0.2rem 0.5rem 0;
+    padding: .2rem .5rem 0;
   }
 
   @include breakpoint($breakpoint-desktop) {
     font-size: 1.5rem;
     line-height: 1.5rem;
-    padding: 0.2rem 0.5rem 0;
+    padding: .2rem .5rem 0;
   }
 }
 
 .bubble__content {
   color: $color-bubble-default-content;
   font-weight: 400;
-  padding-top: 0.5rem;
+  padding-top: .5rem;
   position: relative;
 
   @include breakpoint($breakpoint-pad) {
@@ -78,16 +77,16 @@
 .bubble__button-container {
   display: inline-block;
   font-weight: 600;
-  padding: 0.875rem 0 0;
+  padding: .875rem 0 0;
   position: relative;
-
+  
   @include breakpoint($breakpoint-pad) {
     display: inline-block;
     max-width: 8.15rem;
     padding: 0;
   }
 }
-
+ 
 .bubble--application {
   margin-left: auto;
 }

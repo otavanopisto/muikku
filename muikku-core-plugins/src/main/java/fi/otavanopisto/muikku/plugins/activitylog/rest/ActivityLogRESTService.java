@@ -61,9 +61,6 @@ public class ActivityLogRESTService extends PluginRESTService {
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
-    if (userEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
     
     if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if(workspaceEntityId == null) {

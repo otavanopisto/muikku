@@ -4,8 +4,7 @@ import Link from '../../general/link';
 import {MessageThreadListType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
-
-import '~/sass/elements/panel.scss';
+import Panel from '~/components/general/panel';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
@@ -13,23 +12,23 @@ interface LastMessagesPanelProps {
 }
 
 interface LastMessagesPanelState {
-
+  
 }
 
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
-    return (<div className="panel panel--latest-messages">
-      <div className="panel__header">
-        <div className="panel__header-icon panel__header-icon--latest-messages icon-envelope"></div>
-        <div className="panel__header-title">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</div>
+    return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--latest-messages">
+      <div className="ordered-container__item-header">
+        <span className="ordered-container__item-header-icon ordered-container__item-header-icon--latest-messages icon-envelope"></span>
+        <span className="ordered-container__item-header-text">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</span>
       </div>
-      {this.props.lastThreads.length ? (
-        <div className="panel__body">
+      <Panel modifier="index">
+        {this.props.lastThreads.length ? (
           <div className="item-list item-list--panel-latest-messages">
             {this.props.lastThreads.map((thread)=>{
               return (<Link key={thread.id} className={`item-list__item item-list__item--latest-messages ${thread.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
                       to={`/communicator#inbox/${thread.communicatorMessageId}?f`}>
-                <span className={`item-list__icon item-list__icon--latest-messages icon-${thread.unreadMessagesInThread ? "envelope-alt" : "envelope-open"}`}></span>
+                <span className={`item-list__icon item-list__icon--latest-messages icon-envelope${thread.unreadMessagesInThread ? "-alt" : ""}`}></span>
                 <span className="item-list__text-body item-list__text-body--multiline">
                   <span className="item-list__latest-message-caption">
                     {thread.caption}
@@ -41,12 +40,10 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
               </Link>);
             })}
           </div>
-        </div>
-        ) : (
-          <div className="panel__body panel__body--empty">
-            {this.props.i18n.text.get("plugin.frontPage.latestMessages.noMessages")}
-          </div>
-        )}
+          ) : (
+            <div className="panel__empty">{this.props.i18n.text.get("plugin.frontPage.latestMessages.noMessages")}</div>
+          )}
+      </Panel>
     </div>);
   }
 }

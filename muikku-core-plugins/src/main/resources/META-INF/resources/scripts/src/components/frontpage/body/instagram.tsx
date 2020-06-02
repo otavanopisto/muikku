@@ -28,7 +28,7 @@ export default class FrontpageInstagram extends React.Component<FrontpageInstagr
             <div className="card__content">
               <div className="card__meta">
                 <div className="card__meta-aside">
-                  <a href="https://www.instagram.com/muikkuofficial/" target="_blank"><span className="card__meta-aside-logo icon-instagram"></span></a>
+                  <a href="https://www.instagram.com/muikkuofficial/" target="_blank"><span className="card__meta-aside-logo icon-some-instagram"></span></a>
                 </div>
                 <div className="card__meta-body">
                   <div className="card__meta-body-title"><a className="card__meta-body-link card__meta-body-link--instagram" href="https://www.instagram.com/muikkuofficial/" target="_blank">muikkuofficial</a></div>

@@ -35,9 +35,9 @@ enum Graph {
   MATERIAL_EXERCISEDONE = "exercises"
 }
 
-let ignoreZoomed: boolean = true;
-let zoomStartDate: Date = null;
-let zoomEndDate: Date = null;
+var ignoreZoomed: boolean = true;
+var zoomStartDate: Date = null;
+var zoomEndDate: Date = null;
 
 class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceStatisticsProps, CurrentStudentWorkspaceStatisticsState> {
   constructor(props: CurrentStudentWorkspaceStatisticsProps){
@@ -46,14 +46,13 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
-      amChartsLoaded: AmCharts !== null,
+      amChartsLoaded: (window as any).AmCharts != null,
       filteredGraphs: []
     };
-    if (!this.state.amChartsLoaded){
+    if (!this.state.amChartsLoaded)
       this.loadAmCharts();
-    } else {
+    else
       AmCharts = require("@amcharts/amcharts3-react");
-    }
   }
   
   loadAmCharts(){
@@ -75,7 +74,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
   
   GraphFilterHandler(graph: Graph){
     const filteredGraphs = this.state.filteredGraphs.slice();
-    let index = filteredGraphs.indexOf(graph);
+    var index = filteredGraphs.indexOf(graph);
     if (index > -1)
       filteredGraphs.splice(index, 1);
     else 
@@ -92,9 +91,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
   }
   
   zoomApplyHandler(e: any){
-    if (zoomStartDate !== null && zoomEndDate !== null) {
+    if (zoomStartDate != null && zoomEndDate != null)
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
-    }
   }
   
   render(){
@@ -109,17 +107,29 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
       let date = log.timestamp.slice(0, 10);
       let entry = chartDataMap.get(date) || {};
       switch(log.type){
-        case "EVALUATION_REQUESTED":
-        case "EVALUATION_GOTINCOMPLETED":
-        case "EVALUATION_GOTFAILED":
-        case "EVALUATION_GOTPASSED":
-        case "WORKSPACE_VISIT":
-        case "MATERIAL_EXERCISEDONE":
-        case "MATERIAL_ASSIGNMENTDONE":
-          entry[log.type] = (entry[log.type] + 1) || 1;
+      case "EVALUATION_REQUESTED":
+        entry.EVALUATION_REQUESTED = entry.EVALUATION_REQUESTED + 1 || 1;
         break;
-        default:
-          break;
+      case "EVALUATION_GOTINCOMPLETED":
+        entry.EVALUATION_GOTINCOMPLETED = entry.EVALUATION_GOTINCOMPLETED + 1|| 1;
+        break;
+      case "EVALUATION_GOTFAILED":
+        entry.EVALUATION_GOTFAILED = entry.EVALUATION_GOTFAILED + 1|| 1;
+        break;
+      case "EVALUATION_GOTPASSED":
+        entry.EVALUATION_GOTPASSED = entry.EVALUATION_GOTPASSED + 1|| 1;
+        break;
+      case "WORKSPACE_VISIT":
+        entry.WORKSPACE_VISIT = entry.WORKSPACE_VISIT + 1|| 1;
+        break;
+      case "MATERIAL_EXERCISEDONE":
+        entry.MATERIAL_EXERCISEDONE = entry.MATERIAL_EXERCISEDONE + 1|| 1;
+        break;
+      case "MATERIAL_ASSIGNMENTDONE":
+        entry.MATERIAL_ASSIGNMENTDONE = entry.MATERIAL_ASSIGNMENTDONE + 1|| 1;
+        break;
+      default:
+        break;
       }
       chartDataMap.set(date, entry);
     });

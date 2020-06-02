@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
-import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
@@ -34,12 +33,9 @@ public class DiscussionBackingBean {
   @Inject
   private ForumController forumController;
 
-  @Inject
-  private CurrentUserSession currentUserSession;
-  
   @RequestAction
   public String init() {
-    if (!forumController.isEnvironmentForumActive() || !sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM) || !currentUserSession.isActive()) {
+    if (!forumController.isEnvironmentForumActive() || !sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM) || !sessionController.isActiveUser()) {
       return NavigationRules.ACCESS_DENIED;
     }
     
