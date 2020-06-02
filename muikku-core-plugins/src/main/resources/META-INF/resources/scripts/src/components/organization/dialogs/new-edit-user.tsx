@@ -59,7 +59,13 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
   }
 
   cancelDialog (closeDialog: ()=> any) {
-    this.setState({user: {role: "STUDENT", studyProgrammeIdentifier: ""}});
+    this.setState({
+      user: {role: "STUDENT", studyProgrammeIdentifier: ""},
+      firstNameValid: 2, 
+      lastNameValid: 2, 
+      emailValid: 2,
+      studyProgrammeIdentifierValid: 2
+    });
     closeDialog();
   }
 

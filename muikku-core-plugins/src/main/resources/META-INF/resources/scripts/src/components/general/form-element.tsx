@@ -107,9 +107,10 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     this.updateInputField = this.updateInputField.bind(this);
     
     // 0 = invalid, 1 = valid, 2 = neutral
+
     this.state = {
       value: this.props.value ? this.props.value : "", 
-      valid: this.props.valid !== undefined ? this.props.valid : 2}
+      valid: this.props.valid != null ? this.props.valid : 2}
     }
 
   updateInputField(e: React.ChangeEvent<HTMLInputElement>){
@@ -117,7 +118,7 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
     let name = e.target.name;
     let valid = false;
     this.setState({value:  value});
-    if(this.props.mandatory !== undefined && this.props.mandatory == true) {
+    if(this.props.mandatory != null && this.props.mandatory == true) {
       if(value.trim().length == 0) {
         this.setState({valid: 0});
         valid = false;
@@ -170,7 +171,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 
       // 0 = invalid, 1 = valid, 2 = neutral
 
-      this.state = {valid : this.props.valid !== undefined ? this.props.valid : 2}
+      this.state = {valid : this.props.valid != null ? this.props.valid : 2}
   }
 
   updateSelectField(e: React.ChangeEvent<HTMLSelectElement>){
@@ -178,7 +179,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
     const value = e.target.value;
     let valid =  true;
 
-    if(this.props.mandatory !== undefined && this.props.mandatory == true) {
+    if(this.props.mandatory != null && this.props.mandatory == true) {
       if(value.trim().length == 0) {
         this.setState({valid: 0});
         valid = false;
@@ -234,7 +235,7 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
 
       this.state = {
         value: this.props.value ? this.props.value : "", 
-        valid : this.props.valid !== undefined ? this.props.valid : 2
+        valid : this.props.valid != null ? this.props.valid : 2
       }
   }
 
@@ -244,7 +245,7 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
     let valid = false;
     this.setState({value: value});
 
-   if(this.props.mandatory !== undefined && this.props.mandatory == true) {
+   if(this.props.mandatory != null && this.props.mandatory == true) {
       if (!value || value.trim().length == 0 || !value.match(emailRegExp)) {
         this.setState({valid: 0});      
         valid = false;
@@ -297,7 +298,7 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
 
       this.state = {
         value: this.props.value ? this.props.value : "",
-        valid : this.props.valid !== undefined ? this.props.valid : 2
+        valid : this.props.valid != null ? this.props.valid : 2
       }
   }
 
