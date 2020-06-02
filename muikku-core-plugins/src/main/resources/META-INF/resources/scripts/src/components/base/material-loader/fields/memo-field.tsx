@@ -159,7 +159,7 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
 
     //now we need the field
     let field;
-    let minRows = (this.props.content.rows != "" || this.props.content.rows != null || this.props.content.rows != undefined) ? parseInt(this.props.content.rows) : 3;
+    let minRows: number = this.props.content.rows && this.props.content.rows.trim() !== "" ? parseInt(this.props.content.rows) : 3;
     //if readonly
     if  (this.props.readOnly){
       //depending to whether rich edit or not we make it be with the value as inner html or just raw text
