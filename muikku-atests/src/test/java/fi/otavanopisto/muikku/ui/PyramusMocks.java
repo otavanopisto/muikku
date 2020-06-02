@@ -582,7 +582,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
       (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
       (double) 15, (double) 45, (double) 45, end, (long) 1,
       (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-      null, null, 1L);
+      null, null, 1L, false);
   
     String courseJson = objectMapper.writeValueAsString(course);
     
