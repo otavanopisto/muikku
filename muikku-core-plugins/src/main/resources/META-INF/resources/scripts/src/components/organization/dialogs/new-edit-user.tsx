@@ -111,7 +111,13 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           student: data,
           success: () => { 
             closeDialog();
-            this.setState({user: {role: "STUDENT"}});
+            this.setState({
+              user: {role: "STUDENT", studyProgrammeIdentifier: ""},
+              firstNameValid: 2, 
+              lastNameValid: 2, 
+              emailValid: 2,
+              studyProgrammeIdentifierValid: 2
+            });
           },
           fail: () =>{
           }
@@ -130,6 +136,13 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           mode : this.props.mode,
           staffmember: data,
           success: () => { 
+            this.setState({
+              user: {role: "STUDENT", studyProgrammeIdentifier: ""},
+              firstNameValid: 2, 
+              lastNameValid: 2, 
+              emailValid: 2,
+              studyProgrammeIdentifierValid: 2
+            });
             closeDialog();
           },
           fail: () => {
