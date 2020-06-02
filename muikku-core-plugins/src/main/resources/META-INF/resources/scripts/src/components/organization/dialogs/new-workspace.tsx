@@ -8,17 +8,17 @@ import Button from '~/components/general/button';
 import { StatusType } from '~/reducers/base/status';
 
 
-interface OrganizationNewWorkspaceProps {
+interface OrganizationWorkspaceProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   status: StatusType
 }
 
-interface OrganizationNewWorkspaceState {
+interface OrganizationWorkspaceState {
 }
 
 
-class OrganizationNewWorkspace extends React.Component<OrganizationNewWorkspaceProps, OrganizationNewWorkspaceState> {
+class OrganizationWorkspace extends React.Component<OrganizationWorkspaceProps, OrganizationWorkspaceState> {
   render(){
 
     let content = (closePortal: ()=> any) => <div></div>;
@@ -47,4 +47,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(OrganizationNewWorkspace);
+)(OrganizationWorkspace);

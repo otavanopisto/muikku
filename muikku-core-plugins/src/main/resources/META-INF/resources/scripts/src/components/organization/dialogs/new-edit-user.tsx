@@ -14,7 +14,7 @@ import { ManipulateType } from '~/reducers/user-index';
 
 
 
-interface OrganizationNewUserProps {
+interface OrganizationUserProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   status: StatusType,
@@ -24,7 +24,7 @@ interface OrganizationNewUserProps {
   applyStaffmember: ApplyStaffmemberTriggerType
 }
 
-interface OrganizationNewUserState {
+interface OrganizationUserState {
   user: {
     [field: string] : string,
   },
@@ -35,9 +35,9 @@ interface OrganizationNewUserState {
   studyProgrammeIdentifierValid: number
 }
 
-class OrganizationNewUser extends React.Component<OrganizationNewUserProps, OrganizationNewUserState> {
+class OrganizationUser extends React.Component<OrganizationUserProps, OrganizationUserState> {
 
-  constructor(props: OrganizationNewUserProps) {
+  constructor(props: OrganizationUserProps) {
     super(props);
     this.state = {
       user: {role: "STUDENT", studyProgrammeIdentifier: ""},
@@ -187,4 +187,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(OrganizationNewUser);
+)(OrganizationUser);

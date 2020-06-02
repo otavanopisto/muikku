@@ -189,7 +189,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization) as Action);
   }
 
-
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
       this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
@@ -197,6 +196,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
     }
   }
+
   renderCoursePickerBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){

@@ -12,8 +12,8 @@ import WorkspacesAside from './application/workspaces/aside';
 import Reports from './application/reports';
 import {i18nType} from '~/reducers/base/i18n';
 import { ButtonPill} from '~/components/general/button';
-import AddWorkspaceDialog from '../dialogs/new-workspace';
-import AddUserDialog from '../dialogs/new-user';
+import WorkspaceDialog from '../dialogs/new-workspace';
+import UserDialog from '../dialogs/new-edit-user';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
@@ -47,8 +47,8 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
   render(){
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
-        let usersPrimaryAction = <AddUserDialog mode="CREATE"><ButtonPill buttonModifiers="organization" icon="plus" /></AddUserDialog>;
-        let coursesPrimaryAction = <AddWorkspaceDialog><ButtonPill buttonModifiers="organization" icon="plus" /></AddWorkspaceDialog>;
+        let usersPrimaryAction = <UserDialog mode="CREATE"><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
+        let coursesPrimaryAction = <WorkspaceDialog><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
         let coursesToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="form-element form-element--coursepicker-toolbar">
