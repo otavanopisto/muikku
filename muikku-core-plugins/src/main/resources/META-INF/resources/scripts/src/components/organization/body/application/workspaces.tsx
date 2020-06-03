@@ -6,8 +6,7 @@ import ApplicationList, { ApplicationListItem } from '~/components/general/appli
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Workspace from './workspaces/workspace';
 import {i18nType} from '~/reducers/base/i18n';
- import { loadMoreOrganizationWorkspacesFromServer, LoadMoreWorkspacesFromServerTriggerType } from '~/actions/workspaces';
-
+import { loadMoreOrganizationWorkspacesFromServer, LoadMoreWorkspacesFromServerTriggerType } from '~/actions/workspaces';
 
 import {WorkspacesStateType, WorkspaceType, WorkspaceListType} from '~/reducers/workspaces';
 
@@ -23,7 +22,7 @@ interface OrganizationWorkspacesState {
 }
 
 class OrganizationWorkspaces extends BodyScrollLoader<OrganizationWorkspacesProps, OrganizationWorkspacesState> {
-  
+
   constructor(props: OrganizationWorkspacesProps){
     super(props);
     //once this is in state READY only then a loading more event can be triggered
@@ -33,7 +32,7 @@ class OrganizationWorkspaces extends BodyScrollLoader<OrganizationWorkspacesProp
     //this is the function that will be called
     this.loadMoreTriggerFunctionLocation = "loadMoreOrganizationWorkspacesFromServer";
   }
-  
+
   render(){
     if (this.props.workspacesState === "LOADING"){
       return null;
@@ -64,7 +63,6 @@ function mapStateToProps(state: StateType){
   }
 };
 
-
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({loadMoreOrganizationWorkspacesFromServer}, dispatch);
 };
@@ -73,4 +71,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(OrganizationWorkspaces);
-

@@ -20,7 +20,7 @@ interface NavigationAsideState {
 }
 
 class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAsideState> {
-  
+
   constructor(props: NavigationAsideProps){
     super(props);
       this.state = {
@@ -74,7 +74,7 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
 //        queryString.stringify( Object.assign( {}, locationData, { s: ( locationData.e || [] ).concat(element.name ) } ), { arrayFormat: 'bracket' } ) )
 //      return <NavigationElement key={element.name} isActive={isActive} hash={hash}>{this.props.i18n.text.get(element.label)}</NavigationElement>
 //    })}
-//  </NavigationTopic>   
+//  </NavigationTopic>
 
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>

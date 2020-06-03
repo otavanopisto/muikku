@@ -2,8 +2,6 @@ import Portal from './portal';
 import * as React from 'react';
 import Button from '~/components/general/button';
 import {i18nType} from '~/reducers/base/i18n';
-
-
 import '~/sass/elements/dialog.scss';
 import '~/sass/elements/form-elements.scss';
 
@@ -105,8 +103,6 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
   }
 }
 
-
-
 interface DialogRowProps {
   modifiers?: string | Array<string>,
 }
@@ -117,7 +113,7 @@ interface DialogRowState {
 export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    return ( 
+    return (
       <div className={`dialog__content-row ${this.props.modifiers ? modifiers.map( m => `dialog__content-row--${m}` ).join( " " ) : ""}`}>
         {this.props.children}
       </div>
@@ -125,4 +121,3 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
 
   }
 }
-

@@ -9,12 +9,10 @@ import {DiscussionAreaListType, DiscussionAreaType} from '~/reducers/discussion'
 import {DiscussionType} from '~/reducers/discussion';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
-
 import '~/sass/elements/link.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
-
 import { updateDiscussionArea, UpdateDiscussionAreaTriggerType } from '~/actions/discussion';
 import {StateType} from '~/reducers';
 
@@ -133,7 +131,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
         </div>
       )
     }
-    
+
     return <EnvironmentDialog modifier="modify-area"
       title={this.props.i18n.text.get('plugin.discussion.editArea.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
