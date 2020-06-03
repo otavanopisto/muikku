@@ -23,8 +23,15 @@ export default class Iframe extends React.Component<IframeProps, {}>{
         return <span style={{height: elementProps.height + "px" || "160px"}}/>
       }
 
-      if (Tag === "iframe" && this.props.dataset.url) {
-        elementProps.src = this.props.dataset.url;
+      if (Tag === "iframe" && (this.props.dataset.url || elementProps.src)) {
+        const src = this.props.dataset.url || elementProps.src;
+        const isAbsolute = (src.indexOf('/') == 0) || (src.indexOf('mailto:') == 0) ||
+          (src.indexOf('data:') == 0) || (src.match("^(?:[a-zA-Z]+:)?\/\/"));
+        if (!isAbsolute){
+          elementProps.src = this.props.path + "/" + src;
+        } else {
+          elementProps.src = src;
+        }
       }
 
       if (Tag === "iframe") {
