@@ -1,7 +1,7 @@
 import equals = require("deep-equal");
 import * as React from 'react';
 import getCKEDITOR, { CKEDITOR_VERSION } from '~/lib/ckeditor';
-import uuid from "uuid";
+import * as uuid from "uuid";
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these

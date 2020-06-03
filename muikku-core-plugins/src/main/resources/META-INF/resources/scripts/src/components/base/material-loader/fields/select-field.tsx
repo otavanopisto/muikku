@@ -3,7 +3,7 @@ import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
-import uuid from "uuid";
+import * as uuid from "uuid";
 
 interface SelectFieldProps {
   type: string,
