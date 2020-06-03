@@ -274,8 +274,6 @@ export interface OrganizationWorkspacesavailableFiltersType {
   curriculums: WorkspaceCurriculumFilterListType,
 }
 
-
-
 export type WorkspacesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
 export interface OrganizationWorkspacesActiveFiltersType {
@@ -291,7 +289,6 @@ export interface WorkspacesActiveFiltersType {
   query: string,
   baseFilter: WorkspaceBaseFilterType
 }
-
 
 export interface WorkspaceTypeType {
   identifier: string,
@@ -363,7 +360,6 @@ export interface OrganizationWorkspacesType {
   toolbarLock: boolean,
   types?: Array<WorkspaceTypeType>
 }
-
 
 export type WorkspacesPatchType = Partial<WorkspacesType>;
 
@@ -799,7 +795,6 @@ export default function workspaces(state: WorkspacesType={
   }
   return state;
 }
-
 
 export function organizationWorkspaces(state:OrganizationWorkspacesType = {
     availableWorkspaces: [],

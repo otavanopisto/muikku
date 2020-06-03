@@ -6,7 +6,6 @@ import  UserPanel from '~/components/general/user-panel';
 import { ButtonPill} from '~/components/general/button';
 import {UsersType} from '~/reducers/organization/users';
 
-
 interface OrganizationUsersProps {
   i18n: i18nType
   users: UsersType
@@ -19,26 +18,25 @@ class OrganizationUsers extends React.Component<OrganizationUsersProps, Organiza
 
   constructor(props: OrganizationUsersProps){
     super(props);
-    
   }
+
   render(){
     return (<div>
         <UserPanel i18n={this.props.i18n} title="plugin.organization.users.teachers.title" users={this.props.users.staff}/>
         <UserPanel i18n={this.props.i18n} title="plugin.organization.users.students.title" users={this.props.users.students}/>
-      </div>)}}
-
-
-
-function mapStateToProps(state: StateType){
-  return {
-    i18n: state.i18n,
-    users: state.organizationUsers
+      </div>)}
   }
-};
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
-};
+  function mapStateToProps(state: StateType){
+    return {
+      i18n: state.i18n,
+      users: state.organizationUsers
+    }
+  };
+
+  function mapDispatchToProps(dispatch: Dispatch<any>){
+    return {};
+  };
 
 export default connect(
     mapStateToProps,
