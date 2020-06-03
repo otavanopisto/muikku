@@ -48,11 +48,11 @@ export type UPDATE_WORKSPACE =
 
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
-export type UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS = 
+export type UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS =
   SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS", WorkspacesActiveFiltersType>
-export type UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS = 
+export type UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS =
   SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS", WorkspacesPatchType>
-export type UPDATE_ORGANIZATION_WORKSPACES_STATE = 
+export type UPDATE_ORGANIZATION_WORKSPACES_STATE =
   SpecificActionType<"UPDATE_ORGANIZATION_WORKSPACES_STATE", WorkspacesStateType>
 
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<"UPDATE_WORKSPACES_SET_CURRENT_MATERIALS", MaterialContentNodeListType>;
@@ -553,7 +553,7 @@ let loadUserWorkspaceEducationFiltersFromServer:LoadUserWorkspaceEducationFilter
     }
   }
 }
-  
+
 let loadUserWorkspaceCurriculumFiltersFromServer:LoadUserWorkspaceCurriculumFiltersFromServerTriggerType = function loadUserWorkspaceCurriculumFiltersFromServer(loadOrganizationWorkspaceFilters, callback){
 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -569,7 +569,7 @@ let loadUserWorkspaceCurriculumFiltersFromServer:LoadUserWorkspaceCurriculumFilt
           type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
           payload: curriculums
         });
-      } 
+      }
       callback && callback(curriculums);
     } catch (err){
       if (!(err instanceof MApiError)){
@@ -587,7 +587,7 @@ let loadUserWorkspaceOrganizationFiltersFromServer:LoadUserWorkspaceOrganization
         dispatch({
           type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
           payload: organizations
-        });      
+        });
       callback && callback(organizations);
     } catch (err){
       if (!(err instanceof MApiError)){

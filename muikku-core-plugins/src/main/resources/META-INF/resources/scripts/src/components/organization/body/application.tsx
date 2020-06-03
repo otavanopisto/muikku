@@ -18,7 +18,6 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
 
-
 interface OrganizationManagementApplicationProps {
   aside: React.ReactElement<any>,
   i18n: i18nType
@@ -45,9 +44,9 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
   render(){
         let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.organization.pageTitle')}</h2>;
-        
-        // This "Mode" could be just changed to "userData" and the dialog just gets by that the mode is "edit". But that belongs to the user edit issue. 
-        
+
+        // This "Mode" could be just changed to "userData" and the dialog just gets by that the mode is "edit". But that belongs to the user edit issue.
+
         let usersPrimaryAction = <UserDialog mode="CREATE"><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
         let coursesPrimaryAction = <WorkspaceDialog><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
         let coursesToolbar = <ApplicationPanelToolbar>

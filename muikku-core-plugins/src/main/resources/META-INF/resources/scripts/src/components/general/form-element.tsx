@@ -39,7 +39,7 @@ interface FormElementRowState {
 export class formElementRow extends React.Component<FormElementRowProps, FormElementRowState> {
   render() {
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    return ( 
+    return (
       <div className={`form-element__row ${this.props.modifiers ? modifiers.map( m => `form-element__row--${m}` ).join( " " ) : ""}`}>
         {this.props.children}
       </div>
@@ -70,7 +70,7 @@ export class FormActionsElement extends React.Component<FormActionsProps, FormAc
 
   render() {
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    return ( 
+    return (
       <div className={`env-dialog__actions ${this.props.modifiers ? modifiers.map( m => `env-dialog__actions--${m}` ).join( " " ) : ""}`}>
         <Button buttonModifiers="dialog-execute" onClick={this.props.executeClick} disabled={this.state.locked}>
           {this.props.executeLabel}
@@ -105,11 +105,11 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
   constructor(props: InputFormElementProps){
     super(props);
     this.updateInputField = this.updateInputField.bind(this);
-    
+
     // 0 = invalid, 1 = valid, 2 = neutral
 
     this.state = {
-      value: this.props.value ? this.props.value : "", 
+      value: this.props.value ? this.props.value : "",
       valid: this.props.valid != null ? this.props.valid : 2}
     }
 
@@ -137,8 +137,8 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];   
-    
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
@@ -198,13 +198,13 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
         <select name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map( m => `form-element__select--${m}` ).join( " " ) : ""} ${ this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
           {this.props.children}
-        </select>        
+        </select>
       </div>
     );
   }
@@ -212,7 +212,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 
 interface EmailFormElementProps {
   label: string,
-  value?: string, 
+  value?: string,
   modifiers?: string | Array<string>,
   updateField: (fieldName:string, fieldValue: string, valid: boolean)=> any;
   mandatory? :  boolean,
@@ -234,7 +234,7 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
       // this.props.mandatory !== undefined || this.props.mandatory == true
 
       this.state = {
-        value: this.props.value ? this.props.value : "", 
+        value: this.props.value ? this.props.value : "",
         valid : this.props.valid != null ? this.props.valid : 2
       }
   }
@@ -247,7 +247,7 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
 
    if(this.props.mandatory != null && this.props.mandatory == true) {
       if (!value || value.trim().length == 0 || !value.match(emailRegExp)) {
-        this.setState({valid: 0});      
+        this.setState({valid: 0});
         valid = false;
       } else {
         this.setState({valid: 1});
@@ -264,7 +264,7 @@ export class EmailFormElement extends React.Component<EmailFormElementProps, Ema
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
@@ -342,7 +342,7 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
   }
 
   render() {
-    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];    
+    const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return(
       <div className={`form-element ${this.props.modifiers ? modifiers.map( m => `form-element--${m}` ).join( " " ) : ""}`}>
         <div className="form-element__label">{this.props.label}</div>

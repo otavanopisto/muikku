@@ -12,8 +12,6 @@ import {bindActionCreators} from 'redux';
 import { StudyprogrammeTypes, } from '~/reducers/main-function/users';
 import { ManipulateType } from '~/reducers/user-index';
 
-
-
 interface OrganizationUserProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,

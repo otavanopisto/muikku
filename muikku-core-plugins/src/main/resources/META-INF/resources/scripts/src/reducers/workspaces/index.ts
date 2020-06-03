@@ -223,7 +223,7 @@ export interface WorkspaceType {
 
   //Fancy stuff in here
   journals?: WorkspaceJournalsType
-      
+
   // These are only in organizationlistings
   teachers?: Array<OrganizationCourseTeacherType>,
   studentCount? : number
