@@ -118,6 +118,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
             });
           },
           fail: () =>{
+            closeDialog();
           }
         });
       }
@@ -144,6 +145,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
             closeDialog();
           },
           fail: () => {
+            closeDialog();
           }
         });
       }
