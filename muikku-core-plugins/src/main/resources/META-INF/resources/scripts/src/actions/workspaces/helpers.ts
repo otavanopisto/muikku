@@ -1,8 +1,6 @@
 import notificationActions from '~/actions/base/notifications';
-
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
-
 import {AnyActionType} from '~/actions';
 import { StateType } from '~/reducers';
 import { WorkspacesActiveFiltersType, WorkspacesType, OrganizationWorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType } from '~/reducers/workspaces';
@@ -14,32 +12,32 @@ const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, loadOrganizationWorkspaces: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
 
-// This "WorkspacesType" annoys me. It's used in the organization workspaces, 
-// which have type "OrganizationWorkspacesType", 
-// which at this point is not conflicting, but the "OrganizationWorkspacesType" is different - less attributes. 
+// This "WorkspacesType" annoys me. It's used in the organization workspaces,
+// which have type "OrganizationWorkspacesType",
+// which at this point is not conflicting, but the "OrganizationWorkspacesType" is different - less attributes.
 // I cannot find any bugs or disadvantages in my testing.
 
   let workspaces:WorkspacesType  = state.workspaces;
 
-
-if (loadOrganizationWorkspaces === true) { 
+if (loadOrganizationWorkspaces === true) {
   workspaces = state.organizationWorkspaces;
-} 
-
+}
 
   let hasEvaluationFees:boolean = state.userIndex &&
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
-    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees
+    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees;
 
   //Avoid loading courses again for the first time if it's the same location
+
   if (initial && filters === workspaces.activeFilters && workspaces.state === "READY"){
     return;
   }
 
   let actualFilters = filters || workspaces.activeFilters;
-
   let workspacesNextstate:WorkspacesStateType;
+
   //If it's for the first time
+
   if (initial){
     //We set this state to loading
     workspacesNextstate = "LOADING";
@@ -53,8 +51,7 @@ if (loadOrganizationWorkspaces === true) {
     activeFilters: actualFilters
   }
 
-  
-  if (!loadOrganizationWorkspaces === true) { 
+  if (!loadOrganizationWorkspaces === true) {
     dispatch({
       type: "UPDATE_WORKSPACES_ALL_PROPS",
       payload: newWorkspacesPropsWhileLoading
@@ -98,8 +95,7 @@ if (loadOrganizationWorkspaces === true) {
   }
 
   try {
-    
-    
+
     let nWorkspaces:WorkspaceListType = loadOrganizationWorkspaces ? <WorkspaceListType>await promisify(mApi().organizationmanagement.workspaces.cacheClear().read(params), 'callback')()  : <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
 
     //TODO why in the world does the server return nothing rather than an empty array?
@@ -130,9 +126,8 @@ if (loadOrganizationWorkspaces === true) {
       hasMore
     }
 
-    
     //And there it goes
-    if (loadOrganizationWorkspaces === true) { 
+    if (loadOrganizationWorkspaces === true) {
       dispatch({
         type: "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS",
         payload

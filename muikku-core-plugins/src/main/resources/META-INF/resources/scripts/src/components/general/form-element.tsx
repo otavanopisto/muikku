@@ -28,7 +28,6 @@ export default class FormElement extends React.Component<FormElementProps, FormE
   }
 }
 
-
 interface FormElementRowProps {
   modifiers?: string | Array<string>,
 }

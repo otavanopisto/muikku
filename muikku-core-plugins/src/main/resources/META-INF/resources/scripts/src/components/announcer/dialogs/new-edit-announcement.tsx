@@ -49,7 +49,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
   private baseAnnouncementCurrentTarget: TargetItemsListType;
   constructor(props: NewEditAnnouncementProps){
     super(props, "new-edit-announcement");
-
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setTargetItems = this.setTargetItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
@@ -316,7 +315,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         </div>
       )
     }
-    
+
     return <EnvironmentDialog modifier="new-edit-announcement"
       onOpen={this.checkAgainstStoredState}
       title={this.props.announcement ?
