@@ -199,6 +199,11 @@
     vertical-align: middle;
     width: 35px;
   }
+
+  .link__icon--workspace {
+    background-color: $color-workspace-link-menu-icon-background;
+
+  }
 }
 
 .link--menu__text {
