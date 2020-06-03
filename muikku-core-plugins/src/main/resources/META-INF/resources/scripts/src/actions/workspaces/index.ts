@@ -29,7 +29,6 @@ export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<"UPDATE_WORKS
   oldAssessmentRequestToDelete?: WorkspaceAssessmentRequestType
 }>
 
-
 export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<"UPDATE_WORKSPACES_EDIT_MODE_STATE", Partial<WorkspaceEditModeStateType>>;
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES", WorkspaceEducationFilterListType>
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS = SpecificActionType<"UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS", WorkspaceCurriculumFilterListType>
@@ -521,7 +520,6 @@ let loadMoreWorkspacesFromServer:LoadMoreWorkspacesFromServerTriggerType = funct
 let loadMoreOrganizationWorkspacesFromServer:LoadMoreWorkspacesFromServerTriggerType = function loadMoreWorkspacesFromServer(){
   return loadWorkspacesHelper.bind(this, null, false, true);
 }
-
 
 let loadCurrentWorkspaceJournalsFromServer:LoadCurrentWorkspaceJournalsFromServerTriggerType = function loadCurrentWorkspaceJournalsFromServer(userEntityId){
   return loadCurrentWorkspaceJournalsHelper.bind(this, userEntityId || null, true);
