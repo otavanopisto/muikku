@@ -87,11 +87,11 @@
 }
 
 .form-element--new-user {
-  flex-grow: 1; 
+  flex-grow: 1;
 }
 
 .form-element--new-user:not(:first-child) {
-    margin-left: 20px; 
+  margin-left: 20px;
 }
 
 .form-element__copy-workspace-start-date {
@@ -210,6 +210,7 @@
   &.INVALID {
     border-color: $color-fatal;
   }
+
   &.VALID {
     border-color: $color-success;
   }
@@ -333,7 +334,7 @@
   &.INVALID {
     border-color: $color-fatal;
   }
-  
+
   &.VALID {
     border-color: $color-success;
   }

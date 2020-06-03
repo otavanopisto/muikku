@@ -4,7 +4,7 @@ import {connect, Dispatch} from 'react-redux';
 import { i18nType } from "~/reducers/base/i18n";
 import  UserPanel from '~/components/general/user-panel';
 import { ButtonPill} from '~/components/general/button';
-import {UsersType} from '~/reducers/organization/users';
+import {UsersType} from '~/reducers/main-function/users';
 
 interface OrganizationUsersProps {
   i18n: i18nType
@@ -42,5 +42,3 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(OrganizationUsers);
-
-

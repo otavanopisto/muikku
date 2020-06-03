@@ -1,9 +1,8 @@
 import { ActionType } from "~/actions";
 import {UserWithSchoolDataType} from '~/reducers/user-index';
-
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
-export type UsersListType = Array<UserWithSchoolDataType>;  
+export type UsersListType = Array<UserWithSchoolDataType>;
 export type StudyprogrammeListType= Array<StudyprogrammeType>;
 
 export interface StudyprogrammeTypes {
@@ -15,8 +14,6 @@ export interface StudyprogrammeType {
   identifier: string,
   name: string
 }
-
-
 
 export interface UsersType {
   students: UsersListType ,
@@ -53,12 +50,12 @@ export function studyprogrammes (state:StudyprogrammeTypes={
     return Object.assign({}, state, {
       list: action.payload
     });
-  } 
+  }
   if (action.type === "UPDATE_STUDYPROGRAMME_STATUS_TYPE"){
     return Object.assign({}, state, {
       status: action.payload
     });
-  } 
+  }
   return state;
 }
 

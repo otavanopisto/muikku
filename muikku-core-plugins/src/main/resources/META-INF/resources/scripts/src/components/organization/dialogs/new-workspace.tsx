@@ -7,7 +7,6 @@ import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 import { StatusType } from '~/reducers/base/status';
 
-
 interface OrganizationWorkspaceProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
@@ -17,13 +16,12 @@ interface OrganizationWorkspaceProps {
 interface OrganizationWorkspaceState {
 }
 
-
 class OrganizationWorkspace extends React.Component<OrganizationWorkspaceProps, OrganizationWorkspaceState> {
   render(){
 
     let content = (closePortal: ()=> any) => <div></div>;
     let footer = (closePortal: ()=> any) => <div></div>;
-    
+
     return(<EnvironmentDialog modifier="new-message"
         title={this.props.i18n.text.get('plugin.organization.workspaces.addWorkspace.title')}
         content={content} footer={footer}>
