@@ -1,7 +1,7 @@
 import equals = require("deep-equal");
 import * as React from 'react';
 import getCKEDITOR, { CKEDITOR_VERSION } from '~/lib/ckeditor';
-import $ from '~/lib/jquery';
+import * as uuid from "uuid";
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
@@ -82,11 +82,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   private name:string;
   private currentData:string;
 
-  // These two are not used anywhere, why are they here?
-
-  private width: number | string;
-  private height: number | string;
-
   private cancelChangeTrigger: boolean;
   private timeout: NodeJS.Timer;
   private timeoutProps: CKEditorProps;
@@ -95,11 +90,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   constructor(props: CKEditorProps){
     super(props);
 
-    this.name = "ckeditor-" + (new Date()).getTime();
+    this.name = "ckeditor-" + uuid.v4();
     this.currentData = props.children || "";
-
-    this.width = null;
-    this.height = null;
 
     //CKeditor tends to trigger change on setup for no reason at all
     //we don't expect the user to type anything at all when ckeditor is starting up
@@ -186,10 +178,6 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       let instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
 
-      const style = window.getComputedStyle(instance.container.$, null);
-      const borderTop = parseInt(style.getPropertyValue("border-top")) || 0;
-      const borderBottom = parseInt(style.getPropertyValue("border-bottom")) || 0;
-
       // Height can be given from the ancestor or from instance container.
       // Instance container is "unstable" and changes according to the content it seems, so for example
       // material editor is given the ancestorHeight - the dialog height, which is stable.
@@ -236,7 +224,9 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       clearTimeout(this.timeout);
       return;
     }
-    getCKEDITOR().instances[this.name].destroy();
+    if (getCKEDITOR().instances[this.name]) {
+      getCKEDITOR().instances[this.name].destroy();
+    }
   }
   enableCancelChangeTrigger(){
     setTimeout(()=>{
