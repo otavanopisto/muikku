@@ -900,7 +900,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void assertClassPresent(String selector, String className) {
-    waitForPresent(selector + "." + className);
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     String[] classes = StringUtils.split(element.getAttribute("class"), " ");
     assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));

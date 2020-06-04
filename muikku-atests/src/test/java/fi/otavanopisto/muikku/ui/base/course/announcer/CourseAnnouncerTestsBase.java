@@ -157,9 +157,9 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".item-list__announcement-caption");
       click(".item-list__announcement-caption");
-      waitForPresent(".item-list__item--has-workspaces");
-      assertTextIgnoreCase(".item-list__item--has-workspaces .item-list__announcement-caption", "Test title");
-      assertTextIgnoreCase(".item-list__item--has-workspaces .item-list__announcement-date", "12.11.2015");
+      waitForPresent(".reading-panel--announcement");
+      assertTextIgnoreCase(".reading-panel--announcement .article__header", "Test title");
+      assertTextIgnoreCase(".reading-panel--announcement .article__date", "12.11.2015");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -188,10 +188,10 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      waitForPresent(".ordered-container__item--basic-announcements .item-list--panel-announcements .item-list__item--has-workspaces");
-      assertTextIgnoreCase(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-caption", "Test title");
-      waitForPresent(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-workspaces .label__text--announcement-workspace");
-      assertTextIgnoreCase(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-workspaces .label__text--announcement-workspace", "testcourse (test extension)");
+      waitForPresent(".panel--announcements .item-list--panel-announcements .item-list__announcement-caption");
+      assertTextIgnoreCase(".panel--announcements .item-list--panel-announcements .item-list__announcement-caption", "Test title");
+      waitForPresent(".panel--announcements .item-list--panel-announcements .label__text--announcement-workspace");
+      assertTextIgnoreCase(".panel--announcements .item-list--panel-announcements .label__text--announcement-workspace", "testcourse (test extension)");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
@@ -218,7 +218,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      assertNotPresent(".item-list--panel-announcements a");
+      assertNotPresent(".panel--announcements .item-list--panel-announcements .item-list__announcement-caption");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
