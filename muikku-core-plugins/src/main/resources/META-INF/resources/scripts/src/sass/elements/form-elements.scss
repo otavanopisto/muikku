@@ -207,7 +207,7 @@
     height: 2.5rem;
   }
 
-// scss-lint:disable SelectorFormat
+  // scss-lint:disable SelectorFormat
 
   &.INVALID {
     border-color: $color-fatal;
@@ -217,7 +217,7 @@
     border-color: $color-success;
   }
 
-// scss-lint:enable SelectorFormat
+  // scss-lint:enable SelectorFormat
 
 }
 
