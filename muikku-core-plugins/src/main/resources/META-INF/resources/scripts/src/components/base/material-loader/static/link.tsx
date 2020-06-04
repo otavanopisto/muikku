@@ -18,8 +18,12 @@ export default class Link extends React.Component<LinkProps, {}>{
   }
   render (){
     return HTMLtoReactComponent(this.props.element, (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-      if (Tag === "a" && elementProps.href && !elementProps.href.includes("//") && elementProps.href[0] !== "#"){
-        elementProps.href = this.props.path + "/" + elementProps.href;
+      if (Tag === "a" && elementProps.href && elementProps.href[0] !== "#"){
+        const isAbsolute = (elementProps.href.indexOf('/') == 0) || (elementProps.href.indexOf('mailto:') == 0) ||
+          (elementProps.href.indexOf('data:') == 0) || (elementProps.href.match("^(?:[a-zA-Z]+:)?\/\/"));
+        if (!isAbsolute) {
+          elementProps.href = this.props.path + "/" + elementProps.href;
+        }
       }
 
       return <Tag {...elementProps}>{children}</Tag>

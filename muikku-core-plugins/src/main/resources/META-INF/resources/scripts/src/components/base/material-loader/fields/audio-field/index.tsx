@@ -284,6 +284,9 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     })
   }
   checkDoneAndRunOnChange(){
+    if (!this.props.content) {
+      return;
+    }
     //if something is uploading, wait
     for (let value of this.state.values){
       if (value.uploading){

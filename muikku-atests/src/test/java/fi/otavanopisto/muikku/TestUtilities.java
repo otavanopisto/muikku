@@ -110,7 +110,8 @@ public class TestUtilities {
        (long) 1, 
        null,
        null,
-       1L);
+       1L,
+       false);
     
     return course;
   }

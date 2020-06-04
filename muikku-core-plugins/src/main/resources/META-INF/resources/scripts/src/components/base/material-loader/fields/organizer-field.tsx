@@ -138,7 +138,7 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
   }
   checkAnswers(){
     //if we are allowed
-    if (!this.props.checkAnswers){
+    if (!this.props.checkAnswers || !this.props.content){
       return;
     }
 
@@ -207,6 +207,9 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     this.checkAnswers();
   }
   onDropDraggableItem(termId: string, categoryId: string){
+    if (!this.props.content) {
+      return;
+    }
     //So when we drop a termId onto a category box
     //we first check that it's not there already in that box otherwise
     //it's pointless
@@ -283,6 +286,9 @@ export default class OrganizerField extends React.Component<OrganizerFieldProps,
     return false;
   }
   render(){
+    if (!this.props.content) {
+      return null;
+    }
     if (this.props.invisible){
       return <span className="material-page__organizerfield-wrapper">
         <span className="material-page__organizerfield">

@@ -2,8 +2,8 @@ import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
-import uuid from "uuid/v4";
 import Synchronizer from "./base/synchronizer";
+import * as uuid from "uuid";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -71,7 +71,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
   }
   checkAnswers(){
     //if we are not allowed we return
-    if (!this.props.checkAnswers){
+    if (!this.props.checkAnswers || !this.props.content){
       return;
     }
 
@@ -127,6 +127,9 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     this.checkAnswers();
   }
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
+    if (!this.props.content) {
+      return;
+    }
     //toggles the value of a select field
 
     //the new value will be a copy of the current values so we make a copy
@@ -152,6 +155,10 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     }, this.checkAnswers);
   }
   render(){
+    if (!this.props.content) {
+      return null;
+    }
+
     let markcorrectAnswers = false;
     //the summary component if necessary
     let correctAnswersummaryComponent = null;
@@ -226,8 +233,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
             }
           }
           //lets generate unique id for labels and checkboxes
-          const uuidv4 = require('uuid/v4');
-          let uniqueElementID = "cb-" + uuidv4();
+          let uniqueElementID = "cb-" + uuid.v4();
           return <span key={o.name} className="material-page__checkbox-item-container">
             <input id={uniqueElementID} className={`material-page__checkbox ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
             <label htmlFor={uniqueElementID} className="material-page__checkable-label">{o.text}</label>
