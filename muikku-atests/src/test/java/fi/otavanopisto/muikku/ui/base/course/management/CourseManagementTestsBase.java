@@ -353,7 +353,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".footer--workspace .license__link");
-        assertTextIgnoreCase(".footer--workspace .license__link", "https://creativecommons.org/licenses/by/3.0");
+        assertTextIgnoreCase(".footer--workspace .license__link", "https://creativecommons.org/licenses/by-nc-sa/3.0");
       }finally{
         deleteWorkspace(workspace.getId());  
       }
