@@ -2,8 +2,8 @@ import * as React from "react";
 import equals = require("deep-equal");
 import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
-import uuid from "uuid/v4";
 import Synchronizer from "./base/synchronizer";
+import * as uuid from "uuid";
 
 interface SelectFieldProps {
   type: string,
@@ -217,9 +217,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
       <span className={`material-page__radiobutton-items-wrapper material-page__radiobutton-items-wrapper--${this.props.content.listType === "radio-horizontal" ? "horizontal" : "vertical"} ${fieldStateAfterCheck}`}>
         {this.props.content.options.map(o=>{
           //lets generate unique id for labels and radio buttons
-          const uuidv4 = require('uuid/v4');
-          let uniqueElementID = "rb-" + uuidv4();
-          let itemStateAfterCheck = "";
+          let uniqueElementID = "rb-" + uuid.v4();
           return <span className="material-page__radiobutton-item-container" key={o.name}>
             <input id={uniqueElementID} className="material-page__radiobutton" type="radio" value={o.name} checked={this.state.value === o.name} onChange={this.onSelectChange} disabled={this.props.readOnly}/>
             <label htmlFor={uniqueElementID} className="material-page__checkable-label">{o.text}</label>

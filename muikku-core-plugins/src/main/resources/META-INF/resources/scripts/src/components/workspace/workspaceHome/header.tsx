@@ -25,20 +25,16 @@ interface WorkspaceHomeHeaderState {
 class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, WorkspaceHomeHeaderState> {
   constructor(props: WorkspaceHomeHeaderProps){
     super(props);
-
-    this.toggleWorkspacePublished = this.toggleWorkspacePublished.bind(this);
-  }
-  toggleWorkspacePublished(){
-    this.props.updateWorkspace({
-      workspace: this.props.workspace,
-      update: {published: !this.props.workspace.published}
-    })
   }
   render(){
-    return <header className="hero hero--workspace">
+    let headerBackgroundImage = this.props.workspace ?
+      this.props.workspace.hasCustomImage ? `url(/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped)`
+        : "url(/gfx/workspace-default-header.jpg)"
+    : null;
+
+return <header className="hero hero--workspace">
       <div className="hero__wrapper hero__wrapper--workspace" style={
-      {backgroundImage:this.props.workspace && this.props.workspace.hasCustomImage ?
-      `url(/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped)` : "url(/gfx/workspace-default-header.jpg)"}}>
+        { backgroundImage: headerBackgroundImage}}>
         <h1 className="hero__workspace-title">{this.props.workspace && this.props.workspace.name}</h1>
         {this.props.workspace && this.props.workspace.nameExtension ?
           <div className="hero__workspace-name-extension"><span>{this.props.workspace.nameExtension}</span></div> : null}
@@ -79,7 +75,6 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
             <ProgressData title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
           </div>
         : null}
-
       </div>
     </header>
   }
