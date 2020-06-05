@@ -44,7 +44,6 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
           <div className="hero__workspace-name-extension"><span>{this.props.workspace.nameExtension}</span></div> : null}
         {this.props.workspace && this.props.workspace.additionalInfo && this.props.workspace.additionalInfo.educationType ?
           <div className="hero__workspace-education-type"><span>{this.props.workspace.additionalInfo.educationType.name}</span></div> : null}
-        {/*{this.props.workspace && this.props.workspace.studentActivity  ? <ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/> : null} */}
       </div>
       <div className="meta meta--workspace">
         <div className="meta__item">
@@ -75,15 +74,12 @@ class WorkspaceHomeHeader extends React.Component<WorkspaceHomeHeaderProps, Work
             </span>
           </div>
         : null}
-        { /*
-        {this.props.workspace && this.props.status.permissions.WORKSPACE_CAN_PUBLISH ?
-          <div className="workspace-publication-container" onClick={this.toggleWorkspacePublished}>
-            <Button buttonModifiers={this.props.workspace.published ? "workspace-unpublish" : "workspace-publish"}>
-              {this.props.i18n.text.get(this.props.workspace.published ? 'plugin.workspace.index.unpublish' : 'plugin.workspace.index.publish')}
-            </Button>
+        {this.props.workspace && this.props.workspace.studentActivity ?
+          <div className="meta__item meta__item--progress-data">
+            <ProgressData title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
           </div>
         : null}
-        */ }
+
       </div>
     </header>
   }

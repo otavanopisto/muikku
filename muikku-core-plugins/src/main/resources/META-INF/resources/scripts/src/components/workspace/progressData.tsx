@@ -4,9 +4,12 @@ import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 let ProgressBarCircle = require('react-progress-bar.js').Circle;
 
+import '~/sass/elements/workspace-activity.scss';
+
 export default class ProgressData extends React.Component<{
   activity: WorkspaceStudentActivityType,
-  i18n: i18nType
+  i18n: i18nType,
+  title?: string
 }, {}>{
   render(){
     if (!this.props.activity){
@@ -16,63 +19,74 @@ export default class ProgressData extends React.Component<{
     let evaluablesDone = this.props.activity.evaluablesPassed + this.props.activity.evaluablesSubmitted +
       this.props.activity.evaluablesFailed + this.props.activity.evaluablesIncomplete;
 
-    return <div>
-      {this.props.activity.evaluablesTotal ? <Dropdown modifier="workspace-progress" content={<div>
-        <div className="workspace-progress-menu-title">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.title')}</div>
-      <div className="workspace-progress-menu-item">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.done')} {evaluablesDone}</div>
-      <div className="workspace-progress-menu-item">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.total')} {this.props.activity.evaluablesTotal}</div>
-      {this.props.activity.evaluablesTotal ?
-        <div className="workspace-progress-menu-item">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.passed')} {this.props.activity.evaluablesPassed}</div> : null}
-      {this.props.activity.evaluablesSubmitted ?
-        <div className="workspace-progress-menu-item">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.unevaluated')} {this.props.activity.evaluablesSubmitted}</div> : null}
-      {this.props.activity.evaluablesFailed ?
-        <div className="workspace-progress-menu-item">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.failed')} {this.props.activity.evaluablesFailed}</div> : null}
-      {this.props.activity.evaluablesIncomplete ?
-        <div className="workspace-progress-menu-item">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.incomplete')} {this.props.activity.evaluablesIncomplete}</div> : null}
-      </div>}>
-        <div>
-          <ProgressBarCircle containerClassName="clip flex-row flex-align-items-center" options={{
-            strokeWidth: 1,
-            duration: 1000,
-            color: "#ff9900",
-            trailColor: "#f5f5f5",
-            trailWidth: 1,
-            svgStyle: {width: "50px", height: "50px"},
-            text: {
-              className: "time-text-or-something",
-              style: {width: "50px", height: "50px"}
-            }}
-          }
-          strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
-          trailWidth={1}
-          text={evaluablesDone + "/" + this.props.activity.evaluablesTotal}
-          progress={evaluablesDone/this.props.activity.evaluablesTotal}/>
-        </div>
-      </Dropdown> : null}
-      {this.props.activity.exercisesTotal ? <Dropdown modifier="workspace-progress" content={<div>
-        <div className="workspace-progress-menu-title">{this.props.i18n.text.get('plugin.workspace.progress.exercise.title')}</div>
-        <div className="workspace-progress-menu-item">{this.props.i18n.text.get('plugin.workspace.progress.exercise.done')} {this.props.activity.exercisesAnswered}</div>
-        <div className="workspace-progress-menu-item">{this.props.i18n.text.get('plugin.workspace.progress.exercise.total')} {this.props.activity.exercisesTotal}</div>
-      </div>}>
-        <div>
-          <ProgressBarCircle containerClassName="clip flex-row flex-align-items-center" options={{
-            strokeWidth: 1,
-            duration: 1000,
-            color: "#ff9900",
-            trailColor: "#f5f5f5",
-            trailWidth: 1,
-            svgStyle: {width: "50px", height: "50px"},
-            text: {
-             className: "time-text-or-something",
-             style: {width: "50px", height: "50px"}
-            }}
-          }
-          strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
-          trailWidth={1}
-          text={this.props.activity.exercisesAnswered + "/" + this.props.activity.exercisesTotal}
-          progress={this.props.activity.exercisesAnswered/this.props.activity.exercisesTotal}/>
-        </div>
-      </Dropdown> : null}
+    return <div className="workspace-activity workspace-activity--workspace">
+      {this.props.title ? <div className="workspace-activity__title">{this.props.title}</div> : null}
+      <div className="workspace-activity__content">
+        {this.props.activity.evaluablesTotal ? <Dropdown modifier="workspace-progress" content={<div>
+          <div className="workspace-activity__menu-title">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.title')}</div>
+          <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.done')} <span className="workspace-activity__menu-data">{evaluablesDone}</span></div>
+          <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.total')} <span className="workspace-activity__menu-data">{this.props.activity.evaluablesTotal}</span></div>
+        {this.props.activity.evaluablesTotal ?
+            <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.passed')} <span className="workspace-activity__menu-data">{this.props.activity.evaluablesPassed}</span></div> : null}
+        {this.props.activity.evaluablesSubmitted ?
+          <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.unevaluated')} <span className="workspace-activity__menu-data">{this.props.activity.evaluablesSubmitted}</span></div> : null}
+        {this.props.activity.evaluablesFailed ?
+          <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.failed')} <span className="workspace-activity__menu-data">{this.props.activity.evaluablesFailed}</span></div> : null}
+        {this.props.activity.evaluablesIncomplete ?
+            <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.incomplete')} <span className="workspace-activity__menu-data">{this.props.activity.evaluablesIncomplete}</span></div> : null}
+        </div>}>
+          <div>
+            <ProgressBarCircle containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace" options={{
+              strokeWidth: 10,
+              duration: 1000,
+              color: "#ce01bd",
+              trailColor: "#ebebeb",
+              easing: 'easeInOut',
+              trailWidth: 10,
+              svgStyle: {
+                flexBasis: "25px",
+                flexGrow: "0",
+                flexShrink: "0",
+                height: "25px"
+              },
+              text: {
+                style: null,
+                className: "workspace-activity__progressbar-label workspace-activity__progressbar-label--assignment  workspace-activity__progressbar-label--workspace",
+                value: evaluablesDone + "/" + this.props.activity.evaluablesTotal
+              }}
+            }
+            progress={evaluablesDone/this.props.activity.evaluablesTotal}/>
+          </div>
+        </Dropdown> : null}
+        {this.props.activity.exercisesTotal ? <Dropdown modifier="workspace-progress" content={<div>
+          <div className="workspace-activity__menu-title">{this.props.i18n.text.get('plugin.workspace.progress.exercise.title')}</div>
+          <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.exercise.done')} <span className="workspace-activity__menu-data">{this.props.activity.exercisesAnswered}</span></div>
+          <div className="workspace-activity__menu-label">{this.props.i18n.text.get('plugin.workspace.progress.exercise.total')} <span className="workspace-activity__menu-data">{this.props.activity.exercisesTotal}</span></div>
+        </div>}>
+          <div>
+            <ProgressBarCircle containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace" options={{
+              strokeWidth: 10,
+              duration: 1000,
+              color: "#ff9900",
+              trailColor: "#ebebeb",
+              easing: 'easeInOut',
+              trailWidth: 10,
+              svgStyle: {
+                flexBasis: "25px",
+                flexGrow: "0",
+                flexShrink: "0",
+                height: "25px"
+              },
+              text: {
+                style: null,
+                className: "workspace-activity__progressbar-label workspace-activity__progressbar-label--exercise workspace-activity__progressbar-label--workspace",
+                value: this.props.activity.exercisesAnswered + "/" + this.props.activity.exercisesTotal
+              }}
+            }
+            progress={this.props.activity.exercisesAnswered/this.props.activity.exercisesTotal}/>
+          </div>
+        </Dropdown> : null}
+      </div>
     </div>
   }
 }

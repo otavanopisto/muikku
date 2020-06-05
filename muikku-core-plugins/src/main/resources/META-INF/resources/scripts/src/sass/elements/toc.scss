@@ -21,6 +21,14 @@
   }
 }
 
+.toc__progress {
+  font-weight: normal;
+}
+
+.toc__progress-label {
+  font-size: 1rem;
+}
+
 .toc__section-title {
   @include text;
   display: flex;

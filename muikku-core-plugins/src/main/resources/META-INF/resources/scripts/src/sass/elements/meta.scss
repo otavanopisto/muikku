@@ -41,6 +41,17 @@
   }
 }
 
+.meta__item--progress-data {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-end;
+  }
+}
+
 .meta__item-label {
   font-weight: 300;
   padding: 0 5px;
