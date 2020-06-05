@@ -52,16 +52,16 @@ export default class Pager extends React.Component<PagerProps, PagerState>{
 
     return <div className={`pager ${this.props.modifier ? "pager--" + this.props.modifier : ""}`}>
       <div className="pager__body">
-        {isPagerLessVisible ? [<div className="pager__less" onClick={this.props.onClick.bind(null, pagerLessNumber)}/>,
-                               <div className="pager__first" onClick={this.props.onClick.bind(null, 1)}>1</div>,
-                               <div className="pager_gap">...</div>] : null}
+        {isPagerLessVisible ? [<div className="pager__item pager__item--less icon-arrow-left" onClick={this.props.onClick.bind(null, pagerLessNumber)}/>,
+          <div className="pager__item pager__item--first" onClick={this.props.onClick.bind(null, 1)}>1</div>,
+          <div className="pager__item pager__item--gap">...</div>] : null}
         {Array.from(new Array(rightPage - leftPage + 1),(x,i)=> leftPage+i).map((page)=>{
-          return <div key={page} className={`pager__number ${page === this.props.current ? "pager__number--current" : ""}`}
+          return <div key={page} className={`pager__item ${page === this.props.current ? "pager__item--current" : ""}`}
             onClick={this.props.onClick.bind(null, page)}>{page}</div>
         })}
-        {isPagerMoreVisible ? [<div className="pager_gap">...</div>,
-                               <div className="pager__last" onClick={this.props.onClick.bind(null, this.props.pages)}>{this.props.pages}</div>,
-                               <div className="pager__more" onClick={this.props.onClick.bind(null, pagerMoreNumber)}/>] : null}
+        {isPagerMoreVisible ? [<div className="pager__item pager__item--gap">...</div>,
+          <div className="pager__item pager__item--last" onClick={this.props.onClick.bind(null, this.props.pages)}>{this.props.pages}</div>,
+          <div className="pager__item pager__item--more icon-arrow-right" onClick={this.props.onClick.bind(null, pagerMoreNumber)}/>] : null}
       </div>
     </div>
   }
