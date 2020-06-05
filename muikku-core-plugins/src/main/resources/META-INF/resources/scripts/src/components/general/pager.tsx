@@ -45,8 +45,8 @@ export default class Pager extends React.Component<PagerProps, PagerState>{
       pagerLessNumber = 1;
     }
 
-    let pagerMoreNumber = this.props.current - PAGER_MAX_PAGES;
-    if (pagerMoreNumber > this.props.pages){
+    let pagerMoreNumber = this.props.current + PAGER_MAX_PAGES;
+    if (pagerMoreNumber > this.props.pages) {
       pagerMoreNumber = this.props.pages;
     }
 
