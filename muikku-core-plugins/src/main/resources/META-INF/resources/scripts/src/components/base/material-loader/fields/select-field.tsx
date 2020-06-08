@@ -176,7 +176,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
             <span key={index} className="material-page__field-answer-example"><StrMathJAX>{answer.text}</StrMathJAX></span>
           )}
           {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
-             <Dropdown modifier="material-page-field-explanation" content={this.props.content.explanation}>
+            <Dropdown modifier="material-page-field-explanation" content={<StrMathJAX>{this.props.content.explanation}</StrMathJAX>}>
                <span className="material-page__field-explanation-button icon-question"/>
              </Dropdown>
            </span> : null}
@@ -187,7 +187,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
           <span className="material-page__field-answer-examples-title">
             {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.detailsSummary.title")}
           </span>
-          <span className="material-page__field-answer-example">{this.props.content.explanation}</span>
+          <span className="material-page__field-answer-example"><StrMathJAX>{this.props.content.explanation}</StrMathJAX></span>
         </span>;
       }
     }
