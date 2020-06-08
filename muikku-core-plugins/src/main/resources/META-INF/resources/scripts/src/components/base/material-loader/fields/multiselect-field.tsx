@@ -4,6 +4,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import * as uuid from "uuid";
+import { StrMathJAX } from "../static/mathjax";
 
 interface MultiSelectFieldProps {
   type: string,
@@ -180,7 +181,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
             {this.props.i18n.text.get("plugin.workspace.assigment.checkAnswers.correctSummary.title")}
           </span>
           {correctAnswersFound.map((answer, index)=>
-            <span key={index} className="material-page__field-answer-example">{answer.text}</span>
+            <span key={index} className="material-page__field-answer-example"><StrMathJAX>{answer.text}</StrMathJAX></span>
           )}
           {this.props.content.explanation ? <span className="material-page__field-explanation-wrapper">
              <Dropdown modifier="material-page-field-explanation" content={this.props.content.explanation}>
@@ -236,7 +237,7 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
           let uniqueElementID = "cb-" + uuid.v4();
           return <span key={o.name} className="material-page__checkbox-item-container">
             <input id={uniqueElementID} className={`material-page__checkbox ${itemStateAfterCheck}`} type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
-            <label htmlFor={uniqueElementID} className="material-page__checkable-label">{o.text}</label>
+            <label htmlFor={uniqueElementID} className="material-page__checkable-label"><StrMathJAX>{o.text}</StrMathJAX></label>
           </span>
         })}
         </span>
