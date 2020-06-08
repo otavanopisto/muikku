@@ -18,11 +18,11 @@ export default class ToolbarButton extends React.Component<ToolbarButtonProps, T
   avoidDuplicateCaller: string;
   constructor(props: ToolbarButtonProps){
     super(props);
-    
+
     this.state = {
       tooltipVisible: false
     }
-    
+
     this.toggleTooltip = this.toggleTooltip.bind(this);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -63,7 +63,7 @@ export default class ToolbarButton extends React.Component<ToolbarButtonProps, T
     setTimeout(()=>{
       this.avoidDuplicate = false;
     }, 300);
-    
+
     //console.log("mousedown called");
     this.props.onTrigger(e)
   }
@@ -74,17 +74,17 @@ export default class ToolbarButton extends React.Component<ToolbarButtonProps, T
   }
   onMouseEnter(e: React.MouseEvent<any>){
     e.preventDefault();
-    
+
     this.toggleTooltip(true);
   }
   onMouseLeave(e: React.MouseEvent<any>){
     e.preventDefault();
-    
+
     this.toggleTooltip(false);
   }
   onTouchEnd(e: React.TouchEvent<any>){
     e.preventDefault();
-    
+
     //A delay is added in touch devices
     setTimeout(()=>this.toggleTooltip(false), 2000);
   }

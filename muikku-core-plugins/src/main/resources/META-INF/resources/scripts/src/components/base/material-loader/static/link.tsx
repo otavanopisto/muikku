@@ -25,7 +25,7 @@ export default class Link extends React.Component<LinkProps, {}>{
           elementProps.href = this.props.path + "/" + elementProps.href;
         }
       }
-      
+
       return <Tag {...elementProps}>{children}</Tag>
     });
   }

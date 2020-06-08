@@ -17,7 +17,7 @@ interface WorkspacesPanelProps {
 }
 
 interface WorkspacesPanelState {
-  
+
 }
 
 class WorkspacesPanel extends React.Component<WorkspacesPanelProps, WorkspacesPanelState> {

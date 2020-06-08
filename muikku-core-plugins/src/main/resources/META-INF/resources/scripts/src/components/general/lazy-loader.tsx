@@ -15,11 +15,11 @@ interface LazyLoaderState {
 export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoaderState>{
   constructor(props: LazyLoaderProps){
     super(props);
-    
+
     this.state = {
       loaded: false
     }
-    
+
     this.onScroll = this.onScroll.bind(this);
   }
   componentDidMount(){
@@ -36,15 +36,15 @@ export default class LazyLoader extends React.Component<LazyLoaderProps, LazyLoa
     if (this.state.loaded){
       return;
     }
-    
+
     let el:HTMLDivElement = this.refs["lazycomponent"] as HTMLDivElement;
-    
+
     let rect = el.getBoundingClientRect();
     let elemTop = rect.top;
     let elemBottom = rect.bottom;
-    
+
     let isVisible = elemTop < window.innerHeight && elemBottom >= 0;
-    
+
     if (isVisible){
       this.setState({
         loaded: true

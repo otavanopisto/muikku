@@ -11,7 +11,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
   private lastTimeCalledLoadMore: number;
 
   constructor(props: T){
-    super(props);    
+    super(props);
     this.lastTimeCalledLoadMore = 0;
     this.checkCanLoadMore = this.checkCanLoadMore.bind(this);
     this.onScroll = this.onScroll.bind(this);

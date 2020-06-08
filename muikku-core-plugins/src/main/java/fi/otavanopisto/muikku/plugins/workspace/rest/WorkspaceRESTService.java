@@ -397,6 +397,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("organizations") List<String> organizationIds,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
+        @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
         @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
@@ -413,6 +414,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (userIdentifier != null) {
       if (doMinVisitFilter && userEntity == null) {
         userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+      }
+    }
+    
+    templateRestriction = templateRestriction != null ? templateRestriction : TemplateRestriction.ONLY_WORKSPACES;
+    if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
+        return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
       }
     }
     
@@ -536,7 +544,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
-      TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
       searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, educationTypes, 
           curriculums, organizations, searchString, null, null, includeUnpublished, templateRestriction, firstResult, maxResults, sorts);
       
@@ -579,6 +586,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaces.isEmpty()) {
+      // TODO: return 200 & empty list instead of 204
       return Response.noContent().build();
     }
     
@@ -1278,7 +1286,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{ID}/staffMembers")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE)
   public Response listWorkspaceStaffMembers(
       @PathParam("ID") Long workspaceEntityId, 
       @QueryParam("properties") String properties,
@@ -1355,7 +1363,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEID}/staffMembers/{STAFFMEMBERID}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE)
   public Response findWorkspaceStaffMember(
       @PathParam("WORKSPACEID") Long workspaceEntityId, 
       @PathParam("STAFFMEMBERID") String workspaceStaffMemberIdentifier,
@@ -1676,11 +1684,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     List<ContentNode> workspaceMaterials;
-	try {
-		workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
-	} catch (WorkspaceMaterialException e) {
-		return Response.noContent().build();
-	}
+    try {
+      workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
+    } catch (WorkspaceMaterialException e) {
+      return Response.noContent().build();
+    }
     
     if (workspaceMaterials.isEmpty()) {
       return Response.noContent().build();

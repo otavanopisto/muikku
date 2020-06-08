@@ -37,9 +37,9 @@ class Journal extends React.Component<JournalProps, JournalState>{
             student ? <Avatar id={student.userEntityId} firstName={student.firstName} hasImage={student.hasImage}/> : null
         : null }
         <div className="application-list__item-header-main application-list__item-header-main--journal-entry">
-          {!this.props.status.isStudent ? 
+          {!this.props.status.isStudent ?
             <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-creator">{student ? getName(student, true) : this.props.journal.title}</span>
-            : 
+            :
             <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-entry-title">{this.props.journal.title}</span>}
         </div>
         <div className="application-list__item-header-aside">

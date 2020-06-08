@@ -30,7 +30,7 @@ interface DiscussionToolbarState {
 class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, DiscussionToolbarState> {
   constructor(props: DiscussionToolbarProps){
     super(props);
-    
+
     this.onSelectChange = this.onSelectChange.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
   }
@@ -72,13 +72,13 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
         </div>
       </div>
     }
-    
+
     return <ApplicationPanelToolbar>
       {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ?
           <NewArea><ButtonPill icon="plus" buttonModifiers={["discussion-toolbar"]}/></NewArea> : null}
       {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ?
           <ModifyArea><ButtonPill disabled={!this.props.discussion.areaId} icon="pencil" buttonModifiers={["discussion-toolbar"]}/></ModifyArea> : null}
-      {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? 
+      {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ?
           <DeleteArea><ButtonPill disabled={!this.props.discussion.areaId} icon="trash" buttonModifiers={["discussion-toolbar"]}/></DeleteArea> : null}
       <div className="form-element">
       <select className="form-element__select form-element__select--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>

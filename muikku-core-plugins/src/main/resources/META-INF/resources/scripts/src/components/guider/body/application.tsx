@@ -21,7 +21,7 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
   constructor(props: GuiderApplicationProps){
     super(props);
   }
-  
+
   render(){
     let title = this.props.i18n.text.get('plugin.guider.guider')
     let toolbar = <Toolbar/>

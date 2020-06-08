@@ -30,7 +30,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<ConfirmPublish
     this.state = {
       locked: false
     }
-    
+
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
@@ -38,7 +38,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<ConfirmPublish
     this.setState({
       locked: true
     });
-    
+
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.materialEditor.currentNodeWorkspace,
       material: this.props.materialEditor.currentNodeValue,
@@ -68,9 +68,9 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<ConfirmPublish
     let content = (closeDialog: ()=>any) => <div>
       <span>{this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.text")}</span>
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.confirm.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.confirmButton")}
@@ -81,7 +81,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<ConfirmPublish
         </div>
       )
     }
-    
+
     return <Dialog modifier="confirm-remove-answer-dialog" isOpen={this.props.materialEditor.showRemoveAnswersDialogForPublish} onClose={this.cancel}
       title={this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmPublishPageWithAnswers.title")}
       content={content} footer={footer}/>

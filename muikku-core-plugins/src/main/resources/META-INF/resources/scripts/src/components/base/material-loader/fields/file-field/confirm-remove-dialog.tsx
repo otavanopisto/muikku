@@ -27,7 +27,7 @@ class ConfirmRemoveDialog extends React.Component<ConfirmRemoveDialogProps, Conf
     this.state = {
       locked: false
     }
-    
+
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
@@ -42,9 +42,9 @@ class ConfirmRemoveDialog extends React.Component<ConfirmRemoveDialogProps, Conf
     let content = (closeDialog: ()=>any) => <div>
       <span>{this.props.i18n.text.get("plugin.workspace.materials.assignmentFileAttachment.removeDialog.description")}</span>
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.confirm.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get("plugin.workspace.materials.assignmentFileAttachment.removeDialog.removeButtonLabel")}
@@ -55,7 +55,7 @@ class ConfirmRemoveDialog extends React.Component<ConfirmRemoveDialogProps, Conf
         </div>
       )
     }
-    
+
     return <Dialog modifier="confirm-remove-answer-dialog"
       title={this.props.i18n.text.get("plugin.workspace.materials.assignmentFileAttachment.removeDialog.title")}
       content={content} footer={footer}>{this.props.children}</Dialog>

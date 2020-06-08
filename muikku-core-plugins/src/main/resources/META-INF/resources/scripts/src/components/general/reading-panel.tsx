@@ -26,15 +26,15 @@ interface ReadingPanelState {
 export default class ReadingPanel extends React.Component<ReadingPanelProps, ReadingPanelState> {
   private maxTop:number;
   private stickyHeight:number;
-  
+
   constructor(props: ReadingPanelProps){
     super(props);
-    
+
     this.state = {
       sticky: false,
       remainingHeight: null
     }
-    
+
     this.maxTop = null;
     this.stickyHeight = null;
     this.onScroll = this.onScroll.bind(this);
@@ -42,7 +42,7 @@ export default class ReadingPanel extends React.Component<ReadingPanelProps, Rea
   componentDidMount(){
     window.addEventListener("scroll", this.onScroll);
     this.maxTop = (this.refs["top-reference"] as HTMLElement).offsetTop;
-    
+
 //    let computedStyle = document.defaultView.getComputedStyle(this.refs["sticky"] as HTMLElement);
 //    this.stickyHeight = (this.refs["sticky"] as HTMLElement).offsetTop +
 //        parseInt(computedStyle.getPropertyValue("border-top")) + parseInt(computedStyle.getPropertyValue("border-top"))
@@ -57,7 +57,7 @@ export default class ReadingPanel extends React.Component<ReadingPanelProps, Rea
 //    }
 //    let top = (document.documentElement.scrollTop || document.body.scrollTop);
 //    let height = (document.documentElement.offsetHeight || document.body.offsetHeight);
-//    
+//
 //    if (top > 70){
 //      let height = (document.documentElement.offsetHeight || document.body.offsetHeight);
 //      //sticky thing height 55
@@ -85,10 +85,10 @@ export default class ReadingPanel extends React.Component<ReadingPanelProps, Rea
       <div className="reading-panel__container">
 
         <div className="reading-panel__header">
-        {this.props.title ? 
+        {this.props.title ?
           <h1 className="reading-panel__header-title">{this.props.title}</h1>
         : null}
-        {this.props.icon ? 
+        {this.props.icon ?
           <div className="reading-panel__header-actions">{this.props.icon}</div>
         : null}
         </div>
@@ -109,4 +109,3 @@ export default class ReadingPanel extends React.Component<ReadingPanelProps, Rea
     </div>);
   }
 }
-

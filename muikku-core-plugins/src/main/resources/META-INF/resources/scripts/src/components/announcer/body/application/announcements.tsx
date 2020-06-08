@@ -47,7 +47,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
     return (<BodyScrollKeeper hidden={!!this.props.announcements.current}>
         <SelectableList as={ApplicationList} selectModeModifiers="select-mode" dataState={this.props.announcements.state}>
           {this.props.announcements.announcements.map((announcement: AnnouncementType)=>{
-            let className = announcement.workspaces.length ? 
+            let className = announcement.workspaces.length ?
                 'announcement announcement--workspace' :
                 'announcement announcement--environment';
             return {
@@ -68,7 +68,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                       <span className="application-list__header-item-dates">
                         {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
                       </span>
-                    </div> 
+                    </div>
                   </ApplicationListItemHeader>
                   <ApplicationListItemBody>
                     <article className="application-list-document-short">
@@ -94,7 +94,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                       }
                     })}
                     </div> : null }
-                  <ApplicationListItemFooter modifiers="announcement-actions">  
+                  <ApplicationListItemFooter modifiers="announcement-actions">
                     <NewEditAnnouncement announcement={announcement}>
                       <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
                     </NewEditAnnouncement>

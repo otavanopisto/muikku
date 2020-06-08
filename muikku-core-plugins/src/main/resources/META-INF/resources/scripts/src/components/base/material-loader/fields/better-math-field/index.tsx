@@ -44,12 +44,12 @@ export default class MathField extends React.Component<MathFieldProps, MathField
   private loadedMq: boolean;
   constructor(props: MathFieldProps){
     super(props);
-    
+
     this.state = {
       isFocused: false,
       expandMath: false
     }
-    
+
     this.onFocusField = this.onFocusField.bind(this);
     this.onBlurField = this.onBlurField.bind(this);
     this.onCommand = this.onCommand.bind(this);
@@ -58,13 +58,13 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     this.closeMathExpanded = this.closeMathExpanded.bind(this);
     this.createNewLatex = this.createNewLatex.bind(this);
     this.checkLoadingOfAceAndMQ = this.checkLoadingOfAceAndMQ.bind(this);
-    
+
     this.checkLoadingOfAceAndMQ(props);
   }
   checkLoadingOfAceAndMQ(props: MathFieldProps){
     if (!this.loadedAce && !props.dontLoadACE){
       this.loadedAce = true;
-      
+
       let script = document.createElement('script');
       script.src = ACE_DEFAULT_SRC;
       script.async = true;
@@ -76,15 +76,15 @@ export default class MathField extends React.Component<MathFieldProps, MathField
       }
       document.head.appendChild(script);
     }
-    
+
     if (!props.dontLoadMQ){
       this.loadedMq = true;
-      
+
       let script = document.createElement('script');
       script.src = MQ_DEFAULT_SRC;
       script.async = true;
       document.head.appendChild(script);
-      
+
       let css = document.createElement('link');
       css.rel = "stylesheet";
       css.type = "text/css";

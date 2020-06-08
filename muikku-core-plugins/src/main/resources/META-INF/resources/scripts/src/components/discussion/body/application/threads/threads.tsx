@@ -71,7 +71,7 @@ export class DiscussionCurrentThread extends React.Component<{
         }
         {this.props.sticky ?
           <div className="discussion__icon icon-pin"/> : null
-        } 
+        }
         {this.props.title}
       </div>
       {this.props.children}
@@ -90,7 +90,7 @@ export class DiscussionCurrentThreadElement extends React.Component<{
         this.props.isReplyOfReply ?  "discussion-reply-of-reply" :
           "discussion-reply"
     );
-    
+
     return <ApplicationListItem modifiers={baseMod}>
       <ApplicationListItemContentWrapper asideModifiers="discussion" mainModifiers="discussion" aside={this.props.avatar}>
         {this.props.children}
