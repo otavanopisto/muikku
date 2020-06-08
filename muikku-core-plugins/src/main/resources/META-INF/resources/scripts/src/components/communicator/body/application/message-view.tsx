@@ -28,10 +28,10 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
   private initialXPos: number;
   private initialYPos: number;
   private closeInterval: NodeJS.Timer;
-  
+
   constructor(props: MessageViewProps){
     super(props);
-    
+
     this.loadMessage = this.loadMessage.bind(this);
   }
   loadMessage(messageId: number){
@@ -42,11 +42,11 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
       location.hash = location.hash.split("/")[0] + "/" + messageId;
     }
   }
-  render(){ 
+  render(){
     if (this.props.messages.currentThread === null){
       return null;
     }
-    
+
     return <TouchPager hasNext={!!this.props.messages.currentThread.newerThreadId}
       hasPrev={!!this.props.messages.currentThread.olderThreadId}
       goForward={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}

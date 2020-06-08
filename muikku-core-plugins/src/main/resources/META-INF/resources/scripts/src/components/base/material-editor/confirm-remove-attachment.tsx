@@ -30,7 +30,7 @@ class ConfirmRemoveAttachment extends React.Component<ConfirmRemoveAttachmentPro
     this.state = {
       locked: false
     }
-    
+
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
@@ -38,7 +38,7 @@ class ConfirmRemoveAttachment extends React.Component<ConfirmRemoveAttachmentPro
     this.setState({
       locked: true
     });
-    
+
     this.props.deleteWorkspaceMaterialContentNode({
       material: this.props.file,
       workspace: this.props.materialEditor.currentNodeWorkspace,
@@ -57,9 +57,9 @@ class ConfirmRemoveAttachment extends React.Component<ConfirmRemoveAttachmentPro
     let content = (closeDialog: ()=>any) => <div>
       <span>{this.props.i18n.text.get("plugin.guider.flags.deleteAttachmentDialog.description")}</span>
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.confirm.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get("plugin.guider.flags.deleteAttachmentDialog.yes")}
@@ -70,7 +70,7 @@ class ConfirmRemoveAttachment extends React.Component<ConfirmRemoveAttachmentPro
         </div>
       )
     }
-    
+
     return <Dialog modifier="confirm-remove-answer-dialog"
       title={this.props.i18n.text.get("plugin.guider.flags.deleteAttachmentDialog.title")}
       content={content} footer={footer}>{this.props.children}</Dialog>

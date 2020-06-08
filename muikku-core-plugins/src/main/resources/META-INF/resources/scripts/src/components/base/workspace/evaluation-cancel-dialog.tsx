@@ -30,7 +30,7 @@ class EvaluationCancelDialog extends React.Component<EvaluationCancelDialogProps
     this.state = {
       locked: false
     }
-    
+
     this.cancel = this.cancel.bind(this);
   }
   cancel(closeDialog: ()=>any){
@@ -56,9 +56,9 @@ class EvaluationCancelDialog extends React.Component<EvaluationCancelDialogProps
     let content = (closeDialog: ()=>any) => <div>
       <span>{this.props.i18n.text.get('plugin.workspace.evaluation.cancelEvaluation.description')}</span>
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "warn"]} onClick={this.cancel.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.workspace.evaluation.cancelEvaluation.cancelRequestButton')}
@@ -69,7 +69,7 @@ class EvaluationCancelDialog extends React.Component<EvaluationCancelDialogProps
         </div>
       )
     }
-    
+
     return <Dialog modifier="evaluation-cancel-dialog"
       title={this.props.i18n.text.get('plugin.workspace.evaluation.cancelEvaluation.title')}
       content={content} footer={footer} isOpen={this.props.isOpen} onClose={this.props.onClose}/>

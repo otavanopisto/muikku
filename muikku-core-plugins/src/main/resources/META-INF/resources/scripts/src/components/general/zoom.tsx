@@ -47,5 +47,4 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState>{
       </div>
     )
   }
-
 }

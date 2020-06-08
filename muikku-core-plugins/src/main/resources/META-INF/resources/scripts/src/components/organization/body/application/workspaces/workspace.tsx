@@ -22,11 +22,11 @@ interface CourseState {
 class Workspace extends React.Component<CourseProps, CourseState>{
   constructor(props: CourseProps){
     super(props);
-    
+
     this.state = {
       expanded: false
     }
-    
+
     this.toggleExpanded = this.toggleExpanded.bind(this);
   }
   toggleExpanded(){
@@ -39,7 +39,7 @@ class Workspace extends React.Component<CourseProps, CourseState>{
         return <span key={teacher.lastName + index}>
           {teacherFullName}
          </span>
-      
+
      });
     return   <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>

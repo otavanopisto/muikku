@@ -18,7 +18,7 @@ import { ButtonPill } from "~/components/general/button";
 interface GuiderToolbarLabelsProps {
   i18n: i18nType,
   guider: GuiderType
-  
+
   createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType,
   addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType,
   removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType,
@@ -33,11 +33,11 @@ interface GuiderToolbarLabelsState {
 class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, GuiderToolbarLabelsState> {
   constructor(props: GuiderToolbarLabelsProps){
     super(props);
-    
+
     this.state = {
       labelFilter: ""
     }
-    
+
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
   }
   updateLabelFilter(e: React.ChangeEvent<HTMLInputElement>){
@@ -70,11 +70,11 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
         <ButtonPill buttonModifiers="flag" icon="flag" disabled={this.props.guider.toolbarLock}/>
       </Dropdown>
     }
-  
+
     let allInCommon:number[] = [];
     let onlyInSome:number[] = [];
     let isAtLeastOneSelected = this.props.guider.selectedStudents.length >= 1;
-    
+
     if (isAtLeastOneSelected){
       let partialIds = this.props.guider.selectedStudents.map((student: GuiderStudentType)=>{
         return student.flags.map(l=>l.flagId)}
@@ -82,7 +82,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(allInCommon, flatten(...partialIds));
     }
-  
+
     return <Dropdown modifier="guider-labels" items={
       [
         <div className="form-element">
@@ -100,7 +100,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
         let isPartiallySelected = onlyInSome.includes(label.id as number);
         return (<Link className={`link link--full link--guider-label-dropdown ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""}`}
           disabled={!isAtLeastOneSelected}
-          onClick={!isSelected || isPartiallySelected ? 
+          onClick={!isSelected || isPartiallySelected ?
             this.props.addGuiderLabelToSelectedUsers.bind(null, label) :
             this.props.removeGuiderLabelFromSelectedUsers.bind(null, label)}>
            <span className="link__icon icon-flag" style={{color: label.color}}></span>

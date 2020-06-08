@@ -13,23 +13,23 @@ import { WorkspaceType } from "~/reducers/workspaces";
 
 interface DeactivateReactivateUserDialogProps {
   i18n: i18nType,
-  
+
   user: ShortWorkspaceUserWithActiveStatusType,
   toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType,
   workspace: WorkspaceType,
-  
+
   isOpen: boolean,
   onClose: ()=>any
 }
 
 interface DeactivateReactivateUserDialogState {
-  
+
 }
 
 class DeactivateReactivateUserDialog extends React.Component<DeactivateReactivateUserDialogProps, DeactivateReactivateUserDialogState> {
   constructor(props: DeactivateReactivateUserDialogProps){
     super(props);
-    
+
     this.toggleActiveStatus = this.toggleActiveStatus.bind(this);
   }
   toggleActiveStatus(closeDialog: ()=>any){
@@ -41,7 +41,7 @@ class DeactivateReactivateUserDialog extends React.Component<DeactivateReactivat
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-        <span>{this.props.i18n.text.get(this.props.user.active ? 
+        <span>{this.props.i18n.text.get(this.props.user.active ?
             'plugin.workspace.users.student.archiveDialog.description' :
             'plugin.workspace.users.student.unarchiveDialog.description',
             getName(this.props.user, true))}</span>
@@ -49,7 +49,7 @@ class DeactivateReactivateUserDialog extends React.Component<DeactivateReactivat
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
         <Button buttonModifiers={this.props.user.active ? ["fatal","standard-ok"] : ["execute","standard-ok"]} onClick={this.toggleActiveStatus.bind(this, closeDialog)}>
-          {this.props.i18n.text.get(this.props.user.active ? 
+          {this.props.i18n.text.get(this.props.user.active ?
               'plugin.workspace.users.student.archiveDialog.archiveButton' :
               'plugin.workspace.users.student.unarchiveDialog.archiveButton')}
         </Button>
@@ -61,7 +61,7 @@ class DeactivateReactivateUserDialog extends React.Component<DeactivateReactivat
       </div>
     }
     return <Dialog isOpen={this.props.isOpen}
-      onClose={this.props.onClose} title={this.props.i18n.text.get(this.props.user.active ? 
+      onClose={this.props.onClose} title={this.props.i18n.text.get(this.props.user.active ?
         'plugin.workspace.users.student.archiveDialog.title': 'plugin.workspace.users.student.unarchiveDialog.title')}
       content={content} footer={footer} modifier="deactivate-reactivate-user"/>
   }

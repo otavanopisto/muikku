@@ -85,7 +85,7 @@ const CCVALIDATE = function(version: string, value: string){
   if (value === null) {
     return false;
   }
-  return (value.startsWith(CC_URL_PREFIX_SSL) || value.startsWith(CC_URL_PREFIX_NOSSL)) && 
+  return (value.startsWith(CC_URL_PREFIX_SSL) || value.startsWith(CC_URL_PREFIX_NOSSL)) &&
     value.endsWith(version);
 }
 

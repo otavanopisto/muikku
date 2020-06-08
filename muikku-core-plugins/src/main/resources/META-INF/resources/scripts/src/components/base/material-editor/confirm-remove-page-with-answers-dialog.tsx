@@ -31,7 +31,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePa
     this.state = {
       locked: false
     }
-    
+
     this.cancel = this.cancel.bind(this);
     this.confirm = this.confirm.bind(this);
   }
@@ -39,7 +39,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePa
     this.setState({
       locked: true
     });
-    
+
     this.props.deleteWorkspaceMaterialContentNode({
       material: this.props.materialEditor.currentNodeValue,
       workspace: this.props.materialEditor.currentNodeWorkspace,
@@ -69,9 +69,9 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePa
     let content = (closeDialog: ()=>any) => <div>
       <span>{this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.text")}</span>
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="dialog__button-set">
           <Button buttonModifiers={["standard-ok", "fatal"]} onClick={this.confirm.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.confirmButton")}
@@ -82,7 +82,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<ConfirmDeletePa
         </div>
       )
     }
-    
+
     return <Dialog modifier="confirm-remove-answer-dialog" isOpen={this.props.materialEditor.showRemoveAnswersDialogForDelete} onClose={this.cancel}
       title={this.props.i18n.text.get("plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.title")}
       content={content} footer={footer}/>

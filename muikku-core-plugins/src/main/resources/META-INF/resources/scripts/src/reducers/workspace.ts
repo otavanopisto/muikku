@@ -19,7 +19,7 @@ export default combineReducers({
   status,
   websocket,
   title,
-  
+
   workspaces,
   announcements,
   discussion,

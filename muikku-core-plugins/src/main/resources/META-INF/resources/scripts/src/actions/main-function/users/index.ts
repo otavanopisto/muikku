@@ -15,7 +15,7 @@ export type UPDATE_USERS_STATE = SpecificActionType<"UPDATE_USERS_STATE", UserSt
 
 
 
-//Do not delete this, this is for organization 
+//Do not delete this, this is for organization
 
 
 
@@ -26,26 +26,26 @@ export interface LoadUsersTriggerType {
 let loadUsers:LoadUsersTriggerType = function loadUserst(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      
+
       let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
 
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null
       });
-      
+
       await Promise.all([
         promisify(mApi().user.students.read(), 'callback')()
           .then((users:UserType)=>{
             dispatch({
-              type: "UPDATE_STUDENT_USERS", 
+              type: "UPDATE_STUDENT_USERS",
               payload: users
             });
           }),
         promisify(mApi().user.staffMembers.read(), 'callback')()
           .then((users:UserType)=>{
             dispatch({
-              type: "UPDATE_STAFF_USERS", 
+              type: "UPDATE_STAFF_USERS",
               payload: users
             });
           }),
@@ -74,7 +74,5 @@ let loadUsers:LoadUsersTriggerType = function loadUserst(){
      }
   }
 }
-
-
 
 export {loadUsers};

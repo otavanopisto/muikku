@@ -33,7 +33,7 @@ interface WorkspaceJournalsState {
 class WorkspaceJournals extends BodyScrollLoader<WorkspaceJournalsProps, WorkspaceJournalsState> {
   constructor(props: WorkspaceJournalsProps){
     super(props);
-    
+
     //once this is in state READY only then a loading more event can be triggered
     this.statePropertyLocation = "workspaceJournalsState";
     //it will only call the function if this is true

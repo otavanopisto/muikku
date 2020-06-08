@@ -7,7 +7,6 @@ import CKEditor from "~/components/general/ckeditor";
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 
-
 interface StepProps {
   workspace: WorkspaceType,
   i18n: i18nType,

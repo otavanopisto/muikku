@@ -26,6 +26,7 @@
     display: inline-flex;
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 0.1em; // This prevents unnecessary scrollbars to be rendered
     vertical-align: middle;
   }
@@ -51,18 +52,18 @@
   }
 
   h3 {
-    font-size: 1rem;
+    font-size: 1.125rem;
 
     @include breakpoint($breakpoint-pad) {
-      font-size: 1.125rem;
+      font-size: 1.25rem;
     }
   }
 
   h4 {
-    font-size: 0.9375rem;
+    font-size: 1rem;
 
     @include breakpoint($breakpoint-pad) {
-      font-size: 1rem;
+      font-size: 1.125rem;
     }
   }
 

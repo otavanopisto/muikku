@@ -68,7 +68,7 @@ let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType = func
     if (!getState().status.loggedIn){
       return;
     }
-    
+
     try {
       dispatch( {
         type: "UPDATE_UNREAD_MESSAGE_THREADS_COUNT",
@@ -217,7 +217,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
       message.fail && message.fail();
       return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createMessage.missing.recipients"), 'error'));
     }
-    
+
     try {
       let result: MessageType;
       if (message.replyThreadId) {
@@ -232,7 +232,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
 
       let state = getState();
       let status: StatusType = state.status;
-      
+
       if (state.messages) {
       //First lets check and update the thread count in case the thread is there somewhere for that specific message
         let thread:MessageThreadType = state.messages.threads.find((thread)=>thread.communicatorMessageId === result.communicatorMessageId);
@@ -257,7 +257,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
         const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && weAreOneOfTheRecepients;
         const weAreInSentLocation = state.messages.location === "sent";
         const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
-        
+
         //if we are in sent location or are one of the recipients then the message should become the first one
         if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients) {
           let item = state.messages.navigation.find((item)=>{
@@ -270,7 +270,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
             firstResult: 0,
             maxResults: 1,
           }
-          
+
           //we basically conduct a search for the first result which should be our thread
 
           try {
@@ -284,7 +284,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
                 type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
                 payload: threads[0]
               });
-              
+
               if (weJustSentThatMessageAndWeAreInCurrent && weAreOneOfTheRecepients && threads[0].unreadMessagesInThread) {
                 dispatch(toggleMessageThreadReadStatus(threads[0], true, true));
               }
@@ -293,7 +293,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
             throw err;
           }}
         }
-        
+
         if (weJustSentThatMessageAndWeAreInCurrent){
           dispatch({
             type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
@@ -301,9 +301,9 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
           });
         }
       }
-      
+
       dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.infomessage.newMessage.success"), 'success' ));
-      
+
     } catch ( err ) {
       if (!(err instanceof MApiError)){
         throw err;
@@ -392,7 +392,7 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
       actualThread = threadOrId;
       communicatorMessageId = actualThread.communicatorMessageId;
     }
-     
+
     if (actualThread){
       dispatch( {
         type: "UPDATE_ONE_MESSAGE_THREAD",
@@ -404,7 +404,7 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
         }
       });
     }
-   
+
     try {
       if ((actualThread && actualThread.unreadMessagesInThread) || markAsStatus === true ) {
         await promisify( mApi().communicator[getApiId( item )].markasread.create(communicatorMessageId), 'callback' )();
@@ -431,14 +431,14 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
     }
 
     mApi().communicator[getApiId( item )].cacheClear();
-    
+
     if (!dontLockToolbar){
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
       });
     }
-    
+
     callback && callback();
   }
 }
@@ -449,7 +449,7 @@ let toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType = 
       type: "LOCK_TOOLBAR",
       payload: null
     });
-    
+
     let done = 0;
     threads.forEach((thread)=>{
       let cb = ()=>{
@@ -491,7 +491,7 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
       } );
       return;
     }
-        
+
     await Promise.all(state.messages.selectedThreads.map(async( thread) => {
       try {
         await promisify( mApi().communicator[getApiId( item )].del( thread.communicatorMessageId ), 'callback' )();
@@ -524,7 +524,7 @@ let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType = function
     });
 
     let state = getState();
-    
+
     let item = state.messages.navigation.find((item)=>{
       return item.location === state.messages.location;
     });
@@ -761,7 +761,7 @@ let addMessagesNavigationLabel:AddMessagesNavigationLabelTriggerType = function 
     if (!name){
       return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
-    
+
     let color = Math.round(Math.random() * 16777215);
     let label = {
       name,
@@ -796,13 +796,13 @@ let updateMessagesNavigationLabel:UpdateMessagesNavigationLabelTriggerType = fun
       data.fail && data.fail();
       return dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.createUpdateLabels.missing.title"), 'error'));
     }
-    
+
     let newLabelData = {
       name: data.newName,
       color: hexToColorInt(data.newColor),
       id: data.label.id
     };
-    
+
     try {
       await promisify(mApi().communicator.userLabels.update(data.label.id, newLabelData), 'callback')();
       dispatch({
@@ -841,12 +841,12 @@ let removeMessagesNavigationLabel:RemoveMessagesNavigationLabelTriggerType = fun
     try {
       await promisify(mApi().communicator.userLabels.del(data.label.id), 'callback')();
       let {messages} = getState();
-      
+
       //Notice this is an external trigger, not the nicest thing, but as long as we use hash navigation, meh
       if (messages.location === data.label.location){
         location.hash = "#inbox";
       }
-      
+
       dispatch({
         type: "DELETE_MESSAGE_THREADS_NAVIGATION_LABEL",
         payload: {
@@ -891,7 +891,7 @@ let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType = fu
       });
       return;
     }
-    
+
     await Promise.all(state.messages.selectedThreads.map(async( thread) => {
       try {
         await promisify(mApi().communicator[getApiId(item)].restore.update(thread.communicatorMessageId), 'callback' )();
@@ -924,7 +924,7 @@ let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType = functi
     });
 
     let state = getState();
-    
+
     let item = state.messages.navigation.find((item)=>{
       return item.location === state.messages.location;
     });

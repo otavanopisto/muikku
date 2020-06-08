@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.ui.base.course.journal;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import java.time.OffsetDateTime;
@@ -29,8 +30,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
-        waitForPresent(".workspace-journal-content-wrapper");
-        assertVisible(".workspace-journal-teacher-tools-container");
+        waitForPresent(".application-panel--workspace-journal select.form-element__select");
+        assertVisible(".application-panel--workspace-journal select.form-element__select");
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -40,38 +41,8 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
     }
   }
 
-
   @Test
-  public void courseJournalNewEntryForStudent() throws Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    try{
-      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-      login();
-      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
-
-      Long courseId = NumberUtils.createLong(workspace.getIdentifier()); 
-      MockCourseStudent courseStudent = new MockCourseStudent(1l, courseId, student.getId());
-      mockBuilder.addCourseStudent(courseId, courseStudent).build();
-
-      logout();
-      mockBuilder.mockLogin(student);
-      login();
-      try {
-        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
-        waitForPresent(".workspace-journal-content-wrapper");
-        assertVisible(".workspace-journal-new-entry-button");
-      } finally {
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-
-  @Test
-  public void courseJournalEntryAdded() throws Exception {
+  public void courseJournalEntry() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
@@ -89,15 +60,17 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       login();
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
-        click(".workspace-journal-new-entry-button");
+        selectFinnishLocale();
+        waitAndClick(".application-panel--workspace-journal .button--primary-function");
         addTextToCKEditor("content");
-        sendKeys(".mf-textfield-subject", "title");
-        click("#socialNavigation.sn-container .jo-message-create .mf-toolbar input[name=\"send\"]");
-        waitForPresent("#content");
-        waitForPresent(".workspace-journal-title");
-        assertText(".workspace-journal-title", "title");
-        waitForPresent(".workspace-journal-content>p");
-        assertText(".workspace-journal-content>p", "content");
+        sendKeys(".env-dialog__input--new-edit-journal-title", "title");
+        click(".button--dialog-execute");
+        waitForPresent(".application-list__item-header-main-content--journal-entry-title");
+        assertText(".application-list__item-header-main-content--journal-entry-title", "title");
+        waitForPresent(".application-list__item-content-body--journal-entry>p");
+        assertText(".application-list__item-content-body--journal-entry>p", "content");
+        waitForPresentAndVisibleXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Muokkaa')]");
+        waitForPresentAndVisibleXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Poista')]");
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -105,5 +78,88 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
+  
+  @Test
+  public void deleteCourseJournalEntry() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
 
+      Long courseId = NumberUtils.createLong(workspace.getIdentifier()); 
+      MockCourseStudent courseStudent = new MockCourseStudent(1l, courseId, student.getId());
+      mockBuilder.addCourseStudent(courseId, courseStudent).build();
+      
+      logout();
+      mockBuilder.mockLogin(student);
+      login();
+      try {
+        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
+        selectFinnishLocale();
+        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        addTextToCKEditor("content");
+        sendKeys(".env-dialog__input--new-edit-journal-title", "title");
+        click(".button--dialog-execute");
+        waitForPresent(".application-list__item-header-main-content--journal-entry-title");
+        assertText(".application-list__item-header-main-content--journal-entry-title", "title");
+        waitForPresent(".application-list__item-content-body--journal-entry>p");
+        assertText(".application-list__item-content-body--journal-entry>p", "content");
+        waitAndClickXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Poista')]");
+        waitForPresentAndVisible(".dialog--delete-journal");
+        waitAndClick(".dialog--delete-journal .button--standard-ok");
+        waitForNotVisible(".dialog--delete-journal");
+        assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-content-body--journal-entry>p") == false);
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void editCourseJournalEntry() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+
+      Long courseId = NumberUtils.createLong(workspace.getIdentifier()); 
+      MockCourseStudent courseStudent = new MockCourseStudent(1l, courseId, student.getId());
+      mockBuilder.addCourseStudent(courseId, courseStudent).build();
+      
+      logout();
+      mockBuilder.mockLogin(student);
+      login();
+      try {
+        navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
+        selectFinnishLocale();
+        waitAndClick(".application-panel--workspace-journal .button--primary-function");
+        addTextToCKEditor("content");
+        sendKeys(".env-dialog__input--new-edit-journal-title", "title");
+        click(".button--dialog-execute");
+        waitForPresent(".application-list__item-header-main-content--journal-entry-title");
+        assertText(".application-list__item-header-main-content--journal-entry-title", "title");
+        waitForPresent(".application-list__item-content-body--journal-entry>p");
+        assertText(".application-list__item-content-body--journal-entry>p", "content");
+        waitAndClickXPath("//span[@class='link link--application-list-item-footer' and contains(text(),'Muokkaa')]");
+        addToEndCKEditor(" More text.");
+        click(".button--dialog-execute");
+        waitForNotVisible(".env-dialog__wrapper");
+        waitForPresent(".application-list__item-content-body--journal-entry>p");
+        assertText(".application-list__item-content-body--journal-entry>p", "content More text.");
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
 }

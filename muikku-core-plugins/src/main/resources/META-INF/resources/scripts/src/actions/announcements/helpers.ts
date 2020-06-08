@@ -11,7 +11,7 @@ const MAX_LOADED_AT_ONCE = 30;
 
 export async function loadAnnouncementsHelper(location:string | null, workspaceId: number, notOverrideCurrent: boolean,
     force: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
-  
+
   if (!notOverrideCurrent){
     //Remove the current announcement
     dispatch({
@@ -19,27 +19,27 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
       payload: null
     });
   }
-  
+
   let state = getState();
   let navigation:AnnouncerNavigationItemListType = state.announcements.navigation;
   let announcements:AnnouncementsType = state.announcements;
   let status:StatusType = state.status;
   let actualLocation:string = location || announcements.location;
-  
+
   let isForceDefined = typeof force === "boolean";
   let isForceEnforced = force;
-  
+
   //Avoid loading announcements if it's the same location
   if ((!isForceDefined || !isForceEnforced) && (actualLocation === announcements.location && announcements.state === "READY")){
     return;
   }
-  
+
   //We set this state to loading
   dispatch({
     type: "UPDATE_ANNOUNCEMENTS_STATE",
     payload: <AnnouncementsStateType>"LOADING"
   });
-  
+
   //We get the navigation location item
   let item:AnnouncerNavigationItemType = navigation.find((item)=>{
     return item.location === actualLocation;
@@ -50,7 +50,7 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
       payload: <AnnouncementsStateType>"ERROR"
     });
   }
-  
+
   let params:any = {
     onlyEditable: true,
     hideEnvironmentAnnouncements: !status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT,
@@ -74,11 +74,11 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
       params.timeFrame = "CURRENTANDUPCOMING";
     break;
   }
-  
+
   try {
     let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(params), 'callback')();
     announcements.forEach(a=>a.userGroupEntityIds.forEach(id=>dispatch(loadUserGroupIndex(id))));
-    
+
     //Create the payload for updating all the announcer properties
     let properLocation = location || item.location;
     let payload:AnnouncementsPatchType = {
@@ -89,7 +89,7 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
       selectedIds: [],
       workspaceId: workspaceId || null
     }
-    
+
     //And there it goes
     dispatch({
       type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",

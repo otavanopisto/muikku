@@ -62,7 +62,7 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
         );
       }
     });
-      
+
 
   }
   rotate(){

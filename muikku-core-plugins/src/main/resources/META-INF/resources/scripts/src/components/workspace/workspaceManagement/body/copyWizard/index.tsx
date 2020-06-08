@@ -42,7 +42,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
   private store: CopyWizardStoreType;
   constructor(props: CopyWizardProps){
     super(props);
-    
+
     this.state = {
       store: {
         description: props.workspace.description,
@@ -56,13 +56,13 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       },
       locked: false
     }
-    
+
     this.getStore = this.getStore.bind(this);
     this.updateStore = this.updateStore.bind(this);
     this.checkLastStep = this.checkLastStep.bind(this);
     this.copyWorkspace = this.copyWorkspace.bind(this);
   }
-  
+
   getStore() {
     return this.state.store;
   }
@@ -75,12 +75,12 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       }
     });
   }
-  
+
   copyWorkspace() {
     this.setState({
       locked: true
     });
-    
+
     this.props.copyCurrentWorkspace({
       description: this.state.store.description,
       name: this.state.store.name,
@@ -107,13 +107,13 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
       }
     });
   }
-  
+
   checkLastStep(steps: Array<any>, step: number){
     if (step === steps.length - 1) {
       this.copyWorkspace();
     }
   }
-  
+
   render() {
     const props = {
       getStore: this.getStore,
@@ -131,7 +131,7 @@ class CopyWizard extends React.Component<CopyWizardProps, CopyWizardState> {
        component: <Step1 {...props}/>
      }
     ]
-    
+
     //The reason step 6 is twice is so that the user can review before
     //the action is completed, I guess this stepzilla thing is kind of funny
     steps.push({

@@ -34,17 +34,17 @@ interface MathFieldToolbarState {
 export default class MathFieldToolbar extends React.Component<MathFieldToolbarProps, MathFieldToolbarState> {
   constructor(props: MathFieldToolbarProps){
     super(props);
-    
+
     this.state = {
       isExpanded: false
     }
-    
+
     this.triggerCommandOn = this.triggerCommandOn.bind(this);
     this.toggleIsExpanded = this.toggleIsExpanded.bind(this);
   }
   triggerCommandOn(s: SpecialCharacterType | LatexCommandType, e: React.ChangeEvent<any>){
     e.preventDefault();
-    
+
     if ((s as SpecialCharacterType).character){
       this.props.onCommand({
         latex: (s as SpecialCharacterType).latexCommand || (s as SpecialCharacterType).character,
@@ -54,7 +54,7 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
       });
       return;
     }
-    
+
     this.props.onCommand({
       latex: (s as LatexCommandType).action,
       latexText: (s as LatexCommandType).label || (s as LatexCommandType).action,

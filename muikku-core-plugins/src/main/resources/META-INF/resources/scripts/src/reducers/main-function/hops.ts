@@ -10,7 +10,7 @@ export interface HOPSDataType {
   justTransferCredits: string,    //another disguised number
   transferCreditYears: string,    //disguides number
   completionYears: string,      //disguised number
-  mathSyllabus: "MAA" | "MAB", 
+  mathSyllabus: "MAA" | "MAB",
   finnish: "AI" | "S2",
   swedish: boolean,
   english: boolean,

@@ -7,7 +7,7 @@ interface MaterialLoaderAssesmentProps extends MaterialLoaderProps {
 export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
   const literalAssesment = (props.material.evaluation && props.material.evaluation.verbalAssessment) ||
     (props.compositeReplies && props.compositeReplies.evaluationInfo && props.compositeReplies.evaluationInfo.text);
-  
+
   if (!literalAssesment) {
     return null;
   }

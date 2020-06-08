@@ -199,6 +199,11 @@
     vertical-align: middle;
     width: 35px;
   }
+
+  .link__icon--workspace {
+    background-color: $color-workspace-link-menu-icon-background;
+
+  }
 }
 
 .link--menu__text {
@@ -230,7 +235,27 @@
   }
 }
 
-.link--navigation-dropdown {
+.link--language-picker-dropdown {
+  color: $color-default-contrast;
+  justify-content: flex-start;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-environment-dropdown-link-hover-background;
+    color: $color-default-contrast;
+  }
+
+  .link__icon {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-width: 16px;
+  }
+}
+
+.link--profile-dropdown {
   color: $color-default-contrast;
   justify-content: flex-start;
 

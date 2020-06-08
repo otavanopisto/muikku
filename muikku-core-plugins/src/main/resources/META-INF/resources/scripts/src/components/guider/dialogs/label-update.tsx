@@ -194,10 +194,10 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider" 
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider-edit-label"
      title={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.title')}
      content={content} footer={footer}>{this.props.children}</Dialog>
-  } 
+  }
 }
 
 function mapStateToProps(state: StateType){

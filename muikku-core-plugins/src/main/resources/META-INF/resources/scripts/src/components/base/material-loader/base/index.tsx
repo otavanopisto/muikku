@@ -123,7 +123,7 @@ function preprocessor($html: any): any{
       }
     }
   });
-  
+
   const $newHTML = $html.map(function() {
     if (this.tagName === "TABLE") {
       let elem = document.createElement("div");
@@ -133,15 +133,15 @@ function preprocessor($html: any): any{
     }
     return this;
   });
-  
+
   $newHTML.find("table").each(function(){
     if ($(this).parent().attr("class") === "material-page__table-wrapper") {
       return;
     }
-    
+
     let elem = document.createElement("div");
     elem.className = "material-page__table-wrapper";
-    
+
     $(this).replaceWith(elem);
     elem.appendChild(this);
   });
@@ -202,7 +202,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       this.setState({
         elements,
       });
-      
+
       this.setupEverything(this.props, elements);
     }
   }
@@ -436,7 +436,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           }
         }
       }
-      
+
       if (reprocessFunction) {
         return reprocessFunction(Tag, elementProps, children, element);
       }

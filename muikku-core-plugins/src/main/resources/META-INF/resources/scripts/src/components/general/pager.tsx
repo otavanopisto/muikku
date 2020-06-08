@@ -11,45 +11,45 @@ interface PagerProps {
 }
 
 interface PagerState {
-  
+
 }
 
 export default class Pager extends React.Component<PagerProps, PagerState>{
   render(){
     let left = Math.floor((PAGER_MAX_PAGES-1)/2);
     let right = Math.ceil((PAGER_MAX_PAGES-1)/2);
-    
+
     let leftPage = this.props.current - left;
     let rightPage = this.props.current + right;
-    
+
     if (leftPage < 1){
       rightPage += 1 - leftPage;
       leftPage = 1;
     }
-    
+
     let rightPageExtra = 0;
     if (rightPage > this.props.pages){
       leftPage += this.props.pages - rightPage;
       rightPage = this.props.pages;
     }
-    
+
     if (leftPage < 1){
       leftPage = 1;
     }
-    
+
     let isPagerLessVisible = leftPage !== 1;
     let isPagerMoreVisible = rightPage !== this.props.pages;
-    
+
     let pagerLessNumber = this.props.current - PAGER_MAX_PAGES;
     if (pagerLessNumber < 1){
       pagerLessNumber = 1;
     }
-    
+
     let pagerMoreNumber = this.props.current - PAGER_MAX_PAGES;
     if (pagerMoreNumber > this.props.pages){
       pagerMoreNumber = this.props.pages;
     }
-    
+
     return <div className={`pager ${this.props.modifier ? "pager--" + this.props.modifier : ""}`}>
       <div className="pager__body">
         {isPagerLessVisible ? [<div className="pager__less" onClick={this.props.onClick.bind(null, pagerLessNumber)}/>,

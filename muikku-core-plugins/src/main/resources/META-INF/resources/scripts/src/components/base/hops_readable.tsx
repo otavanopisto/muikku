@@ -51,7 +51,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item-data">
           <span>
-            {this.state.hops.goalSecondarySchoolDegree ? 
+            {this.state.hops.goalSecondarySchoolDegree ?
               this.props.i18n.text.get("plugin.records.hops.goals." + this.state.hops.goalSecondarySchoolDegree) : "-"}
           </span>
         </div>
@@ -62,7 +62,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item-data">
           <span>
-            {this.state.hops.goalMatriculationExam ? 
+            {this.state.hops.goalMatriculationExam ?
               this.props.i18n.text.get("plugin.records.hops.goals." + this.state.hops.goalMatriculationExam) : "-"}
           </span>
         </div>
@@ -71,7 +71,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="application-sub-panel__item-title">
           {this.props.i18n.text.get("plugin.records.hops.goals.vocationalYears1")}
           <span className="application-sub-panel__item-inline-value">
-            {this.state.hops.vocationalYears ? 
+            {this.state.hops.vocationalYears ?
               this.state.hops.vocationalYears: "-"}
           </span>
           {this.props.i18n.text.get("plugin.records.hops.goals.vocationalYears2")}
@@ -87,14 +87,14 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="application-sub-panel__item-title">
           {this.props.i18n.text.get("plugin.records.hops.goals.justTransferCredits1")}
           <span className="application-sub-panel__item-inline-value">
-            {this.state.hops.transferCreditYears ? 
+            {this.state.hops.transferCreditYears ?
               this.state.hops.transferCreditYears : "-"}
           </span>
           {this.props.i18n.text.get("plugin.records.hops.goals.justTransferCredits2")}
         </div>
         <div className="application-sub-panel__item-data">
           <span>
-            {this.state.hops.justTransferCredits ? 
+            {this.state.hops.justTransferCredits ?
               this.props.i18n.text.get("plugin.records.hops.goals." + this.state.hops.justTransferCredits) : "-"}
           </span>
         </div>
@@ -103,7 +103,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="application-sub-panel__item-title">
           {this.props.i18n.text.get("plugin.records.hops.goals.completionYears1")}
           <span className="application-sub-panel__item-inline-value">
-            {this.state.hops.completionYears ? 
+            {this.state.hops.completionYears ?
               this.state.hops.completionYears : "-"}
           </span>
           {this.props.i18n.text.get("plugin.records.hops.goals.completionYears2")}
@@ -175,7 +175,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item-data">
           <span>
-            {this.state.hops.mathSyllabus ? 
+            {this.state.hops.mathSyllabus ?
               this.props.i18n.text.get("plugin.records.hops.mathSyllabus." + this.state.hops.mathSyllabus) : "-"}
           </span>
         </div>
@@ -186,7 +186,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item-data">
           <span>
-            {this.state.hops.science ? 
+            {this.state.hops.science ?
               this.props.i18n.text.get("plugin.records.hops.science." + this.state.hops.science) : "-"}
           </span>
         </div>
@@ -197,7 +197,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
         <div className="application-sub-panel__item-data">
           <span>
-            {this.state.hops.religion ? 
+            {this.state.hops.religion ?
               this.props.i18n.text.get("plugin.records.hops.religion." + this.state.hops.religion) : "-"}
           </span>
         </div>
@@ -232,4 +232,4 @@ function mapDispatchToProps( dispatch: Dispatch<any> ) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( Hops );
+)(Hops);

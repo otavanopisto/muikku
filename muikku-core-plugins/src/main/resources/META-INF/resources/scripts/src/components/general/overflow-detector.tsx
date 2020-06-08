@@ -14,11 +14,11 @@ interface OverflowDetectorState {
 export default class OverflowDetector extends React.Component<OverflowDetectorProps, OverflowDetectorState> {
   constructor(props: OverflowDetectorProps){
     super(props);
-    
+
     this.state = {
       overflown: false
     }
-    
+
     this.checkOverflown = this.checkOverflown.bind(this);
   }
   componentDidMount(){

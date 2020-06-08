@@ -36,7 +36,7 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
        locked: false
     }
   }
-  
+
   componentWillReceiveProps() {
     this.setState({
       username: this.props.credentials.username
@@ -55,30 +55,30 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.empty.username"), "error");
       return;
     }
-    
+
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.passwordsDontMatch"), "error");
       return;
     }
-      
+
     if (newPassword1 == "" || newPassword2 == "") {
       this.props.displayNotification(this.props.i18n.text.get("plugin.forgotpassword.changeCredentials.messages.error.empty.passwords"), "error");
       return;
     }
-    
+
     this.setState({
       locked: true
     });
-    
+
     this.props.updateCredentials(newUserCredentials)
-  } 
- 
+  }
+
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>){
     let nField:any = {};
     nField[field] = e.target.value;
     this.setState(nField);
   }
-  
+
   render(){
     const credentialsContent =  this.props.credentials.state == "READY" ? <div className="form form--forgot-password">
     <div className="form-row">
@@ -110,8 +110,8 @@ class ReturnCredentials extends React.Component<ReturnCredentialsProps, ReturnCr
                <LoginButton />
              </div>
            </div>;
-      
-      
+
+
     return (
       <Panel>
         {credentialsContent}
