@@ -638,6 +638,7 @@
   display: inline-flex;
   height: 1rem;
   justify-content: center;
+  min-width: 1rem;
   width: 1rem;
 
   &:checked {
@@ -709,6 +710,7 @@
   display: inline-flex;
   height: 1rem;
   justify-content: center;
+  min-width: 1rem;
   width: 1rem;
 
   &:checked {
