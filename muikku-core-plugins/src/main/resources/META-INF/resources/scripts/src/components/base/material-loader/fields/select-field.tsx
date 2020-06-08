@@ -205,7 +205,7 @@ export default class SelectField extends React.Component<SelectFieldProps, Selec
           value={this.state.value} onChange={this.onSelectChange} disabled={this.props.readOnly}>
           {this.props.content.listType === "dropdown" ? <option value=""/> : null}
           {this.props.content.options.map(o=>{
-            return <option className="material-page__selectfield-item-container" key={o.name} value={o.name}><StrMathJAX>{o.text}</StrMathJAX></option>
+            return <option className="material-page__selectfield-item-container" key={o.name} value={o.name}>{o.text}</option>
           })}
         </select>
         {correctAnswersummaryComponent}
