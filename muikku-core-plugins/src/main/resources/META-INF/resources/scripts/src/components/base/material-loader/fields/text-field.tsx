@@ -214,7 +214,7 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     };
 
     const objectStyle = {
-      'box-sizing': 'border-box'
+      'box-sizing': 'content-box'
     };
 
     //The state of the whole field
