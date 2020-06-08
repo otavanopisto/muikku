@@ -20,10 +20,14 @@ public class EvaluationResourcePermissionCollection extends AbstractMuikkuPermis
    * Evaluation view
    */
 
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDY_GUIDER })
+  public static final String EVALUATION_VIEW = "EVALUATION_VIEW";
+
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDY_GUIDER })
   @DefaultWorkspacePermissionRoles({WorkspaceRoleArchetype.TEACHER})
-  public static final String EVALUATION_VIEW_INDEX = "EVALUATION_VIEW_INDEX";
+  public static final String EVALUATION_VIEW_WORKSPACE = "EVALUATION_VIEW_WORKSPACE";
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles({EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })

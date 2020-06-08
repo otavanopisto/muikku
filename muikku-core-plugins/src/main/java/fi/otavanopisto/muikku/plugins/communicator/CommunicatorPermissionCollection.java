@@ -22,6 +22,15 @@ public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCo
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER })
   public static final String COMMUNICATOR_GROUP_MESSAGING = "COMMUNICATOR_GROUP_MESSAGING";
+
+  /**
+   * COMMUNICATOR_WORKSPACE_MESSAGING_ENV - environment level permission for workspace messaging.
+   * Use for generic checking of whether the user may have permission to send messages to workspaces,
+   * use COMMUNICATOR_WORKSPACE_MESSAGING with workspace for permission for particular workspace.
+   */
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER })
+  public static final String COMMUNICATOR_WORKSPACE_MESSAGING_ENV = "COMMUNICATOR_WORKSPACE_MESSAGING_ENV";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles ({ WorkspaceRoleArchetype.TEACHER })

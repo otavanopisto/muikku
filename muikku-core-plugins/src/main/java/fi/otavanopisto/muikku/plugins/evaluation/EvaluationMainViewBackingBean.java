@@ -66,12 +66,12 @@ public class EvaluationMainViewBackingBean {
     }
     
     if (workspaceEntity == null) {
-      if (!sessionController.hasEnvironmentPermission(EvaluationResourcePermissionCollection.EVALUATION_VIEW_INDEX)) {
+      if (!sessionController.hasEnvironmentPermission(EvaluationResourcePermissionCollection.EVALUATION_VIEW)) {
         return NavigationRules.ACCESS_DENIED; 
       }
     }
     else {
-      if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_VIEW_INDEX, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_VIEW_WORKSPACE, workspaceEntity)) {
         return NavigationRules.ACCESS_DENIED; 
       }
     }

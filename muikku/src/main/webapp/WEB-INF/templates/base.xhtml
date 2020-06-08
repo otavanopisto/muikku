@@ -38,14 +38,14 @@
       FORUM_ACCESSENVIRONMENTFORUM: #{sessionBackingBean.canAccessEnvironmentForum},
       GUIDER_VIEW: #{sessionBackingBean.hasEnvironmentPermission('GUIDER_VIEW')},
       TRANSCRIPT_OF_RECORDS_VIEW: #{sessionBackingBean.hasEnvironmentPermission('TRANSCRIPT_OF_RECORDS_VIEW')},
-      EVALUATION_VIEW_INDEX: #{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')},
+      EVALUATION_VIEW_INDEX: #{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW')},
       ANNOUNCER_TOOL: #{sessionBackingBean.hasEnvironmentPermission('ANNOUNCER_TOOL')},
       ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
       ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
       ANNOUNCER_CAN_PUBLISH_GROUPS: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
 
       COMMUNICATOR_GROUP_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')},
-      COMMUNICATOR_WORKSPACE_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_WORKSPACE_MESSAGING')},
+      COMMUNICATOR_WORKSPACE_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_WORKSPACE_MESSAGING_ENV')},
 
       AREA_PERMISSIONS: #{sessionBackingBean.areaPermissions},
       FORUM_LOCK_STICKY_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_LOCK_OR_STICKIFY_MESSAGES')},
