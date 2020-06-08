@@ -69,6 +69,7 @@
   max-width: 100%;
   min-height: 150px;
   padding: 0;
+  position: relative;
 
   @include breakpoint($breakpoint-pad) {
     min-height: 196px;

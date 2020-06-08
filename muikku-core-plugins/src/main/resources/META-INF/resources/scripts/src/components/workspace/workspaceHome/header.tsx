@@ -40,7 +40,6 @@ return <header className="hero hero--workspace">
           <div className="hero__workspace-name-extension"><span>{this.props.workspace.nameExtension}</span></div> : null}
         {this.props.workspace && this.props.workspace.additionalInfo && this.props.workspace.additionalInfo.educationType ?
           <div className="hero__workspace-education-type"><span>{this.props.workspace.additionalInfo.educationType.name}</span></div> : null}
-        {/*{this.props.workspace && this.props.workspace.studentActivity  ? <ProgressData i18n={this.props.i18n} activity={this.props.workspace.studentActivity}/> : null} */}
       </div>
       <div className="meta meta--workspace">
         <div className="meta__item">
@@ -71,8 +70,11 @@ return <header className="hero hero--workspace">
             </span>
           </div>
         : null}
-        {
-      }
+        {this.props.workspace && this.props.workspace.studentActivity ?
+          <div className="meta__item meta__item--progress-data">
+            <ProgressData title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
+          </div>
+        : null}
       </div>
     </header>
   }
