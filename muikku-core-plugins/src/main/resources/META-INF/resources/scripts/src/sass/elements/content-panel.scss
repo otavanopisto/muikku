@@ -35,21 +35,20 @@
 
   @include breakpoint($breakpoint-pad) {
     align-items: center;
-    background-color: $color-default-body;
     display: flex;
     flex-basis: auto;
+    flex-flow: row nowrap;
     flex-grow: 0;
     flex-shrink: 0;
     justify-content: center;
     margin: 10px;
-    max-width: calc($breakpoint-max-usable-screen - 20px);
     position: relative;
     width: calc(100% - 20px);
   }
 }
 
 .content-panel__header-title {
-  flex-basis: auto;
+  flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
   font-size: 1.5rem;
@@ -60,6 +59,25 @@
 
   @include breakpoint($breakpoint-pad) {
     height: $panel-header-title-height-desktop;
+  }
+}
+
+.content-panel__aside {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 10px;
+
+  @include breakpoint($breakpoint-desktop) {
+    justify-self: flex-end;
+    margin: -35px 10px 10px auto;
+    max-width: 300px;
+    min-width: 250px;
+    // scss-lint:disable VendorPrefix
+    position: -webkit-sticky; // Safari 7-12 support
+    // scss-lint:enable VendorPrefix
+    position: sticky;
+    top: calc(#{$navbar-desktop-height} * 1.25 + (1 * #{$panel-header-title-margin}));
   }
 }
 
@@ -123,6 +141,9 @@
     flex-shrink: 1;
     height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop}));
     margin: 0;
+    // scss-lint:disable VendorPrefix
+    position: -webkit-sticky; // Safari 7-12 support
+    // scss-lint:enable VendorPrefix
     position: sticky;
     top: calc(#{$navbar-desktop-height} * 1.25 + (2 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop});
     z-index: 99;
