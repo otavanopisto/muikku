@@ -857,6 +857,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
   
+  protected void waitForValue(String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          String value = getAttributeValue(selector, "value");
+          if (!value.isEmpty()) {
+            return true;
+          }
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected void clickOnBullshitElement(String selector) {
     Actions action = new Actions(getWebDriver());
     action.moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().build().perform();

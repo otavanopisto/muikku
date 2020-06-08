@@ -78,7 +78,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           sleep(500);
           
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".file-uploader__item-title");
           assertTextIgnoreCase(".file-uploader__item-title", testFile.getName());
           
           waitForPresent(".file-uploader__item-delete-icon");
@@ -361,18 +360,18 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__textfield");
         selectFinnishLocale();
-        assertVisible(".material-page__textfield");
-        assertValue(".material-page__textfield", "");
-        waitAndSendKeys(".material-page__textfield", "field value");
+        selectFinnishLocale();
+        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
         waitAndClick(".button--muikku-check-exercises");
         waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
         assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
-        assertValue(".material-page__textfield", "field value");
-//        TODO: This bugs every time on full suite run. So... What?
-//        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-//        waitForPresent(".material-page__textfield");
-//        sleep(1000);
-//        assertValue(".material-page__textfield", "field value");
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+        waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -409,8 +408,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+    MockCourseStudent courseStudent = new MockCourseStudent(1l, course1.getId(), student.getId());
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .addCourseStudent(course1.getId(), courseStudent)
       .build();
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -424,19 +425,18 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           mockBuilder.mockLogin(student);
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__textfield");
           selectFinnishLocale();
-          assertVisible(".material-page__textfield");
-          assertValue(".material-page__textfield", "");
-          waitAndSendKeys(".material-page__textfield", "field value");
+          waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+          assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
+          waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+          waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
           waitAndClick(".button--muikku-check-exercises");
           waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
           assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
-//        TODO: This bugs every time on full suite run. So... What?
-//          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-//          waitForPresent(".material-page__textfield");
-//          sleep(1000);
-//          assertValue(".material-page__textfield", "field value");
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+          waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
+          assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -827,27 +827,27 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__connectfield-wrapper");
         scrollIntoView(".material-page__connectfield-wrapper");
-        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");                    
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
             "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]");
         
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
             "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Hampurilainen')]");
 
         waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::div[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
+        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
             "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
         
         waitAndClick(".button--muikku-check-exercises");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div/parent::div", "correct-answer");
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::div/parent::div", "incorrect-answer");
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::div/parent::div", "incorrect-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::span/parent::span", "incorrect-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::span/parent::span", "incorrect-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -901,11 +901,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__connectfield-wrapper");
         scrollIntoView(".material-page__connectfield-wrapper");
-        dragAndDropXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]", "//div[@class='material-page__connectfield-counterparts-container']/div[1]", 10, 10);
+        dragAndDropXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]", "//span[@class='material-page__connectfield-counterparts-container']/span[1]", 10, 10);
         waitAndClick(".button--muikku-check-exercises");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::div/parent::div", "correct-answer");
+        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -1236,7 +1236,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           click(".button-pill--editing-master-switch");
           waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC0");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
@@ -1298,14 +1298,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           click(".button-pill--editing-master-switch");
           waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC4");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
           waitForPresent(".material-page__metadata-container .material-page__license-item");
-          assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by/4.0");
+          assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by-nc-sa/4.0");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         }
@@ -1360,14 +1360,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           click(".button-pill--editing-master-switch");
           waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC3");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
           waitForPresent(".material-page__metadata-container .material-page__license-item");
-          assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by/3.0");
+          assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "https://creativecommons.org/licenses/by-nc-sa/3.0");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         }
@@ -1422,7 +1422,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           click(".button-pill--editing-master-switch");
           waitForClickable(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           click(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab  tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "text_or_link");
           waitForPresentAndVisible(".license-selector .form-element__input--material-editor");
@@ -1430,8 +1430,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
-          waitForPresent(".material-page__metadata-container .material-page__license-item");
-          assertTextIgnoreCase(".material-page__metadata-container .material-page__license-item", "www.test.com");
+          waitForPresent(".material-page__metadata-container .material-page__license span");
+          assertTextIgnoreCase(".material-page__metadata-container .material-page__license span", "www.test.com");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
         }
