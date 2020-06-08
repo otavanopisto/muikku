@@ -2214,12 +2214,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build(); 
     }
     
-    // #5013: Race condition with field save websocket messages might mean this user already has a reply for this page
     fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply =
-        workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, loggedUser);
-    if (workspaceMaterialReply == null) {
-      workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser);
-    }
+        workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser);
     
     return Response.ok(createRestModel(workspaceMaterialReply)).build();
   }
