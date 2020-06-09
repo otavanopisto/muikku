@@ -486,8 +486,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
         selectOption(".material-page__selectfield", "2");
-//      TODO: Replace when save indicator is implemented.
-        sleep(1500);
+        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
         assertSelectedOption(".material-page__selectfield", "dos");
@@ -545,8 +545,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__selectfield");
           selectOption(".material-page__selectfield", "2");
-//        TODO: Replace when save indicator is implemented.
-          sleep(1500);
+          waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__selectfield");
           assertSelectedOption(".material-page__selectfield", "dos");
@@ -600,7 +599,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__radiobutton-items-wrapper");
         waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
-        sleep(1500);
+        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__radiobutton-items-wrapper");
         assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
@@ -656,7 +655,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__radiobutton-items-wrapper");
           waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
-          sleep(1500);
+          waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__radiobutton-items-wrapper");
           assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
@@ -709,9 +708,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitAndClickXPath("//input[@type='checkbox' and @value='1']");
-        //      TODO: That saved indicator stuff
-        sleep(1500);
-//        waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
+        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForClickableXPath("//input[@type='checkbox' and @value='1']");
         assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
@@ -763,9 +760,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitAndClickXPath("//input[@type='checkbox' and @value='1']");
-          //      TODO: That saved indicator stuff
-          sleep(1500);
-//          waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
+          waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForClickableXPath("//input[@type='checkbox' and @value='1']");
           assertCheckedXPath("//input[@type='checkbox' and @value='1']", true);
@@ -841,7 +836,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[@class='material-page__connectfield-term material-page__connectfield-term--selected \n" + 
             "                  ']");
         waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
-        
+//        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-check-exercises");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
@@ -902,6 +897,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(".material-page__connectfield-wrapper");
         scrollIntoView(".material-page__connectfield-wrapper");
         dragAndDropXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]", "//span[@class='material-page__connectfield-counterparts-container']/span[1]", 10, 10);
+//        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-check-exercises");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
