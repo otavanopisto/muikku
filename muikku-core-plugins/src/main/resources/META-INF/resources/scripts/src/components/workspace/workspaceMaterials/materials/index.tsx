@@ -412,7 +412,7 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
     });
 
     let progressData = this.props.workspace && this.props.workspace.studentActivity ?
-      <ProgressData title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
+      <ProgressData modifier="workspace-materials" title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
     : null;
 
     return <ContentPanel aside={progressData} onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
