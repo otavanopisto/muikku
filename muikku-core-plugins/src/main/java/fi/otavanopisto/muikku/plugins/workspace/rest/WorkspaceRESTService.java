@@ -2179,12 +2179,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   @POST
-  // @Path ("/workspaces/{WORKSPACEENTITYID:[0-9]*}/materials/{WORKSPACEMATERIALID:[0-9]*}/replies")
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply payload) {
-    // TODO: Security!
-    
     if (payload == null) {
       return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build(); 
     }
@@ -2217,18 +2214,16 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build(); 
     }
     
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser);
+    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply =
+        workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser);
     
     return Response.ok(createRestModel(workspaceMaterialReply)).build();
   }
   
   @PUT
-  // @Path ("/workspaces/{WORKSPACEENTITYID:[0-9]*}/materials/{WORKSPACEMATERIALID:[0-9]*}/replies/{REPLYID:[0-9]*}")
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies/{REPLYID}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam ("REPLYID") Long workspaceMaterialReplyId, WorkspaceMaterialReply payload) {
-    // TODO: Security!
-    
     if (payload == null) {
       return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build(); 
     }

@@ -67,7 +67,6 @@ public class SaveFieldAnswerWebSocketMessageHandler {
   
   public void handleMessage(@Observes @MuikkuWebSocketEvent("workspace:field-answer-save") WebSocketMessageEvent event) {
     // TODO: Localize error messages
-    
     WebSocketMessage webSocketMessage = event.getMessage();
     
     ObjectMapper mapper = new ObjectMapper();
@@ -136,8 +135,9 @@ public class SaveFieldAnswerWebSocketMessageHandler {
       
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
       if (reply == null) {
-        reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.ANSWERED, userEntity, 1l, now, now);
-      } else {
+        reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.ANSWERED, userEntity);
+      }
+      else {
         workspaceMaterialReplyController.incWorkspaceMaterialReplyTries(reply);
       }
       

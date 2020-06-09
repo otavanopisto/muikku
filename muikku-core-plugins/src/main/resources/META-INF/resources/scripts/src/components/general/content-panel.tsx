@@ -8,6 +8,7 @@ interface ContentPanelProps {
   modifier: string,
   title?: React.ReactElement<any> | string,
   navigation?: React.ReactElement<any>,
+  aside?: React.ReactElement<any>,
   onOpenNavigation?: ()=>any
 }
 
@@ -128,10 +129,10 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
     return (
     <div className={`content-panel content-panel--${this.props.modifier}`} ref="panel">
       <div className="content-panel__container">
-
         <div className="content-panel__header">
           <h1 className="content-panel__header-title">{this.props.title}</h1>
         </div>
+        {this.props.aside ? <div className="content-panel__aside">{this.props.aside}</div> : null}
 
         <div className="content-panel__body" ref="body">
           <div className="content-panel__content">

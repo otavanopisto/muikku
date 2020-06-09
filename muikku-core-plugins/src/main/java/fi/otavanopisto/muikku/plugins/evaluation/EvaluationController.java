@@ -112,10 +112,7 @@ public class EvaluationController {
         verbalAssessment);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
     WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
-    if (reply == null) {
-      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, state, student);
-    }
-    else {
+    if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
     
@@ -213,9 +210,7 @@ public class EvaluationController {
     
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
     WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
-    if (reply == null) {
-      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, state, student);
-    } else {
+    if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
     
@@ -334,10 +329,7 @@ public class EvaluationController {
       WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
       if (student != null && workspaceMaterial != null) {
         WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-        if (reply == null) {
-          workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.INCOMPLETE, student);
-        }
-        else {
+        if (reply != null) {
           workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
         }
       }
