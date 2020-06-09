@@ -27,7 +27,7 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class CourseMaterialsPageTestsBase extends AbstractUITest {
 
-  @Test
+//  @Test
   @TestEnvironments (
     browsers = {
       TestEnvironments.Browser.CHROME,
