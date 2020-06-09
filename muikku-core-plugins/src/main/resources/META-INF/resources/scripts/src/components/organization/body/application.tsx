@@ -47,7 +47,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
 
         // This "Mode" could be just changed to "userData" and the dialog just gets by that the mode is "edit". But that belongs to the user edit issue.
 
-        let usersPrimaryAction = <UserDialog mode="CREATE"><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
+        let usersPrimaryAction = <UserDialog><ButtonPill buttonModifiers="organization" icon="plus" /></UserDialog>;
         let coursesPrimaryAction = <WorkspaceDialog><ButtonPill buttonModifiers="organization" icon="plus" /></WorkspaceDialog>;
         let coursesToolbar = <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>

@@ -9,14 +9,14 @@ import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import { StatusType } from '~/reducers/base/status';
 import {bindActionCreators} from 'redux';
-import { StudyprogrammeTypes, } from '~/reducers/main-function/users';
+import { StudyprogrammeTypes, UserUpdateType, } from '~/reducers/main-function/users';
 import { ManipulateType } from '~/reducers/user-index';
 
 interface OrganizationUserProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   status: StatusType,
-  mode: ManipulateType,
+  data? : UserUpdateType,
   studyprogrammes: StudyprogrammeTypes;
   applyStudent: ApplyStudentTriggerType,
   applyStaffmember: ApplyStaffmemberTriggerType
@@ -68,7 +68,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
   }
 
   saveUser(closeDialog: ()=>any) {
-    const mode = this.props.mode;
+    const mode = this.props.data? "UPDATE" : "CREATE";
     let valid = true;
 
     if (this.state.user.firstName == "" || this.state.user.firstName == undefined) {
@@ -105,7 +105,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         }
 
         this.props.applyStudent({
-          mode : this.props.mode,
+          mode : mode,
           student: data,
           success: () => {
             closeDialog();
@@ -132,7 +132,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         }
 
         this.props.applyStaffmember({
-          mode : this.props.mode,
+          mode : mode,
           staffmember: data,
           success: () => {
             this.setState({
@@ -162,9 +162,9 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
             <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
             <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
           </SelectFormElement>
-          <InputFormElement name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
-          <InputFormElement name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
-          <EmailFormElement modifiers="new-user" valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
+          <InputFormElement value={this.props.data? this.props.data.firstName : ""} name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement value={this.props.data? this.props.data.lastName : ""} name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
+          <EmailFormElement value={this.props.data? this.props.data.email : ""} modifiers="new-user" valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
         {this.state.user.role == "STUDENT" ?
         <DialogRow modifiers="new-user">
@@ -172,7 +172,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           <SelectFormElement valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
             <option value="">{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme.emptyOption')}</option>
             {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme)=>{
-                return <option key={studyprogramme.identifier} value={studyprogramme.identifier}>{studyprogramme.name}</option>
+                return <option key={studyprogramme.identifier} value={studyprogramme.identifier} {...this.props.data ? this.props.data.studyProgrammeIdentifier === studyprogramme.identifier ? "selected" : null : null}>{studyprogramme.name}</option>
               })
             }
           </SelectFormElement>

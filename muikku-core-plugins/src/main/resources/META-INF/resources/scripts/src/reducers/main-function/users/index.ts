@@ -15,6 +15,15 @@ export interface StudyprogrammeType {
   name: string
 }
 
+export interface UserUpdateType {
+  firstName: string,
+  lastName: string,
+  email: string,
+  role: string,
+  ssn?: string,
+  studyProgrammeIdentifier?: string
+}
+
 export interface UsersType {
   students: UsersListType ,
   staff: UsersListType
