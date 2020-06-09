@@ -5,6 +5,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { WorkspaceType, MaterialContentNodeListType, MaterialContentNodeType, MaterialCompositeRepliesListType, WorkspaceEditModeStateType } from "~/reducers/workspaces";
 
 import ContentPanel, { ContentPanelItem } from '~/components/general/content-panel';
+import ProgressData from '../../progressData';
 
 import WorkspaceMaterial from './material';
 import { ButtonPill } from "~/components/general/button";
@@ -410,7 +411,11 @@ class WorkspaceMaterials extends React.Component<WorkspaceMaterialsProps, Worksp
       </section>);
     });
 
-    return <ContentPanel onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
+    let progressData = this.props.workspace && this.props.workspace.studentActivity ?
+      <ProgressData title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
+    : null;
+
+    return <ContentPanel aside={progressData} onOpenNavigation={this.onOpenNavigation} modifier="materials" navigation={this.props.navigation} title={this.props.i18n.text.get("plugin.workspace.materials.pageTitle")} ref="content-panel">
       {results}
       {emptyMessage}
       {createSectionElementWhenEmpty}

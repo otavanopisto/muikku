@@ -68,7 +68,6 @@ if (loadOrganizationWorkspaces === true) {
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
-  let search = actualFilters.query;
   let myWorkspaces = false;
   let includeUnpublished = false;
 
@@ -161,8 +160,6 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId:number | n
   //  return;
   //}
 
-  let actualUserEntityId = userEntityId || currentWorkspace.journals && currentWorkspace.journals.userEntityId || null;
-
   let journalNextstate:WorkspacesStateType;
   //If it's for the first time
   if (initial){
@@ -173,13 +170,14 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId:number | n
     journalNextstate = "LOADING_MORE";
   }
 
+  const currentJournals = currentWorkspace.journals ? currentWorkspace.journals.journals : [];
   dispatch({
     type: "UPDATE_WORKSPACE",
     payload: {
       original: currentWorkspace,
       update: {
         journals: {
-          journals: currentWorkspace.journals ? currentWorkspace.journals.journals : [],
+          journals: currentJournals,
           hasMore: (currentWorkspace.journals && currentWorkspace.journals.hasMore) || false,
           userEntityId,
           state: journalNextstate
@@ -206,7 +204,8 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId:number | n
     //update current workspace again in case
     currentWorkspace = getState().workspaces.currentWorkspace;
 
-    let hasMore:boolean = journals.length === MAX_LOADED_AT_ONCE + 1;
+    let concat = !initial;
+    let hasMore:boolean = journals.length === MAX_JOURNAL_LOADED_AT_ONCE + 1;
 
     let actualJournals = journals.concat([]);
     if (hasMore){
@@ -220,7 +219,7 @@ export async function loadCurrentWorkspaceJournalsHelper(userEntityId:number | n
         original: currentWorkspace,
         update: {
           journals: {
-            journals: actualJournals,
+            journals: concat ? currentJournals.concat(actualJournals) : actualJournals,
             hasMore,
             userEntityId,
             state: <WorkspacesStateType>"READY"

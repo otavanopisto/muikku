@@ -182,7 +182,6 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     const isEditable = this.props.workspaceEditMode.active;
 
     return <Toc tocTitle={this.props.i18n.text.get("plugin.workspace.materials.tocTitle")}>
-      {/*{this.props.workspace ? <ProgressData activity={this.props.workspace.studentActivity} i18n={this.props.i18n}/> : null}*/}
       {this.state.materials.map((node, nodeIndex)=>{
         const isSectionViewRestricted = (node.viewRestrict === "LOGGED_IN" && !this.props.isLoggedIn);
         const isSectionViewRestrictedVisible = node.viewRestrict === "LOGGED_IN" && !this.props.isStudent;
