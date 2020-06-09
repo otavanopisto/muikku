@@ -205,12 +205,13 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     }
 
     // Lets calculate textfield width based on textfield size option.
-    // If no option size has been set then we use 100 as a default value.
+    // If no option size has been set then we use 50 as a default value.
     // This sets baseline width for normal textfields and autogrow textfields so they appear at same width when they have same size set.
-    const textfieldWidth = this.props.content.columns && parseInt(this.props.content.columns) ? parseInt(this.props.content.columns) * 10 : 100
+    const textfieldWidth = this.props.content.columns && parseInt(this.props.content.columns) ? parseInt(this.props.content.columns) * 10 : 50
 
     const textfieldStyle = {
-      width: textfieldWidth
+      'width': textfieldWidth,
+      'box-sizing': 'content-box'
     };
 
     const doNotInjectStyles = {
@@ -223,7 +224,7 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     };
 
     const objectStyle = {
-      'box-sizing': 'border-box'
+      'box-sizing': 'content-box'
     };
 
     // The state of the whole field
