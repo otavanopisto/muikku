@@ -182,9 +182,9 @@ export default class TextField extends React.Component<TextFieldProps, TextField
 
     if (this.props.invisible){
       return <span ref="base" className="material-page__textfield-wrapper">
-        <div className="material-page__textfield">
+        <span className="material-page__textfield">
           <input readOnly/>
-        </div>
+        </span>
         {correctAnswersummaryComponent}
       </span>
     }
@@ -198,15 +198,24 @@ export default class TextField extends React.Component<TextFieldProps, TextField
         delete newProps.minWidth;
         delete newProps.className;
         delete newProps.style;
-        return <div className={props.className} style={props.style}>
+        return <span className={props.className} style={props.style}>
           <input {...newProps}/>
-        </div>
+        </span>
       }
     }
 
+    // Lets calculate textfield width based on textfield size option.
+    // If no option size has been set then we use 100 as a default value.
+    // This sets baseline width for normal textfields and autogrow textfields so they appear at same width when they have same size set.
+    const textfieldWidth = this.props.content.columns && parseInt(this.props.content.columns) ? parseInt(this.props.content.columns) * 10 : 100
+
+    const textfieldStyle = {
+      width: textfieldWidth
+    };
+
     const doNotInjectStyles = {
       injectStyles: false,
-      minWidth: this.props.content.columns && parseInt(this.props.content.columns) ? parseInt(this.props.content.columns) * 9 : 200,
+      minWidth: textfieldWidth,
     } as any;
 
     const wrapperStyle = {
@@ -214,23 +223,23 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     };
 
     const objectStyle = {
-      'box-sizing': 'content-box'
+      'box-sizing': 'border-box'
     };
 
-    //The state of the whole field
+    // The state of the whole field
     let fieldStateAfterCheck = this.state.answerState !== "UNKNOWN" && this.props.displayCorrectAnswers && this.props.checkAnswers ?
         (this.state.answerState === "FAIL" ? "incorrect-answer" : "correct-answer") : "";
 
+    // Read only version
     if (this.props.readOnly){
       const component =
         this.props.content.autogrow ?
           <AutosizeInput style={wrapperStyle} inputStyle={objectStyle} {...doNotInjectStyles} readOnly className={`material-page__textfield ${fieldStateAfterCheck}`} type="text" value={this.state.value}
            size={this.props.content.columns && parseInt(this.props.content.columns)}/> :
-          <div className={`material-page__textfield ${fieldStateAfterCheck}`}>
+          <span className={`material-page__textfield ${fieldStateAfterCheck}`}>
             <input type="text" value={this.state.value} readOnly
-              size={this.props.content.columns && parseInt(this.props.content.columns)}/>
-          </div>;
-      //Read only version
+              size={this.props.content.columns && parseInt(this.props.content.columns)} style={textfieldStyle}/>
+          </span>;
       return <span className="material-page__textfield-wrapper">
         {component}
         {correctAnswersummaryComponent}
@@ -252,14 +261,15 @@ export default class TextField extends React.Component<TextFieldProps, TextField
         onChange={this.onInputChange}
       />
     } else {
-      component = <div className={`material-page__textfield ${fieldStateAfterCheck}`}>
+      component = <span className={`material-page__textfield ${fieldStateAfterCheck}`}>
         <input
           type="text"
           value={this.state.value}
           size={this.props.content.columns && parseInt(this.props.content.columns)}
           placeholder={this.props.content.hint}
+          style={textfieldStyle}
           onChange={this.onInputChange}/>
-      </div>
+      </span>
     }
 
     //Standard modifiable version
