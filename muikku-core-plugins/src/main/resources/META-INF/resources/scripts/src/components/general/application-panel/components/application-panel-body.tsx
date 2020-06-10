@@ -180,7 +180,7 @@ export default class ApplicationPanelBody extends React.Component<ApplicationPan
              right: this.state.extraPaddingRight
            } : null}>
           {this.props.primaryOption ? <div className={`application-panel__helper-container application-panel__helper-container--main-action ${this.props.modifier ? "application-panel__helper-container--" + this.props.modifier : ""}`}>{this.props.primaryOption}</div> : null}
-          {this.props.toolbar ? <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div> : null}
+          {this.props.toolbar ? <div className={`application-panel__main-container application-panel__main-container--actions ${this.props.modifier ? "application-panel__main-container--" + this.props.modifier : ""}`}>{this.props.toolbar}</div> : null}
         </div>
         <div className="application-panel__content" style={this.state.sticky ? {paddingLeft: this.state.asideBeforeWidth} : null}>
           {this.props.asideBefore ? <div className="application-panel__helper-container" ref="asideBefore" style={{
