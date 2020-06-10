@@ -858,6 +858,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
   
+  protected void waitForValue(String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          String value = getAttributeValue(selector, "value");
+          if (!value.isEmpty()) {
+            return true;
+          }
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected void clickOnBullshitElement(String selector) {
     Actions action = new Actions(getWebDriver());
     action.moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().build().perform();
@@ -901,7 +917,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void assertClassPresent(String selector, String className) {
-    waitForPresent(selector + "." + className);
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     String[] classes = StringUtils.split(element.getAttribute("class"), " ");
     assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));
