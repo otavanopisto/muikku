@@ -1,4 +1,5 @@
 import WorkspaceNavbar from '~/components/base/workspace/navbar';
+import HoverButton from '~/components/general/hover-button';
 import ScreenContainer from '~/components/general/screen-container';
 import Application from './body/application';
 import Aside from './body/aside';
@@ -29,6 +30,7 @@ export default class WorkspaceJournalBody extends React.Component<WorkspaceJourn
     return (<div>
       <WorkspaceNavbar activeTrail="journal" workspaceUrl={this.props.workspaceUrl}/>
       <Application aside={aside}/>
+
     </div>);
   }
 }
