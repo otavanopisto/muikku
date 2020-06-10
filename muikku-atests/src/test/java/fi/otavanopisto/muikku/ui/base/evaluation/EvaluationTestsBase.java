@@ -84,12 +84,12 @@ public class EvaluationTestsBase extends AbstractUITest {
         login();
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+          waitForPresent(".material-page__textfield");
+          selectFinnishLocale();
+          assertVisible(".material-page__textfield");
+          assertValue(".material-page__textfield", "");
+          waitAndSendKeys(".material-page__textfield", "field value");
           
-          assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-          assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-          assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-          sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
           waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
           waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
           waitForPresentAndVisible(".notification-queue-item-success");
@@ -103,7 +103,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           addTextToCKEditor("Test evaluation.");
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
-          click(".save-evaluation-button");
+          waitAndClick(".save-evaluation-button");
           waitForPresentAndVisible(".evaluation-assignment-wrapper");
           assertClassPresent(".evaluation-assignment-wrapper", "assignment-evaluated");
           waitAndClick(".assignment-submitted");
@@ -201,7 +201,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           addTextToCKEditor("Test evaluation.");
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
-          click(".save-evaluation-button");
+          waitAndClick(".save-evaluation-button");
           waitForPresentAndVisible(".evaluation-assignment-wrapper");
           assertClassPresent(".evaluation-assignment-wrapper", "assignment-evaluated");
           
@@ -217,7 +217,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           addTextToCKEditor("Test evaluation in re-evaluation.");
           selectOption("#grade", "2/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
-          click(".save-evaluation-button");
+          waitAndClick(".save-evaluation-button");
           waitForPresentAndVisible(".evaluation-assignment-wrapper");
           waitAndClick(".assignment-submitted");
           waitForPresent("#grade");
@@ -329,7 +329,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           sendKeys("#evaluationDate", "2.12.2015");
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
-          click(".save-evaluation-button");
+          waitAndClick(".save-evaluation-button");
           waitForPresent(".notification-queue-item-success");
           
   //        There's no JSONComparator that allows different values. And since dev machine and travis testing gives different dates we can not test requestBody with CourseAssessment model.
