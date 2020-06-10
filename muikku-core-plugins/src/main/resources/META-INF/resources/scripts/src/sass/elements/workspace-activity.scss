@@ -17,7 +17,8 @@
   padding: 10px 0 0;
 }
 
-.workspace-activity--workspace {
+.workspace-activity--workspace-home,
+.workspace-activity--workspace-materials {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
@@ -29,8 +30,15 @@
 }
 
 .workspace-activity__title {
-  padding: 0 10px 0 0;
-  text-decoration: uppercase;
+  font-weight: 300;
+  padding: 0 5px;
+  text-transform: uppercase;
+}
+
+.workspace-activity__title--workspace-materials {
+  font-weight: 400;
+  padding: 0 5px 0 0;
+  text-transform: none;
 }
 
 .workspace-activity__content {
