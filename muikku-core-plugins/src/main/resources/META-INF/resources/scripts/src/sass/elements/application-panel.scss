@@ -221,6 +221,11 @@
   padding: 8px;
   z-index: 1;
 
+  @include breakpoint($breakpoint-pad) {
+    height: $navbar-desktop-height;
+    padding: 12px;
+  }
+
 }
 
 // Main containers
@@ -255,10 +260,9 @@
 
 .application-panel__main-container--workspace-journal {
   display: none;
-  
-  @include breakpoint($breakpoint-pad) {
-   display: block;
 
+  @include breakpoint($breakpoint-pad) {
+    display: block;
   }
 }
 
