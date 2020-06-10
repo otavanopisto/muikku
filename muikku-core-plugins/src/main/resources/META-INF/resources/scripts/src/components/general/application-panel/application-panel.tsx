@@ -44,7 +44,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
           : null}
           </div>
           {this.props.panelTabs ? <Tabs modifier="application-panel" tabs={this.props.panelTabs} onTabChange={this.props.onTabChange} activeTab={this.props.activeTab} /> :
-            <ApplicationPanelBody toolbar={this.props.toolbar} primaryOption={this.props.primaryOption} asideAfter={this.props.asideAfter} asideBefore={this.props.asideBefore} disableStickyScrolling={this.props.disableStickyScrolling}>
+            <ApplicationPanelBody modifier={this.props.modifier? this.props.modifier : ""} toolbar={this.props.toolbar} primaryOption={this.props.primaryOption} asideAfter={this.props.asideAfter} asideBefore={this.props.asideBefore} disableStickyScrolling={this.props.disableStickyScrolling}>
               {this.props.children}
             </ApplicationPanelBody>
           }
