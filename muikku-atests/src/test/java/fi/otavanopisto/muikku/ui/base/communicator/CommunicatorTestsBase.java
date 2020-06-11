@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 
 import org.junit.Test;
 
+import com.thoughtworks.selenium.webdriven.commands.WaitForCondition;
+
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
@@ -281,12 +283,13 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
 
-        waitForPresentAndVisible(".form-element__input--communicator-label-name");
-        clearElement(".form-element__input--communicator-label-name");
-        sendKeys(".form-element__input--communicator-label-name", "Dun dun duun");
-        // TODO: Clicking the guider-share-label button does not seem to work, element is present but click won't go through
-        waitAndClick(".button--standard-ok");
-        waitForNotVisible(".dialog--communicator");
+        waitForPresentAndVisible(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name");
+        sleep(500);
+        clearElement(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name");
+        sendKeys(".dialog--visible .dialog__window--communicator .form-element__input--communicator-label-name", "Dun dun duun");
+        waitAndClick(".dialog--visible .dialog__window--communicator .button--standard-ok");
+        sleep(500);
+        waitForNotVisible(".dialog--visible .dialog__window--communicator .dialog--communicator");
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
         assertText("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .item-list__text-body", "Dun dun duun");
       }finally{
@@ -312,13 +315,19 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
+        selectFinnishLocale();
         waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-pencil");
-        waitForPresentAndVisible(".dialog--communicator.dialog--visible");
-        waitAndClick(".button--communicator-remove-label");
-        assertClassPresent(".button--communicator-remove-label", "disabled");
-        // TODO: Clicking the guider-share-label button does not seem to work, element is present but click won't go through
-        waitAndClick(".button--standard-ok");
-        waitForNotVisible("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
+        waitForPresentAndVisible("div>.dialog>.dialog__window");
+        sleep(500);
+        waitForClickable("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--communicator-remove-label");
+        sleep(500);
+        click("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--communicator-remove-label");
+        sleep(500);
+        waitUntilContentChanged(".dialog--visible .dialog__footer .button--communicator-remove-label", "Poista tunniste");
+        assertClassPresent(".dialog--visible .dialog__footer .button--communicator-remove-label", "disabled");
+        waitForClickable("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--standard-ok");
+        click("div>.dialog>.dialog__window>.dialog__footer>.dialog__button-set>.button--standard-ok");
+        waitForNotVisible("div>.dialog>.dialog__window");
         assertNotPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] ");
       }finally{
         deleteCommunicatorUserLabels(admin.getId());

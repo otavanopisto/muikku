@@ -72,7 +72,7 @@ return <header className="hero hero--workspace">
         : null}
         {this.props.workspace && this.props.workspace.studentActivity ?
           <div className="meta__item meta__item--progress-data">
-            <ProgressData title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
+            <ProgressData modifier="workspace-home" title={this.props.i18n.text.get('plugin.workspace.index.courseProgressLabel')} i18n={this.props.i18n} activity={this.props.workspace.studentActivity} />
           </div>
         : null}
       </div>
