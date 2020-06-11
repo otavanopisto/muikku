@@ -927,9 +927,14 @@ let loadWorkspaceCompositeMaterialReplies:LoadWorkspaceCompositeMaterialReplies 
           payload: []
         });
         return;
+      } else {
+        dispatch({
+          type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
+          payload: null,
+        });
       }
       let compositeReplies:MaterialCompositeRepliesListType = <MaterialCompositeRepliesListType>(await promisify(mApi().workspace.
-          workspaces.compositeReplies.read(id), 'callback')());
+          workspaces.compositeReplies.cacheClear().read(id), 'callback')());
       dispatch({
         type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
         payload: compositeReplies || []

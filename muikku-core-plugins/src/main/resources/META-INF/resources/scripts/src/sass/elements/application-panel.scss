@@ -187,6 +187,7 @@
 }
 
 // Helper containers
+
 .application-panel__helper-container {
   display: none;
 
@@ -206,6 +207,25 @@
 .application-panel__helper-container--main-action {
   border-bottom: 1px solid $color-main-function-application-panel-actions-border;
   height: $navbar-desktop-height;
+}
+
+.application-panel__helper-container--workspace-journal {
+  @include no-scrollbars;
+  display: flex;
+  flex-basis: 220px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: $navbar-mobile-height;
+  margin: 0;
+  overscroll-behavior: contain;
+  padding: 8px;
+  z-index: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $navbar-desktop-height;
+    padding: 12px;
+  }
+
 }
 
 // Main containers
@@ -235,6 +255,14 @@
     border-width: 1px;
     height: $navbar-desktop-height;
     padding: 12px;
+  }
+}
+
+.application-panel__main-container--workspace-journal {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: block;
   }
 }
 
