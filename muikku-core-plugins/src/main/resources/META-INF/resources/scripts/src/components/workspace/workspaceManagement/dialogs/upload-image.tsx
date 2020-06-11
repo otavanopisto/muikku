@@ -93,7 +93,6 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   render(){
     let content = (closeDialog: ()=>any)=><div>
 
-
       <ImageEditor className="image-editor image-editor--workspace" onInitializedGetRetriever={this.getRetriever}
        dataURL={this.props.src || this.props.b64} onLoadError={this.showLoadError} ratio={4.63}
        scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={parseInt(window.innerWidth*0.8 as any)}/>
