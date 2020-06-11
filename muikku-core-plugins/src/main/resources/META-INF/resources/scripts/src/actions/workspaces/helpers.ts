@@ -1,32 +1,43 @@
 import notificationActions from '~/actions/base/notifications';
-
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
-
 import {AnyActionType} from '~/actions';
 import { StateType } from '~/reducers';
-import { WorkspacesActiveFiltersType, WorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType } from '~/reducers/workspaces';
+import { WorkspacesActiveFiltersType, WorkspacesType, OrganizationWorkspacesType, WorkspacesStateType, WorkspacesPatchType, WorkspaceType, WorkspaceListType, WorkspaceJournalListType } from '~/reducers/workspaces';
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
 const MAX_JOURNAL_LOADED_AT_ONCE = 10;
 
-export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType | null, initial:boolean, loadOrganizationWorkspaces: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
-  let workspaces:WorkspacesType = state.workspaces;
+
+// This "WorkspacesType" annoys me. It's used in the organization workspaces,
+// which have type "OrganizationWorkspacesType",
+// which at this point is not conflicting, but the "OrganizationWorkspacesType" is different - less attributes.
+// I cannot find any bugs or disadvantages in my testing.
+
+  let workspaces:WorkspacesType  = state.workspaces;
+
+if (loadOrganizationWorkspaces === true) {
+  workspaces = state.organizationWorkspaces;
+}
+
   let hasEvaluationFees:boolean = state.userIndex &&
     state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
-    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees
+    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees;
 
   //Avoid loading courses again for the first time if it's the same location
+
   if (initial && filters === workspaces.activeFilters && workspaces.state === "READY"){
     return;
   }
 
   let actualFilters = filters || workspaces.activeFilters;
-
   let workspacesNextstate:WorkspacesStateType;
+
   //If it's for the first time
+
   if (initial){
     //We set this state to loading
     workspacesNextstate = "LOADING";
@@ -40,17 +51,23 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
     activeFilters: actualFilters
   }
 
-  dispatch({
-    type: "UPDATE_WORKSPACES_ALL_PROPS",
-    payload: newWorkspacesPropsWhileLoading
-  });
+  if (!loadOrganizationWorkspaces === true) {
+    dispatch({
+      type: "UPDATE_WORKSPACES_ALL_PROPS",
+      payload: newWorkspacesPropsWhileLoading
+    });
+  } else  {
+    dispatch({
+      type: "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS",
+      payload: newWorkspacesPropsWhileLoading
+    });
+  }
 
   //Generate the api query, our first result in the messages that we have loaded
   let firstResult = initial ? 0 : workspaces.availableWorkspaces.length;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
-
   let myWorkspaces = false;
   let includeUnpublished = false;
 
@@ -77,7 +94,8 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
   }
 
   try {
-    let nWorkspaces:WorkspaceListType = <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+
+    let nWorkspaces:WorkspaceListType = loadOrganizationWorkspaces ? <WorkspaceListType>await promisify(mApi().organizationmanagement.workspaces.cacheClear().read(params), 'callback')()  : <WorkspaceListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
@@ -108,10 +126,17 @@ export async function loadWorkspacesHelper(filters:WorkspacesActiveFiltersType |
     }
 
     //And there it goes
-    dispatch({
-      type: "UPDATE_WORKSPACES_ALL_PROPS",
-      payload
-    });
+    if (loadOrganizationWorkspaces === true) {
+      dispatch({
+        type: "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS",
+        payload
+      });
+    } else {
+      dispatch({
+        type: "UPDATE_WORKSPACES_ALL_PROPS",
+        payload
+      });
+    }
   } catch (err){
     if (!(err instanceof MApiError)){
       throw err;

@@ -46,6 +46,13 @@
   }
 }
 
+.dialog__window--new-user {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+  }
+}
+
+
 .dialog__window--wizard {
   bottom: 0;
   display: flex;
@@ -215,6 +222,13 @@
   label {
     font-weight: 600;
   }
+}
+
+.dialog__content-row--new-user {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
 }
 
 .dialog__content-row--label {

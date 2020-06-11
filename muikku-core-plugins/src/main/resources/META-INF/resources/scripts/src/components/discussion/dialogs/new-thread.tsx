@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionType } from '~/reducers/discussion';
@@ -184,11 +184,11 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
         </div>
       )
     }
-    return <JumboDialog modifier="new-message"
+    return <EnvironmentDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
-    </JumboDialog>
+    </EnvironmentDialog>
   }
 }
 

@@ -7,7 +7,7 @@ import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import InputContactsAutofillLoaders from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
@@ -206,12 +206,12 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       )
     }
     
-    return <JumboDialog modifier="new-message"
+    return <EnvironmentDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}
       onClose={this.props.onClose} isOpen={this.props.isOpen}>
       {this.props.children}
-    </JumboDialog>
+    </EnvironmentDialog>
   }
 }
 

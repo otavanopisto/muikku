@@ -1,5 +1,25 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
+export type ManipulateType = "UPDATE" | "CREATE";
+
+export interface ManipulateStudentType {
+  id?: string,
+  firstName: string,
+  lastName: string,
+  studyProgrammeIdentifier: string,
+  email: string,
+  gender?: "MALE" | "FEMALE" | "OTHER",
+  ssn?: string
+}
+
+export interface ManipulateStaffmemberType {
+  id? : string
+  firstName: string,
+  lastName: string,
+  email: string,
+  role: string
+ }
+
 
 export interface UserType {
   id: number,
