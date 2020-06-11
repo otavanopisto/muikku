@@ -84,10 +84,17 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   getRetriever(retriever: ImageEditorRetrieverType){
     this.retriever = retriever;
   }
+
+  // The calculated image ratio at the moment for the workspace cover image is 4,62962962963,
+  // so it's passed as 4.63 which is close enough (I don't see any difference as a result).
+  // If the layout is changed and the ratio changes, this needs to be updated
+  // The ratio could be calculated dynamically, but as of now, there's no reason
+
   render(){
     let content = (closeDialog: ()=>any)=><div>
+
       <ImageEditor className="image-editor image-editor--workspace" onInitializedGetRetriever={this.getRetriever}
-       dataURL={this.props.src || this.props.b64} onLoadError={this.showLoadError} ratio={4}
+       dataURL={this.props.src || this.props.b64} onLoadError={this.showLoadError} ratio={4.63}
        scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={parseInt(window.innerWidth*0.8 as any)}/>
       <div className="dialog__image-tools">
         <div className="dialog__slider">
