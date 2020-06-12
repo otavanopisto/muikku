@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import { i18nType } from 'reducers/base/i18n';
 import { AnyActionType } from '~/actions';
 import {StateType} from '~/reducers';
@@ -157,14 +157,14 @@ class NewEditJournal extends SessionStateComponent<NewEditJournalProps, NewEditJ
       )
     }
 
-    return <JumboDialog modifier="new-edit-journal"
+    return <EnvironmentDialog modifier="new-edit-journal"
       onOpen={this.checkAgainstStoredState}
       title={this.props.journal ?
         this.props.i18n.text.get('plugin.workspace.journal.editEntry.title') :
         this.props.i18n.text.get('plugin.workspace.journal.newEntry.title')}
       content={content} footer={footer}>
       {this.props.children}
-    </JumboDialog>
+    </EnvironmentDialog>
   }
 }
 

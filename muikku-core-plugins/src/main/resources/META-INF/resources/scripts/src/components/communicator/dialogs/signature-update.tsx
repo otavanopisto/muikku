@@ -1,5 +1,5 @@
 import * as React from 'react';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import Link from '~/components/general/link';
 import CKEditor from '~/components/general/ckeditor';
 import {connect, Dispatch} from 'react-redux';
@@ -9,9 +9,7 @@ import {updateSignature, UpdateSignatureTriggerType} from '~/actions/main-functi
 import {MessageSignatureType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
-
 import Button from '~/components/general/button';
-
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 
@@ -39,7 +37,6 @@ interface CommunicatorSignatureUpdateDialogState {
 class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSignatureUpdateDialogProps, CommunicatorSignatureUpdateDialogState> {
   constructor(props: CommunicatorSignatureUpdateDialogProps){
     super(props);
-
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.handleKeydown = this.handleKeydown.bind(this);
     this.resetState = this.resetState.bind(this);
@@ -87,9 +84,9 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
           </div>
         </div>
     }
-    return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature"
+    return <EnvironmentDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature"
      title={this.props.i18n.text.get("plugin.communicator.settings.signature")}
-     content={content} footer={footer}>{this.props.children}</JumboDialog>
+     content={content} footer={footer}>{this.props.children}</EnvironmentDialog>
   }
 }
 

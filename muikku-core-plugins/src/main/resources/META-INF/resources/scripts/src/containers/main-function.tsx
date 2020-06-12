@@ -14,26 +14,18 @@ import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messag
 import CousePickerBody from '../components/coursepicker/body';
 import { loadLoggedUser } from '~/actions/user-index';
 import { UserType } from '~/reducers/user-index';
-
-// New ones
 import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
+import {loadUsers, loadStudyprogrammes} from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
-
-// Deprecating
-//import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
-//import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
-
 import OrganizationAdministrationBody from '../components/organization/body';
 import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
 import DiscussionBody from '../components/discussion/body';
 import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId} from '~/actions/discussion';
-
 import {loadAnnouncement, loadAnnouncements} from '~/actions/announcements';
 import AnnouncementsBody from '../components/announcements/body';
 import { AnnouncementListType } from '~/reducers/announcements';
-
 import AnnouncerBody from '../components/announcer/body';
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
@@ -194,9 +186,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
     }
-    this.props.store.dispatch(loadWorkspacesFromServer(filters) as Action);
+    this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization) as Action);
   }
-
 
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
@@ -205,13 +196,13 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
     }
   }
+
   renderCoursePickerBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
-
-      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
-      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
 
@@ -272,19 +263,22 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
       this.props.websocket.restoreEventListeners();
-      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
-      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
 
       if (currentLocationHasData) {
+
+        // Todo: this is not for coursepicker anymore
+
         this.loadCoursePickerData(currentLocationData, true);
       }
 
       let state:StateType = this.props.store.getState();
-
-      // this.props.store.dispatch(loadUsers() as Action);
+      this.props.store.dispatch(loadUsers() as Action);
+      this.props.store.dispatch(loadStudyprogrammes() as Action);
 
       this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
         if (!currentLocationHasData) {
@@ -425,13 +419,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
   renderRecordsBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
-
-      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
-
-      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
+      this.props.websocket.restoreEventListeners();      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
-
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
     }
 

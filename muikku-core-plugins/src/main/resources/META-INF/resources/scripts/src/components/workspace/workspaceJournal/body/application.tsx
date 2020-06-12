@@ -74,6 +74,7 @@ class WorkspaceJournalApplication extends React.Component<WorkspaceJournalApplic
           <WorkspaceJournals/>
         </ApplicationPanel>
         {this.props.status.isStudent ? <NewJournal><HoverButton icon="plus" modifier="new-message" /></NewJournal> : null}
+
       </div>
     );
   }

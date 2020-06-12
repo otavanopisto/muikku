@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionType, DiscussionThreadType } from '~/reducers/discussion';
@@ -156,11 +156,11 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
       )
     }
 
-    return <JumboDialog modifier="modify-message"
+    return <EnvironmentDialog modifier="modify-message"
       title={this.props.i18n.text.get('plugin.discussion.editmessage.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
-    </JumboDialog>
+    </EnvironmentDialog>
   }
 }
 
