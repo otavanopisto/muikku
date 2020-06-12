@@ -405,7 +405,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     int attempts = 0;
     while (attempts < 2) {
       try{
-        new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.cssSelector(selector))));          
+        new WebDriverWait(getWebDriver(), 20).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.cssSelector(selector))));          
       }catch (StaleElementReferenceException e) {
       }      
       attempts++;
@@ -584,7 +584,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForPresent(final String selector) {
-    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+    new WebDriverWait(getWebDriver(), 20).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
         try {
           List<WebElement> elements = findElements(selector);
@@ -696,7 +696,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void selectOption(String selector, String value){
     Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
-    assertSelectedOption(selector, value);
+    assertSelectValue(selector, value);
   }
   
   protected void selectFinnishLocale() {
@@ -940,6 +940,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     WebElement option = select.getFirstSelectedOption();
     String optionText = option.getText();
     assertEquals(expected, optionText);
+  }
+  protected void assertSelectValue(String selector, String expected){
+    Select select = new Select(findElementByCssSelector(selector));
+    WebElement option = select.getFirstSelectedOption();
+    String optionValue = option.getAttribute("value");
+    assertEquals(expected, optionValue);
   }
   protected void assertChecked(String selector, Boolean expected) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));

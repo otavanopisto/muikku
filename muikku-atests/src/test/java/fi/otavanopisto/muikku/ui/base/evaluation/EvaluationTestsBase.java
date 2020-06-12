@@ -84,16 +84,14 @@ public class EvaluationTestsBase extends AbstractUITest {
         login();
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__textfield");
           selectFinnishLocale();
-          assertVisible(".material-page__textfield");
-          assertValue(".material-page__textfield", "");
-          waitAndSendKeys(".material-page__textfield", "field value");
-          
-          waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-          waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-          waitForPresentAndVisible(".notification-queue-item-success");
-          waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
+          waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+          assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
+          waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+          waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+          waitAndClick(".button--muikku-submit-assignment");
+
+          waitForElementToBeClickable(".button--muikku-withdraw-assignment");
           logout();
           mockBuilder.mockLogin(admin);
           login();
