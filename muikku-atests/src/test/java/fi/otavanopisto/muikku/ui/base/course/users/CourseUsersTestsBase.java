@@ -179,10 +179,11 @@ public class CourseUsersTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".env-dialog--new-message.visible .env-dialog__selected-item .autocomplete__selected-item");
         assertText(".env-dialog--new-message.visible .env-dialog__selected-item .autocomplete__selected-item", "Student Tester");
         
-        waitForPresentAndVisible(".button--dialog-execute");
-        waitAndClick(".button--dialog-execute");
+        waitForPresentAndVisible(".env-dialog__footer .env-dialog__actions .button--dialog-execute");
+        scrollIntoView(".env-dialog__footer .env-dialog__actions .button--dialog-execute");
+        sleep(500);
+        waitAndClick(".env-dialog__footer .env-dialog__actions .button--dialog-execute");
         waitForPresentAndVisible(".notification-queue__item--success");
-//        waitForNotVisible(".env-dialog--new-message.visible");
         
         logout();
         mockBuilder.mockLogin(student);
