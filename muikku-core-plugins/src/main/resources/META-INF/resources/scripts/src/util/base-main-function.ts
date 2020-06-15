@@ -82,6 +82,10 @@ export default function(store: Store<StateType>){
             muc_history_max_stanzas: 0,
 
             muc_show_join_leave: true,
+            
+            
+            // If you set this setting to true, then you will be notified of all messages received in a room.
+            //notify_all_room_messages: true,
 
             // This allows students and teachers private messages between each other without adding recipient to contacts
             allow_non_roster_messaging: true,
