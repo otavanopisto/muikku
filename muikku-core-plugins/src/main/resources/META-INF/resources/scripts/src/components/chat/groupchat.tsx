@@ -73,6 +73,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   private myRef: any;
   private messagesEnd: any;
   private messageFormRef: any;
+  _isMounted = false;
 
   constructor(props: any){
     super(props);
@@ -133,7 +134,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     } 
     
   }
-  openMucConversation(room: string){
+  async openMucConversation(room: string){
     let data = {
       jid: room,
       nick: this.props.nick
@@ -183,6 +184,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
     jid = data.jid;
     let __ = this;
+   
    this.props.converse.api.rooms.open(jid, _.extend(data,
       {
         'jid':jid,
@@ -198,7 +200,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           isPersistentRoom: chat.features.attributes.persistent
         });
        	let parsedJid = chat.attributes.jid.split("@");
-		let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
+		    let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
         chat.listenTo(chat.occupants, 'add', this.getOccupants);
         chat.listenTo(chat.occupants, 'destroy', this.getOccupants);
         chat.messages.models.map((msg: any) => this.getMUCMessages(msg));
@@ -603,7 +605,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let roomJID = this.state.roomJid;
       let room = await this.props.converse.api.rooms.get(this.state.roomJid);
 
-      if (room.occupants.models) {
+      if (room.occupants.models.length > 0) {
         let user: any;
         let userData: any;
         let chatSettings: any;
@@ -650,10 +652,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             }
           }
         }
-        this.setState({
-          studentOccupants: tempStudentOccupants,
-          staffOccupants: tempStaffOccupants
-        });
+        if (this._isMounted) {
+          this.setState({
+            studentOccupants: tempStudentOccupants,
+            staffOccupants: tempStaffOccupants
+          });
+        }
+      } else {
+        return;
       }
     }
     scrollToBottom(method: string = "smooth") {
@@ -683,7 +689,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
     componentDidMount(){
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
-
+      this._isMounted = true;
 //      if (converse) {
 //        this.setState({
 //          converse: converse
@@ -711,9 +717,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           })
         }
         this.isWorkspaceChatRoom(chat.jid);
-        this.props.converse.api.waitUntil('roomsAutoJoined').then(() => {
+        this.props.converse.api.waitUntil('roomsAutoJoined').then(async() => {
           this.openMucConversation(chat.jid);
-          this.getOccupants();
+          let room = await this.props.converse.api.rooms.get(this.state.roomJid);
+
+          room.listenTo(room.occupants, 'add', this.getOccupants);
+          room.listenTo(room.occupants, 'destroy', this.getOccupants);
           this.scrollToBottom.bind(this, "auto");
         });
       }
@@ -732,6 +741,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       
       this.props.converse.api.listen.on('message', this.handleIncomingMessages);
       this.props.converse.api.listen.on('membersFetched', this.getOccupants );
+    }
+
+    componentWillUnmount() {
+      this._isMounted = false;
     }
 
     componentDidUpdate(){

@@ -120,11 +120,12 @@ export class Chat extends React.Component<Iprops, Istate> {
     let from: any;
     let bareJid: any;
     let tempPrivateChats: any;
+	let type = data.stanza.getAttribute('type');
     const { Strophe, sizzle } = converse.env;
     from = data.stanza.getAttribute('from');
     bareJid = Strophe.getBareJidFromJid(from);
     const is_me = bareJid === this.state.converse.bare_jid;
-    if(data.stanza.getAttribute('type') !== 'groupchat' &&
+    if(type !== null && type !== 'groupchat' &&
       from !== null && 
       !u.isOnlyChatStateNotification(data.stanza) && 
       !u.isOnlyMessageDeliveryReceipt(data.stanza) && 
@@ -420,7 +421,7 @@ export class Chat extends React.Component<Iprops, Istate> {
         });
       }
   }
-  onOpenChat (roomJid: string) {
+  async onOpenChat (roomJid: string) {
     let openChatsList = this.state.openChats;
 
     if (openChatsList.includes(roomJid)){
@@ -437,7 +438,10 @@ export class Chat extends React.Component<Iprops, Istate> {
 
       window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
 
-      return;
+	  let room = await this.state.converse.api.rooms.get(roomJid);
+
+	  room.leave();
+
 
     } else {
       openChatsList.push(roomJid);
@@ -445,6 +449,8 @@ export class Chat extends React.Component<Iprops, Istate> {
       this.setState({
         openChats: openChatsList
       });
+      const rooms = await this.state.converse.api.rooms.get();
+      rooms.forEach((room: any) => room.rejoinIfNecessary());
     }
   }
   getWorkspaceMucRooms() {
@@ -475,9 +481,9 @@ export class Chat extends React.Component<Iprops, Istate> {
       initialize: function () {
         var _converse = this._converse;
         __this.setState({converse: _converse});
-        __this.state.converse.api.listen.on('message',  __this.privateMessageNotification);
+        
         __this.state.converse.on('connected', function () {
-
+		__this.state.converse.api.listen.on('message',  __this.privateMessageNotification);
           const rooms = __this.state.converse.api.rooms;
 
           __this.setState({

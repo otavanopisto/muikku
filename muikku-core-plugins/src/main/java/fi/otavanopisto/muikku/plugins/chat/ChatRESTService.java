@@ -203,7 +203,7 @@ public class ChatRESTService extends PluginRESTService {
     SchoolDataIdentifier identifier = sessionController.getLoggedUser();
 
     if (identifier == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
+      return Response.status(Status.NOT_FOUND).entity("Couldn't find logged user").build();
     }
 
     boolean chatEnabled = false;
@@ -229,7 +229,7 @@ public class ChatRESTService extends PluginRESTService {
     User user = userController.findUserByIdentifier(identifier);
 
     if (user == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Logged user doesn't exist").build();
+      return Response.status(Status.NOT_FOUND).entity("Logged user doesn't exist").build();
     }
 
     if (chatEnabled) {
