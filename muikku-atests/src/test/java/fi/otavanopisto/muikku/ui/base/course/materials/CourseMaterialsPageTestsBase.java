@@ -360,7 +360,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__textfield");
         selectFinnishLocale();
-        selectFinnishLocale();
         waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
