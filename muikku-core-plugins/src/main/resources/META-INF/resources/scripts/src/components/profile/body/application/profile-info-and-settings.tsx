@@ -27,11 +27,11 @@ function ProfileProperty(props: {
     return null;
   }
   return <div className="profile-element__item">
-    <label className="profile_element-label">{props.i18n.text.get(props.label)}</label>
+    <label className="profile-element__label">{props.i18n.text.get(props.label)}</label>
     {typeof props.value === "string" ?
       <div>{props.value}</div> :
       props.value.map((v)=>{
-        return typeof v === "string" ? <div className="profile-user-data" key={v}>{v}</div> : <div className="profile-user-data" key={v.key}>{v.value}</div>
+        return typeof v === "string" ? <div className="profile-element__data" key={v}>{v}</div> : <div className="profile-element__data" key={v.key}>{v.value}</div>
       })}
   </div>
 }
@@ -148,13 +148,20 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       }
     }
 
+<<<<<<< HEAD
     if (!this.props.status.isStudent) {
       if (this.props.profile.properties['profile-vacation-end'] !== this.state.profileVacationEnd){
         totals++;
         this.props.saveProfileProperty('profile-vacation-end', this.state.profileVacationEnd ? this.state.profileVacationEnd.toISOString() : null, cb);
       }
+=======
+    if (this.props.profile.properties['profile-vacation-end'] !== this.state.profileVacationEnd){
+      totals++;
+      this.props.saveProfileProperty('profile-vacation-end', this.state.profileVacationEnd ? this.state.profileVacationEnd.toISOString() : null, cb);
+>>>>>>> refs/remotes/origin/devel
     }
 
+<<<<<<< HEAD
     if (!this.props.status.isStudent) {
       if ((this.props.profile.properties['profile-phone'] || "") !== this.state.phoneNumber){
         totals++;
@@ -171,6 +178,11 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
           fail: cb,
         });
       }
+=======
+    if ((this.props.profile.properties['profile-phone'] || "") !== this.state.phoneNumber){
+      totals++;
+      this.props.saveProfileProperty('profile-phone', this.state.phoneNumber.trim(), cb);
+>>>>>>> refs/remotes/origin/devel
     }
   }
 
@@ -183,6 +195,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       }
     }
     return (<div className="profile-element">
+<<<<<<< HEAD
       <h1 className="profile-element__title">{this.props.status.profile.displayName}</h1>
       <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
         value={this.props.status.profile.emails}/>
@@ -194,6 +207,19 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}/>
       <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
       value={studyTimeEndValues}/>
+=======
+        <h1 className="profile-element__title">{this.props.status.profile.displayName}</h1>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel"
+          value={this.props.status.profile.emails}/>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel"
+         value={this.props.status.profile.addresses}/>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers"
+         value={this.props.status.profile.phoneNumbers}/>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyStartDate} label="plugin.profile.studyStartDateLabel"
+        value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}/>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel"
+        value={studyTimeEndValues}/>
+>>>>>>> refs/remotes/origin/devel
 
       <form>
         <div className="profile-element__item">
@@ -206,6 +232,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
           <UpdateAddressDialog>
             <Button buttonModifiers="primary-function-content">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
           </UpdateAddressDialog>
+<<<<<<< HEAD
         </div> : null}
 
         {!this.props.status.isStudent ?
@@ -249,6 +276,30 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       </form>
 
   </div>);
+=======
+        </div> : <form>
+          <div className="profile-element__item">
+            <label className="profile-element__label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
+            <input className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
+          </div>
+          <div className="profile-element__item">
+            <label className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
+            <DatePicker className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationStart")}
+             maxDate={this.state.profileVacationEnd || null}
+             locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationStart}/>
+          </div>
+          <div className="profile-element__item">
+            <label className="profile-element__label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
+            <DatePicker className="form-element__input" onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
+             minDate={this.state.profileVacationStart || null}
+             locale={this.props.i18n.time.getLocale()} selected={this.state.profileVacationEnd}/>
+           </div>
+          <div className="profile-element__item">
+            <Button buttonModifiers="primary-function-save" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
+          </div>
+        </form>}
+    </div>);
+>>>>>>> refs/remotes/origin/devel
   }
 }
 

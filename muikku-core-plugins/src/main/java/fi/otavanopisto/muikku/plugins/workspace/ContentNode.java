@@ -3,26 +3,29 @@ package fi.otavanopisto.muikku.plugins.workspace;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 
 public class ContentNode {
 
-  public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
+  public ContentNode(String title, String type, String contentType, Long workspaceMaterialId, Long materialId, int level, 
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      Long parentId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
-      String license, String producers, MaterialViewRestrict viewRestrict, boolean viewRestricted) {
+      Long parentId, Long nextSiblingId, Boolean hidden, String html,  Long currentRevision, Long publishedRevision, String path,
+      String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
     this.type = type;
+    this.contentType = contentType;
     this.workspaceMaterialId = workspaceMaterialId;
     this.materialId = materialId;
     this.level = level;
     this.assignmentType = assignmentType;
     this.correctAnswers = correctAnswers;
     this.parentId = parentId;
+    this.nextSiblingId = nextSiblingId;
     this.hidden = hidden;
     this.html = html;
     this.currentRevision = currentRevision;
@@ -30,7 +33,6 @@ public class ContentNode {
     this.path = path;
     this.license = license;
     this.viewRestrict = viewRestrict;
-    this.viewRestricted = viewRestricted;
     this.producers = producers;
   }
 
@@ -44,6 +46,10 @@ public class ContentNode {
 
   public String getType() {
     return type;
+  }
+
+  public String getContentType() {
+    return contentType;
   }
 
   public List<ContentNode> getChildren() {
@@ -138,15 +144,7 @@ public class ContentNode {
     this.license = license;
   }
   
-  public boolean getViewRestricted() {
-    return viewRestricted;
-  }
-  
-  public void setViewRestricted(boolean viewRestricted) {
-    this.viewRestricted = viewRestricted;
-  }
-  
-  public String getProducers() {
+  public List<MaterialProducer> getProducers() {
     return producers;
   }
   
@@ -158,8 +156,17 @@ public class ContentNode {
     this.viewRestrict = viewRestrict;
   }
 
+  public Long getNextSiblingId() {
+    return nextSiblingId;
+  }
+
+  public void setNextSiblingId(Long nextSiblingId) {
+    this.nextSiblingId = nextSiblingId;
+  }
+
   private String title;
   private String type;
+  private String contentType;
   private List<ContentNode> children;
   private Long workspaceMaterialId;
   private Long materialId;
@@ -168,12 +175,13 @@ public class ContentNode {
   private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
   private Boolean hidden;
   private Long parentId;
+  private Long nextSiblingId;
   private String html;
   private Long currentRevision;
   private Long publishedRevision;
   private String path;
   private String license;
   private MaterialViewRestrict viewRestrict;
-  private boolean viewRestricted;
-  private String producers;
+  private List<MaterialProducer> producers;
+
 }

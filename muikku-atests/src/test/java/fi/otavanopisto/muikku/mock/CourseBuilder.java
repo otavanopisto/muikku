@@ -42,7 +42,7 @@ public class CourseBuilder {
   private List<String> tags = null;
   private Set<Long> curriculumIds = null;  
   private Long organizationId = 1L;
-  
+  private boolean courseTemplate = false;
   public CourseBuilder() { 
 
   }
@@ -54,7 +54,7 @@ public class CourseBuilder {
     return new Course(id, name, created, lastModified, description, archived, courseNumber, maxParticipantCount, beginDate,
         endDate, nameExtension, localTeachingDays, teachingHours, distanceTeachingHours, distanceTeachingDays,
         assessingHours, planningHours, enrolmentTimeEnd, creatorId, lastModifierId, subjectId, curriculumIds, length,
-        lengthUnitId, moduleId, stateId, typeId, variables, tags, organizationId);
+        lengthUnitId, moduleId, stateId, typeId, variables, tags, organizationId, courseTemplate);
   }
 
   public CourseBuilder name(String name)

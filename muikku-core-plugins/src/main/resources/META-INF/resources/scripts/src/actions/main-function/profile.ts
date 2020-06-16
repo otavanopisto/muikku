@@ -225,6 +225,7 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
 
       dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.notif.error'), 'error'));
 
+
       data.fail && data.fail();
     }
   }
@@ -348,3 +349,4 @@ let deleteProfileImage:DeleteProfileImageTriggerType = function deleteProfileIma
 }
 
 export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, loadProfileChatSettings, updateProfileChatSettings, uploadProfileImage, deleteProfileImage};
+

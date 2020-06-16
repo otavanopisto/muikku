@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -20,7 +19,6 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyStat
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
-@Dependent
 public class WorkspaceMaterialReplyController {
   
   @Inject
@@ -38,25 +36,35 @@ public class WorkspaceMaterialReplyController {
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
   
-  public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, 
-      UserEntity userEntity, Long numberOfTries, Date created, Date lastModified) {
-    Date submitted = state == WorkspaceMaterialReplyState.SUBMITTED ? new Date() : null;
-    Date withdrawn = state == WorkspaceMaterialReplyState.WITHDRAWN ? new Date() : null;
-    WorkspaceRootFolder root = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-    switch (workspaceMaterial.getAssignmentType()) {
-    case EVALUATED:
-      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_ASSIGNMENTDONE, root.getWorkspaceEntityId(), null);
-    break;
-    case EXERCISE:
-      activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_EXERCISEDONE, root.getWorkspaceEntityId(), null);
-    break;
-    }
-    return workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), numberOfTries, created, lastModified, submitted, withdrawn);
-  }
-  
   public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, UserEntity userEntity) {
-    Date now = new Date();
-    return createWorkspaceMaterialReply(workspaceMaterial, state, userEntity, 1l, now, now);
+
+    // #5013: Race condition with field save websocket messages might mean this user already has a reply for this page   
+    
+    WorkspaceMaterialReply reply = findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+    if (reply == null) {
+      Date created = new Date();
+      Date submitted = state == WorkspaceMaterialReplyState.SUBMITTED ? new Date() : null;
+      Date withdrawn = state == WorkspaceMaterialReplyState.WITHDRAWN ? new Date() : null;
+      reply = workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), 1L, created, created, submitted, withdrawn);
+      
+      // Activity logging
+      
+      if (state == WorkspaceMaterialReplyState.SUBMITTED) {
+        WorkspaceRootFolder root = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+        if (workspaceMaterial.getAssignmentType() != null) {
+          switch (workspaceMaterial.getAssignmentType()) {
+          case EVALUATED:
+            activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_ASSIGNMENTDONE, root.getWorkspaceEntityId(), null);
+            break;
+          case EXERCISE:
+            activityLogController.createActivityLog(userEntity.getId(), ActivityLogType.MATERIAL_EXERCISEDONE, root.getWorkspaceEntityId(), null);
+            break;
+          }
+        }
+      }
+    }
+    
+    return reply;
   }
 
   public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(WorkspaceMaterial workspaceMaterial, UserEntity userEntity) {

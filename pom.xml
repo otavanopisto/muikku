@@ -4,7 +4,7 @@
 
 	<groupId>fi.otavanopisto.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.1.132-SNAPSHOT</version>
+	<version>1.1.137-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -68,7 +68,6 @@
     <module>muikku-school-data-pyramus-persistence</module>
 		<module>muikku-dummy-mail-bridge-plugin</module>
 		<module>muikku-jndi-mail-bridge-plugin</module>
-		<module>muikku-deus-nex-machina</module>
     <module>muikku-evaluation-plugin-persistence</module>
     <module>muikku-evaluation-plugin-rest-model</module>
     <module>muikku-evaluation-plugin</module>
@@ -98,7 +97,7 @@
 			<dependency>
 				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.1.132-SNAPSHOT</version>
+				<version>1.1.137-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

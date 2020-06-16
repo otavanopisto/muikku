@@ -68,6 +68,7 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import fi.otavanopisto.muikku.AbstractIntegrationTest;
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.WorkspaceAccess;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
 import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
@@ -411,6 +412,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
   
+  protected void waitForVisibleXPath(String XPath) {
+    int attempts = 0;
+    while (attempts < 2) {
+      try{
+        new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.xpath(XPath))));          
+      }catch (StaleElementReferenceException e) {
+      }      
+      attempts++;
+    }
+  }
+  
   protected void waitForUrlNotMatches(final String regex) {
     WebDriver driver = getWebDriver();
     new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
@@ -437,10 +449,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+  
+  protected String getCurrentPath() {
+    String path = getWebDriver().getCurrentUrl();
+    path = StringUtils.substring(path, StringUtils.lastIndexOf(path, "/"));
+    return path;
+  }
 
   protected void waitForPresentAndVisible(String selector) {
     waitForPresent(selector);
     waitForVisible(selector);
+  }
+  
+  protected void waitForPresentAndVisibleXPath(String XPath) {
+    waitForPresentXPath(XPath);
+    waitForVisibleXPath(XPath);
   }
   
   protected void refresh() {
@@ -573,6 +596,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+  
+  protected void waitForPresentXPath(final String xpath) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElementsXPath(xpath);
+          return !elements.isEmpty();
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
 
   protected void waitForNotVisible(String selector) {
     new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(selector)));
@@ -592,6 +629,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     getWebDriver().findElement(By.cssSelector(selector)).click();
   }
   
+  protected void clickXPath(String xpath) {
+    getWebDriver().findElement(By.xpath(xpath)).click();
+  }
+  
   protected void waitForClickable(final String selector) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
@@ -607,9 +648,31 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+  
+  protected void waitForClickableXPath(final String xpath) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          List<WebElement> elements = findElementsXPath(xpath);
+          if (elements.size() > 0) {
+            return ExpectedConditions.elementToBeClickable(elements.get(0)).apply(driver) != null;
+          }
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected void waitAndClick(String selector) {
     waitForClickable(selector);
     click(selector);
+  }
+  
+  protected void waitAndClickXPath(String xpath) {
+    waitForClickableXPath(xpath);
+    clickXPath(xpath);
   }
   
   protected void scrollToEnd() {
@@ -636,12 +699,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void selectFinnishLocale() {
-    waitForPresent("a.button-pill--current-language>span");
+    waitForPresent("a.button-pill--current-language");
     String localeText = getElementText("a.button-pill--current-language>span");
     if(localeText.equalsIgnoreCase("EN")) {
       waitAndClick(".button-pill--current-language");
-      waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
+      waitAndClick(".link--language-picker-dropdown .link__locale--fi");
       waitUntilContentChanged("a.button-pill--current-language>span", "EN");
+    }  
+  }
+  
+  protected void selectEnglishLocale() {
+    waitForPresent("a.button-pill--current-language");
+    String localeText = getElementText("a.button-pill--current-language>span");
+    if(localeText.equalsIgnoreCase("FI")) {
+      waitAndClick(".button-pill--current-language");
+      waitAndClick(".link--language-picker-dropdown .link__locale--en");
+      waitUntilContentChanged("a.button-pill--current-language>span", "FI");
     }  
   }
   
@@ -651,12 +724,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void assertText(String selector, String text) {
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(text, element.getText());
   }
 
 
   protected void assertTextIgnoreCase(String selector, String text) {
+    waitForPresent(selector);
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
   }
@@ -782,6 +857,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     });
   }
   
+  protected void waitForValue(String selector) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          String value = getAttributeValue(selector, "value");
+          if (!value.isEmpty()) {
+            return true;
+          }
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+  
   protected void clickOnBullshitElement(String selector) {
     Actions action = new Actions(getWebDriver());
     action.moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().build().perform();
@@ -825,13 +916,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
 
   protected void assertClassPresent(String selector, String className) {
-    waitForPresent(selector + "." + className);
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     String[] classes = StringUtils.split(element.getAttribute("class"), " ");
     assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));
   }
-  
+
+  protected void assertClassPresentXPath(String xpath, String className) {
+    WebElement element = getWebDriver().findElement(By.xpath(xpath));
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
+    assertTrue(String.format("Class %s is not present in element", className), ArrayUtils.contains(classes, className));
+  }
+    
   protected void assertValue(String selector, String value) {
+    waitForPresent(selector);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(value, element.getAttribute("value"));
   }
@@ -844,6 +942,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   protected void assertChecked(String selector, Boolean expected) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    assertEquals(expected, element.isSelected());
+  }
+  
+  protected void assertCheckedXPath(String xpath, Boolean expected) {
+    WebElement element = getWebDriver().findElement(By.xpath(xpath));
     assertEquals(expected, element.isSelected());
   }
   
@@ -885,8 +988,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void logout() {
     navigate("/", false);
-    waitAndClick(".navbar .button-pill--profile");
-    waitAndClick("body a.link--profile > span.icon-signout+span");
+    waitAndClick(".button-pill--profile");
+    waitAndClick(".dropdown__container .icon-sign-out");
     waitForPresent("body");
   }
   @Deprecated
@@ -1331,6 +1434,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
   }
   
+  protected void waitUntilValueChanges(String selector, String attribute, String originalValue){
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getAttribute(attribute));
+        if (!actual.equalsIgnoreCase(originalValue)) {
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+  
   protected WebElement findElementByTag(String name) {
     return getWebDriver().findElement(By.tagName(name));
   }
@@ -1356,6 +1471,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
 
+  protected void dragAndDropXPath(String source, String target, int x, int y) {
+    WebElement sourceElement = findElementXPath(source); 
+    WebElement targetElement = findElementXPath(target);
+    (new Actions(getWebDriver()))
+    .clickAndHold(sourceElement)
+    .moveToElement(targetElement, x, y)
+    .build()
+    .perform();
+    sleep(500);
+    (new Actions(getWebDriver()))
+      .release()
+      .build()
+      .perform();  
+  }
+  
   protected void dragAndDropWithOffSetAndTimeout(String source, String target, int x, int y){  
     WebElement sourceElement = findElement(source); 
     WebElement targetElement = findElement(target);
@@ -1381,23 +1511,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void addToEndCKEditor(String text) {
       waitForPresentAndVisible(".cke_contents");
-      getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
       String gotoEnd = Keys.chord(Keys.CONTROL, Keys.END);
-      waitForPresentAndVisible(".cke_contents_ltr");
-      getWebDriver().findElement(By.cssSelector(".cke_contents_ltr")).sendKeys(gotoEnd);
-      sendKeys(".cke_contents_ltr", text);
+      waitForPresentAndVisible(".cke_contents");
+      waitAndClick(".cke_contents");
+      getWebDriver().findElement(By.cssSelector(".cke_wysiwyg_div")).sendKeys(gotoEnd);
+      sendKeys(".cke_wysiwyg_div", text);
       getWebDriver().switchTo().defaultContent();
   }
   
   protected void addTextToCKEditor(String text) {
-    waitForPresent(".cke_wysiwyg_frame");
+    waitForPresent(".cke_contents");
     if (StringUtils.equals(getBrowser(), "phantomjs") ) {
       waitForCKReady("textContent");
       ((JavascriptExecutor) getWebDriver()).executeScript("CKEDITOR.instances.textContent.setData('"+ text +"');");
     } else {
       waitAndClick(".cke_contents");
-      getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
-      sendKeys(".cke_contents_ltr", text);
+      sendKeys(".cke_wysiwyg_div", text);
       getWebDriver().switchTo().defaultContent();
     }
   }
@@ -1425,10 +1554,22 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected WebElement findElement(String selection) {
     return getWebDriver().findElement(By.cssSelector(selection));
   }
+
+  protected WebElement findElementXPath(String xpath) {
+    return getWebDriver().findElement(By.xpath(xpath));
+  }
   
   protected List<WebElement> findElements(String selector){
     try {
       return getWebDriver().findElements(By.cssSelector(selector));
+    } catch (Exception e) {
+      return new ArrayList<WebElement>();
+    }
+  }
+  
+  protected List<WebElement> findElementsXPath(String xpath){
+    try {
+      return getWebDriver().findElements(By.xpath(xpath));
     } catch (Exception e) {
       return new ArrayList<WebElement>();
     }
@@ -1442,6 +1583,18 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void switchToDefaultFrame() {
     getWebDriver().switchTo().defaultContent();
+  }
+    
+  protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
+    navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+    scrollIntoView("input#access-" + workspaceAccess);
+    sleep(500);
+    waitAndClick("input#access-" + workspaceAccess);
+    scrollIntoView(".button--primary-function-save");
+    sleep(500);
+    waitAndClick(".button--primary-function-save");
+    waitForPresent(".notification-queue__item--success");
+    sleep(500);
   }
   
   enum RoleType {

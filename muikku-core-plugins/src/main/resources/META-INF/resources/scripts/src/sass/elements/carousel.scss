@@ -1,81 +1,72 @@
-//
-// Provides a handy carousel tool, make sure to include the carousel interaction js file
-//
-//   div.carousel[ | .carousel-unpadded]
-//    div.carousel-item
-//      div.carousel-video?
-//        (BODY)
-//      (BODY)?
-//  div.carousel-controls
-//
-
-@import "../base/mixins";
 @import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
 
 .carousel {
   position: relative;
   width: 100%;
+}
 
-  .carousel__item {
-    display: block;
-    height: auto;
-    position: relative;
+.carousel__item {
+  display: block;
+  height: auto;
+  position: relative;
+  width: 100%;
+}
+
+.carousel__item-video {
+  height: 0;
+  padding-bottom: 56.25%;
+  padding-top: 25px;
+  width: 100%;
+
+  iframe {
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
     width: 100%;
-
-    .carousel__item__video {
-      height: 0;
-      padding-bottom: 56.25%;
-      padding-top: 25px;
-      width: 100%;
-
-      iframe {
-        height: 100%;
-        left: 0;
-        position: absolute;
-        top: 0;
-        width: 100%;
-      }
-    }
   }
 }
 
 .carousel__controls {
   display: block;
   margin: 0;
-  padding: 20px 0 20px;
+  padding: 20px 0;
+  width: 100%;
+}
+
+.carousel__dots {
+  display: block;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
   width: 100%;
 
-  .carousel__dots {
-    display: block;
-    list-style-type: none;
+  li {
+    display: inline-block;
     margin: 0;
     padding: 0;
-    text-align: center;
-    width: 100%;
+  }
 
-    li {
-      display: inline-block;
-      margin: 0;
-      padding: 0;
-    }
+  button {
+    @include prefix(transition, moz ms webkit o, background 0.3);
+    background: $color-carousel-default-dot-background;
+    border: solid 2px $color-carousel-default-dot-border;
+    border-radius: 100%;
+    cursor: pointer;
+    font-size: 0;
+    height: 17px;
+    margin: 0 10px;
+    outline: none;
+    padding: 0;
+    vertical-align: top;
+    width: 17px;
+  }
 
-    button {
-      @include prefix(transition, moz ms webkit o, background 0.3);
-      background: $color-carousel-default-dot-background;
-      border: solid 2px $color-carousel-default-dot-border;
-      border-radius: 100%;
-      cursor: pointer;
-      font-size: 0;
-      height: 17px;
-      margin: 0 10px;
-      outline: none;
-      padding: 0;
-      vertical-align: top;
-      width: 17px;
-    }
-
-    .slick-active button {
-      background: $color-carousel-default-dot-active-background;
-    }
+  .slick-active button {
+    background: $color-carousel-default-dot-active-background;
   }
 }

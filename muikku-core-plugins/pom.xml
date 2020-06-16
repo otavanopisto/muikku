@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.132-SNAPSHOT</version>
+    <version>1.1.137-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -41,6 +41,12 @@
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
       <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -244,17 +250,16 @@
     
     <!-- XMPP (for prebind) -->
     <!-- TODO versions in BOM -->
-        <dependency>
-            <groupId>rocks.xmpp</groupId>
-            <artifactId>xmpp-core-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>rocks.xmpp</groupId>
-            <artifactId>xmpp-extensions-client</artifactId>
-      </dependency>
-
+    <dependency>
+      <groupId>rocks.xmpp</groupId>
+      <artifactId>xmpp-core-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>rocks.xmpp</groupId>
+      <artifactId>xmpp-extensions-client</artifactId>
+    </dependency>
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>development</id>
@@ -296,7 +301,6 @@
       </plugins>
     </pluginManagement>
     <plugins>
-
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
@@ -342,38 +346,38 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.6</version>
-                <configuration>
-                    <workingDirectory>src/main/resources/META-INF/resources/scripts/src/</workingDirectory>
-                    <environmentVariables>
-                        <NODE_ENV>${frontend.environment}</NODE_ENV>
-                    </environmentVariables>   
-                </configuration>
-                
-                <executions>
-             <execution>
-                       <id>install node and npm</id>
-                       <goals>
-                          <goal>install-node-and-npm</goal>
-                       </goals>
-                       <phase>generate-resources</phase>
-                       <configuration>
-                          <nodeVersion>v8.4.0</nodeVersion>
-                       </configuration>
-                   </execution>
-                   <execution>
-                     <id>npm install</id>
-                     <goals>
-                       <goal>npm</goal>
-                     </goals>
-                   </execution>
-                </executions>
-            </plugin>
-         </plugins>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.6</version>
+        <configuration>
+          <workingDirectory>src/main/resources/META-INF/resources/scripts/src/</workingDirectory>
+          <environmentVariables>
+            <NODE_ENV>${frontend.environment}</NODE_ENV>
+          </environmentVariables>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <nodeVersion>v8.4.0</nodeVersion>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+          </execution>
+       </executions>
+      </plugin>
+    </plugins>
      <resources>
         <resource>
             <directory>src/main/resources</directory>

@@ -34,19 +34,72 @@
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    border-radius: 2px;
+    border-radius: 3px;
     bottom: auto;
+    box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-size: $text-desktop-font-size;
     left: auto;
-    max-width: 450px;
+    max-width: 470px;
     position: relative;
     right: auto;
     top: auto;
   }
+}
+
+.dialog__window--new-user {
+  @include breakpoint($breakpoint-pad) {
+    max-width: 815px;
+  }
+}
+
+
+.dialog__window--wizard {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
 
   @include breakpoint($breakpoint-pad) {
-    box-shadow: 0 0 80px $color-dialog-default-shadow;
+    border-radius: 10px;
+    bottom: 20px;
+    left: 20px;
+    max-width: none;
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    width: auto;
   }
+
+  .dialog__content {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+
+  .multi-step {
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    left: 20px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+
+  .wizard__content {
+    display: flex;
+    flex-basis: auto;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+.dialog--upload-header-image .dialog__window {
+  max-width: none;
 }
 
 .dialog__container {
@@ -57,15 +110,21 @@
 }
 
 .dialog__container--color-picker {
-  align-items: center;
+  flex-basis: auto;
   flex-flow: row wrap;
+  flex-grow: 0;
+  flex-shrink: 0;
   justify-content: center;
-  padding: 15px 0;
+  padding: 0 15px 15px 0;
   position: relative;
 }
 
-.dialog__container--form {
+.dialog__container--label-form {
+  flex-basis: auto;
   flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0;
 }
 
 .dialog__image-tools {
@@ -75,7 +134,9 @@
 }
 
 .dialog__slider {
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   padding-right: 15px;
 }
 
@@ -89,7 +150,22 @@
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     background-color: $color-dialog-desktop-background;
+    border-radius: 3px 3px 0 0;
     color: $color-dialog-desktop-text;
+    display: flex;
+    height: 3rem;
+    padding: 0 20px;
+  }
+}
+
+.dialog__header--wizard {
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    background-color: $color-dialog-wizard-desktop-background;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: $color-dialog-wizard-desktop-text;
     display: flex;
     height: 3rem;
     padding: 0 20px;
@@ -128,10 +204,9 @@
   line-height: $dialog-button-close-height;
   margin-top: -#{$dialog-button-close-height / 2};
   position: absolute;
-  right: 10px;
+  right: 5px;
   text-align: center;
   top: 50%;
-  vertical-align: center;
   width: $dialog-button-close-height;
 }
 
@@ -143,6 +218,24 @@
 
 .dialog__content-row {
   margin: 0 0 10px;
+
+  label {
+    font-weight: 600;
+  }
+}
+
+.dialog__content-row--new-user {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+}
+
+.dialog__content-row--label {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
 }
 
 .dialog__footer {
@@ -176,4 +269,28 @@
       margin: 0 10px 0 0;
     }
   }
+}
+
+.dialog--enrollment {
+  background: transparent;
+  bottom: auto;
+  top: 10px;
+
+  .dialog__content-row--label {
+    flex-flow: row nowrap;
+  }
+
+  .dialog__content-column {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+    padding-left: 24px;
+  }
+}
+
+.dialog__header--enrollment {
+  background: $color-default;
+  color: $color-default-contrast;
 }

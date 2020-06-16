@@ -116,16 +116,20 @@
   <!-- locales -->
   <script defer="defer" jsf:name="scripts/gui/locales.js" />
 
+
   <!-- Flex Grid, DEPRECATED -->
   <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css" />
 
   <!-- Conversejs headless -->
+
+  <!-- Converse if required -->
   <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
     <script defer="defer" src="//cdn.muikkuverkko.fi/libs/converse/6.0.0/converse-headless.js" />
   </ui:fragment>
 
   <!-- Muikku icons -->
-  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.5/style.css" />
+  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.7/style.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&amp;subset=cyrillic" rel="stylesheet" />
   <ui:insert name="styles"></ui:insert>
 
   <!-- Here goes what a page needs, usually their controllers -->

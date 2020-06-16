@@ -9,46 +9,36 @@ import Websocket from '~/util/websocket';
 import * as queryString from 'query-string';
 import titleActions from '~/actions/base/title';
 import IndexBody from '../components/index/body';
-import { loadAnnouncementsAsAClient } from '~/actions/main-function/announcements';
+import { loadAnnouncementsAsAClient } from '~/actions/announcements';
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 import CousePickerBody from '../components/coursepicker/body';
-import { loadLoggedUser } from '~/actions/main-function/user-index';
-
-// New ones
+import { loadLoggedUser } from '~/actions/user-index';
+import { UserType } from '~/reducers/user-index';
 import { loadWorkspacesFromServer, loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer, loadUserWorkspaceOrganizationFiltersFromServer } from '~/actions/workspaces';
 import { loadLastWorkspaceFromServer, loadUserWorkspacesFromServer } from '~/actions/workspaces';
+import {loadUsers, loadStudyprogrammes} from '~/actions/main-function/users';
 import { WorkspacesActiveFiltersType } from '~/reducers/workspaces';
-
-
-
-// Deprecating 
-import { loadCoursesFromServer, LoadAvailableEducationFiltersFromServer, LoadAvailableCurriculumFiltersFromServer, LoadAvailableOrganizationFiltersFromServer } from '~/actions/main-function/courses';
-import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
-
-
-
-import { UserType } from '~/reducers/main-function/user-index';
 import OrganizationAdministrationBody from '../components/organization/body';
 import CommunicatorBody from '../components/communicator/body';
 import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
 import DiscussionBody from '../components/discussion/body';
-import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer} from '~/actions/main-function/discussion';
-import {loadAnnouncement, loadAnnouncements} from '~/actions/main-function/announcements';
+import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId} from '~/actions/discussion';
+import {loadAnnouncement, loadAnnouncements} from '~/actions/announcements';
 import AnnouncementsBody from '../components/announcements/body';
-import { AnnouncementListType } from '~/reducers/main-function/announcements';
+import { AnnouncementListType } from '~/reducers/announcements';
 import AnnouncerBody from '../components/announcer/body';
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadMoreStudents, loadStudent } from '~/actions/main-function/guider';
-import { loadUsers } from '~/actions/main-function/users';
 import GuiderBody from '../components/guider/body';
 import ProfileBody from '../components/profile/body';
 import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress, loadProfileChatSettings } from '~/actions/main-function/profile';
 import RecordsBody from '../components/records/body';
-import { updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records';
+import { CKEDITOR_VERSION } from '~/lib/ckeditor';
+
+import { setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, updateTranscriptOfRecordsFiles, updateAllStudentUsersAndSetViewToRecords } from '~/actions/main-function/records';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
-import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
 import {Chat} from '../components/chat/chat';
 
@@ -156,10 +146,11 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
   }
 
   loadAnnouncerData(location: string[]){
-    if (location.length === 1){
-      this.props.store.dispatch(loadAnnouncements(location[0]) as Action);
+    const actualLocation = location.filter(l => !!l);
+    if (actualLocation.length === 1){
+      this.props.store.dispatch(loadAnnouncements(actualLocation[0]) as Action);
     } else {
-      this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1])) as Action);
+      this.props.store.dispatch(loadAnnouncement(actualLocation[0], parseInt(actualLocation[1])) as Action);
     }
   }
 
@@ -197,10 +188,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES"
     }
-    this.props.store.dispatch(loadWorkspacesFromServer(filters) as Action);
+    this.props.store.dispatch(loadWorkspacesFromServer(filters, isOrganization) as Action);
   }
 
-  
   loadCommunicatorData(location: string[]){
     if (location.length === 1){
       this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
@@ -208,14 +198,15 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
     }
   }
+
   renderCoursePickerBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
 
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(false) as Action);
 
-      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
-      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
       this.props.store.dispatch(loadUserWorkspaceOrganizationFiltersFromServer() as Action);
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
@@ -245,6 +236,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
             } else {
               this.loadCoursePickerData(currentLocationData, false);
             }
+          } else {
+            this.loadCoursePickerData(currentLocationData, false);
           }
         }) as Action);
       } else if (!currentLocationHasData) {
@@ -275,19 +268,22 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.organization.pageTitle')));
       this.props.websocket.restoreEventListeners();
-      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer() as Action);
-      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer() as Action);
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(true) as Action);
+      this.props.store.dispatch(loadUserWorkspaceEducationFiltersFromServer(true) as Action);
 
       let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
       let currentLocationHasData = Object.keys(currentLocationData).length;
 
       if (currentLocationHasData) {
+
+        // Todo: this is not for coursepicker anymore
+
         this.loadCoursePickerData(currentLocationData, true);
       }
 
       let state:StateType = this.props.store.getState();
-      
       this.props.store.dispatch(loadUsers() as Action);
+      this.props.store.dispatch(loadStudyprogrammes() as Action);
 
       this.props.store.dispatch(loadLoggedUser((user:UserType)=>{
         if (!currentLocationHasData) {
@@ -349,6 +345,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.forum.pageTitle')));
 
+      this.props.store.dispatch(setDiscussionWorkpaceId(null) as Action);
+
+
       this.props.store.dispatch(loadDiscussionAreasFromServer(()=>{
         //here in the callback
         let currentLocation = window.location.hash.replace("#","").split("/");
@@ -363,6 +362,8 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     if (this.itsFirstTime){
       this.props.websocket.restoreEventListeners();
 
+
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.announcements.pageTitle')));
       this.props.store.dispatch(loadAnnouncementsAsAClient({hideWorkspaceAnnouncements: "false"}, (announcements:AnnouncementListType)=>{}) as Action);
       this.loadAnnouncementsData(parseInt(window.location.hash.replace("#","")));
     }
@@ -413,7 +414,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
 
       this.props.store.dispatch(loadProfileUsername() as Action);
 
-
       if (!this.props.store.getState().status.isStudent){
         this.props.store.dispatch(loadProfilePropertiesSet() as Action);
       } else {
@@ -429,13 +429,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
   renderRecordsBody(){
     this.updateFirstTime();
     if (this.itsFirstTime){
-      this.props.websocket.restoreEventListeners();
-
-      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
-
-      this.props.store.dispatch(LoadAvailableCurriculumFiltersFromServer() as Action);
+      this.props.websocket.restoreEventListeners();      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.records.pageTitle')));
+      this.props.store.dispatch(loadUserWorkspaceCurriculumFiltersFromServer(false) as Action);
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action)
-
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
     }
 

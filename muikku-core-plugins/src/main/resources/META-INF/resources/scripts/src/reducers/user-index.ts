@@ -1,5 +1,25 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
+export type ManipulateType = "UPDATE" | "CREATE";
+
+export interface ManipulateStudentType {
+  id?: string,
+  firstName: string,
+  lastName: string,
+  studyProgrammeIdentifier: string,
+  email: string,
+  gender?: "MALE" | "FEMALE" | "OTHER",
+  ssn?: string
+}
+
+export interface ManipulateStaffmemberType {
+  id? : string
+  firstName: string,
+  lastName: string,
+  email: string,
+  role: string
+ }
+
 
 export interface UserType {
   id: number,
@@ -11,7 +31,7 @@ export interface UserType {
   hasEvaluationFees?: false,
   curriculumIdentifier?: string,
   organizationIdentifier?: string,
- 
+
   //EXTENDED VALUES, may or may not be available
   email?: string,
   language?: string,
@@ -95,7 +115,7 @@ export interface UserRecepientType {
 
 export interface UserGroupRecepientType {
   type: "usergroup",
-  value: UserGroupType 
+  value: UserGroupType
 }
 
 export interface StaffRecepientType {
@@ -178,6 +198,6 @@ export default function userIndex(state:UserIndexType={
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop)});
   }
-  
+
   return state;
 }

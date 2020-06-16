@@ -1,5 +1,5 @@
 // Based on min-width (mobile-first) so these breakpoints fires when resolution exceeds given value.
-// Em values are calculated as 1em = 16px by default. If user has increased browser's font size 
+// Em values are calculated as 1em = 16px by default. If user has increased browser's font size
 // break points will scale properly (threshold to fire break point increases as well) without breaking the
 // amazing and magnificent layout :)
 
@@ -10,15 +10,15 @@ $breakpoint-mobile-xl: 40em;
 $breakpoint-pad: 48em;
 
 // eq. 1024px and up - normal desktop and landscape mode for pads that exceeds 64em/1024px width
-$breakpoint-desktop: 64em; 
+$breakpoint-desktop: 64em;
 
 // eq. 1200px and up - wide desktops that exceeds 75em/1200px width
-$breakpoint-desktop-xl: 75em; 
+$breakpoint-desktop-xl: 75em;
 
-// This has to be set in absolute pixel value so our max screen width doesn't increase when user increases browser's font size 
+// This has to be set in absolute pixel value so our max screen width doesn't increase when user increases browser's font size
 $breakpoint-max-usable-screen: 80rem;
 
-@mixin breakpoint($breakpoint){
+@mixin breakpoint($breakpoint) {
   @media screen and (min-width: $breakpoint) {
     @content;
   }

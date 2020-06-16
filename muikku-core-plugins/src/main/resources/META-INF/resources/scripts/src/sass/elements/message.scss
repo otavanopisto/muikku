@@ -4,12 +4,12 @@
 @import "../base/breakpoints";
 
 .message {
-  border-top: 3px solid $color-message-border;
+  border-top: 2px solid $color-message-border;
   cursor: pointer;
   padding: 10px;
 
   &:first-child {
-    border-color: transparent;
+    border-top-color: transparent;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -37,41 +37,41 @@
 }
 
 .message__title--category-1 {
-  border-left: 5px solid $color-message-area-category-1;  
+  border-left: 5px solid $color-message-area-category-1;
 }
 
 .message__title--category-2 {
-  border-left: 5px solid $color-message-area-category-2;  
+  border-left: 5px solid $color-message-area-category-2;
 }
 
 .message__title--category-3 {
-  border-left: 5px solid $color-message-area-category-3;  
+  border-left: 5px solid $color-message-area-category-3;
 }
 
 .message__title--category-4 {
-  border-left: 5px solid $color-message-area-category-4;  
+  border-left: 5px solid $color-message-area-category-4;
 }
 
 .message__title--category-5 {
-   border-left: 5px solid $color-message-area-category-5; 
+  border-left: 5px solid $color-message-area-category-5;
 }
 
 .message__title--category-6 {
-  border-left: 5px solid $color-message-area-category-6;  
+  border-left: 5px solid $color-message-area-category-6;
 }
 
 .message__title--category-7 {
-  border-left: 5px solid $color-message-area-category-7;    
+  border-left: 5px solid $color-message-area-category-7;
 }
 
 .message__title--category-8 {
-  border-left: 5px solid $color-message-area-category-8;    
+  border-left: 5px solid $color-message-area-category-8;
 }
 
 .message__title--category-9 {
-  border-left: 5px solid $color-message-area-category-9;  
+  border-left: 5px solid $color-message-area-category-9;
 }
 
 .message__title--category-10 {
-  border-left: 5px solid $color-message-area-category-10;  
+  border-left: 5px solid $color-message-area-category-10;
 }

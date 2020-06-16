@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -68,8 +69,8 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
+import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -94,6 +95,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   @Inject
   private LocaleController localeController;
+
+  @Inject
+  private CoursePickerController coursePickerController;
   
   @Inject
   private WorkspaceController workspaceController;
@@ -138,7 +142,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   private WorkspaceEntityFileController workspaceEntityFileController;
   
   @Inject
-  private OrganizationEntityController organizationEntityController;
+  private CurrentUserSession currentUserSession;
   
   @Inject
   @Any
@@ -178,24 +182,20 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Path("/organizations")
   @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
   public Response listOrganizations() {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      List<OrganizationEntity> organizations = organizationEntityController.listUnarchived();
-      
-      // TODO: Limit to organizations the user is part of / has access to
+    // Find the organizations with public workspaces accessible and/or for logged user the own organization workspaces
 
-      List<CoursePickerOrganization> restOrganizations = organizations.stream().map(organization -> {
-        SchoolDataIdentifier organizationIdentifier = organization.schoolDataIdentifier();
-        return new CoursePickerOrganization(organizationIdentifier.toId(), organization.getName());
-      }).collect(Collectors.toList());
-      
-      restOrganizations.sort((CoursePickerOrganization a, CoursePickerOrganization b)-> {
-        return a.getName().compareTo(b.getName());
-      });
-      return Response.ok(restOrganizations).build();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    List<OrganizationEntity> organizations = coursePickerController.listAccessibleOrganizations();
+    
+    List<CoursePickerOrganization> restOrganizations = organizations.stream().map(organization -> {
+      SchoolDataIdentifier organizationIdentifier = organization.schoolDataIdentifier();
+      return new CoursePickerOrganization(organizationIdentifier.toId(), organization.getName());
+    }).collect(Collectors.toList());
+    
+    restOrganizations.sort((CoursePickerOrganization a, CoursePickerOrganization b)-> {
+      return a.getName().compareTo(b.getName());
+    });
+    
+    return Response.ok(restOrganizations).build();
   }
   
   @GET
@@ -210,6 +210,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("myWorkspaces") @DefaultValue ("false") Boolean myWorkspaces,
+        @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestriction templateRestriction,
         @QueryParam("orderBy") List<String> orderBy,
         @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
         @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults,
@@ -235,6 +236,13 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     }
 
+    templateRestriction = templateRestriction != null ? templateRestriction : TemplateRestriction.ONLY_WORKSPACES;
+    if (templateRestriction != TemplateRestriction.ONLY_WORKSPACES) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_WORKSPACE_TEMPLATES)) {
+        return Response.status(Status.FORBIDDEN).entity("You have no permission to list workspace templates.").build();
+      }
+    }
+    
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
@@ -291,7 +299,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         }
       }
       
-      // TODO: Limit to organizations the logged user has access to (how though?)
+      List<OrganizationEntity> accessibleOrganizations = coursePickerController.listAccessibleOrganizations();
+      Set<SchoolDataIdentifier> accessibleOrganizationsIdentifiers = accessibleOrganizations.stream().map(OrganizationEntity::schoolDataIdentifier).collect(Collectors.toSet());
       
       List<SchoolDataIdentifier> organizationIdentifiers = null;
       if (organizationIds != null) {
@@ -299,7 +308,11 @@ public class CoursePickerRESTService extends PluginRESTService {
         for (String organizationId : organizationIds) {
           SchoolDataIdentifier organizationIdentifier = SchoolDataIdentifier.fromId(organizationId);
           if (organizationIdentifier != null) {
-            organizationIdentifiers.add(organizationIdentifier);
+            if (accessibleOrganizationsIdentifiers.contains(organizationIdentifier)) {
+              organizationIdentifiers.add(organizationIdentifier);
+            } else {
+              Response.status(Status.BAD_REQUEST).entity("Organization not found");
+            }
           } else {
             return Response.status(Status.BAD_REQUEST).entity(String.format("Malformed organization identifier", organizationId)).build();
           }
@@ -317,7 +330,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         .setAccesses(accesses)
         .setAccessUser(sessionController.getLoggedUser())
         .setIncludeUnpublished(includeUnpublished)
-        .setTemplateRestriction(TemplateRestriction.ONLY_WORKSPACES)
+        .setTemplateRestriction(templateRestriction)
         .setFirstResult(firstResult)
         .setMaxResults(maxResults)
         .setSorts(sorts)
@@ -379,6 +392,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
 
     if (workspaces.isEmpty()) {
+      // TODO: return 200 & empty list instead of 204
       return Response.noContent().build();
     }
     
@@ -561,7 +575,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   }
   
   private boolean getCanSignup(WorkspaceEntity workspaceEntity) {
-    if (sessionController.isLoggedIn() && sessionController.isActiveUser()) {
+    if (sessionController.isLoggedIn() && currentUserSession.isActive()) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
       return workspaceUserEntity == null && sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
     }

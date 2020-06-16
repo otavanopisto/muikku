@@ -1,6 +1,7 @@
 import { ActionType } from "~/actions";
 import { StudentUserAddressType, UserWithSchoolDataType, UserChatSettingsType } from "~/reducers/main-function/user-index";
 
+
 export interface ProfileType {
   properties: {
     [key: string]: string

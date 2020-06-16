@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.model.users;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -65,6 +67,14 @@ public class OrganizationEntity {
     this.archived = archived;
   }
 
+  public OrganizationWorkspaceVisibility getWorkspaceVisibility() {
+    return workspaceVisibility;
+  }
+
+  public void setWorkspaceVisibility(OrganizationWorkspaceVisibility workspaceVisibility) {
+    this.workspaceVisibility = workspaceVisibility;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -81,6 +91,10 @@ public class OrganizationEntity {
   @Column (nullable = false)
   @NotEmpty
   private String name;
+  
+  @Column (nullable = false)
+  @Enumerated (EnumType.STRING)
+  private OrganizationWorkspaceVisibility workspaceVisibility;
 
   @NotNull
   @Column(nullable = false)

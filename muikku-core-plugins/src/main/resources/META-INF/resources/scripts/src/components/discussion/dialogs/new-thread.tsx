@@ -3,40 +3,18 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
-import JumboDialog from '~/components/general/environment-dialog';
+import EnvironmentDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-import { DiscussionType } from '~/reducers/main-function/discussion';
-import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion';
+import { DiscussionType } from '~/reducers/discussion';
+import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/discussion';
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
 import { StatusType } from '~/reducers/base/status';
-import { CKEDITOR_VERSION } from '~/lib/ckeditor';
 
-const ckEditorConfig = {
-  uploadUrl: '/communicatorAttachmentUploadServlet',
-  toolbar: [
-    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-    { name: 'links', items: [ 'Link' ] },
-    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
-    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-    { name: 'styles', items: [ 'Format' ] },
-    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-    { name: 'tools', items: [ 'Maximize' ] }
-  ],
-  resize_enabled: false
-}
-const extraPlugins = {
-    'widget': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/${CKEDITOR_VERSION}/`,
-    'lineutils': `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/${CKEDITOR_VERSION}/`,
-    'filetools' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/${CKEDITOR_VERSION}/`,
-    'notification' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/${CKEDITOR_VERSION}/`,
-    'notificationaggregator' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/${CKEDITOR_VERSION}/`,
-    'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-    'uploadwidget' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/${CKEDITOR_VERSION}/`,
-    'uploadimage' : `//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/${CKEDITOR_VERSION}/`
-}
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 
 interface DicussionNewThreadProps {
   children: React.ReactElement<any>,
@@ -58,7 +36,7 @@ interface DicussionNewThreadState {
 class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, DicussionNewThreadState> {
   constructor(props: DicussionNewThreadProps){
     super(props, "discussion-new-thread");
-    
+
     this.state = this.getRecoverStoredState({
       text: "",
       title: "",
@@ -67,7 +45,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
       threadLocked: false,
       selectedAreaId: props.discussion.areaId || (props.discussion.areas[0] && props.discussion.areas[0].id)
     }, props.discussion.areaId || (props.discussion.areas[0] && props.discussion.areas[0].id));
-    
+
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
@@ -76,7 +54,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
   }
-  checkAgainstStoredState(){  
+  checkAgainstStoredState(){
     this.checkStoredAgainstThisState({
       text: "",
       title: "",
@@ -158,14 +136,14 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-       <div key="1" className="env-dialog__row env-dialog__row---new-discussion-options">
-         <div className="env-dialog__form-element-container">  
-           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>       
-           <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" 
-           value={this.state.title} onChange={this.onTitleChange} autoFocus/>
+       <div key="1" className="env-dialog__row env-dialog__row--new-discussion-options">
+         <div className="env-dialog__form-element-container">
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>
+           <input className="env-dialog__input env-dialog__input--new-discussion-thread-title"
+             value={this.state.title} onChange={this.onTitleChange} autoFocus/>
          </div>
-         <div className="env-dialog__form-element-container">  
-           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.area')}</div>       
+         <div className="env-dialog__form-element-container">
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.area')}</div>
            <select className="env-dialog__select" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
             {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
               {area.name}
@@ -174,21 +152,25 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
          </div>
        </div>,
        (this.props.status.permissions.FORUM_LOCK_STICKY_PERMISSION ? <div key="2" className="env-dialog__row  env-dialog__row--new-discussion-thread-states">
-         <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
-         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
-         <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
-         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
+         <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
+           <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+           <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
+         </div>
+         <div className="env-dialog__form-element-container env-dialog__form-element-container--locked-thread">
+           <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+           <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
+         </div>
        </div> : <div key="2" className="env-dialog__row env-dialog__row--new-discussion-thread-states"/>),
-       <div className="env-dialog__row" key="3">     
+       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
-           <CKEditor key="3" width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+           <CKEditor key="3"
            onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
          </div>
        </div>
     ]
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
         <div className="env-dialog__actions">
          <Button buttonModifiers="dialog-execute" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
@@ -201,12 +183,12 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
           </Button> : null}
         </div>
       )
-    }    
-    return <JumboDialog modifier="new-message"
+    }
+    return <EnvironmentDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
-    </JumboDialog>
+    </EnvironmentDialog>
   }
 }
 

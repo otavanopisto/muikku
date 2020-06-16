@@ -1,23 +1,19 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
-
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
-
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
-import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
-
+import { AnnouncementsType, AnnouncementType } from '~/reducers/announcements';
 import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import NewEditAnnouncement from '../../dialogs/new-edit-announcement';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
-import { updateAnnouncement, UpdateAnnouncementTriggerType, RemoveFromAnnouncementsSelectedTriggerType, removeFromAnnouncementsSelected } from '~/actions/main-function/announcements';
+import { updateAnnouncement, UpdateAnnouncementTriggerType, RemoveFromAnnouncementsSelectedTriggerType, removeFromAnnouncementsSelected } from '~/actions/announcements';
 
 interface AnnouncerToolbarProps {
   i18n: i18nType,
@@ -33,7 +29,6 @@ interface AnnouncerToolbarState {
 class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerToolbarState> {
   constructor( props: AnnouncerToolbarProps ) {
     super( props );
-
     this.go = this.go.bind( this );
     this.onGoBackClick = this.onGoBackClick.bind( this );
     this.restoreCurrentAnnouncement = this.restoreCurrentAnnouncement.bind(this);
@@ -105,28 +100,28 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick} />
+            <ButtonPill buttonModifiers="go-back" icon="back" onClick={this.onGoBackClick} />
 
             <div className="application-panel__tool--current-folder">
-              <span className="application-panel__tool-icon icon-new-section"></span>
+              <span className="application-panel__tool-icon icon-folder"></span>
               <span className="application-panel__tool-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
 
             <NewEditAnnouncement announcement={this.props.announcements.current}>
-              <ButtonPill buttonModifiers="edit" icon="edit" />
+              <ButtonPill buttonModifiers="edit" icon="pencil" />
             </NewEditAnnouncement>
             {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
             {this.props.announcements.location !== "archived" ?
               <DeleteAnnouncementDialog announcement={this.props.announcements.current} onDeleteAnnouncementSuccess={this.onGoBackClick}>
-                <ButtonPill buttonModifiers="delete" icon="delete" />
+                <ButtonPill buttonModifiers="delete" icon="trash" />
               </DeleteAnnouncementDialog>
             : null}
-            {this.props.announcements.location === "archived" ? 
-                <ButtonPill buttonModifiers="restore" icon="put-back" onClick={this.restoreCurrentAnnouncement}/> : null}
+            {this.props.announcements.location === "archived" ?
+                <ButtonPill buttonModifiers="restore" icon="undo" onClick={this.restoreCurrentAnnouncement}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
-            <ButtonPill buttonModifiers="prev-page" disabled={!prev} onClick={this.go.bind( this, prev )} icon="arrow-left-thin" />
-            <ButtonPill buttonModifiers="next-page" disabled={!next} onClick={this.go.bind( this, next )} icon="arrow-right-thin" />
+            <ButtonPill buttonModifiers="prev-page" disabled={!prev} onClick={this.go.bind( this, prev )} icon="arrow-left" />
+            <ButtonPill buttonModifiers="next-page" disabled={!next} onClick={this.go.bind( this, next )} icon="arrow-right" />
           </ApplicationPanelToolbarActionsAside>
         </ApplicationPanelToolbar>
       )
@@ -135,17 +130,17 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="application-panel__tool--current-folder">
-              <span className="glyph application-panel__tool-icon icon-new-section"></span>
+              <span className="glyph application-panel__tool-icon icon-folder"></span>
               <span className="application-panel__tool-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
             {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
             {this.props.announcements.location !== "archived" ?
               <DeleteAnnouncementDialog>
-                <ButtonPill buttonModifiers="delete" disabled={this.props.announcements.selected.length === 0} icon="delete"/>
+                <ButtonPill buttonModifiers="delete" disabled={this.props.announcements.selected.length === 0} icon="trash"/>
               </DeleteAnnouncementDialog>
             : null }
-            {this.props.announcements.location === "archived" ? 
-              <ButtonPill buttonModifiers="restore" icon="put-back" disabled={this.props.announcements.selected.length === 0} onClick={this.restoreSelectedAnnouncements}/> : null}
+            {this.props.announcements.location === "archived" ?
+              <ButtonPill buttonModifiers="restore" icon="undo" disabled={this.props.announcements.selected.length === 0} onClick={this.restoreSelectedAnnouncements}/> : null}
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
       )
@@ -168,4 +163,4 @@ function mapDispatchToProps( dispatch: Dispatch<any> ) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( AnnouncerToolbar );
+)(AnnouncerToolbar);

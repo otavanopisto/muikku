@@ -3,12 +3,21 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.application-panel-wrapper {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
 .application-panel {
   align-items: center;
   display: flex;
   justify-content: center;
+  margin: 0 auto;
+  max-width: $breakpoint-max-usable-screen;
   padding: $navbar-mobile-height 0 10px;
-  
+  width: 100%;
+
   @include breakpoint($breakpoint-pad) {
     padding: calc(#{$navbar-desktop-height} * 1.25) 10px 10px;
   }
@@ -18,12 +27,20 @@
   @include text;
   display: flex;
   flex-direction: column;
-  max-width: $breakpoint-max-usable-screen;
   width: 100%;
 }
 
 .application-panel__body {
   @include panel-body;
+  background-color: $color-application-panel-box-background;
+  box-shadow: 0 2px 3px $color-panel-shadow;
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoint($breakpoint-pad) {
+    border: solid 1px $color-application-panel-box-border;
+    box-shadow: none;
+  }
 }
 
 .application-panel__body--tabs {
@@ -39,7 +56,7 @@
 
 .application-panel__header {
   display: none;
-  
+
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     background-color: $color-default-body;
@@ -49,22 +66,25 @@
     flex-shrink: 0;
     justify-content: center;
     margin: 10px;
-    position: relative;
     max-width: calc($breakpoint-max-usable-screen - 20px);
+    position: relative;
     width: calc(100% - 20px);
   }
 }
 
-.application-panel__header-title-container {
+.application-panel__header-title {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-}
-
-.application-panel__header-title {
   font-size: 1.5rem;
   font-weight: 300;
+  height: $panel-header-title-height-mobile;
+  line-height: 1;
   text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $panel-header-title-height-desktop;
+  }
 }
 
 .application-panel__header-actions {
@@ -80,7 +100,7 @@
   right: 0;
   top: $navbar-mobile-height;
   z-index: 998;
-  
+
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     display: flex;
@@ -94,15 +114,15 @@
     top: 0;
   }
 }
-  
+
 .application-panel__toolbar {
   align-items: center;
   display: flex;
   overflow: hidden;
   width: 100%;
-}  
-  
-  
+}
+
+
 .application-panel__tool--current-folder {
   align-items: center;
   display: flex;
@@ -114,30 +134,28 @@
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
-  
+
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
 }
- 
+
 .application-panel__tool-icon {
   font-size: 1rem;
   height: auto;
   padding: 0 5px 0 0;
   width: 22px;
 }
- 
+
 .application-panel__tool-title {
   display: inline-block;
   font-size: 1rem;
-  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths 
+  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
- 
-  
 .application-panel__toolbar-actions-main {
   align-items: center;
   display: flex;
@@ -147,10 +165,10 @@
 }
 
 .application-panel__tools-container {
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  display: flex;
 }
 
 .application-panel__toolbar-actions-aside {
@@ -160,7 +178,7 @@
 
 .application-panel__content {
   padding: $navbar-mobile-height 0 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     display: flex;
     flex-direction: row;
@@ -169,15 +187,18 @@
 }
 
 // Helper containers
+
 .application-panel__helper-container {
   display: none;
 
   @include breakpoint($breakpoint-pad) {
+    @include no-scrollbars;
+    display: flex;
     flex-basis: 220px;
     flex-grow: 0;
     flex-shrink: 0;
-    display: flex;
     margin: 0;
+    overscroll-behavior: contain;
     padding: 12px;
     z-index: 1;
   }
@@ -188,15 +209,35 @@
   height: $navbar-desktop-height;
 }
 
+.application-panel__helper-container--workspace-journal {
+  @include no-scrollbars;
+  display: flex;
+  flex-basis: 220px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: $navbar-mobile-height;
+  margin: 0;
+  overscroll-behavior: contain;
+  padding: 8px;
+  z-index: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $navbar-desktop-height;
+    padding: 12px;
+  }
+
+}
+
 // Main containers
 .application-panel__main-container {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  margin: 0;
   padding: 0;
   position: relative;
-  margin: 0;
-  
+  width: 100%;
+
   @include breakpoint($breakpoint-pad) {
     padding: 12px;
   }
@@ -204,16 +245,24 @@
 
 .application-panel__main-container--actions {
   background: $color-default;
-  border-bottom: 2px solid $color-main-function-application-panel-actions-border; 
+  border-bottom: 2px solid $color-main-function-application-panel-actions-border;
   flex-direction: row;
   height: $navbar-mobile-height;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     background: transparent;
     border-width: 1px;
     height: $navbar-desktop-height;
     padding: 12px;
+  }
+}
+
+.application-panel__main-container--workspace-journal {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: block;
   }
 }
 
@@ -226,7 +275,7 @@
   @include breakpoint($breakpoint-pad) {
     padding-left: 0;
   }
-} 
+}
 
 
 // Profile
@@ -234,14 +283,14 @@
 
   .application-panel__helper-container {
     display: block;
-    
+
     @include breakpoint($breakpoint-pad) {
       display: flex;
-      justify-content: center;
       flex-basis: 294px;
+      justify-content: center;
     }
   }
-  
+
   .application-panel__content {
     padding: 10px 0 0;
   }

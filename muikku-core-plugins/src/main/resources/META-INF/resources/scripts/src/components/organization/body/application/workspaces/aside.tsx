@@ -5,13 +5,13 @@ import { i18nType } from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { CoursesType, CourseEducationFilterType, CourseCurriculumFilterType} from '~/reducers/main-function/courses';
+import { WorkspacesType, WorkspaceEducationFilterType, WorkspaceCurriculumFilterType } from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 
 interface NavigationAsideProps {
   i18n: i18nType,
-  courses: CoursesType
+  workspaces: WorkspacesType
 }
 
 interface NavigationAsideState {
@@ -20,20 +20,19 @@ interface NavigationAsideState {
 }
 
 class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAsideState> {
+
   constructor(props: NavigationAsideProps){
     super(props);
       this.state = {
           published: false,
           active: false
       }
-    
     }
-  
+
   render() {
-    
     let locationData = queryString.parse( document.location.hash.split( "?" )[1] || "", { arrayFormat: 'bracket' } );
     // Moc data because the backend lacks this
-    
+
     let published = [
       {
         name: "published",
@@ -44,7 +43,7 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
         label: "plugin.organization.filters.published.false"
       }
     ];
-    
+
     let active =  [
      {
        name: "active",
@@ -56,9 +55,8 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
      }
     ];
 
-    
 //    These are waiting for backend works
-// 
+//
 //  <NavigationTopic name={this.props.i18n.text.get('plugin.organization.filters.published.title')}>
 //    {published.map( ( element ) => {
 //      let isActive = this.state.published;
@@ -76,13 +74,12 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
 //        queryString.stringify( Object.assign( {}, locationData, { s: ( locationData.e || [] ).concat(element.name ) } ), { arrayFormat: 'bracket' } ) )
 //      return <NavigationElement key={element.name} isActive={isActive} hash={hash}>{this.props.i18n.text.get(element.label)}</NavigationElement>
 //    })}
-//  </NavigationTopic>   
-    
-    return <Navigation>
+//  </NavigationTopic>
 
+    return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
-        {this.props.courses.availableFilters.educationTypes.map( ( educationType: CourseEducationFilterType ) => {
-          let isActive = this.props.courses.activeFilters.educationFilters.includes( educationType.identifier );
+        {this.props.workspaces.availableFilters.educationTypes.map( ( educationType: WorkspaceEducationFilterType ) => {
+          let isActive = this.props.workspaces.activeFilters.educationFilters.includes( educationType.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).filter( ( i: string ) => i !== educationType.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).concat( educationType.identifier ) } ), { arrayFormat: 'bracket' } ) )
@@ -90,8 +87,8 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
         })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
-        {this.props.courses.availableFilters.curriculums.map( ( curriculum: CourseCurriculumFilterType ) => {
-          let isActive = this.props.courses.activeFilters.curriculumFilters.includes( curriculum.identifier );
+        {this.props.workspaces.availableFilters.curriculums.map( ( curriculum: WorkspaceCurriculumFilterType ) => {
+          let isActive = this.props.workspaces.activeFilters.curriculumFilters.includes( curriculum.identifier );
           let hash = "?" + ( isActive ?
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).filter( ( c: string ) => c !== curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { c: ( locationData.c || [] ).concat( curriculum.identifier ) } ), { arrayFormat: 'bracket' } ) );
@@ -105,7 +102,7 @@ class WorkspacesAside extends React.Component<NavigationAsideProps, NavigationAs
 function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n,
-    courses: state.courses
+    workspaces: state.organizationWorkspaces
   }
 };
 
