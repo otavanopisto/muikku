@@ -1711,7 +1711,8 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("lastName"), 
             email,
             propertyMap,
-            organizationRESTModel));
+            organizationRESTModel,
+            (String) o.get("archetype")));
         }
       }
     }
