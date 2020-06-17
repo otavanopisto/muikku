@@ -72,16 +72,16 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       login();
     
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-      waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+      selectFinnishLocale();
+      waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+      assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
+      waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+      waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+      waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+      waitAndClick(".button--muikku-submit-assignment");
+
+      waitForElementToBeClickable(".button--muikku-withdraw-assignment");
       
-      assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-      assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-      assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-      sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-      waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-      waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-      waitForPresentAndVisible(".notification-queue-item-success");
-      waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
       mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
@@ -180,16 +180,16 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         login();
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        selectFinnishLocale();
+        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitAndClick(".button--muikku-submit-assignment");
+
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
         
-        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-        waitForPresentAndVisible(".notification-queue-item-success");
-        waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
         mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
@@ -205,6 +205,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
         waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
+        waitUntilContentChanged(".assignment-wrapper .muikku-text-field", "");
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
         waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
@@ -361,16 +362,16 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         login();
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-        waitForPresentAndVisible(".notification-queue-item-success");
-        waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
+        selectFinnishLocale();
+        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitAndClick(".button--muikku-submit-assignment");
+
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
+
         mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
@@ -407,13 +408,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        waitAndClick(".muikku-show-evaluation-button");
-        
-        waitForPresentAndVisible(".evaluation-container .assignment-literal-container .assignment-literal-data p");
-        assertText(".evaluation-container .assignment-literal-container .assignment-literal-data p", "Test evaluation.");
-        waitForPresentAndVisible(".evaluation-container .assignment-grade-container span.assignment-grade-data");
-        assertText(".evaluation-container .assignment-grade-container span.assignment-grade-data", "Excellent");
+        waitForPresent(".material-page__assignment-assessment");
+        assertText(".material-page__assignment-assessment .material-page__assignment-assessment-literal-data>p", "Test evaluation.");
+        waitForPresentAndVisible(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data");
+        assertText(".material-page__assignment-assessment .material-page__assignment-assessment-grade-data", "Excellent");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());
@@ -558,16 +556,15 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         login();
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-        waitForPresentAndVisible(".notification-queue-item-success");
-        waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
+        selectFinnishLocale();
+        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitAndClick(".button--muikku-submit-assignment");
+
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");
         mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
