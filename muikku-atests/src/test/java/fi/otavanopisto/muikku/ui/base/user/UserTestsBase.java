@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.CourseBuilder;
@@ -57,23 +58,12 @@ public class UserTestsBase extends AbstractUITest {
         .build();
       
       login();
-      waitForPresent(".ordered-container__item--workspaces .ordered-container__item-header-text");
-      String worspaceTitleText = getWebDriver().findElement(By.cssSelector(".ordered-container__item--workspaces .ordered-container__item-header-text")).getText();
-      if(worspaceTitleText.equalsIgnoreCase("Työtilat")) {
-        waitAndClick(".button-pill--current-language");
-        waitForPresent(".dropdown--language-picker");
-        waitForPresent(".ordered-container__item--workspaces .ordered-container__item-header-text");
-        waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
-        waitForPresent(".ordered-container__item--workspaces .ordered-container__item-header-text");
-        assertTextIgnoreCase(".ordered-container__item--workspaces .ordered-container__item-header-text", "Workspaces");
-      }else {
-        waitAndClick(".button-pill--current-language");
-        waitForPresent(".dropdown--language-picker");
-        waitForPresent(".ordered-container__item--workspaces .text__panel-title");
-        waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
-        waitForPresent(".ordered-container__item--workspaces .ordered-container__item-header-text");
-        assertTextIgnoreCase(".ordered-container__item--workspaces .ordered-container__item-header-text", "Työtilat");
-      }
+      selectEnglishLocale();
+      waitForPresent(".panel--workspaces .panel__header-title");
+      assertTextIgnoreCase(".panel--workspaces .panel__header-title", "Workspaces");
+      selectFinnishLocale();
+      waitForPresent(".panel--workspaces .panel__header-title");
+      assertTextIgnoreCase(".panel--workspaces .panel__header-title", "Työtilat");
     }finally {
       mockBuilder.wiremockReset();
     }
@@ -92,10 +82,11 @@ public class UserTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       waitAndClick(".button-pill--profile");
+      waitForPresentAndVisible(".dropdown__container .icon-user + span");
       assertVisible(".dropdown__container .icon-user + span");
-      assertVisible(".dropdown__container .icon-forgotpassword + span");
-      assertVisible(".dropdown__container .icon-helpdesk + span");
-      assertVisible(".dropdown__container .icon-signout + span");
+      assertVisible(".dropdown__container .icon-question + span");
+      assertVisible(".dropdown__container .icon-support+ span");
+      assertVisible(".dropdown__container .icon-sign-out + span");
     }finally {
       mockBuilder.wiremockReset();
     }
@@ -116,8 +107,8 @@ public class UserTestsBase extends AbstractUITest {
       navigate("/profile", false);
       waitForPresentAndVisible(".profile-element__title");
       assertTextIgnoreCase(".profile-element__title", "admin user");
-      waitForPresentAndVisible(".application-panel__main-container .profile-element__item .profile-user-data");
-      assertTextIgnoreCase(".application-panel__main-container .profile-element__item .profile-user-data", "admin@example.com");
+      waitForPresentAndVisible(".application-panel__body .application-panel__content .application-panel__main-container .profile-element .profile-element__item .profile-element__data");
+      assertTextIgnoreCase(".application-panel__body .application-panel__content .application-panel__main-container .profile-element .profile-element__item .profile-element__data", "admin@example.com");
       
       assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(1) > label", "Puhelinnumero");
       assertVisible("div.application-panel__main-container > div > form > div:nth-child(1) > input");
@@ -136,6 +127,15 @@ public class UserTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI
+      }
+    )
   public void teacherInformationSetAndVisibleTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -163,9 +163,11 @@ public class UserTestsBase extends AbstractUITest {
       waitAndClick(".profile-element__title");
       waitAndClick("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
       waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input", "19.04.2030");
-      waitAndClick(".profile-element__title");
-      click("form .button--primary-function-save");
-      click("form .button--primary-function-save");
+      waitAndClick(".application-panel__header-title");
+      waitForNotVisible(".react-datepicker-popper");
+      sleep(300);
+      waitAndClick("form a.button--primary-function-save");
+      waitAndClick("form a.button--primary-function-save");
       waitForPresentAndVisible(".notification-queue__item--success");
       navigate("/", false);
       logout();
@@ -173,12 +175,10 @@ public class UserTestsBase extends AbstractUITest {
       login();
       selectFinnishLocale();
       navigate("/workspace/" + workspace.getUrlName(), false);
-      waitForPresent(".workspace-frontpage-teachers");
-      waitForPresentAndVisible(".workspace-teacher-info.phone");
-      assertTextIgnoreCase(".workspace-teacher-info.phone", "Puhelin: 121212");
-// TODO: These don't show at all
-      waitForPresentAndVisible(".workspace-teacher-info.vacation-period");
-      assertText(".workspace-teacher-info.vacation-period", "Poissa 19.4.2018 - 19.4.2030"); 
+      waitForPresentAndVisible(".panel--workspace-teachers .item-list__user-phone");
+      assertTextIgnoreCase(".panel--workspace-teachers .item-list__user-phone", "121212");
+      waitForPresentAndVisible(".panel--workspace-teachers .item-list__user-vacation-period");
+      assertText(".panel--workspace-teachers .item-list__user-vacation-period", "Poissa 19.04.2018–19.04.2030"); 
     }finally {
       mockBuilder.wiremockReset();
     }
