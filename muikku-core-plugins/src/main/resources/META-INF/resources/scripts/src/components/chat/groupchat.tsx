@@ -720,9 +720,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         this.props.converse.api.waitUntil('roomsAutoJoined').then(async() => {
           this.openMucConversation(chat.jid);
           let room = await this.props.converse.api.rooms.get(this.state.roomJid);
-
-          room.listenTo(room.occupants, 'add', this.getOccupants);
-          room.listenTo(room.occupants, 'destroy', this.getOccupants);
+		
+		  if(room){
+			room.listenTo(room.occupants, 'add', this.getOccupants);
+            room.listenTo(room.occupants, 'destroy', this.getOccupants);
+		  }
+          
           this.scrollToBottom.bind(this, "auto");
         });
       }
