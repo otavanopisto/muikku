@@ -101,7 +101,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       signupDialogOpen: false,
     });
   }
-  loadlib(url: string){
+  loadlib(url: string, onload?: () => void){
     if (this.loadedLibs.indexOf(url) !== -1){
       return;
     }
@@ -109,6 +109,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
     let script = document.createElement("script");
     script.src = url;
+    if (onload) {
+      script.onload = onload;
+    }
     document.head.appendChild(script);
   }
   onHashChange(){
@@ -241,7 +244,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.status.currentWorkspaceName));
@@ -260,7 +265,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
     }
 
     return <WorkspaceHomeBody workspaceUrl={props.match.params["workspaceUrl"]}/>
@@ -272,7 +279,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.helpPage.title')));
@@ -296,7 +305,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.discussions.pageTitle')));
@@ -336,7 +347,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.announcer.pageTitle')));
@@ -405,7 +418,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.materials.pageTitle')));
@@ -446,7 +461,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.users.pageTitle')));
@@ -472,7 +489,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.journal.pageTitle')));
@@ -502,7 +521,9 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
 
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
-      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`);
+      this.loadlib(`//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`, () => {
+        (window as any).CKEDITOR.disableAutoInline = true;
+      });
 
       let state = this.props.store.getState();
       this.props.store.dispatch(titleActions.updateTitle(state.i18n.text.get('plugin.workspace.management.pageTitle')));
