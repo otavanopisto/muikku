@@ -1,8 +1,5 @@
 import * as React from "react";
-import { HTMLtoReactComponent, guidGenerator } from "~/util/modifiers";
-import $ from '~/lib/jquery';
 import Toolbar, { MathFieldCommandType } from './toolbar';
-import equals = require("deep-equal");
 import Field from './field';
 
 interface MathFieldProps {
@@ -34,12 +31,10 @@ interface MathFieldState {
 const ACE_DEFAULT_SRC = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js";
 const ACE_MODE_SRC = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/mode-latex.js";
 
-const MQ_DEFAULT_SRC = "//cdn.muikkuverkko.fi/libs/digabi-math-editor/3.4.1/mathquill.min.js";
-const MQ_DEFAULT_CSS = "//cdn.muikkuverkko.fi/libs/digabi-math-editor/3.4.1/mathquill.css";
+const MQ_DEFAULT_SRC = "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.min.js";
+const MQ_DEFAULT_CSS = "//cdn.muikkuverkko.fi/libs/mathquill/0.10.1/mathquill.css";
 
 export default class MathField extends React.Component<MathFieldProps, MathFieldState> {
-  //private cancelRemovalOfFocus: boolean;
-  private value: string;
   private loadedAce: boolean;
   private loadedMq: boolean;
   constructor(props: MathFieldProps){

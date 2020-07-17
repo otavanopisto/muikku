@@ -3,7 +3,7 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.muikku-math-exercise-toolbar {
+.material-page__mathfield-toolbar {
   background-color: $color-math-exercise-toolbar-default-background;
   border-bottom: $color-math-exercise-toolbar-default-border;
   box-shadow: 0 2px 4px $color-math-exercise-toolbar-default-shadow;
@@ -15,8 +15,8 @@
   top: 0;
   z-index: 9999;
 
-  .muikku-math-exercise-toolbar--symbols,
-  .muikku-math-exercise-toolbar--math.muikku-math-exercise-toolbar--math-expanded {
+  .material-page__mathfield-toolbar--symbols,
+  .material-page__mathfield-toolbar--math.material-page__mathfield-toolbar--math-expanded {
     align-content: flex-start;
     align-items: flex-start;
     display: flex;
@@ -26,11 +26,11 @@
     position: relative;
   }
 
-  .muikku-math-exercise-toolbar--math.muikku-math-exercise-toolbar--math-expanded {
+  .material-page__mathfield-toolbar--math.material-page__mathfield-toolbar--math-expanded {
     padding-top: 10px;
   }
 
-  .muikku-math-exercise-toolbar--symbols-expand {
+  .material-page__mathfield-toolbar--symbols-expand {
     bottom: 10px;
     height: 25px;
     position: absolute;
@@ -39,8 +39,8 @@
     width: 25px;
   }
 
-  .muikku-math-exercise-toolbar--symbol-group-label,
-  .muikku-math-exercise-toolbar--math-label {
+  .material-page__mathfield-toolbar--symbol-group-label,
+  .material-page__mathfield-toolbar--math-label {
     display: none;
     font-size: 12px;
     height: 20px;
@@ -48,14 +48,14 @@
     width: 100%;
   }
 
-  .muikku-math-exercise-toolbar--symbol-group {
+  .material-page__mathfield-toolbar--symbol-group {
     margin-right: 10px;
     padding: 20px 20px 0 0;
     position: relative;
   }
 
-  .muikku-math-exercise-toolbar--symbol,
-  .muikku-math-exercise-toolbar--math-operation {
+  .material-page__mathfield-toolbar--symbol,
+  .material-page__mathfield-toolbar--math-operation {
     align-items: center;
     display: inline-flex;
     height: 30px;
@@ -64,8 +64,8 @@
     vertical-align: top;
     width: 30px;
 
-    .muikku-math-exercise-toolbar--symbol-latex-tooltip,
-    .muikku-math-exercise-toolbar--math-operation-tooltip {
+    .material-page__mathfield-toolbar--symbol-latex-tooltip,
+    .material-page__mathfield-toolbar--math-operation-tooltip {
       background-color: $color-default-contrast;
       color: $color-default;
       display: block;
@@ -80,23 +80,23 @@
     }
   }
 
-  &.muikku-math-exercise-toolbar--expanded {
+  &.material-page__mathfield-toolbar--expanded {
 
     @include breakpoint($breakpoint-pad) {
 
-      .muikku-math-exercise-toolbar--symbols-expand {
+      .material-page__mathfield-toolbar--symbols-expand {
         bottom: auto;
         top: 40px;
       }
 
-      .muikku-math-exercise-toolbar--symbol-group-label,
-      .muikku-math-exercise-toolbar--math-label {
+      .material-page__mathfield-toolbar--symbol-group-label,
+      .material-page__mathfield-toolbar--math-label {
         display: block;
       }
     }
   }
 
-  .muikku-math-exercise-toolbar--more-math-expand {
+  .material-page__mathfield-toolbar--more-math-expand {
     height: 30px;
     margin-top: 10px;
     width: 100%;
@@ -108,7 +108,7 @@
   }
 }
 
-.muikku-math-exercise-field-editor {
+.material-page__mathfield-editor {
   background-color: $color-math-editor-background;
   border: solid 1px $color-math-editor-border;
   border-radius: 3px;
@@ -150,7 +150,7 @@
   }
 }
 
-.muikku-math-exercise-editor {
+.material-page__mathfield-editor {
   border: 1px solid $color-default-separator-border;
   box-shadow: 0 2px 5px $color-default-separator-border;
   display: block;
@@ -158,7 +158,7 @@
   position: relative;
 }
 
-.muikku-math-exercise-editor--formula-container {
+.material-page__mathfield-editor--formula-container {
   align-items: center;
   justify-content: center;
   position: relative;
@@ -171,7 +171,7 @@
   }
 }
 
-.muikku-math-exercise-editor--formula-text-editor {
+.material-page__mathfield-editor--formula-text-editor {
   min-height: 100px;
   position: relative;
 }
