@@ -159,8 +159,8 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         <DialogRow modifiers="new-user">
           <SelectFormElement name="role" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')} updateField={this.updateField} >
             <option value="STUDENT">{this.props.i18n.text.get('plugin.organization.users.addUser.role.student')}</option>
-            <option value="MANAGER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
-            <option value="TEACHER">{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
+            <option value="MANAGER" {...this.props.data.role && this.props.data.role == "MANAGER" ? "selected" : null}>{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
+            <option value="TEACHER" {...this.props.data.role && this.props.data.role == "TEACHER" ? "selected" : null}>{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
           </SelectFormElement>
           <InputFormElement value={this.props.data? this.props.data.firstName : ""} name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
           <InputFormElement value={this.props.data? this.props.data.lastName : ""} name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />

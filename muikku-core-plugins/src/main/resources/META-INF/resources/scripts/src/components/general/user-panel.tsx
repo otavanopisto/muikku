@@ -35,7 +35,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
               firstName: user.firstName,
               lastName: user.lastName,
               email: user.email,
-              role: "STUDENT",
+              role: user.role ? user.role : null,
               studyProgrammeIdentifier: "STUDYPROGRAMME-1"
             }
             let actions = <div><UserDialog data={data}><span className="icon-pencil"></span></UserDialog></div>;

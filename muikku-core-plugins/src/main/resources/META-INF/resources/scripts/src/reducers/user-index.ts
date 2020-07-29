@@ -55,6 +55,7 @@ export interface UserWithSchoolDataType {
   nationality?: string,
   nickName?: string,
   school?: string,
+  role? : string,
   studyEndDate?: string,
   studyProgrammeName?: string,
   studyStartDate?: string,
