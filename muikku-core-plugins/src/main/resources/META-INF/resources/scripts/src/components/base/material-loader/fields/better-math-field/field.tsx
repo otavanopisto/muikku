@@ -510,7 +510,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   unselect(focusAfterImage?: boolean, selectAfterUnselect?: boolean){
     if (this.selectedFormula){
-      console.log("unselect");
+      //console.log("unselect");
 
       let latex = this.selectedMathField.latex();
       if (latex.trim() === ""){
