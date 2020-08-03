@@ -561,14 +561,14 @@ export class Chat extends React.Component<Iprops, Istate> {
 
         {/* Chat bubble */}
         { (this.state.showChatButton === true) && <div onClick={() => this.openControlBox()} className="chat__bubble">
-          <span className="icon-discussion"></span>
+          <span className="icon-chat"></span>
         </div>}
 
         {/* Chat controlbox */}
         { (this.state.showControlBox === true) && <div className="chat__panel chat__panel--controlbox">
           <div className="chat__panel-header chat__panel-header--controlbox">
-            <span onClick={() => this.openNewRoomForm()} className="chat__button chat__button--new-room icon-add"></span>
-            <span onClick={() => this.openControlBox()} className="chat__button chat__button--close icon-close"></span>
+            <span onClick={() => this.openNewRoomForm()} className="chat__button chat__button--new-room icon-plus"></span>
+            <span onClick={() => this.openControlBox()} className="chat__button chat__button--close icon-cross"></span>
           </div>
 
           { (this.state.isConnectionOk === false) && <div>

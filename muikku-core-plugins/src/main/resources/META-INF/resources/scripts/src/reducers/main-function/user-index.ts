@@ -44,7 +44,7 @@ export interface UserWithSchoolDataType {
 }
 
 export interface UserChatSettingsType {
-  visibility: string,
+  visibility: any,
   nick?: string
 }
 

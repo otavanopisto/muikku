@@ -719,6 +719,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         this.isWorkspaceChatRoom(chat.jid);
         this.props.converse.api.waitUntil('roomsAutoJoined').then(async() => {
           this.openMucConversation(chat.jid);
+          this.state.converse.api.listen.on('onChatReconnected', (chatbox:any) => { this.getMUCMessages(chatbox) });
           let room = await this.props.converse.api.rooms.get(this.state.roomJid);
 		
 		  if(room){
@@ -762,22 +763,22 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           {this.state.minimized === true ? (
             <div onClick={() => this.minimizeChats(this.state.roomJid)} className={`chat__minimized chat__minimized--${chatRoomTypeClassName}`}>
               <div className="chat__minimized-title">{this.state.roomName}</div>
-              <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-close"></div>
+              <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-cross"></div>
             </div>
           ) : (
             <div className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
               <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
                 <div className="chat__panel-header-title">{this.state.roomName}</div>
-                <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-members"></div>
+                <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-users"></div>
                 <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-remove"></div>
                 {(!this.state.isStudent) && <div onClick={() => this.openChatSettings()} className="chat__button chat__button--room-settings icon-cogs"></div>}
-                <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-close"></div>
+                <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-cross"></div>
               </div>
 
               {(this.state.openChatSettings === true) && <div className="chat__subpanel">
                 <div className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}>
                   <div className="chat__subpanel-title">Huoneen asetukset</div>
-                  <div onClick={() => this.openChatSettings()} className="chat__button chat__button--close icon-close-small"></div>
+                  <div onClick={() => this.openChatSettings()} className="chat__button chat__button--close icon-cross"></div>
                 </div>
                 <div className="chat__subpanel-body">
                   <form onSubmit={this.saveRoomFeatures}>
