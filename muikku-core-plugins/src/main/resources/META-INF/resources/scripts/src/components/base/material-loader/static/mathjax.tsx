@@ -1,6 +1,6 @@
 import * as React from "react";
 import { MATHJAXSRC, MATHJAXCONFIG } from "~/lib/mathjax";
-const MathJax = require("react-mathjax-preview");
+import MathjaxReactLoader from "./mathjax-react-loader";
 
 interface MathJaxProps {
   invisible?: boolean;
@@ -19,7 +19,14 @@ export default class MathJAX extends React.Component<MathJaxProps, {}>{
     if (this.props.invisible){
       return <span className="math-tex">{this.props.children}</span>
     }
-    return <span className="math-tex"><MathJax.default script={MATHJAXSRC} config={MATHJAXCONFIG} math={this.props.children}/></span>
+    return <span className="math-tex">
+      <MathjaxReactLoader
+        script={MATHJAXSRC}
+        config={MATHJAXCONFIG}
+        math={this.props.children}
+        parentCollectorSelector=".material-page"
+      />
+    </span>
   }
 }
 
