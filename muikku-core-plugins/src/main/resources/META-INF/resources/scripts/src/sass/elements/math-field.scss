@@ -110,8 +110,11 @@
 
 .material-page__mathfield-editor {
   background-color: $color-math-editor-background;
-  border: solid 1px $color-math-editor-border;
+  border: 1px solid $color-default-separator-border;
   border-radius: 3px;
+  box-shadow: 0 2px 5px $color-default-separator-border;
+  display: block;
+  margin: 30px;
   min-height: 50px;
   outline: none;
   padding: 10px;
@@ -148,14 +151,6 @@
     max-height: 1000px;
     max-width: 100%;
   }
-}
-
-.material-page__mathfield-editor {
-  border: 1px solid $color-default-separator-border;
-  box-shadow: 0 2px 5px $color-default-separator-border;
-  display: block;
-  margin: 30px;
-  position: relative;
 }
 
 .material-page__mathfield-editor--formula-container {
