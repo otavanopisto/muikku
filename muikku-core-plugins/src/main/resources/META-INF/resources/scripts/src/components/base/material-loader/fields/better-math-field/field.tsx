@@ -343,7 +343,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       return;
     }
 
-    console.log("selecting", target);
+    //console.log("selecting", target);
 
     //We set the cancel the blur to true as the focus will go out of the contenteditable
     //once we are done
@@ -558,7 +558,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.lastMouseedDownElement = e.target as HTMLElement;
   }
   render(){
-    console.log("RENDER");
+    // console.log("RENDER");
     return <div className={this.props.className}
       contentEditable={!this.props.readOnly}
       spellCheck={false}
