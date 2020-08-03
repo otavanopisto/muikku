@@ -78,4 +78,4 @@ const MathjaxReactLoader = (props: MathJaxPreviewProps) => {
   )
 }
 
-export default MathjaxReactLoader
+export default MathjaxReactLoader;
