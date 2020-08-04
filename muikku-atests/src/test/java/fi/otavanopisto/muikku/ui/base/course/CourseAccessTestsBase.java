@@ -56,7 +56,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".panel--workspace-signup .button--signup-read-more", "Read more");
         click(".panel--workspace-signup .button--signup-read-more");
         waitForPresent("#studying");
-        assertTrue("Read more button did not return to frontpage", getCurrentPath().equals("/"));
+        assertTrue("Read more button did not return to the frontpage", getCurrentPath().equals("/"));
       }finally{
         deleteWorkspace(workspace.getId());  
       }
