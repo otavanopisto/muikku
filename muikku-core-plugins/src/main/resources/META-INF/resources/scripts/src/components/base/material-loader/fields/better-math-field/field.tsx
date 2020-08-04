@@ -554,7 +554,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     if (this.props.readOnly){
       return;
     }
-    console.log("checking the focus at", e.target);
+    //console.log("checking the focus at", e.target);
     this.lastMouseedDownElement = e.target as HTMLElement;
   }
   render(){
