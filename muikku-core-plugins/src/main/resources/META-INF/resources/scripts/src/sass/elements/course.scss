@@ -62,3 +62,7 @@
 .course__title {
   padding-left: 5px;
 }
+
+.course__header--secondary {
+ @include list-secondary;
+}

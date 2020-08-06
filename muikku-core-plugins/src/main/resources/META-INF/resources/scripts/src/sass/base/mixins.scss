@@ -127,3 +127,19 @@
     box-shadow: none;
   }
 }
+
+@mixin list-secondary {
+  align-items: center;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-size: $text-capitalized-mobile-font-size;
+  justify-content: flex-end;
+  margin: 0 0 0 15px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-capitalized-desktop-font-size;
+  }
+}

@@ -2,17 +2,8 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as queryString from 'query-string';
-
 import {i18nType} from '~/reducers/base/i18n';
-
-import '~/sass/elements/course.scss';
-import '~/sass/elements/empty.scss';
-import '~/sass/elements/loaders.scss';
-
-import '~/sass/elements/application-sub-panel.scss';
-import '~/sass/elements/workspace-activity.scss';
-import '~/sass/elements/file-uploader.scss';
-
+import ApplicationSubPanel, {ApplicationSubPanelItem}  from "~/components/general/application-sub-panel";
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
@@ -20,10 +11,16 @@ import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementSta
 import { UserWithSchoolDataType } from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
-import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
+import ApplicationList, { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemHeaderPrimary, ApplicationListItemHeaderSecondary } from '~/components/general/application-list';
 import { MatriculationLink } from './matriculation-link';
 import { StatusType } from '~/reducers/base/status';
 import moment from '~/lib/moment';
+import '~/sass/elements/course.scss';
+import '~/sass/elements/empty.scss';
+import '~/sass/elements/loaders.scss';
+import '~/sass/elements/application-sub-panel.scss';
+import '~/sass/elements/workspace-activity.scss';
+import '~/sass/elements/file-uploader.scss';
 
 let ProgressBarLine = require('react-progress-bar.js').Line;
 
@@ -50,7 +47,7 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
   }
 
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
-    return <div className="application-list__header-secondary">
+    return <div className="course__header--secondary">
       <span>{props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}
         className="application-list__indicator-badge application-list__indicator-badge--evaluation-request icon-assessment-pending"></span>
@@ -63,10 +60,10 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
   // this shouldn't come to this, but just in case
   if (transferCredit === null) {
-    return <div className="application-list__header-secondary"/>
+    return <div className="course__header--secondary"/>
   }
 
-  return <div className="application-list__header-secondary">
+  return <div className="course__header--secondary">
     <span>{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
     <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
       getShortenGradeExtension(transferCredit.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${transferCredit.passed ? "state-PASSED" : "state-FAILED"}`}>
@@ -77,7 +74,7 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
 
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
   if (workspace.studentAssessmentState && workspace.studentAssessmentState.grade){
-    return <span className="application-list__header-secondary">
+    return <span className="course__header--secondary">
       <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) +
         getShortenGradeExtension(workspace.studentAssessmentState.grade)}
@@ -89,7 +86,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
   } else if (workspace.studentAssessmentState && workspace.studentAssessmentState.state === "incomplete"){
     let status = props.i18n.text.get(workspace.studentAssessmentState.state === "incomplete" ?
     		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
-    return <span className="application-list__header-secondary">
+    return <span className="course__header--secondary">
       <span>{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
         className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
@@ -204,46 +201,49 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           let records = data.records;
 
           return <div className="react-required-container" key={data.user.id}>
-          <div className="application-sub-panel__header">{user.studyProgrammeName}</div>
-          <div className="application-sub-panel__body">
-            {records.length ? records.map((record, index)=>{
-              return <ApplicationList key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <div className="application-list__header"><h3 className="application-list__title">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}
-                  {record.workspaces.map((workspace)=>{
-                    //Do we want an special way to display all these different states? passed is very straightforward but failed and
-                    //incomplete might be difficult to understand
-                    let extraClassNameState = "";
-                    if (workspace.studentAssessmentState.state === "pass"){
-                      extraClassNameState = "state-PASSED"
-                    } else if (workspace.studentAssessmentState.state === "fail"){
-                      extraClassNameState = "state-FAILED"
-                    } else if (workspace.studentAssessmentState.state === "incomplete"){
-                      extraClassNameState = "state-INCOMPLETE"
-                    }
-                    return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
-                      <ApplicationListItemHeader modifiers="course" key={workspace.id}>
-                        <span className="application-list__header-icon icon-books"></span>
-                        <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span>
-                        {getEvaluationRequestIfAvailable(this.props, workspace)}
-                        {getAssessments(this.props, workspace)}
-                        {getActivity(this.props, workspace)}
-                      </ApplicationListItemHeader>
-                    </ApplicationListItem>
-                  })}
-                {record.transferCredits.length ?
-                  <div className="application-list__header"><h3 className="application-list__title">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
-                    {record.transferCredits.map((credit)=>{
-                      return <ApplicationListItem className="course course--credits" key={credit.identifier}>
-                        <ApplicationListItemHeader modifiers="course">
-                          <span className="application-list__header-icon icon-books"></span>
-                          <span className="application-list__header-primary">{credit.courseName}</span>
-                          {getTransferCreditValue(this.props, credit)}
-                        </ApplicationListItemHeader>
-                      </ApplicationListItem>
+            <div className="application-sub-panel__header">{user.studyProgrammeName}</div>
+            <div className="application-sub-panel__body">
+              {records.length ? records.map((record, index)=>{
+                return <ApplicationList key={record.groupCurriculumIdentifier || index}>
+                  {record.groupCurriculumIdentifier ? <div className="application-list__header"><h3 className="application-list__title">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}
+                    {record.workspaces.map((workspace)=>{
+                      //Do we want an special way to display all these different states? passed is very straightforward but failed and
+                      //incomplete might be difficult to understand
+                      let extraClassNameState = "";
+                      if (workspace.studentAssessmentState.state === "pass"){
+                        extraClassNameState = "state-PASSED"
+                      } else if (workspace.studentAssessmentState.state === "fail"){
+                        extraClassNameState = "state-FAILED"
+                      } else if (workspace.studentAssessmentState.state === "incomplete"){
+                        extraClassNameState = "state-INCOMPLETE"
+                      }
+                      return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                          <ApplicationListItemHeader modifiers="course" key={workspace.id} icon={"icon-books"}>
+                            <ApplicationListItemHeaderPrimary>
+                              {workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}
+                            </ApplicationListItemHeaderPrimary>
+                            <ApplicationListItemHeaderSecondary>
+                              {getEvaluationRequestIfAvailable(this.props, workspace)}
+                              {getAssessments(this.props, workspace)}
+                            </ApplicationListItemHeaderSecondary>
+                              {getActivity(this.props, workspace)}
+                          </ApplicationListItemHeader>
+                       </ApplicationListItem>
                     })}
-              </ApplicationList>
-            }) : <div className="application-sub-panel__item application-sub-panel__item--empty">{this.props.i18n.text.get("plugin.records.courses.empty")}</div>}
-          </div>
+                  {record.transferCredits.length ?
+                    <div className="application-list__header"><h3 className="application-list__title">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
+                      {record.transferCredits.map((credit)=>{
+                        return <ApplicationListItem className="course course--credits" key={credit.identifier}>
+                          <ApplicationListItemHeader modifiers="course">
+                            <span className="application-list__header-icon icon-books"></span>
+                            <span className="application-list__header-primary">{credit.courseName}</span>
+                            {getTransferCreditValue(this.props, credit)}
+                          </ApplicationListItemHeader>
+                        </ApplicationListItem>
+                      })}
+                </ApplicationList>
+              }) : <div className="application-sub-panel__item application-sub-panel__item--empty">{this.props.i18n.text.get("plugin.records.courses.empty")}</div>}
+            </div>
           </div>
         })}
       </div>

@@ -39,6 +39,7 @@ export class ApplicationListItem extends React.Component<ApplicationListItemProp
 
 interface ApplicationListItemHeaderProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   modifiers?: string | Array<string>
+  icon?: string,
 }
 
 interface ApplicationListItemHeaderState {
@@ -50,10 +51,44 @@ export class ApplicationListItemHeader extends React.Component<ApplicationListIt
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     delete newProps["modifiers"];
     return <div {...newProps} className={`application-list__item-header ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map( m => `application-list__item-header--${m}` ).join( " " ) : ""}`}>
+      {this.props.icon ? <span className={`application-list__header-icon ${this.props.icon}`}></span> : null}
       {this.props.children}
     </div>
   }
 }
+
+
+interface ApplicationListItemHeaderPrimaryProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  modifiers?: string | Array<string>
+}
+
+interface ApplicationListItemHeaderPrimaryState {
+}
+
+
+
+export class ApplicationListItemHeaderPrimary extends React.Component<ApplicationListItemHeaderPrimaryProps, ApplicationListItemHeaderPrimaryState> {
+
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    return <span className={`application-list__header-primary ${this.props.modifiers ? modifiers.map( m => `application-list__header-primary--${m}` ).join( " " ) : ""}`}>{this.props.children}</span>
+  }
+}
+
+interface ApplicationListItemHeaderSecondaryProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  modifiers?: string | Array<string>
+}
+
+interface ApplicationListItemHeaderSecondaryState {
+}
+
+export class ApplicationListItemHeaderSecondary extends React.Component<ApplicationListItemHeaderSecondaryProps, ApplicationListItemHeaderSecondaryState> {
+  render() {
+    let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
+    return  <span className={`application-list__header-secondary ${this.props.modifiers ? modifiers.map( m => `application-list__header-secondary--${m}` ).join( " " ) : ""}`} >{this.props.children}</span>
+  }
+}
+
 
 interface ApplicationListItemBodyProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   modifiers?: string | Array<string>
@@ -143,7 +178,7 @@ export class ApplicationListItemContentWrapper extends React.Component<Applicati
       <div className={`application-list__item-content-main ${this.props.mainModifiers ? mainModifiers.map( m => `application-list__item-content-main--${m}` ).join( " " ) : ""}`}>
         {this.props.children}
       </div>
-        {this.props.actions ? 
+        {this.props.actions ?
           <div className="application-list__item-content-actions">{this.props.actions}</div>
         : null}
     </div>
@@ -164,7 +199,7 @@ export class ApplicationListItemContentActions extends React.Component<Applicati
     </div>
   }
 }
-   
+
 interface ApplicationListItemContentDataProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   modifiers?: string | Array<string>,
 }
@@ -175,6 +210,6 @@ interface ApplicationListItemContentDataState {
 export class ApplicationListItemContentData extends React.Component<ApplicationListItemContentDataProps, ApplicationListItemContentDataState> {
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    return <div className={`application-list__item-content ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map( m => `application-list__item-content--${m}` ).join( " " ) : ""}`}>{this.props.children}</div> 
+    return <div className={`application-list__item-content ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map( m => `application-list__item-content--${m}` ).join( " " ) : ""}`}>{this.props.children}</div>
   }
 }
