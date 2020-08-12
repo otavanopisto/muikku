@@ -13,7 +13,7 @@ import Reports from './application/reports';
 import {i18nType} from '~/reducers/base/i18n';
 import { ButtonPill} from '~/components/general/button';
 import WorkspaceDialog from '../dialogs/new-workspace';
-import UserDialog from '../dialogs/new-edit-user';
+import UserDialog from '../dialogs/new-user';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';

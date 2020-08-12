@@ -3,7 +3,7 @@ import { WorkspaceType } from "~/reducers/workspaces";
 export type ManipulateType = "UPDATE" | "CREATE";
 
 export interface ManipulateStudentType {
-  id?: string,
+  identifier?: string,
   firstName: string,
   lastName: string,
   studyProgrammeIdentifier: string,
@@ -13,7 +13,7 @@ export interface ManipulateStudentType {
 }
 
 export interface ManipulateStaffmemberType {
-  id? : string
+  identifier?: string,
   firstName: string,
   lastName: string,
   email: string,

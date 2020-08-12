@@ -3,7 +3,8 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {UserWithSchoolDataType} from "~/reducers/user-index";
 import Avatar from "~/components/general/avatar";
-import UserDialog from '~/components/organization//dialogs/new-edit-user';
+import StudentDialog from '~/components/organization/dialogs/edit-student';
+import StaffDialog from '~/components/organization/dialogs/edit-staff';
 import {getName} from "~/util/modifiers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemContentData} from "~/components/general/application-list";
@@ -35,10 +36,11 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
               firstName: user.firstName,
               lastName: user.lastName,
               email: user.email,
-              role: user.role ? user.role : null,
+              identifier: user.id,
+              role: user.role ? user.role : "STUDENT",
               studyProgrammeIdentifier: "STUDYPROGRAMME-1"
             }
-            let actions = <div><UserDialog data={data}><span className="icon-pencil"></span></UserDialog></div>;
+            let actions = data.role == "STUDENT" ? <div><StudentDialog data={data}><span className="icon-pencil"></span></StudentDialog></div> : data.role === "ADMINISTRATOR" ? <div>{data.role}</div> : <div><StaffDialog data={data}><span className="icon-pencil"></span></StaffDialog></div> ;
             return <ApplicationListItem key={user.id} modifiers="user">
               <ApplicationListItemContentWrapper modifiers="user" actions={actions} mainModifiers="user" asideModifiers="user" aside={aside}>
                 <ApplicationListItemContentData modifiers="primary">{getName(user, true)}</ApplicationListItemContentData>

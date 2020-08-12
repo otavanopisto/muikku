@@ -18,6 +18,7 @@ export interface StudyprogrammeType {
 export interface UserUpdateType {
   firstName: string,
   lastName: string,
+  identifier: string,
   email: string,
   role: string,
   ssn?: string,

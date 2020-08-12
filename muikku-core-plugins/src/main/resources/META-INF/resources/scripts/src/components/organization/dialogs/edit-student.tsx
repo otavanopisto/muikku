@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Dialog, {DialogRow} from '~/components/general/dialog';
 import {FormActionsElement, EmailFormElement, InputFormElement, SSNFormElement, SelectFormElement} from '~/components/general/form-element';
-import {applyStudent, applyStaffmember, ApplyStaffmemberTriggerType, ApplyStudentTriggerType} from '~/actions/main-function/users';
+import {updateStudent, ApplyStudentTriggerType} from '~/actions/main-function/users';
 import {AnyActionType} from '~/actions';
 import notificationActions from '~/actions/base/notifications';
 import {i18nType} from '~/reducers/base/i18n';
@@ -16,10 +16,9 @@ interface OrganizationUserProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   status: StatusType,
-  data? : UserUpdateType,
+  data : UserUpdateType,
   studyprogrammes: StudyprogrammeTypes;
-  applyStudent: ApplyStudentTriggerType,
-  applyStaffmember: ApplyStaffmemberTriggerType
+  updateStudent: ApplyStudentTriggerType,
 }
 
 interface OrganizationUserState {
@@ -86,7 +85,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       valid = false;
     }
 
-    if(this.state.user.role == "STUDENT") {
+
 
       if(this.state.user.studyProgrammeIdentifier == "" || this.state.user.studyProgrammeIdentifier == undefined) {
         this.setState({studyProgrammeIdentifierValid: 0});
@@ -104,8 +103,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier
         }
 
-        this.props.applyStudent({
-          mode : mode,
+        this.props.updateStudent({
           student: data,
           success: () => {
             closeDialog();
@@ -122,61 +120,27 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           }
         });
       }
-    } else {
-      if (valid) {
-        let data = {
-          firstName: this.state.user.firstName,
-          lastName: this.state.user.lastName,
-          email: this.state.user.email,
-          role: this.state.user.role
-        }
-
-        this.props.applyStaffmember({
-          mode : mode,
-          staffmember: data,
-          success: () => {
-            this.setState({
-              user: {role: "STUDENT", studyProgrammeIdentifier: ""},
-              firstNameValid: 2,
-              lastNameValid: 2,
-              emailValid: 2,
-              studyProgrammeIdentifierValid: 2
-            });
-            closeDialog();
-          },
-          fail: () => {
-            closeDialog();
-          }
-        });
-      }
-    }
-
   }
 
   render(){
     let content =  (closePortal: ()=> any) =>
       <div>
         <DialogRow modifiers="new-user">
-          <SelectFormElement name="role" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.role')} updateField={this.updateField} >
-            <option value="STUDENT">{this.props.i18n.text.get('plugin.organization.users.addUser.role.student')}</option>
-            <option value="MANAGER" {...this.props.data.role && this.props.data.role == "MANAGER" ? "selected" : null}>{this.props.i18n.text.get('plugin.organization.users.addUser.role.manager')}</option>
-            <option value="TEACHER" {...this.props.data.role && this.props.data.role == "TEACHER" ? "selected" : null}>{this.props.i18n.text.get('plugin.organization.users.addUser.role.teacher')}</option>
-          </SelectFormElement>
-          <InputFormElement value={this.props.data? this.props.data.firstName : ""} name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
-          <InputFormElement value={this.props.data? this.props.data.lastName : ""} name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
-          <EmailFormElement value={this.props.data? this.props.data.email : ""} modifiers="new-user" valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
+          <InputFormElement value={this.props.data.firstName} name="firstName" modifiers="new-user" valid={this.state.firstNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.firstName')} updateField={this.updateField} />
+          <InputFormElement value={this.props.data.lastName} name="lastName" modifiers="new-user" valid={this.state.lastNameValid} mandatory={true} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.lastName')} updateField={this.updateField} />
+          <EmailFormElement value={this.props.data.email} modifiers="new-user" valid={this.state.emailValid} mandatory={true} updateField={this.updateField} label={this.props.i18n.text.get('plugin.organization.users.addUser.label.email')} />
         </DialogRow>
-        {this.state.user.role == "STUDENT" ?
         <DialogRow modifiers="new-user">
           <SSNFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
           <SelectFormElement valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
             <option value="">{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme.emptyOption')}</option>
+
             {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme)=>{
-                return <option key={studyprogramme.identifier} value={studyprogramme.identifier} {...this.props.data ? this.props.data.studyProgrammeIdentifier === studyprogramme.identifier ? "selected" : null : null}>{studyprogramme.name}</option>
+                return <option key={studyprogramme.identifier} value={studyprogramme.identifier}>{studyprogramme.name} {this.props.data.studyProgrammeIdentifier}</option>
               })
             }
           </SelectFormElement>
-        </DialogRow> : null}
+        </DialogRow>
       </div>;
 
     let footer = (closePortal: ()=> any) => <FormActionsElement executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
@@ -200,7 +164,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({applyStudent, applyStaffmember}, dispatch);
+  return bindActionCreators({updateStudent}, dispatch);
 };
 
 export default connect(
