@@ -18,8 +18,8 @@
 .chat__bubble {
   align-items: center;
   background-color: $color-chat-bubble-background;
-  border-radius: 100%;
   border: 2px solid $color-default;
+  border-radius: 100%;
   box-shadow: 0 0 10px $color-chat-bubble-box-shadow;
   color: $color-default;
   cursor: pointer;
@@ -42,7 +42,7 @@
 // Chat Rooms
 .chat__chatrooms-container {
   align-items: flex-end;
-  display:flex;
+  display: flex;
   flex-direction: row;
   justify-content: flex-end;
   order: 1;
@@ -86,19 +86,19 @@
   background: $color-chat-private-main-color;
 }
 
-@-o-keyframes pulse {
-  0%   { background-color: $color-default-contrast; }
-  100% { background-color: $color-chat-message-notification; }
-}
 @keyframes pulse {
-  0%   { background-color: $color-default-contrast; }
-  100% { background-color: $color-chat-message-notification; }
+  0% {
+    background-color: $color-default-contrast;
+  }
+
+  100% {
+    background-color: $color-chat-message-notification;
+  }
 }
 
-.chat__message-notification{
-  background-image:none !important;
-  -o-animation: pulse 2s infinite;
+.chat__message-notification {
   animation: pulse 2s infinite;
+  background-image: none;
 }
 
 .chat__minimized-title {
@@ -157,29 +157,12 @@
   color: $color-default-contrast;
   display: flex;
   flex-basis: 0;
-  flex-grow: 0;
   flex-flow: row nowrap;
+  flex-grow: 0;
   flex-shrink: 0;
   font-size: 1rem;
   padding: 10px;
   z-index: 2;
-}
-
-.chat__panel-header--controlbox {
-  box-shadow: none;
-  justify-content: space-between;
-}
-
-.chat__panel-header--workspace {
-  justify-content: flex-start;
-}
-
-.chat__panel-header--other {
-  justify-content: flex-start;
-}
-
-.chat__panel-header--private {
-  justify-content: flex-start;
 }
 
 .chat__panel-header-title {
@@ -212,8 +195,8 @@
 .chat__panel-footer {
   align-items: center;
   display: flex;
-  flex-flow: row nowrap;
   flex-basis: 50px;
+  flex-flow: row nowrap;
   flex-grow: 0;
   flex-shrink: 0;
 }
@@ -231,20 +214,8 @@
 // Controlbox specific icon colors
 .chat__panel-header--controlbox,
 .chat__subpanel-header--new-room {
-
-  .chat__button--new-room {
-    color: $color-chat-controlbox-main-color;
-    margin: 0;
-  }
-
-  .chat__button--close {
-    color: $color-chat-controlbox-main-color;
-  }
-}
-
-// Controlbox Room specific icon colors
-.chat__panel-header--controlbox,
-.chat__subpanel-header--new-room {
+  box-shadow: none;
+  justify-content: space-between;
 
   .chat__button--new-room {
     color: $color-chat-controlbox-main-color;
@@ -259,6 +230,7 @@
 // Workspace room specific icon colors
 .chat__panel-header--workspace,
 .chat__subpanel-header--room-settings-workspace {
+  justify-content: flex-start;
 
   .chat__button--room-settings {
     color: $color-chat-workspace-room-main-color;
@@ -280,6 +252,7 @@
 // Other room specific icon colors
 .chat__panel-header--other,
 .chat__subpanel-header--room-settings-other {
+  justify-content: flex-start;
 
   .chat__button--room-settings {
     color: $color-chat-other-room-main-color;
@@ -300,6 +273,7 @@
 
 // Private chat specific icon colors
 .chat__panel-header--private {
+  justify-content: flex-start;
 
   .chat__button--minimize {
     color: $color-chat-private-main-color;
@@ -356,7 +330,7 @@
 
 .chat__controlbox-room-action {
   align-items: center;
-  color: $color-info;
+  color: $color-chat-other-room-main-color;
   cursor: pointer;
   display: flex;
   flex-basis: 10px;
@@ -365,6 +339,10 @@
   font-size: 10px;
   justify-content: center;
   margin: 0 5px 0 0;
+}
+
+.chat__controlbox-room-action--workspace {
+  color: $color-chat-workspace-room-main-color;
 }
 
 .chat__controlbox-room-name {
@@ -409,11 +387,13 @@
   flex-grow: 0;
   flex-shrink: 0;
   font-size: 1rem;
-  justify-content: space-between;
   padding: 10px;
 }
 
 .chat__subpanel-title {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: 1rem;
   line-height: 1rem;
   text-transform: uppercase;
@@ -458,14 +438,15 @@
   padding: 5px;
   width: 100%;
 }
+
 .chat__memofield::placeholder {
   font-style: normal;
 }
 
 .chat__checkbox {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   align-items: center;
+  -moz-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
   border: solid 2px $color-default-helper;
   border-radius: 3px;
@@ -484,7 +465,7 @@
   color: $color-default;
   content: "\e639";
   font-family: muikku;
-  font-size: .875rem;
+  font-size: 0.875rem;
 }
 
 .chat__submit {
@@ -578,15 +559,15 @@
 }
 
 .chat__occupant-online {
-  color: green;
+  color: $collor-chat-user-status-online;
 }
 
 .chat__occupant-away {
-  color: yellow;
+  color: $collor-chat-user-status-away;
 }
 
 .chat__occupant-offline {
-  color: red;
+  color: $collor-chat-user-status-offline;
 }
 
 .chat__message {
@@ -726,76 +707,8 @@
   cursor: pointer;
   display: flex;
   flex-basis: auto;
-  flex-grow: 0;
   flex-flow: row nowrap;
+  flex-grow: 0;
   flex-shrink: 0;
   line-height: 1;
 }
-
-// OLDIES
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
-}
-
-.status {
-  margin-bottom: 10px;
-}
-
-.square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
-}
-
-.square:focus {
-  outline: none;
-}
-
-.kbd-navigation .square:focus {
-  background: #ddd;
-}
-
-.game {
-  display: flex;
-  flex-direction: row;
-}
-
-.game-info {
-  margin-left: 20px;
-}
-
-.--none {
-    display: none;
-  }
-
-.--success {
-    background-color: forestgreen;
-  }
-
-.--failed {
-  background-color: teal;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-

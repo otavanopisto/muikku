@@ -8,7 +8,8 @@ interface Iprops{
   converse?: any,
   orderNumber?: any,
   onOpenChat?:any,
-  chatObject?:any
+  chatObject?:any,
+  modifier?: string
 }
 
 interface Istate {
@@ -92,7 +93,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       showRoomInfo: false,
       roomAlign: "",
       minimized: false,
-      showOccupantsList: false
+      showOccupantsList: false,
     }
     this.myRef = null;
     this.openChatSettings = this.openChatSettings.bind(this);
@@ -192,9 +193,10 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       }
     }
     render() {
+      let roomActionModifier = this.props.modifier ? "chat__controlbox-room-action--" + this.props.modifier : "";
       return (
         <div className="chat__controlbox-room">
-            <div className="chat__controlbox-room-action icon-arrow-right"  onClick={() => this.toggleRoomInfo()}></div>
+          <div className={`chat__controlbox-room-action ${roomActionModifier} icon-arrow-right`}  onClick={() => this.toggleRoomInfo()}></div>
             <div className="chat__controlbox-room-name" onClick={() => this.props.onOpenChat(this.state.roomJid)}>
               {this.state.roomName}
             </div>

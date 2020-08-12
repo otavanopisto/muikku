@@ -590,9 +590,9 @@ export class Chat extends React.Component<Iprops, Istate> {
             </select>
 
             <div className="chat__controlbox-rooms-heading">Kurssikohtaiset huoneet: </div>
-            <div className="chat__controlbox-rooms-listing">
+            <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
               {this.getWorkspaceMucRooms().length > 0 ?
-                this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
+                this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList modifier="workspace" onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
               : <div className="chat__controlbox-room  chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
