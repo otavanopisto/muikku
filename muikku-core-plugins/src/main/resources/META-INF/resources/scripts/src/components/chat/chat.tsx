@@ -126,9 +126,9 @@ export class Chat extends React.Component<Iprops, Istate> {
     bareJid = Strophe.getBareJidFromJid(from);
     const is_me = bareJid === this.state.converse.bare_jid;
     if(type !== null && type !== 'groupchat' &&
-      from !== null && 
-      !u.isOnlyChatStateNotification(data.stanza) && 
-      !u.isOnlyMessageDeliveryReceipt(data.stanza) && 
+      from !== null &&
+      !u.isOnlyChatStateNotification(data.stanza) &&
+      !u.isOnlyMessageDeliveryReceipt(data.stanza) &&
       !is_me){
 
       tempPrivateChats = this.state.privateChats;
@@ -141,7 +141,7 @@ export class Chat extends React.Component<Iprops, Istate> {
         userId = data.stanza.getAttribute('from').split('@');
         userId = userId[0];
         chatSettings = (await promisify(mApi().chat.settings.read(userId), 'callback')());
-        nick = chatSettings.nick;       
+        nick = chatSettings.nick;
         user = (await promisify(mApi().user.users.basicinfo.read(chatSettings.userIdentifier,{}), 'callback')());
         if (nick == "" || nick == undefined) {
           nick = user.firstName + " " + user.lastName;
@@ -154,7 +154,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       }
     }
   }
-  
+
   handleSubmit(event: any) { // login
 
     this.setState({
@@ -463,7 +463,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     let newStatus = e.target.value;
 
     this.state.converse.api.user.status.set(newStatus);
-    
+
     this.userAvailability();
   }
   userAvailability (){
@@ -481,7 +481,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       initialize: function () {
         var _converse = this._converse;
         __this.setState({converse: _converse});
-        
+
         __this.state.converse.on('connected', function () {
 		__this.state.converse.api.listen.on('message',  __this.privateMessageNotification);
           const rooms = __this.state.converse.api.rooms;
@@ -606,7 +606,7 @@ export class Chat extends React.Component<Iprops, Istate> {
             {(this.state.showNewRoomForm === true) && <div className="chat__subpanel">
               <div className="chat__subpanel-header chat__subpanel-header--new-room">
                 <div className="chat__subpanel-title">Luo uusi huone</div>
-                <div onClick={() => this.openNewRoomForm()} className="chat__button chat__button--close icon-close-small"></div>
+                <div onClick={() => this.openNewRoomForm()} className="chat__button chat__button--close icon-cross"></div>
               </div>
               <div className="chat__subpanel-body">
                 <form onSubmit={this.joinRoom}>

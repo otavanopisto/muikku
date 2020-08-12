@@ -48,9 +48,9 @@
   order: 1;
 }
 
-// CHat panel wrapper
+// Chat panel wrapper
 .chat__panel-wrapper {
-
+  order: initial;
 }
 
 .chat__panel-wrapper--reorder {
@@ -67,6 +67,7 @@
   justify-content: flex-start;
   margin: 0 15px 0 0;
   padding: 5px 10px;
+  width: 200px;
 
   .chat__button--close {
     color: $color-default;
@@ -94,9 +95,9 @@
   100% { background-color: $color-chat-message-notification; }
 }
 
-.chat__message-notification{    
-  background-image:none !important; 
-  -o-animation: pulse 2s infinite; 
+.chat__message-notification{
+  background-image:none !important;
+  -o-animation: pulse 2s infinite;
   animation: pulse 2s infinite;
 }
 
@@ -107,6 +108,9 @@
   flex-shrink: 1;
   font-size: 0.875rem;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // Chat Panels
@@ -183,6 +187,10 @@
   flex-grow: 1;
   flex-shrink: 1;
   font-size: 0.875rem;
+  line-height: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat__panel-body {
@@ -351,9 +359,10 @@
   color: $color-info;
   cursor: pointer;
   display: flex;
-  flex-basis: 14px;
+  flex-basis: 10px;
   flex-grow: 0;
   flex-shrink: 0;
+  font-size: 10px;
   justify-content: center;
   margin: 0 5px 0 0;
 }
@@ -363,6 +372,10 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+  max-width: calc(100% - 15px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat__controlbox-room-description {
@@ -401,8 +414,8 @@
 }
 
 .chat__subpanel-title {
-  font-size: 1;
-  line-height: 1;
+  font-size: 1rem;
+  line-height: 1rem;
   text-transform: uppercase;
 }
 

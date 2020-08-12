@@ -382,7 +382,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
             <div className="chat__panel chat__panel--private">
               <div className="chat__panel-header chat__panel-header--private">
                 <div className="chat__panel-header-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
-                <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-remove"></div>
+                <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-minus"></div>
                 <div onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="chat__button chat__button--close icon-close"></div>
               </div>
 
@@ -395,7 +395,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e) => this.sendMessage(e)}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.state.roomJid} readOnly />
                 <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
-                <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right-thin"></span></button>
+                <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>
           )}

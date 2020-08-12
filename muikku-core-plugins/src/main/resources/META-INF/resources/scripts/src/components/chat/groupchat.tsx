@@ -128,11 +128,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     if(data.chatbox !== undefined) {
       if (data.chatbox.attributes.jid === this.state.roomJid){
         if (data.chatbox.messages.models.length > 0) {
-          this.getMUCMessages(data.chatbox.messages.models[data.chatbox.messages.models.length - 1]);          
+          this.getMUCMessages(data.chatbox.messages.models[data.chatbox.messages.models.length - 1]);
         }
-      }  
-    } 
-    
+      }
+    }
+
   }
   async openMucConversation(room: string){
     let data = {
@@ -151,7 +151,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
 
     window.sessionStorage.setItem("openChats", JSON.stringify(result));
-    
+
     let nick: string;
     nick = this.props.nick;
     if (!nick) {
@@ -184,7 +184,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
     jid = data.jid;
     let __ = this;
-   
+
    this.props.converse.api.rooms.open(jid, _.extend(data,
       {
         'jid':jid,
@@ -207,9 +207,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       })
   }
-  
+
   async getMUCMessages(stanza: any){
-      
+
       const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
       if (stanza && stanza.attributes.type === "groupchat") {
@@ -223,16 +223,16 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         let nick: any;
         let userName: any;
         let deletedTime: any;
-        
+
         if (from){
           from = from.split("/").pop();
-          
+
           if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
               from = from.split("@");
               from = from[0];
               chatSettings = (await promisify(mApi().chat.settings.read(from), 'callback')());
               nick = chatSettings.nick;
-              
+
               if (nick == "" || nick == undefined) {
                 user = (await promisify(mApi().user.users.basicinfo.read(from,{}), 'callback')());
                 userName = user.firstName + " " + user.lastName;
@@ -242,20 +242,20 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             nick = from;
           }
         }
-        
+
 
         if (message !== "") {
           messageId = stanza.attributes.id;
         } else {
           messageId = "null";
         }
-      
+
         let myNick: string = "";
         if(!chatSettings){
-          chatSettings = (await promisify(mApi().chat.settings.read(window.MUIKKU_LOGGED_USER), 'callback')());        
+          chatSettings = (await promisify(mApi().chat.settings.read(window.MUIKKU_LOGGED_USER), 'callback')());
         }
         myNick = chatSettings.nick;
-        
+
         if (from === window.MUIKKU_LOGGED_USER || from === myNick) {
           senderClass = "sender-me";
         } else {
@@ -275,7 +275,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
         if (message !== "") {
           let tempGroupMessages = new Array;
-        
+
           if(this.state.groupMessages.length !== 0){
             tempGroupMessages = [...this.state.groupMessages];
           }
@@ -312,12 +312,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       var spoiler_hint = "undefined";
 
       const attrs = chat.getOutgoingMessageAttributes("messageID=" + text.messageId, spoiler_hint);
-      
+
       let today = new Date();
       let date = today.getDate()+'.'+(today.getMonth()+1)+'.'+today.getFullYear();
       let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       let dateTime = date+' '+time;
-      
+
       attrs.dateTime = dateTime;
 
       let message = chat.messages.findWhere('correcting')
@@ -375,7 +375,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
       this.scrollToBottom.bind(this, "smooth");
     }
-    
+
     //--- SETTINGS & INFOS
     openChatSettings(){
       if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false) {
@@ -559,7 +559,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         if (minimizedRoomList.includes(roomJid)) {
 
           const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJid);
-          
+
           window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredRooms));
 //          return;
         }
@@ -628,7 +628,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                 userData = {id: item.attributes.nick, nick: nick, status: item.attributes.show, firstName: "", lastName: ""};
               }
             }
-          
+
             if(typeof item.attributes.nick !== 'undefined'){
               if(item.attributes.nick.startsWith("PYRAMUS-STAFF-")){
                 let isExists = tempStaffOccupants.some(function(curr :any) {
@@ -721,12 +721,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           this.openMucConversation(chat.jid);
           this.state.converse.api.listen.on('onChatReconnected', (chatbox:any) => { this.getMUCMessages(chatbox) });
           let room = await this.props.converse.api.rooms.get(this.state.roomJid);
-		
+
 		  if(room){
 			room.listenTo(room.occupants, 'add', this.getOccupants);
             room.listenTo(room.occupants, 'destroy', this.getOccupants);
 		  }
-          
+
           this.scrollToBottom.bind(this, "auto");
         });
       }
@@ -742,7 +742,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           }
         })
       }
-      
+
       this.props.converse.api.listen.on('message', this.handleIncomingMessages);
       this.props.converse.api.listen.on('membersFetched', this.getOccupants );
     }
@@ -752,7 +752,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
 
     componentDidUpdate(){
-	
+
     }
     render(){
       let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
@@ -770,7 +770,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
                 <div className="chat__panel-header-title">{this.state.roomName}</div>
                 <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-users"></div>
-                <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-remove"></div>
+                <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-minus"></div>
                 {(!this.state.isStudent) && <div onClick={() => this.openChatSettings()} className="chat__button chat__button--room-settings icon-cogs"></div>}
                 <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-cross"></div>
               </div>
@@ -805,20 +805,20 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
               <div className="chat__panel-body chat__panel-body--chatroom">
                 <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} ref={ (ref) => this.myRef=ref }>
-                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} removeMessage={this.removeMessage.bind(this)} 
+                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} removeMessage={this.removeMessage.bind(this)}
                     groupMessage={groupMessage} />)}
                   <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
                 </div>
                 {this.state.showOccupantsList && <div className="chat__occupants-container">
                   <div className="chat__occupants-staff">
                     {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
-                    {this.state.staffOccupants.map((staffOccupant: any, i: any) => 
+                    {this.state.staffOccupants.map((staffOccupant: any, i: any) =>
                     <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(staffOccupant)} key={i}>
                       <span className={"chat__online-indicator chat__occupant-"+staffOccupant.status}></span>{staffOccupant.nick}</div>)}
                   </div>
                   <div className="chat__occupants-student">
                     {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
-                    {this.state.studentOccupants.map((studentOccupant: any, i: any) => 
+                    {this.state.studentOccupants.map((studentOccupant: any, i: any) =>
                     <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(studentOccupant)} key={i}>
                       <span className={"chat__online-indicator chat__occupant-"+studentOccupant.status}></span>{studentOccupant.nick}</div>)}
                   </div>
@@ -827,7 +827,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.state.roomJid} readOnly/>
                 <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
-                <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right-thin"></span></button>
+                <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
               </form>
             </div>)
           }
