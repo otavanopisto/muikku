@@ -1302,14 +1302,14 @@ public class UserRESTService extends AbstractRESTService {
    * {firstName: required; the first name of the staff member
    *  lastName: required; the last name of the staff member
    *  email: required; the email address of the staff member
-   *  role: required; TEACHER to create a teacher, MANAGER to create a manager}
+   *  role: required; MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Output:
    * {identifier: identifier of the created staff member
    *  firstName: the first name of the staff member
    *  lastName: the last name of the staff member
    *  email: the email address of the staff member
-   *  role: TEACHER or MANAGER}
+   *  role: MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Errors:
    * 409 if the email address is already in use; response contains a localized error message 
@@ -1366,14 +1366,14 @@ public class UserRESTService extends AbstractRESTService {
    *  firstName: required; the first name of the staff member
    *  lastName: required; the last name of the staff member
    *  email: required; the email address of the staff member
-   *  role: required; TEACHER or MANAGER }
+   *  role: required; MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Output:
    * {identifier: identifier of the staff member
    *  firstName: the first name of the staff member
    *  lastName: the last name of the staff member
    *  email: the email address of the staff member
-   *  role: TEACHER or MANAGER}
+   *  role: MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Errors:
    * 409 if the email address is already in use; response contains a localized error message 
