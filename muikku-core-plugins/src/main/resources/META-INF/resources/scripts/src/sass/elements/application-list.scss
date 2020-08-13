@@ -184,8 +184,8 @@
 
 
 .application-list__item-content-actions {
-  &.state-DISABLED {
-    
+  .state-DISABLED {
+    color: $color-disabled;
   }
 }
 
