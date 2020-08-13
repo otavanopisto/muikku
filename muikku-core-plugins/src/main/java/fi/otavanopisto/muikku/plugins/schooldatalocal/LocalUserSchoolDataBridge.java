@@ -69,6 +69,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
   
+  public BridgeResponse<StudentPayload> updateStudent(StudentPayload payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
   public List<StudyProgramme> listStudyProgrammes() {
     return Collections.emptyList();
   }

@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.user;
+package fi.otavanopisto.muikku.model.users;
 
 import java.util.Date;
 
