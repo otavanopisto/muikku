@@ -15,18 +15,17 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/organization", to = "/jsf/organization/index.jsf")
-
+@Join(path = "/organization", to = "/jsf/organization/index.jsf")
 public class OrganizationManagementViewBackingBean {
-	
-    @Inject
-    private SessionController sessionController;
 
-    @RequestAction
-    public String init() {
+  @Inject
+  private SessionController sessionController;
+
+  @RequestAction
+  public String init() {
     if (!sessionController.hasEnvironmentPermission(OrganizationManagementPermissions.ORGANIZATION_VIEW)) {
-         return NavigationRules.ACCESS_DENIED;
-         }
-         return null;
+      return NavigationRules.ACCESS_DENIED;
     }
+    return null;
+  }
 }

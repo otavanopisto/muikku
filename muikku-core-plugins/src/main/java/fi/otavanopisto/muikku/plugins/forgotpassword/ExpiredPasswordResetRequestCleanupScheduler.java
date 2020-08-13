@@ -7,7 +7,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChangeDAO;
+import fi.otavanopisto.muikku.dao.users.UserPendingPasswordChangeDAO;
 
 @Startup
 @Singleton
