@@ -51,15 +51,9 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
 }
 
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
-  let gradeId = [
-    transferCredit.gradingScaleIdentifier,
-    transferCredit.gradeIdentifier].join('-');
-  let grade = props.records.grades[gradeId];
   return <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
-      getShortenGradeExtension(grade.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
-      {shortenGrade(grade.grade)}
-
-    </span>
+      getShortenGradeExtension(transferCredit.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${transferCredit.passed ? "state-PASSED" : "state-FAILED"}`}>
+      {shortenGrade(transferCredit.grade)}</span>
 }
 
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
@@ -111,8 +105,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
     window.location.hash = "#?u=" + user.userEntityId + "&i=" + encodeURIComponent(user.id) + "&w=" + workspace.id;
   }
-
-
   sortBy (data: any, key: string, direction: string) {
     data.sort(
         (a: any, b: any) => {
@@ -124,8 +116,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         }
     )
   }
-
-
   sortWorkspaces(data: any){
     let key = "name";
     let sortDirection = this.state.sortDirectionWorkspaces;
@@ -172,7 +162,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             {records.length ? records.map((record, index)=>{
               return <ApplicationList key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <div onClick={this.sortWorkspaces.bind(this, record.workspaces)} className="application-list__header-container application-list__header-container--sorter">
-                  <h3 className="application-list__header application-list__header--sorter">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3>
+                  <h3 className="application-list__header application-list__header--sorter">{record.groupCurriculumIdentifier ? storedCurriculumIndex[record.groupCurriculumIdentifier] : null}</h3>
                   <div className={`icon-sort-alpha-${this.state.sortDirectionWorkspaces === 'asc' ? 'desc' : 'asc'}`}></div>
                 </div> : null}
                 {record.workspaces.map((workspace)=>{
@@ -200,7 +190,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 })}
                 {record.transferCredits.length ?
                   <div className="application-list__header-container application-list__header-container--sorter" onClick={this.sortRecords.bind(this, record.transferCredits)}>
-                    <h3 className="application-list__header application-list__header--sorter">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3>
+                    <h3 className="application-list__header application-list__header--sorter">{this.props.i18n.text.get("plugin.records.transferCredits")} {record.groupCurriculumIdentifier ? (storedCurriculumIndex[record.groupCurriculumIdentifier]) : null}</h3>
                     <div className={`icon-sort-alpha-${this.state.sortDirectionRecords === 'asc' ? 'desc' : 'asc'}`}></div>
                   </div> : null}
                   {record.transferCredits.map((credit)=>{

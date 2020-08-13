@@ -63,7 +63,20 @@ public class FeedRESTService extends PluginRESTService {
     }
     
     List<FeedItem> feedItems = feedItemDao.findByFeeds(feeds, numItems, order);
+    List<FeedRestItem> feedRestItems = new ArrayList<FeedRestItem>();
+    for (FeedItem feedItem : feedItems) {
+      FeedRestItem feedRestItem = new FeedRestItem();
+      feedRestItem.setAuthor(feedItem.getAuthor());
+      feedRestItem.setDescription(feedItem.getDescription());
+      feedRestItem.setFeed(feedItem.getFeed().getName());
+      feedRestItem.setImage(feedItem.getImage());
+      feedRestItem.setLink(feedItem.getLink());
+      feedRestItem.setPublicationDate(feedItem.getPublicationDate());
+      feedRestItem.setTitle(feedItem.getTitle());
+      feedRestItems.add(feedRestItem);
+    }
     
-    return Response.ok(feedItems).build();
+    return Response.ok(feedRestItems).build();
   }
+
 }

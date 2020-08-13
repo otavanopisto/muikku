@@ -44,7 +44,7 @@ enum Graph {
   MATERIAL_ASSIGNMENTDONE = "assignments",
   MATERIAL_EXERCISEDONE = "exercises",
   WORKSPACE_VISIT = "visits",
-  FORUM_NEWMESSAGE = "discussion-messages",
+  FORUM_NEWMESSAGE = "discussionMessages",
 }
 
 var ignoreZoomed: boolean = true;
@@ -291,7 +291,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.FORUM_NEWMESSAGE)){
       graphs.push({
         "id": "FORUM_NEWMESSAGE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.discussion-messagesTitle") + " <b>[[FORUM_NEWMESSAGE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.discussionMessagesTitle") + " <b>[[FORUM_NEWMESSAGE]]</b>",
         "fillAlphas": 1,
         "lineAlpha": 0.2,
         "lineColor": "#62c3eb",

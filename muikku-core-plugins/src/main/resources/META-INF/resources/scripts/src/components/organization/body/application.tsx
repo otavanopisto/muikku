@@ -7,7 +7,7 @@ import ApplicationPanelBody from '~/components/general/application-panel/compone
 import Tabs from '~/components/general/tabs';
 import Summary from './application/summary';
 import Users from './application/users';
-import Workspaces from './application/workspaces';
+import OrganizationWorkspaces from './application/workspaces';
 import WorkspacesAside from './application/workspaces/aside';
 import Reports from './application/reports';
 import {i18nType} from '~/reducers/base/i18n';
@@ -84,7 +84,7 @@ class OrganizationManagementApplication extends React.Component<OrganizationMana
           {
             id: "COURSES",
             name: this.props.i18n.text.get('plugin.organization.tab.title.courses'),
-            component: ()=> { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<Workspaces />}/>}
+            component: ()=> { return <ApplicationPanelBody primaryOption={coursesPrimaryAction} toolbar={coursesToolbar} modifier="tabs" asideBefore={<WorkspacesAside />} children={<OrganizationWorkspaces />}/>}
             
           },
           {

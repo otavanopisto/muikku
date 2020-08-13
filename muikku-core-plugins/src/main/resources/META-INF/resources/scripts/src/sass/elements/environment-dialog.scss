@@ -24,6 +24,15 @@
       bottom: 0;
     }
   }
+
+  label {
+    display: block;
+    font-family: $text-font-family;
+    font-weight: 600;
+    overflow: hidden;
+    padding: 0 0 5px;
+    text-overflow: ellipsis;
+  }
 }
 
 .env-dialog__wrapper {
@@ -250,15 +259,6 @@
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
-}
-
-label {
-  display: block;
-  font-family: $text-font-family;
-  font-weight: 600;
-  overflow: hidden;
-  padding: 0 0 5px;
-  text-overflow: ellipsis;
 }
 
 .env-dialog__input {

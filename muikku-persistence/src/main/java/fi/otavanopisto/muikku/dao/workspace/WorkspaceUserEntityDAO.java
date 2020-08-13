@@ -260,6 +260,26 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getSingleResult();
   }
   
+  public Long countByWorkspaceEntityAndRoleArchetypeAndArchived(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    Join<WorkspaceUserEntity, WorkspaceRoleEntity> join = root.join(WorkspaceUserEntity_.workspaceUserRole);
+    
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
+            criteriaBuilder.equal(join.get(WorkspaceRoleEntity_.archetype), archetype)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
   public WorkspaceUserEntity updateIdentifier(WorkspaceUserEntity workspaceUserEntity, String identifier) {
     workspaceUserEntity.setIdentifier(identifier);
     return persist(workspaceUserEntity);

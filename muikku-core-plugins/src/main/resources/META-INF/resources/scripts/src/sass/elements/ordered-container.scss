@@ -34,10 +34,14 @@
   }
 }
 
-.ordered-container--frontpage-studying,
-.ordered-container--frontpage-news-and-events {
+.ordered-container--frontpage-studying {
+
   .ordered-container__item {
     margin-bottom: calc(2 * #{$ordered-container-item-gutter});
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
   }
 }
 
@@ -168,7 +172,7 @@
 
 .ordered-container__subcontainer-content {
   color: $color-frontpage-text-organization-description;
-  font-family: $text-branded-font-family;  
+  font-family: $text-branded-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   line-height: 1.375rem;
@@ -191,7 +195,11 @@
 }
 
 .ordered-container__item-subcontainer--organization-description {
-  margin-top: 1.5rem;
+  margin-top: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-top: 1.5rem;
+  }
 
   @include breakpoint($breakpoint-desktop) {
     margin-top: 0;
@@ -208,7 +216,7 @@
 
 .ordered-container__subcontainer-header--social-media {
   color: $color-frontpage-text-organization-info-title;
-  font-family: $text-branded-font-family;  
+  font-family: $text-branded-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 600;
   margin: 0 0 0.625rem;
@@ -246,62 +254,31 @@
     order: 3;
   }
 
-  // Events card
-  .ordered-container__item--frontpage-events {
-    flex-basis: calc(50% - #{$ordered-container-item-gutter});
-    flex-grow: 1;
-    flex-shrink: 1;
-    padding: 0 $ordered-container-item-gutter 0 0;
-    order: 1;
-  }
-
   // News card
   .ordered-container__item--frontpage-news {
-    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-basis: 100%;
     flex-grow: 1;
     flex-shrink: 1;
-    padding: 0 0 0 $ordered-container-item-gutter;
-    order: 2;
-  }
-
-  // Images card
-  .ordered-container__item--frontpage-images {
-    align-self: flex-start;
-    flex-basis: calc(50% - #{$ordered-container-item-gutter});
-    flex-grow: 1;
-    flex-shrink: 1;
-    padding: 0 $ordered-container-item-gutter 0 0;
-    order: 3;
-    overflow: hidden; // This prevents slick carousel to reserve 100% fill entire container some reason!
-  }
-
-  // Blogs card
-  .ordered-container__item--frontpage-blogs {
-    flex-basis: calc(50% - #{$ordered-container-item-gutter});
-    flex-grow: 1;
-    flex-shrink: 1;
-    padding: 0 0 0 $ordered-container-item-gutter;
-    order: 4;
   }
 }
 
 @include breakpoint($breakpoint-desktop) {
   .ordered-container__item--upper-secondary-school {
-    flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-basis: 33%;
     flex-grow: 1;
     flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter 0 0;
   }
 
   .ordered-container__item--secondary-school {
-    flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-basis: 33%;
     flex-grow: 1;
     flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter;
   }
 
   .ordered-container__item--open-materials {
-    flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-basis: 33%;
     flex-grow: 1;
     flex-shrink: 1;
     margin: 0 0 0 $ordered-container-item-gutter;

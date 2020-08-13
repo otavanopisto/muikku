@@ -170,7 +170,7 @@ export default function records(state: RecordsType={
     return Object.assign({}, state, {
       location: action.payload
     });
-  } else if (action.type === "UPDATE_COURSES_AVALIABLE_FILTERS_CURRICULUMS"){
+  } else if (action.type === "UPDATE_COURSES_AVAILABLE_FILTERS_CURRICULUMS"){
     return Object.assign({}, state, {
       curriculums: action.payload
     });

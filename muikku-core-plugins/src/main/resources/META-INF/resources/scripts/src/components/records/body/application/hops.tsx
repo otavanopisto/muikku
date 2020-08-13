@@ -35,7 +35,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
     this.timeout = setTimeout(this.props.setHopsTo.bind(null, hops), 1000);
   }
   render(){
-    if (this.props.records.location !== "hops" || this.props.hops.eligibility.upperSecondarySchoolCurriculum == false){
+    if (this.props.records.location !== "hops" || (this.props.hops.eligibility && this.props.hops.eligibility.upperSecondarySchoolCurriculum == false)){
       return null;
     } else if (this.props.hops.status === "ERROR"){
       // TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error

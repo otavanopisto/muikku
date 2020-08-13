@@ -91,5 +91,4 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
   public void delete(FeedItem feedItem) {
     super.delete(feedItem);
   }
-
 }

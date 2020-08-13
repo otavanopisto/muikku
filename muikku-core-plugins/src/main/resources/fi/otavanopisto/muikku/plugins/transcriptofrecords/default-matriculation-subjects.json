@@ -1,3 +1,4 @@
+
 [
   {
     "code": "A",
@@ -13,11 +14,11 @@
   },
   {
     "code": "FA",
-    "subjectCode": "RAB2"
+    "subjectCode": "RAA"
   },
   {
     "code": "PA",
-    "subjectCode": "EAB3"
+    "subjectCode": "EAA"
   },
   {
     "code": "SA",
@@ -33,7 +34,7 @@
   },
   {
     "code": "BB",
-    "subjectCode": "RUB"
+    "subjectCode": "RUB1"
   },
   {
     "code": "M",
@@ -46,6 +47,10 @@
   {
     "code": "UE",
     "subjectCode": "UE"
+  },
+  {
+    "code": "UO",
+    "subjectCode": "UO"
   },
   {
     "code": "ET",
@@ -89,7 +94,7 @@
   },
   {
     "code": "EC",
-    "subjectCode": "ENA3"
+    "subjectCode": "ENB3"
   },
   {
     "code": "FC",
@@ -113,10 +118,14 @@
   },
   {
     "code": "GC",
-    "subjectCode": null
+    "subjectCode": "POB3"
   },
   {
     "code": "LC",
     "subjectCode": "LAB3"
+  },
+  {
+    "code": "SMC",
+    "subjectCode": "SMB3"
   }
 ]
