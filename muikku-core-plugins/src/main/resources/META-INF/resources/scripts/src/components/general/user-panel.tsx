@@ -8,7 +8,7 @@ import StaffDialog from '~/components/organization/dialogs/edit-staff';
 import {getName} from "~/util/modifiers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, {ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemContentData} from "~/components/general/application-list";
-import Student from '../guider/body/application/students/student';
+
 
 
 interface UserPanelProps {
@@ -24,7 +24,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
   constructor(props: UserPanelProps){
     super(props);
   }
-
+  
   render() {
 
     return(
@@ -40,7 +40,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
               role: user.role ? user.role : "STUDENT",
               studyProgrammeIdentifier: "STUDYPROGRAMME-1"
             }
-            let actions = data.role == "STUDENT" ? <div><StudentDialog data={data}><span className="icon-pencil"></span></StudentDialog></div> : data.role === "ADMINISTRATOR" ? <div>{data.role}</div> : <div><StaffDialog data={data}><span className="icon-pencil"></span></StaffDialog></div> ;
+            let actions = data.role == "STUDENT" ? <div><StudentDialog data={data}><span className="icon-pencil"></span></StudentDialog></div> : data.role === "ADMINISTRATOR" ? <div title={data.role}><span className="icon-disabled icon-pencil"></span></div> : <div><StaffDialog data={data}><span className="icon-pencil"></span></StaffDialog></div> ;
             return <ApplicationListItem key={user.id} modifiers="user">
               <ApplicationListItemContentWrapper modifiers="user" actions={actions} mainModifiers="user" asideModifiers="user" aside={aside}>
                 <ApplicationListItemContentData modifiers="primary">{getName(user, true)}</ApplicationListItemContentData>

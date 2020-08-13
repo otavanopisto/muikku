@@ -126,7 +126,7 @@ export class InputFormElement extends React.Component<InputFormElementProps, Inp
         valid = true;
       }
     }
-    this.props.updateField(name, this.state.value, valid);
+    this.props.updateField(name, value, valid);
   }
 
   componentDidUpdate(prevProps:any) {
