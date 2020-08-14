@@ -1,21 +1,21 @@
-package fi.otavanopisto.muikku.plugins.user;
+package fi.otavanopisto.muikku.dao.users;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.user.UserPendingEmailChange_;
+import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
-import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.user.UserPendingEmailChange;
+import fi.otavanopisto.muikku.model.users.UserPendingEmailChange;
+import fi.otavanopisto.muikku.model.users.UserPendingEmailChange_;
 
 @Deprecated
-public class UserPendingEmailChangeDAO extends CorePluginsDAO<UserPendingEmailChange> {
+public class UserPendingEmailChangeDAO extends CoreDAO<UserPendingEmailChange> {
 
   private static final long serialVersionUID = 4107269645530561563L;
 
-  public UserPendingEmailChange create(UserEmailEntity userEmailEntity, String newEmail, String confirmationHash) {
+  public fi.otavanopisto.muikku.model.users.UserPendingEmailChange create(UserEmailEntity userEmailEntity, String newEmail, String confirmationHash) {
     UserPendingEmailChange userPendingEmailChange = new UserPendingEmailChange();
     
     userPendingEmailChange.setUserEmailEntity(userEmailEntity.getId());
@@ -54,4 +54,5 @@ public class UserPendingEmailChangeDAO extends CorePluginsDAO<UserPendingEmailCh
     
     return getSingleResult(entityManager.createQuery(criteria));
   }
+
 }

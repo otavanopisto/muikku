@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.plugins.user;
+package fi.otavanopisto.muikku.dao.users;
 
 import java.util.Date;
 
@@ -8,10 +8,12 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
+import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
+import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange_;
 
-public class UserPendingPasswordChangeDAO extends CorePluginsDAO<UserPendingPasswordChange> {
+public class UserPendingPasswordChangeDAO extends CoreDAO<UserPendingPasswordChange> {
 
   private static final long serialVersionUID = 5503016597955204959L;
 

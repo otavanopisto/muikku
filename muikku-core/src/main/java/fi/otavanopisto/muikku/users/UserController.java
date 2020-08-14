@@ -34,6 +34,10 @@ public class UserController {
     return userSchoolDataController.createStudent(dataSource, student);
   }
 
+  public BridgeResponse<StudentPayload> updateStudent(String dataSource, StudentPayload student) {
+    return userSchoolDataController.updateStudent(dataSource, student);
+  }
+
   public User findUserByDataSourceAndIdentifier(String schoolDataSource, String userIdentifier) {
     return userSchoolDataController.findUser(schoolDataSource, userIdentifier);
   }
