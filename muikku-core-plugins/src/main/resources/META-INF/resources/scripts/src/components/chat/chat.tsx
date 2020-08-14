@@ -451,9 +451,11 @@ export class Chat extends React.Component<Iprops, Istate> {
       });
      // const rooms = await this.state.converse.api.rooms.get();
       //rooms.forEach((room: any) => room.rejoinIfNecessary());
-      let room = await this.state.converse.api.rooms.get(roomJid);
+      if (roomJid){
+        let room = await this.state.converse.api.rooms.get(roomJid);
 
-      room.join(this.state.nick, null);
+        room.join(this.state.nick);
+      }
     }
   }
   getWorkspaceMucRooms() {
