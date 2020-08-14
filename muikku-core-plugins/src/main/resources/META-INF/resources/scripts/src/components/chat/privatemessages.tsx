@@ -374,7 +374,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
         {this.state.minimized === true ? (
-          <div onClick={() => this.minimizeChats(this.state.roomJid)} className={this.state.messageNotification === true ? "chat__message-notification chat__minimized chat__minimized--private" : "chat__minimized chat__minimized--private"}>
+          <div onClick={() => this.minimizeChats(this.state.roomJid)} className={this.state.messageNotification === true ? "chat__minimized chat__minimized--private chat__nofication--private" : "chat__minimized chat__minimized--private"}>
             <div className="chat__minimized-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
             <div onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="chat__button chat__button--close icon-close"></div>
           </div>
@@ -383,7 +383,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
               <div className="chat__panel-header chat__panel-header--private">
                 <div className="chat__panel-header-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
                 <div onClick={() => this.minimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-minus"></div>
-                <div onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="chat__button chat__button--close icon-close"></div>
+                <div onClick={() => this.props.onOpenPrivateChat(this.state.info.info)} className="chat__button chat__button--close icon-cross"></div>
               </div>
 
               <div className="chat__panel-body chat__panel-body--chatroom">

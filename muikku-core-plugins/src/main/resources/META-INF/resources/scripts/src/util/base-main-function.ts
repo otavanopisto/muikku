@@ -67,54 +67,54 @@ export default function(store: Store<StateType>, options: {
               // This is default value but added here as a reminder not to touch this as Muikku Chat UI requires this setting for displaying nick names/real names.
               muc_nickname_from_jid: false,
               // * * * * * * * * * * * * * * *
-  
+
               // - - - - - - - - - - - - - - -
               // Thou shall touch these
               // - - - - - - - - - - - - - - -
-  
+
               // Sets timeout when user is marked away automatically
               auto_away: 300,
-  
+
               // Supported locales for converse. If Muikku has more langauges in future we need to update this.
               locales: ["fi", "en"],
-  
+
               // Needs to be set to "info" when in production mode
               logLevel: "debug",
-  
+
               // This might be depcerated as it is not included in converse documentation
               hide_muc_server: false,
-  
+
               allow_muc: true,
-  
+
               // We try to archive every message, openfire needs to have archiving turned on with chat rooms also
               message_archiving: "always",
-  
+
               // This defines the maximum amount of archived messages to be returned per query.
               archived_messages_page_size: 10,
-  
+
               // Should be 0 if MAM (message_archiving: "always") is in use
               muc_history_max_stanzas: 0,
-  
+
               muc_show_join_leave: true,
-              
-              
+
+
               // If you set this setting to true, then you will be notified of all messages received in a room.
               //notify_all_room_messages: true,
-  
+
               // This allows students and teachers private messages between each other without adding recipient to contacts
               allow_non_roster_messaging: true,
-  
+
               // We could set this to IndexedDB so we don't bump into 5MB limit of local storage (not very like to happen).
               // IndexedDB is also async and might be more future proof.
               persistent_store: "localStorage",
-  
+
               // How often converse pings in milliseconds
               ping_interval: 45,
-  
+
               // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY.
               // For production this option needs to be removed.
               trusted: "off",
-  
+
               // Plugins that can be used
               whitelisted_plugins: ["muikku-chat-ui"],
               // - - - - - - - - - - - - - - -

@@ -86,19 +86,46 @@
   background: $color-chat-private-main-color;
 }
 
-@keyframes pulse {
-  0% {
-    background-color: $color-default-contrast;
-  }
+.chat__nofication--workspace {
+  animation: 2.5s linear infinite;
 
-  100% {
-    background-color: $color-chat-message-notification;
+  @include chat-pulse {
+    0% {
+      background: $color-chat-workspace-room-main-color;
+    }
+
+    50% {
+      background: $color-chat-message-notification;
+    }
   }
 }
 
-.chat__message-notification {
-  animation: pulse 2s infinite;
-  background-image: none;
+.chat__nofication--other {
+  animation: 2.5s linear infinite;
+
+  @include chat-pulse {
+    0% {
+      background: $color-chat-other-room-main-color;
+    }
+
+    50% {
+      background: $color-chat-message-notification;
+    }
+  }
+}
+
+.chat__nofication--private {
+  animation: 2.5s linear infinite;
+
+  @include chat-pulse {
+    0% {
+      background: $color-chat-private-main-color;
+    }
+
+    50% {
+      background: $color-chat-message-notification;
+    }
+  }
 }
 
 .chat__minimized-title {
@@ -711,4 +738,18 @@
   flex-grow: 0;
   flex-shrink: 0;
   line-height: 1;
+}
+
+// Chat subpanel notifications
+.chat-notification {
+  font-weight: 600;
+  padding: 10px;
+}
+
+.chat-notification--success {
+  color: $color-success;
+}
+
+.chat-notification--failed {
+  color: $color-error;
 }

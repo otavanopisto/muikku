@@ -127,3 +127,12 @@
     box-shadow: none;
   }
 }
+
+@mixin chat-pulse {
+  $animation-name: unique-id();
+  animation-name: $animation-name;
+
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}

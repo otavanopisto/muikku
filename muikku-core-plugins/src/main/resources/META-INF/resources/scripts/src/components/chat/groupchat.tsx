@@ -512,12 +512,12 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       return this.props.converse.api.sendIQ(iq).then(() =>
         this.setState({
           isRoomConfigSavedSuccesfully: "Tallennettu onnistuneesti!",
-          settingsInformBox: "settingsInform --success"
+          settingsInformBox: "chat-notification chat-notification--success"
         })
       ).catch(() =>
         this.setState({
           isRoomConfigSavedSuccesfully: "Tallennettu onnistuneesti!",
-          settingsInformBox: "settingsInform --failed"
+          settingsInformBox: "chat-notification chat-notification--failed"
         })
       );
     }
