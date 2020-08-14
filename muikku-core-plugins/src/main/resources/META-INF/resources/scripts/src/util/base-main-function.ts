@@ -119,7 +119,7 @@ export default function(store: Store<StateType>, options: {
               whitelisted_plugins: ["muikku-chat-ui"],
               // - - - - - - - - - - - - - - -
 
-              blacklisted_plugins: ["converse-bookmarks", "converse-controlbox"]
+              blacklisted_plugins: ["converse-bookmarks"]
           });
         }
       });

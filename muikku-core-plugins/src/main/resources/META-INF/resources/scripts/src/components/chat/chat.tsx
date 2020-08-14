@@ -340,7 +340,7 @@ export class Chat extends React.Component<Iprops, Istate> {
 
 	let affiliationlist = (await promisify(mApi().chat.affiliations.read({roomName: parsedJid}), 'callback')());
 
-    event.target.reset();
+    //event.target.reset();
   }
   informRoomCreationFailed(){
     alert("EI OLE MITÄÄN HUONEITA TÄÄLLÄ!!");
@@ -449,8 +449,11 @@ export class Chat extends React.Component<Iprops, Istate> {
       this.setState({
         openChats: openChatsList
       });
-      const rooms = await this.state.converse.api.rooms.get();
-      rooms.forEach((room: any) => room.rejoinIfNecessary());
+     // const rooms = await this.state.converse.api.rooms.get();
+      //rooms.forEach((room: any) => room.rejoinIfNecessary());
+      let room = await this.state.converse.api.rooms.get(roomJid);
+
+      room.join(this.state.nick, null);
     }
   }
   getWorkspaceMucRooms() {
