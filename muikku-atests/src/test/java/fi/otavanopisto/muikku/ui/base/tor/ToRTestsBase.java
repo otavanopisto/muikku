@@ -130,16 +130,16 @@ public class ToRTestsBase extends AbstractUITest {
         login();
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+        selectFinnishLocale();
+        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitAndClick(".button--muikku-submit-assignment");
+
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");
         
-        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-        waitForPresentAndVisible(".notification-queue-item-success");
-        waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
         mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
@@ -180,9 +180,11 @@ public class ToRTestsBase extends AbstractUITest {
         waitAndClick(".application-list__header-primary");
         waitForPresent(".state-PASSED");
         assertText(".state-PASSED", "E");
-        waitAndClick(".application-list__item-header--studies-assignment");
-        waitForVisible(".application-sub-panel__text--task-evaluation p");
-        assertTextIgnoreCase(".application-sub-panel__text--task-evaluation p", "Test evaluation.");
+        waitAndClick(".application-list__item-header--studies-assignment .application-list__header-primary");
+        waitForPresentAndVisible(".material-page__assignment-assessment-grade-data");
+        assertText(".material-page__assignment-assessment-grade-data", "Excellent");
+        waitForVisible(".material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p");
+        assertTextIgnoreCase(".material-page__assignment-assessment-literal .material-page__assignment-assessment-literal-data p", "Test evaluation.");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

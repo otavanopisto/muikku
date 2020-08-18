@@ -4,15 +4,14 @@ import {NotificationListType} from './base/notifications';
 import {CredentialsType} from './base/credentials';
 import {StatusType} from './base/status';
 import {WebsocketStateType} from './util/websocket';
-import { AnnouncementsType } from './main-function/announcements';
+import { AnnouncementsType } from './announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
-import {UserIndexType} from './main-function/user-index';
-import {UsersType} from './main-function/users';
 import {WorkspacesType} from './workspaces';
-import { CoursesType } from './main-function/courses';
-import { DiscussionType } from './main-function/discussion';
+import {UsersType, StudyprogrammeTypes} from './main-function/users';
+import {UserIndexType} from './user-index';
+import { DiscussionType } from './discussion';
 import { GuiderType } from './main-function/guider';
 import { SummaryType } from './main-function/records/summary';
 import { YOType, SubjectEligibilitySubjectsType } from './main-function/records/yo';
@@ -36,12 +35,12 @@ export interface StateType {
   hops?: HOPSType,
   vops?: VOPSType,
   summary?: SummaryType,
+  studyprogrammes?: StudyprogrammeTypes,
   messages?: MessagesType,
-  users: UsersType;
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
-  courses?: CoursesType,
-  organizationCourses: CoursesType,
+  organizationWorkspaces?: WorkspacesType,
+  organizationUsers?: UsersType,
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,

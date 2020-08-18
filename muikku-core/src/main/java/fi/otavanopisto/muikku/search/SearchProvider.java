@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 
 public interface SearchProvider {
   
@@ -20,10 +21,11 @@ public interface SearchProvider {
   public void deinit();
   
   public WorkspaceSearchBuilder searchWorkspaces();
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, List<SchoolDataIdentifier> organizationIdentifiers, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, int start, int maxResults, List<Sort> sorts);
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers, List<SchoolDataIdentifier> organizationIdentifiers, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, boolean includeUnpublished, TemplateRestriction templateRestriction, int start, int maxResults, List<Sort> sorts);
   public SearchResult searchWorkspaces(String schoolDataSource, String subject, int courseNumber);
+  public SearchResult findWorkspace(SchoolDataIdentifier identifier);
 
-  public SearchResult findUser(Long userEntityId, boolean includeInactive);
+  public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive);
   public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
       Boolean onlyDefaultUsers, int start, int maxResults);

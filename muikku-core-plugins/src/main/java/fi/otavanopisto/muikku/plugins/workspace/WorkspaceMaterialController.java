@@ -1,8 +1,5 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,38 +10,19 @@ import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.xerces.parsers.DOMParser;
-import org.cyberneko.html.HTMLConfiguration;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
+import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
@@ -129,7 +107,8 @@ public class WorkspaceMaterialController {
   /* WorkspaceNode */
 
   /**
-   * Updates the order numbers of workspace nodes so that <code>workspaceNode</code> appears above <code>referenceNode</code>.
+   * Updates the order numbers of workspace nodes so that
+   * <code>workspaceNode</code> appears above <code>referenceNode</code>.
    * 
    * @param workspaceNode
    *          The workspace node to be moved
@@ -145,7 +124,8 @@ public class WorkspaceMaterialController {
     List<WorkspaceNode> subsequentNodes = workspaceNodeDAO.listByOrderNumberEqualOrGreater(referenceNode);
     // Sort workspace nodes according to order number
     sortWorkspaceNodes(subsequentNodes);
-    // node order number = referenceOrderNumber, subsequent nodes = ++referenceOrderNumber
+    // node order number = referenceOrderNumber, subsequent nodes =
+    // ++referenceOrderNumber
     workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, referenceOrderNumber);
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       if (!(subsequentNode.getId().equals(workspaceNode.getId()))) {
@@ -156,7 +136,8 @@ public class WorkspaceMaterialController {
   }
 
   /**
-   * Updates the order numbers of workspace nodes so that <code>workspaceNode</code> appears below <code>referenceNode</code>.
+   * Updates the order numbers of workspace nodes so that
+   * <code>workspaceNode</code> appears below <code>referenceNode</code>.
    * 
    * @param workspaceNode
    *          The workspace node to be moved
@@ -172,7 +153,8 @@ public class WorkspaceMaterialController {
     List<WorkspaceNode> subsequentNodes = workspaceNodeDAO.listByOrderNumberGreater(referenceNode);
     // Sort workspace nodes according to order number
     sortWorkspaceNodes(subsequentNodes);
-    // node order number = referenceOrderNumber + 1, subsequent nodes = ++referenceOrderNumber
+    // node order number = referenceOrderNumber + 1, subsequent nodes =
+    // ++referenceOrderNumber
     workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, ++referenceOrderNumber);
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       workspaceNodeDAO.updateOrderNumber(subsequentNode, ++referenceOrderNumber);
@@ -181,8 +163,8 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceNode findWorkspaceNodeNextSibling(WorkspaceNode referenceNode) {
-    List<WorkspaceNode> nextSiblings = workspaceNodeDAO.listParentByOrderNumberGreaterSortByGreater(referenceNode.getParent(), referenceNode.getOrderNumber(),
-        0, 1);
+    List<WorkspaceNode> nextSiblings = workspaceNodeDAO
+        .listParentByOrderNumberGreaterSortByGreater(referenceNode.getParent(), referenceNode.getOrderNumber(), 0, 1);
     if (nextSiblings.isEmpty()) {
       return null;
     }
@@ -228,7 +210,8 @@ public class WorkspaceMaterialController {
   }
 
   public String getCompletePath(WorkspaceNode workspaceNode) {
-    return String.format("workspace/%s/materials/%s", getWorkspaceNodeWorkspaceUrlName(workspaceNode), workspaceNode.getPath());
+    return String.format("workspace/%s/materials/%s", getWorkspaceNodeWorkspaceUrlName(workspaceNode),
+        workspaceNode.getPath());
   }
 
   public WorkspaceMaterial findWorkspaceMaterialByRootPath(String path) {
@@ -236,7 +219,8 @@ public class WorkspaceMaterialController {
       path = StringUtils.substringBefore(path, "?");
     }
     String[] pathElements = StringUtils.split(path, "/");
-    if (pathElements.length >= 3 && StringUtils.equals("workspace", pathElements[0]) && StringUtils.equals("materials", pathElements[2])) {
+    if (pathElements.length >= 3 && StringUtils.equals("workspace", pathElements[0])
+        && StringUtils.equals("materials", pathElements[2])) {
       String workspaceUrlName = pathElements[1];
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(workspaceUrlName);
       if (workspaceEntity != null) {
@@ -252,21 +236,21 @@ public class WorkspaceMaterialController {
     }
     return null;
   }
-  
+
   public String getWorkspaceNodeWorkspaceUrlName(WorkspaceNode workspaceNode) {
     WorkspaceNode node = workspaceNode;
-    
+
     while (node != null) {
       if (node instanceof WorkspaceRootFolder) {
         return ((WorkspaceRootFolder) node).getUrlName();
       }
-      
+
       node = node.getParent();
     }
 
     return null;
   }
-  
+
   public List<WorkspaceNode> listWorkspaceNodesByParent(WorkspaceNode parent) {
     return workspaceNodeDAO.listByParentSortByOrderNumber(parent);
   }
@@ -275,7 +259,8 @@ public class WorkspaceMaterialController {
     return listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(parent, WorkspaceFolderType.DEFAULT);
   }
 
-  public List<WorkspaceNode> listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent, WorkspaceFolderType folderType) {
+  public List<WorkspaceNode> listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent,
+      WorkspaceFolderType folderType) {
     List<WorkspaceNode> nodes = workspaceNodeDAO.listByParentSortByOrderNumber(parent);
     // TODO: Do in database
     for (int i = nodes.size() - 1; i >= 0; i--) {
@@ -287,11 +272,12 @@ public class WorkspaceMaterialController {
         }
       }
     }
-    
+
     return nodes;
   }
-  
-  public List<WorkspaceFolder> listWorkspaceFoldersByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent, WorkspaceFolderType folderType) {
+
+  public List<WorkspaceFolder> listWorkspaceFoldersByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent,
+      WorkspaceFolderType folderType) {
     List<WorkspaceFolder> nodes = workspaceFolderDAO.listByParentAndFolderType(parent, folderType);
     // TODO: Do in database
     for (int i = nodes.size() - 1; i >= 0; i--) {
@@ -300,11 +286,12 @@ public class WorkspaceMaterialController {
         nodes.remove(i);
       }
     }
-    
+
     return nodes;
   }
 
-  public List<WorkspaceNode> listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent, WorkspaceFolderType folderType) {
+  public List<WorkspaceNode> listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent,
+      WorkspaceFolderType folderType) {
     List<WorkspaceNode> nodes = workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(parent, Boolean.FALSE);
     // TODO: Do in database
     for (int i = nodes.size() - 1; i >= 0; i--) {
@@ -316,44 +303,50 @@ public class WorkspaceMaterialController {
         }
       }
     }
-    
+
     return nodes;
   }
-
+  
   public void deleteAllWorkspaceNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialContainsAnswersExeption {
     WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-    deleteAllChildNodes(rootFolder);
+    deleteChildNodesAndSelf(rootFolder);
   }
   
-  private void deleteAllChildNodes(WorkspaceNode node) throws WorkspaceMaterialContainsAnswersExeption {
+  private void deleteChildNodesAndSelf(WorkspaceNode node) {
     List<WorkspaceNode> childNodes = listWorkspaceNodesByParent(node);
     for (WorkspaceNode childNode : childNodes) {
-      deleteAllChildNodes(childNode);
+      deleteChildNodesAndSelf(childNode);
     }
-
     switch (node.getType()) {
-      case FRONT_PAGE_FOLDER:
-      case FOLDER:
-        deleteWorkspaceFolder((WorkspaceFolder) node);
+    case FRONT_PAGE_FOLDER:
+    case FOLDER:
+      deleteWorkspaceFolder((WorkspaceFolder) node);
       break;
-      case MATERIAL:
+    case MATERIAL:
+      try {
         deleteWorkspaceMaterial((WorkspaceMaterial) node, true);
+      }
+      catch (WorkspaceMaterialContainsAnswersExeption e) {
+        // Ignored since removeAnswers flag has been explicitly set to true
+      }
       break;
-      case ROOT_FOLDER:
-        deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
+    case ROOT_FOLDER:
+      deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
       break;
     }
   }
 
   public Material getMaterialForWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
-    return workspaceMaterial.getMaterialId() == null ? null : materialController.findMaterialById(workspaceMaterial.getMaterialId());
+    return workspaceMaterial.getMaterialId() == null ? null
+        : materialController.findMaterialById(workspaceMaterial.getMaterialId());
   }
 
   public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials) {
     return cloneWorkspaceNode(workspaceNode, parent, cloneMaterials, false);
   }
 
-  private WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials, boolean overrideCloneMaterials) {
+  private WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent, boolean cloneMaterials,
+      boolean overrideCloneMaterials) {
     WorkspaceNode newNode;
     boolean isHtmlMaterial = false;
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
@@ -362,7 +355,8 @@ public class WorkspaceMaterialController {
       WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) workspaceNode;
       Material material = getMaterialForWorkspaceMaterial(workspaceMaterial);
       isHtmlMaterial = material instanceof HtmlMaterial;
-      Material clonedMaterial = cloneMaterials && !overrideCloneMaterials ? materialController.cloneMaterial(material) : material;
+      Material clonedMaterial = cloneMaterials && !overrideCloneMaterials ? materialController.cloneMaterial(material)
+          : material;
 
       // Implementation of feature #1232 (front and help pages should always be copies)
       if (isHtmlMaterial && !cloneMaterials) {
@@ -374,26 +368,27 @@ public class WorkspaceMaterialController {
           }
         }
       }
-      
-      newNode = createWorkspaceMaterial(
-          parent,
-          clonedMaterial,
-          workspaceMaterial.getTitle(),
-          generateUniqueUrlName(parent, workspaceMaterial.getUrlName()),
-          index,
-          workspaceMaterial.getHidden(),
-          workspaceMaterial.getAssignmentType(),
-          workspaceMaterial.getCorrectAnswers());
+
+      newNode = createWorkspaceMaterial(parent, clonedMaterial, workspaceMaterial.getTitle(),
+          generateUniqueUrlName(parent, workspaceMaterial.getUrlName()), index, workspaceMaterial.getHidden(),
+          workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers());
     }
     else if (workspaceNode instanceof WorkspaceFolder) {
-      newNode = createWorkspaceFolder(
-          parent,
-          ((WorkspaceFolder) workspaceNode).getTitle(),
-          generateUniqueUrlName(parent, workspaceNode.getUrlName()),
-          index,
-          workspaceNode.getHidden(),
-          ((WorkspaceFolder) workspaceNode).getFolderType(),
-          ((WorkspaceFolder) workspaceNode).getViewRestrict());
+      WorkspaceFolder folder = (WorkspaceFolder) workspaceNode;
+      // When copying front page or help page folders and the target already has them, remove
+      // the existing ones first since all workspaces should only have one set 
+      if (folder.getFolderType() == WorkspaceFolderType.FRONT_PAGE || folder.getFolderType() == WorkspaceFolderType.HELP_PAGE) {
+        WorkspaceEntity workspaceEntity = findWorkspaceEntityByNode(parent);
+        WorkspaceNode existingFolder = folder.getFolderType() == WorkspaceFolderType.FRONT_PAGE ?
+            findWorkspaceFrontPageFolder(workspaceEntity) :
+            findWorkspaceHelpPageFolder(workspaceEntity);
+        if (existingFolder != null && !(existingFolder.getId().equals(folder.getId()))) {
+          deleteChildNodesAndSelf(existingFolder);
+        }
+      }
+      newNode = createWorkspaceFolder(parent, folder.getTitle(),
+          generateUniqueUrlName(parent, workspaceNode.getUrlName()), index, workspaceNode.getHidden(),
+          folder.getFolderType(), folder.getViewRestrict());
     }
     else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
@@ -416,7 +411,8 @@ public class WorkspaceMaterialController {
     }
     workspaceMaterialDAO.updateMaterialId(workspaceMaterial, originMaterial.getId());
     if (updateUrlName) {
-      String urlName = generateUniqueUrlName(workspaceMaterial.getParent(), workspaceMaterial, originMaterial.getTitle());
+      String urlName = generateUniqueUrlName(workspaceMaterial.getParent(), workspaceMaterial,
+          originMaterial.getTitle());
       if (!workspaceMaterial.getUrlName().equals(urlName)) {
         workspaceMaterialDAO.updateUrlName(workspaceMaterial, urlName);
       }
@@ -425,25 +421,38 @@ public class WorkspaceMaterialController {
   }
 
   /* Workspace material */
-  
+
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
     return createWorkspaceMaterial(parent, material, null, null);
   }
 
-  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material,
+      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
     String urlName = generateUniqueUrlName(parent, material.getTitle());
     return createWorkspaceMaterial(parent, material, urlName, assignmentType, correctAnswers);
   }
 
-  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName,
+      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
-    return createWorkspaceMaterial(parent, material, material.getTitle(), urlName, index, false, assignmentType, correctAnswers);
+    return createWorkspaceMaterial(parent, material, material.getTitle(), urlName, index, false, assignmentType,
+        correctAnswers);
   }
-  
-  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String title, String urlName, Integer index,
-      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), title, urlName, index, hidden, assignmentType, correctAnswers);
+
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String title,
+      String urlName, Integer index, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType,
+      WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+    // #4927: If binary material filename has changed due to unique constraints,
+    // update workspace instance filename accordingly
+    if (material instanceof BinaryMaterial) {
+      String oldFileName = generateUniqueUrlName(material.getTitle());
+      if (!StringUtils.equals(oldFileName, urlName)) {
+        title = urlName;
+      }
+    }
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), title, urlName, index,
+        hidden, assignmentType, correctAnswers);
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
   }
@@ -457,7 +466,7 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceMaterial findWorkspaceMaterialByWorkspaceEntityAndPath(WorkspaceEntity workspaceEntity, String path) {
-    WorkspaceNode workspaceNode = findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path); 
+    WorkspaceNode workspaceNode = findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path);
     return workspaceNode instanceof WorkspaceMaterial ? (WorkspaceMaterial) workspaceNode : null;
   }
 
@@ -469,95 +478,101 @@ public class WorkspaceMaterialController {
     return workspaceMaterialDAO.listByMaterialId(material.getId());
   }
 
-  public WorkspaceMaterial updateWorkspaceMaterialAssignmentType(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAssignmentType assignmentType) {
+  public WorkspaceMaterial updateWorkspaceMaterialAssignmentType(WorkspaceMaterial workspaceMaterial,
+      WorkspaceMaterialAssignmentType assignmentType) {
     return workspaceMaterialDAO.updateAssignmentType(workspaceMaterial, assignmentType);
   }
-  
-  public WorkspaceFolder updateWorkspaceFolder(WorkspaceFolder workspaceFolder, String title, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden, MaterialViewRestrict viewRestrict) {
+
+  public WorkspaceFolder updateWorkspaceFolder(WorkspaceFolder workspaceFolder, String title, WorkspaceNode parentNode,
+      WorkspaceNode nextSibling, Boolean hidden, MaterialViewRestrict viewRestrict) {
     if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
 
     // Parent node & URL name
-    
+
     long oldParent = workspaceFolder.getParent() == null ? 0 : workspaceFolder.getParent().getId();
     long newParent = parentNode == null ? 0 : parentNode.getId();
     if (oldParent != newParent) {
-      // Before changing the parent, make sure the folder's URL name will be unique under it
+      // Before changing the parent, make sure the folder's URL name will be unique
+      // under it
       String urlName = generateUniqueUrlName(parentNode, title);
       // Change the parent
       workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateParent(workspaceFolder, parentNode);
-      // Update URL name if applicable 
+      // Update URL name if applicable
       if (!StringUtils.equals(workspaceFolder.getUrlName(), urlName)) {
         workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateUrlName(workspaceFolder, urlName);
       }
     }
     else {
-      // Parent stays the same. Still, make sure title and URL name are in sync  
+      // Parent stays the same. Still, make sure title and URL name are in sync
       String urlName = generateUniqueUrlName(parentNode, workspaceFolder, title);
       if (!StringUtils.equals(workspaceFolder.getUrlName(), urlName)) {
         workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateUrlName(workspaceFolder, urlName);
       }
     }
-    
+
     // Next sibling
-    
+
     if (nextSibling == null) {
       Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
       orderNumber = orderNumber == null ? 0 : orderNumber;
       if (workspaceFolder.getOrderNumber() < orderNumber) {
         workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateOrderNumber(workspaceFolder, ++orderNumber);
       }
-    } else {
+    }
+    else {
       workspaceFolder = (WorkspaceFolder) moveAbove(workspaceFolder, nextSibling);
     }
-    
+
     // Hidden
-    
+
     workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateHidden(workspaceFolder, hidden);
-    
+
     // Title
-    
+
     String urlName = generateUniqueUrlName(workspaceFolder.getParent(), workspaceFolder, title);
     workspaceFolder = workspaceFolderDAO.updateFolderName(workspaceFolder, urlName, title);
-    
+
     // View restrict
-    
+
     workspaceFolder = workspaceFolderDAO.updateViewRestrict(workspaceFolder, viewRestrict);
-    
+
     // Return updated folder
-    
+
     return workspaceFolder;
   }
 
-  public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden,
-      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers, String title) {
+  public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode,
+      WorkspaceNode nextSibling, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType,
+      WorkspaceMaterialCorrectAnswersDisplay correctAnswers, String title) {
     if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
 
     // Material id
-    
+
     if (workspaceNode instanceof WorkspaceMaterial) {
       workspaceNode = workspaceMaterialDAO.updateMaterialId((WorkspaceMaterial) workspaceNode, materialId);
       workspaceNode = workspaceMaterialDAO.updateAssignmentType((WorkspaceMaterial) workspaceNode, assignmentType);
       workspaceNode = workspaceMaterialDAO.updateCorrectAnswers((WorkspaceMaterial) workspaceNode, correctAnswers);
     }
-    
+
     // Title
-    
+
     workspaceNode = workspaceNodeDAO.updateTitle(workspaceNode, title);
-    
+
     // Parent node & URL name
-    
+
     long oldParent = workspaceNode.getParent() == null ? 0 : workspaceNode.getParent().getId();
     long newParent = parentNode == null ? 0 : parentNode.getId();
     if (oldParent != newParent) {
-      // Before changing the parent, make sure the node's URL name will be unique under it
+      // Before changing the parent, make sure the node's URL name will be unique
+      // under it
       String urlName = generateUniqueUrlName(parentNode, title);
       // Change the parent
       workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
-      // Update URL name 
+      // Update URL name
       workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
     }
     else {
@@ -565,21 +580,22 @@ public class WorkspaceMaterialController {
       String urlName = generateUniqueUrlName(parentNode, workspaceNode, title);
       workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
     }
-    
+
     // Next sibling
-    
+
     if (nextSibling == null) {
       Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
       orderNumber = orderNumber == null ? 0 : orderNumber;
       if (workspaceNode.getOrderNumber() < orderNumber) {
         workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, ++orderNumber);
       }
-    } else {
+    }
+    else {
       workspaceNode = moveAbove(workspaceNode, nextSibling);
     }
 
     // Hidden
-    
+
     workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
 
     // Updated node
@@ -587,14 +603,15 @@ public class WorkspaceMaterialController {
   }
 
   public void showWorkspaceNode(WorkspaceNode workspaceNode) {
-    workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.TRUE);
+    workspaceNodeDAO.updateHidden(workspaceNode, Boolean.TRUE);
   }
 
   public void hideWorkspaceNode(WorkspaceNode workspaceNode) {
-    workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.FALSE);
+    workspaceNodeDAO.updateHidden(workspaceNode, Boolean.FALSE);
   }
 
-  public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
+  public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers)
+      throws WorkspaceMaterialContainsAnswersExeption {
     try {
       workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial, removeAnswers));
 
@@ -602,11 +619,13 @@ public class WorkspaceMaterialController {
       for (WorkspaceNode childNode : childNodes) {
         if (childNode instanceof WorkspaceMaterial) {
           deleteWorkspaceMaterial((WorkspaceMaterial) childNode, removeAnswers);
-        } else if (childNode instanceof WorkspaceFolder) {
+        }
+        else if (childNode instanceof WorkspaceFolder) {
           deleteWorkspaceFolder((WorkspaceFolder) childNode);
         }
       }
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       Throwable cause = e;
       while (cause != null) {
         cause = cause.getCause();
@@ -621,12 +640,14 @@ public class WorkspaceMaterialController {
   }
 
   /**
-   * Returns the identifier of the workspace entity the given workspace node belongs to.
+   * Returns the identifier of the workspace entity the given workspace node
+   * belongs to.
    * 
    * @param workspaceNode
    *          The workspace node
    * 
-   * @return The identifier of the workspace entity the given workspace node belongs to
+   * @return The identifier of the workspace entity the given workspace node
+   *         belongs to
    */
   public Long getWorkspaceEntityId(WorkspaceNode workspaceNode) {
     WorkspaceNode rootFolder = workspaceNode;
@@ -637,6 +658,10 @@ public class WorkspaceMaterialController {
       throw new IllegalArgumentException("WorkspaceNode " + workspaceNode.getId() + " has not root folder");
     }
     return ((WorkspaceRootFolder) rootFolder).getWorkspaceEntityId();
+  }
+  
+  public WorkspaceEntity findWorkspaceEntityByNode(WorkspaceNode node) {
+    return workspaceEntityController.findWorkspaceEntityById(getWorkspaceEntityId(node));
   }
 
   /* Root Folder */
@@ -660,7 +685,6 @@ public class WorkspaceMaterialController {
     return (WorkspaceRootFolder) node;
   }
 
-
   public void deleteWorkspaceRootFolder(WorkspaceRootFolder workspaceRootFolder) {
     workspaceRootFolderDAO.delete(workspaceRootFolder);
   }
@@ -670,11 +694,14 @@ public class WorkspaceMaterialController {
   public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
-    return createWorkspaceFolder(parent, title, urlName, index, Boolean.FALSE, WorkspaceFolderType.DEFAULT, MaterialViewRestrict.NONE);
+    return createWorkspaceFolder(parent, title, urlName, index, Boolean.FALSE, WorkspaceFolderType.DEFAULT,
+        MaterialViewRestrict.NONE);
   }
-  
-  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, Integer index, Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict) {
-    WorkspaceFolder workspaceFolder = workspaceFolderDAO.create(parent, title, urlName, index, hidden, folderType, viewRestrict);
+
+  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, Integer index,
+      Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict) {
+    WorkspaceFolder workspaceFolder = workspaceFolderDAO.create(parent, title, urlName, index, hidden, folderType,
+        viewRestrict);
     workspaceFolderCreateEvent.fire(new WorkspaceFolderCreateEvent(workspaceFolder));
     return workspaceFolder;
   }
@@ -683,7 +710,7 @@ public class WorkspaceMaterialController {
     String urlName = generateUniqueUrlName(parent, title);
     return createWorkspaceFolder(parent, title, urlName);
   }
-  
+
   public WorkspaceMaterial ensureWorkspaceFrontPageExists(WorkspaceEntity workspace) {
     WorkspaceFolder frontPageFolder = findWorkspaceFrontPageFolder(workspace);
     if (frontPageFolder == null) {
@@ -703,23 +730,12 @@ public class WorkspaceMaterialController {
     return frontPageMaterial;
   }
 
-  public WorkspaceMaterial ensureWorkspaceHelpPageExists(WorkspaceEntity workspace) {
+  public WorkspaceFolder ensureWorkspaceHelpFolderExists(WorkspaceEntity workspace) {
     WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspace);
     if (helpPageFolder == null) {
       helpPageFolder = createWorkspaceHelpPageFolder(workspace);
     }
-    WorkspaceMaterial helpPageMaterial = null;
-    List<WorkspaceMaterial> helpPageMaterials = listWorkspaceMaterialsByParent(helpPageFolder);
-    if (helpPageMaterials.isEmpty()) {
-      String title = localeController.getText(sessionController.getLocale(), "plugin.workspace.helpPage.title");
-      String license = null;
-      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(title, "", "text/html", 0l, license);
-      helpPageMaterial = createWorkspaceMaterial(helpPageFolder, htmlMaterial);
-    }
-    else {
-      helpPageMaterial = helpPageMaterials.get(0);
-    }
-    return helpPageMaterial;
+    return helpPageFolder;
   }
 
   public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
@@ -729,25 +745,29 @@ public class WorkspaceMaterialController {
   public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
     workspaceFolderDAO.delete(workspaceFolder);
   }
-  
+
   public void updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {
     workspaceFolderDAO.updateDefaultMaterial(workspaceFolder, defaultMaterial);
   }
 
   /* Utility methods */
-  
-  public Long getMaterialCountByWorkspaceAndAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
+
+  public Long getMaterialCountByWorkspaceAndAssignmentType(WorkspaceEntity workspaceEntity,
+      WorkspaceMaterialAssignmentType assignmentType) {
     List<WorkspaceNode> folders = listWorkspaceFolders(workspaceEntity, BooleanPredicate.FALSE);
     return workspaceMaterialDAO.countByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, folders);
   }
 
-  public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
+  public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity,
+      WorkspaceMaterialAssignmentType assignmentType) {
     return listWorkspaceMaterialsByAssignmentType(workspaceEntity, assignmentType, BooleanPredicate.FALSE);
   }
-  
-  public List<WorkspaceMaterial> listWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType, BooleanPredicate hidden) {
+
+  public List<WorkspaceMaterial> listWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity,
+      WorkspaceMaterialAssignmentType assignmentType, BooleanPredicate hidden) {
     final List<WorkspaceNode> folders = listWorkspaceFolders(workspaceEntity, hidden);
-    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(hidden, assignmentType, folders);
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(hidden,
+        assignmentType, folders);
     Collections.sort(workspaceMaterials, new Comparator<WorkspaceMaterial>() {
       @Override
       public int compare(WorkspaceMaterial o1, WorkspaceMaterial o2) {
@@ -761,20 +781,24 @@ public class WorkspaceMaterialController {
     return workspaceMaterials;
   }
 
-  public List<WorkspaceMaterial> listWorkspaceMaterialsByParentAndAssignmentType(WorkspaceNode parent, WorkspaceEntity workspaceEntity,
-      WorkspaceMaterialAssignmentType assignmentType, BooleanPredicate hidden) {
+  public List<WorkspaceMaterial> listWorkspaceMaterialsByParentAndAssignmentType(WorkspaceNode parent,
+      WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType, BooleanPredicate hidden) {
     return workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(hidden, assignmentType, Arrays.asList(parent));
   }
-  
-  public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
+
+  public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity)
+      throws WorkspaceMaterialException {
     List<ContentNode> result = new ArrayList<>();
-    
-    List<WorkspaceMaterial> workspaceMaterials = listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
-    
-    for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      result.add(createContentNode(workspaceMaterial, 0, processHtml, false));
+
+    List<WorkspaceMaterial> workspaceMaterials = listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity,
+        WorkspaceMaterialAssignmentType.EVALUATED);
+
+    for (int i = 0; i < workspaceMaterials.size(); i++) {
+      WorkspaceMaterial currentMaterial = workspaceMaterials.get(i);
+      WorkspaceMaterial nextSibling = i + 1 < workspaceMaterials.size() ? workspaceMaterials.get(i + 1) : null;
+      result.add(createContentNode(currentMaterial, 0, false, nextSibling));
     }
-    
+
     return result;
   }
 
@@ -783,242 +807,159 @@ public class WorkspaceMaterialController {
 
     WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     result.add(rootFolder);
-    
+
     appendChildFolders(rootFolder, result, hidden);
 
     return result;
   }
-  
+
   private void appendChildFolders(WorkspaceNode parent, List<WorkspaceNode> result, BooleanPredicate hidden) {
-    List<WorkspaceFolder> childFolders = workspaceFolderDAO.listByHiddenAndParentAndFolderType(hidden, parent, WorkspaceFolderType.DEFAULT);
+    List<WorkspaceFolder> childFolders = workspaceFolderDAO.listByHiddenAndParentAndFolderType(hidden, parent,
+        WorkspaceFolderType.DEFAULT);
     result.addAll(childFolders);
-    
+
     for (WorkspaceFolder childFolder : childFolders) {
       appendChildFolders(childFolder, result, hidden);
     }
   }
 
-  public List<FlattenedWorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes, int level, boolean includeHidden) {
+  public List<FlattenedWorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes, int level,
+      boolean includeHidden) {
     List<FlattenedWorkspaceNode> result = new ArrayList<>();
 
-    for (WorkspaceNode workspaceNode : workspaceNodes) {
+    for (int i = 0; i < workspaceNodes.size(); i++) {
+      WorkspaceNode workspaceNode = workspaceNodes.get(i);
+      WorkspaceNode nextSibling = i + 1 < workspaceNodes.size() ? workspaceNodes.get(i + 1) : null;
       if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) workspaceNode;
-        List<WorkspaceNode> children = includeHidden
-            ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
+        List<WorkspaceNode> children = includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
             : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
-        result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), workspaceFolder, level, workspaceFolder.getParent().getId(), workspaceFolder.getHidden()));
+        result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), workspaceFolder, level,
+            workspaceFolder.getParent().getId(), nextSibling, workspaceFolder.getHidden()));
         result.addAll(flattenWorkspaceNodes(children, level + 1, includeHidden));
-      } else {
-        result.add(new FlattenedWorkspaceNode(false, null, workspaceNode, level, workspaceNode.getParent().getId(), workspaceNode.getHidden()));
+      }
+      else {
+        result.add(new FlattenedWorkspaceNode(false, null, workspaceNode, level, workspaceNode.getParent().getId(),
+            nextSibling, workspaceNode.getHidden()));
       }
     }
 
     return result;
   }
-  
-  public List<ContentNode> listWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean includeHidden) throws WorkspaceMaterialException {
-   List<ContentNode> contentNodes = new ArrayList<>();
-   WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-   List<WorkspaceNode> rootMaterialNodes = includeHidden
-       ? listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT)
-       : listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
-   for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
-     ContentNode node = createContentNode(rootMaterialNode, 1, true, includeHidden);
-     contentNodes.add(node);
-   }
-   return contentNodes;
+
+  public List<ContentNode> listWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean includeHidden)
+      throws WorkspaceMaterialException {
+    List<ContentNode> contentNodes = new ArrayList<>();
+    WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    List<WorkspaceNode> rootMaterialNodes = includeHidden
+        ? listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT)
+        : listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
+    for (int i = 0; i < rootMaterialNodes.size(); i++) {
+      WorkspaceNode currentNode = rootMaterialNodes.get(i);
+      WorkspaceNode nextSibling = i + 1 < rootMaterialNodes.size() ? rootMaterialNodes.get(i + 1) : null;
+      ContentNode node = createContentNode(currentNode, 1, includeHidden, nextSibling);
+      contentNodes.add(node);
+    }
+    return contentNodes;
   }
 
-  public List<ContentNode> listWorkspaceFrontPagesAsContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
+  public List<ContentNode> listWorkspaceFrontPagesAsContentNodes(WorkspaceEntity workspaceEntity)
+      throws WorkspaceMaterialException {
     List<ContentNode> contentNodes = new ArrayList<>();
     List<WorkspaceMaterial> frontPages = listFrontPages(workspaceEntity);
     for (WorkspaceNode frontPage : frontPages) {
-      ContentNode node = createContentNode(frontPage);
+      ContentNode node = createContentNode(frontPage, null);
       contentNodes.add(node);
     }
     return contentNodes;
   }
-  
-  public List<ContentNode> listWorkspaceHelpPagesAsContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
+
+  public List<ContentNode> listWorkspaceHelpPagesAsContentNodes(WorkspaceEntity workspaceEntity)
+      throws WorkspaceMaterialException {
     List<ContentNode> contentNodes = new ArrayList<>();
-    List<WorkspaceMaterial> helpPages = listHelpPages(workspaceEntity);
-    for (WorkspaceMaterial helpPage : helpPages) {
-      ContentNode node = createContentNode(helpPage);
+    List<WorkspaceNode> helpPages = listHelpPages(workspaceEntity);
+    for (int i = 0; i < helpPages.size(); i++) {
+      WorkspaceNode currentNode = helpPages.get(i);
+      WorkspaceNode nextSibling = i + 1 < helpPages.size() ? helpPages.get(i + 1) : null;
+      ContentNode node = createContentNode(currentNode, 1, true, nextSibling);
       contentNodes.add(node);
     }
     return contentNodes;
   }
 
-  public ContentNode createContentNode(WorkspaceNode rootMaterialNode) throws WorkspaceMaterialException {
-    return createContentNode(rootMaterialNode, 1, true, true);
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, WorkspaceNode nextSibling)
+      throws WorkspaceMaterialException {
+    return createContentNode(rootMaterialNode, 1, true, nextSibling);
   }
 
-  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean processHtml, boolean includeHidden) throws WorkspaceMaterialException {
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean includeHidden,
+      WorkspaceNode nextSibling) throws WorkspaceMaterialException {
     boolean viewRestricted = false;
-    try {
-      switch (rootMaterialNode.getType()) {
-      case FOLDER:
-        WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        viewRestricted = !sessionController.isLoggedIn() && workspaceFolder.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
-        ContentNode folderContentNode = new ContentNode(
-            workspaceFolder.getTitle(),
-            "folder",
-            rootMaterialNode.getId(),
-            null,
-            level,
-            null,
-            null,
-            rootMaterialNode.getParent().getId(),
-            rootMaterialNode.getHidden(),
-            null,
-            0l,
-            0l,
-            workspaceFolder.getPath(),
-            null,
-            null,
-            workspaceFolder.getViewRestrict(),
-            viewRestricted);
-        List<WorkspaceNode> children = includeHidden
-            ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
-            : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
-        List<FlattenedWorkspaceNode> flattenedChildren;
-        if (level >= FLATTENING_LEVEL) {
-          flattenedChildren = flattenWorkspaceNodes(children, level, includeHidden);
-        }
-        else {
-          flattenedChildren = new ArrayList<>();
-          for (WorkspaceNode node : children) {
-            flattenedChildren.add(new FlattenedWorkspaceNode(false, null, node, level, node.getParent().getId(), node.getHidden()));
-          }
-        }
-        for (FlattenedWorkspaceNode child : flattenedChildren) {
-          ContentNode contentNode;
-          if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, null, child.parentId, child.hidden, null, 0l, 0l, child.node.getPath(), null, null, MaterialViewRestrict.NONE, false);
-          } else {
-            contentNode = createContentNode(child.node, child.level, processHtml, includeHidden);
-          }
-          folderContentNode.addChild(contentNode);
-        }
-
-        return folderContentNode;
-      case MATERIAL:
-        DOMParser parser = null;
-        Transformer transformer = null;
-        
-        if (processHtml) {
-          parser = new DOMParser(new HTMLConfiguration());
-          parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
-          transformer = TransformerFactory.newInstance().newTransformer();
-          transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-          transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-          transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-          transformer.setOutputProperty(OutputKeys.INDENT, "no");
-        }
-        
-        WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
-        Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
-        Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
-        Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
-
-        List<String> producerNames = null;
-        String html;
-       
-        List<MaterialProducer> producers = materialController.listMaterialProducers(material);
-        if ((producers != null) && !producers.isEmpty()) {
-          producerNames = new ArrayList<>();
-          for (MaterialProducer producer : producers) {
-            producerNames.add(StringUtils.replace(StringEscapeUtils.escapeHtml4(producer.getName()), ",", "&#44;"));
-          }
-        }
-        
-        viewRestricted = !sessionController.isLoggedIn() && material.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
-        if (!viewRestricted) {
-          html = processHtml ? getMaterialHtml(material, parser, transformer) : null;
-        }
-        else {
-          html = String.format("<p class=\"content-view-restricted-message\">%s</p>", localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
-        }
-          
-        return new ContentNode(
-            workspaceMaterial.getTitle(),
-            material.getType(),
-            rootMaterialNode.getId(),
-            material.getId(),
-            level,
-            workspaceMaterial.getAssignmentType(),
-            workspaceMaterial.getCorrectAnswers(),
-            workspaceMaterial.getParent().getId(),
-            workspaceMaterial.getHidden(),
-            html,
-            currentRevision,
-            publishedRevision,
-            workspaceMaterial.getPath(),
-            material.getLicense(),
-            StringUtils.join(producerNames, ','),
-            material.getViewRestrict(),
-            viewRestricted);
-      default:
-        return null;
+    switch (rootMaterialNode.getType()) {
+    case FOLDER:
+      WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
+      ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", null,
+          rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getParent().getId(),
+          nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null, 0l, 0l,
+          workspaceFolder.getPath(), null, Collections.emptyList(), workspaceFolder.getViewRestrict());
+      List<WorkspaceNode> children = includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
+          : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
+      List<FlattenedWorkspaceNode> flattenedChildren;
+      if (level >= FLATTENING_LEVEL) {
+        flattenedChildren = flattenWorkspaceNodes(children, level, includeHidden);
       }
-    }
-    catch (SAXNotRecognizedException | SAXNotSupportedException | TransformerConfigurationException e) {
-      throw new WorkspaceMaterialException(e); 
-    }
-  }
-
-  private String getMaterialHtml(Material material, DOMParser parser, Transformer transformer) throws WorkspaceMaterialException {
-    try {
-      if (material instanceof HtmlMaterial) {
-        String html = ((HtmlMaterial) material).getHtml();
-        if (html == null) {
-          return null;
-        }
-
-        StringReader htmlReader = new StringReader(html);
-        try {
-          InputSource inputSource = new InputSource(htmlReader);
-          parser.parse(inputSource);
-          Document document = parser.getDocument();
- 
-          NodeList imgList = document.getElementsByTagName("img");
-          for (int i = 0, l = imgList.getLength(); i < l; i++) {
-            Element img = (Element) imgList.item(i);
-            String imgClass = img.getAttribute("class");
-            img.setAttribute("class", imgClass == null ? "lazy" : imgClass + " lazy");
-            img.setAttribute("data-original", img.getAttribute("src"));
-            img.removeAttribute("src");
-          }
-
-          NodeList iframeList = document.getElementsByTagName("iframe");
-          for (int i = iframeList.getLength() -1 ; i >= 0; i--) {
-            Element iframe = (Element) iframeList.item(i);
-            iframe.setAttribute("data-url", iframe.getAttribute("src"));
-            iframe.removeAttribute("src");
-            if (iframe.hasAttribute("class")) {
-              iframe.setAttribute("class", iframe.getAttribute("class") + " lazyFrame");
-            }
-            else {
-              iframe.setAttribute("class", "lazyFrame");
-            }
-          }
-
-          StringWriter writer = new StringWriter();
-          NodeList bodyChildren = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//body/*", document, XPathConstants.NODESET);
-          for (int i = 0, l = bodyChildren.getLength(); i < l; i++) {
-            transformer.transform(new DOMSource(bodyChildren.item(i)), new StreamResult(writer));
-          }
-          return writer.getBuffer().toString();
-        } finally {
-          htmlReader.close(); 
+      else {
+        flattenedChildren = new ArrayList<>();
+        for (WorkspaceNode node : children) {
+          WorkspaceNode nextSibiling = findWorkspaceNodeNextSibling(node);
+          flattenedChildren.add(new FlattenedWorkspaceNode(false, null, node, level, node.getParent().getId(),
+              nextSibiling, node.getHidden()));
         }
       }
+      for (FlattenedWorkspaceNode child : flattenedChildren) {
+        ContentNode contentNode;
+        if (child.isEmptyFolder) {
+          contentNode = new ContentNode(child.emptyFolderTitle, "folder", null, rootMaterialNode.getId(), null,
+              child.level, null, null, child.parentId, child.nextSibling == null ? null : child.nextSibling.getId(),
+              child.hidden, null, 0l, 0l, child.node.getPath(), null, Collections.emptyList(),
+              MaterialViewRestrict.NONE);
+        }
+        else {
+          contentNode = createContentNode(child.node, child.level, includeHidden, child.nextSibling);
+        }
+        folderContentNode.addChild(contentNode);
+      }
 
+      return folderContentNode;
+    case MATERIAL:
+      WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
+      Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
+      Long currentRevision = material instanceof HtmlMaterial
+          ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material)
+          : 0l;
+      Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
+      String contentType = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getContentType()
+          : material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContentType() : null;
+
+      String html;
+      viewRestricted = !sessionController.isLoggedIn() && material.getViewRestrict() == MaterialViewRestrict.LOGGED_IN;
+      if (!viewRestricted) {
+        html = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml() : null;
+      }
+      else {
+        html = String.format("<p class=\"content-view-restricted-message\">%s</p>",
+            localeController.getText(sessionController.getLocale(), "plugin.workspace.materialViewRestricted"));
+      }
+
+      nextSibling = findWorkspaceNodeNextSibling(workspaceMaterial);
+
+      return new ContentNode(workspaceMaterial.getTitle(), material.getType(), contentType, rootMaterialNode.getId(),
+          material.getId(), level, workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(),
+          workspaceMaterial.getParent().getId(), nextSibling == null ? null : nextSibling.getId(),
+          workspaceMaterial.getHidden(), html, currentRevision, publishedRevision, workspaceMaterial.getPath(),
+          material.getLicense(), createRestModel(materialController.listMaterialProducers(material)), material.getViewRestrict());
+    default:
       return null;
-    }
-    catch (IOException | XPathExpressionException | TransformerException | SAXException e) {
-      throw new WorkspaceMaterialException(e);
     }
   }
 
@@ -1034,12 +975,13 @@ public class WorkspaceMaterialController {
     String urlName = generateUrlName(title);
     String fileName = StringUtils.substringBeforeLast(urlName, ".");
     String extension = StringUtils.substringAfterLast(urlName, ".");
-    int extensionLength = StringUtils.length(extension); 
+    int extensionLength = StringUtils.length(extension);
     boolean isFileName = StringUtils.isAlphanumeric(extension) && extensionLength < StringUtils.length(urlName) - 1;
     // use urlName as base and uniqueName as final result
     String uniqueName = urlName;
     if (parent != null) {
-      // if parent node is given, ensure that the generated url name is unique amongst its child nodes
+      // if parent node is given, ensure that the generated url name is unique amongst
+      // its child nodes
       int i = 1;
       while (true) {
         // find child node with uniqueName
@@ -1049,9 +991,12 @@ public class WorkspaceMaterialController {
             // uniqueName is in use but by the target node itself, so it's okay
             break;
           }
-          // uniqueName in use, try again with the next candidate (name, name-2, name-3, etc.)
-          uniqueName = isFileName ? String.format("%s-%d.%s", fileName, ++i, extension) : String.format("%s-%d", urlName, ++i); 
-        } else {
+          // uniqueName in use, try again with the next candidate (name, name-2, name-3,
+          // etc.)
+          uniqueName = isFileName ? String.format("%s-%d.%s", fileName, ++i, extension)
+              : String.format("%s-%d", urlName, ++i);
+        }
+        else {
           // Current uniqueName is available
           break;
         }
@@ -1067,7 +1012,8 @@ public class WorkspaceMaterialController {
     while (urlName.indexOf("--") >= 0) {
       urlName = urlName.replace("--", "-");
     }
-    // get rid of accented characters and all special characters other than minus, period, and underscore
+    // get rid of accented characters and all special characters other than minus,
+    // period, and underscore
     urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
     return StringUtils.isBlank(urlName) ? StringUtils.substringBefore(UUID.randomUUID().toString(), "-") : urlName;
   }
@@ -1075,17 +1021,20 @@ public class WorkspaceMaterialController {
   /* Front page */
 
   public WorkspaceFolder createWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
-    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Ohjeet", "ohjeet", 0, false, WorkspaceFolderType.HELP_PAGE, MaterialViewRestrict.NONE);
+    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Ohjeet", "ohjeet", 0,
+        false, WorkspaceFolderType.HELP_PAGE, MaterialViewRestrict.NONE);
   }
 
   public WorkspaceFolder createWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
-    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0, false, WorkspaceFolderType.FRONT_PAGE, MaterialViewRestrict.NONE);
+    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0,
+        false, WorkspaceFolderType.FRONT_PAGE, MaterialViewRestrict.NONE);
   }
 
   public boolean isUsedInPublishedWorkspaces(Material material) {
     List<WorkspaceMaterial> workspaceMaterials = listWorkspaceMaterialsByMaterial(material);
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(getWorkspaceEntityId(workspaceMaterial));
+      WorkspaceEntity workspaceEntity = workspaceEntityController
+          .findWorkspaceEntityById(getWorkspaceEntityId(workspaceMaterial));
       if (workspaceEntity != null && workspaceEntity.getPublished()) {
         return true;
       }
@@ -1094,8 +1043,8 @@ public class WorkspaceMaterialController {
   }
 
   private WorkspaceFolder findWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
-    List<WorkspaceFolder> frontPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
-        WorkspaceFolderType.FRONT_PAGE);
+    List<WorkspaceFolder> frontPageFolders = workspaceFolderDAO.listByParentAndFolderType(
+        findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), WorkspaceFolderType.FRONT_PAGE);
     if (frontPageFolders.isEmpty()) {
       return null;
     }
@@ -1106,8 +1055,8 @@ public class WorkspaceMaterialController {
   }
 
   private WorkspaceFolder findWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
-    List<WorkspaceFolder> helpPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
-        WorkspaceFolderType.HELP_PAGE);
+    List<WorkspaceFolder> helpPageFolders = workspaceFolderDAO.listByParentAndFolderType(
+        findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), WorkspaceFolderType.HELP_PAGE);
     if (helpPageFolders.isEmpty()) {
       return null;
     }
@@ -1125,22 +1074,41 @@ public class WorkspaceMaterialController {
     return Arrays.asList();
   }
 
-  private List<WorkspaceMaterial> listHelpPages(WorkspaceEntity workspaceEntity) {
+  private List<WorkspaceNode> listHelpPages(WorkspaceEntity workspaceEntity) {
     WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspaceEntity);
     if (helpPageFolder != null) {
-      return listWorkspaceMaterialsByParent(helpPageFolder);
+      return listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(helpPageFolder, WorkspaceFolderType.DEFAULT);
     }
     return Arrays.asList();
   }
 
+  // TODO: This class should be oblivious to REST but ContentNode, in essence, is supposed to be a REST model  
+  private List<fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer> createRestModel(List<MaterialProducer> producers) {
+    List<fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer> result = new ArrayList<>();
+    
+    for (MaterialProducer producer : producers) {
+      result.add(createRestModel(producer));
+    }
+    
+    return result;
+  }
+  
+  // TODO: This class should be oblivious to REST but ContentNode, in essence, is supposed to be a REST model  
+  private fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer createRestModel(MaterialProducer entity) {
+    Long materialId = entity.getMaterial() != null ? entity.getMaterial().getId() : null;
+    return new fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer(entity.getId(), entity.getName(), materialId);
+  } 
+
   private static class FlattenedWorkspaceNode {
 
-    public FlattenedWorkspaceNode(boolean isEmptyFolder, String emptyFolderTitle, WorkspaceNode node, int level, Long parentId, Boolean hidden) {
+    public FlattenedWorkspaceNode(boolean isEmptyFolder, String emptyFolderTitle, WorkspaceNode node, int level,
+        Long parentId, WorkspaceNode nextSibling, Boolean hidden) {
       this.isEmptyFolder = isEmptyFolder;
       this.emptyFolderTitle = emptyFolderTitle;
       this.node = node;
       this.level = level;
       this.parentId = parentId;
+      this.nextSibling = nextSibling;
       this.hidden = hidden;
     }
 
@@ -1149,6 +1117,7 @@ public class WorkspaceMaterialController {
     public final WorkspaceNode node;
     public final int level;
     public final Long parentId;
+    public final WorkspaceNode nextSibling;
     public final Boolean hidden;
   }
 

@@ -78,4 +78,13 @@ public interface WorkspaceSearchBuilder {
 
   WorkspaceSearchBuilder setSorts(List<Sort> sorts);
 
+  TemplateRestriction getTemplateRestriction();
+  WorkspaceSearchBuilder setTemplateRestriction(TemplateRestriction templateRestriction);
+  
+  public enum TemplateRestriction {
+    LIST_ALL,
+    ONLY_TEMPLATES,
+    ONLY_WORKSPACES
+  }
+  
 }

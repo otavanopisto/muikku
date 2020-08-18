@@ -1,19 +1,21 @@
 import '~/sass/elements/link.scss';
-
+import '~/sass/elements/form-elements.scss';
+import '~/sass/elements/form.scss';
 import '~/sass/elements/buttons.scss';
+
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
-import { DiscussionThreadType, DiscussionThreadReplyType } from '~/reducers/main-function/discussion';
+import { DiscussionThreadType, DiscussionThreadReplyType } from '~/reducers/discussion';
 import Link from '~/components/general/link';
 import Dialog from '~/components/general/dialog';
 import Button from '~/components/general/button';
 import {DeleteCurrentDiscussionThreadTriggerType,
   DeleteDiscussionThreadReplyFromCurrentTriggerType,
   deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent} from '~/actions/main-function/discussion';
+  deleteDiscussionThreadReplyFromCurrent} from '~/actions/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionDeleteThreadComponentProps {
@@ -31,9 +33,9 @@ interface DiscussionDeleteThreadComponentState {
 class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteThreadComponentProps, DiscussionDeleteThreadComponentState> {
   constructor(props: DiscussionDeleteThreadComponentProps){
     super(props);
-    
+
     this.deleteComponent = this.deleteComponent.bind(this);
-    
+
     this.state = {
       locked: false
     }
@@ -66,14 +68,14 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
   render(){
     let content = (closeDialog: ()=>any) => <div>
       {
-        this.props.reply ? 
+        this.props.reply ?
         this.props.i18n.text.get('plugin.discussion.removeReply.text') :
         this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.text')
       }
     </div>
-       
+
     let footer = (closeDialog: ()=>any)=>{
-      return (          
+      return (
          <div className="dialog__button-set">
           <Button buttonModifiers={["fatal", "standard-ok"]} onClick={this.deleteComponent.bind(this, closeDialog)} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.confirmButton')}
@@ -84,10 +86,10 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
         </div>
       )
     }
-    
+
     return <Dialog modifier="delete-area"
       title={
-        this.props.reply ? 
+        this.props.reply ?
         this.props.i18n.text.get('plugin.discussion.removeReply') :
         this.props.i18n.text.get('plugin.discussion.removeThread')
       }

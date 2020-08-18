@@ -2,7 +2,6 @@ import actions from '../../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { YOEnrollmentType, YOStatusType, YOMatriculationSubjectType, YOEligibilityStatusType, YOEligibilityType, SubjectEligibilityType, SubjectEligibilityListType, SubjectEligibilityStatusType, EligibleStatusType} from '~/reducers/main-function/records/yo';
 import { HOPSDataType, HOPSStatusType } from '~/reducers/main-function/hops';
 import { StateType } from '~/reducers';

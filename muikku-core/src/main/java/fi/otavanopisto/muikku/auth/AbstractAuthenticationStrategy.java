@@ -183,7 +183,8 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
       userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
       userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());
-      sessionController.login(schoolDataSource.getIdentifier(), user.getIdentifier(), user.getStudyEndDate() == null);
+      
+      sessionController.login(schoolDataSource.getIdentifier(), user.getIdentifier());
       userEntityController.updateLastLogin(userEntity);
       HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
       userLoggedInEvent.fire(new LoginEvent(userEntity.getId(), sessionController.getLoggedUser(), this, req.getRemoteAddr()));

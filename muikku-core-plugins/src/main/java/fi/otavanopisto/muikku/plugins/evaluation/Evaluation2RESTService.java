@@ -48,7 +48,6 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestSupplementationRequest;
@@ -81,6 +80,7 @@ import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -216,14 +216,12 @@ public class Evaluation2RESTService {
     }
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
     UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(),
-        workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       if (!sessionController.getLoggedUserEntity().getId().equals(studentEntity.getId())) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
-    User student = userController.findUserByIdentifier(studentIdentifier);
+    UserEntityName studentName = userEntityController.getName(studentEntity);
     
     // Result object
     
@@ -250,7 +248,7 @@ public class Evaluation2RESTService {
       // Event
       
       RestEvaluationEvent event = new RestEvaluationEvent();
-      event.setStudent(student.getDisplayName());
+      event.setStudent(studentName.getDisplayName());
       event.setAuthor(assessor.getDisplayName());
       event.setDate(workspaceAssessment.getDate());
       event.setGrade(gradingScaleItem.getName());
@@ -281,7 +279,7 @@ public class Evaluation2RESTService {
       User assessor = userController.findUserByIdentifier(assessorIdentifier);
       
       RestEvaluationEvent event = new RestEvaluationEvent();
-      event.setStudent(student.getDisplayName());
+      event.setStudent(studentName.getDisplayName());
       event.setAuthor(assessor.getDisplayName());
       event.setDate(supplementationRequest.getRequestDate());
       event.setIdentifier(supplementationRequest.getId().toString());
@@ -298,8 +296,8 @@ public class Evaluation2RESTService {
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
       RestEvaluationEvent event = new RestEvaluationEvent();
-      event.setStudent(student.getDisplayName());
-      event.setAuthor(student.getDisplayName());
+      event.setStudent(studentName.getDisplayName());
+      event.setAuthor(studentName.getDisplayName());
       event.setDate(assessmentRequest.getDate());
       event.setIdentifier(assessmentRequest.getIdentifier());
       event.setText(assessmentRequest.getRequestText());
@@ -595,6 +593,7 @@ public class Evaluation2RESTService {
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/evaluationinfo")
   @RESTPermit(handling = Handling.INLINE)
+  @Deprecated // possibly; compositeReplies endpoint includes this information already
   public Response findWorkspaceMaterialEvaluationInfo(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
     
     // Access check
@@ -623,40 +622,8 @@ public class Evaluation2RESTService {
       return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
     }
     
-    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(userEntityId, workspaceMaterialId, Boolean.FALSE); 
-    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-    if (supplementationRequest == null && workspaceMaterialEvaluation == null) {
-      // No evaluation, no supplementation request 
-      return Response.status(Status.NO_CONTENT).build();
-    }
-    else if (supplementationRequest != null && (workspaceMaterialEvaluation == null || workspaceMaterialEvaluation.getEvaluated().before(supplementationRequest.getRequestDate()))) {
-      // No evaluation or supplementation request is newer
-      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
-      evaluation.setType(RestAssignmentEvaluationType.INCOMPLETE);
-      evaluation.setDate(supplementationRequest.getRequestDate());
-      evaluation.setText(supplementationRequest.getRequestText());
-      return Response.ok(evaluation).build();
-    }
-    else {
-      // No supplementation request or evaluation is newer
-      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
-      evaluation.setType(RestAssignmentEvaluationType.PASSED);
-      evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
-      evaluation.setText(workspaceMaterialEvaluation.getVerbalAssessment());
-      GradingScale gradingScale = gradingController.findGradingScale(
-          workspaceMaterialEvaluation.getGradingScaleSchoolDataSource(), workspaceMaterialEvaluation.getGradingScaleIdentifier());
-      if (gradingScale != null) {
-        GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
-            gradingScale, workspaceMaterialEvaluation.getGradeSchoolDataSource(), workspaceMaterialEvaluation.getGradeIdentifier());
-        if (gradingScaleItem != null) {
-          evaluation.setGrade(gradingScaleItem.getName());
-          if (Boolean.FALSE.equals(gradingScaleItem.isPassingGrade())) {
-            evaluation.setType(RestAssignmentEvaluationType.FAILED);
-          }
-        }
-      }
-      return Response.ok(evaluation).build();
-    }
+    RestAssignmentEvaluation evaluationInfo = evaluationController.getEvaluationInfo(userEntity, workspaceMaterial);
+    return evaluationInfo == null ? Response.status(Status.NO_CONTENT).build() : Response.ok(evaluationInfo).build();
   }
 
   @PUT

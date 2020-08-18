@@ -13,11 +13,15 @@ import '~/sass/elements/file-uploader.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentStateType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
-import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
+import { UserWithSchoolDataType } from '~/reducers/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
+import { MatriculationLink } from './matriculation-link';
+import { StatusType } from '~/reducers/base/status';
+import moment from '~/lib/moment';
+
 
 interface RecordsProps {
   i18n: i18nType,
@@ -40,8 +44,8 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
     assesmentState = workspace.studentAssessmentState.state;
     assesmentDate = workspace.studentAssessmentState.date;
   } else if (workspace.studentActivity && workspace.studentActivity.assessmentState){
-    assesmentState = workspace.studentAssessmentState.state;
-    assesmentDate = workspace.studentAssessmentState.date;
+    assesmentState = workspace.studentActivity.assessmentState.state;
+    assesmentDate = workspace.studentActivity.assessmentState.date;
   }
 
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
@@ -51,6 +55,12 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
 }
 
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
+
+  // this shouldn't come to this, but just in case
+  if (transferCredit === null) {
+    return <div className="application-list__header-secondary"/>
+  }
+
   return <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
       getShortenGradeExtension(transferCredit.grade)} className={`application-list__indicator-badge application-list__indicator-badge-course ${transferCredit.passed ? "state-PASSED" : "state-FAILED"}`}>
       {shortenGrade(transferCredit.grade)}</span>
@@ -65,8 +75,8 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
     {shortenGrade(workspace.studentAssessmentState.grade)}
   </span>
   } else if (workspace.studentAssessmentState && workspace.studentAssessmentState.state === "incomplete"){
-    let status = props.i18n.text.get("plugin.records.workspace.incomplete");
-
+    let status = props.i18n.text.get(workspace.studentAssessmentState.state === "incomplete" ?
+        "plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
     return   <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessmentState.date)) + " - " + status}
     className={`application-list__indicator-badge application-list__indicator-badge--course ${workspace.studentAssessmentState.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
     {status[0].toLocaleUpperCase()}
@@ -181,6 +191,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                       <span className="application-list__header-icon icon-books"></span>
                       <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span>
                       <div className="application-list__header-secondary">
+
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
                         {getAssessments(this.props, workspace)}
                         {getActivity(this.props, workspace)}
@@ -205,6 +216,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     </ApplicationListItem>
                   })}
             </ApplicationList>
+
             }) : <div className="application-sub-panel__item application-sub-panel__item--empty">{this.props.i18n.text.get("plugin.records.courses.empty")}</div>}
           </div>
           </div>
@@ -214,6 +226,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
     <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.records.title")}</div>
+    <MatriculationLink i18n={this.props.i18n} />
+
     {studentRecords}
     <div className="application-sub-panel">
       <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>

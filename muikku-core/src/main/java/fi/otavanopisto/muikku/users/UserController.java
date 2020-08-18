@@ -10,6 +10,7 @@ import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
+import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
@@ -26,8 +27,16 @@ public class UserController {
     return userSchoolDataController.createStaffMember(dataSource, staffMember);
   }
 
+  public BridgeResponse<StaffMemberPayload> updateStaffMember(String dataSource, StaffMemberPayload staffMember) {
+    return userSchoolDataController.updateStaffMember(dataSource, staffMember);
+  }
+
   public BridgeResponse<StudentPayload> createStudent(String dataSource, StudentPayload student) {
     return userSchoolDataController.createStudent(dataSource, student);
+  }
+
+  public BridgeResponse<StudentPayload> updateStudent(String dataSource, StudentPayload student) {
+    return userSchoolDataController.updateStudent(dataSource, student);
   }
 
   public User findUserByDataSourceAndIdentifier(String schoolDataSource, String userIdentifier) {
@@ -52,6 +61,10 @@ public class UserController {
 
   public List<User> listUsers() {
     return userSchoolDataController.listUsers();
+  }
+  
+  public List<StudyProgramme> listStudyProgrammes() {
+    return userSchoolDataController.listStudyProgrammes();
   }
   
   public List<UserAddress> listUserAddresses(User user) {

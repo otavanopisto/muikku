@@ -13,7 +13,6 @@ import { SummaryType } from '~/reducers/main-function/records/summary';
 import { HOPSType } from '~/reducers/main-function/hops';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import MainChart from '~/components/general/graph/main-chart';
 import '~/sass/elements/application-sub-panel.scss';

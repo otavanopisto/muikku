@@ -5,11 +5,11 @@ import Aside from './body/aside';
 import * as React from 'react';
 
 interface CoursepickerBodyProps {
-  
+
 }
 
 interface CoursepickerBodyState {
-  
+
 }
 
 export default class CoursepickerBody extends React.Component<CoursepickerBodyProps, CoursepickerBodyState> {

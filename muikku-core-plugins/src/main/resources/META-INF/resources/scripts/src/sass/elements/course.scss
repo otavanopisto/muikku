@@ -3,9 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-
-// OK, this is pretty similar to application-list__item--notification, we should consider if these should be combined
-
 .course {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
@@ -15,21 +12,25 @@
     border-color: transparent;
   }
 
-  @include breakpoint($breakpoint-pad) {
-    border-width: 1px;
-  }
-
   &.course--open {
     background: $color-default;
-    border-color: transparent;
-    box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
-    display: block;
-    z-index: 10;
+    border-left: 3px solid $color-application-list-item-course-border-selected;
+    margin-left: 1px;
+    padding-left: 6px; // padding - left border - left margin
+
+    @include breakpoint($breakpoint-pad) {
+      border-left-width: 2px;
+      margin-left: 0;
+      padding-left: 8px;
+    }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
   }
 }
 
 .course--studies {
-  min-height: 3.75rem;
 
   &:hover,
   &.hover,
@@ -44,7 +45,6 @@
 
 .course--credits {
   cursor: auto;
-  min-height: 3.75rem;
 
   .application-list__item-header--course {
     cursor: auto;

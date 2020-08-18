@@ -50,7 +50,7 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitAndClick("input.env-dialog__input--new-discussion-thread-title");
         sendKeys("input.env-dialog__input--new-discussion-thread-title", "Test title for discussion");
         addTextToCKEditor("Test text for discussion.");
-        click("a.button--dialog-execute");
+        waitAndClick(".env-dialog__actions .button--dialog-execute");
         waitForPresent("h3.application-list__header-title");
         assertText("h3.application-list__header-title", "Test title for discussion");
         waitForPresent(".application-list__item-body article>p");
@@ -83,11 +83,11 @@ public class DiscussionTestsBase extends AbstractUITest {
     login();
     try{
       navigate("/discussion", false);
-      waitAndClick(".application-panel__toolbar .button-pill__icon.icon-add");
+      waitAndClick(".application-panel__toolbar .button-pill__icon.icon-plus");
       waitAndSendKeys("input.env-dialog__input--new-discussion-area-name", "Test area");
       waitAndClick(".env-dialog__textarea");
       waitAndSendKeys(".env-dialog__textarea", "Description of test area");
-      click(".button--dialog-execute");
+      waitAndClick(".env-dialog__actions .button--dialog-execute");
       waitForPresent(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)");
       assertTextIgnoreCase(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)", "Test area");
     } finally {
@@ -120,12 +120,12 @@ public class DiscussionTestsBase extends AbstractUITest {
           "<p>Testing testing daa daa</p>", false, false);
       try{
         navigate("/discussion", false);
-        waitAndClick(".message__title");
+        waitAndClick(".application-list__item-header--discussion span");
         waitAndClick(".link--application-list-item-footer:nth-child(1)");
         addTextToCKEditor("Test reply for test.");
-        click(".button--standard-ok");
-        waitForPresent(".application-list__item--discussion-reply .application-list__item__body article p");
-        assertText(".application-list__item--discussion-reply .application-list__item__body article p", "Test reply for test.");
+        waitAndClick(".env-dialog__actions .button--dialog-execute");
+        waitForPresentAndVisible(".application-list__item--discussion-reply .application-list__item-body article p");
+        assertText(".application-list__item--discussion-reply .application-list__item-body article p", "Test reply for test.");
       } catch (Exception e) {
         deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
     } finally {
@@ -160,13 +160,14 @@ public class DiscussionTestsBase extends AbstractUITest {
           "<p>Testing testing daa daa</p>", false, false);
       try{
         navigate("/discussion", false);
-        waitAndClick(".message__title");
+        selectFinnishLocale();
+        waitAndClick(".application-list__item-header--discussion span");
         waitAndClick(".link--application-list-item-footer:nth-child(4)");
         waitForPresentAndVisible(".dialog--delete-area .button--standard-ok");
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--delete-area");
         waitForPresentAndVisible(".application-panel__content .application-panel__main-container.loader-empty");
-        assertNotPresent(".message__title");
+        assertTextIgnoreCase(".application-panel__content .application-panel__main-container.loader-empty .empty span", "Ei viestejä");
       } catch (Exception e) {
         deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
     } finally {

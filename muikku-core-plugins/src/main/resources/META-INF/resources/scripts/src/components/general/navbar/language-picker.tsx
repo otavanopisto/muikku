@@ -17,18 +17,18 @@ interface LanguagePickerProps {
 }
 
 interface LanguagePickerState {
-  
+
 }
 
 class LanguagePicker extends React.Component<LanguagePickerProps, LanguagePickerState> {
   render(){
     return <Dropdown modifier="language-picker" items={this.props.locales.available.map((locale)=>{
-      return (<Link className={`link link--full link--language`} onClick={this.props.setLocale.bind(this, locale.locale)}>
-        <span>{locale.name}</span>
+      return (<Link className={`link link--full link--language-picker-dropdown`} onClick={this.props.setLocale.bind(this, locale.locale)}>
+        <span className={`link__locale link__locale--${locale.locale}`}>{locale.name}</span>
       </Link>);
     })}>
       <Link className={`button-pill button-pill--current-language`}>
-        <span>{this.props.locales.current}</span>
+        <span className={`button-pill__current-locale button-pill__current-locale--${this.props.locales.current}`}>{this.props.locales.current}</span>
       </Link>
     </Dropdown>
   }

@@ -21,6 +21,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
+import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
@@ -49,18 +50,34 @@ public class UserSchoolDataController {
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
 
+  public boolean isActiveUser(User user) {
+    return getUserBridge(user.getSchoolDataSource()).isActiveUser(user);
+  }
+  
   /* User */
 
   public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {
     return getUserBridge(dataSource).createStaffMember(staffMember);
   }
   
+  public BridgeResponse<StaffMemberPayload> updateStaffMember(String dataSource, StaffMemberPayload staffMember) {
+    return getUserBridge(dataSource).updateStaffMember(staffMember);
+  }
+  
   public BridgeResponse<StudentPayload> createStudent(String dataSource, StudentPayload student) {
     return getUserBridge(dataSource).createStudent(student);
+  }
+
+  public BridgeResponse<StudentPayload> updateStudent(String dataSource, StudentPayload student) {
+    return getUserBridge(dataSource).updateStudent(student);
   }
   
   public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).findUser(userIdentifier);
+  }
+
+  public User findUser(SchoolDataIdentifier userIdentifier) {
+    return getUserBridge(userIdentifier.getDataSource()).findUser(userIdentifier.getIdentifier());
   }
 
   public User findUser(String schoolDataSource, String userIdentifier) {
@@ -215,6 +232,14 @@ public class UserSchoolDataController {
       result.addAll(userBridge.listRoles());
     }
 
+    return result;
+  }
+  
+  public List<StudyProgramme> listStudyProgrammes() {
+    List<StudyProgramme> result = new ArrayList<>();
+    for (UserSchoolDataBridge userBridge : getUserBridges()) {
+      result.addAll(userBridge.listStudyProgrammes());
+    }
     return result;
   }
 
@@ -377,9 +402,7 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).resetCredentials(payload);
   }
 
-  public StudentCourseStats getStudentCourseStats(
-      SchoolDataIdentifier studentIdentifier
-  ) {
+  public StudentCourseStats getStudentCourseStats(SchoolDataIdentifier studentIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));

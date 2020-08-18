@@ -56,6 +56,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
@@ -120,7 +121,31 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
-  public SearchResult findUser(Long userEntityId, boolean includeInactive) {
+  public SearchResult findWorkspace(SchoolDataIdentifier identifier) {
+    SearchRequestBuilder requestBuilder = elasticClient.prepareSearch("muikku").setTypes("Workspace");
+    BoolQueryBuilder query = boolQuery();
+    query.must(termQuery("identifier", identifier.getIdentifier()));
+    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHits searchHits = response.getHits();
+    long totalHitCount = searchHits.getTotalHits();
+    SearchHit[] results = searchHits.getHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      if (hitSource == null){
+        hitSource = new HashMap<>();
+        for(String key : hit.getFields().keySet()){
+          hitSource.put(key, hit.getFields().get(key).getValue().toString());
+        }
+      }
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
+    return new SearchResult(0, searchResults.size(), searchResults, totalHitCount);
+  }
+  
+  @Override
+  public SearchResult findUser(SchoolDataIdentifier identifier, boolean includeInactive) {
 
     // Query that checks activity based on user having a study end date set
     
@@ -128,7 +153,9 @@ public class ElasticSearchProvider implements SearchProvider {
     if (!includeInactive) {
       query.mustNot(existsQuery("studyEndDate"));
     }
-    query.must(termQuery("userEntityId", userEntityId));
+    IdsQueryBuilder includeIdsQuery = idsQuery("User");
+    includeIdsQuery.addIds(String.format("%s/%s", identifier.getIdentifier(), identifier.getDataSource()));
+    query.must(includeIdsQuery);
     
     // Search
     
@@ -446,6 +473,7 @@ public class ElasticSearchProvider implements SearchProvider {
       Collection<WorkspaceAccess> accesses, 
       SchoolDataIdentifier accessUser, 
       boolean includeUnpublished, 
+      TemplateRestriction templateRestriction,
       int start, 
       int maxResults, 
       List<Sort> sorts) {
@@ -461,6 +489,18 @@ public class ElasticSearchProvider implements SearchProvider {
       
       if (!includeUnpublished) {
         query.must(termQuery("published", Boolean.TRUE));
+      }
+      
+      switch (templateRestriction) {
+        case ONLY_WORKSPACES:
+          query.must(termQuery("isTemplate", Boolean.FALSE));
+        break;
+        case ONLY_TEMPLATES:
+          query.must(termQuery("isTemplate", Boolean.TRUE));
+        break;
+        case LIST_ALL:
+          // No restrictions
+        break;
       }
       
       if (accesses != null) {

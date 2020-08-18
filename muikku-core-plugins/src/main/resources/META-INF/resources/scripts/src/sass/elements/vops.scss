@@ -2,7 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-	
+
 .vops {
   width: 100%;
   margin-top: 10px;
@@ -97,10 +97,6 @@
   padding: 10px;
   width: 100%;
 
-  @include breakpoint($breakpoint-pad) {
-    padding: 10px 0;
-  }
-
   > span {
     display: block;
     font-size: $text-mobile-font-size;
@@ -111,13 +107,17 @@
       font-size: $text-mobile-font-size;
     }
   }
-  
+
   > span:not(:first-child) {
     margin: 0;
 
     @include breakpoint($breakpoint-pad) {
-      margin: 0 0 0 15px; 
+      margin: 0 0 0 15px;
     }
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
   }
 }
 

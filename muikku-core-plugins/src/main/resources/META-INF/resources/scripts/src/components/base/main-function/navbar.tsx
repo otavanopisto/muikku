@@ -2,6 +2,7 @@ import Navbar from '~/components/general/navbar';
 import Link from '~/components/general/link';
 import LoginButton from '../login-button';
 import ForgotPasswordDialog from '../forgot-password-dialog';
+import Dropdown from '~/components/general/dropdown';
 
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
@@ -34,7 +35,7 @@ interface MainFunctionNavbarProps {
 }
 
 interface MainFunctionNavbarState {
-  
+
 }
 
 class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFunctionNavbarState> {
@@ -70,7 +71,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       trail: "discussion",
       text: 'plugin.forum.forum',
       href: "/discussion",
-      icon: "bubble",
+      icon: "bubbles",
       to: true,
       condition: this.props.status.isActiveUser && this.props.status.loggedIn && this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM
     }, {
@@ -78,7 +79,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       trail: "guider",
       text: 'plugin.guider.guider',
       href: "/guider",
-      icon: "members",
+      icon: "users",
       to: true,
       condition: this.props.status.permissions.GUIDER_VIEW
     }, {
@@ -90,7 +91,15 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       icon: "profile",
       to: true,
       condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW
-    }, {
+    },{
+      modifier: "announcer",
+      trail: "announcer",
+      text: 'plugin.announcer.announcer',
+      href: "/announcer",
+      icon: "paper-plane",
+      to: true,
+      condition: this.props.status.permissions.ANNOUNCER_TOOL
+    },{
       //Evaluation is also an external
       modifier: "evaluation",
       trail: "evaluation",
@@ -99,28 +108,21 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       icon: "evaluate",
       condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
       openInNewTab: "_blank"
-    }, {
-      modifier: "announcer",
-      trail: "announcer",
-      text: 'plugin.announcer.announcer',
-      href: "/announcer",
-      icon: "announcer",
-      to: true,
-      condition: this.props.status.permissions.ANNOUNCER_TOOL
     }];
 
-    return <Navbar mobileTitle={this.props.title}
+    return <Navbar mobileTitle={this.props.title} isProfileContainedInThisApp={true}
       modifier="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item)=>{
       if (!item.condition){
         return null;
       }
       return {
         modifier: item.modifier,
-        item: (<Link openInNewTab={item.openInNewTab} href={item.href} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
-          title={this.props.i18n.text.get(item.text)}>
+        item: (<Dropdown openByHover key={item.text} content={this.props.i18n.text.get(item.text)}>
+          <Link openInNewTab={item.openInNewTab} href={this.props.activeTrail !== item.trail ? item.href : null} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+          aria-label={this.props.i18n.text.get(item.text)}>
           <span className={`link__icon icon-${item.icon}`}/>
           {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
-        </Link>)
+        </Link></Dropdown>)
       }
     })} defaultOptions={this.props.status.loggedIn ? null : [
       (<LoginButton modifier="login-main-function" key="0"/>),
@@ -131,7 +133,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       if (!item.condition){
         return null;
       }
-      return <Link openInNewTab={item.openInNewTab} href={item.href} className={`link link--full link--menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
+      return <Link openInNewTab={item.openInNewTab} href={item.href} className={`link link--full link--menu ${this.props.activeTrail === item.trail ? 'active' : ''}`} aria-label={this.props.i18n.text.get(item.text)}>
         <span className={`link__icon icon-${item.icon}`}/>
         {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         <span className="link--menu__text">{this.props.i18n.text.get(item.text)}</span>

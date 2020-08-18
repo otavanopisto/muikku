@@ -15,4 +15,14 @@ $color-index-item-list-item-panel-latest-messages-unread-icon: $color-index-text
 $color-index-item-list-item-panel-announcements-unread-icon: $color-index-text-for-panels-title-announcements-icon-background;
 $color-index-text-panels-date-color: #868686;
 $color-index-item-list-item-panel-announcements-icon: $color-index-text-for-panels-title-announcements-icon-background;
-$color-index-item-list-item-panel-announcements-has-workspaces-icon: #2fd4af
+$color-index-item-list-item-panel-announcements-has-workspaces-icon: #2fd4af;
+
+// Same things but appears in workspaces NEEDS TO BE GENERALIZED
+$color-workspace-text-for-panels-title-teachers-icon-background: $color-workspace;
+$color-workspace-text-for-panels-title-teachers-icon-color: $color-default;
+$color-workspace-text-for-panels-title-announcements-icon-background: $color-workspace;
+$color-workspace-text-for-panels-title-announcements-icon-color: $color-default;
+$color-workspace-text-for-panels-title-description-icon-background: $color-workspace;
+$color-workspace-text-for-panels-title-description-icon-color: $color-default;
+$color-workspace-text-for-panels-title-signup-icon-background: #ff008d;
+$color-workspace-text-for-panels-title-signup-icon-color: $color-default;

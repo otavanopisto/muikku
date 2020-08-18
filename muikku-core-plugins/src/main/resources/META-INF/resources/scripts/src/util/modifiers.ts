@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { UserType, UserWithSchoolDataType } from '~/reducers/main-function/user-index';
+import { UserType, UserWithSchoolDataType, UserStaffType } from '~/reducers/user-index';
+import $ from '~/lib/jquery';
+import { MaterialContentNodeListType } from '~/reducers/workspaces';
 
 function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -39,17 +41,17 @@ export function filterHighlight(string: string, filter: string){
       return;
     } else if (element === " "){
       accumulator.push([]);
-    } else if (element === filter) {
+    } else if (element.toLocaleLowerCase() === filter.toLocaleLowerCase()) {
       accumulator[accumulator.length - 1].push(React.createElement(
-          "b",
-          {key: index},
+          "span",
+          { key: index, className: 'form-element__autocomplete-highlight'},
           element
       ))
     } else {
       accumulator[accumulator.length - 1].push(element);
     }
   });
-  
+
   let spans = accumulator.map((childMap, index)=>React.createElement("span",{key: index},...childMap));
   let newChild:Array<any> = [];
   spans.forEach((s, index)=>{
@@ -69,7 +71,7 @@ export function colorIntToHex(color: number) {
   let rStr = r.length == 1 ? "0" + r : r;
   let gStr = g.length == 1 ? "0" + g : g;
   let bStr = b.length == 1 ? "0" + b : b;
-	    
+
   return "#" + rStr + gStr + bStr;
 }
 
@@ -82,12 +84,12 @@ export function hexToColorInt(hexColor: string) {
     if (hexColor.length == 7){
       hexColor = hexColor.slice(1);
     }
-    
+
     r = parseInt(hexColor.slice(0, 2), 16);
     g = parseInt(hexColor.slice(2, 4), 16);
     b = parseInt(hexColor.slice(4, 6), 16);
   }
-    
+
   return (r << 16) + (g << 8) + b;
 }
 
@@ -95,7 +97,7 @@ export function intersect(...elements:any[]){
   if (elements.length === 1){
     return elements[0];
   }
-  
+
   return elements.reduce(intersectTwo);
 }
 
@@ -103,7 +105,7 @@ export function difference(...elements:any[]){
   if (elements.length === 1){
     return [];
   }
-  
+
   return elements.reduce(differenceTwo);
 }
 
@@ -113,7 +115,7 @@ export function flatten(...elements:any[]){
   } else if (elements.length === 0){
     return [];
   }
-  
+
   return elements.reduce((a, b)=>{
     return a.concat(b);
   });
@@ -132,26 +134,26 @@ export function unescapeHTML(str: string){
   return doc.documentElement.textContent;
 }
 
-export function getName(user: UserType | UserWithSchoolDataType, hasFullNamePermission: boolean){
+export function getName(user: any, hasFullNamePermission: boolean){
   if (!user){
     return "";
   }
   let userText = "";
-  
+
   if (user.firstName && (hasFullNamePermission || !user.nickName)){
     userText += user.firstName;
   }
-  
+
   if (user.nickName && hasFullNamePermission){
     userText += (userText ? ' "' : '"') + user.nickName + '"';
   } else if (user.nickName) {
     userText += (userText ? ' ' : '') + user.nickName;
   }
-  
+
   if (user.lastName){
     userText += (userText ? ' ' : '') + user.lastName;
   }
-  
+
   return userText;
 }
 
@@ -166,6 +168,9 @@ export function getUserImageUrl(user: UserType | number, type?: number | string,
 }
 
 export function shortenGrade(grade: string){
+  if (grade === null) {
+    return "";
+  }
   if ("" + parseInt(grade) === grade){
     return grade;
   }
@@ -173,8 +178,11 @@ export function shortenGrade(grade: string){
 }
 
 export function getShortenGradeExtension(grade: string){
+  if (grade === null) {
+    return "";
+  }
   if ("" + parseInt(grade) === grade){
-    return ""
+    return "";
   }
   return " - " + grade;
 }
@@ -193,7 +201,7 @@ export function hashCode(str: string) {
 export function resize(img: HTMLImageElement, width: number, mimeType?: string, quality?: number) {
   let canvas = document.createElement('canvas');
   let ctx = canvas.getContext("2d");
-  
+
   // set size proportional to image
   canvas.width = width;
   canvas.height = canvas.width * (img.height / img.width);
@@ -201,6 +209,259 @@ export function resize(img: HTMLImageElement, width: number, mimeType?: string, 
   // step 3, resize to final size
   ctx.drawImage(img, 0, 0, img.width, img.height,
   0, 0, canvas.width, canvas.height);
-  
+
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);
+}
+
+export function shuffle(oArray: Array<any>) {
+  let array = [...oArray];
+
+  let currentIndex = array.length;
+  let temporaryValue;
+  let randomIndex;
+
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+type TypescriptBuggyTakeThisCallbackComeOn =  (element:any)=>any;
+
+export function arrayToObject(array: Array<any>, propertyName: string, propertyValue?: string | TypescriptBuggyTakeThisCallbackComeOn) {
+  let obj:any = {};
+  array.forEach((element: any)=>{
+    obj[element[propertyName]] = propertyValue ? (typeof propertyValue === "string" ? element[propertyValue] : propertyValue(element)) : element;
+  });
+  return obj;
+}
+
+const translations:any = {
+  "width": "width",
+  "class": "className",
+  "id": "id",
+  "name": "name",
+  "src": "src",
+  "height": "height",
+  "href": "href",
+  "target": "target",
+  "alt": "alt",
+  "title": "title",
+  "dir": "dir",
+  "lang": "lang",
+  "hreflang": "hrefLang",
+  "charset": "charSet",
+  "download": "download",
+  "rel": "rel",
+  "type": "type",
+  "media": "media",
+  "wrap": "wrap",
+  "start": "start",
+  "reversed": "reversed",
+
+  // Iframe  specific
+  "scrolling": "scrolling",
+  "frameborder": "frameBorder",
+  "allowfullscreen": "allowFullScreen",
+
+  // Table specefic
+  "cellspacing": "cellSpacing", // Deprecated, Table
+  "cellpadding": "cellPadding", // Deprecated, Table
+  "span": "span",
+  "summary": "summary", // Deprecated, Table
+  "colspan": "colSpan",
+  "rowspan": "rowSpan",
+  "scope": "scope",
+  "headers": "headers",
+
+  // Audio/video specific
+  "autoplay": "autoPlay",
+  "capture": "capture",
+  "controls": "controls",
+  "loop": "loop",
+  "role": "role",
+  "label": "label",
+  "default": "default",
+  "kind": "kind",
+  "srclang": "srcLang",
+  "controlsList": "controlsList",
+
+  // Form specific
+  "required": "required",
+  "rows": "rows",
+  "cols": "cols",
+  "tabindex": "tabIndex",
+  "hidden": "hidden",
+  "list": "list",
+  "value": "value",
+  "selected": "selected",
+  "checked": "checked",
+  "disabled": "disabled",
+  "readonly": "readOnly",
+  "size": "size",
+  "placeholder": "placeholder",
+  "multiple": "multiple",
+  "accept": "accept",
+}
+
+export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
+  const result:any = {};
+  for (let i = 0; i < declaraion.length; i++) {
+    const item = declaraion.item(i);
+    result[item] = (declaraion as any)[item];
+  }
+  return result;
+}
+
+export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: string, props: any, children: Array<any>, element: HTMLElement)=>any, key?: number):any {
+  let defaultProcesser = processer ? processer : (a:any, b:any, c:any)=>React.createElement(a,b,c);
+  let props:any = {
+    key
+  }
+  if (element.nodeType === 3) {
+    return element.textContent;
+  }
+  Array.from(element.attributes).forEach((attr:Attr)=>{
+    if (translations[attr.name]){
+      props[translations[attr.name]] = attr.value
+    }
+  });
+  if (element.style.cssText){
+    props.style = CSSStyleDeclarationToObject(element.style);
+  }
+  let children = Array.from(element.childNodes).map((node, index)=>{
+    if (node instanceof HTMLElement){
+      return HTMLtoReactComponent(node, defaultProcesser, index)
+    }
+    return node.textContent;
+  });
+  if (!children.length){
+    children = null;
+  }
+  return defaultProcesser(
+      element.tagName.toLowerCase(),
+      props,
+      children,
+      element
+  );
+}
+
+export function extractDataSet(element: HTMLElement):any{
+  let finalThing:any = {
+     ...element.dataset
+  };
+  Array.from(element.childNodes).map((node, index)=>{
+    if (node instanceof HTMLElement){
+      finalThing = {
+        ...finalThing,
+        ...extractDataSet(node)
+      }
+    }
+  });
+
+  return finalThing;
+}
+
+export function guidGenerator() {
+  let S4 = function() {
+     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  };
+  return (S4()+S4()+"."+S4()+"."+S4()+"."+S4()+"."+S4()+S4()+S4());
+}
+
+export function scrollToSection(anchor: string, onScrollToSection?: ()=>any, scrollPadding?: number, disableAnimate?: boolean, disableAnchorSet?: boolean) {
+  console.log("CALLED SCROLL TO", anchor);
+  let actualAnchor = anchor + ',[data-id="' + anchor.replace("#", "") + '"]';
+  try {
+    if (!$(actualAnchor).size()){
+      if (!disableAnchorSet){
+        if (anchor[0] === "#"){
+          window.location.hash = anchor;
+        } else  {
+          window.location.href = anchor;
+        }
+      }
+      return;
+    }
+  } catch (err){
+    if (!disableAnchorSet){
+      if (anchor[0] === "#"){
+        window.location.hash = anchor;
+      } else  {
+        window.location.href = anchor;
+      }
+    }
+    return;
+  }
+
+  console.log("scrolling is being sucessful");
+
+  let topOffset = scrollPadding || 90;
+  let scrollTop = $(actualAnchor).offset().top - topOffset;
+
+  onScrollToSection && onScrollToSection();
+  if (disableAnimate){
+    $('html, body').scrollTop(scrollTop);
+  } else {
+    $('html, body').stop().animate({
+      scrollTop : scrollTop
+    }, {
+      duration : 500,
+      easing : "easeInOutQuad"
+    });
+  }
+
+  if (!disableAnchorSet){
+    setTimeout(()=>{
+      if (anchor[0] === "#"){
+        window.location.hash = anchor;
+      } else  {
+        window.location.href = anchor;
+      }
+    }, 500);
+  }
+}
+
+export function repairContentNodes(base: MaterialContentNodeListType, pathRepair?: string, pathRepairId?: number, parentNodeId?: number): MaterialContentNodeListType {
+  if (base === null) {
+    return null;
+  }
+
+  return base.map((cn, index) => {
+    const nextSibling = base[index + 1];
+    const nextSiblingId = nextSibling ? nextSibling.workspaceMaterialId : null;
+    const parentId = typeof parentNodeId !== "number" ? cn.parentId : parentNodeId;
+    let path = cn.path;
+    if (pathRepair && pathRepairId === cn.workspaceMaterialId) {
+      path = pathRepair;
+    } else if (pathRepair && pathRepairId === parentNodeId) {
+      const splitted = path.split("/");
+      splitted.shift();
+      path = [pathRepair, ...splitted].join("/");
+    }
+    const children = cn.children && cn.children.length ? repairContentNodes(cn.children, pathRepair, pathRepairId, cn.workspaceMaterialId) : cn.children;
+
+    return {
+      ...cn,
+      nextSiblingId,
+      parentId,
+      children,
+      path,
+    }
+  });
+}
+
+export function validURL(str: string) {
+  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return !!pattern.test(str);
 }

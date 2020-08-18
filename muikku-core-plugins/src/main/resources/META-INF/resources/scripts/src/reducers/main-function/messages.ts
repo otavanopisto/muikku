@@ -2,7 +2,7 @@ import {ActionType} from "~/actions";
 import {i18nType} from '~/reducers/base/i18n';
 
 import {WorkspaceType, WorkspaceListType} from '~/reducers/workspaces';
-import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, UserGroupListType } from '~/reducers/main-function/user-index';
+import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, UserGroupListType } from '~/reducers/user-index';
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export interface MessageSignatureType {
@@ -134,28 +134,28 @@ const defaultNavigation: MessagesNavigationItemListType = [
     location: "inbox",
     type: "folder",
     id: "inbox",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.inbox")}
   },
   {
     location: "unread",
     type: "folder",
     id: "unread",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.unread")}
   },
   {
     location: "sent",
     type: "folder",
     id: "sent",
-    icon: "new-section",
+    icon: "folder",
     text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.sent")}
   },
   {
     location: "trash",
     type: "folder",
     id: "trash",
-    icon: "new-section",
+    icon: "trash-alt",
     text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.trash")}
   }
 ]
@@ -196,7 +196,7 @@ function sortNavigationItems(itemA: MessagesNavigationItemType, itemB: MessagesN
   } else if (itemA.type !== "label" && itemB.type === "label"){
     return -1;
   }
-  
+
   let labelAUpperCase = itemA.text(null).toUpperCase();
   let labelBUpperCase = itemB.text(null).toUpperCase();
   return (labelAUpperCase < labelBUpperCase) ? -1 : (labelAUpperCase > labelBUpperCase) ? 1 : 0;
@@ -212,7 +212,7 @@ export default function messages(state: MessagesType = {
   toolbarLock: false,
   currentThread: null,
   signature: null,
-  
+
   unreadThreadCount: 0,
   navigation: defaultNavigation
 }, action: ActionType): MessagesType {
@@ -288,7 +288,7 @@ export default function messages(state: MessagesType = {
     if (newCurrent && newCurrent.messages[0].communicatorMessageId === action.payload.communicatorMessageId){
       newCurrent = Object.assign(newCurrent, {labels: newCurrent.labels.concat([action.payload.label])});
     }
-  
+
     return Object.assign({}, state, {selectedThreads: state.selectedThreads.map((selectedThread: MessageThreadType)=>{
       if (selectedThread.communicatorMessageId === action.payload.communicatorMessageId){
         if (!selectedThread.labels.find(label=>label.labelId === action.payload.label.labelId)){
@@ -312,14 +312,14 @@ export default function messages(state: MessagesType = {
       }
       return thread;
     }), currentThread: newCurrent});
-  } else if (action.type === "UPDATE_MESSAGE_THREAD_DROP_LABEL"){   
+  } else if (action.type === "UPDATE_MESSAGE_THREAD_DROP_LABEL"){
     let newCurrent = state.currentThread;
     if (newCurrent && newCurrent.messages[0].communicatorMessageId === action.payload.communicatorMessageId){
       newCurrent = Object.assign(newCurrent, {
         labels: newCurrent.labels.filter(label=>label.labelId !== action.payload.label.labelId)
       });
     }
-  
+
     return Object.assign({}, state, {selectedThreads: state.selectedThreads.map((selectedThread: MessageThreadType)=>{
       if (selectedThread.communicatorMessageId === action.payload.communicatorMessageId){
         return Object.assign({}, selectedThread, {

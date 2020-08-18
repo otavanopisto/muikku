@@ -44,9 +44,9 @@ interface VopsState {
 class Vops extends React.Component<VopsProps, VopsState> {
   constructor(props: VopsProps){
     super(props);
-    
+
     this.toggleLegend = this.toggleLegend.bind(this);
-    
+
     this.state = {
       legendOpened: false
     }
@@ -153,7 +153,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
     </div>
   }
 }
-            
+
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,

@@ -42,6 +42,24 @@
   font-size: 0.875rem;
 }
 
+.application-list--workspace-staff-members {
+  display: flex;
+  flex-wrap: wrap;
+  height: auto;
+  padding: 0;
+}
+
+.application-list--workspace-users {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 0;
+}
+
+
+.application-list__title {
+  @include workspace-subpanel-title;
+}
 
 .application-list__header-title {
   display: flex;
@@ -127,8 +145,6 @@
   }
 }
 
-// Shit shit shit. This is not really a duplicate, but something about studies. TODO: find out where it belongs and name it accordingly
-
 .application-list__indicator-badge {
   align-items: center;
   border-radius: 2px;
@@ -142,6 +158,7 @@
   text-align: center;
   width: 1.875rem;
 
+  // scss-lint:disable SelectorFormat
   &.state-PASSED {
     background: $color-grade-passed;
   }
@@ -157,6 +174,7 @@
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
+  // scss-lint:enable SelectorFormat
 }
 
 .application-list__indicator-badge--course {
@@ -200,6 +218,32 @@
   flex-flow: row nowrap;
 }
 
+.application-list__item-content-wrapper--workspace-user {
+  align-items: center;
+}
+
+.application-list__item--workspace-staff-member {
+  flex-basis: 100%;
+  padding: 10px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+
+    &:nth-child(odd) {
+      padding: 10px 10px 10px 0;
+    }
+
+    &:nth-child(even) {
+      padding: 10px 0 10px 10px;
+    }
+  }
+}
+
+.application-list__item--workspace-user {
+  padding: 10px 0;
+  width: 100%;
+}
+
 .application-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   align-items: center;
@@ -207,24 +251,17 @@
   display: flex;
   position: relative;
 
-  &.hover,
-  &:hover {
-  // background-color: $color-application-list-item-background-hover;
-  }
-
-  &.active,
-  &:active {
-  // background-color: $color-application-list-item-background-active;
-  }
-
   &.selected {
     background-color: $color-application-list-item-background-selected;
     .label {
       background-color: $color-label-mobile-selected-background;
     }
+
     .glyph,
     .link,
     .application-list__header-primary,
+    .application-list__header-secondary,
+    .application-list__header-helper,
     .application-list__header-item-date,
     .application-list__header-item-body {
       color: $color-default;
@@ -301,17 +338,21 @@
 }
 
 .application-list__item--highlight {
-  background-color: $color-message-unread-background;
+  border-left: 3px solid $color-message-unread-border;
+  margin-left: 1px;
+  padding-left: 6px; // padding - left border - left margin
 
   @include breakpoint($breakpoint-pad) {
-    border-top: solid 1px $color-default;
+    border-left-width: 2px;
+    margin-left: 0;
+    padding-left: 8px;
   }
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
 
     @include breakpoint($breakpoint-pad) {
-      background-color: $color-message-unread-background;
+      background-color: transparent;
     }
   }
 }
@@ -364,9 +405,9 @@
   display: none;
 
   input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     align-items: center;
+    -moz-appearance: none;
+    -webkit-appearance: none;
     appearance: none;
     border: solid 2px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
@@ -385,7 +426,7 @@
     color: $color-main-function-application-list-item-checkbox-checked-mark;
     content: "\e639";
     font-family: muikku;
-    font-size: .875rem;
+    font-size: 0.875rem;
   }
 
   @include breakpoint($breakpoint-pad) {
@@ -397,16 +438,32 @@
   }
 }
 
+.application-list__item-content-aside--workspace-user {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
 .application-list__item-content-main {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
 }
 
+.application-list__item-content-main--workspace-user {
+  margin-left: 5px;
+}
+
+.application-list__item-content-secondary-data {
+  color: $color-text-secondary;
+}
+
 .application-list__item-content-avatar {
   align-items: center;
   border-radius: 100%;
-  color: $color-environment-link-icon-color;
+  color: $color-default;
   display: flex;
   font-size: 1.25rem;
   height: 46px;
@@ -538,6 +595,7 @@
 .application-list__item-header-main-content {
   display: inline-block;
 }
+
 .application-list__item-header-main-content--discussion-message-creator {
   font-size: 0.875rem;
   font-weight: 600;
@@ -550,6 +608,7 @@
 
 .application-list__item-header-main-content--communicator-sender {
   font-weight: 600;
+
   &::after {
     content: ">";
     margin: 0 10px;
@@ -568,19 +627,60 @@
   }
 }
 
+.application-list__item-header-main-content--journal-entry-creator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0 0 0 15px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    font-weight: 400;
+  }
+}
+
+.application-list__item-header-main-content--journal-entry-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+}
+
 .application-list__item-header-aside {
   align-items: center;
   display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   justify-content: flex-end;
 }
 
 .application-list--open {
-  -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+// Journal
+.application-list__item-header--journal-entry {
+  flex-flow: row wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+}
+
+.application-list__item-content-header--journal-entry {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    padding: 10px 0;
   }
 }
 
@@ -595,6 +695,15 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
+}
+
+.application-list__item-content-body--journal-entry {
+  padding: 0;
+}
+
+.application-list__item-footer--journal-entry {
+  flex-flow: row wrap;
+  margin: 10px 0 0;
 }
 
 // User
@@ -616,7 +725,17 @@
 }
 
 
-// Discussion 
+// Discussion
+.application-list__header--workspace-users {
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0 10px 10px;
+  }
+}
+
+
+// Discussion
 
 .application-list__header-container--discussion {
   padding: 10px;
@@ -634,14 +753,21 @@
   }
 }
 
-.application-list__item-body--discussion-message {
+.application-list__item-text-body--discussion-message {
+  font-size: $text-mobile-font-size;
   font-style: italic;
-  line-height: 1rem;
+  font-weight: 400;
+  line-height: 1.125rem;
   max-height: 5rem;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    line-height: 1.25rem;
+  }
 }
 
 .application-list__item-edited {
@@ -649,7 +775,7 @@
   font-weight: 600;
 }
 
-.application-list__item-body--discussion-message-overflow::before {
+.application-list__item-text-body--discussion-message-overflow::before {
   background: linear-gradient($color-application-list-item-fade-background 1rem, $color-default);
   bottom: 0;
   content: "";
@@ -700,12 +826,12 @@
 .application-list__item--environment-announcement {
   padding: 10px 0;
 
-  @include breakpoint($breakpoint-pad) {
-    padding: 15px 0;
-  }
-
   .glyph::before {
     color: $color-announcement-workspace-icon;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
   }
 }
 
@@ -738,12 +864,12 @@
   border-bottom: 5px solid $color-message-border;
   padding: 10px 0;
 
-  @include breakpoint($breakpoint-pad) {
-    padding: 15px 0;
-  }
-
   &:last-child {
     border: 0;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
   }
 }
 
@@ -811,8 +937,8 @@
 
 // Studies
 .application-list__header-container--studies-detailed-info {
-  padding: 10px 0;
   font-size: 1.125rem;
+  padding: 10px 0;
 
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0;

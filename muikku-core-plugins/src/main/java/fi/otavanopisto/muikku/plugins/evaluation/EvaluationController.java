@@ -25,6 +25,8 @@ import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationType;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialException;
@@ -110,10 +112,7 @@ public class EvaluationController {
         verbalAssessment);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
     WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
-    if (reply == null) {
-      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, state, student);
-    }
-    else {
+    if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
     
@@ -211,18 +210,53 @@ public class EvaluationController {
     
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
     WorkspaceMaterialReplyState state = grade.isPassingGrade() ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
-    if (reply == null) {
-      workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, state, student);
-    } else {
+    if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
     
     return workspaceMaterialEvaluation;
   }
 
+  public RestAssignmentEvaluation getEvaluationInfo(UserEntity userEntity, WorkspaceMaterial workspaceMaterial) {
+    SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), Boolean.FALSE); 
+    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = findLatestWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    if (supplementationRequest == null && workspaceMaterialEvaluation == null) {
+      // No evaluation, no supplementation request 
+      return null;
+    }
+    else if (supplementationRequest != null && (workspaceMaterialEvaluation == null || workspaceMaterialEvaluation.getEvaluated().before(supplementationRequest.getRequestDate()))) {
+      // No evaluation or supplementation request is newer
+      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
+      evaluation.setType(RestAssignmentEvaluationType.INCOMPLETE);
+      evaluation.setDate(supplementationRequest.getRequestDate());
+      evaluation.setText(supplementationRequest.getRequestText());
+      return evaluation;
+    }
+    else {
+      // No supplementation request or evaluation is newer
+      RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
+      evaluation.setType(RestAssignmentEvaluationType.PASSED);
+      evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
+      evaluation.setText(workspaceMaterialEvaluation.getVerbalAssessment());
+      GradingScale gradingScale = gradingController.findGradingScale(
+          workspaceMaterialEvaluation.getGradingScaleSchoolDataSource(), workspaceMaterialEvaluation.getGradingScaleIdentifier());
+      if (gradingScale != null) {
+        GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
+            gradingScale, workspaceMaterialEvaluation.getGradeSchoolDataSource(), workspaceMaterialEvaluation.getGradeIdentifier());
+        if (gradingScaleItem != null) {
+          evaluation.setGrade(gradingScaleItem.getName());
+          if (Boolean.FALSE.equals(gradingScaleItem.isPassingGrade())) {
+            evaluation.setType(RestAssignmentEvaluationType.FAILED);
+          }
+        }
+      }
+      return evaluation;
+    }
+  }
+
   public List<ContentNode> getAssignmentContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
     List<ContentNode> result = new ArrayList<>();
-    addAssignmentNodes(workspaceMaterialController.listVisibleEvaluableWorkspaceMaterialsAsContentNodes(workspaceEntity, processHtml), result);
+    addAssignmentNodes(workspaceMaterialController.listVisibleEvaluableWorkspaceMaterialsAsContentNodes(workspaceEntity), result);
     return result;
   }
   
@@ -295,10 +329,7 @@ public class EvaluationController {
       WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
       if (student != null && workspaceMaterial != null) {
         WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-        if (reply == null) {
-          workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.INCOMPLETE, student);
-        }
-        else {
+        if (reply != null) {
           workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
         }
       }

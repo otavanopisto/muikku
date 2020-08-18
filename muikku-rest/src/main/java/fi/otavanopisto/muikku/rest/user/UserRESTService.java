@@ -79,6 +79,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -738,6 +739,14 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   @GET
+  @Path("/studyProgrammes")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudyProgrammes() {
+    List<StudyProgramme> studyProgrammes = userController.listStudyProgrammes();
+    return Response.ok(createRestModel(studyProgrammes.toArray(new StudyProgramme[0]))).build();
+  }
+  
+  @GET
   @Path("/students/{ID}/emails")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listStudentEmails(@PathParam("ID") String id) {
@@ -1293,14 +1302,14 @@ public class UserRESTService extends AbstractRESTService {
    * {firstName: required; the first name of the staff member
    *  lastName: required; the last name of the staff member
    *  email: required; the email address of the staff member
-   *  role: required; TEACHER to create a teacher, MANAGER to create a manager}
+   *  role: required; MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Output:
    * {identifier: identifier of the created staff member
    *  firstName: the first name of the staff member
    *  lastName: the last name of the staff member
    *  email: the email address of the staff member
-   *  role: TEACHER or MANAGER}
+   *  role: MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Errors:
    * 409 if the email address is already in use; response contains a localized error message 
@@ -1345,6 +1354,47 @@ public class UserRESTService extends AbstractRESTService {
     else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
     }
+  }
+
+  /**
+   * PUT mApi().user.staffMembers
+   * 
+   * Updates a staff member.
+   * 
+   * Payload:
+   * {identifier: required; identifier of the edited staff member
+   *  firstName: required; the first name of the staff member
+   *  lastName: required; the last name of the staff member
+   *  email: required; the email address of the staff member
+   *  role: required; MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
+   * 
+   * Output:
+   * {identifier: identifier of the staff member
+   *  firstName: the first name of the staff member
+   *  lastName: the last name of the staff member
+   *  email: the email address of the staff member
+   *  role: MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
+   * 
+   * Errors:
+   * 409 if the email address is already in use; response contains a localized error message 
+   */
+  @PUT
+  @Path("/staffMembers/{ID}")
+  @RESTPermit(MuikkuPermissions.UPDATE_STAFF_MEMBER)
+  public Response updateStaffMember(@PathParam("ID") String id, StaffMemberPayload payload) {
+    
+    // Payload validation
+    
+    if (StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
+    }
+
+    // User creation
+    
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+    BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(dataSource, payload);
+        
+    return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
   }
 
   /**
@@ -1573,11 +1623,20 @@ public class UserRESTService extends AbstractRESTService {
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
       nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+      // #4917: When listing workspace staff members, search across all organizations (TODO: Would be better via WorkspaceRESTService.listWorkspaceStaffMembers)
+      
+      List<OrganizationEntity> organizations;
+      if (workspaceEntityId == null) {
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+        OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+        organizations = Arrays.asList(organization);
+      }
+      else {
+        organizations = organizationEntityController.listUnarchived();
+      }
       
       SearchResult result = elasticSearchProvider.searchUsers(
-          Arrays.asList(organization),
+          organizations,
           searchString, 
           fields, 
           nonStudentArchetypes, 
@@ -1652,7 +1711,8 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("lastName"), 
             email,
             propertyMap,
-            organizationRESTModel));
+            organizationRESTModel,
+            (String) o.get("archetype")));
         }
       }
     }
@@ -1778,6 +1838,14 @@ public class UserRESTService extends AbstractRESTService {
       }
     }
     return null;
+  }
+  
+  private List<fi.otavanopisto.muikku.rest.model.StudyProgramme> createRestModel(StudyProgramme[] entities) {
+    List<fi.otavanopisto.muikku.rest.model.StudyProgramme> result = new ArrayList<>();
+    for (StudyProgramme entity : entities) {
+      result.add(new fi.otavanopisto.muikku.rest.model.StudyProgramme(entity.getIdentifier(), entity.getName()));
+    }
+    return result;
   }
 
   private List<StudentPhoneNumber> createRestModel(UserPhoneNumber[] entities) {

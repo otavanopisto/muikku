@@ -1,5 +1,5 @@
 import { ActionType } from '~/actions';
-import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/main-function/user-index';
+import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/user-index';
 import { WorkspaceType, WorkspaceListType, ActivityLogType} from "~/reducers/workspaces";
 
 //TODO
@@ -97,7 +97,7 @@ export interface GuiderStudentUserProfileLabelType {
   studentIdentifier: string
 }
 
-function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType){ 
+function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType){
   let labelAUpperCase = labelA.name.toUpperCase();
   let labelBUpperCase = labelB.name.toUpperCase();
   return (labelAUpperCase < labelBUpperCase) ? -1 : (labelAUpperCase > labelBUpperCase) ? 1 : 0;
