@@ -21,6 +21,8 @@ import WorkspaceManagementBody from '~/components/workspace/workspaceManagement'
 import WorkspaceUsersBody from '~/components/workspace/workspaceUsers';
 import WorkspacePermissionsBody from '~/components/workspace/workspacePermissions';
 
+import { Chat } from '../components/chat/chat';
+
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials,
   setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
@@ -574,6 +576,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
       <Route path="/workspace/:workspaceUrl/journal" render={this.renderWorkspaceJournal}/>
       <Route path="/workspace/:workspaceUrl/workspace-management" render={this.renderWorkspaceManagement}/>
       <Route path="/workspace/:workspaceUrl/permissions" render={this.renderWorkspacePermissions}/>
+      <Chat />
     </div></BrowserRouter>);
   }
 }
