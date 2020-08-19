@@ -321,7 +321,6 @@ export class Chat extends React.Component<Iprops, Istate> {
       }
     }), true).then((chat: any) => {
 
-
       let availableMucRoom =  {
         name: chat.attributes.jid.split('@conference.dev.muikkuverkko.fi'),
         jid: chat.attributes.jid,
@@ -382,8 +381,9 @@ export class Chat extends React.Component<Iprops, Istate> {
           jid: jid,
           roomDesc: description
         }
+
         roomsList.push(addRoomToList);
-          this.setState({availableMucRooms: roomsList});
+        this.setState({availableMucRooms: roomsList});
       }
       return;
     } else {
@@ -451,7 +451,7 @@ export class Chat extends React.Component<Iprops, Istate> {
      // const rooms = await this.state.converse.api.rooms.get();
       //rooms.forEach((room: any) => room.rejoinIfNecessary());
       if (roomJid){
-        let room = await this.state.converse.api.rooms.get(roomJid);
+        let room = await this.state.converse.api.rooms.get(roomJid, {}, false);
 
         room.join(this.state.nick);
       }
@@ -487,7 +487,7 @@ export class Chat extends React.Component<Iprops, Istate> {
         __this.setState({converse: _converse});
 
         __this.state.converse.on('connected', function () {
-		__this.state.converse.api.listen.on('message',  __this.privateMessageNotification);
+          __this.state.converse.api.listen.on('message',  __this.privateMessageNotification);
           const rooms = __this.state.converse.api.rooms;
 
           __this.setState({
@@ -504,7 +504,7 @@ export class Chat extends React.Component<Iprops, Istate> {
             'from': from + "@dev.muikkuverkko.fi",
             'type': "get"
           }).c("query", {xmlns: Strophe.NS.DISCO_ITEMS});
-          __this.state.converse.api.sendIQ(iq)
+            __this.state.converse.api.sendIQ(iq)
             .then((iq: any) => __this.onRoomsFound(iq))
             .catch((iq: any) => console.log(iq));
 
@@ -515,7 +515,7 @@ export class Chat extends React.Component<Iprops, Istate> {
               __this.setState({
                 showControlBox: true,
                 showChatButton: false
-               });
+                });
             } else {
               __this.setState({
                 showControlBox: false,
@@ -544,6 +544,7 @@ export class Chat extends React.Component<Iprops, Istate> {
               privateChats: openPrivateChatsFromSessionStorage
             });
           }
+
           let userStatus = __this.state.converse.api.user.status.get();
 
           __this.setState({

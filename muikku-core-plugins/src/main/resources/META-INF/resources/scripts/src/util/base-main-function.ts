@@ -72,6 +72,11 @@ export default function(store: Store<StateType>, options: {
               // Thou shall touch these
               // - - - - - - - - - - - - - - -
 
+              // Prevents converse to create instant rooms automatically. This prevents converse to create instant rooms automatically based on local/sessionStorage information.
+              // If room is set as disabled via workspace settings and room gets deleted from openfore properly, converse added room back as an instant room.
+              muc_instant_rooms: false,
+              muc_respect_autojoin: false,
+
               // Sets timeout when user is marked away automatically
               auto_away: 300,
 
@@ -81,11 +86,6 @@ export default function(store: Store<StateType>, options: {
               // Needs to be set to "info" when in production mode
               logLevel: "debug",
 
-              // This might be depcerated as it is not included in converse documentation
-              hide_muc_server: false,
-
-              allow_muc: true,
-
               // We try to archive every message, openfire needs to have archiving turned on with chat rooms also
               message_archiving: "always",
 
@@ -94,9 +94,6 @@ export default function(store: Store<StateType>, options: {
 
               // Should be 0 if MAM (message_archiving: "always") is in use
               muc_history_max_stanzas: 0,
-
-              muc_show_join_leave: true,
-
 
               // If you set this setting to true, then you will be notified of all messages received in a room.
               //notify_all_room_messages: true,
@@ -113,7 +110,7 @@ export default function(store: Store<StateType>, options: {
 
               // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY.
               // For production this option needs to be removed.
-              trusted: "off",
+              trusted: "false",
 
               // Plugins that can be used
               whitelisted_plugins: ["muikku-chat-ui"],
