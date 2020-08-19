@@ -360,7 +360,7 @@ public class ChatRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettingsRestModel workspaceChatSettings) {
     
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);   
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
   
     if (!workspaceEntityId.equals(workspaceChatSettings.getWorkspaceEntityId())) {
       return Response.status(Status.BAD_REQUEST).build();

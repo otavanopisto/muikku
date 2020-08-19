@@ -430,7 +430,7 @@ export class Chat extends React.Component<Iprops, Istate> {
         openChats: filteredRooms
       });
 
-      var result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
+      let result = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
 
       const filteredChats = result.filter(function(item: any) {
         return item !== roomJid;
@@ -441,7 +441,6 @@ export class Chat extends React.Component<Iprops, Istate> {
 	  let room = await this.state.converse.api.rooms.get(roomJid);
 
 	  room.leave();
-
 
     } else {
       openChatsList.push(roomJid);

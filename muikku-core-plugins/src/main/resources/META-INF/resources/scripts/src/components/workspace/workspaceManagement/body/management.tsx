@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProducerType, WorkspaceUpdateType, WorkspaceDetailsType, WorkspacePermissionsType } from "~/reducers/workspaces";
+import { WorkspaceType, WorkspaceChatSettingsType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProducerType, WorkspaceUpdateType, WorkspaceDetailsType, WorkspacePermissionsType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button, { ButtonPill } from "~/components/general/button";
@@ -19,7 +19,8 @@ import { LicenseSelector } from "~/components/general/license-selector";
 import UploadImageDialog from '../dialogs/upload-image';
 import DeleteImageDialog from '../dialogs/delete-image';
 import AddProducer from '~/components/general/add-producer';
-import { updateWorkspace, UpdateWorkspaceTriggerType,
+import {
+  updateWorkspace, UpdateWorkspaceTriggerType,
   updateWorkspaceProducersForCurrentWorkspace, UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64, UpdateCurrentWorkspaceImagesB64TriggerType,
   updateWorkspaceDetailsForCurrentWorkspace, UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
@@ -27,6 +28,7 @@ import { updateWorkspace, UpdateWorkspaceTriggerType,
 import { bindActionCreators } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { filterMatch, filterHighlight } from "~/util/modifiers";
+import { Chat } from "~/components/chat/chat";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
@@ -56,7 +58,7 @@ interface ManagementPanelState {
   workspaceLicense: string,
   workspaceHasCustomImage: boolean,
   workspacePermissions: Array<WorkspacePermissionsType>,
-
+  workspaceChatStatus: string,
   workspaceUsergroupNameFilter: string,
   currentWorkspaceProducerInputValue: string,
   newWorkspaceImageSrc?: string,
@@ -69,8 +71,7 @@ interface ManagementPanelState {
   },
   isImageDialogOpen: boolean,
   isDeleteImageDialogOpen: boolean,
-
-  locked: boolean
+  locked: boolean,
 }
 
 class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPanelState> {
@@ -88,6 +89,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceDescription: props.workspace ? props.workspace.description || "" : "",
       workspaceLicense: props.workspace ? props.workspace.materialDefaultLicense : "",
       workspaceHasCustomImage: props.workspace ? props.workspace.hasCustomImage : false,
+      workspaceChatStatus: props.workspace && props.workspace.chatSettings ? props.workspace.chatSettings.chatStatus : null,
       workspacePermissions: props.workspace && props.workspace.permissions ? props.workspace.permissions : [],
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
@@ -100,6 +102,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     this.setWorkspacePublishedTo = this.setWorkspacePublishedTo.bind(this);
     this.setWorkspaceAccessTo = this.setWorkspaceAccessTo.bind(this);
     this.updateWorkspaceType = this.updateWorkspaceType.bind(this);
+    this.setWorkspaceChatTo = this.setWorkspaceChatTo.bind(this);
     this.updateStartDate = this.updateStartDate.bind(this);
     this.updateEndDate = this.updateEndDate.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
@@ -131,6 +134,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: nextProps.workspace ? nextProps.workspace.materialDefaultLicense : "",
       workspaceDescription: nextProps.workspace ? nextProps.workspace.description || "" : "",
       workspaceHasCustomImage: nextProps.workspace ? nextProps.workspace.hasCustomImage : false,
+      workspaceChatStatus: nextProps.workspace && nextProps.workspace.chatSettings ? nextProps.workspace.chatSettings.chatStatus : null,
       workspacePermissions: nextProps.workspace && nextProps.workspace.permissions ? nextProps.workspace.permissions : [],
     });
 
@@ -143,6 +147,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
   setWorkspacePublishedTo(value: boolean){
     this.setState({
       workspacePublished: value
+    });
+  }
+  setWorkspaceChatTo(value: string) {
+    this.setState({
+      workspaceChatStatus: value
     });
   }
   setWorkspaceAccessTo(value: WorkspaceAccessType){
@@ -180,13 +189,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceUsergroupNameFilter: e.target.value
     });
   }
-
   checkIfEnterKeyIsPressedAndAddProducer(e: React.KeyboardEvent<HTMLInputElement>){
     if (e.keyCode == 13) {
       this.addProducer(this.state.currentWorkspaceProducerInputValue);
     }
   }
-
   addProducer(name: string){
     this.setState({
       currentWorkspaceProducerInputValue: "",
@@ -210,13 +217,11 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: newLicense
     });
   }
-
   removeCustomImage(){
     this.setState({
       isDeleteImageDialogOpen: true,
     });
   }
-
   readNewImage(e: React.ChangeEvent<HTMLInputElement>){
     let file = e.target.files[0];
     let reader = new FileReader();
@@ -238,7 +243,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
   }
   editCurrentImage(){
 
-//    let imageSrc = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`;
+    // let imageSrc = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`;
 
     if (this.state.newWorkspaceImageCombo){
       this.setState({
@@ -262,7 +267,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceHasCustomImage: false
     });
   }
-
   acceptNewImage(croppedB64: string, originalB64?: string, file?: File){
     this.setState({
       workspaceHasCustomImage: true,
@@ -288,7 +292,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     });
   }
   saveImage(croppedB64: string, originalB64?: string, file?: File) {
-
    this.props.updateCurrentWorkspaceImagesB64({
       originalB64: originalB64,
       croppedB64: croppedB64,
@@ -305,7 +308,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
         croppedB64
       }
     });
-
   }
   save(){
     this.setState({
@@ -331,7 +333,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       nameExtension: this.state.workspaceExtension,
       materialDefaultLicense: this.state.workspaceLicense,
       description: this.state.workspaceDescription,
-      hasCustomImage: this.state.workspaceHasCustomImage
+      hasCustomImage: this.state.workspaceHasCustomImage,
     }
     let currentWorkspaceAsUpdate:WorkspaceUpdateType = {
       name: this.props.workspace.name,
@@ -340,7 +342,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       nameExtension: this.props.workspace.nameExtension,
       materialDefaultLicense: this.props.workspace.materialDefaultLicense,
       description: this.props.workspace.description,
-      hasCustomImage: this.props.workspace.hasCustomImage
+      hasCustomImage: this.props.workspace.hasCustomImage,
     }
 
     if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)){
@@ -354,6 +356,20 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     if (!equals(workspaceMaterialProducers, this.props.workspace.producers)){
       totals++;
       payload = Object.assign({producers: workspaceMaterialProducers}, payload);
+    }
+
+    // Chat
+    let workspaceChatSettings: WorkspaceChatSettingsType = {
+      chatStatus: this.state.workspaceChatStatus,
+    }
+
+    let currentWorkspaceChatSettings: WorkspaceChatSettingsType = {
+      chatStatus: this.props.workspace.chatSettings.chatStatus
+    }
+
+    if (!equals(workspaceChatSettings, currentWorkspaceChatSettings)) {
+      totals++;
+      payload = Object.assign({chatSettings: workspaceChatSettings}, payload);
     }
 
     let workspaceDetails:WorkspaceDetailsType = {
@@ -406,7 +422,6 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
     onDone();
   }
-
   render(){
     let actualBackgroundSRC = this.state.workspaceHasCustomImage ?
       `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped` :
@@ -475,7 +490,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
               </div>
             </section>
             <section className="application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.settingsSectionTitle")}</h2>
+              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceVisibilitySectionTitle")}</h2>
               <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
                 <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-publicity">
                   <fieldset>
@@ -553,13 +568,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                 </div>
               </div>
             </section>
-            <section className="form-element application-sub-panel application-sub-panel--workspace-settings">
+            <section className="application-sub-panel application-sub-panel--workspace-settings">
               <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceLicenceSectionTitle")}</h2>
               <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
                 <LicenseSelector modifier="workspace-management" value={this.state.workspaceLicense} onChange={this.updateLicense} i18n={this.props.i18n}/>
               </div>
             </section>
-            <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+            <section className="application-sub-panel application-sub-panel--workspace-settings">
               <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceProducersSectionTitle")}</h2>
               {this.state.workspaceProducers?
                 <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
@@ -567,8 +582,34 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                 </div>
               : null}
              </section>
-             <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.permissions.viewTitle")}</h2>
+
+            <section className="application-sub-panel application-sub-panel--workspace-settings">
+              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspaceChatSectionTitle")}</h2>
+              <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
+                <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-chat-option">
+                  <fieldset>
+                    <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.status")}</legend>
+                    <div className="application-sub-panel__item-data application-sub-panel__item-data--workspace-management">
+                      <span className="form-element form-element--checkbox-radiobutton">
+                        <input id="chat-enabled" name="chat-enabled" type="radio"
+                          checked={this.state.workspaceChatStatus === "ENABLED"}
+                          onChange={this.setWorkspaceChatTo.bind(this, "ENABLED")} />
+                        <label htmlFor="chat-enabled">{this.props.i18n.text.get("plugin.workspace.management.settings.chatEnabled")}</label>
+                      </span>
+                      <span className="form-element form-element--checkbox-radiobutton">
+                        <input id="chat-disabled" name="chat-disabled" type="radio"
+                          checked={this.state.workspaceChatStatus === "DISABLED"}
+                          onChange={this.setWorkspaceChatTo.bind(this, "DISABLED")} />
+                        <label htmlFor="chat-disabled">{this.props.i18n.text.get("plugin.workspace.management.settings.chatDisabled")}</label>
+                      </span>
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+            </section>
+
+             <section className="application-sub-panel application-sub-panel--workspace-settings">
+              <h2 className="application-sub-panel__header application-sub-panel__header--workspace-settings">{this.props.i18n.text.get("plugin.workspace.management.workspacePermissionsSectionTitle")}</h2>
               <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
 
                 <div className="form-element form-element--workspace-toolbar application-sub-panel__item application-sub-panel__item--workspace-permissions">
@@ -578,7 +619,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
 
                 <div className="application-sub-panel__item application-sub-panel__item--workspace-management">
                   <fieldset>
-                    <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.permissions.usergroupsColumn.label")}</legend>
+                    <legend className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.workspace.management.settings.usergroups")}</legend>
 
                     {/*
                     If we ever have multiple permissions to set then we need to use the following code.
@@ -603,7 +644,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
                 </div>
               </div>
             </section>
-            <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+            <section className="application-sub-panel application-sub-panel--workspace-settings">
               <div className="application-sub-pane__button-container">
                 <Button className="button--primary-function-save" disabled={this.state.locked} onClick={this.save}>{this.props.i18n.text.get("plugin.workspace.management.workspaceButtons.save")}</Button>
               </div>
@@ -625,7 +666,8 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({updateWorkspace, updateWorkspaceProducersForCurrentWorkspace,
+  return bindActionCreators({
+    updateWorkspace, updateWorkspaceProducersForCurrentWorkspace,
     updateCurrentWorkspaceImagesB64, updateWorkspaceDetailsForCurrentWorkspace, displayNotification,
     updateCurrentWorkspaceUserGroupPermission}, dispatch);
 };
