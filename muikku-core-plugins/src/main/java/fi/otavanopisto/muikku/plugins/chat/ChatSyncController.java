@@ -307,7 +307,7 @@ public class ChatSyncController {
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
     
-    client.deleteChatRoom(workspaceEntity.getIdentifier());
+    client.deleteChatRoom("workspace-chat-" + workspaceEntity.getIdentifier());
     
 
   }
