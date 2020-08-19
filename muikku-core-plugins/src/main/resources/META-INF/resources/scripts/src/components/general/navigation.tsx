@@ -83,7 +83,7 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
         icon="pencil" onClick={this.props.editableAction} />
     }
 
-    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`item-list__item--${s}`).join(" ")}`}
+    return <Link className={`item-list__item item-list__item--aside-navigation ${this.props.isActive ? "active" : ""} ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`item-list__item--${s}`).join(" ")}`}
       onScrollToSection={this.props.onScrollToSection}
       scrollPadding={this.props.scrollPadding} disableScroll={this.props.disableScroll}
       href={this.props.hash ? "#" + this.props.hash : null} to={this.props.href} onClick={this.props.onClick} ref="element">

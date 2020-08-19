@@ -248,11 +248,12 @@
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   align-items: center;
   background-color: $color-application-list-item-background;
-  display: flex;
+  // display: flex;
   position: relative;
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
+
     .label {
       background-color: $color-label-mobile-selected-background;
     }
@@ -586,6 +587,7 @@
   }
 }
 
+
 .application-list__item-header-main {
   flex-basis: auto;
   flex-grow: 1;
@@ -649,6 +651,14 @@
 }
 
 .application-list__item-header-aside {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: right;
+}
+
+/*
+.application-list__item-header-aside {
   align-items: center;
   display: flex;
   flex-basis: auto;
@@ -656,6 +666,7 @@
   flex-shrink: 0;
   justify-content: flex-end;
 }
+*/
 
 .application-list--open {
   overflow: -moz-scrollbars-none;
@@ -684,18 +695,7 @@
   }
 }
 
-.application-list__item-header-aside {
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  justify-content: right;
-}
 
-.application-list__item-header-main {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
 
 .application-list__item-content-body--journal-entry {
   padding: 0;
