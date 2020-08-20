@@ -5,8 +5,8 @@ import java.util.Date;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChange;
-import fi.otavanopisto.muikku.plugins.user.UserPendingPasswordChangeDAO;
+import fi.otavanopisto.muikku.dao.users.UserPendingPasswordChangeDAO;
+import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 
 @Dependent
 public class ForgotPasswordController {
