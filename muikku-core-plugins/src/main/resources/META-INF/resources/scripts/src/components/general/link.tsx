@@ -139,7 +139,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["scrollPadding"];
     delete elementProps["disableScroll"];
 
-    return <Element {...elementProps} title={this.props.title}
+    return <Element ref="element" {...elementProps}
       className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchMove={this.onTouchMove}/>
   }
