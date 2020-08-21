@@ -171,6 +171,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <div className="application-sub-panel__body">
             {records.length ? records.map((record, index)=>{
               return <ApplicationList key={record.groupCurriculumIdentifier || index}>
+
+              // TODO this is not right, this needs to be a part of the application list component
+
                 {record.groupCurriculumIdentifier ? <div onClick={this.sortWorkspaces.bind(this, record.workspaces)} className="application-list__header-container application-list__header-container--sorter">
                   <h3 className="application-list__header application-list__header--sorter">{record.groupCurriculumIdentifier ? storedCurriculumIndex[record.groupCurriculumIdentifier] : null}</h3>
                   <div className={`icon-sort-alpha-${this.state.sortDirectionWorkspaces === 'asc' ? 'desc' : 'asc'}`}></div>
