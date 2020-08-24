@@ -715,16 +715,17 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             }
           })
         }
+
         this.isWorkspaceChatRoom(chat.jid);
         this.props.converse.api.waitUntil('roomsAutoJoined').then(async() => {
           this.openMucConversation(chat.jid);
           this.state.converse.api.listen.on('onChatReconnected', (chatbox:any) => { this.getMUCMessages(chatbox) });
           let room = await this.props.converse.api.rooms.get(this.state.roomJid);
 
-		  if(room){
-			room.listenTo(room.occupants, 'add', this.getOccupants);
+          if(room){
+            room.listenTo(room.occupants, 'add', this.getOccupants);
             room.listenTo(room.occupants, 'destroy', this.getOccupants);
-		  }
+          }
 
           this.scrollToBottom.bind(this, "auto");
         });

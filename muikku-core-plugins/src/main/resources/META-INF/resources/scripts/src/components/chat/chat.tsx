@@ -33,7 +33,7 @@ interface Istate {
   groupMessageRecipient?: String,
   receivedMUCMessages: Object[],
   availableMucRooms: any,
-  chatBox:null,
+  chatBox: null,
   showChatButton: boolean,
   showControlBox: boolean,
   showNewRoomForm: boolean,
@@ -377,9 +377,6 @@ export class Chat extends React.Component<Iprops, Istate> {
           jid: jid,
           roomDesc: description
         }
-
-        // DEBUG
-        console.log("Method: onRoomsFound" + " / JIDfromSID:" + iq.attributes[4].value + " / JID:" + this.state.converse.connection.jid + " / roomJID:" + jid);
 
         roomsList.push(addRoomToList);
         this.setState({availableMucRooms: roomsList});
