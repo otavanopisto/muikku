@@ -63,7 +63,6 @@ export default function(store: Store<StateType>, options: {
               i18n: state.locales.current,
               //jid: state.status.userSchoolDataIdentifier,
               keepalive: true,
-              //prebind: true,
               // This forces the use of nickname set in Muikku user's profile view
               // This is default value but added here as a reminder not to touch this as Muikku Chat UI requires this setting for displaying nick names/real names.
               muc_nickname_from_jid: false,
