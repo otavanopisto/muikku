@@ -262,7 +262,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get( "plugin.records.hops.additionalInfo.title" )}
           </div>
-          <div className="application-sub-panel__item-data form-element">
+          <div className="application-sub-panel__item-data form-element__textarea-container">
             <textarea className="form-element__textarea" onChange={this.setFromEventValue.bind( this, "additionalInfo" )} value={this.state.hops.additionalInfo || ""} />
           </div>
         </div>
