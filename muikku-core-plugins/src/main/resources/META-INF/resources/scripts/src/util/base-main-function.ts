@@ -84,7 +84,7 @@ export default function(store: Store<StateType>, options: {
               locales: ["fi", "en"],
 
               // Needs to be set to "info" when in production mode
-              logLevel: "debug",
+              loglevel: "debug",
 
               // We try to archive every message, openfire needs to have archiving turned on with chat rooms also
               message_archiving: "always",

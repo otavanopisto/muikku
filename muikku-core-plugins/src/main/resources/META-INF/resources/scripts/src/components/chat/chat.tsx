@@ -97,15 +97,14 @@ export class Chat extends React.Component<Iprops, Istate> {
       privateChats: []
     }
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.joinRoom = this.joinRoom.bind(this);
+    this.createAndJoinChatRoom = this.createAndJoinChatRoom.bind(this);
     this.sendPrivateMessage = this.sendPrivateMessage.bind(this);
-   // this.sendMessage = this.sendMessage.bind(this);
     this.openControlBox = this.openControlBox.bind(this);
-    this.openNewRoomForm = this.openNewRoomForm.bind(this);
+    this.openCreateChatRoomForm = this.openCreateChatRoomForm.bind(this);
     this.onOpenChat = this.onOpenChat.bind(this);
     this.onOpenPrivateChat = this.onOpenPrivateChat.bind(this);
-    this.userAvailability = this.userAvailability.bind(this);
-    this.changeUserAvailability = this.changeUserAvailability.bind(this);
+    this.getUserAvailability = this.getUserAvailability.bind(this);
+    this.setUserAvailability = this.setUserAvailability.bind(this);
     this.getChatNick = this.getChatNick.bind(this);
     this.privateMessageNotification = this.privateMessageNotification.bind(this);
   }
@@ -120,7 +119,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     let from: any;
     let bareJid: any;
     let tempPrivateChats: any;
-	let type = data.stanza.getAttribute('type');
+    let type = data.stanza.getAttribute('type');
     const { Strophe, sizzle } = converse.env;
     from = data.stanza.getAttribute('from');
     bareJid = Strophe.getBareJidFromJid(from);
@@ -154,7 +153,6 @@ export class Chat extends React.Component<Iprops, Istate> {
       }
     }
   }
-
   handleSubmit(event: any) { // login
 
     this.setState({
@@ -206,7 +204,6 @@ export class Chat extends React.Component<Iprops, Istate> {
       }
     }
   }
-
   sendPrivateMessage(event:any){
 
     event.preventDefault();
@@ -249,7 +246,6 @@ export class Chat extends React.Component<Iprops, Istate> {
 
     });
   }
-
   //---------- CONVERSE MUC ROOMS --------------------
   // Nickname, persistency, room name and room description for new chat room
   parseRoomDataFromEvent (form: HTMLFormElement) {
@@ -274,7 +270,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     }
   }
   // Creating new chat room
-  async joinRoom (event: any) {
+  async createAndJoinChatRoom (event: any) {
 
     event.preventDefault();
 
@@ -342,7 +338,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     //event.target.reset();
   }
   informRoomCreationFailed(){
-    alert("EI OLE MITÄÄN HUONEITA TÄÄLLÄ!!");
+    alert("TODO: Error message for room creation fail state");
   }
 
   // ------ mApi() ----------
@@ -409,7 +405,7 @@ export class Chat extends React.Component<Iprops, Istate> {
       window.sessionStorage.setItem("showControlBox", "opened");
     }
   }
-  openNewRoomForm(){
+  openCreateChatRoomForm(){
     if (!this.state.showNewRoomForm){
       this.setState({
           showNewRoomForm: true
@@ -438,22 +434,22 @@ export class Chat extends React.Component<Iprops, Istate> {
 
       window.sessionStorage.setItem("openChats", JSON.stringify(filteredChats));
 
-	  let room = await this.state.converse.api.rooms.get(roomJid);
+      let room = await this.state.converse.api.rooms.get(roomJid);
 
-	  room.leave();
-
+      room.leave();
     } else {
       openChatsList.push(roomJid);
 
       this.setState({
         openChats: openChatsList
       });
-     // const rooms = await this.state.converse.api.rooms.get();
-      //rooms.forEach((room: any) => room.rejoinIfNecessary());
+
       if (roomJid){
         let room = await this.state.converse.api.rooms.get(roomJid, {}, false);
 
-        room.join(this.state.nick);
+        if (room) {
+          room.join(this.state.nick);
+        }
       }
     }
   }
@@ -463,14 +459,14 @@ export class Chat extends React.Component<Iprops, Istate> {
   getNotWorkspaceMucRooms() {
     return this.state.availableMucRooms.filter((room:any) => !room.jid.startsWith("workspace-"));
   }
-  changeUserAvailability (e:any){
+  setUserAvailability (e:any){
     let newStatus = e.target.value;
 
     this.state.converse.api.user.status.set(newStatus);
 
-    this.userAvailability();
+    this.getUserAvailability();
   }
-  userAvailability (){
+  getUserAvailability (){
     let userStatus = this.state.converse.api.user.status.get();
 
     this.setState({
@@ -572,7 +568,7 @@ export class Chat extends React.Component<Iprops, Istate> {
         {/* Chat controlbox */}
         { (this.state.showControlBox === true) && <div className="chat__panel chat__panel--controlbox">
           <div className="chat__panel-header chat__panel-header--controlbox">
-            <span onClick={() => this.openNewRoomForm()} className="chat__button chat__button--new-room icon-plus"></span>
+            <span onClick={() => this.openCreateChatRoomForm()} className="chat__button chat__button--new-room icon-plus"></span>
             <span onClick={() => this.openControlBox()} className="chat__button chat__button--close icon-cross"></span>
           </div>
 
@@ -588,10 +584,10 @@ export class Chat extends React.Component<Iprops, Istate> {
           }
 
           { (this.state.showMaterial === true) && <div className="chat__panel-body chat__panel-body--controlbox">
-            <select value={this.state.selectedState} onChange={this.changeUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${userStatusClassName}`}>
+
+            <select value={this.state.selectedState} onChange={this.setUserAvailability} className={`chat__controlbox-user-status chat__controlbox-user-status--${userStatusClassName}`}>
               <option value="online">Paikalla</option>
               <option value="away">Palaan pian</option>
-              <option value="offline">Poissa</option>
             </select>
 
             <div className="chat__controlbox-rooms-heading">Kurssikohtaiset huoneet: </div>
@@ -611,10 +607,10 @@ export class Chat extends React.Component<Iprops, Istate> {
             {(this.state.showNewRoomForm === true) && <div className="chat__subpanel">
               <div className="chat__subpanel-header chat__subpanel-header--new-room">
                 <div className="chat__subpanel-title">Luo uusi huone</div>
-                <div onClick={() => this.openNewRoomForm()} className="chat__button chat__button--close icon-cross"></div>
+                <div onClick={() => this.openCreateChatRoomForm()} className="chat__button chat__button--close icon-cross"></div>
               </div>
               <div className="chat__subpanel-body">
-                <form onSubmit={this.joinRoom}>
+                <form onSubmit={this.createAndJoinChatRoom}>
                   <div className="chat__subpanel-row">
                     <label className="chat__label">Huoneen nimi:</label>
                     <input className="chat__textfield" name="roomName" ref="roomName" type="text"></input>
