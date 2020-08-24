@@ -124,7 +124,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
 
-  handleIncomingMessages( data: any ) {
+  async handleIncomingMessages( data: any ) {
     if(data.chatbox !== undefined) {
       if (data.chatbox.attributes.jid === this.state.roomJid){
         if (data.chatbox.messages.models.length > 0) {
@@ -602,7 +602,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
     }
     async getOccupants(){
-      let roomJID = this.state.roomJid;
       let room = await this.props.converse.api.rooms.get(this.state.roomJid);
 
       if (room.occupants.models.length > 0) {
