@@ -149,10 +149,6 @@
   @include form-element-toolbar;
 }
 
-.form-element--guider-toolbar {
-  @include form-element-toolbar;
-}
-
 .form-element--workspace-toolbar {
   @include form-element-toolbar;
   width: 100%;

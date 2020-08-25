@@ -38,10 +38,10 @@
   margin-bottom: 20px;
 }
 
-
 .application-list__header--discussion {
-  margin-left: 10px;
   margin-bottom: 0;
+  margin-left: 10px;
+
 
   @include breakpoint($breakpoint-pad) {
     margin-left: 0;
