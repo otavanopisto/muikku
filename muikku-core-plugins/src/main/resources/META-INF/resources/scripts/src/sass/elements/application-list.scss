@@ -42,7 +42,7 @@
 .application-list__header--discussion {
   margin-left: 10px;
   margin-bottom: 0;
-  
+
   @include breakpoint($breakpoint-pad) {
     margin-left: 0;
   }
@@ -653,17 +653,6 @@
   flex-shrink: 0;
   justify-content: right;
 }
-
-/*
-.application-list__item-header-aside {
-  align-items: center;
-  display: flex;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  justify-content: flex-end;
-}
-*/
 
 .application-list--open {
   overflow: -moz-scrollbars-none;

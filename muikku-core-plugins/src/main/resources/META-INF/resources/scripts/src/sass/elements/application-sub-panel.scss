@@ -6,7 +6,7 @@
 .application-sub-panel {
   border-bottom: 1px solid $color-subpanel-border;
   margin: 0 10px 20px;
-  
+
   &:last-child {
     border: 0;
     margin: 0;
@@ -16,7 +16,7 @@
 .application-sub-panel--yo-status-container {
   flex-basis: 50%;
   border-bottom: 0;
-  
+
     &:last-child {
       border: 0;
       margin: 0 10px 20px;

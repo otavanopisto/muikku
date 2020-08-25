@@ -153,10 +153,6 @@
   @include form-element-toolbar;
 }
 
-.form-element--coursepicker-toolbar {
-  @include form-element-toolbar;
-}
-
 .form-element--workspace-toolbar {
   @include form-element-toolbar;
   width: 100%;
@@ -166,24 +162,16 @@
   }
 }
 
-
-
 .form-element__custom-element {
   padding: 10px 0 0;
 }
 
 .form-element--guider-toolbar {
-  display: flex;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
+  @include form-element-toolbar;
 }
 
 .form-element--coursepicker-toolbar {
-  display: flex;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
+  @include form-element-toolbar;
 }
 
 .form-element--profile {
@@ -353,8 +341,8 @@
 
 .form-element__select--main-action {
   display: inline-block;
-  height: 35px;
   font-weight: 300;
+  height: 35px;
   min-width: 150px;
   padding: 5px 25px 5px 5px;
   text-transform: uppercase;
@@ -402,9 +390,9 @@
   border-radius: 2px;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  padding: 6px;
   margin-top: 10px;
   min-height: 150px;
+  padding: 6px;
   width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
