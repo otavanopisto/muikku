@@ -29,7 +29,6 @@ export interface HOPSEligibilityType {
   upperSecondarySchoolCurriculum: boolean
 }
 
-
 export interface HOPSType {
   eligibility: HOPSEligibilityType,
   status: HOPSStatusType,

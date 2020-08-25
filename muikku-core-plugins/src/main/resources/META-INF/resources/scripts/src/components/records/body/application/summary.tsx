@@ -18,7 +18,6 @@ import MainChart from '~/components/general/graph/main-chart';
 import '~/sass/elements/application-sub-panel.scss';
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
 
-
 interface SummaryProps {
   i18n: i18nType,
   records: RecordsType,

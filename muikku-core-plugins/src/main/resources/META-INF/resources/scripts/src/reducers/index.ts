@@ -19,8 +19,6 @@ import { RecordsType } from './main-function/records';
 import { ErrorType } from './base/error';
 import { ProfileType } from './main-function/profile';
 
-
-
 export interface StateType {
   notifications: NotificationListType,
   i18n: i18nType,
