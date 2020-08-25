@@ -67,7 +67,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let student = this.props.status.isStudent === true;
 
     return <DiscussionCurrentThread sticky={this.props.discussion.current.sticky} locked={this.props.discussion.current.locked}
-      title={<h3 className="application-list__header-title">{this.props.discussion.current.title}</h3>}>
+      title={<h3 className="application-list__title">{this.props.discussion.current.title}</h3>}>
         <DiscussionCurrentThreadElement isOpMessage avatar={<div className="avatar avatar--category-1">{avatar}</div>}>
           <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(this.props.discussion.current.created)}</span>}>
             <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(userCreator, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}</span>

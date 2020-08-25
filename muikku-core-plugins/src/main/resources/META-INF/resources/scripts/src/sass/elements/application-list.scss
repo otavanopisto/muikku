@@ -8,6 +8,7 @@
   height: 100%;
   width: 100%;
   overflow: visible;
+  margin-bottom: 20px;
 
   &::-webkit-scrollbar {
     display: none;
@@ -34,12 +35,22 @@
 }
 
 .application-list__header {
-  font-size: 1.125rem;
-  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+
+.application-list__header--discussion {
+  margin-left: 10px;
+  margin-bottom: 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    margin-left: 0;
+  }
 }
 
 .application-list__header--sorter {
   font-size: 0.875rem;
+  margin-bottom: 0;
 }
 
 .application-list--workspace-staff-members {
@@ -58,21 +69,7 @@
 
 
 .application-list__title {
-  @include workspace-subpanel-title;
-}
-
-.application-list__header-title {
-  display: flex;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 1rem;
-  font-weight: 600;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1.25rem;
-    font-weight: 400;
-  }
+  @include mainfunction-subpanel-title;
 }
 
 .application-list__header-icon {
