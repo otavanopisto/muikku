@@ -120,7 +120,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     let filteredCompletedWorkspaces: number[] = [];
     if (workspaceId) {
       filteredCompletedWorkspaces = this.state.filteredCompletedWorkspaces.slice();
-      var index = filteredCompletedWorkspaces.indexOf(workspaceId);
+      const index = filteredCompletedWorkspaces.indexOf(workspaceId);
       if (index > -1)
         filteredCompletedWorkspaces.splice(index, 1);
       else
@@ -139,10 +139,12 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
   GraphFilterHandler(graph: Graph) {
     const filteredGraphs = this.state.filteredGraphs.slice();
     const index = filteredGraphs.indexOf(graph);
-    if (index > -1)
+    if (index > -1) {
       filteredGraphs.splice(index, 1);
-    else
+    }
+    else {
       filteredGraphs.push(graph);
+    }
     this.setState({ filteredGraphs: filteredGraphs });
   }
 

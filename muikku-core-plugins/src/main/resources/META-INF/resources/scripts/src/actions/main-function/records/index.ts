@@ -85,13 +85,11 @@ let updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToR
         maxResults: 20
       }), 'callback')() as Array<UserWithSchoolDataType>;
 
-
-
       //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
       //The bigger number to be first
       users = users.sort((a, b) => {
-        if (a.id < b.id) return 1;
-        if (a.id > b.id) return -1;
+        if (a.id < b.id) { return 1 };
+        if (a.id > b.id) { return -1 };
         return 0;
       });
 
