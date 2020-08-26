@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -16,8 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -34,6 +38,8 @@ import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.EducationSubtype;
 import fi.otavanopisto.pyramus.rest.model.EducationType;
 import fi.otavanopisto.pyramus.rest.model.Subject;
+import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
+import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
@@ -462,6 +468,82 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
           logger.warning(String.format("Could not find participation type %d", newParticipationType));
         }
       }
+    }
+  }
+
+  @Override
+  public Set<SchoolDataIdentifier> listWorkspaceSignupGroups(SchoolDataIdentifier workspaceIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
+    
+    CourseSignupStudyProgramme[] signupStudyProgrammes = pyramusClient.get(String.format("/courses/courses/%d/signupStudyProgrammes", courseId), CourseSignupStudyProgramme[].class);
+    Set<SchoolDataIdentifier> signupStudyProgrammeIdentifiers = Arrays.stream(signupStudyProgrammes)
+      .map(signupStudyProgramme -> new SchoolDataIdentifier(identifierMapper.getStudyProgrammeIdentifier(signupStudyProgramme.getStudyProgrammeId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE))
+      .collect(Collectors.toSet());
+    
+    CourseSignupStudentGroup[] signupStudentGroups = pyramusClient.get(String.format("/courses/courses/%d/signupStudentGroups", courseId), CourseSignupStudentGroup[].class);
+    Set<SchoolDataIdentifier> signupStudentGroupIdentifiers = Arrays.stream(signupStudentGroups)
+        .map(signupStudentGroup -> new SchoolDataIdentifier(identifierMapper.getStudentGroupIdentifier(signupStudentGroup.getStudentGroupId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE))
+        .collect(Collectors.toSet());
+    
+    Set<SchoolDataIdentifier> signupGroupIdentifiers = new HashSet<>();
+    signupGroupIdentifiers.addAll(signupStudyProgrammeIdentifiers);
+    signupGroupIdentifiers.addAll(signupStudentGroupIdentifiers);
+    return signupGroupIdentifiers;
+  }
+
+  @Override
+  public void addWorkspaceSignupGroup(SchoolDataIdentifier workspaceIdentifier,
+      SchoolDataIdentifier userGroupIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
+
+    switch (identifierMapper.getStudentGroupType(userGroupIdentifier.getIdentifier())) {
+      case STUDYPROGRAMME:
+        Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(userGroupIdentifier.getIdentifier());
+        CourseSignupStudyProgramme signupStudyProgramme = new CourseSignupStudyProgramme(null, courseId, studyProgrammeId, null);
+        pyramusClient.post(String.format("/courses/courses/%d/signupStudyProgrammes", courseId), signupStudyProgramme);
+      break;
+      case STUDENTGROUP:
+        Long studentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupIdentifier.getIdentifier());
+        CourseSignupStudentGroup signupStudentGroup = new CourseSignupStudentGroup(null, courseId, studentGroupId, null);
+        pyramusClient.post(String.format("/courses/courses/%d/signupStudentGroups", courseId), signupStudentGroup);
+      break;
+    }
+  }
+
+  @Override
+  public void removeWorkspaceSignupGroup(SchoolDataIdentifier workspaceIdentifier,
+      SchoolDataIdentifier userGroupIdentifier) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
+
+    switch (identifierMapper.getStudentGroupType(userGroupIdentifier.getIdentifier())) {
+      case STUDYPROGRAMME:
+        Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(userGroupIdentifier.getIdentifier());
+        CourseSignupStudyProgramme[] signupStudyProgrammes = pyramusClient.get(String.format("/courses/courses/%d/signupStudyProgrammes", courseId), CourseSignupStudyProgramme[].class);
+        CourseSignupStudyProgramme existingStudyProgrammeGroup = Arrays.stream(signupStudyProgrammes)
+            .filter(signupStudyProgramme -> Objects.equals(studyProgrammeId, signupStudyProgramme.getStudyProgrammeId()))
+            .findFirst()
+            .orElse(null);
+
+        if (existingStudyProgrammeGroup != null) {
+          pyramusClient.delete(String.format("/courses/courses/%d/signupStudyProgrammes/%d", courseId, existingStudyProgrammeGroup.getId()));
+        } else {
+          logger.warning(String.format("Cannot remove signup studentgroup %s as it didn't exist for course %d", userGroupIdentifier.getIdentifier(), courseId));
+        }
+      break;
+      case STUDENTGROUP:
+        Long studentGroupId = identifierMapper.getPyramusStudentGroupId(userGroupIdentifier.getIdentifier());
+        CourseSignupStudentGroup[] signupStudentGroups = pyramusClient.get(String.format("/courses/courses/%d/signupStudentGroups", courseId), CourseSignupStudentGroup[].class);
+        CourseSignupStudentGroup existingStudentGroup = Arrays.stream(signupStudentGroups)
+          .filter(signupStudentGroup -> Objects.equals(studentGroupId, signupStudentGroup.getStudentGroupId()))
+          .findFirst()
+          .orElse(null);
+
+        if (existingStudentGroup != null) {
+          pyramusClient.delete(String.format("/courses/courses/%d/signupStudentGroups/%d", courseId, existingStudentGroup.getId()));
+        } else {
+          logger.warning(String.format("Cannot remove signup studentgroup %s as it didn't exist for course %d", userGroupIdentifier.getIdentifier(), courseId));
+        }
+      break;
     }
   }
 

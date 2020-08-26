@@ -53,6 +53,10 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.create(userGroupEntity, schoolDataSource, identifier, userSchoolDataIdentifier, false);
   }
   
+  public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
+    return findUserGroupEntityByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier(), false);
+  }
+  
   public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
     return findUserGroupEntityByDataSourceAndIdentifier(dataSource, identifier, false);
   }
@@ -77,6 +81,10 @@ public class UserGroupEntityController {
   
   public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
     return findUserGroupUserEntityByDataSourceAndIdentifier(dataSource, identifier, false);
+  }
+  
+  public UserGroupUserEntity findUserGroupUserEntityBySchoolDataIdentifier(SchoolDataIdentifier schoolDataIdentifier) {
+    return findUserGroupUserEntityByDataSourceAndIdentifier(schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier(), false);
   }
   
   public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier, Boolean includeArchived) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -330,6 +331,47 @@ class WorkspaceSchoolDataController {
     }
     
     return Collections.unmodifiableList(result);
+  }
+
+  public void addWorkspaceSignupGroup(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userGroupIdentifier) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
+    if (workspaceBridge != null) {
+      try {
+        workspaceBridge.addWorkspaceSignupGroup(workspaceIdentifier, userGroupIdentifier);
+      } catch (SchoolDataBridgeInternalException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + workspaceIdentifier.getDataSource());
+    }
+  }
+  
+  public void removeWorkspaceSignupGroup(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userGroupIdentifier) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
+    if (workspaceBridge != null) {
+      try {
+        workspaceBridge.removeWorkspaceSignupGroup(workspaceIdentifier, userGroupIdentifier);
+      } catch (SchoolDataBridgeInternalException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + workspaceIdentifier.getDataSource());
+    }
+  }
+  
+  public Set<SchoolDataIdentifier> listWorkspaceSignupGroups(SchoolDataIdentifier workspaceIdentifier) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
+    if (workspaceBridge != null) {
+      try {
+        return workspaceBridge.listWorkspaceSignupGroups(workspaceIdentifier);
+      } catch (SchoolDataBridgeInternalException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + workspaceIdentifier.getDataSource());
+    }
+    
+    return null;
   }
   
 }

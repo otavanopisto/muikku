@@ -177,13 +177,16 @@ public class PermissionRESTService extends AbstractRESTService {
 
         if (permitted) {
           if (workspaceGroupPermission == null) {
+            workspaceController.addWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
             permissionController.addWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission);
           }
         } else {
-          if (workspaceGroupPermission != null)
+          if (workspaceGroupPermission != null) {
+            workspaceController.removeWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
             permissionController.removeWorkspaceGroupPermission(workspaceGroupPermission);
-          else
+          } else {
             return Response.status(Response.Status.NOT_FOUND).build();
+          }
         }
       }
 
