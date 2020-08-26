@@ -40,38 +40,38 @@ class YO extends React.Component<YOProps, YOState> {
     if (this.props.records.location !== "yo" || this.props.yo.status != "READY" || this.props.hops.eligibility.upperSecondarySchoolCurriculum == false) {
       return null;
     } else {
-      const selectedMatriculationSubjects = this.props.eligibilitySubjects.status == "READY" ?  this.props.eligibilitySubjects.subjects.length > 0 ? this.props.eligibilitySubjects.subjects.map((subject, index) => {
+      const selectedMatriculationSubjects = this.props.eligibilitySubjects.status == "READY" ? this.props.eligibilitySubjects.subjects.length > 0 ? this.props.eligibilitySubjects.subjects.map((subject, index) => {
         return (
           <MatriculationEligibilityRow key={subject.subjectCode + index} subject={subject} />
         );
-      }) : <div>{this.props.i18n.text.get("plugin.records.yo.noMatriculationSubjectsSelected")}</div>  : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div> ;
+      }) : <div>{this.props.i18n.text.get("plugin.records.yo.noMatriculationSubjectsSelected")}</div> : <div>{this.props.i18n.text.get("plugin.records.yo.participationRights.loading")}</div>;
 
-//  < div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
+      //  < div className="empty">{i18n.text.get("plugin.records.matriculation.hopsUnfinished")}</div>
 
-       const enrollmentLink = this.props.yo.enrollment != null ?
-         (this.props.yo.enrollment).filter((exam) => exam.eligible == true).map((exam) => {
-           return (
-             exam.enrolled ?
-               <div key={exam.id}>
-                 <div className="application-sub-panel__notification-content">
-                   <span className="application-sub-panel__notification-content-title">{this.props.i18n.text.get("plugin.records.yo.button.signUp.hasAssigned")}</span>
+      const enrollmentLink = this.props.yo.enrollment != null ?
+        (this.props.yo.enrollment).filter((exam) => exam.eligible == true).map((exam) => {
+          return (
+            exam.enrolled ?
+              <div key={exam.id}>
+                <div className="application-sub-panel__notification-content">
+                  <span className="application-sub-panel__notification-content-title">{this.props.i18n.text.get("plugin.records.yo.button.signUp.hasAssigned")}</span>
                 </div>
-                 <div className="application-sub-panel__notification-content">
-                   <span className="application-sub-panel__notification-content-label">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
-                   <span className="application-sub-panel__notification-content-data">{new Date(exam.enrollmentDate).toLocaleDateString("fi-Fi")}</span>
-                 </div>
-               </div>
-             :
-               <div key={exam.id}>
-                 <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))}
-                   className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
-               </div>
-           );
-         }) : null;
+                <div className="application-sub-panel__notification-content">
+                  <span className="application-sub-panel__notification-content-label">{i18n.text.get("plugin.records.matriculation.enrollmentDate")}</span>
+                  <span className="application-sub-panel__notification-content-data">{new Date(exam.enrollmentDate).toLocaleDateString("fi-Fi")}</span>
+                </div>
+              </div>
+              :
+              <div key={exam.id}>
+                <Button key={exam.id} href={"/matriculation-enrollment/" + exam.id} title={this.props.i18n.text.get("plugin.records.yo.button.signUp.active.title", new Date(exam.ends).toLocaleDateString("fi-Fi"))}
+                  className="button button--yo-signup">{this.props.i18n.text.get("plugin.records.yo.button.signUp.active", new Date(exam.ends).toLocaleDateString("fi-Fi"))}</Button>
+              </div>
+          );
+        }) : null;
 
-         return (
-          // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components.
-          // Github issue: #4840
+      return (
+        // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components.
+        // Github issue: #4840
         <div>
           <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.yo.title")}</div>
           <div className="application-sub-panel application-sub-panel--yo-status-container">
@@ -87,12 +87,12 @@ class YO extends React.Component<YOProps, YOState> {
                 <div className="application-sub-panel__body application-sub-panel__body--yo-status-incomplete">
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete"
-                      dangerouslySetInnerHTML={{__html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired)}}/>
+                      dangerouslySetInnerHTML={{ __html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired) }} />
                     {this.props.yo.enrollment.length > 0 && <div className="application-sub-panel__notification-footer">{enrollmentLink}</div>}
                   </div>
                 </div> :
-              null
-            : null}
+                null
+              : null}
           </div>
           <div className="application-sub-panel  application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.participationRights.title")}</div>
@@ -121,9 +121,8 @@ function mapStateToProps(state: StateType) {
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>) {
-    return bindActionCreators({}, dispatch);
+  return bindActionCreators({}, dispatch);
 };
-
 
 export default connect(
   mapStateToProps,

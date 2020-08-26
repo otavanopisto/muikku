@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {connect, Dispatch} from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 import Link from '~/components/general/link';
 import LabelUpdateDialog from '../dialogs/label-update';
-import {MessagesNavigationItemListType, MessagesNavigationItemType, MessagesType} from '~/reducers/main-function/messages';
-import {i18nType} from '~/reducers/base/i18n';
-import {StateType} from '~/reducers';
+import { MessagesNavigationItemListType, MessagesNavigationItemType, MessagesType } from '~/reducers/main-function/messages';
+import { i18nType } from '~/reducers/base/i18n';
+import { StateType } from '~/reducers';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
@@ -14,7 +14,7 @@ import Navigation, { NavigationTopic, NavigationElement } from '~/components/gen
 interface NavigationProps {
   i18n: i18nType,
   messages: MessagesType,
-  openSignatureDialog: ()=>any
+  openSignatureDialog: () => any
 }
 
 
@@ -22,13 +22,13 @@ interface NavigationState {
 }
 
 class NavigationAside extends React.Component<NavigationProps, NavigationState> {
-  render(){
+  render() {
     return <Navigation>
       <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.folders.title")}>
-        {this.props.messages.navigation.map((item)=>{
+        {this.props.messages.navigation.map((item) => {
           return <NavigationElement modifiers="aside-navigation" iconColor={item.color} icon={item.icon} key={item.id}
             isActive={this.props.messages.location === item.location} hash={item.location}
-            editableWrapper={LabelUpdateDialog} editableWrapperArgs={item.type === "label" ? {label:item} : null}
+            editableWrapper={LabelUpdateDialog} editableWrapperArgs={item.type === "label" ? { label: item } : null}
             isEditable={item.type === "label"}>{item.text(this.props.i18n)}</NavigationElement>
         })}
       </NavigationTopic>
@@ -39,14 +39,14 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     messages: state.messages
   }
 };
 
-function mapDispatchToProps(dispatch: Dispatch<any>){
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };
 

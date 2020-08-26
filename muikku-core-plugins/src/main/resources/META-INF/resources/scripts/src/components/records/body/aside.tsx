@@ -5,7 +5,7 @@ import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import { TranscriptOfRecordLocationType, RecordsType } from '~/reducers/main-function/records';
-import {StateType} from '~/reducers';
+import { StateType } from '~/reducers';
 import NavigationMenu, { NavigationTopic, NavigationElement } from '~/components/general/navigation';
 import { HOPSType } from '~/reducers/main-function/hops';
 
@@ -21,27 +21,24 @@ interface NavigationState {
 
 class Navigation extends React.Component<NavigationProps, NavigationState> {
 
-  constructor(props: NavigationProps){
+  constructor(props: NavigationProps) {
     super(props);
   }
 
   /**
    * Returns whether section with given hash should be visible or not
-   * 
+   *
    * @param hash section hash
    * @return whether section with given hash should be visible or not
    */
   isVisible(hash: string) {
-    switch (hash) {
+    switch (hash) {
       case "hops":
-        return this.props.hops.eligibility && this.props.hops.eligibility.upperSecondarySchoolCurriculum === true;
+        return !this.props.records.studyEndDate || this.props.hops.eligibility && this.props.hops.eligibility.upperSecondarySchoolCurriculum === true;
       case "vops":
       case "yo":
         const yoVisibleValues = ["yes", "maybe"];
         return this.props.hops.value && yoVisibleValues.indexOf(this.props.hops.value.goalMatriculationExam) > -1 && !this.props.records.studyEndDate;
-      case "hops":
-        // Lets hide HOPS if student's studies has ended
-        return !this.props.records.studyEndDate;
     }
 
     return true;
@@ -49,35 +46,34 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
 
   render() {
     let sections = [
-        {
-          name: this.props.i18n.text.get("plugin.records.category.summary"),
-          hash: "summary"
-        },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.records"),
-          hash: "records"
-        },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.hops"),
-          hash: "hops"
-        },
-        {
-          name: this.props.i18n.text.get("plugin.records.category.yo"),
-          hash: "yo"
-        }
-        ]
+      {
+        name: this.props.i18n.text.get("plugin.records.category.summary"),
+        hash: "summary"
+      },
+      {
+        name: this.props.i18n.text.get("plugin.records.category.records"),
+        hash: "records"
+      },
+      {
+        name: this.props.i18n.text.get("plugin.records.category.hops"),
+        hash: "hops"
+      },
+      {
+        name: this.props.i18n.text.get("plugin.records.category.yo"),
+        hash: "yo"
+      }
+    ]
 
     return (
       <NavigationMenu>
-          {sections.filter(section => this.isVisible(section.hash)).map((item, index)=>{
-            return <NavigationElement isActive={this.props.location === item.hash} hash={item.hash} key={index}
-            >{item.name}</NavigationElement> 
-          })}
+        {sections.filter(section => this.isVisible(section.hash)).map((item, index) => {
+          return <NavigationElement isActive={this.props.location === item.hash} hash={item.hash} key={index}
+          >{item.name}</NavigationElement>
+        })}
       </NavigationMenu>
     )
   }
 }
-
 
 function mapStateToProps(state: StateType) {
   return {
@@ -88,11 +84,11 @@ function mapStateToProps(state: StateType) {
   }
 };
 
-function mapDispatchToProps( dispatch: Dispatch<any> ) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {};
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( Navigation );
+)(Navigation);

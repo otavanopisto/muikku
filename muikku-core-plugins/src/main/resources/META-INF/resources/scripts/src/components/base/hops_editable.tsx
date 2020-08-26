@@ -5,16 +5,14 @@ import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from '~/reducers';
 import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
-
 import '~/sass/elements/hops.scss';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 
-
 interface HopsProps {
   data?: HOPSDataType,
   defaultData: HOPSDataType,
-  onHopsChange?: ( hops: HOPSDataType ) => any,
+  onHopsChange?: (hops: HOPSDataType) => any,
   i18n: i18nType
 }
 
@@ -23,36 +21,36 @@ interface HopsState {
 }
 
 class Hops extends React.Component<HopsProps, HopsState> {
-  constructor( props: HopsProps ) {
-    super( props );
+  constructor(props: HopsProps) {
+    super(props);
 
-    this.set = this.set.bind( this );
-    this.setFromEventValue = this.setFromEventValue.bind( this );
+    this.set = this.set.bind(this);
+    this.setFromEventValue = this.setFromEventValue.bind(this);
 
     this.state = {
       hops: props.data || props.defaultData
     }
   }
 
-  set( property: string, value: any ) {
+  set(property: string, value: any) {
     let nProp: any = {};
     nProp[property] = value || null;
-    let nval = Object.assign( {}, this.state.hops, nProp );
-    this.props.onHopsChange && this.props.onHopsChange( nval );
+    let nval = Object.assign({}, this.state.hops, nProp);
+    this.props.onHopsChange && this.props.onHopsChange(nval);
 
-    this.setState( {
+    this.setState({
       hops: nval
-    } );
+    });
   }
 
-  setFromEventValue( property: string, e: React.ChangeEvent<HTMLInputElement> ) {
-    return this.set( property, e.target.value );
+  setFromEventValue(property: string, e: React.ChangeEvent<HTMLInputElement>) {
+    return this.set(property, e.target.value);
   }
 
-  componentWillReceiveProps( nextProps: HopsProps ) {
+  componentWillReceiveProps(nextProps: HopsProps) {
     let nextData = nextProps.data || nextProps.defaultData;
-    if ( nextData !== this.state.hops ) {
-      this.setState( { hops: nextData } );
+    if (nextData !== this.state.hops) {
+      this.setState({ hops: nextData });
     }
   }
 
@@ -67,45 +65,45 @@ class Hops extends React.Component<HopsProps, HopsState> {
 
   render() {
     let data = this.props.data || this.props.defaultData;
-    if (!data || !data.optedIn){
+    if (!data || !data.optedIn) {
       return null;
     }
     return <div className="application-sub-panel">
       <div className="application-sub-panel__body">
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get( "plugin.records.hops.goals.upperSecondary" )}
+            {this.props.i18n.text.get("plugin.records.hops.goals.upperSecondary")}
           </div>
           <div className="application-sub-panel__item-data form-element">
-            {["yes", "no", "maybe"].map( ( option: string ) => {
-                let onEvent = this.set.bind( this, "goalSecondarySchoolDegree", option );
-                return <div className="form-element__radio-option-container" key={option}>
-                  <input id={'goalSecondarySchoolDegree' + option} type="radio" value={option} checked={this.state.hops.goalSecondarySchoolDegree === option}
-                    onChange={onEvent} />
-                  <label htmlFor={'goalSecondarySchoolDegree' + option} onClick={onEvent}>{this.props.i18n.text.get( "plugin.records.hops.goals." + option )}</label>
-                </div>
-              } )}
+            {["yes", "no", "maybe"].map((option: string) => {
+              let onEvent = this.set.bind(this, "goalSecondarySchoolDegree", option);
+              return <div className="form-element__radio-option-container" key={option}>
+                <input id={'goalSecondarySchoolDegree' + option} type="radio" value={option} checked={this.state.hops.goalSecondarySchoolDegree === option}
+                  onChange={onEvent} />
+                <label htmlFor={'goalSecondarySchoolDegree' + option} onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.goals." + option)}</label>
+              </div>
+            })}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get( "plugin.records.hops.goals.matriculationExam" )}
+            {this.props.i18n.text.get("plugin.records.hops.goals.matriculationExam")}
           </div>
           <div className="application-sub-panel__item-data form-element">
-            {["yes", "no", "maybe"].map( ( option: string ) => {
-                let onEvent = this.set.bind( this, "goalMatriculationExam", option );
-                return <div className="form-element__radio-option-container" key={option}>
-                  <input id={'goalMatriculationExam' + option} type="radio" value={option} checked={this.state.hops.goalMatriculationExam === option}
-                    onChange={onEvent} />
-                  <label htmlFor={'goalMatriculationExam' + option} onClick={onEvent}>{this.props.i18n.text.get( "plugin.records.hops.goals." + option )}</label>
-                </div>
-              })}
+            {["yes", "no", "maybe"].map((option: string) => {
+              let onEvent = this.set.bind(this, "goalMatriculationExam", option);
+              return <div className="form-element__radio-option-container" key={option}>
+                <input id={'goalMatriculationExam' + option} type="radio" value={option} checked={this.state.hops.goalMatriculationExam === option}
+                  onChange={onEvent} />
+                <label htmlFor={'goalMatriculationExam' + option} onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.goals." + option)}</label>
+              </div>
+            })}
           </div>
         </div>
         {this.state.hops.goalMatriculationExam === "yes" &&
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title">
-              {this.props.i18n.text.get( "plugin.records.hops.goals.matriculationSubjects" )}
+              {this.props.i18n.text.get("plugin.records.hops.goals.matriculationSubjects")}
             </div>
             <div className="application-sub-panel__item-data form-element">
               <MatriculationSubjectsList initialMatriculationSubjects={this.state.hops.studentMatriculationSubjects} onMatriculationSubjectsChange={this.onMatriculationSubjectsChange} />
@@ -114,156 +112,156 @@ class Hops extends React.Component<HopsProps, HopsState> {
         }
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title form-element">
-            {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears1" )}
-              <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.vocationalYears || ""} onChange={this.setFromEventValue.bind( this, "vocationalYears" )}>
-                <option disabled value="">{this.props.i18n.text.get( "plugin.records.hops.selectAnOption" )}</option>
-                {["1", "2", "2,5", "3", "4", "5", "6", "7", "8", "9", "10"].map( ( n ) => {
-                  return <option key={n} value={n}>{n}</option>
-                } )}
-              </select>
-            {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears2" )}
+            {this.props.i18n.text.get("plugin.records.hops.goals.vocationalYears1")}
+            <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.vocationalYears || ""} onChange={this.setFromEventValue.bind(this, "vocationalYears")}>
+              <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
+              {["1", "2", "2,5", "3", "4", "5", "6", "7", "8", "9", "10"].map((n) => {
+                return <option key={n} value={n}>{n}</option>
+              })}
+            </select>
+            {this.props.i18n.text.get("plugin.records.hops.goals.vocationalYears2")}
           </div>
           <div className="application-sub-panel__item-data form-element">
-            {["yes", "no"].map( ( option: string ) => {
-              let onEvent = this.set.bind( this, "goalJustMatriculationExam", option );
+            {["yes", "no"].map((option: string) => {
+              let onEvent = this.set.bind(this, "goalJustMatriculationExam", option);
               return <div className="form-element__radio-option-container" key={option}>
                 <input id={'goalJustMatriculationExam' + option} type="radio" value={option} checked={this.state.hops.goalJustMatriculationExam === option}
                   onChange={onEvent} />
-                <label htmlFor={'goalJustMatriculationExam' + option} onClick={onEvent}>{this.props.i18n.text.get( "plugin.records.hops.goals." + option )}</label>
+                <label htmlFor={'goalJustMatriculationExam' + option} onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.goals." + option)}</label>
               </div>
-            } )}
+            })}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title form-element">
-            {this.props.i18n.text.get( "plugin.records.hops.goals.justTransferCredits1" )}
-              <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.transferCreditYears || ""} onChange={this.setFromEventValue.bind( this, "transferCreditYears" )}>
-                <option disabled value="">{this.props.i18n.text.get( "plugin.records.hops.selectAnOption" )}</option>
-                {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map( ( n ) => {
-                  return <option key={n} value={n}>{n}</option>
-                } )}
-              </select>
-            {this.props.i18n.text.get( "plugin.records.hops.goals.justTransferCredits2" )}
+            {this.props.i18n.text.get("plugin.records.hops.goals.justTransferCredits1")}
+            <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.transferCreditYears || ""} onChange={this.setFromEventValue.bind(this, "transferCreditYears")}>
+              <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
+              {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map((n) => {
+                return <option key={n} value={n}>{n}</option>
+              })}
+            </select>
+            {this.props.i18n.text.get("plugin.records.hops.goals.justTransferCredits2")}
           </div>
           <div className="application-sub-panel__item-data form-element">
-              {["yes", "no"].map( ( option: string ) => {
-                let onEvent = this.set.bind( this, "justTransferCredits", option );
-                return <div className="form-element__radio-option-container" key={option}>
-                  <input id={'justTransferCredits' + option} type="radio" value={option} checked={this.state.hops.justTransferCredits === option}
-                    onChange={onEvent} />
-                  <label htmlFor={'justTransferCredits' + option} onClick={onEvent}>{this.props.i18n.text.get( "plugin.records.hops.goals." + option )}</label>
-                </div>
-              } )}
+            {["yes", "no"].map((option: string) => {
+              let onEvent = this.set.bind(this, "justTransferCredits", option);
+              return <div className="form-element__radio-option-container" key={option}>
+                <input id={'justTransferCredits' + option} type="radio" value={option} checked={this.state.hops.justTransferCredits === option}
+                  onChange={onEvent} />
+                <label htmlFor={'justTransferCredits' + option} onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.goals." + option)}</label>
+              </div>
+            })}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title form-element">
-            {this.props.i18n.text.get( "plugin.records.hops.goals.completionYears1" )}
-              <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.completionYears || ""} onChange={this.setFromEventValue.bind( this, "completionYears" )}>
-                <option disabled value="">{this.props.i18n.text.get( "plugin.records.hops.selectAnOption" )}</option>
-                {["1", "2", "3", "4"].map( ( n ) => {
-                  return <option key={n} value={n}>{n}</option>
-                } )}
-              </select>
-            {this.props.i18n.text.get( "plugin.records.hops.goals.completionYears2" )}
+            {this.props.i18n.text.get("plugin.records.hops.goals.completionYears1")}
+            <select className="form-element__select form-element__select--hops-selector" value={this.state.hops.completionYears || ""} onChange={this.setFromEventValue.bind(this, "completionYears")}>
+              <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
+              {["1", "2", "3", "4"].map((n) => {
+                return <option key={n} value={n}>{n}</option>
+              })}
+            </select>
+            {this.props.i18n.text.get("plugin.records.hops.goals.completionYears2")}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get( "plugin.records.hops.languages.mandatory.title" )}
+            {this.props.i18n.text.get("plugin.records.hops.languages.mandatory.title")}
           </div>
           <div className="application-sub-panel__item-data form-element">
-              {["AI", "S2"].map( ( option: string ) => {
-                let onEvent = this.set.bind( this, "finnish", option );
-                const nativity: any = { "AI": "native", "S2": "foreign" };
-                return <div className="form-element__radio-option-container" key={option}>
-                  <input id={'finnish' + option} type="radio" value={option} checked={this.state.hops.finnish === option}
-                    onChange={onEvent} />
-                  <label htmlFor={'finnish' + option} onClick={onEvent}>{this.props.i18n.text.get( "plugin.records.hops.languages.finnish." + nativity[option] )}</label>
-                </div>
-              } )}
+            {["AI", "S2"].map((option: string) => {
+              let onEvent = this.set.bind(this, "finnish", option);
+              const nativity: any = { "AI": "native", "S2": "foreign" };
+              return <div className="form-element__radio-option-container" key={option}>
+                <input id={'finnish' + option} type="radio" value={option} checked={this.state.hops.finnish === option}
+                  onChange={onEvent} />
+                <label htmlFor={'finnish' + option} onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.languages.finnish." + nativity[option])}</label>
+              </div>
+            })}
           </div>
         </div>
         <div>
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-            {this.props.i18n.text.get( "plugin.records.hops.languages.mandatory.additionalInfo" )}
+            {this.props.i18n.text.get("plugin.records.hops.languages.mandatory.additionalInfo")}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get( "plugin.records.hops.languages.optional.title" )}
+            {this.props.i18n.text.get("plugin.records.hops.languages.optional.title")}
           </div>
           <div className="application-sub-panel__item-data form-element">
             <div className="form-element__check-option-container">
-              <input id="langGerman" type="checkbox" checked={this.state.hops.german} onChange={this.set.bind( this, "german", !this.state.hops.german )} />
-              <label htmlFor="langGerman">{this.props.i18n.text.get( "plugin.records.hops.languages.german" )}</label>
+              <input id="langGerman" type="checkbox" checked={this.state.hops.german} onChange={this.set.bind(this, "german", !this.state.hops.german)} />
+              <label htmlFor="langGerman">{this.props.i18n.text.get("plugin.records.hops.languages.german")}</label>
             </div>
             <div className="form-element__check-option-container">
-              <input id="langFrench" type="checkbox" checked={this.state.hops.french} onChange={this.set.bind( this, "french", !this.state.hops.french )} />
-              <label htmlFor="langFrench">{this.props.i18n.text.get( "plugin.records.hops.languages.french" )}</label>
+              <input id="langFrench" type="checkbox" checked={this.state.hops.french} onChange={this.set.bind(this, "french", !this.state.hops.french)} />
+              <label htmlFor="langFrench">{this.props.i18n.text.get("plugin.records.hops.languages.french")}</label>
             </div>
             <div className="form-element__check-option-container">
-              <input id="langItalian" type="checkbox" checked={this.state.hops.italian} onChange={this.set.bind( this, "italian", !this.state.hops.italian )} />
-              <label htmlFor="langItalian">{this.props.i18n.text.get( "plugin.records.hops.languages.italian" )}</label>
+              <input id="langItalian" type="checkbox" checked={this.state.hops.italian} onChange={this.set.bind(this, "italian", !this.state.hops.italian)} />
+              <label htmlFor="langItalian">{this.props.i18n.text.get("plugin.records.hops.languages.italian")}</label>
             </div>
             <div className="form-element__check-option-container">
-              <input id="langSpanish" type="checkbox" checked={this.state.hops.spanish} onChange={this.set.bind( this, "spanish", !this.state.hops.spanish )} />
-              <label htmlFor="langSpanish">{this.props.i18n.text.get( "plugin.records.hops.languages.spanish" )}</label>
+              <input id="langSpanish" type="checkbox" checked={this.state.hops.spanish} onChange={this.set.bind(this, "spanish", !this.state.hops.spanish)} />
+              <label htmlFor="langSpanish">{this.props.i18n.text.get("plugin.records.hops.languages.spanish")}</label>
             </div>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get( "plugin.records.hops.mathSyllabus.title" )}
+            {this.props.i18n.text.get("plugin.records.hops.mathSyllabus.title")}
           </div>
           <div className="application-sub-panel__item-data form-element">
-            {["MAA", "MAB"].map( ( option: string ) => {
-              let onEvent = this.set.bind( this, "mathSyllabus", option );
+            {["MAA", "MAB"].map((option: string) => {
+              let onEvent = this.set.bind(this, "mathSyllabus", option);
               return <div className="form-element__radio-option-container" key={option}>
                 <input id={'mathSyllabus' + option} type="radio" value={option} checked={this.state.hops.mathSyllabus === option}
                   onChange={onEvent} />
-                <label htmlFor={'mathSyllabus' + option} onClick={onEvent}>{this.props.i18n.text.get( "plugin.records.hops.mathSyllabus." + option )}</label>
+                <label htmlFor={'mathSyllabus' + option} onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.mathSyllabus." + option)}</label>
               </div>
-            } )}
+            })}
           </div>
 
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get( "plugin.records.hops.science.title" )}
+            {this.props.i18n.text.get("plugin.records.hops.science.title")}
           </div>
           <div className="application-sub-panel__item-data form-element">
-            {["BI", "FY", "KE", "GE"].map( ( option: string ) => {
-              let onEvent = this.set.bind( this, "science", option );
+            {["BI", "FY", "KE", "GE"].map((option: string) => {
+              let onEvent = this.set.bind(this, "science", option);
               return <div className="form-element__radio-option-container" key={option}>
                 <input id={'science' + option} type="radio" value={option} checked={this.state.hops.science === option}
                   onChange={onEvent} />
-                <label htmlFor={'science' + option} onClick={onEvent}>{this.props.i18n.text.get( "plugin.records.hops.science." + option )}</label>
+                <label htmlFor={'science' + option} onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.science." + option)}</label>
               </div>
-            } )}
+            })}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get( "plugin.records.hops.religion.title" )}
+            {this.props.i18n.text.get("plugin.records.hops.religion.title")}
           </div>
           <div className="application-sub-panel__item-data form-element">
-            {["UE", "ET", "UX"].map( ( option: string ) => {
-              let onEvent = this.set.bind( this, "religion", option );
+            {["UE", "ET", "UX"].map((option: string) => {
+              let onEvent = this.set.bind(this, "religion", option);
               return <div className="form-element__radio-option-container" key={option}>
                 <input id={'religion' + option} type="radio" value={option} checked={this.state.hops.religion === option}
                   onChange={onEvent} />
-                <label htmlFor={'religion' + option} onClick={onEvent}>{this.props.i18n.text.get( "plugin.records.hops.religion." + option )}</label>
+                <label htmlFor={'religion' + option} onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.religion." + option)}</label>
               </div>
-            } )}
+            })}
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
           <div className="application-sub-panel__item-title">
-            {this.props.i18n.text.get( "plugin.records.hops.additionalInfo.title" )}
+            {this.props.i18n.text.get("plugin.records.hops.additionalInfo.title")}
           </div>
           <div className="application-sub-panel__item-data form-element__textarea-container">
-            <textarea className="form-element__textarea" onChange={this.setFromEventValue.bind( this, "additionalInfo" )} value={this.state.hops.additionalInfo || ""} />
+            <textarea className="form-element__textarea" onChange={this.setFromEventValue.bind(this, "additionalInfo")} value={this.state.hops.additionalInfo || ""} />
           </div>
         </div>
       </div>
@@ -271,18 +269,18 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 }
 
-function mapStateToProps( state: StateType ) {
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
     defaultData: state.hops && state.hops.value
   }
 };
 
-function mapDispatchToProps( dispatch: Dispatch<any> ) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
   return {}
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( Hops );
+)(Hops);
