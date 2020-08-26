@@ -527,8 +527,6 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     );
   }
   toggleMinimizeChats(roomJid: string){
-    // For some reason this.state.minimizedChats is everytime empty when minimizeChats() is called, that's why we load list from sessionStorage instead
-
     let minimizedRoomList = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
     if (this.state.minimized === false) {
@@ -568,9 +566,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   async toggleOccupantsList(){
     let room = await this.props.converse.api.rooms.get(this.state.roomJid);
 
-    // For some reason this.state.occupantsListOpened is everytime empty when toggleOccupantsList() is called, that's why we load list from sessionStorage instead
-    // let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
-    let roomsWithOpenOccupantsList = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
+    let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
 
     if (this.state.showOccupantsList === true) {
 
@@ -722,13 +718,27 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       });
     }
 
+    // Lets get minimizedChats sessionStorage value and set it to coresponding state (minimizedChats)
     let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
+    // Lets get showOccupantsList sessionStorage value and set it to coresponding state
+    let showOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || []
+
+    if (showOccupantsFromSessionStorage) {
+      this.setState({
+        occupantsListOpened: showOccupantsFromSessionStorage,
+      });
+    }
+
     if (minimizedChatsFromSessionStorage) {
+      this.setState({
+        minimizedChats: minimizedChatsFromSessionStorage,
+      });
+
       minimizedChatsFromSessionStorage.map((item: any) => {
         if (item === chat.jid) {
           this.setState({
-            minimized: true
+            minimized: true,
           });
         }
       })
@@ -744,8 +754,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
         {this.state.minimized === true ? (
-          <div onClick={() => this.toggleMinimizeChats(this.state.roomJid)} className={`chat__minimized chat__minimized--${chatRoomTypeClassName}`}>
-            <div className="chat__minimized-title">{this.state.roomName}</div>
+          <div className={`chat__minimized chat__minimized--${chatRoomTypeClassName}`}>
+            <div onClick={() => this.toggleMinimizeChats(this.state.roomJid)} className="chat__minimized-title">{this.state.roomName}</div>
             <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-cross"></div>
           </div>
         ) : (
@@ -753,7 +763,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
             <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
               <div className="chat__panel-header-title">{this.state.roomName}</div>
               <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-users"></div>
-                <div onClick={() => this.toggleMinimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-minus"></div>
+              <div onClick={() => this.toggleMinimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-minus"></div>
               {(!this.state.isStudent) && <div onClick={() => this.openChatSettings()} className="chat__button chat__button--room-settings icon-cogs"></div>}
               <div onClick={() => this.props.onOpenChat(this.state.roomJid)} className="chat__button chat__button--close icon-cross"></div>
             </div>

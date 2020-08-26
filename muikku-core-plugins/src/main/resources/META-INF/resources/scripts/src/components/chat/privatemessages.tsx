@@ -75,8 +75,6 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     this.toggleMinimizeChats = this.toggleMinimizeChats.bind(this);
   }
   toggleMinimizeChats(roomJid: string) {
-    // For some reason this.state.minimizedChats is everytime empty when minimizeChats() is called, that's why we load list from sessionStorage instead
-
     let minimizedRoomList = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
     if (this.state.minimized === false) {

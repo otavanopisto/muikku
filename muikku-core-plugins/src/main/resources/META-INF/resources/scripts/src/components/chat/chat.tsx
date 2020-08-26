@@ -107,7 +107,6 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.getChatNick = this.getChatNick.bind(this);
     this.privateMessageNotification = this.privateMessageNotification.bind(this);
   }
-
   async privateMessageNotification (data: any) {
     const u = converse.env.utils;
     let from: any;
@@ -508,15 +507,6 @@ export class Chat extends React.Component<Iprops, Istate> {
             });
           }
 
-          // openChats sessionStorage key includes chat rooms and private chats
-          let openChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("openChats"));
-
-          if (openChatsFromSessionStorage) {
-            __this.setState({
-              openChats: openChatsFromSessionStorage
-            });
-          }
-
           let userStatus = __this.state.converse.api.user.status.get();
 
           __this.setState({
@@ -528,6 +518,16 @@ export class Chat extends React.Component<Iprops, Istate> {
         });
       },
     });
+
+    // Lets get openChats from sessionStorage value and set it to coresponding state (openChats)
+    // Includes both chat rooms and private chats
+    let openChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("openChats"));
+
+    if (openChatsFromSessionStorage) {
+      this.setState({
+        openChats: openChatsFromSessionStorage
+      });
+    }
   }
   render() {
     let userStatusClassName = this.state.selectedState === "online" ? "online" : this.state.selectedState === "offline" ? "offline" : "away";
