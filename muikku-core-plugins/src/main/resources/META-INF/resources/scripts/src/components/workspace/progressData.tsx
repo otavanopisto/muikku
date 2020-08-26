@@ -9,7 +9,8 @@ import '~/sass/elements/workspace-activity.scss';
 export default class ProgressData extends React.Component<{
   activity: WorkspaceStudentActivityType,
   i18n: i18nType,
-  title?: string
+  title?: string,
+  modifier?: string
 }, {}>{
   render(){
     if (!this.props.activity){
@@ -19,8 +20,8 @@ export default class ProgressData extends React.Component<{
     let evaluablesDone = this.props.activity.evaluablesPassed + this.props.activity.evaluablesSubmitted +
       this.props.activity.evaluablesFailed + this.props.activity.evaluablesIncomplete;
 
-    return <div className="workspace-activity workspace-activity--workspace">
-      {this.props.title ? <div className="workspace-activity__title">{this.props.title}</div> : null}
+    return <div className={`workspace-activity ${this.props.modifier ? 'workspace-activity--' + this.props.modifier : ''}`}>
+      {this.props.title ? <div className={`workspace-activity__title ${this.props.modifier ? 'workspace-activity__title--' + this.props.modifier : ''}`}>{this.props.title}</div> : null}
       <div className="workspace-activity__content">
         {this.props.activity.evaluablesTotal ? <Dropdown modifier="workspace-progress" content={<div>
           <div className="workspace-activity__menu-title">{this.props.i18n.text.get('plugin.workspace.progress.evaluable.title')}</div>

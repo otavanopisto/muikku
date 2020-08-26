@@ -32,6 +32,7 @@ public interface UserSchoolDataBridge {
   public BridgeResponse<StaffMemberPayload> updateStaffMember(StaffMemberPayload staffMember);
                     
   public BridgeResponse<StudentPayload> createStudent(StudentPayload student);
+  public BridgeResponse<StudentPayload> updateStudent(StudentPayload student);
     
   /**
    * Creates new user

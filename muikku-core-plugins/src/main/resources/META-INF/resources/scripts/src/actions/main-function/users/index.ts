@@ -1,29 +1,132 @@
 import mApi, {MApiError} from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import promisify from '~/util/promisify';
-
-
-import {UserStatusType} from 'reducers/main-function/users';
-import {UserType} from 'reducers/user-index';
+import {UserStatusType,StudyprogrammeListType, StudyprogrammeTypeStatusType} from 'reducers/main-function/users';
+import {UserType, ManipulateStudentType, ManipulateType, ManipulateStaffmemberType} from 'reducers/user-index';
 import notificationActions from '~/actions/base/notifications';
 import {StateType} from '~/reducers';
-
-
 export type UPDATE_STUDENT_USERS = SpecificActionType<"UPDATE_STUDENT_USERS", UserType>
 export type UPDATE_STAFF_USERS = SpecificActionType<"UPDATE_STAFF_USERS", UserType>
 export type UPDATE_USERS_STATE = SpecificActionType<"UPDATE_USERS_STATE", UserStatusType>
+export type UPDATE_STUDYPROGRAMME_TYPES = SpecificActionType<"UPDATE_STUDYPROGRAMME_TYPES", StudyprogrammeListType>
+export type UPDATE_STUDYPROGRAMME_STATUS_TYPE = SpecificActionType<"UPDATE_STUDYPROGRAMME_STATUS_TYPE", StudyprogrammeTypeStatusType>
 
+export interface ApplyStudentTriggerType {
+  (data: {
+    mode: ManipulateType,
+    student: ManipulateStudentType,
+    success?: () => any,
+    fail?: () => any
+  }): AnyActionType
+}
 
+export interface ApplyStaffmemberTriggerType {
+  (data: {
+    mode: ManipulateType,
+    staffmember: ManipulateStaffmemberType,
+    success?: () => any,
+    fail?: () => any
+  }): AnyActionType
+}
 
-//Do not delete this, this is for organization
-
-
+export interface LoadStudyprogrammesTriggerType {
+  (): AnyActionType
+}
 
 export interface LoadUsersTriggerType {
   (): AnyActionType
 }
 
-let loadUsers:LoadUsersTriggerType = function loadUserst(){
+const selectStudentEndPoint:  ApplyStudentTriggerType = function studentEndPoint (data) {
+  if(data.mode  == "CREATE" ) {
+    return mApi().user.students.create(data.student);
+  } else {
+    return mApi().user.students.put(data.student);
+  }
+}
+
+let applyStudent: ApplyStudentTriggerType = function applyStudent (data) {
+
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(selectStudentEndPoint(data), 'callback')().then(() => {
+        promisify(mApi().user.students.read(), 'callback')()
+        .then((students:UserType) => {
+          dispatch({
+            type: "UPDATE_STUDENT_USERS",
+            payload: students
+          });
+        });
+      });
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.success"), 'success'));
+      data.success && data.success();
+    } catch (err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.error"), 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
+const selectStaffmemberEndPoint:  ApplyStaffmemberTriggerType = function studentEndPoint (data) {
+  if(data.mode  == "CREATE" ) {
+    return mApi().user.staffMembers.create(data.staffmember);
+  } else {
+    return mApi().user.staffMembers.put(data.staffmember);
+  }
+}
+
+let applyStaffmember: ApplyStaffmemberTriggerType = function applyStaffmember (data) {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(selectStaffmemberEndPoint(data), 'callback')().then(() => {
+        promisify(mApi().user.staffMembers.read(), 'callback')()
+        .then((users:UserType)=>{
+          dispatch({
+            type: "UPDATE_STAFF_USERS",
+            payload: users
+          });
+        })
+      });
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.staff.success"), 'success'));
+      data.success && data.success();
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.staff.error"), 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
+let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprogrammes() {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      dispatch({
+        type: "UPDATE_STUDYPROGRAMME_TYPES",
+        payload: <StudyprogrammeListType>(await promisify(mApi().user.studyProgrammes.read(), 'callback')())
+      });
+      dispatch({
+        type: "UPDATE_STUDYPROGRAMME_STATUS_TYPE",
+        payload: <StudyprogrammeTypeStatusType>"READY"
+      });
+    } catch(err) {
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch({
+        type: "UPDATE_STUDYPROGRAMME_STATUS_TYPE",
+        payload: <StudyprogrammeTypeStatusType>"ERROR"
+      });
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO: Error"), 'error'));
+    }
+  }
+}
+
+let loadUsers:LoadUsersTriggerType = function loadUsers (){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
 
@@ -63,6 +166,7 @@ let loadUsers:LoadUsersTriggerType = function loadUserst(){
         throw err;
       }
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
+
       dispatch({
         type: "UPDATE_USERS_STATE",
         payload: <UserStatusType>"ERROR"
@@ -75,4 +179,4 @@ let loadUsers:LoadUsersTriggerType = function loadUserst(){
   }
 }
 
-export {loadUsers};
+export {loadUsers, loadStudyprogrammes, applyStaffmember, applyStudent};
