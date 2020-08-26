@@ -76,10 +76,12 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
   GraphFilterHandler(graph: Graph) {
     const filteredGraphs = this.state.filteredGraphs.slice();
     let index = filteredGraphs.indexOf(graph);
-    if (index > -1)
+    if (index > -1) {
       filteredGraphs.splice(index, 1);
-    else
+    }
+    else {
       filteredGraphs.push(graph);
+    }
     this.setState({ filteredGraphs: filteredGraphs });
   }
 
