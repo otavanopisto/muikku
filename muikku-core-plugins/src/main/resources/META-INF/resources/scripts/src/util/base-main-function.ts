@@ -90,7 +90,7 @@ export default function(store: Store<StateType>, options: {
               message_archiving: "always",
 
               // This defines the maximum amount of archived messages to be returned per query.
-              archived_messages_page_size: 10,
+              archived_messages_page_size: 50,
 
               // Should be 0 if MAM (message_archiving: "always") is in use
               muc_history_max_stanzas: 0,
@@ -103,14 +103,15 @@ export default function(store: Store<StateType>, options: {
 
               // We could set this to IndexedDB so we don't bump into 5MB limit of local storage (not very like to happen).
               // IndexedDB is also async and might be more future proof.
-              persistent_store: "localStorage",
+              //persistent_store: "localStorage",
+              persistent_store: "IndexedDB",
 
               // How often converse pings in milliseconds
               ping_interval: 45,
 
               // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY.
               // For production this option needs to be removed.
-              trusted: "false",
+              //trusted: "false",
 
               // Plugins that can be used
               whitelisted_plugins: ["muikku-chat-ui"],
