@@ -100,13 +100,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public BridgeResponse<StaffMemberPayload> updateStaffMember(StaffMemberPayload staffMember) {
-    Long studentId = identifierMapper.getPyramusStudentId(staffMember.getIdentifier());
-    
-    if (studentId == null) {
-      throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
+    Long staffMemberId = identifierMapper.getPyramusStaffId(staffMember.getIdentifier());
+    if (staffMemberId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus staff member");
     }
-
-    BridgeResponse<StaffMemberPayload> response = pyramusClient.responsePut(String.format("/muikku/users/%d", studentId), Entity.entity(staffMember, MediaType.APPLICATION_JSON), StaffMemberPayload.class);
+    BridgeResponse<StaffMemberPayload> response = pyramusClient.responsePut(String.format("/muikku/users/%d", staffMemberId), Entity.entity(staffMember, MediaType.APPLICATION_JSON), StaffMemberPayload.class);
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
       response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
     }
@@ -132,6 +130,24 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return response;
   }
 
+  @Override
+  public BridgeResponse<StudentPayload> updateStudent(StudentPayload student) {
+    
+    // Convert Muikku study programme identifier to Pyramus study programme id
+    
+    String studyProgrammeIdentifier = student.getStudyProgrammeIdentifier();
+    Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(studyProgrammeIdentifier);
+    student.setStudyProgrammeIdentifier(String.valueOf(studyProgrammeId));
+    
+    // Create student
+    
+    BridgeResponse<StudentPayload> response = pyramusClient.responsePut("/muikku/students", Entity.entity(student, MediaType.APPLICATION_JSON), StudentPayload.class);
+    if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
+      response.getEntity().setIdentifier(identifierMapper.getStudentIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
+      response.getEntity().setStudyProgrammeIdentifier(studyProgrammeIdentifier); // restore original study programme identifier
+    }
+    return response;
+  }
   
   @Override
   public User createUser(String firstName, String lastName) {
