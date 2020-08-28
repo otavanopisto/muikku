@@ -20,7 +20,7 @@ interface Iprops {
 interface Istate {
   jid?: string,
   converse?: any,
-  roomJid?: string,
+  RoomJID?: string,
   minimized?: boolean,
   roomName?: string,
   minimizedChats?: any,
@@ -53,7 +53,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     this.state = {
       jid: window.MUIKKU_LOGGED_USER + "@dev.muikkuverkko.fi".toLowerCase(),
       converse: this.props.converse,
-      roomJid: "",
+      RoomJID: "",
       minimized: false,
       roomName: "",
       minimizedChats: [],
@@ -66,7 +66,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       chat: Object,
       chatRecipientNick: "",
       privateChatData: [],
-      messageNotification: this.props.privateChatData.info.receivedMessageNotification,
+      messageNotification: this.props.privateChatData.data.receivedMessageNotification,
     }
     this.myRef = null;
     this.sendMessage = this.sendMessage.bind(this);
@@ -74,7 +74,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     this.scrollToBottom = this.scrollToBottom.bind(this);
     this.toggleMinimizeChats = this.toggleMinimizeChats.bind(this);
   }
-  toggleMinimizeChats(roomJid: string) {
+  toggleMinimizeChats(RoomJID: string) {
     let minimizedRoomList = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
     if (this.state.minimized === false) {
@@ -83,9 +83,9 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         messageNotification: false
       });
 
-      if (!minimizedRoomList.includes(roomJid)) {
+      if (!minimizedRoomList.includes(RoomJID)) {
 
-        minimizedRoomList.push(roomJid);
+        minimizedRoomList.push(RoomJID);
 
         this.setState({
           minimizedChats: minimizedRoomList
@@ -100,9 +100,9 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         messageNotification: false
       });
 
-      if (minimizedRoomList.includes(roomJid)) {
+      if (minimizedRoomList.includes(RoomJID)) {
 
-        const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJid)
+        const filteredRooms = minimizedRoomList.filter((item: any) => item !== RoomJID)
 
         this.setState({
           minimizedChats: filteredRooms
@@ -110,7 +110,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
 
         window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredRooms));
       }
-      this.openConversation(roomJid);
+      this.openConversation(RoomJID);
     }
   }
   async sendMessage(event: any) {
@@ -157,10 +157,10 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       return false;
     }
   }
-  async openConversation(jid: any) {
+  async openConversation(BareJID: any) {
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
-    this.state.converse.api.chats.open(jid).then(async (chat: any) => {
+    this.state.converse.api.chats.open(BareJID).then(async (chat: any) => {
       this.setState({
         chat: chat,
         chatRecipientNick: chat.attributes.nickname || this.state.nickTo
@@ -168,15 +168,15 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
 
       let result;
       try {
-        result = await this.state.converse.api.archive.query({ 'with': jid });
+        result = await this.state.converse.api.archive.query({ 'with': BareJID });
       } catch (e) {
         console.log("Failed to load archived messages " + e.innerHTML);
       }
 
       let openPrivateChatList = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
 
-      if (!openPrivateChatList.includes(jid)) {
-        openPrivateChatList.push(jid);
+      if (!openPrivateChatList.includes(BareJID)) {
+        openPrivateChatList.push(BareJID);
       }
       window.sessionStorage.setItem("openChats", JSON.stringify(openPrivateChatList));
 
@@ -226,7 +226,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       }
       this.setState({
         messages: newArrFromOldMessages,
-        roomJid: jid
+        RoomJID: BareJID
       }, this.scrollToBottom.bind(this, "auto"));
     });
     return;
@@ -236,7 +236,6 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     const { Backbone, Promise, Strophe, moment, f, sizzle, _, $build, $iq, $msg, $pres } = converse.env;
 
     if (data.chatbox && data.chatbox.attributes.message_type === "chat") {
-      let message = data.stanza.textContent;
       let from: any;
       let user: any;
       let nickname: any;
@@ -323,20 +322,20 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     let privateChatData = this.props.privateChatData;
 
     if (privateChatData) {
-      let jid = privateChatData.jid;
-      let nick = privateChatData.info.nick;
-      let firstName = privateChatData.info.firstName;
-      let lastName = privateChatData.info.lastName;
+      let BareJID = privateChatData.BareJID;
+      let MuikkuNickName = privateChatData.data.MuikkuNickName;
+      let firstName = privateChatData.data.firstName;
+      let lastName = privateChatData.data.lastName;
 
       this.setState({
-        jidTo: jid,
-        nickTo: nick,
+        jidTo: BareJID,
+        nickTo: MuikkuNickName,
         fnTo: firstName,
         lnTo: lastName,
         privateChatData: privateChatData
       });
 
-      this.openConversation(jid);
+      this.openConversation(BareJID);
 
       this.props.converse.api.listen.on('message', function (messageXML: any) {
         __this.getPrivateMessages(messageXML);
@@ -365,16 +364,16 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
 
       <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
         {this.state.minimized === true ? (
-          <div onClick={() => this.toggleMinimizeChats(this.state.roomJid)} className={this.state.messageNotification === true ? "chat__minimized chat__minimized--private chat__nofication--private" : "chat__minimized chat__minimized--private"}>
+          <div onClick={() => this.toggleMinimizeChats(this.state.RoomJID)} className={this.state.messageNotification === true ? "chat__minimized chat__minimized--private chat__nofication--private" : "chat__minimized chat__minimized--private"}>
             <div className="chat__minimized-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
-            <div onClick={() => this.props.onOpenPrivateChat(this.state.privateChatData.info)} className="chat__button chat__button--close icon-cross"></div>
+            <div onClick={() => this.props.onOpenPrivateChat(this.state.privateChatData.data)} className="chat__button chat__button--close icon-cross"></div>
           </div>
         ) : (
           <div className="chat__panel chat__panel--private">
             <div className="chat__panel-header chat__panel-header--private">
               <div className="chat__panel-header-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
-              <div onClick={() => this.toggleMinimizeChats(this.state.roomJid)} className="chat__button chat__button--minimize icon-minus"></div>
-                <div onClick={() => this.props.onOpenPrivateChat(this.state.privateChatData.info)} className="chat__button chat__button--close icon-cross"></div>
+                <div onClick={() => this.toggleMinimizeChats(this.state.RoomJID)} className="chat__button chat__button--minimize icon-minus"></div>
+                <div onClick={() => this.props.onOpenPrivateChat(this.state.privateChatData.data)} className="chat__button chat__button--close icon-cross"></div>
             </div>
 
             <div className="chat__panel-body chat__panel-body--chatroom">
@@ -384,7 +383,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
               </div>
             </div>
             <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e) => this.sendMessage(e)}>
-              <input name="chatRecipient" className="chat__muc-recipient" value={this.state.roomJid} readOnly />
+                <input name="chatRecipient" className="chat__muc-recipient" value={this.state.RoomJID} readOnly />
               <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
               <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
             </form>
