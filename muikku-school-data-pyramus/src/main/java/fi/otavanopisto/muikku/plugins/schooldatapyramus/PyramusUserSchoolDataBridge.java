@@ -93,7 +93,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   public BridgeResponse<StaffMemberPayload> createStaffMember(StaffMemberPayload staffMember) {
     BridgeResponse<StaffMemberPayload> response = pyramusClient.responsePost("/muikku/users", Entity.entity(staffMember, MediaType.APPLICATION_JSON), StaffMemberPayload.class);
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
-      response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
+      response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())).toId());
     }
     return response;
   }
@@ -103,7 +103,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     // Identifier to Pyramus entity id
     
-    Long staffMemberId = identifierMapper.getPyramusStaffId(staffMember.getIdentifier());
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(staffMember.getIdentifier());
+    Long staffMemberId = identifierMapper.getPyramusStaffId(identifier.getIdentifier());
     if (staffMemberId == null) {
       throw new SchoolDataBridgeInternalException("User is not a Pyramus staff member");
     }
@@ -116,7 +117,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     // Pyramus entity id to identifier
     
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
-      response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
+      response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())).toId());
     }
     return response;
   }
@@ -126,16 +127,16 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     // Convert Muikku study programme identifier to Pyramus study programme id
     
-    String studyProgrammeIdentifier = student.getStudyProgrammeIdentifier();
-    Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(studyProgrammeIdentifier);
+    SchoolDataIdentifier studyProgrammeIdentifier = SchoolDataIdentifier.fromId(student.getStudyProgrammeIdentifier());
+    Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(studyProgrammeIdentifier.getIdentifier());
     student.setStudyProgrammeIdentifier(String.valueOf(studyProgrammeId));
     
     // Create student
     
     BridgeResponse<StudentPayload> response = pyramusClient.responsePost("/muikku/students", Entity.entity(student, MediaType.APPLICATION_JSON), StudentPayload.class);
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
-      response.getEntity().setIdentifier(identifierMapper.getStudentIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
-      response.getEntity().setStudyProgrammeIdentifier(studyProgrammeIdentifier); // restore original study programme identifier
+      response.getEntity().setIdentifier(identifierMapper.getStudentIdentifier(Long.valueOf(response.getEntity().getIdentifier())).toId());
+      response.getEntity().setStudyProgrammeIdentifier(studyProgrammeIdentifier.toId()); // restore original study programme identifier
     }
     return response;
   }
@@ -145,13 +146,14 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     // Convert Muikku study programme identifier to Pyramus study programme id
     
-    String studyProgrammeIdentifier = student.getStudyProgrammeIdentifier();
-    Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(studyProgrammeIdentifier);
+    SchoolDataIdentifier studyProgrammeIdentifier = SchoolDataIdentifier.fromId(student.getStudyProgrammeIdentifier());
+    Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(studyProgrammeIdentifier.getIdentifier());
     student.setStudyProgrammeIdentifier(String.valueOf(studyProgrammeId));
     
     // Identifier to Pyramus entity id
     
-    Long studentId = identifierMapper.getPyramusStudentId(student.getIdentifier());
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(student.getIdentifier());
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     if (studentId == null) {
       throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
     }
@@ -161,8 +163,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     BridgeResponse<StudentPayload> response = pyramusClient.responsePut(String.format("/muikku/students/%d", studentId), Entity.entity(student, MediaType.APPLICATION_JSON), StudentPayload.class);
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
-      response.getEntity().setIdentifier(identifierMapper.getStudentIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
-      response.getEntity().setStudyProgrammeIdentifier(studyProgrammeIdentifier); // restore original study programme identifier
+      response.getEntity().setIdentifier(identifierMapper.getStudentIdentifier(Long.valueOf(response.getEntity().getIdentifier())).toId());
+      response.getEntity().setStudyProgrammeIdentifier(studyProgrammeIdentifier.toId()); // restore original study programme identifier
     }
     return response;
   }
@@ -661,7 +663,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           if (studyProgramme != null) {
             SchoolDataIdentifier organizationIdentifier = studyProgramme.getOrganizationId() != null ? 
                 identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()) : null;
-            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()), studyProgramme.getName(), false, organizationIdentifier);
+            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()).getIdentifier(), studyProgramme.getName(), false, organizationIdentifier);
           }
         }
       break;
@@ -708,7 +710,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
         if (studentId != null) {
           return new PyramusGroupUser(identifier,
-              identifierMapper.getStudentIdentifier(studentId));
+              identifierMapper.getStudentIdentifier(studentId).getIdentifier());
         }
       break;
     }

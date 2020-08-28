@@ -457,6 +457,7 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("lastName"),
             (String) o.get("nickName"),
             (String) o.get("studyProgrammeName"), 
+            (String) o.get("studyProgrammeIdentifier"),
             hasImage,
             (String) o.get("nationality"), 
             (String) o.get("language"), 
@@ -558,6 +559,7 @@ public class UserRESTService extends AbstractRESTService {
         user.getLastName(),
         user.getNickName(),
         user.getStudyProgrammeName(),
+        user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
         false, 
         user.getNationality(), 
         user.getLanguage(), 
@@ -1420,8 +1422,8 @@ public class UserRESTService extends AbstractRESTService {
 
     // User update
     
-    String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(dataSource, payload);
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(id);
+    BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(identifier.getDataSource(), payload);
         
     return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
   }
@@ -1435,12 +1437,12 @@ public class UserRESTService extends AbstractRESTService {
    * {firstName: required; the first name of the student
    *  lastName: required; the last name of the student
    *  email: required; the email address of the student
-   *  studyProgrammeIdentifier: required; student's study programme (e.g. STUDYPROGRAMME-42)
+   *  studyProgrammeIdentifier: required; student's study programme (e.g. PYRAMUS-STUDYPROGRAMME-42)
    *  gender: optional; student gender (MALE|FEMALE|OTHER)
    *  ssn: optional; student social security number
    * 
    * Output:
-   * {identifier: identifier of the created student (e.g. STUDENT-123)
+   * {identifier: identifier of the created student (e.g. PYRAMUS-STUDENT-123)
    *  firstName: the first name of the student
    *  lastName: the last name of the student
    *  email: the email address of the student
@@ -1520,12 +1522,12 @@ public class UserRESTService extends AbstractRESTService {
    * {firstName: required; the first name of the student
    *  lastName: required; the last name of the student
    *  email: required; the email address of the student
-   *  studyProgrammeIdentifier: required; student's study programme (e.g. STUDYPROGRAMME-42)
+   *  studyProgrammeIdentifier: required; student's study programme (e.g. PYRAMUS-STUDYPROGRAMME-42)
    *  gender: optional; student gender (MALE|FEMALE|OTHER)
    *  ssn: optional; student social security number
    * 
    * Output:
-   * {identifier: identifier of the created student (e.g. STUDENT-123)
+   * {identifier: identifier of the created student (e.g. PYRAMUS-STUDENT-123)
    *  firstName: the first name of the student
    *  lastName: the last name of the student
    *  email: the email address of the student
@@ -1550,8 +1552,8 @@ public class UserRESTService extends AbstractRESTService {
 
     // Student update
     
-    String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<StudentPayload> response = userController.updateStudent(dataSource, payload);
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(id);
+    BridgeResponse<StudentPayload> response = userController.updateStudent(identifier.getDataSource(), payload);
         
     return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
   }
@@ -1935,7 +1937,7 @@ public class UserRESTService extends AbstractRESTService {
   private List<fi.otavanopisto.muikku.rest.model.StudyProgramme> createRestModel(StudyProgramme[] entities) {
     List<fi.otavanopisto.muikku.rest.model.StudyProgramme> result = new ArrayList<>();
     for (StudyProgramme entity : entities) {
-      result.add(new fi.otavanopisto.muikku.rest.model.StudyProgramme(entity.getIdentifier(), entity.getName()));
+      result.add(new fi.otavanopisto.muikku.rest.model.StudyProgramme(toId(entity.getIdentifier()), entity.getName()));
     }
     return result;
   }
