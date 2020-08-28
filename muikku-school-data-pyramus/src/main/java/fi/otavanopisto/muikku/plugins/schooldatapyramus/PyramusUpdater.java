@@ -194,7 +194,7 @@ public class PyramusUpdater {
 
   public void updateStudyProgramme(Long pyramusId) {
     StudyProgramme studentGroup = pyramusClient.get().get(String.format("/students/studyProgrammes/%d", pyramusId), StudyProgramme.class);
-    String identifier = identifierMapper.getStudyProgrammeIdentifier(pyramusId);
+    String identifier = identifierMapper.getStudyProgrammeIdentifier(pyramusId).getIdentifier();
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, true);
     
     if (studentGroup == null) {
@@ -224,7 +224,7 @@ public class PyramusUpdater {
 
   public void updateStudyProgrammeMember(Student student) {
     if (student.getStudyProgrammeId() != null) {
-      String studyProgrammeIdentifier = identifierMapper.getStudyProgrammeIdentifier(student.getStudyProgrammeId());
+      String studyProgrammeIdentifier = identifierMapper.getStudyProgrammeIdentifier(student.getStudyProgrammeId()).getIdentifier();
       String studyProgrammeStudentIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(student.getId());
 
       UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studyProgrammeStudentIdentifier);
@@ -233,7 +233,7 @@ public class PyramusUpdater {
       
       if (isActive) {
         if (userGroupUserEntity == null) {
-          String userEntityIdentifier = identifierMapper.getStudentIdentifier(student.getId());
+          String userEntityIdentifier = identifierMapper.getStudentIdentifier(student.getId()).getIdentifier();
           fireUserGroupUserDiscovered(studyProgrammeStudentIdentifier, studyProgrammeIdentifier, userEntityIdentifier);
         } else
           fireUserGroupUserUpdated(studyProgrammeStudentIdentifier, studyProgrammeIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
@@ -308,7 +308,7 @@ public class PyramusUpdater {
           
           // If not existing, then it's a new one
           if (!existingGroupUserIds.contains(identifier)) {
-            String staffMemberIdentifier = identifierMapper.getStaffIdentifier(sgStaffMember.getStaffMemberId());
+            String staffMemberIdentifier = identifierMapper.getStaffIdentifier(sgStaffMember.getStaffMemberId()).getIdentifier();
             fireUserGroupUserDiscovered(identifier, userGroupIdentifier, staffMemberIdentifier);
           }
         }
@@ -325,7 +325,7 @@ public class PyramusUpdater {
 
           // If not existing, then it's a new one
           if (!existingGroupUserIds.contains(identifier)) {
-            String studentIdentifier = identifierMapper.getStudentIdentifier(sgs.getStudentId());
+            String studentIdentifier = identifierMapper.getStudentIdentifier(sgs.getStudentId()).getIdentifier();
             fireUserGroupUserDiscovered(identifier, userGroupIdentifier, studentIdentifier);
           }
         }
@@ -362,7 +362,7 @@ public class PyramusUpdater {
       if (userGroupUserEntity != null)
         fireUserGroupUserRemoved(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     } else {
-      String studentIdentifier = identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId());
+      String studentIdentifier = identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId()).getIdentifier();
       if (userGroupUserEntity == null) {
         fireUserGroupUserDiscovered(identifier, userGroupIdentifier, studentIdentifier);
       } else {
@@ -384,7 +384,7 @@ public class PyramusUpdater {
         fireUserGroupUserRemoved(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     } else {
       if (userGroupUserEntity == null) {
-        String staffMemberIdentifier = identifierMapper.getStaffIdentifier(studentGroupStaffMember.getStaffMemberId());
+        String staffMemberIdentifier = identifierMapper.getStaffIdentifier(studentGroupStaffMember.getStaffMemberId()).getIdentifier();
         fireUserGroupUserDiscovered(identifier, userGroupIdentifier, staffMemberIdentifier);
       } else {
         fireUserGroupUserUpdated(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
@@ -802,7 +802,7 @@ public class PyramusUpdater {
 
   private void fireCourseStaffMemberDiscovered(CourseStaffMember courseStaffMember) {
     String identifier = identifierMapper.getWorkspaceStaffIdentifier(courseStaffMember.getId());
-    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId());
+    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId()).getIdentifier();
     String roleIdentifier = identifierMapper.getWorkspaceStaffRoleIdentifier(courseStaffMember.getRoleId());
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
 
@@ -813,7 +813,7 @@ public class PyramusUpdater {
   
   private void fireCourseStaffMemberUpdated(CourseStaffMember courseStaffMember) {
     String identifier = identifierMapper.getWorkspaceStaffIdentifier(courseStaffMember.getId());
-    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId());
+    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId()).getIdentifier();
     String roleIdentifier = identifierMapper.getWorkspaceStaffRoleIdentifier(courseStaffMember.getRoleId());
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
 
@@ -824,7 +824,7 @@ public class PyramusUpdater {
 
   private void fireCourseStaffMemberRemoved(Long courseStaffMemberId, Long staffMemberId, Long courseId) {
     String identifier = identifierMapper.getWorkspaceStaffIdentifier(courseStaffMemberId);
-    String userIdentifier = identifierMapper.getStaffIdentifier(staffMemberId);
+    String userIdentifier = identifierMapper.getStaffIdentifier(staffMemberId).getIdentifier();
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
 
     schoolDataWorkspaceUserRemovedEvent.fire(new SchoolDataWorkspaceUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
@@ -834,7 +834,7 @@ public class PyramusUpdater {
 
   private void fireCourseStudentDiscovered(CourseStudent courseStudent, boolean isActive) {
     String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
-    String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
+    String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId()).getIdentifier();
     String roleIdentifier = identifierMapper.getWorkspaceStudentRoleIdentifier();
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId());
 
@@ -845,7 +845,7 @@ public class PyramusUpdater {
 
   private void fireCourseStudentUpdated(CourseStudent courseStudent, boolean isActive) {
     String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
-    String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
+    String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId()).getIdentifier();
     String roleIdentifier = identifierMapper.getWorkspaceStudentRoleIdentifier();
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId());
 
@@ -856,7 +856,7 @@ public class PyramusUpdater {
 
   private void fireCourseStudentRemoved(Long courseStudentId, Long studentId, Long courseId) {
     String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudentId);
-    String userIdentifier = identifierMapper.getStudentIdentifier(studentId);
+    String userIdentifier = identifierMapper.getStudentIdentifier(studentId).getIdentifier();
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
 
     schoolDataWorkspaceUserRemovedEvent.fire(new SchoolDataWorkspaceUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
@@ -953,7 +953,7 @@ public class PyramusUpdater {
     if (students != null) {
       // Iterate over all student instances
       for (Student student : students) {
-        String identifier = identifierMapper.getStudentIdentifier(student.getId());
+        String identifier = identifierMapper.getStudentIdentifier(student.getId()).getIdentifier();
         SchoolDataIdentifier schoolDataIdentifier = toIdentifier(identifier);
         List<String> identifierEmails = new ArrayList<String>();
 
@@ -1003,7 +1003,7 @@ public class PyramusUpdater {
     if (staffMembers != null) {
       for (StaffMember staffMember : staffMembers) {
         // Add staffMember identifier into the identifier list
-        String identifier = identifierMapper.getStaffIdentifier(staffMember.getId());
+        String identifier = identifierMapper.getStaffIdentifier(staffMember.getId()).getIdentifier();
         SchoolDataIdentifier schoolDataIdentifier = toIdentifier(identifier);
         List<String> identifierEmails = new ArrayList<String>();
 
@@ -1163,7 +1163,7 @@ public class PyramusUpdater {
     if (staffMember != null) {
       updatePerson(staffMember.getPersonId());
     } else {
-      identifierRemoved(toIdentifier(identifierMapper.getStaffIdentifier(staffMemberId)));
+      identifierRemoved(identifierMapper.getStaffIdentifier(staffMemberId));
     }
   }
 
@@ -1173,7 +1173,7 @@ public class PyramusUpdater {
       updatePerson(student.getPersonId());
       updateStudyProgrammeMember(student);
     } else {
-      identifierRemoved(toIdentifier(identifierMapper.getStudentIdentifier(studentId)));
+      identifierRemoved(identifierMapper.getStudentIdentifier(studentId));
     }
   }
 

@@ -11,15 +11,17 @@ public class Student {
   }
 
   public Student(String id, String firstName, String lastName, String nickName, String studyProgrammeName,
-      Boolean hasImage, String nationality, String language, String municipality, String school, String email,
-      Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier, boolean updatedByStudent,
-      Long userEntityId, List<StudentFlag> flags, OrganizationRESTModel organization) {
+      String studyProgrammeIdentifier, Boolean hasImage, String nationality, String language, String municipality,
+      String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier,
+      boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
+      OrganizationRESTModel organization) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.nickName = nickName;
     this.studyProgrammeName = studyProgrammeName;
+    this.studyProgrammeIdentifier = studyProgrammeIdentifier;
     this.hasImage = hasImage;
     this.nationality = nationality;
     this.language = language;
@@ -188,11 +190,20 @@ public class Student {
     this.organization = organization;
   }
 
+  public String getStudyProgrammeIdentifier() {
+    return studyProgrammeIdentifier;
+  }
+
+  public void setStudyProgrammeIdentifier(String studyProgrammeIdentifier) {
+    this.studyProgrammeIdentifier = studyProgrammeIdentifier;
+  }
+
   private String id;
   private String firstName;
   private String lastName;
   private String nickName;
   private String studyProgrammeName;
+  private String studyProgrammeIdentifier;
   private Boolean hasImage;
   private String nationality;
   private String language;

@@ -46,6 +46,9 @@ public interface User extends SchoolDataEntity {
   public String getDisplayName();
   
   public String getStudyProgrammeName();
+
+  @IndexField (toId = true)
+  public SchoolDataIdentifier getStudyProgrammeIdentifier();
   
   public String getNationality();
   

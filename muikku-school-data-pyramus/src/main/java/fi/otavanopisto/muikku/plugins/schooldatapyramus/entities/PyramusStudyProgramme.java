@@ -1,11 +1,12 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 
 public class PyramusStudyProgramme implements StudyProgramme {
 
-  public PyramusStudyProgramme(String identifier, String name) {
+  public PyramusStudyProgramme(SchoolDataIdentifier identifier, String name) {
     this.identifier = identifier;
     this.name = name;
   }
@@ -16,7 +17,7 @@ public class PyramusStudyProgramme implements StudyProgramme {
   }
 
   @Override
-  public String getIdentifier() {
+  public SchoolDataIdentifier getIdentifier() {
     return identifier;
   }
 
@@ -24,7 +25,7 @@ public class PyramusStudyProgramme implements StudyProgramme {
   public String getName() {
     return name;
   }
-  private String identifier;
+  private SchoolDataIdentifier identifier;
   private String name;
   
 }
