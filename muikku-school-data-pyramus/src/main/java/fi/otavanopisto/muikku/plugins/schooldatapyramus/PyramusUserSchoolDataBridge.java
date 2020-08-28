@@ -100,11 +100,21 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public BridgeResponse<StaffMemberPayload> updateStaffMember(StaffMemberPayload staffMember) {
+
+    // Identifier to Pyramus entity id
+    
     Long staffMemberId = identifierMapper.getPyramusStaffId(staffMember.getIdentifier());
     if (staffMemberId == null) {
       throw new SchoolDataBridgeInternalException("User is not a Pyramus staff member");
     }
+    staffMember.setIdentifier(staffMemberId.toString());
+    
+    // Update
+    
     BridgeResponse<StaffMemberPayload> response = pyramusClient.responsePut(String.format("/muikku/users/%d", staffMemberId), Entity.entity(staffMember, MediaType.APPLICATION_JSON), StaffMemberPayload.class);
+    
+    // Pyramus entity id to identifier
+    
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
       response.getEntity().setIdentifier(identifierMapper.getStaffIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
     }
@@ -139,9 +149,17 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(studyProgrammeIdentifier);
     student.setStudyProgrammeIdentifier(String.valueOf(studyProgrammeId));
     
+    // Identifier to Pyramus entity id
+    
+    Long studentId = identifierMapper.getPyramusStudentId(student.getIdentifier());
+    if (studentId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
+    }
+    student.setIdentifier(studentId.toString());
+    
     // Create student
     
-    BridgeResponse<StudentPayload> response = pyramusClient.responsePut("/muikku/students", Entity.entity(student, MediaType.APPLICATION_JSON), StudentPayload.class);
+    BridgeResponse<StudentPayload> response = pyramusClient.responsePut(String.format("/muikku/students/%d", studentId), Entity.entity(student, MediaType.APPLICATION_JSON), StudentPayload.class);
     if (response.getEntity() != null && NumberUtils.isNumber(response.getEntity().getIdentifier())) {
       response.getEntity().setIdentifier(identifierMapper.getStudentIdentifier(Long.valueOf(response.getEntity().getIdentifier())));
       response.getEntity().setStudyProgrammeIdentifier(studyProgrammeIdentifier); // restore original study programme identifier
