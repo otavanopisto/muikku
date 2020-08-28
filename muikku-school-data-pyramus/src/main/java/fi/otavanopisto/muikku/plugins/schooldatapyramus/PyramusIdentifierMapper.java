@@ -78,8 +78,8 @@ public class PyramusIdentifierMapper {
     return null;
   }
   
-  public String getStaffIdentifier(Long id) {
-    return STAFF_PREFIX + id.toString();
+  public SchoolDataIdentifier getStaffIdentifier(Long id) {
+    return new SchoolDataIdentifier(STAFF_PREFIX + id.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
   
   public Long getPyramusStaffId(String identifier) {
@@ -94,8 +94,8 @@ public class PyramusIdentifierMapper {
     return StringUtils.startsWith(identifier, STUDENT_PREFIX);
   }
   
-  public String getStudentIdentifier(Long id) {
-    return STUDENT_PREFIX + id.toString();
+  public SchoolDataIdentifier getStudentIdentifier(Long id) {
+    return new SchoolDataIdentifier(STUDENT_PREFIX + id.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
   
   public Long getPyramusStudentId(String identifier) {
@@ -237,8 +237,9 @@ public class PyramusIdentifierMapper {
     return null;
   }
   
-  public String getStudyProgrammeIdentifier(Long pyramusStudyProgrammeId){
-    return pyramusStudyProgrammeId == null ? null : STUDYPROGRAMME_PREFIX + String.valueOf(pyramusStudyProgrammeId);
+  public SchoolDataIdentifier getStudyProgrammeIdentifier(Long pyramusStudyProgrammeId){
+    return pyramusStudyProgrammeId == null ? null : new SchoolDataIdentifier(STUDYPROGRAMME_PREFIX + String.valueOf(pyramusStudyProgrammeId),
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
 
   public StudentGroupType getStudentGroupType(String identifier) {
