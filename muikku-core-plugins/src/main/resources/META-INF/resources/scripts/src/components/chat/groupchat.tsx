@@ -87,7 +87,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       RoomPersistency: false
     }
     this.myRef = null;
-    this.sendMessage = this.sendMessage.bind(this);
+    this.sendMessageToChatRoom = this.sendMessageToChatRoom.bind(this);
     this.openMucConversation = this.openMucConversation.bind(this);
     this.openChatRoomSettings = this.openChatRoomSettings.bind(this);
     this.setChatRoomConfiguration = this.setChatRoomConfiguration.bind(this);
@@ -298,7 +298,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.getMUCMessages(message);
   }
   // Send message to the chat room
-  sendMessage(event: any){
+  sendMessageToChatRoom(event: any){
     event.preventDefault();
 
     let text = event.target.chatMessage.value;
@@ -736,7 +736,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                 </div>
               </div>}
             </div>
-            <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e)=>this.sendMessage(e)}>
+              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e) => this.sendMessageToChatRoom(e)}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.state.RoomJID} readOnly/>
               <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
               <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>

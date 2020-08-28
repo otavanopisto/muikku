@@ -69,7 +69,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       messageNotification: this.props.privateChatData.data.receivedMessageNotification,
     }
     this.myRef = null;
-    this.sendMessage = this.sendMessage.bind(this);
+    this.sendPrivateChatMessage = this.sendPrivateChatMessage.bind(this);
     this.openConversation = this.openConversation.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
     this.toggleMinimizeChats = this.toggleMinimizeChats.bind(this);
@@ -113,7 +113,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       this.openConversation(RoomJID);
     }
   }
-  async sendMessage(event: any) {
+  async sendPrivateChatMessage(event: any) {
     event.preventDefault();
     let text = event.target.chatMessage.value;
 
@@ -382,7 +382,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
                 <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
               </div>
             </div>
-            <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e) => this.sendMessage(e)}>
+              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e) => this.sendPrivateChatMessage(e)}>
                 <input name="chatRecipient" className="chat__muc-recipient" value={this.state.RoomJID} readOnly />
               <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
               <button className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private" type="submit" value=""><span className="icon-arrow-right"></span></button>
