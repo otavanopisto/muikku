@@ -1540,7 +1540,7 @@ public class UserRESTService extends AbstractRESTService {
    */
   @PUT
   @Path("/students/{ID}/basicInfo")
-  @RESTPermit(MuikkuPermissions.UPDATE_STAFF_MEMBER)
+  @RESTPermit(MuikkuPermissions.UPDATE_STUDENT)
   public Response updateStudent(@PathParam("ID") String id, StudentPayload payload) {
     
     // Payload validation
