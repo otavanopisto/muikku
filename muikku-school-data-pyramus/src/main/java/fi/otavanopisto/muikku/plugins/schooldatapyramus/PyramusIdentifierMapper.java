@@ -238,7 +238,8 @@ public class PyramusIdentifierMapper {
   }
   
   public SchoolDataIdentifier getStudyProgrammeIdentifier(Long pyramusStudyProgrammeId){
-    return pyramusStudyProgrammeId == null ? null : new SchoolDataIdentifier(String.valueOf(pyramusStudyProgrammeId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    return pyramusStudyProgrammeId == null ? null : new SchoolDataIdentifier(STUDYPROGRAMME_PREFIX + String.valueOf(pyramusStudyProgrammeId),
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
 
   public StudentGroupType getStudentGroupType(String identifier) {
