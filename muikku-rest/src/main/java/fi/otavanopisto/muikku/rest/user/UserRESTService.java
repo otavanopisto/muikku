@@ -1413,11 +1413,12 @@ public class UserRESTService extends AbstractRESTService {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+    if (!StringUtils.equals(id, payload.getIdentifier()) ||
+        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
-    // User creation
+    // User update
     
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(dataSource, payload);
@@ -1536,13 +1537,14 @@ public class UserRESTService extends AbstractRESTService {
    * 409 if the email address or (optional) SSN is already in use; response contains a localized error message 
    */
   @PUT
-  @Path("/students/basicInfo/{ID}")
+  @Path("/students/{ID}/basicInfo")
   @RESTPermit(MuikkuPermissions.UPDATE_STAFF_MEMBER)
   public Response updateStudent(@PathParam("ID") String id, StudentPayload payload) {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getStudyProgrammeIdentifier())) {
+    if (!StringUtils.equals(id,  payload.getIdentifier()) ||
+        StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getStudyProgrammeIdentifier())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
