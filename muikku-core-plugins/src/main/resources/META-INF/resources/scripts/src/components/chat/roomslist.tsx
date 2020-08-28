@@ -35,7 +35,6 @@ declare global {
 }
 
 export class RoomsList extends React.Component<Iprops, Istate> {
-  private myRef: any;
 
   constructor(props: any){
     super(props);
@@ -46,7 +45,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
       RoomDesc: "",
       showRoomInfo: false,
     }
-    this.myRef = null;
+
     this.toggleRoomInfo = this.toggleRoomInfo.bind(this);
   }
   toggleRoomInfo() {
