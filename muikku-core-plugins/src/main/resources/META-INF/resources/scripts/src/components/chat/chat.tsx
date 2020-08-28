@@ -34,8 +34,14 @@ RoomID
 RoomName
   A user-friendly, natural-language name for a room, configured by the room owner and presented in Service Discovery queries; contrast with Room ID.
 
+RoomPersistency
+  Chat room persistency.
+
 RoomDesc
   A user-friendly, natural-language description for a room, configured by the room owner pulled from Openfire and/or browserStorage.
+
+RoomConfig
+  This is used to gather necessary room configurations.
 
 MuikkuNickName
   A user-friendly, natural-language nick name for the user, configured by the user itself via Muikku user profile view.
@@ -106,7 +112,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.onOpenPrivateChat = this.onOpenPrivateChat.bind(this);
     this.getUserAvailability = this.getUserAvailability.bind(this);
     this.setUserAvailability = this.setUserAvailability.bind(this);
-    this.getChatNick = this.getChatNick.bind(this);
+    this.getPyramusUserID = this.getPyramusUserID.bind(this);
     this.privateMessageNotification = this.privateMessageNotification.bind(this);
   }
   // Notification handler for Received Private Messages.
@@ -207,26 +213,20 @@ export class Chat extends React.Component<Iprops, Istate> {
   parseRoomDataFromEvent (form: HTMLFormElement) {
     let data = new FormData(form);
     let RoomJID = data.get('roomName').toString();
-    let persistentRoom = data.get('persistent');
+    let RoomPersistency = data.get('persistent');
     let RoomDesc = data.get('roomDesc');
     let RoomName = data.get('roomName');
-    let PyramusUserID: string;
-    if (this.state.converse.locked_muc_nickname) {
-      PyramusUserID = this.state.PyramusUserID;
-      if (!PyramusUserID) {
-        throw new Error("Using locked_muc_nickname but no nickname found!");
-      }
-    }
+
     return {
       'RoomJID': RoomJID,
-      'PyramusUserID': PyramusUserID,
-      'persistent': persistentRoom,
+      'RoomPersistency': RoomPersistency,
       'RoomDesc': RoomDesc,
       'RoomName': RoomName
     }
   }
   // Creating new chat room
-  async createAndJoinChatRoom (event: any) {
+  // TODO: Need to check if RoomName is mempty and show error notification
+  async createAndJoinChatRoom(event: any) {
     event.preventDefault();
     let data = this.parseRoomDataFromEvent(event.target);
 
@@ -239,15 +239,11 @@ export class Chat extends React.Component<Iprops, Istate> {
 
     // We need to trim and replace white spaces so new room will be created succefully
     let RoomJID = data.RoomJID.trim().replace(/\s+/g, '-') + '@conference.dev.muikkuverkko.fi';
-    let persistent = data.persistent ? true : false;
-    let RoomName = (data.RoomName && data.RoomName !== "") ? data.RoomName : "";
-    let RoomDesc = (data.RoomDesc && data.RoomDesc !== "") ? data.RoomDesc : "";
-    let PyramusUserID = (data.PyramusUserID || data.PyramusUserID == "") ? this.state.PyramusUserID : data.PyramusUserID;
-    let RoomJIDAndPyramusUserID = RoomJID + (data.PyramusUserID !== null ? "data.PyramusUserID" : "");
+    let OccupantJID = RoomJID + "/" + this.state.PyramusUserID;
 
     const stanza = $pres({
       'from': this.state.converse.connection.jid,
-      'to': RoomJIDAndPyramusUserID
+      'to': OccupantJID
     }).c("x", {'xmlns': Strophe.NS.MUC})
     .c("history", {'maxstanzas': this.state.converse.muc_history_max_stanzas}).up();
 
@@ -256,21 +252,21 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.state.converse.api.user.status.set('online');
 
     this.state.converse.api.rooms.open(RoomJID, _.extend({
-      'nick': PyramusUserID,
+      'nick': this.state.PyramusUserID,
       'maximize': true,
       'auto_configure': true,
       'publicroom': true,
       'roomconfig': {
-        'persistentroom': persistent,
-        'roomdesc': RoomDesc,
-        'roomname': RoomName
+        'persistentroom': data.RoomPersistency ? true : false,
+        'roomname': data.RoomName,
+        'roomdesc': data.RoomDesc
       }
     }), true).then((chat: any) => {
 
       let newAvailableMucRoom =  {
-        RoomName: chat.attributes.roomconfig.roomname,
-        RoomJID: chat.attributes.jid,
-        RoomDesc: chat.attributes.roomconfig.roomdesc,
+        RoomName: data.RoomName,
+        RoomJID: RoomJID,
+        RoomDesc: data.RoomDesc,
         chatObject: chat
       };
 
@@ -285,11 +281,8 @@ export class Chat extends React.Component<Iprops, Istate> {
       });
     });
   }
-  informRoomCreationFailed(){
-    alert("For some reason chat room creation failed");
-  }
   // Setting PyramusUserID state based on MUIKKU_LOGGED_USER
-  async getChatNick (){
+  async getPyramusUserID (){
     this.setState({
       PyramusUserID: window.MUIKKU_LOGGED_USER
     });
@@ -483,7 +476,7 @@ export class Chat extends React.Component<Iprops, Istate> {
             selectedUserPresence: userPresence
           });
 
-          __this.getChatNick();
+          __this.getPyramusUserID();
 
         });
       },
@@ -566,7 +559,7 @@ export class Chat extends React.Component<Iprops, Istate> {
         {/* Chatrooms */}
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openChats.includes(chat.RoomJID) ?
-            <Groupchat key={i} onOpenPrivateChat={this.onOpenPrivateChat.bind(this)} onOpenChat={this.onOpenChat} nick={this.state.PyramusUserID} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>
+            <Groupchat key={i} onOpenPrivateChat={this.onOpenPrivateChat.bind(this)} onOpenChat={this.onOpenChat} PyramusUserID={this.state.PyramusUserID} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>
           : null)}
 
           {this.state.privateChatData.map((privateChatData: any, i: any) => this.state.openChats.includes(privateChatData.BareJID) ?

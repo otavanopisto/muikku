@@ -6,7 +6,7 @@ import promisify, { promisifyNewConstructor } from '~/util/promisify';
 
 interface Iprops{
   groupMessage?: any,
-  removeMessage?: any,
+  setMessageAsRemoved?: any,
   deleted?: any,
   onDeleted?: any
 }
@@ -67,7 +67,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
   async showRealName (userIdentifier: Object){
     let user: any;
     let userName;
-    
+
     if (this.state.showName === false && window.MUIKKU_IS_STUDENT === false){
       if (userIdentifier){
         user = (await promisify(mApi().user.users.basicinfo.read(userIdentifier,{}), 'callback')());
@@ -135,7 +135,7 @@ export class ChatMessage extends React.Component<Iprops, Istate> {
           {this.props.groupMessage.deleted ? <i>Viesti poistettu {this.props.groupMessage.deletedTime}</i>  : this.props.groupMessage.content}
         </div>
         {(this.state.showRemoveButton === true) && <div className="chat__message-action-container">
-          <div onClick={() => this.props.removeMessage(this.state.groupMessage)} className="chat__message-delete">Poista</div>
+          <div onClick={() => this.props.setMessageAsRemoved(this.state.groupMessage)} className="chat__message-delete">Poista</div>
         </div>}
       </div>
     </div>
