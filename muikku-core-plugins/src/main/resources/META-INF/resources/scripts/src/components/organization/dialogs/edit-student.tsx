@@ -46,10 +46,10 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         SSN: this.props.data.ssn
       },
       editUser: false,
-      firstNameValid: 2,
-      lastNameValid: 2,
-      emailValid: 2,
-      studyProgrammeIdentifierValid: 2
+      firstNameValid: 1,
+      lastNameValid: 1,
+      emailValid: 1,
+      studyProgrammeIdentifierValid: 1
     };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
@@ -100,7 +100,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     if (valid) {
       let data = {
         firstName: this.state.user.firstName,
-        id: this.props.data.identifier,
+        identifier: this.props.data.identifier,
         lastName: this.state.user.lastName,
         email: this.state.user.email,
         ssn: this.state.user.ssn,
@@ -135,8 +135,8 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         </DialogRow>
         <DialogRow modifiers="new-user">
           <SSNFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
-          <SelectFormElement valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} value={this.props.data.studyProgrammeIdentifier} >
-            <option value="">{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme.emptyOption')}</option>
+          <SelectFormElement valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} value={this.state.user.studyProgrammeIdentifier} >
+            <option>{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme.emptyOption')}</option>
             {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme) => {
               return <option key={studyprogramme.identifier} value={studyprogramme.identifier} >{studyprogramme.name}</option>
             })
@@ -149,7 +149,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
     return (<Dialog modifier="new-user"
-      title={this.props.i18n.text.get('plugin.organization.users.addUser.title')}
+      title={this.props.i18n.text.get('plugin.organization.users.editUser.title')}
       content={content} footer={footer}>
       {this.props.children}
     </Dialog  >

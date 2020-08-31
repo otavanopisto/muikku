@@ -160,7 +160,8 @@ interface SelectFormElementProps {
 }
 
 interface SelectFormElementState {
-  valid: number
+  valid: number,
+  value: string
 }
 
 export class SelectFormElement extends React.Component<SelectFormElementProps, SelectFormElementState> {
@@ -171,14 +172,17 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 
     // 0 = invalid, 1 = valid, 2 = neutral
 
-    this.state = { valid: this.props.valid != null ? this.props.valid : 2 }
+    this.state = {
+      valid: this.props.valid != null ? this.props.valid : 2,
+      value: this.props.value ? this.props.value : ""
+    }
   }
 
   updateSelectField(e: React.ChangeEvent<HTMLSelectElement>) {
     const name = e.target.name;
     const value = e.target.value;
     let valid = true;
-
+    this.setState({ value: value });
     if (this.props.mandatory != null && this.props.mandatory == true) {
       if (value.trim().length == 0) {
         this.setState({ valid: 0 });
@@ -193,7 +197,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
 
   componentDidUpdate(prevProps: any) {
     if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid })
+      this.setState({ valid: this.props.valid, })
     }
   }
 
@@ -202,7 +206,7 @@ export class SelectFormElement extends React.Component<SelectFormElementProps, S
     return (
       <div className={`form-element ${this.props.modifiers ? modifiers.map(m => `form-element--${m}`).join(" ") : ""}`}>
         <div className="form-element__label">{this.props.label}</div>
-        <select value={this.props.value} name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map(m => `form-element__select--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
+        <select value={this.state.value} name={this.props.name} className={`form-element__select ${this.props.modifiers ? modifiers.map(m => `form-element__select--${m}`).join(" ") : ""} ${this.state.valid !== 2 ? this.state.valid == 1 ? "VALID" : "INVALID" : ""}`} onChange={this.updateSelectField}>
           {this.props.children}
         </select>
       </div>

@@ -63,8 +63,9 @@ let updateStudent: ApplyStudentTriggerType = function updateStudent(data) {
 
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      await promisify(mApi().user.students.basicInfo.update(data.student.id, data.student), 'callback')().then(() => {
-        promisify(mApi().user.students.read(), 'callback')()
+      await promisify(mApi().user.students.basicInfo.update(data.student.identifier, data.student), 'callback')().then(() => {
+        setTimeout('', 5000);
+        promisify(mApi().user.students.cacheClear().read(), 'callback')()
           .then((students: UserType) => {
             dispatch({
               type: "UPDATE_STUDENT_USERS",
@@ -91,6 +92,7 @@ let createStaffmember: ApplyStaffmemberTriggerType = function createStaffmember(
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       await promisify(mApi().user.staffMembers.create(data.staffmember), 'callback')().then(() => {
+        setTimeout('', 5000);
         promisify(mApi().user.staffMembers.read(), 'callback')()
           .then((users: UserType) => {
             dispatch({
@@ -115,7 +117,8 @@ let updateStaffmember: ApplyStaffmemberTriggerType = function updateStaffmember(
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
       await promisify(mApi().user.staffMembers.update(data.staffmember.identifier, data.staffmember), 'callback')().then(() => {
-        promisify(mApi().user.staffMembers.read(), 'callback')()
+        setTimeout('', 5000);
+        promisify(mApi().user.staffMembers.cacheClear().read(), 'callback')()
           .then((users: UserType) => {
             dispatch({
               type: "UPDATE_STAFF_USERS",
@@ -172,14 +175,14 @@ let loadUsers: LoadUsersTriggerType = function loadUsers() {
       });
 
       await Promise.all([
-        promisify(mApi().user.students.read(), 'callback')()
+        promisify(mApi().user.students.cacheClear().read(), 'callback')()
           .then((users: UserType) => {
             dispatch({
               type: "UPDATE_STUDENT_USERS",
               payload: users
             });
           }),
-        promisify(mApi().user.staffMembers.read(), 'callback')()
+        promisify(mApi().user.staffMembers.cacheClear().read(), 'callback')()
           .then((users: UserType) => {
             dispatch({
               type: "UPDATE_STAFF_USERS",
