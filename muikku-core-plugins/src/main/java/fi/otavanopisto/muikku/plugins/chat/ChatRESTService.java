@@ -352,7 +352,10 @@ public class ChatRESTService extends PluginRESTService {
     if (workspaceChatSettings == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    return Response.ok(restModel(workspaceChatSettings)).build();
+    
+    WorkspaceChatStatus workspaceChatStatus = workspaceChatSettings.getStatus();
+    
+    return Response.ok(workspaceChatStatus).build();
   }
   
   @PUT
