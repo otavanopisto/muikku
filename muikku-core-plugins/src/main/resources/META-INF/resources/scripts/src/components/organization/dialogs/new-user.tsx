@@ -37,7 +37,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
   constructor(props: OrganizationUserProps) {
     super(props);
     this.state = {
-      user: { role: "STUDENT", studyProgrammeIdentifier: "" },
+      user: { role: "STUDENT" },
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
@@ -56,7 +56,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
 
   cancelDialog(closeDialog: () => any) {
     this.setState({
-      user: { role: this.props.data.role },
+      user:{role: "STUDENT"},
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
@@ -106,7 +106,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           success: () => {
             closeDialog();
             this.setState({
-              user: { role: "STUDENT", studyProgrammeIdentifier: "" },
+              user: { role: "STUDENT" },
               firstNameValid: 2,
               lastNameValid: 2,
               emailValid: 2,
@@ -131,7 +131,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           staffmember: data,
           success: () => {
             this.setState({
-              user: { role: "STUDENT", studyProgrammeIdentifier: "" },
+              user: { role: "STUDENT" },
               firstNameValid: 2,
               lastNameValid: 2,
               emailValid: 2,
