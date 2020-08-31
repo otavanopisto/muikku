@@ -43,9 +43,9 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         lastName: this.props.data.lastName,
         email: this.props.data.email
       },
-      firstNameValid: 1,
-      lastNameValid: 1,
-      emailValid: 1,
+      firstNameValid: 2,
+      lastNameValid: 2,
+      emailValid: 2,
     };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
@@ -60,9 +60,9 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
 
   cancelDialog(closeDialog: () => any) {
     this.setState({
-      firstNameValid: 1,
-      lastNameValid: 1,
-      emailValid: 1,
+      firstNameValid: 2,
+      lastNameValid: 2,
+      emailValid: 2,
     });
     closeDialog();
   }

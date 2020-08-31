@@ -56,7 +56,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
 
   cancelDialog(closeDialog: () => any) {
     this.setState({
-      user: { role: "STUDENT", studyProgrammeIdentifier: "" },
+      user: { role: this.props.data.role },
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
@@ -170,7 +170,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           <DialogRow modifiers="new-user">
             <SSNFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
             <SelectFormElement valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} >
-              <option value="">{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme.emptyOption')}</option>
               {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme) => {
                 return <option key={studyprogramme.identifier} value={studyprogramme.identifier} {...this.props.data ? this.props.data.studyProgrammeIdentifier === studyprogramme.identifier ? "selected" : null : null}>{studyprogramme.name}</option>
               })

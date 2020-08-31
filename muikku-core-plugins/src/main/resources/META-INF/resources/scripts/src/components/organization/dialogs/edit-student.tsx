@@ -46,10 +46,10 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         SSN: this.props.data.ssn
       },
       editUser: false,
-      firstNameValid: 1,
-      lastNameValid: 1,
-      emailValid: 1,
-      studyProgrammeIdentifierValid: 1
+      firstNameValid: 2,
+      lastNameValid: 2,
+      emailValid: 2,
+      studyProgrammeIdentifierValid: 2
     };
     this.updateField = this.updateField.bind(this);
     this.saveUser = this.saveUser.bind(this);
@@ -136,7 +136,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         <DialogRow modifiers="new-user">
           <SSNFormElement modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.SSN')} updateField={this.updateField} />
           <SelectFormElement valid={this.state.studyProgrammeIdentifierValid} mandatory={true} name="studyProgrammeIdentifier" modifiers="new-user" label={this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme')} updateField={this.updateField} value={this.state.user.studyProgrammeIdentifier} >
-            <option>{this.props.i18n.text.get('plugin.organization.users.addUser.label.studyprogramme.emptyOption')}</option>
             {this.props.studyprogrammes && this.props.studyprogrammes.list.map((studyprogramme) => {
               return <option key={studyprogramme.identifier} value={studyprogramme.identifier} >{studyprogramme.name}</option>
             })
