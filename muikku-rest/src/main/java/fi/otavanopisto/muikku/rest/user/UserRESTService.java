@@ -1797,7 +1797,7 @@ public class UserRESTService extends AbstractRESTService {
           if (organizationEntity != null) {
             organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
-          
+          boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
             new Long((Integer) o.get("userEntityId")),
@@ -1806,7 +1806,8 @@ public class UserRESTService extends AbstractRESTService {
             email,
             propertyMap,
             organizationRESTModel,
-            (String) o.get("archetype")));
+            (String) o.get("archetype"),
+            hasImage));
         }
       }
     }

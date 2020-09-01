@@ -143,7 +143,7 @@ public class OrganizationUserManagementRESTService {
         UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
         propertyMap.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
       }
-        
+      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);        
       staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
           staffMemberIdentifier.toId(),
           new Long((Integer) o.get("userEntityId")),
@@ -152,7 +152,8 @@ public class OrganizationUserManagementRESTService {
           email,
           propertyMap,
           organizationRESTModel,
-          (String) o.get("archetype")));
+          (String) o.get("archetype"),
+          hasImage));
     }
       
     return Response.ok(staffMembers).build();
