@@ -144,7 +144,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         </DialogRow>
       </div>;
 
-    let footer = (closePortal: () => any) => <FormActionsElement executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
+    let footer = (closePortal: () => any) => <FormActionsElement executeLabel={this.props.i18n.text.get('plugin.organization.users.editUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
     return (<Dialog modifier="new-user"
