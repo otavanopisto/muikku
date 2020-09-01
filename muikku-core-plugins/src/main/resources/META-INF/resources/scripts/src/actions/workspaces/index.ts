@@ -681,7 +681,10 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
 
       // Update workspace chat status (enabled/disabled)
       if (newChatStatus) {
-        await promisify(mApi().chat.workspaceChatSettings.update(data.workspace.id, {newChatStatus}), 'callback')();
+        await promisify(mApi().chat.workspaceChatSettings.update(data.workspace.id, {
+          chatStatus: newChatStatus,
+          workspaceEntityId: data.workspace.id
+        }), 'callback')();
 
         // Add chat status back to the update object
         data.update.chatStatus = newChatStatus;
