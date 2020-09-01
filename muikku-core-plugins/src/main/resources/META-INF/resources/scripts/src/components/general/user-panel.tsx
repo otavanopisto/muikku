@@ -32,7 +32,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
       <ApplicationSubPanel i18n={this.props.i18n} modifier="organization-users" bodyModifier="organization-users" title={this.props.i18n.text.get(this.props.title)}>
         <ApplicationList>
           {this.props.users && this.props.users.map((user) => {
-            let aside = <Avatar id={user.userEntityId} hasImage firstName={user.firstName} />;
+            let aside = <Avatar id={user.userEntityId} hasImage={user.hasImage} firstName={user.firstName} />;
             let data = {
               firstName: user.firstName,
               lastName: user.lastName,
