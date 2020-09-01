@@ -1,10 +1,11 @@
-import {ActionType} from '~/actions';
+import { ActionType } from '~/actions';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
 import { repairContentNodes } from '~/util/modifiers';
 
 export interface OrganizationCourseTeacherType {
   firstName: string,
-  lastName: string
+  lastName: string,
+  hasImage: boolean
 }
 
 export type WorkspaceAssessementStateType = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
@@ -45,7 +46,7 @@ export interface WorkspaceForumStatisticsType {
   latestMessage: string //represents a date
 }
 
-export interface WorkspaceStudentAssessmentType {
+export interface WorkspaceStudentAssessmentType {
   assessorEntityId: number,
   evaluated: string,
   gradeIdentifier: string,
@@ -68,9 +69,9 @@ export interface WorkspaceStudentAssessmentsType {
 
 export interface ActivityLogType {
   type: "EVALUATION_REQUESTED" | "EVALUATION_GOTINCOMPLETED" | "EVALUATION_GOTFAILED" | "EVALUATION_GOTPASSED"
-    | "WORKSPACE_VISIT" | "MATERIAL_EXERCISEDONE" | "MATERIAL_ASSIGNMENTDONE" | "SESSION_LOGGEDIN" | "FORUM_NEWMESSAGE"
-    | "FORUM_NEWTHREAD" | "NOTIFICATION_ASSESMENTREQUEST" | "NOTIFICATION_NOPASSEDCOURSES" | "NOTIFICATION_SUPPLEMENTATIONREQUEST"
-    | "NOTIFICATION_STUDYTIME",
+  | "WORKSPACE_VISIT" | "MATERIAL_EXERCISEDONE" | "MATERIAL_ASSIGNMENTDONE" | "SESSION_LOGGEDIN" | "FORUM_NEWMESSAGE"
+  | "FORUM_NEWTHREAD" | "NOTIFICATION_ASSESMENTREQUEST" | "NOTIFICATION_NOPASSEDCOURSES" | "NOTIFICATION_SUPPLEMENTATIONREQUEST"
+  | "NOTIFICATION_STUDYTIME",
   timestamp: string,
   contextId?: number
 }
@@ -180,7 +181,7 @@ export interface WorkspacePermissionsType {
 
 export interface WorkspaceType {
   archived: boolean,
-  description: string ,
+  description: string,
   hasCustomImage: boolean,
   id: number,
   lastVisit: string,
@@ -226,7 +227,7 @@ export interface WorkspaceType {
 
   // These are only in organizationlistings
   teachers?: Array<OrganizationCourseTeacherType>,
-  studentCount? : number
+  studentCount?: number
 }
 
 export type WorkspaceUpdateType = Partial<WorkspaceType>;
@@ -469,29 +470,32 @@ export interface MaterialEvaluationType {
 export type MaterialContentNodeListType = Array<MaterialContentNodeType>;
 
 function processWorkspaceToHaveNewAssessmentStateAndDate(id: number, assessmentState: WorkspaceAssessementStateType, date: string,
-    assessmentRequestObject: WorkspaceAssessmentRequestType, deleteAssessmentRequestObject:boolean, workspace: WorkspaceType){
+  assessmentRequestObject: WorkspaceAssessmentRequestType, deleteAssessmentRequestObject: boolean, workspace: WorkspaceType) {
   let replacement = workspace && workspace.id === id ?
-      {...workspace} : workspace;
-  if (replacement && replacement.id === id){
+    { ...workspace } : workspace;
+  if (replacement && replacement.id === id) {
     if (replacement.studentActivity) {
-      replacement.studentActivity = {...replacement.studentActivity, assessmentState: {
-        ...replacement.studentActivity.assessmentState,
-        date,
-        state: assessmentState,
-      }};
+      replacement.studentActivity = {
+        ...replacement.studentActivity, assessmentState: {
+          ...replacement.studentActivity.assessmentState,
+          date,
+          state: assessmentState,
+        }
+      };
     }
-    if (replacement.studentAssessments){
-      replacement.studentAssessments = {...replacement.studentAssessments,
+    if (replacement.studentAssessments) {
+      replacement.studentAssessments = {
+        ...replacement.studentAssessments,
         assessmentState,
         assessmentStateDate: date,
         assessments: replacement.studentAssessments.assessments
       }
     }
-    if (replacement.assessmentRequests){
-      let index = replacement.assessmentRequests.findIndex(r=>r.id === assessmentRequestObject.id);
+    if (replacement.assessmentRequests) {
+      let index = replacement.assessmentRequests.findIndex(r => r.id === assessmentRequestObject.id);
       replacement.assessmentRequests = [...replacement.assessmentRequests];
-      if (index !== -1){
-        if (deleteAssessmentRequestObject){
+      if (index !== -1) {
+        if (deleteAssessmentRequestObject) {
           replacement.assessmentRequests.splice(index, 1);
         } else {
           replacement.assessmentRequests[index] = assessmentRequestObject
@@ -504,7 +508,7 @@ function processWorkspaceToHaveNewAssessmentStateAndDate(id: number, assessmentS
   return replacement;
 }
 
-export default function workspaces(state: WorkspacesType={
+export default function workspaces(state: WorkspacesType = {
   availableWorkspaces: [],
   userWorkspaces: [],
   lastWorkspace: null,
@@ -558,104 +562,104 @@ export default function workspaces(state: WorkspacesType={
     canSetTitle: true,
   }
 }, action: ActionType): WorkspacesType {
-  if (action.type === 'UPDATE_USER_WORKSPACES'){
+  if (action.type === 'UPDATE_USER_WORKSPACES') {
     return <WorkspacesType>Object.assign({}, state, {
       userWorkspaces: action.payload
     });
-  } else if (action.type === 'UPDATE_LAST_WORKSPACE'){
+  } else if (action.type === 'UPDATE_LAST_WORKSPACE') {
     return Object.assign({}, state, {
       lastWorkspace: <WorkspaceMaterialReferenceType>action.payload
     });
-  } else if (action.type === 'SET_CURRENT_WORKSPACE'){
+  } else if (action.type === 'SET_CURRENT_WORKSPACE') {
     return Object.assign({}, state, {
       currentWorkspace: <WorkspaceType>action.payload
     });
-  } else if (action.type === 'UPDATE_WORKSPACE_ASSESSMENT_STATE'){
+  } else if (action.type === 'UPDATE_WORKSPACE_ASSESSMENT_STATE') {
     return Object.assign({}, state, {
       currentWorkspace: processWorkspaceToHaveNewAssessmentStateAndDate(
-          action.payload.workspace.id, action.payload.newState, action.payload.newDate,
-          action.payload.newAssessmentRequest || action.payload.oldAssessmentRequestToDelete, !!action.payload.oldAssessmentRequestToDelete, state.currentWorkspace),
-       availableWorkspaces: state.availableWorkspaces.map(processWorkspaceToHaveNewAssessmentStateAndDate.bind(this, action.payload.workspace.id, action.payload.newState,
-          action.payload.newDate, action.payload.newAssessmentRequest)),
-       userWorkspaces: state.userWorkspaces.map(processWorkspaceToHaveNewAssessmentStateAndDate.bind(this, action.payload.workspace.id, action.payload.newState,
-          action.payload.newDate, action.payload.newAssessmentRequest))
+        action.payload.workspace.id, action.payload.newState, action.payload.newDate,
+        action.payload.newAssessmentRequest || action.payload.oldAssessmentRequestToDelete, !!action.payload.oldAssessmentRequestToDelete, state.currentWorkspace),
+      availableWorkspaces: state.availableWorkspaces.map(processWorkspaceToHaveNewAssessmentStateAndDate.bind(this, action.payload.workspace.id, action.payload.newState,
+        action.payload.newDate, action.payload.newAssessmentRequest)),
+      userWorkspaces: state.userWorkspaces.map(processWorkspaceToHaveNewAssessmentStateAndDate.bind(this, action.payload.workspace.id, action.payload.newState,
+        action.payload.newDate, action.payload.newAssessmentRequest))
     })
-  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"){
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
         educationTypes: action.payload
       })
     });
-  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"){
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
         curriculums: action.payload
       })
     });
-  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS"){
+  } else if (action.type === "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS") {
     return Object.assign({}, state, {
       availableFilters: Object.assign({}, state.availableFilters, {
         organizations: action.payload
       })
     });
-  } else if (action.type === "UPDATE_WORKSPACES_ACTIVE_FILTERS"){
+  } else if (action.type === "UPDATE_WORKSPACES_ACTIVE_FILTERS") {
     return Object.assign({}, state, {
       activeFilters: action.payload
     });
-  } else if (action.type === "UPDATE_WORKSPACES_ALL_PROPS"){
+  } else if (action.type === "UPDATE_WORKSPACES_ALL_PROPS") {
     return Object.assign({}, state, action.payload);
-  } else if (action.type === "UPDATE_WORKSPACES_STATE"){
+  } else if (action.type === "UPDATE_WORKSPACES_STATE") {
     return Object.assign({}, state, {
       state: action.payload
     });
-  } else if (action.type === "UPDATE_WORKSPACE"){
+  } else if (action.type === "UPDATE_WORKSPACE") {
     let newCurrent = state.currentWorkspace;
-    if (newCurrent && newCurrent.id === action.payload.original.id){
-      newCurrent = {...newCurrent, ...action.payload.update};
+    if (newCurrent && newCurrent.id === action.payload.original.id) {
+      newCurrent = { ...newCurrent, ...action.payload.update };
     }
     return Object.assign({}, state, {
       currentWorkspace: newCurrent,
-      availableWorkspaces: state.availableWorkspaces.map(w=>{
-        if (w.id === action.payload.original.id){
-          return {...w, ...action.payload.update};
+      availableWorkspaces: state.availableWorkspaces.map(w => {
+        if (w.id === action.payload.original.id) {
+          return { ...w, ...action.payload.update };
         }
         return w;
       }),
-      userWorkspaces: state.userWorkspaces.map(w=>{
-        if (w.id === action.payload.original.id){
-          return {...w, ...action.payload.update};
+      userWorkspaces: state.userWorkspaces.map(w => {
+        if (w.id === action.payload.original.id) {
+          return { ...w, ...action.payload.update };
         }
         return w;
       })
     })
-  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS"){
-    return {...state, currentMaterials: action.payload};
-  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_HELP"){
-    return {...state, currentHelp: action.payload};
-  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID"){
-    return {...state, currentMaterialsActiveNodeId: action.payload};
-  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES"){
-    return {...state, currentMaterialsReplies: action.payload}
-  } else if (action.type === "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER"){
+  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS") {
+    return { ...state, currentMaterials: action.payload };
+  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_HELP") {
+    return { ...state, currentHelp: action.payload };
+  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID") {
+    return { ...state, currentMaterialsActiveNodeId: action.payload };
+  } else if (action.type === "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES") {
+    return { ...state, currentMaterialsReplies: action.payload }
+  } else if (action.type === "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER") {
     let wasUpdated = false;
-    let newCurrentMaterialsReplies = state.currentMaterialsReplies.map((compositeReplies: MaterialCompositeRepliesType)=>{
-      if (compositeReplies.workspaceMaterialId === action.payload.workspaceMaterialId){
+    let newCurrentMaterialsReplies = state.currentMaterialsReplies.map((compositeReplies: MaterialCompositeRepliesType) => {
+      if (compositeReplies.workspaceMaterialId === action.payload.workspaceMaterialId) {
         wasUpdated = true;
-        return {...compositeReplies, ...action.payload};
+        return { ...compositeReplies, ...action.payload };
       }
       return compositeReplies
     });
-    if (!wasUpdated){
+    if (!wasUpdated) {
       newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([<MaterialCompositeRepliesType>action.payload]);
     }
-    return {...state, currentMaterialsReplies: newCurrentMaterialsReplies}
+    return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies }
   } else if (action.type === "UPDATE_MATERIAL_CONTENT_NODE") {
     let found = false;
     let newCurrentWorkspace = state.currentWorkspace;
     if (!action.payload.isDraft && !found && newCurrentWorkspace.contentDescription.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
       found = true;
-      newCurrentWorkspace = {...newCurrentWorkspace};
-      newCurrentWorkspace.contentDescription = {...newCurrentWorkspace.contentDescription, ...action.payload.update};
+      newCurrentWorkspace = { ...newCurrentWorkspace };
+      newCurrentWorkspace.contentDescription = { ...newCurrentWorkspace.contentDescription, ...action.payload.update };
     }
     let mapMaterial = (m: MaterialContentNodeType) => {
       if (action.payload.isDraft) {
@@ -668,10 +672,10 @@ export default function workspaces(state: WorkspacesType={
 
       if (m.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
         found = true;
-        return {...m, ...action.payload.update};
+        return { ...m, ...action.payload.update };
       }
 
-      const newM:MaterialContentNodeType = {...m, children: m.children ? m.children.map(mapMaterial) : m.children};
+      const newM: MaterialContentNodeType = { ...m, children: m.children ? m.children.map(mapMaterial) : m.children };
       if (newM.childrenAttachments) {
         newM.childrenAttachments = newM.childrenAttachments.map(mapMaterial);
       }
@@ -680,17 +684,17 @@ export default function workspaces(state: WorkspacesType={
 
     let newEditor = state.materialEditor;
     if (!action.payload.isDraft && newEditor && newEditor.currentNodeValue &&
-        newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
-      newEditor = {...newEditor};
-      newEditor.currentNodeValue = {...newEditor.currentNodeValue, ...action.payload.update};
+      newEditor.currentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      newEditor = { ...newEditor };
+      newEditor.currentNodeValue = { ...newEditor.currentNodeValue, ...action.payload.update };
     } else if (!action.payload.isDraft && newEditor && newEditor.parentNodeValue &&
-        newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
-      newEditor = {...newEditor};
-      newEditor.parentNodeValue = {...newEditor.parentNodeValue, ...action.payload.update};
+      newEditor.parentNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      newEditor = { ...newEditor };
+      newEditor.parentNodeValue = { ...newEditor.parentNodeValue, ...action.payload.update };
     } else if (action.payload.isDraft && newEditor && newEditor.currentDraftNodeValue &&
-        newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
-      newEditor = {...newEditor};
-      newEditor.currentDraftNodeValue = {...newEditor.currentDraftNodeValue, ...action.payload.update};
+      newEditor.currentDraftNodeValue.workspaceMaterialId === action.payload.material.workspaceMaterialId) {
+      newEditor = { ...newEditor };
+      newEditor.currentDraftNodeValue = { ...newEditor.currentDraftNodeValue, ...action.payload.update };
     }
     newEditor.showRemoveAnswersDialogForPublish = action.payload.showRemoveAnswersDialogForPublish;
     newEditor.showUpdateLinkedMaterialsDialogForPublish = action.payload.showUpdateLinkedMaterialsDialogForPublish;
@@ -710,8 +714,8 @@ export default function workspaces(state: WorkspacesType={
       if (typeof m.id !== "undefined" && typeof action.payload.id !== "undefined" && m.id === action.payload.id) {
         return false;
       } else if (typeof m.workspaceMaterialId !== "undefined" &&
-          typeof action.payload.workspaceMaterialId !== "undefined" &&
-          m.workspaceMaterialId === action.payload.workspaceMaterialId) {
+        typeof action.payload.workspaceMaterialId !== "undefined" &&
+        m.workspaceMaterialId === action.payload.workspaceMaterialId) {
         return false;
       }
 
@@ -719,7 +723,7 @@ export default function workspaces(state: WorkspacesType={
     }
     let mapMaterial = (m: MaterialContentNodeType, index: number, arr: Array<MaterialContentNodeType>) => {
       const nextSiblingId = arr[index + 1] ? arr[index + 1].workspaceMaterialId : null;
-      const newM:MaterialContentNodeType = {
+      const newM: MaterialContentNodeType = {
         ...m,
         nextSiblingId,
         children: m.children ? m.children.filter(filterMaterial).map(mapMaterial) : m.children
@@ -732,9 +736,9 @@ export default function workspaces(state: WorkspacesType={
 
     let newEditor = state.materialEditor;
     if (newEditor && (
-          newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
-          (newEditor.parentNodeValue && newEditor.parentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId)
-        )) {
+      newEditor.currentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId ||
+      (newEditor.parentNodeValue && newEditor.parentNodeValue.workspaceMaterialId === action.payload.workspaceMaterialId)
+    )) {
       newEditor = {
         currentNodeValue: null,
         parentNodeValue: null,
@@ -744,8 +748,8 @@ export default function workspaces(state: WorkspacesType={
       };
     }
     if (newEditor && newEditor.currentNodeValue && newEditor.currentNodeValue.childrenAttachments) {
-      newEditor = {...newEditor};
-      newEditor.currentNodeValue = {...newEditor.currentNodeValue};
+      newEditor = { ...newEditor };
+      newEditor.currentNodeValue = { ...newEditor.currentNodeValue };
       newEditor.currentNodeValue.childrenAttachments = newEditor.currentNodeValue.childrenAttachments.filter(filterMaterial);
     }
     return {
@@ -768,7 +772,7 @@ export default function workspaces(state: WorkspacesType={
       insertedContentNode.parentId !== state.currentWorkspace.details.rootFolderId
     ) {
       const targetIndex = newCurrentMaterials.findIndex((cn) => cn.workspaceMaterialId === insertedContentNode.parentId);
-      newCurrentMaterials[targetIndex] = {...newCurrentMaterials[targetIndex]};
+      newCurrentMaterials[targetIndex] = { ...newCurrentMaterials[targetIndex] };
       newCurrentMaterials[targetIndex].children = [...newCurrentMaterials[targetIndex].children];
       targetArray = newCurrentMaterials[targetIndex].children;
     }
@@ -791,52 +795,52 @@ export default function workspaces(state: WorkspacesType={
       currentHelp: repairContentNodes(state.currentHelp, action.payload.newPath, action.payload.material.workspaceMaterialId)
     }
   } else if (action.type === "UPDATE_WORKSPACES_EDIT_MODE_STATE") {
-    return {...state, editMode: {...state.editMode, ...action.payload}}
+    return { ...state, editMode: { ...state.editMode, ...action.payload } }
   }
   return state;
 }
 
-export function organizationWorkspaces(state:OrganizationWorkspacesType = {
-    availableWorkspaces: [],
-    availableFilters: {
-      educationTypes: [],
-      curriculums: [],
-    },
-    state: "LOADING",
-    activeFilters: {
-      educationFilters: [],
-      curriculumFilters: [],
-      query: "",
-    },
-    hasMore: false,
-    toolbarLock: false,
-    types: null,
+export function organizationWorkspaces(state: OrganizationWorkspacesType = {
+  availableWorkspaces: [],
+  availableFilters: {
+    educationTypes: [],
+    curriculums: [],
+  },
+  state: "LOADING",
+  activeFilters: {
+    educationFilters: [],
+    curriculumFilters: [],
+    query: "",
+  },
+  hasMore: false,
+  toolbarLock: false,
+  types: null,
 
-  }, action: ActionType): OrganizationWorkspacesType {
-    if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES"){
-      return Object.assign({}, state, {
-        availableFilters: Object.assign({}, state.availableFilters, {
-          educationTypes: action.payload
-        })
-      });
-    }
-    else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS"){
-      return Object.assign({}, state, {
-        availableFilters: Object.assign({}, state.availableFilters, {
-          curriculums: action.payload
-        })
-      });
-    } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS"){
-      return Object.assign({}, state, action.payload);
-    } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS"){
-      return Object.assign({}, state, {
-        activeFilters: action.payload
-      });
-    } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_STATE"){
-      return Object.assign({}, state, {
-        state: action.payload
-      });
-    }
-    return state;
+}, action: ActionType): OrganizationWorkspacesType {
+  if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES") {
+    return Object.assign({}, state, {
+      availableFilters: Object.assign({}, state.availableFilters, {
+        educationTypes: action.payload
+      })
+    });
+  }
+  else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS") {
+    return Object.assign({}, state, {
+      availableFilters: Object.assign({}, state.availableFilters, {
+        curriculums: action.payload
+      })
+    });
+  } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS") {
+    return Object.assign({}, state, action.payload);
+  } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS") {
+    return Object.assign({}, state, {
+      activeFilters: action.payload
+    });
+  } else if (action.type === "UPDATE_ORGANIZATION_WORKSPACES_STATE") {
+    return Object.assign({}, state, {
+      state: action.payload
+    });
+  }
+  return state;
 }
 
