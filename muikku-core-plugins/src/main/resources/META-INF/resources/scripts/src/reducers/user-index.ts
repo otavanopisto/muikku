@@ -85,6 +85,7 @@ export interface UserStaffType {
   lastName: string,
   properties: any,
   userEntityId: number
+  hasImage: boolean
 }
 
 export interface ShortWorkspaceUserWithActiveStatusType {
