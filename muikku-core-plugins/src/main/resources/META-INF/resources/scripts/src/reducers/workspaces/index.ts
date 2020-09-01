@@ -171,13 +171,7 @@ export interface WorkspaceStudentAssessmentStateType {
   text?: string
 }
 
-//export type WorkspaceChatType = "ENABLED" | "DISABLED";
-
-export interface WorkspaceChatSettingsType {
-  chatStatus: string,
-  id?: number,
-  workspaceEntityId?: number,
-}
+export type WorkspaceChatStatusType = "ENABLED" | "DISABLED";
 
 export interface WorkspacePermissionsType {
   workspaceEntityId: number,
@@ -198,9 +192,7 @@ export interface WorkspaceType {
   numVisits: number,
   published: boolean,
   urlName: string,
-
-  //This is chat
-  chatSettings?: WorkspaceChatSettingsType,
+  chatStatus?: WorkspaceChatStatusType,
 
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded

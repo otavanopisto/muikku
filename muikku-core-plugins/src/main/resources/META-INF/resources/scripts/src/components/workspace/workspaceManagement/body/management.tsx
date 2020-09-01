@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType, WorkspaceChatSettingsType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProducerType, WorkspaceUpdateType, WorkspaceDetailsType, WorkspacePermissionsType } from "~/reducers/workspaces";
+import { WorkspaceType, WorkspaceChatStatusType, WorkspaceAccessType, WorkspaceTypeType, WorkspaceProducerType, WorkspaceUpdateType, WorkspaceDetailsType, WorkspacePermissionsType } from "~/reducers/workspaces";
 import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button, { ButtonPill } from "~/components/general/button";
@@ -28,7 +28,6 @@ import {
 import { bindActionCreators } from "redux";
 import { displayNotification, DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { filterMatch, filterHighlight } from "~/util/modifiers";
-import { Chat } from "~/components/chat/chat";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
@@ -58,7 +57,7 @@ interface ManagementPanelState {
   workspaceLicense: string,
   workspaceHasCustomImage: boolean,
   workspacePermissions: Array<WorkspacePermissionsType>,
-  workspaceChatStatus: string,
+  workspaceChatStatus: WorkspaceChatStatusType,
   workspaceUsergroupNameFilter: string,
   currentWorkspaceProducerInputValue: string,
   newWorkspaceImageSrc?: string,
@@ -89,7 +88,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceDescription: props.workspace ? props.workspace.description || "" : "",
       workspaceLicense: props.workspace ? props.workspace.materialDefaultLicense : "",
       workspaceHasCustomImage: props.workspace ? props.workspace.hasCustomImage : false,
-      workspaceChatStatus: props.workspace && props.workspace.chatSettings ? props.workspace.chatSettings.chatStatus : null,
+      workspaceChatStatus: props.workspace ? props.workspace.chatStatus : null,
       workspacePermissions: props.workspace && props.workspace.permissions ? props.workspace.permissions : [],
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
@@ -134,7 +133,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspaceLicense: nextProps.workspace ? nextProps.workspace.materialDefaultLicense : "",
       workspaceDescription: nextProps.workspace ? nextProps.workspace.description || "" : "",
       workspaceHasCustomImage: nextProps.workspace ? nextProps.workspace.hasCustomImage : false,
-      workspaceChatStatus: nextProps.workspace && nextProps.workspace.chatSettings ? nextProps.workspace.chatSettings.chatStatus : null,
+      workspaceChatStatus: nextProps.workspace ? nextProps.workspace.chatStatus  : null,
       workspacePermissions: nextProps.workspace && nextProps.workspace.permissions ? nextProps.workspace.permissions : [],
     });
 
@@ -149,7 +148,7 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
       workspacePublished: value
     });
   }
-  setWorkspaceChatTo(value: string) {
+  setWorkspaceChatTo(value: WorkspaceChatStatusType) {
     this.setState({
       workspaceChatStatus: value
     });
@@ -359,17 +358,13 @@ class ManagementPanel extends React.Component<ManagementPanelProps, ManagementPa
     }
 
     // Chat
-    let workspaceChatSettings: WorkspaceChatSettingsType = {
-      chatStatus: this.state.workspaceChatStatus,
-    }
+    let workspaceChatStatus = this.state.workspaceChatStatus;
 
-    let currentWorkspaceChatSettings: WorkspaceChatSettingsType = {
-      chatStatus: this.props.workspace.chatSettings.chatStatus
-    }
+    let currentWorkspaceChatStatus = this.props.workspace.chatStatus;
 
-    if (!equals(workspaceChatSettings, currentWorkspaceChatSettings)) {
+    if (!equals(workspaceChatStatus, currentWorkspaceChatStatus)) {
       totals++;
-      payload = Object.assign({chatSettings: workspaceChatSettings}, payload);
+      payload = Object.assign({chatStatus: workspaceChatStatus}, payload);
     }
 
     let workspaceDetails:WorkspaceDetailsType = {

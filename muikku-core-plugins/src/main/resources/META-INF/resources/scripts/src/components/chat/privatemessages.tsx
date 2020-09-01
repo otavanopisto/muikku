@@ -9,23 +9,19 @@ import promisify, { promisifyNewConstructor } from '~/util/promisify';
 interface Iprops {
   chat?: any,
   converse?: any,
-  orderNumber?: any,
   onOpenPrivateChat?: any,
-  chatObject?: any,
   openPrivateChat?: any,
-  jid?: any,
+  BareJID?: any,
   privateChatData?: any
 }
 
 interface Istate {
-  jid?: string,
+  BareJID?: string,
   converse?: any,
   RoomJID?: string,
   minimized?: boolean,
-  roomName?: string,
   minimizedChats?: any,
   messages?: any,
-  minimizedClass?: string,
   jidTo?: string,
   nickTo?: string,
   fnTo?: string,
@@ -51,14 +47,12 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
   constructor(props: any) {
     super(props);
     this.state = {
-      jid: window.MUIKKU_LOGGED_USER + "@dev.muikkuverkko.fi".toLowerCase(),
+      BareJID: window.MUIKKU_LOGGED_USER + "@dev.muikkuverkko.fi".toLowerCase(),
       converse: this.props.converse,
       RoomJID: "",
       minimized: false,
-      roomName: "",
       minimizedChats: [],
       messages: [],
-      minimizedClass: "",
       jidTo: "",
       nickTo: "",
       fnTo: "",

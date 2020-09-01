@@ -32,7 +32,7 @@ import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMat
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
-  loadWorkspaceChatSetting,
+  loadWorkspaceChatStatus,
   loadWholeWorkspaceHelp} from '~/actions/workspaces';
 import { loadAnnouncementsAsAClient, loadAnnouncement, loadAnnouncements } from '~/actions/announcements';
 import { loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer, setDiscussionWorkpaceId } from '~/actions/discussion';
@@ -538,7 +538,7 @@ export default class Workspace extends React.Component<WorkspaceProps, Workspace
           if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
             this.props.store.dispatch(loadWorkspaceDetailsInCurrentWorkspace() as Action);
           }
-          this.props.store.dispatch(loadWorkspaceChatSetting() as Action);
+          this.props.store.dispatch(loadWorkspaceChatStatus() as Action);
         }
       }) as Action);
     }

@@ -2,7 +2,7 @@ import actions, { displayNotification } from '../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, WorkspaceChatSettingsType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType} from '~/reducers/workspaces';
+import { WorkspaceListType, WorkspaceMaterialReferenceType, WorkspaceType, WorkspaceChatStatusType, WorkspaceStudentActivityType, WorkspaceStudentAssessmentsType, WorkspaceFeeInfoType, WorkspaceAssessementStateType, WorkspaceAssessmentRequestType, WorkspaceEducationFilterListType, WorkspaceCurriculumFilterListType, WorkspacesActiveFiltersType, WorkspacesStateType, WorkspacesPatchType, WorkspaceAdditionalInfoType, WorkspaceUpdateType} from '~/reducers/workspaces';
 import { StateType } from '~/reducers';
 import { loadWorkspacesHelper, loadCurrentWorkspaceJournalsHelper } from '~/actions/workspaces/helpers';
 import { UserStaffType, ShortWorkspaceUserWithActiveStatusType } from '~/reducers/user-index';
@@ -268,7 +268,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       let isCourseMember:boolean;
       let journals:WorkspaceJournalsType;
       let details:WorkspaceDetailsType;
-      let chatStatus: WorkspaceChatSettingsType;
+      let chatStatus: WorkspaceChatStatusType;
       let status = getState().status;
       [workspace, assesments, feeInfo, assessmentRequests, activity, additionalInfo, contentDescription, producers, isCourseMember, journals, details, chatStatus] = await Promise.all([
                                                 reuseExistantValue(true, workspace, ()=>promisify(mApi().workspace.workspaces.cacheClear().read(data.workspaceId), 'callback')()),
@@ -309,7 +309,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
                                                   ()=>promisify(mApi().workspace.workspaces
                                                     .details.read(data.workspaceId), 'callback')()) : null,
 
-                                                reuseExistantValue(true, workspace && workspace.chatSettings,
+                                                reuseExistantValue(true, workspace && workspace.chatStatus,
                                                   () => promisify(mApi().chat.workspaceChatSettings.read(data.workspaceId), 'callback')()),
 
                                                    ]) as any
@@ -323,7 +323,7 @@ let setCurrentWorkspace:SetCurrentWorkspaceTriggerType = function setCurrentWork
       workspace.isCourseMember = isCourseMember;
       workspace.journals = journals;
       workspace.details = details;
-      workspace.chatSettings = chatStatus;
+      workspace.chatStatus = chatStatus;
 
       dispatch({
         type: 'SET_CURRENT_WORKSPACE',
@@ -640,13 +640,13 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
     delete actualOriginal["journals"];
     delete actualOriginal["activityLogs"];
     delete actualOriginal["permissions"];
-    delete actualOriginal["chatSettings"];
+    delete actualOriginal["chatStatus"];
 
     try {
       let newDetails = data.update.details;
       let newPermissions = data.update.permissions;
       let appliedProducers = data.update.producers;
-      let newChatSettings = data.update.chatSettings;
+      let newChatStatus = data.update.chatStatus;
       let unchangedPermissions:WorkspacePermissionsType[]=[];
       let currentWorkspace:WorkspaceType = getState().workspaces.currentWorkspace;
 
@@ -656,7 +656,7 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
       delete data.update["details"];
       delete data.update["permissions"];
       delete data.update["producers"];
-      delete data.update["chatSettings"];
+      delete data.update["chatStatus"];
 
       // First lets update the basic stuff - if any outside of details, producers, chat or permissions
       if(data.update){
@@ -680,11 +680,11 @@ let updateWorkspace:UpdateWorkspaceTriggerType = function updateWorkspace(data){
       }
 
       // Update workspace chat status (enabled/disabled)
-      if (newChatSettings) {
-        await promisify(mApi().chat.workspaceChatSettings.update(data.workspace.id, { chatStatus: newChatSettings.chatStatus, workspaceEntityId: data.workspace.id}), 'callback')();
+      if (newChatStatus) {
+        await promisify(mApi().chat.workspaceChatSettings.update(data.workspace.id, {newChatStatus}), 'callback')();
 
         // Add chat status back to the update object
-        data.update.chatSettings = newChatSettings;
+        data.update.chatStatus = newChatStatus;
       }
 
       // Then permissions - if any
@@ -1042,7 +1042,7 @@ export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
   }):AnyActionType
 }
 
-export interface LoadWorkspaceChatSettingsTriggerType {
+export interface LoadWorkspaceChatStatusTriggerType {
   (): AnyActionType
 }
 
@@ -1197,11 +1197,11 @@ let deleteWorkspaceJournalInCurrentWorkspace:DeleteWorkspaceJournalInCurrentWork
   }
 }
 
-let loadWorkspaceChatSetting: LoadWorkspaceChatSettingsTriggerType = function loadWorkspaceChatSetting() {
+let loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType = function loadWorkspaceChatStatus() {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
 
-      let chatSettings: WorkspaceChatSettingsType = <WorkspaceChatSettingsType>(await promisify(mApi().chat.workspaceChatSettings
+      let chatStatus: WorkspaceChatStatusType = <WorkspaceChatStatusType>(await promisify(mApi().chat.workspaceChatSettings
         .read(getState().workspaces.currentWorkspace.id), 'callback')());
 
       let currentWorkspace: WorkspaceType = getState().workspaces.currentWorkspace;
@@ -1210,9 +1210,7 @@ let loadWorkspaceChatSetting: LoadWorkspaceChatSettingsTriggerType = function lo
         type: 'UPDATE_WORKSPACE',
         payload: {
           original: currentWorkspace,
-          update: {
-            chatSettings
-          }
+          update: {chatStatus}
         }
       });
 
@@ -2079,7 +2077,7 @@ let updateWorkspaceEditModeState:UpdateWorkspaceEditModeStateTriggerType = funct
 export {loadUserWorkspaceCurriculumFiltersFromServer, loadUserWorkspaceEducationFiltersFromServer,
   loadUserWorkspaceOrganizationFiltersFromServer, loadWorkspacesFromServer, loadMoreWorkspacesFromServer,
   signupIntoWorkspace, loadUserWorkspacesFromServer, loadLastWorkspaceFromServer, setCurrentWorkspace, requestAssessmentAtWorkspace, cancelAssessmentAtWorkspace,
-  updateWorkspace, loadStaffMembersOfWorkspace, loadWorkspaceChatSetting, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
+  updateWorkspace, loadStaffMembersOfWorkspace, loadWorkspaceChatStatus, loadWholeWorkspaceMaterials, setCurrentWorkspaceMaterialsActiveNodeId, loadWorkspaceCompositeMaterialReplies,
   updateAssignmentState, updateLastWorkspace, loadStudentsOfWorkspace, toggleActiveStateOfStudentOfWorkspace, loadCurrentWorkspaceJournalsFromServer,
   loadMoreCurrentWorkspaceJournalsFromServer, createWorkspaceJournalForCurrentWorkspace, updateWorkspaceJournalInCurrentWorkspace,
   deleteWorkspaceJournalInCurrentWorkspace, loadWorkspaceDetailsInCurrentWorkspace, loadWorkspaceTypes, deleteCurrentWorkspaceImage, copyCurrentWorkspace,
