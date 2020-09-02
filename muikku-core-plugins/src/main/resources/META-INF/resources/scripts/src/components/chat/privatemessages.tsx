@@ -182,10 +182,10 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       let text: any;
       let from: any;
       let stamp: any;
-      let user: any;
-      let nickname: any;
-      let userName: any;
-      let nick: any;
+      let MuikkuUser: any;
+      let MuikkuChatUser: any;
+      let MuikkuRealName: any;
+      let MuikkuNickName: any;
       let senderClass: any;
 
       for (i = 0; i < olderMessages.length; i++) {
@@ -199,13 +199,13 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         from = from.toUpperCase();
 
         if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
-          user = (await promisify(mApi().user.users.basicinfo.read(from, {}), 'callback')());
-          nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
-          userName = user.firstName + " " + user.lastName;
-          nick = nickname.nick;
+          MuikkuUser = (await promisify(mApi().user.users.basicinfo.read(from, {}), 'callback')());
+          MuikkuChatUser = (await promisify(mApi().chat.settings.read(from), 'callback')());
+          MuikkuRealName = MuikkuUser.firstName + " " + MuikkuUser.lastName;
+          MuikkuNickName = MuikkuChatUser.nick;
         } else {
-          userName = from;
-          nick = from;
+          MuikkuRealName = from;
+          MuikkuNickName = from;
         }
 
         if (from === window.MUIKKU_LOGGED_USER) {
@@ -215,7 +215,7 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         }
 
         if (!text.startsWith("messageID=")) {
-          newArrFromOldMessages.push({ message: text, from: userName + " (" + nick + ")", id: "", stamp: stamp, senderClass: senderClass });
+          newArrFromOldMessages.push({ message: text, from: MuikkuRealName + " (" + MuikkuNickName + ")", id: "", stamp: stamp, senderClass: senderClass });
         }
       }
       this.setState({
@@ -231,11 +231,10 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
 
     if (data.chatbox && data.chatbox.attributes.message_type === "chat") {
       let from: any;
-      let user: any;
-      let nickname: any;
-      let nick: any;
-      let userName: any;
-
+      let MuikkuUser: any;
+      let MuikkuChatUser: any;
+      let MuikkuRealName: any;
+      let MuikkuNickName: any;
       let msg = data.chatbox.messages.models[data.chatbox.messages.models.length - 1];
 
       from = msg.attributes.from;
@@ -243,18 +242,18 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       from = from.toUpperCase();
 
       if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
-        user = (await promisify(mApi().user.users.basicinfo.read(from, {}), 'callback')());
-        nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
-        userName = user.firstName + " " + user.lastName;
-        nick = nickname.nick;
+        MuikkuUser = (await promisify(mApi().user.users.basicinfo.read(from, {}), 'callback')());
+        MuikkuChatUser = (await promisify(mApi().chat.settings.read(from), 'callback')());
+        MuikkuRealName = MuikkuUser.firstName + " " + MuikkuUser.lastName;
+        MuikkuNickName = MuikkuChatUser.nick;
       } else {
-        userName = from;
-        nick = from;
+        MuikkuRealName = from;
+        MuikkuNickName = from;
       }
 
       let newMessage = {
         message: msg.attributes.message,
-        from: userName + " '" + nick + "' ",
+        from: MuikkuRealName + " '" + MuikkuNickName + "' ",
         id: msg.attributes.id,
         stamp: msg.attributes.time,
         senderClass: "sender-" + msg.attributes.sender
@@ -284,19 +283,19 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
       let from = data.attributes.from;
       from = from.split("@")[0];
       from = from.toUpperCase();
-      let user: any;
-      let nickname: any;
-      let nick: any;
-      let userName: any;
+      let MuikkuUser: any;
+      let MuikkuChatUser: any;
+      let MuikkuRealName: string;
+      let MuikkuNickName: string;
 
       if (from.startsWith("PYRAMUS-STAFF-") || from.startsWith("PYRAMUS-STUDENT-")) {
-        user = (await promisify(mApi().user.users.basicinfo.read(from, {}), 'callback')());
-        nickname = (await promisify(mApi().chat.settings.read(from), 'callback')());
-        userName = user.firstName + " " + user.lastName;
-        nick = nickname.nick;
+        MuikkuUser = (await promisify(mApi().user.users.basicinfo.read(from, {}), 'callback')());
+        MuikkuChatUser = (await promisify(mApi().chat.settings.read(from), 'callback')());
+        MuikkuRealName = MuikkuUser.firstName + " " + MuikkuUser.lastName;
+        MuikkuNickName = MuikkuChatUser.nick;
       } else {
-        userName = from;
-        nick = from;
+        MuikkuRealName = from;
+        MuikkuNickName = from;
       }
       if (this.state.minimized) {
         this.setState({
@@ -318,14 +317,14 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
     if (privateChatData) {
       let BareJID = privateChatData.BareJID;
       let MuikkuNickName = privateChatData.data.MuikkuNickName;
-      let firstName = privateChatData.data.firstName;
-      let lastName = privateChatData.data.lastName;
+      let MuikkuFirstName = privateChatData.data.firstName;
+      let MuikkuLastName = privateChatData.data.lastName;
 
       this.setState({
         jidTo: BareJID,
         nickTo: MuikkuNickName,
-        fnTo: firstName,
-        lnTo: lastName,
+        fnTo: MuikkuFirstName,
+        lnTo: MuikkuLastName,
         privateChatData: privateChatData
       });
 

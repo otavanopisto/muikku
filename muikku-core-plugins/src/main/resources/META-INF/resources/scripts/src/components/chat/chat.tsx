@@ -11,7 +11,10 @@ import promisify, { promisifyNewConstructor } from '~/util/promisify';
 VARIABLES:
 
 MuikkuUser
-  Object that's usually contains basic info (firstName and lastName) of loggedin Muikku user.
+  Object that's contains basic info (firstName and lastName) of loggedin Muikku user.
+
+MuikkuChatUser
+  Object that's contains Muikku user's chat settings.
 
 UserId
   The local part of BareJID/FullJID and equal as PyramusNickName, used only when querying private message senders MuikkuNickName.
@@ -45,6 +48,15 @@ RoomConfig
 
 MuikkuNickName
   A user-friendly, natural-language nick name for the user, configured by the user itself via Muikku user profile view.
+
+MuikkuFirstName
+  Muikku user's first name
+
+MuikkuLastName
+  Muikku user's last name
+
+MuikkuRealName
+  Real nam eof Muikku user, consists of first name and last name.
 
 PyramusUserID
   A pre-defined pyramus-student-# or pyramus-staff-# user ide. This is the local part (user) in bareJID and fullJID and resource part (nick) in occupantJID variables.

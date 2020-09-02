@@ -10,18 +10,11 @@ interface Istate {
   groupMessage: any,
   senderClass: string,
   from: string,
-  realName: string,
+  MuikkuRealName: string,
   timeStamp: any,
   content: string,
-  showName: boolean,
+  showMuikkuRealName: boolean,
   message: any
-}
-
-declare namespace JSX {
-  interface ElementClass {
-    render: any,
-    converse: any;
-  }
 }
 
 declare global {
@@ -42,23 +35,23 @@ export class PrivateMessage extends React.Component<Iprops, Istate> {
       groupMessage: null,
       senderClass:"",
       from: "",
-      realName: "",
+      MuikkuRealName: "",
       timeStamp: "",
       content: "",
-      showName: false,
+      showMuikkuRealName: false,
       message: []
   }
   this.myRef = null;
   this.showRealName = this.showRealName.bind(this);
   }
   showRealName (){
-    if (this.state.showName === false && window.MUIKKU_IS_STUDENT === false){
+    if (this.state.showMuikkuRealName === false && window.MUIKKU_IS_STUDENT === false){
       this.setState({
-        showName: true
+        showMuikkuRealName: true
       });
     } else{
       this.setState({
-        showName: false
+        showMuikkuRealName: false
       });
     }
   }
@@ -70,7 +63,7 @@ export class PrivateMessage extends React.Component<Iprops, Istate> {
         message: message.message,
         senderClass: message.senderClass,
         from: message.from,
-        realName: message.alt || message.from,
+        MuikkuRealName: message.alt || message.from,
         timeStamp: stamp,
         content: message.content
       });
@@ -83,7 +76,7 @@ export class PrivateMessage extends React.Component<Iprops, Istate> {
         <div className={`chat__message chat__message--${this.state.senderClass}`}>
         <div className="chat__message-meta">
           <span className="chat__message-meta-sender" onClick={this.showRealName}>
-            {this.state.from} {(this.state.showName === true) && <span className="chat__message-meta-sender-real-name">({this.state.realName}) </span>}
+              {this.state.from} {(this.state.showMuikkuRealName === true) && <span className="chat__message-meta-sender-real-name">({this.state.MuikkuRealName}) </span>}
           </span>
           <span className="chat__message-meta-timestamp">
             {new Intl.DateTimeFormat('fi-FI', {
