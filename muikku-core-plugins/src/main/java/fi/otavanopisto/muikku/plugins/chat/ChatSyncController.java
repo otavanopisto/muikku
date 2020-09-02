@@ -176,14 +176,30 @@ public class ChatSyncController {
             String subjectCode = courseMetaController
                 .findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
 
-            String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
+            StringBuilder roomName = new StringBuilder();
+            if (!StringUtils.isBlank(subjectCode)) {
+              roomName.append(subjectCode);
+            }
+            if (workspace.getCourseNumber() != null) {
+              roomName.append(workspace.getCourseNumber());
+            }
+            if (!StringUtils.isBlank(roomName)) {
+              roomName.append(" - ");
+            }
+            // Prefer just name extension but fall back to workspace name if extension is not available
+            if (!StringUtils.isBlank(workspace.getNameExtension())) {
+              roomName.append(workspace.getNameExtension());
+            }
+            else {
+              roomName.append(workspace.getName());
+            }
 
             List<String> broadcastPresenceRolesList = new ArrayList<String>();
             broadcastPresenceRolesList.add("moderator");
             broadcastPresenceRolesList.add("participant");
             broadcastPresenceRolesList.add("visitor");
 
-            chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName, "");
+            chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName.toString(), "");
             chatRoomEntity.setPersistent(true);
             chatRoomEntity.setLogEnabled(true);
             chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
@@ -359,7 +375,7 @@ public class ChatSyncController {
     if (!StringUtils.isBlank(subjectCode)) {
       roomName.append(subjectCode);
     }
-    if (workspace.getCourseNumber() != null && workspace.getCourseNumber() > 0) {
+    if (workspace.getCourseNumber() != null) {
       roomName.append(workspace.getCourseNumber());
     }
     if (!StringUtils.isBlank(roomName)) {
