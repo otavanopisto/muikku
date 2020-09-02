@@ -326,10 +326,6 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     WorkspaceChatStatus status = workspaceChatSettings.getChatStatus();
     if (status != null) {
       WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
