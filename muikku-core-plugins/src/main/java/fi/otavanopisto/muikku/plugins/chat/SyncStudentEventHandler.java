@@ -39,12 +39,12 @@ public class SyncStudentEventHandler {
     String workspaceDataSource = event.getWorkspaceDataSource();
     String workspaceIdentifier = event.getWorkspaceIdentifier();
     
-    WorkspaceEntity workspace = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
     
-    WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspace.getId());
+    WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspaceEntity);
 
     if (workspaceChatStatus != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
-      chatSyncController.syncWorkspaceUser(workspace, user);
+      chatSyncController.syncWorkspaceUser(workspaceEntity, user);
     }
   }
 
@@ -57,12 +57,12 @@ public class SyncStudentEventHandler {
     String workspaceDataSource = event.getWorkspaceDataSource();
     String workspaceIdentifier = event.getWorkspaceIdentifier();
     
-    WorkspaceEntity workspace = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
     
-    WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspace.getId());
+    WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspaceEntity);
     
     if (workspaceChatStatus != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
-      chatSyncController.removeChatRoomMembership(user, workspace);
+      chatSyncController.removeChatRoomMembership(user, workspaceEntity);
     }
   }
   

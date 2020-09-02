@@ -38,6 +38,7 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @Stateless
 public class ChatSyncController {
@@ -50,6 +51,9 @@ public class ChatSyncController {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private CourseMetaController courseMetaController;
@@ -128,16 +132,23 @@ public class ChatSyncController {
         client.createUser(userEntity);
 
         if (userSchoolDataSource == null || userIdentifier == null) {
-          logger.log(Level.WARNING,
-              "No user entity found for identifier " + studentIdentifier.getIdentifier() + ", skipping...");
+          logger.log(Level.WARNING, String.format("No user entity found for identifier %s, skipping...", studentIdentifier.getIdentifier()));
         }
       }
 
-      List<WorkspaceEntity> usersWorkspaces = workspaceController.listWorkspaceEntitiesByUser(userEntityController.findUserEntityByUser(user), false);
+      fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity = userEntityController.findUserEntityByUser(user);
+      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(muikkuUserEntity);
 
-      for (WorkspaceEntity usersWorkspace : usersWorkspaces) {
-        MUCRoomEntity chatRoomEntity = client.getChatRoom(usersWorkspace.getIdentifier());
-        Workspace workspace = workspaceController.findWorkspace(usersWorkspace);
+      for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+        
+        // Ignore workspaces that don't have chat enabled
+        WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
+        if (workspaceChatSettings == null || workspaceChatSettings.getStatus() == WorkspaceChatStatus.DISABLED) {
+          continue;
+        }
+        
+        MUCRoomEntity chatRoomEntity = client.getChatRoom(workspaceEntity.getIdentifier());
+        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
         Set<SchoolDataIdentifier> curriculumIdentifiers = workspace.getCurriculumIdentifiers();
         boolean hasCorrectCurriculums = true;
 
@@ -153,42 +164,40 @@ public class ChatSyncController {
           }
         }
 
-        WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(usersWorkspace.getId());
-       
-        if (workspaceChatSettings != null && workspaceChatSettings.getStatus() == WorkspaceChatStatus.ENABLED) {
-          if (hasCorrectCurriculums) {
-          
-            if (chatRoomEntity == null) {
-              logger.log(Level.INFO, "Syncing chat workspace " + usersWorkspace.getUrlName());
-              if (userIdentifier == null) {
-                logger.log(Level.WARNING, "Invalid workspace identifier " + userIdentifier + ", skipping...");
-                continue;
-              }
-            
-              String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
-              
-              String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
-              
-              List<String> broadcastPresenceRolesList = new ArrayList<String>();
-              broadcastPresenceRolesList.add("moderator");
-              broadcastPresenceRolesList.add("participant");
-              broadcastPresenceRolesList.add("visitor");
+        if (hasCorrectCurriculums) {
 
-              
-              chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName, "");
-              chatRoomEntity.setPersistent(true);
-              chatRoomEntity.setLogEnabled(true);
-              chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
-              client.createChatRoom(chatRoomEntity);
-            }  
-
-            EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
-            if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
-              client.addOwner("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
-            } else {
-              client.addMember("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource +"-"+ userIdentifier);
+          if (chatRoomEntity == null) {
+            logger.log(Level.INFO, "Syncing chat workspace " + workspaceEntity.getUrlName());
+            if (userIdentifier == null) {
+              logger.log(Level.WARNING, "Invalid workspace identifier " + userIdentifier + ", skipping...");
+              continue;
             }
-          } 
+
+            String subjectCode = courseMetaController
+                .findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+
+            String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
+
+            List<String> broadcastPresenceRolesList = new ArrayList<String>();
+            broadcastPresenceRolesList.add("moderator");
+            broadcastPresenceRolesList.add("participant");
+            broadcastPresenceRolesList.add("visitor");
+
+            chatRoomEntity = new MUCRoomEntity("workspace-chat-" + workspace.getIdentifier(), roomName, "");
+            chatRoomEntity.setPersistent(true);
+            chatRoomEntity.setLogEnabled(true);
+            chatRoomEntity.setBroadcastPresenceRoles(broadcastPresenceRolesList);
+            client.createChatRoom(chatRoomEntity);
+          }
+
+          EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(studentIdentifier);
+          if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype())
+              || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
+            client.addOwner("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource + "-" + userIdentifier);
+          }
+          else {
+            client.addMember("workspace-chat-" + workspace.getIdentifier(), userSchoolDataSource + "-" + userIdentifier);
+          }
         }
       }
     }

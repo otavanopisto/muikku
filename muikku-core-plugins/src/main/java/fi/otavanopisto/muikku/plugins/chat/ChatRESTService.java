@@ -10,7 +10,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +19,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,15 +34,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity_;
-import fi.otavanopisto.muikku.model.users.OrganizationEntity;
-import fi.otavanopisto.muikku.model.users.OrganizationEntity_;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
-import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings_;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
@@ -52,11 +45,8 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentRoleEntityController;
-import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -100,22 +90,14 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
-  @Inject 
-  private OrganizationEntity organizationEntity;
-  
-  @Inject 
-  private EnvironmentRoleEntity environmentRoleEntity;
-  
-    
   @GET
   @Path("/prebind")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response fetchPrebindIdentifiers() {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     PrivateKey privateKey = getPrivateKey();
     if (privateKey == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Private key not set").build();
@@ -167,12 +149,8 @@ public class ChatRESTService extends PluginRESTService {
    
   @GET
   @Path("/credentials")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response fetchCredentials() {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-    
     PrivateKey privateKey = getPrivateKey();
     if (privateKey == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Private key not set").build();
@@ -194,12 +172,8 @@ public class ChatRESTService extends PluginRESTService {
 
   @GET
   @Path("/status")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response chatStatus() {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     SchoolDataIdentifier identifier = sessionController.getLoggedUser();
 
     if (identifier == null) {
@@ -281,25 +255,17 @@ public class ChatRESTService extends PluginRESTService {
   
   @GET
   @Path("/settings")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response chatSettingsGet() {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-
     UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
-
     return Response.ok(userChatSettings).build();
   }
+
   @PUT
   @Path("/settings")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateUserChatSettings(UserChatSettings userChatSettings) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
 
     chatSyncController.syncStudent(userIdentifier);
@@ -318,6 +284,7 @@ public class ChatRESTService extends PluginRESTService {
     }
     return Response.ok(findUserChatSettings).build(); 
   }
+  
   private WorkspaceChatSettingsRestModel restModel(WorkspaceChatSettings workspaceChatSettings) {
     WorkspaceChatSettingsRestModel restModel = new WorkspaceChatSettingsRestModel();
     restModel.setWorkspaceEntityId(workspaceChatSettings.getWorkspaceEntityId());
@@ -327,40 +294,30 @@ public class ChatRESTService extends PluginRESTService {
   
   @GET
   @Path("/settings/{userIdentifier}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getNick(@PathParam("userIdentifier") String identifierString) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString);
-
     UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
-
     return Response.ok(userChatSettings).build();
   }
 
   @GET
-  @Path("/workspaceChatSettings/{WorkspaceEntityId}")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response workspaceChatSettingsGet(@PathParam("WorkspaceEntityId") Long workspaceEntityId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+  @Path("/workspaceChatSettings/{workspaceEntityId}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response workspaceChatSettingsGet(@PathParam("workspaceEntityId") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity != null) {
+      WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
+      if (workspaceChatSettings != null) {
+        return Response.ok(workspaceChatSettings.getStatus()).build();
+      }
     }
-    
-    WorkspaceChatSettings workspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
-    
-    if (workspaceChatSettings == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    WorkspaceChatStatus workspaceChatStatus = workspaceChatSettings.getStatus();
-    
-    return Response.ok(workspaceChatStatus).build();
+    return Response.ok(WorkspaceChatStatus.DISABLED).build();
   }
   
   @PUT
   @Path("/workspaceChatSettings/{WorkspaceEntityId}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS)
   public Response createOrUpdateWorkspaceChatSettings(@PathParam("WorkspaceEntityId") Long workspaceEntityId, WorkspaceChatSettingsRestModel workspaceChatSettings) {
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -368,19 +325,16 @@ public class ChatRESTService extends PluginRESTService {
     if (!workspaceEntityId.equals(workspaceChatSettings.getWorkspaceEntityId())) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
+
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
     WorkspaceChatStatus status = workspaceChatSettings.getChatStatus();
     if (status != null) {
-      WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntityId);
+      WorkspaceChatSettings findWorkspaceChatSettings = chatController.findWorkspaceChatSettings(workspaceEntity);
       if (findWorkspaceChatSettings == null) {
-        findWorkspaceChatSettings = chatController.createWorkspaceChatSettings(workspaceEntityId, status);
+        findWorkspaceChatSettings = chatController.createWorkspaceChatSettings(workspaceEntity, status);
       }
       else {
         findWorkspaceChatSettings = chatController.updateWorkspaceChatSettings(findWorkspaceChatSettings, status);
@@ -400,12 +354,8 @@ public class ChatRESTService extends PluginRESTService {
   
   @GET
   @Path("/affiliations/")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response chatUserAffiliations(@QueryParam("roomName") String roomName) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-    
     //SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     List<String> roles = new ArrayList<String>();
     roles.add("ADMINISTRATOR");

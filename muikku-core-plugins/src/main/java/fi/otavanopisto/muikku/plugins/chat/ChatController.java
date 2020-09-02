@@ -48,12 +48,12 @@ public class ChatController {
     return userChatSettingsDAO.updateNick(settings, nick);
   }
   
-  public WorkspaceChatSettings findWorkspaceChatSettings(Long workspaceEntityId) {
-    return workspaceChatSettingsDAO.findByWorkspace(workspaceEntityId);
+  public WorkspaceChatSettings findWorkspaceChatSettings(WorkspaceEntity workspaceEntity) {
+    return workspaceChatSettingsDAO.findByWorkspace(workspaceEntity.getId());
   }
 
-  public WorkspaceChatSettings createWorkspaceChatSettings(Long workspaceEntity, WorkspaceChatStatus status) {    
-    return workspaceChatSettingsDAO.create(workspaceEntity, status);
+  public WorkspaceChatSettings createWorkspaceChatSettings(WorkspaceEntity workspaceEntity, WorkspaceChatStatus status) {    
+    return workspaceChatSettingsDAO.create(workspaceEntity.getId(), status);
   }
 
   public WorkspaceChatSettings updateWorkspaceChatSettings(WorkspaceChatSettings settings, WorkspaceChatStatus status) {
