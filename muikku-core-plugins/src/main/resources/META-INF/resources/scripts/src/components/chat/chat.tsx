@@ -120,8 +120,8 @@ export class Chat extends React.Component<Iprops, Istate> {
     this.createAndJoinChatRoom = this.createAndJoinChatRoom.bind(this);
     this.toggleControlBox = this.toggleControlBox.bind(this);
     this.toggleCreateChatRoomForm = this.toggleCreateChatRoomForm.bind(this);
-    this.onOpenChat = this.onOpenChat.bind(this);
-    this.onOpenPrivateChat = this.onOpenPrivateChat.bind(this);
+    this.toggleJoinLeaveChatRoom = this.toggleJoinLeaveChatRoom.bind(this);
+    this.toggleJoinLeavePrivateChat = this.toggleJoinLeavePrivateChat.bind(this);
     this.getUserAvailability = this.getUserAvailability.bind(this);
     this.setUserAvailability = this.setUserAvailability.bind(this);
     this.getPyramusUserID = this.getPyramusUserID.bind(this);
@@ -181,7 +181,7 @@ export class Chat extends React.Component<Iprops, Istate> {
     }
   }
   // Toggle Private Message Window
-  async onOpenPrivateChat(occupant: any) {
+  async toggleJoinLeavePrivateChat(occupant: any) {
     let openChatsList = this.state.openChats;
     let newPrivateChatData = this.state.privateChatData;
 
@@ -368,8 +368,8 @@ export class Chat extends React.Component<Iprops, Istate> {
       });
     }
   }
-  //
-  async onOpenChat (RoomJID: string) {
+  // Toggles between joining and leaving the chat room
+  async toggleJoinLeaveChatRoom (RoomJID: string) {
     let openChatsList = this.state.openChats;
 
     // Check whether current RoomJID is allready part of openChatList
@@ -531,14 +531,14 @@ export class Chat extends React.Component<Iprops, Istate> {
             <div className="chat__controlbox-rooms-heading">Kurssikohtaiset huoneet: </div>
             <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
               {this.getWorkspaceMucRooms().length > 0 ?
-                this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList modifier="workspace" onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
+                this.getWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList modifier="workspace" toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
               : <div className="chat__controlbox-room  chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
             <div className="chat__controlbox-rooms-heading">Muut huoneet:</div>
             <div className="chat__controlbox-rooms-listing">
             {this.getNotWorkspaceMucRooms().length > 0 ?
-              this.getNotWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList onOpenChat={this.onOpenChat} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
+                this.getNotWorkspaceMucRooms().map((chat: any, i: any) => <RoomsList toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} key={i} chat={chat} orderNumber={i} converse={this.state.converse}/>)
             : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
@@ -571,11 +571,11 @@ export class Chat extends React.Component<Iprops, Istate> {
         {/* Chatrooms */}
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat: any, i: any) => this.state.openChats.includes(chat.RoomJID) ?
-            <Groupchat key={i} onOpenPrivateChat={this.onOpenPrivateChat.bind(this)} onOpenChat={this.onOpenChat} PyramusUserID={this.state.PyramusUserID} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>
+            <Groupchat key={i} toggleJoinLeavePrivateChat={this.toggleJoinLeavePrivateChat.bind(this)} toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} PyramusUserID={this.state.PyramusUserID} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.state.converse}/>
           : null)}
 
           {this.state.privateChatData.map((privateChatData: any, i: any) => this.state.openChats.includes(privateChatData.BareJID) ?
-            <PrivateMessages key={i} onOpenPrivateChat={this.onOpenPrivateChat} privateChatData={privateChatData} converse={this.state.converse} />
+            <PrivateMessages key={i} toggleJoinLeavePrivateChat={this.toggleJoinLeavePrivateChat} privateChatData={privateChatData} converse={this.state.converse} />
           : null)}
         </div>
       </div>

@@ -12,8 +12,8 @@ interface Iprops{
   orderNumber?: any,
   showChatbox?: any,
   chatObject?: any,
-  onOpenChat?: any,
-  onOpenPrivateChat?: any,
+  toggleJoinLeaveChatRoom?: any,
+  toggleJoinLeavePrivateChat?: any,
   removeMessage?: any,
   PyramusUserID?: any,
 }
@@ -89,7 +89,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.myRef = null;
     this.sendMessageToChatRoom = this.sendMessageToChatRoom.bind(this);
     this.openMucConversation = this.openMucConversation.bind(this);
-    this.openChatRoomSettings = this.openChatRoomSettings.bind(this);
+    this.toggleChatRoomSettings = this.toggleChatRoomSettings.bind(this);
     this.setChatRoomConfiguration = this.setChatRoomConfiguration.bind(this);
     this.sendChatRoomConfiguration = this.sendChatRoomConfiguration.bind(this);
     this.toggleMinimizeChats = this.toggleMinimizeChats.bind(this);
@@ -335,7 +335,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.scrollToBottom.bind(this, "smooth");
   }
   // Open chat room settings
-  openChatRoomSettings(){
+  toggleChatRoomSettings(){
     if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false) {
       this.setState({
         openChatSettings: true,
@@ -588,7 +588,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       return false;
     }
   }
-  // Check which chat room type
+  // Check whether chat room is for workspace or environment level
+  // Workspace gets chat room automatically via workspace management chat settings
   isWorkspaceChatRoom(RoomJID: any){
     if (RoomJID.startsWith("workspace-")){
       this.setState({
@@ -624,23 +625,28 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       }
 
       this.isWorkspaceChatRoom(this.props.chat.RoomJID);
-      this.props.converse.api.waitUntil('roomsAutoJoined').then(async() => {
-        this.openMucConversation(this.props.chat.RoomJID);
-        this.state.converse.api.listen.on('onChatReconnected', (chatbox:any) => { this.getMUCMessages(chatbox) });
-        let room = await this.props.converse.api.rooms.get(this.state.RoomJID);
 
-        if(room){
-          room.listenTo(room.occupants, 'add', this.getOccupants);
-          room.listenTo(room.occupants, 'destroy', this.getOccupants);
+      this.props.converse.api.waitUntil('chatBoxesFetched').then(async() => {
+        this.openMucConversation(this.props.chat.RoomJID);
+        this.state.converse.api.listen.on('chatRoomInitialized', (chatbox: any) => {
+          this.getMUCMessages(chatbox)
+        });
+
+        let chatRoom = await this.props.converse.api.rooms.get(this.state.RoomJID);
+
+        if(chatRoom){
+          chatRoom.listenTo(chatRoom.occupants, 'add', this.getOccupants);
+          chatRoom.listenTo(chatRoom.occupants, 'destroy', this.getOccupants);
         }
-        this.scrollToBottom.bind(this, "auto");
       });
+
     }
 
-    // Lets get minimizedChats sessionStorage value and set it to coresponding state (minimizedChats)
+
+    // Getting minimizedChats sessionStorage value and set it to coresponding state (minimizedChats)
     let minimizedChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
-    // Lets get showOccupantsList sessionStorage value and set it to coresponding state
+    // Getting showOccupantsList sessionStorage value and set it to coresponding state
     let showOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || []
 
     if (showOccupantsFromSessionStorage) {
@@ -664,18 +670,18 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
 
     this.props.converse.api.listen.on('message', this.handleIncomingMessages);
-    this.props.converse.api.listen.on('membersFetched', this.getOccupants );
+    this.props.converse.api.listen.on('membersFetched', this.getOccupants);
   }
   render(){
     let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
-    let messages = this.state.groupMessages;
+
     return  (
       <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
         {this.state.minimized === true ? (
           <div className={`chat__minimized chat__minimized--${chatRoomTypeClassName}`}>
             <div onClick={() => this.toggleMinimizeChats(this.state.RoomJID)} className="chat__minimized-title">{this.state.RoomName}</div>
-            <div onClick={() => this.props.onOpenChat(this.state.RoomJID)} className="chat__button chat__button--close icon-cross"></div>
+            <div onClick={() => this.props.toggleJoinLeaveChatRoom(this.state.RoomJID)} className="chat__button chat__button--close icon-cross"></div>
           </div>
         ) : (
           <div className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
@@ -683,14 +689,14 @@ export class Groupchat extends React.Component<Iprops, Istate> {
               <div className="chat__panel-header-title">{this.state.RoomName}</div>
               <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-users"></div>
               <div onClick={() => this.toggleMinimizeChats(this.state.RoomJID)} className="chat__button chat__button--minimize icon-minus"></div>
-              {(!this.state.isStudent) && <div onClick={() => this.openChatRoomSettings()} className="chat__button chat__button--room-settings icon-cogs"></div>}
-                <div onClick={() => this.props.onOpenChat(this.state.RoomJID)} className="chat__button chat__button--close icon-cross"></div>
+                {(!this.state.isStudent) && <div onClick={() => this.toggleChatRoomSettings()} className="chat__button chat__button--room-settings icon-cogs"></div>}
+                <div onClick={() => this.props.toggleJoinLeaveChatRoom(this.state.RoomJID)} className="chat__button chat__button--close icon-cross"></div>
             </div>
 
             {(this.state.openChatSettings === true) && <div className="chat__subpanel">
               <div className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}>
                 <div className="chat__subpanel-title">Huoneen asetukset</div>
-                <div onClick={() => this.openChatRoomSettings()} className="chat__button chat__button--close icon-cross"></div>
+                  <div onClick={() => this.toggleChatRoomSettings()} className="chat__button chat__button--close icon-cross"></div>
               </div>
               <div className="chat__subpanel-body">
                   <form onSubmit={this.setChatRoomConfiguration}>
@@ -725,13 +731,13 @@ export class Groupchat extends React.Component<Iprops, Istate> {
                 <div className="chat__occupants-staff">
                   {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
                   {this.state.staffOccupants.map((staffOccupant: any, i: any) =>
-                  <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(staffOccupant)} key={i}>
+                    <div className="chat__occupants-item" onClick={() => this.props.toggleJoinLeavePrivateChat(staffOccupant)} key={i}>
                     <span className={"chat__online-indicator chat__occupant-"+staffOccupant.status}></span>{staffOccupant.MuikkuNickName}</div>)}
                 </div>
                 <div className="chat__occupants-student">
                   {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
                   {this.state.studentOccupants.map((studentOccupant: any, i: any) =>
-                  <div className="chat__occupants-item" onClick={() => this.props.onOpenPrivateChat(studentOccupant)} key={i}>
+                    <div className="chat__occupants-item" onClick={() => this.props.toggleJoinLeavePrivateChat(studentOccupant)} key={i}>
                       <span className={"chat__online-indicator chat__occupant-" + studentOccupant.status}></span>{studentOccupant.MuikkuNickName}</div>)}
                 </div>
               </div>}

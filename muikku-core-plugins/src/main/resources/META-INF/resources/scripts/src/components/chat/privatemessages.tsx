@@ -9,8 +9,7 @@ import promisify, { promisifyNewConstructor } from '~/util/promisify';
 interface Iprops {
   chat?: any,
   converse?: any,
-  onOpenPrivateChat?: any,
-  openPrivateChat?: any,
+  toggleJoinLeavePrivateChat?: any,
   BareJID?: any,
   privateChatData?: any
 }
@@ -359,14 +358,14 @@ export class PrivateMessages extends React.Component<Iprops, Istate> {
         {this.state.minimized === true ? (
           <div onClick={() => this.toggleMinimizeChats(this.state.RoomJID)} className={this.state.messageNotification === true ? "chat__minimized chat__minimized--private chat__nofication--private" : "chat__minimized chat__minimized--private"}>
             <div className="chat__minimized-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
-            <div onClick={() => this.props.onOpenPrivateChat(this.state.privateChatData.data)} className="chat__button chat__button--close icon-cross"></div>
+            <div onClick={() => this.props.toggleJoinLeavePrivateChat(this.state.privateChatData.data)} className="chat__button chat__button--close icon-cross"></div>
           </div>
         ) : (
           <div className="chat__panel chat__panel--private">
             <div className="chat__panel-header chat__panel-header--private">
               <div className="chat__panel-header-title">{this.state.fnTo + " '" + this.state.nickTo + "' " + this.state.lnTo}</div>
                 <div onClick={() => this.toggleMinimizeChats(this.state.RoomJID)} className="chat__button chat__button--minimize icon-minus"></div>
-                <div onClick={() => this.props.onOpenPrivateChat(this.state.privateChatData.data)} className="chat__button chat__button--close icon-cross"></div>
+                <div onClick={() => this.props.toggleJoinLeavePrivateChat(this.state.privateChatData.data)} className="chat__button chat__button--close icon-cross"></div>
             </div>
 
             <div className="chat__panel-body chat__panel-body--chatroom">

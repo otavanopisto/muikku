@@ -6,7 +6,7 @@ interface Iprops{
   chat?: any,
   converse?: any,
   orderNumber?: any,
-  onOpenChat?:any,
+  toggleJoinLeaveChatRoom?:any,
   chatObject?:any,
   modifier?: string
 }
@@ -79,7 +79,7 @@ export class RoomsList extends React.Component<Iprops, Istate> {
     return (
       <div className="chat__controlbox-room">
         <div className={`chat__controlbox-room-action ${roomActionModifier} icon-arrow-right`}  onClick={() => this.toggleRoomInfo()}></div>
-          <div className="chat__controlbox-room-name" onClick={() => this.props.onOpenChat(this.state.RoomJID)}>
+        <div className="chat__controlbox-room-name" onClick={() => this.props.toggleJoinLeaveChatRoom(this.state.RoomJID)}>
             {this.state.RoomName}
           </div>
           { (this.state.showRoomInfo === true) && <div className="chat__controlbox-room-description"><p>{this.state.RoomDesc}</p></div> }
