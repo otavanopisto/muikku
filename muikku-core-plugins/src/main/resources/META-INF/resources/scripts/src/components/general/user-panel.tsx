@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
-import { UserWithSchoolDataType } from "~/reducers/user-index";
+import { UserType } from "~/reducers/user-index";
 import Avatar from "~/components/general/avatar";
 import StudentDialog from '~/components/organization/dialogs/edit-student';
 import StaffDialog from '~/components/organization/dialogs/edit-staff';
@@ -9,12 +9,13 @@ import { getName } from "~/util/modifiers";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemContentData } from "~/components/general/application-list";
 import '~/sass/elements/application-list.scss';
+import { UsersType } from '~/reducers/main-function/users';
 
 
 
 interface UserPanelProps {
   i18n: i18nType,
-  users: Array<UserWithSchoolDataType>,
+  users: Array<UserType>,
   title: string
 }
 
@@ -37,7 +38,7 @@ export default class UserPanel extends React.Component<UserPanelProps, UserPanel
               firstName: user.firstName,
               lastName: user.lastName,
               email: user.email,
-              identifier: user.id,
+              id: user.id,
               role: user.role ? user.role : "STUDENT",
               studyProgrammeIdentifier: user.studyProgrammeIdentifier
             }

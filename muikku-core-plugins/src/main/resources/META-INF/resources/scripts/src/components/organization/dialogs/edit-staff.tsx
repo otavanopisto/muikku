@@ -2,23 +2,23 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow } from '~/components/general/dialog';
 import { FormActionsElement, EmailFormElement, InputFormElement, SSNFormElement, SelectFormElement } from '~/components/general/form-element';
-import { updateStaffmember, ApplyStaffmemberTriggerType } from '~/actions/main-function/users';
+import { updateStaffmember, UpdateStaffmemberTriggerType } from '~/actions/main-function/users';
 import { AnyActionType } from '~/actions';
 import notificationActions from '~/actions/base/notifications';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { StatusType } from '~/reducers/base/status';
 import { bindActionCreators } from 'redux';
-import { StudyprogrammeTypes, UserUpdateType, } from '~/reducers/main-function/users';
-import { ManipulateType } from '~/reducers/user-index';
+import { StudyprogrammeTypes } from '~/reducers/main-function/users';
+import { UserType } from '~/reducers/user-index';
 
 interface OrganizationUserProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   status: StatusType,
-  data?: UserUpdateType,
-  studyprogrammes: StudyprogrammeTypes;
-  updateStaffmember: ApplyStaffmemberTriggerType
+  data?: UserType,
+  studyprogrammes: StudyprogrammeTypes,
+  updateStaffmember: UpdateStaffmemberTriggerType
 }
 
 interface OrganizationUserState {
@@ -38,7 +38,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     this.state = {
       user: {
         role: this.props.data.role,
-        identifier: this.props.data.identifier,
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
         email: this.props.data.email
@@ -87,7 +86,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
 
 
     let data = {
-      identifier: this.props.data.identifier,
+      identifier: this.props.data.id,
       firstName: this.state.user.firstName,
       lastName: this.state.user.lastName,
       email: this.state.user.email,

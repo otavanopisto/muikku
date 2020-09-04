@@ -2,24 +2,25 @@ import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
 export type ManipulateType = "UPDATE" | "CREATE";
 
-export interface ManipulateStudentType {
-  identifier?: string,
+
+export interface CreateUserType {
   firstName: string,
   lastName: string,
-  studyProgrammeIdentifier: string,
   email: string,
-  gender?: "MALE" | "FEMALE" | "OTHER",
+  studyProgrammeIdentifier?: string,
+  role?: string,
   ssn?: string
 }
 
-export interface ManipulateStaffmemberType {
-  identifier?: string,
+export interface UpdateUserType {
+  identifier: number,
   firstName: string,
   lastName: string,
   email: string,
-  role: string
+  role?: string,
+  studyProgrammeIdentifier?: string,
+  ssn?: string
 }
-
 
 export interface UserType {
   id: number,
@@ -34,19 +35,20 @@ export interface UserType {
   organizationIdentifier?: string,
 
   //EXTENDED VALUES, may or may not be available
+  role?: string,
+  ssn?: string,
   email?: string,
   language?: string,
   municipality?: string,
   nationality?: string,
   school?: string,
   studyStartDate?: string,
-  studyTimeEnd?: string
+  studyTimeEnd?: string,
+  userEntityId?: number
 }
-
 
 export interface UserWithSchoolDataType {
   curriculumIdentifier?: string,
-  studyProgrammeIdentifier?: string,
   email: string,
   firstName: string,
   hasImage: boolean,
@@ -57,7 +59,6 @@ export interface UserWithSchoolDataType {
   nationality?: string,
   nickName?: string,
   school?: string,
-  role?: string,
   studyEndDate?: string,
   studyProgrammeName?: string,
   studyStartDate?: string,

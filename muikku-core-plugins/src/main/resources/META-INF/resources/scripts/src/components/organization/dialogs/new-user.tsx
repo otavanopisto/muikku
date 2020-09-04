@@ -2,24 +2,24 @@ import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import Dialog, { DialogRow } from '~/components/general/dialog';
 import { FormActionsElement, EmailFormElement, InputFormElement, SSNFormElement, SelectFormElement } from '~/components/general/form-element';
-import { createStudent, createStaffmember, ApplyStaffmemberTriggerType, ApplyStudentTriggerType } from '~/actions/main-function/users';
+import { createStudent, createStaffmember, CreateStaffmemberTriggerType, CreateStudentTriggerType } from '~/actions/main-function/users';
 import { AnyActionType } from '~/actions';
 import notificationActions from '~/actions/base/notifications';
 import { i18nType } from '~/reducers/base/i18n';
 import { StateType } from '~/reducers';
 import { StatusType } from '~/reducers/base/status';
 import { bindActionCreators } from 'redux';
-import { StudyprogrammeTypes, UserUpdateType, } from '~/reducers/main-function/users';
-import { ManipulateType } from '~/reducers/user-index';
+import { StudyprogrammeTypes } from '~/reducers/main-function/users';
+import { CreateUserType } from '~/reducers/user-index';
 
 interface OrganizationUserProps {
   children?: React.ReactElement<any>,
   i18n: i18nType,
   status: StatusType,
-  data?: UserUpdateType,
+  data?: CreateUserType,
   studyprogrammes: StudyprogrammeTypes;
-  createStudent: ApplyStudentTriggerType,
-  createStaffmember: ApplyStaffmemberTriggerType
+  createStudent: CreateStudentTriggerType,
+  createStaffmember: CreateStaffmemberTriggerType
 }
 
 interface OrganizationUserState {
@@ -37,7 +37,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
   constructor(props: OrganizationUserProps) {
     super(props);
     this.state = {
-      user: { role: "STUDENT" },
+      user: { role: "STUDENT", studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier },
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
@@ -54,14 +54,18 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     this.setState({ user: newState });
   }
 
-  cancelDialog(closeDialog: () => any) {
+  clearComponentState() {
     this.setState({
-      user:{role: "STUDENT"},
+      user: { role: "STUDENT", studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier },
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
       studyProgrammeIdentifierValid: 2
     });
+  }
+
+  cancelDialog(closeDialog: () => any) {
+    this.clearComponentState();
     closeDialog();
   }
 
@@ -105,16 +109,11 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           student: data,
           success: () => {
             closeDialog();
-            this.setState({
-              user: { role: "STUDENT" },
-              firstNameValid: 2,
-              lastNameValid: 2,
-              emailValid: 2,
-              studyProgrammeIdentifierValid: 2
-            });
+            this.clearComponentState();
           },
           fail: () => {
             closeDialog();
+            this.clearComponentState();
           }
         });
       }
@@ -138,9 +137,11 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
               studyProgrammeIdentifierValid: 2
             });
             closeDialog();
+            this.clearComponentState();
           },
           fail: () => {
             closeDialog();
+            this.clearComponentState();
           }
         });
       }

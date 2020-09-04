@@ -1,8 +1,8 @@
 import { ActionType } from "~/actions";
-import { UserWithSchoolDataType } from '~/reducers/user-index';
+import { UserWithSchoolDataType, UserType } from '~/reducers/user-index';
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type StudyprogrammeTypeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
-export type UsersListType = Array<UserWithSchoolDataType>;
+export type UsersListType = Array<UserType>;
 export type StudyprogrammeListType = Array<StudyprogrammeType>;
 
 export interface StudyprogrammeTypes {
@@ -13,16 +13,6 @@ export interface StudyprogrammeTypes {
 export interface StudyprogrammeType {
   identifier: string,
   name: string
-}
-
-export interface UserUpdateType {
-  firstName: string,
-  lastName: string,
-  identifier: string,
-  email: string,
-  role: string,
-  ssn?: string,
-  studyProgrammeIdentifier?: string
 }
 
 export interface UsersType {
