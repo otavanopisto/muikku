@@ -66,6 +66,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
+    this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.itsFirstTime = true;
     this.loadedLibs = [];
 
@@ -449,6 +450,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       <Route path="/announcer" render={this.renderAnnouncerBody}/>
       <Route path="/guider" render={this.renderGuiderBody}/>
       <Route path="/profile" render={this.renderProfileBody}/>
+      <Route path="/records" render={this.renderRecordsBody} />
       <Chat/>
 
     </div></BrowserRouter>);
