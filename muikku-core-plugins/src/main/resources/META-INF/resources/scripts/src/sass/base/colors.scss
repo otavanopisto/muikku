@@ -92,8 +92,8 @@ $color-message-from-workspace-background: #f5f5f5;
 $color-evaluation-request: $color-primary;
 $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
-$color-grade-passed: #2ed31c;
-$color-grade-failed: #4c4c4c;
+$color-grade-passed: #24c118;
+$color-grade-failed: #de3211;
 $color-task-evaluation: #e2ffe2;
 
 // Wizard
@@ -109,7 +109,8 @@ $color-submitted: #009fe3;
 $color-view-restricted: $color-fatal;
 $color-passed: #24c118;
 $color-failed: #de3211;
-$color-incomplete: #ff6600;
+$color-pending: #009fe3;
+$color-incomplete: #ea7503;
 $color-example: #e2ffe2;
 $color-correct-answer: #43f860;
 $color-incorrect-answer: #f64e4e;

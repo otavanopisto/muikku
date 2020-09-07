@@ -13,6 +13,7 @@ import '~/sass/elements/assignment.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/journal.scss';
+import '~/sass/elements/workspace-assessment.scss';
 
 import ApplicationList, { ApplicationListItem, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
 import { StatusType } from '~/reducers/base/status';
@@ -38,48 +39,91 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
       return null;
     }
 
-    let assesmentStateClassName = "";
+    let evalStateClassName = "";
+    let evalStateIcon = "";
+    let assessmentIsPending = null;
+    let assessmentIsIncomplete = null;
     if (this.props.records.current.workspace.studentAssessmentState) {
       switch (this.props.records.current.workspace.studentAssessmentState.state) {
         case "pass":
-          assesmentStateClassName = "PASSED";
+          evalStateClassName = "workspace-assessment--passed";
+          evalStateIcon = "icon-thumb-up";
           break;
         case "pending":
         case "pending_pass":
         case "pending_fail":
-          assesmentStateClassName = "PENDING";
+          evalStateClassName = "workspace-assessment--pending";
+          evalStateIcon = "icon-assessment-pending";
+          assessmentIsPending = true;
           break;
         case "fail":
-          assesmentStateClassName = "FAILED";
+          evalStateClassName = "workspace-assessment--failed";
+          evalStateIcon = "icon-thumb-down";
           break;
         case "incomplete":
-          assesmentStateClassName = "INCOMPLETE";
+          evalStateClassName = "workspace-assessment--incomplete";
+          evalStateIcon = "";
+          assessmentIsIncomplete = true;
           break;
       }
     }
 
-    let workspaceEvaluation = this.props.records.current.workspace.studentAssessmentState &&
-      this.props.records.current.workspace.studentAssessmentState.text ?
-      <div dangerouslySetInnerHTML={{ __html: this.props.records.current.workspace.studentAssessmentState.text }}
-        className={`rich-text application-sub-panel__text application-sub-panel__text--course-evaluation state-${assesmentStateClassName}`} /> : null;
+    let literalAssessment = this.props.records.current.workspace.studentAssessmentState &&
+      this.props.records.current.workspace.studentAssessmentState.text ? this.props.records.current.workspace.studentAssessmentState.text : null;
+
+
+
     return <div className="react-container">
       <div className="application-panel__content-header" key={this.props.records.current.workspace.id}>
         {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
       </div>
       <div className="application-sub-panel">
+
+        {this.props.records.current.workspace.studentAssessmentState && !assessmentIsPending ?
+          <div className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}>
+            <div className={`workspace-assessment__icon ${evalStateIcon}`}></div>
+            <div className="workspace-assessment__date">
+              <span className="workspace-assessment__date-label">{this.props.i18n.text.get("plugin.records.workspace.assessment.date.label")}:</span>
+              <span className="workspace-assessment__date-data">{this.props.i18n.time.format(this.props.records.current.workspace.studentAssessmentState.date)}</span>
+            </div>
+            <div className="workspace-assessment__grade">
+              <span className="workspace-assessment__grade-label">{this.props.i18n.text.get("plugin.records.workspace.assessment.grade.label")}:</span>
+              <span className="workspace-assessment__grade-data">{assessmentIsIncomplete ? this.props.i18n.text.get("plugin.records.workspace.assessment.grade.incomplete.data") : this.props.records.current.workspace.studentAssessmentState.grade}</span>
+            </div>
+            <div className="workspace-assessment__literal">
+              <div className="workspace-assessment__literal-label">{this.props.i18n.text.get("plugin.records.workspace.assessment.literal.label")}:</div>
+              <div className="workspace-assessment__literal-data rich-text" dangerouslySetInnerHTML={{ __html: literalAssessment }}></div>
+            </div>
+          </div>
+          :
+          <div className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}>
+            <div className={`workspace-assessment__icon ${evalStateIcon}`}></div>
+            <div className="workspace-assessment__date">
+              <span className="workspace-assessment__date-label">{this.props.i18n.text.get("plugin.records.workspace.assessment.date.label")}:</span>
+              <span className="workspace-assessment__date-data">{this.props.i18n.time.format(this.props.records.current.workspace.studentAssessmentState.date)}</span>
+            </div>
+            <div className="workspace-assessment__literal">
+              <div className="workspace-assessment__literal-label">{this.props.i18n.text.get("plugin.records.workspace.assessment.request.label")}:</div>
+              <div className="workspace-assessment__literal-data rich-text" dangerouslySetInnerHTML={{ __html: literalAssessment }}></div>
+            </div>
+          </div>
+        }
+
+        <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
-          {workspaceEvaluation}
           <ApplicationList>
-            <div className="application-list__header"><h3 className="application-list__title">{this.props.i18n.text.get("plugin.records.assignments.title")}</h3></div>
             {this.props.records.current.materials.map((material) => {
               return <Material key={material.id} material={material} i18n={this.props.i18n}
                 workspace={this.props.records.current.workspace}
                 status={this.props.status} />
             })}
           </ApplicationList>
-
-          {this.props.records.current.journals.length ? <div className="application-list">
-            <div className="application-list__header"><h3 className="application-list__title">{this.props.i18n.text.get("plugin.records.studydiary.title")}</h3></div>
+        </div>
+      </div>
+      {this.props.records.current.journals.length ? <div className="application-sub-panel">
+        <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.studydiary.title")}</div>
+        <div className="application-sub-panel__body application-sub-panel__body--studies-journal-entries">
+          <div className="application-list">
             <div className="application-list_item-wrapper">
               {this.props.records.current.journals.map((journal) => {
                 return <ApplicationListItem className="journal journal--studies" key={journal.id}>
@@ -97,10 +141,10 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
                 </ApplicationListItem>
               })}
             </div>
-          </div> : null}
+          </div>
         </div>
+      </div>: null}
 
-      </div>
     </div>
   }
 }

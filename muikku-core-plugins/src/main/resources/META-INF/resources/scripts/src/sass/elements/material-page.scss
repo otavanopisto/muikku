@@ -1767,6 +1767,11 @@ mark[data-muikku-word-definition] {
   padding: 0 10px 0 0;
 }
 
+.material-page__assignment-assessment-date-data {
+  @include assessment-text;
+  line-height: 1.375rem;
+}
+
 // MATERIAL PAGE FIELD ANSWER SYNCHRONIZER
 .material-page__field-answer-synchronizer {
   border-radius: 3px;
