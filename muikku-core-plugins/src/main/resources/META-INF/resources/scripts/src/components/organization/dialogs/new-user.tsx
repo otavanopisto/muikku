@@ -27,6 +27,7 @@ interface OrganizationUserState {
     [field: string]: string,
   },
   locked: boolean,
+  executing: boolean,
   firstNameValid: number,
   lastNameValid: number,
   emailValid: number,
@@ -40,6 +41,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     this.state = {
       user: { role: "STUDENT", studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier },
       locked: false,
+      executing: false,
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
@@ -63,7 +65,8 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       lastNameValid: 2,
       emailValid: 2,
       studyProgrammeIdentifierValid: 2,
-      locked: false
+      locked: false,
+      executing: false
     });
   }
 
@@ -102,7 +105,8 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       if (valid) {
 
         this.setState({
-          locked: true
+          locked: true,
+          executing: true
         });
 
         let data = {
@@ -129,7 +133,8 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       if (valid) {
 
         this.setState({
-          locked: true
+          locked: true,
+          executing: true
         });
 
         let data = {
@@ -159,7 +164,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         });
       }
     }
-
   }
 
   render() {
@@ -195,7 +199,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     let footer = (closePortal: () => any) => <FormActionsElement locked={this.state.locked} executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
-    return (<Dialog modifier="new-user"
+    return (<Dialog executing={this.state.executing} modifier="new-user"
       title={this.props.i18n.text.get('plugin.organization.users.addUser.title')}
       content={content} footer={footer}>
       {this.props.children}

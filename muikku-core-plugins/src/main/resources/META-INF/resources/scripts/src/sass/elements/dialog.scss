@@ -102,6 +102,20 @@
   max-width: none;
 }
 
+.dialog__overlay {
+  position: absolute;
+  bottom: 0;
+  z-index: 1000;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  left: 0;
+  background-color: #fff;
+  opacity: 0.9;
+}
+
 .dialog__container {
   align-items: flex-start;
   display: flex;
