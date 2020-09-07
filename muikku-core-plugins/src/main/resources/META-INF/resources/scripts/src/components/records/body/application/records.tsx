@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as queryString from 'query-string';
 import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/activity-badge.scss';
@@ -13,15 +11,11 @@ import '~/sass/elements/file-uploader.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
+import { WorkspaceType, WorkspaceAssessementStateType } from '~/reducers/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/user-index';
 import { StateType } from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
 import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
-import { MatriculationLink } from './matriculation-link';
-import { StatusType } from '~/reducers/base/status';
-import moment from '~/lib/moment';
-
 
 interface RecordsProps {
   i18n: i18nType,
@@ -229,22 +223,22 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
     return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
       <div className="application-panel__content-header">{this.props.i18n.text.get("plugin.records.records.title")}</div>
-      <MatriculationLink i18n={this.props.i18n} />
 
       {studentRecords}
       <div className="application-sub-panel">
         <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
         <div className="application-sub-panel__body">
           {this.props.records.files.length ?
-            <ApplicationList className="uploaded-files text">
+            <ApplicationList>
               {this.props.records.files.map((file) => {
-                return <ApplicationListItem className="uploaded-files__item" key={file.id}>
-                  <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
-                  <Link className="uploaded-files__item-title" href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
+                return <ApplicationListItem className="application-list__item--studies-file-attacment" key={file.id}>
+                  <Link className="studies-file-attachment" href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
                 </ApplicationListItem>
               })}
             </ApplicationList> :
-            <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.records.files.empty")}</div>
+            <ApplicationListItem className="application-list__item--studies-file-attacment">
+              {this.props.i18n.text.get("plugin.records.files.empty")}
+            </ApplicationListItem>
           }
         </div>
       </div>

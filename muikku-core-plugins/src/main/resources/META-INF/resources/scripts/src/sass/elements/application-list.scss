@@ -241,6 +241,11 @@
   width: 100%;
 }
 
+.application-list__item--studies-file-attacment {
+  padding: 5px 10px;
+  width: 100%;
+}
+
 .application-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   align-items: center;
