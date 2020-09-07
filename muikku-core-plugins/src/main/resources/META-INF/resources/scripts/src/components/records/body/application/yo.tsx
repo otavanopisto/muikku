@@ -80,7 +80,9 @@ class YO extends React.Component<YOProps, YOState> {
               <div className="application-sub-panel__body application-sub-panel__body--yo-status-complete">
                 <div className="application-sub-panel__notification-item">
                   <div className="application-sub-panel__notification-body">{this.props.i18n.text.get("plugin.records.yo.abiStatus.content.finished")}</div>
-                  {this.props.yo.enrollment.length < 0 && <div className="application-sub-panel__notification-footer">{enrollmentLink}</div>}
+                  {this.props.yo.enrollment.length > 0 &&
+                    <div className="application-sub-panel__notification-footer">{enrollmentLink}</div>
+                  }
                 </div>
               </div> :
               this.props.yo.eligibilityStatus == "NOT_ELIGIBLE" ?
@@ -88,7 +90,9 @@ class YO extends React.Component<YOProps, YOState> {
                   <div className="application-sub-panel__notification-item">
                     <div className="application-sub-panel__notification-body application-sub-panel__notification-body--yo-status-incomplete"
                       dangerouslySetInnerHTML={{ __html: i18n.text.get("plugin.records.matriculation.notEligible", this.props.yo.eligibility.coursesCompleted, this.props.yo.eligibility.coursesRequired) }} />
-                    {this.props.yo.enrollment.length > 0 && <div className="application-sub-panel__notification-footer">{enrollmentLink}</div>}
+                    {this.props.yo.enrollment.length > 0 &&
+                      <div className="application-sub-panel__notification-footer">{enrollmentLink}</div>
+                    }
                   </div>
                 </div> :
                 null
