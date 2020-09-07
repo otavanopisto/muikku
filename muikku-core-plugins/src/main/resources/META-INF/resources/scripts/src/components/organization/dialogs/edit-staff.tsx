@@ -84,7 +84,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       valid = false;
     }
 
-
     if (valid) {
 
       this.setState({

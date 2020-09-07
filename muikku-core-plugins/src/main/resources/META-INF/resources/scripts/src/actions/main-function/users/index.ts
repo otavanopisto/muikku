@@ -69,7 +69,6 @@ let createStudent: CreateStudentTriggerType = function createStudent(data) {
         }, 1000);
       });
 
-
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.success"), 'success'));
       data.success && data.success();
     } catch (err) {
@@ -152,8 +151,6 @@ let updateStaffmember: UpdateStaffmemberTriggerType = function updateStaffmember
           });
         }, 1000);
 
-
-
       });
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.update.staff.success"), 'success'));
       data.success && data.success();
@@ -166,7 +163,6 @@ let updateStaffmember: UpdateStaffmemberTriggerType = function updateStaffmember
     }
   }
 }
-
 
 let loadStudyprogrammes: LoadStudyprogrammesTriggerType = function loadStudyprogrammes() {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
