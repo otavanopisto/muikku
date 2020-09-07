@@ -293,8 +293,6 @@
   }
 }
 
-
-
 .button--frontpage-upper-secondary-school-readmore {
   background-color: $color-frontpage-button-upper-secondary-school-readmore-background;
   color: $color-frontpage-button-upper-secondary-school-readmore-text;
@@ -1042,8 +1040,8 @@
 
   @include breakpoint($breakpoint-desktop) {
     order: 1;
-  } 
-  
+  }
+
   &.disabled,
   &:disabled {
     background-color: $color-button-pill-background-disabled;
@@ -1065,7 +1063,7 @@
   background-color: $color-button-cancel-background;
   color: $color-button-cancel-text;
   order: 2;
-  
+
   &.disabled,
   &:disabled {
     background-color: $color-button-pill-background-disabled;
