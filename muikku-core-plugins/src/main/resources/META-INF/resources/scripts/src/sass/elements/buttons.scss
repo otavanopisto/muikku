@@ -1042,6 +1042,12 @@
 
   @include breakpoint($breakpoint-desktop) {
     order: 1;
+  } 
+  
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
   }
 }
 
@@ -1059,6 +1065,12 @@
   background-color: $color-button-cancel-background;
   color: $color-button-cancel-text;
   order: 2;
+  
+  &.disabled,
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
 }
 
 .button-social {

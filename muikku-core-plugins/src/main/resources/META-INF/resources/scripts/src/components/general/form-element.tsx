@@ -47,34 +47,33 @@ export class formElementRow extends React.Component<FormElementRowProps, FormEle
 }
 
 interface FormActionsProps {
-  executeLabel: string;
-  cancelLabel: string;
-  executeClick: () => any;
-  cancelClick: () => any;
+  executeLabel: string,
+  cancelLabel: string,
+  executeClick: () => any,
+  cancelClick: () => any,
+  locked: boolean,
+  executing?: boolean,
   modifiers?: string | Array<string>,
   customButton?: React.ReactElement<any>,
 }
 
 interface FormActionsState {
-  locked: boolean;
+
 }
 
 export class FormActionsElement extends React.Component<FormActionsProps, FormActionsState> {
   constructor(props: FormActionsProps) {
     super(props);
-    this.state = {
-      locked: false
-    }
   }
 
   render() {
     const modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
     return (
       <div className={`env-dialog__actions ${this.props.modifiers ? modifiers.map(m => `env-dialog__actions--${m}`).join(" ") : ""}`}>
-        <Button buttonModifiers="dialog-execute" onClick={this.props.executeClick} disabled={this.state.locked}>
+        <Button buttonModifiers="dialog-execute" onClick={this.props.executeClick} disabled={this.props.locked}>
           {this.props.executeLabel}
         </Button>
-        <Button buttonModifiers="dialog-cancel" onClick={this.props.cancelClick} disabled={this.state.locked}>
+        <Button buttonModifiers="dialog-cancel" onClick={this.props.cancelClick} disabled={this.props.locked}>
           {this.props.cancelLabel}
         </Button>
         {this.props.customButton}
@@ -342,7 +341,7 @@ export class SSNFormElement extends React.Component<SSNFormElementProps, SSNForm
 
   componentDidUpdate(prevProps: any) {
     if (this.props.valid !== prevProps.valid) {
-      this.setState({ valid: this.props.valid })
+      this.setState({ valid: this.props.valid });
     }
   }
 

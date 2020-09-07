@@ -56,7 +56,7 @@ export interface LoadUsersTriggerType {
 let createStudent: CreateStudentTriggerType = function createStudent(data) {
   return async (dispatch: (arg: AnyActionType) => any, getState: () => StateType) => {
     try {
-      await promisify(mApi().user.students.basicInfo.create(data.student), 'callback')().then(() => {
+      await promisify(mApi().user.students.create(data.student), 'callback')().then(() => {
 
         mApi().organizationUserManagement.staffMembers.cacheClear();
 

@@ -25,7 +25,7 @@ interface OrganizationUserState {
   user: {
     [field: string]: string,
   },
-
+  locked: boolean,
   firstNameValid: number,
   lastNameValid: number,
   emailValid: number,
@@ -42,6 +42,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         lastName: this.props.data.lastName,
         email: this.props.data.email
       },
+      locked: false,
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
@@ -68,7 +69,6 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
 
   saveUser(closeDialog: () => any) {
     let valid = true;
-
     if (this.state.user.firstName == "" || this.state.user.firstName == undefined) {
       this.setState({ firstNameValid: 0 });
       valid = false;
@@ -85,28 +85,36 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     }
 
 
-    let data = {
-      identifier: this.props.data.id,
-      firstName: this.state.user.firstName,
-      lastName: this.state.user.lastName,
-      email: this.state.user.email,
-      role: this.state.user.role,
-    }
+    if (valid) {
 
-    this.props.updateStaffmember({
-      staffmember: data,
-      success: () => {
-        this.setState({
-          firstNameValid: 2,
-          lastNameValid: 2,
-          emailValid: 2,
-        });
-        closeDialog();
-      },
-      fail: () => {
-        closeDialog();
+      this.setState({
+        locked: true
+      });
+
+      let data = {
+        identifier: this.props.data.id,
+        firstName: this.state.user.firstName,
+        lastName: this.state.user.lastName,
+        email: this.state.user.email,
+        role: this.state.user.role,
       }
-    });
+
+      this.props.updateStaffmember({
+        staffmember: data,
+        success: () => {
+          this.setState({
+            locked: false,
+            firstNameValid: 2,
+            lastNameValid: 2,
+            emailValid: 2,
+          });
+          closeDialog();
+        },
+        fail: () => {
+          closeDialog();
+        }
+      });
+    }
   }
 
   render() {
@@ -127,7 +135,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
         </DialogRow>
       </div>;
 
-    let footer = (closePortal: () => any) => <FormActionsElement executeLabel={this.props.i18n.text.get('plugin.organization.users.editUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
+    let footer = (closePortal: () => any) => <FormActionsElement locked={this.state.locked} executeLabel={this.props.i18n.text.get('plugin.organization.users.editUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
     return (

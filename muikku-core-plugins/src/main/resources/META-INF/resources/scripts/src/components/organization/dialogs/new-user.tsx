@@ -26,6 +26,7 @@ interface OrganizationUserState {
   user: {
     [field: string]: string,
   },
+  locked: boolean,
   firstNameValid: number,
   lastNameValid: number,
   emailValid: number,
@@ -38,6 +39,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
     super(props);
     this.state = {
       user: { role: "STUDENT", studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier },
+      locked: false,
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
@@ -60,7 +62,8 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       firstNameValid: 2,
       lastNameValid: 2,
       emailValid: 2,
-      studyProgrammeIdentifierValid: 2
+      studyProgrammeIdentifierValid: 2,
+      locked: false
     });
   }
 
@@ -97,6 +100,11 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       // SSN for user is optional at this point, so we don't validate. Only we do is set it to "" if it's not a valid SSN
 
       if (valid) {
+
+        this.setState({
+          locked: true
+        });
+
         let data = {
           firstName: this.state.user.firstName,
           lastName: this.state.user.lastName,
@@ -119,6 +127,11 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
       }
     } else {
       if (valid) {
+
+        this.setState({
+          locked: true
+        });
+
         let data = {
           firstName: this.state.user.firstName,
           lastName: this.state.user.lastName,
@@ -179,7 +192,7 @@ class OrganizationUser extends React.Component<OrganizationUserProps, Organizati
           </DialogRow> : null}
       </div>;
 
-    let footer = (closePortal: () => any) => <FormActionsElement executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
+    let footer = (closePortal: () => any) => <FormActionsElement locked={this.state.locked} executeLabel={this.props.i18n.text.get('plugin.organization.users.addUser.execute')} cancelLabel={this.props.i18n.text.get('plugin.organization.users.addUser.cancel')} executeClick={this.saveUser.bind(this, closePortal)}
       cancelClick={this.cancelDialog.bind(this, closePortal)} />;
 
     return (<Dialog modifier="new-user"
