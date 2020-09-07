@@ -44,7 +44,6 @@ export interface UpdateStaffmemberTriggerType {
   }): AnyActionType
 }
 
-
 export interface LoadStudyprogrammesTriggerType {
   (): AnyActionType
 }
