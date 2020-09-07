@@ -65,7 +65,7 @@ let createStudent: CreateStudentTriggerType = function createStudent(data) {
             type: "UPDATE_STUDENT_USERS",
             payload: users
           });
-        }, 1000);
+        }, 2000);
       });
 
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.student.success"), 'success'));
@@ -93,7 +93,7 @@ let updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
             type: "UPDATE_STUDENT_USERS",
             payload: users
           });
-        }, 1000);
+        }, 2000);
       });
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.update.student.success"), 'success'));
       data.success && data.success();
@@ -120,7 +120,7 @@ let createStaffmember: CreateStaffmemberTriggerType = function createStaffmember
             type: "UPDATE_STAFF_USERS",
             payload: users
           });
-        }, 1000);
+        }, 2000);
 
       });
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.create.staff.success"), 'success'));
@@ -148,7 +148,7 @@ let updateStaffmember: UpdateStaffmemberTriggerType = function updateStaffmember
             type: "UPDATE_STAFF_USERS",
             payload: users
           });
-        }, 1000);
+        }, 2000);
 
       });
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.organization.update.staff.success"), 'success'));
