@@ -74,8 +74,6 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
     let literalAssessment = this.props.records.current.workspace.studentAssessmentState &&
       this.props.records.current.workspace.studentAssessmentState.text ? this.props.records.current.workspace.studentAssessmentState.text : null;
 
-
-
     return <div className="react-container">
       <div className="application-panel__content-header" key={this.props.records.current.workspace.id}>
         {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
