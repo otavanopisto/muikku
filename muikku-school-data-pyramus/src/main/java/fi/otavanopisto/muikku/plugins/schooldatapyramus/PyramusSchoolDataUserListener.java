@@ -88,7 +88,7 @@ public class PyramusSchoolDataUserListener {
 
           if (isActive) {
             String userGroupUserIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(pyramusStudentId);
-            String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId);
+            String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId).getIdentifier();
             String userEntityIdentifier = identifier.getIdentifier();
             fireUserGroupUserDiscovered(userGroupUserIdentifier, userGroupIdentifier, userEntityIdentifier);
           }
@@ -106,7 +106,7 @@ public class PyramusSchoolDataUserListener {
         Long pyramusStudyProgrammeId = student.getStudyProgrammeId();
         
         if (pyramusStudyProgrammeId != null) {
-          String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId);
+          String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId).getIdentifier();
 
           boolean found = false;
           boolean isActive = !student.getArchived() && (student.getStudyEndDate() == null || student.getStudyEndDate().isAfter(OffsetDateTime.now()));
