@@ -141,6 +141,7 @@
     flex-shrink: 1;
     height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop}));
     margin: 0;
+    order: 2;
     // scss-lint:disable VendorPrefix
     position: -webkit-sticky; // Safari 7-12 support
     // scss-lint:enable VendorPrefix
@@ -199,6 +200,7 @@
     margin: 0 50px 10px 0;
     max-width: 700px;
     min-width: 650px;
+    order :1;
   }
 
   @include breakpoint($breakpoint-desktop-xl) {
@@ -270,7 +272,7 @@
   justify-content: center;
   position: fixed;
   right: -1px;
-  top: 65px;
+  top: 70px;
   width: 2rem;
   z-index: 10;
 
