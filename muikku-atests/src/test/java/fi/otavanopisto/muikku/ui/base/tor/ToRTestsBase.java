@@ -23,7 +23,7 @@ import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class ToRTestsBase extends AbstractUITest {
-  
+//  TODO: Proper testin of revised records
   @Test
   public void recordsWorkspaceEvaluationTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -82,8 +82,8 @@ public class ToRTestsBase extends AbstractUITest {
       assertText(".application-list__item-header--course .application-list__indicator-badge--course", "E");
       
       waitAndClick(".application-list__item-header--course .application-list__header-primary");
-      waitForPresent(".application-sub-panel__text--course-evaluation");
-      assertText(".application-sub-panel__text--course-evaluation", "Test evaluation.");
+      waitForPresent(".workspace-assessment__literal .workspace-assessment__literal-data");
+      assertText(".workspace-assessment__literal .workspace-assessment__literal-data", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
