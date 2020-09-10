@@ -33,61 +33,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
     }
     return <div>
       <div className="application-panel__header-title">{this.props.i18n.text.get("plugin.records.vops.title")}</div>
-
-      {/*
-      <div className="application-sub-panel">
-        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
-          <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.vops.mandatory.title")}</div>
-            <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--total">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.mandatory")}</span>
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--done">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.done")}</span>
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--undone">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.planned")}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="application-sub-panel">
-        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-cards">
-          <div className="application-sub-panel__item application-sub-panel__item--summarizer">
-            <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.vops.optional.title")}</div>
-            <div className="application-sub-panel__item-body application-sub-panel__item-body--summarizer">
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--total">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.optional")}</span>
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--done">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.done")}</span>
-              <span className="application-sub-panel__summary-highlight application-sub-panel__summary-highlight--undone">23</span>
-              <span className="application-sub-panel__summary-definition">{this.props.i18n.text.get("plugin.records.vops.subject.courses.planned")}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    */}
       <VopsGraph />
-      {/*
-      <div className="application-sub-panel">
-        <div className="application-sub-panel__header">{this.props.i18n.text.get("plugin.records.yo.plannedWorkspaces.title")}</div>
-        <div className="application-sub-panel__body application-list">
-          <div className="application-list__item course">
-            <div className="application-list__item-header application-list__item-header--course">
-              <span className="application-list__header-icon icon-books"></span>
-              <span className="application-list__header-primary">Gur- gurzi 4</span>
-              <span className="application-list__header-secondary">Toissijainen</span>
-            </div>
-          </div>
-          <div className="application-list__item course">
-            <div className="application-list__item-header  application-list__item-header--course">
-              <span className="application-list__header-icon icon-books"></span>
-              <span className="application-list__header-primary">Gur- gurzi 5</span>
-              <span className="application-list__header-secondary">Toissijainen</span>
-            </div>
-          </div>
-        </div>
-      </div>
-*/}
     </div>
   }
 }
