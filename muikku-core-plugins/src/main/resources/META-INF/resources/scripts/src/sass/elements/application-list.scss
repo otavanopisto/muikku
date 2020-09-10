@@ -242,6 +242,9 @@
 }
 
 .application-list__item--studies-file-attacment {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
   padding: 5px 10px;
   width: 100%;
 }

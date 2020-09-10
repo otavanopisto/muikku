@@ -231,12 +231,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           {this.props.records.files.length ?
             <ApplicationList>
               {this.props.records.files.map((file) => {
-                return <ApplicationListItem className="application-list__item--studies-file-attacment" key={file.id}>
-                  <Link className="studies-file-attachment" href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
+                return <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment" key={file.id}>
+                  <span className="icon-attachment"></span><Link className="link link--studies-file-attachment" href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
                 </ApplicationListItem>
               })}
             </ApplicationList> :
-            <ApplicationListItem className="application-list__item--studies-file-attacment">
+            <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment">
               {this.props.i18n.text.get("plugin.records.files.empty")}
             </ApplicationListItem>
           }
