@@ -11,8 +11,6 @@ interface ReportsState {
 
 
 class Reports extends React.Component<ReportsProps, ReportsState> {
-
-  
   render(){
     return (
         <div></div>

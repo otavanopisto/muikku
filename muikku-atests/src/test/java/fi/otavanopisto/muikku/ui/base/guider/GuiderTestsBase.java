@@ -128,13 +128,13 @@ public class GuiderTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
-      waitForPresent(".file-uploader>input");
-      scrollIntoView(".file-uploader>input");
+      waitForPresent(".file-uploader input");
+      scrollIntoView(".file-uploader input");
 
       File testFile = getTestFile();
-      sendKeys(".file-uploader>input", testFile.getAbsolutePath());
-      waitForPresent("a.uploaded-files__item-title");
-      assertTextStartsWith("a.uploaded-files__item-title", testFile.getName());
+      sendKeys(".file-uploader input", testFile.getAbsolutePath());
+      waitForPresent(".file-uploader__items-container .file-uploader__item-title");
+      assertTextStartsWith(".file-uploader__items-container .file-uploader__item-title", testFile.getName());
       logout();
       mockBuilder.mockLogin(student);
       login();
@@ -196,16 +196,15 @@ public class GuiderTestsBase extends AbstractUITest {
         login();
       
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-        
-        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-        waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-        waitForPresentAndVisible(".notification-queue-item-success");
-        waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
+        selectFinnishLocale();
+        waitForPresentAndVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
+        waitAndClick(".button--muikku-submit-assignment");
+
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");
         mockBuilder
           .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
           .mockCompositeGradingScales()

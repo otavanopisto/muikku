@@ -42,9 +42,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
+import fi.otavanopisto.muikku.dao.users.UserPendingPasswordChangeDAO;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
@@ -57,6 +59,7 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -93,6 +96,7 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.CreatedUserEntityFinder;
 import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -119,7 +123,7 @@ public class UserRESTService extends AbstractRESTService {
   @Inject 
   @BaseUrl
   private String baseUrl;
-
+  
   @Inject
   private LocaleController localeController;
 
@@ -173,6 +177,12 @@ public class UserRESTService extends AbstractRESTService {
 
   @Inject
   private OrganizationEntityController organizationEntityController;
+  
+  @Inject
+  private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO;
+  
+  @Inject
+  private CreatedUserEntityFinder createdUserEntityFinder;
   
   @Inject
   @Any
@@ -447,6 +457,7 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("lastName"),
             (String) o.get("nickName"),
             (String) o.get("studyProgrammeName"), 
+            (String) o.get("studyProgrammeIdentifier"),
             hasImage,
             (String) o.get("nationality"), 
             (String) o.get("language"), 
@@ -548,6 +559,7 @@ public class UserRESTService extends AbstractRESTService {
         user.getLastName(),
         user.getNickName(),
         user.getStudyProgrammeName(),
+        user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
         false, 
         user.getNationality(), 
         user.getLanguage(), 
@@ -1302,14 +1314,14 @@ public class UserRESTService extends AbstractRESTService {
    * {firstName: required; the first name of the staff member
    *  lastName: required; the last name of the staff member
    *  email: required; the email address of the staff member
-   *  role: required; TEACHER to create a teacher, MANAGER to create a manager}
+   *  role: required; MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Output:
    * {identifier: identifier of the created staff member
    *  firstName: the first name of the staff member
    *  lastName: the last name of the staff member
    *  email: the email address of the staff member
-   *  role: TEACHER or MANAGER}
+   *  role: MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Errors:
    * 409 if the email address is already in use; response contains a localized error message 
@@ -1331,20 +1343,38 @@ public class UserRESTService extends AbstractRESTService {
     BridgeResponse<StaffMemberPayload> response = userController.createStaffMember(dataSource, payload);
         
     if (response.ok()) {
-      
-      // Mail about credential creation
+      UserEntity userEntity = findCreatedUserEntity(response.getEntity().getIdentifier());
+      if (userEntity != null) {
 
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
-        String confirmationHash = userSchoolDataController.requestCredentialReset(schoolDataSource, payload.getEmail());
-        String resetLink = String.format("%s/forgotpassword/reset?h=%s", baseUrl, confirmationHash);
-        String mailSubject = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailSubject");
-        String mailContent = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailContent", new String[] { resetLink });
-        mailer.sendMail(systemSettingsController.getSystemEmailSenderAddress(), payload.getEmail(), mailSubject, mailContent);
+        // Mail about credential creation
+
+        schoolDataBridgeSessionController.startSystemSession();
+        try {
+          SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+          String confirmationHash = userSchoolDataController.requestCredentialReset(schoolDataSource, payload.getEmail());
+
+          // Expires in 3 days
+          Date expires = DateUtils.addDays(new Date(), 3);
+          UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByUserEntity(userEntity);
+          if (passwordChange != null) {
+            passwordChange = userPendingPasswordChangeDAO.updateHash(passwordChange, confirmationHash);
+            passwordChange = userPendingPasswordChangeDAO.updateExpires(passwordChange, expires);
+          }
+          else {
+            passwordChange = userPendingPasswordChangeDAO.create(userEntity, confirmationHash, expires);
+          }
+
+          String resetLink = String.format("%s/forgotpassword/reset?h=%s", baseUrl, confirmationHash);
+          String mailSubject = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailSubject");
+          String mailContent = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailContent", new String[] { resetLink });
+          mailer.sendMail(systemSettingsController.getSystemEmailSenderAddress(), payload.getEmail(), mailSubject, mailContent);
+        }
+        finally {
+          schoolDataBridgeSessionController.endSystemSession();
+        }
       }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
+      else {
+        logger.severe("Could not resolve UserEntity for identifier. Credential mail not sent.");
       }
       
       // Success resposne
@@ -1366,14 +1396,14 @@ public class UserRESTService extends AbstractRESTService {
    *  firstName: required; the first name of the staff member
    *  lastName: required; the last name of the staff member
    *  email: required; the email address of the staff member
-   *  role: required; TEACHER or MANAGER }
+   *  role: required; MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Output:
    * {identifier: identifier of the staff member
    *  firstName: the first name of the staff member
    *  lastName: the last name of the staff member
    *  email: the email address of the staff member
-   *  role: TEACHER or MANAGER}
+   *  role: MANAGER|STUDY_PROGRAMME_LEADER|TEACHER|STUDY_GUIDER}
    * 
    * Errors:
    * 409 if the email address is already in use; response contains a localized error message 
@@ -1385,14 +1415,15 @@ public class UserRESTService extends AbstractRESTService {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+    if (!StringUtils.equals(id, payload.getIdentifier()) ||
+        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
-    // User creation
+    // User update
     
-    String dataSource = sessionController.getLoggedUserSchoolDataSource();
-    BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(dataSource, payload);
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(id);
+    BridgeResponse<StaffMemberPayload> response = userController.updateStaffMember(identifier.getDataSource(), payload);
         
     return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
   }
@@ -1406,12 +1437,12 @@ public class UserRESTService extends AbstractRESTService {
    * {firstName: required; the first name of the student
    *  lastName: required; the last name of the student
    *  email: required; the email address of the student
-   *  studyProgrammeIdentifier: required; student's study programme (e.g. STUDYPROGRAMME-42)
+   *  studyProgrammeIdentifier: required; student's study programme (e.g. PYRAMUS-STUDYPROGRAMME-42)
    *  gender: optional; student gender (MALE|FEMALE|OTHER)
    *  ssn: optional; student social security number
    * 
    * Output:
-   * {identifier: identifier of the created student (e.g. STUDENT-123)
+   * {identifier: identifier of the created student (e.g. PYRAMUS-STUDENT-123)
    *  firstName: the first name of the student
    *  lastName: the last name of the student
    *  email: the email address of the student
@@ -1439,20 +1470,38 @@ public class UserRESTService extends AbstractRESTService {
     BridgeResponse<StudentPayload> response = userController.createStudent(dataSource, payload);
         
     if (response.ok()) {
-      
-      // Mail about credential creation
+      UserEntity userEntity = findCreatedUserEntity(response.getEntity().getIdentifier());
+      if (userEntity != null) {
 
-      schoolDataBridgeSessionController.startSystemSession();
-      try {
-        SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
-        String confirmationHash = userSchoolDataController.requestCredentialReset(schoolDataSource, payload.getEmail());
-        String resetLink = String.format("%s/forgotpassword/reset?h=%s", baseUrl, confirmationHash);
-        String mailSubject = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailSubject");
-        String mailContent = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailContent", new String[] { resetLink });
-        mailer.sendMail(systemSettingsController.getSystemEmailSenderAddress(), payload.getEmail(), mailSubject, mailContent);
+        // Mail about credential creation
+
+        schoolDataBridgeSessionController.startSystemSession();
+        try {
+          SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+          String confirmationHash = userSchoolDataController.requestCredentialReset(schoolDataSource, payload.getEmail());
+          
+          // Expires in 3 days
+          Date expires = DateUtils.addDays(new Date(), 3);
+          UserPendingPasswordChange passwordChange = userPendingPasswordChangeDAO.findByUserEntity(userEntity);
+          if (passwordChange != null) {
+            passwordChange = userPendingPasswordChangeDAO.updateHash(passwordChange, confirmationHash);
+            passwordChange = userPendingPasswordChangeDAO.updateExpires(passwordChange, expires);
+          }
+          else {
+            passwordChange = userPendingPasswordChangeDAO.create(userEntity, confirmationHash, expires);
+          }
+
+          String resetLink = String.format("%s/forgotpassword/reset?h=%s", baseUrl, confirmationHash);
+          String mailSubject = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailSubject");
+          String mailContent = localeController.getText(sessionController.getLocale(), "rest.user.createCredentials.mailContent", new String[] { resetLink });
+          mailer.sendMail(systemSettingsController.getSystemEmailSenderAddress(), payload.getEmail(), mailSubject, mailContent);
+        }
+        finally {
+          schoolDataBridgeSessionController.endSystemSession();
+        }
       }
-      finally {
-        schoolDataBridgeSessionController.endSystemSession();
+      else {
+        logger.severe("Could not resolve UserEntity for identifier. Credential mail not sent.");
       }
       
       // Success resposne
@@ -1462,6 +1511,51 @@ public class UserRESTService extends AbstractRESTService {
     else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
     }
+  }
+  
+  /**
+   * PUT mApi().user.students.basicInfo
+   * 
+   * Updates a student.
+   * 
+   * Payload:
+   * {firstName: required; the first name of the student
+   *  lastName: required; the last name of the student
+   *  email: required; the email address of the student
+   *  studyProgrammeIdentifier: required; student's study programme (e.g. PYRAMUS-STUDYPROGRAMME-42)
+   *  gender: optional; student gender (MALE|FEMALE|OTHER)
+   *  ssn: optional; student social security number
+   * 
+   * Output:
+   * {identifier: identifier of the created student (e.g. PYRAMUS-STUDENT-123)
+   *  firstName: the first name of the student
+   *  lastName: the last name of the student
+   *  email: the email address of the student
+   *  studyProgrammeIdentifier: the study programme of the student
+   *  gender: student gender, if originally sent
+   *  ssn: student social security number, if originally sent
+   * 
+   * Errors:
+   * 409 if the email address or (optional) SSN is already in use; response contains a localized error message 
+   */
+  @PUT
+  @Path("/students/{ID}/basicInfo")
+  @RESTPermit(MuikkuPermissions.UPDATE_STUDENT)
+  public Response updateStudent(@PathParam("ID") String id, StudentPayload payload) {
+    
+    // Payload validation
+    
+    if (!StringUtils.equals(id,  payload.getIdentifier()) ||
+        StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getStudyProgrammeIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
+    }
+
+    // Student update
+    
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(id);
+    BridgeResponse<StudentPayload> response = userController.updateStudent(identifier.getDataSource(), payload);
+        
+    return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
   }
 
   @GET
@@ -1711,7 +1805,8 @@ public class UserRESTService extends AbstractRESTService {
             (String) o.get("lastName"), 
             email,
             propertyMap,
-            organizationRESTModel));
+            organizationRESTModel,
+            (String) o.get("archetype")));
         }
       }
     }
@@ -1842,7 +1937,7 @@ public class UserRESTService extends AbstractRESTService {
   private List<fi.otavanopisto.muikku.rest.model.StudyProgramme> createRestModel(StudyProgramme[] entities) {
     List<fi.otavanopisto.muikku.rest.model.StudyProgramme> result = new ArrayList<>();
     for (StudyProgramme entity : entities) {
-      result.add(new fi.otavanopisto.muikku.rest.model.StudyProgramme(entity.getIdentifier(), entity.getName()));
+      result.add(new fi.otavanopisto.muikku.rest.model.StudyProgramme(toId(entity.getIdentifier()), entity.getName()));
     }
     return result;
   }
@@ -1918,6 +2013,29 @@ public class UserRESTService extends AbstractRESTService {
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
+  }
+  
+  private UserEntity findCreatedUserEntity(String identifier) {
+    UserEntity userEntity = null;
+    long timeoutTime = System.currentTimeMillis() + 30000;    
+    while (userEntity == null) {
+      userEntity = createdUserEntityFinder.findCreatedUserEntity(sessionController.getLoggedUserSchoolDataSource(), identifier);
+      if (System.currentTimeMillis() > timeoutTime) {
+        logger.severe(String.format("Timeout waiting for created UserEntity for identifier %s", identifier));
+        return null;
+      }
+      if (userEntity == null) {
+        try {
+          Thread.sleep(500);
+        }
+        catch (InterruptedException e) {
+        }
+      }
+      else {
+        return userEntity;
+      }
+    }
+    return userEntity;
   }
   
 }

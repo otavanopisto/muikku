@@ -42,7 +42,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
       maxWidth: null,
     }
 
-    if (!isNaN(aspectRatio)) {
+    if (!isNaN(aspectRatio) && isFinite(aspectRatio)) {
       this.predictedAspectRatio = aspectRatio;
     }
 
@@ -62,7 +62,7 @@ export default class Image extends React.Component<ImageProps, ImageState>{
   calculatePredictedHeight() {
     if (this.predictedAspectRatio && this.refs["img"]) {
       const predictedHeight = (this.refs["img"] as HTMLImageElement).offsetWidth/this.predictedAspectRatio;
-      if (predictedHeight !== this.state.predictedHeight) {
+      if (predictedHeight !== this.state.predictedHeight && !isNaN(predictedHeight) && isFinite(predictedHeight)) {
         this.setState({
           predictedHeight
         });

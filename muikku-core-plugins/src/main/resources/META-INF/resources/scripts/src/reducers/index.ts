@@ -8,8 +8,9 @@ import { AnnouncementsType } from './announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
-import {UserIndexType} from './user-index';
 import {WorkspacesType} from './workspaces';
+import {UsersType, StudyprogrammeTypes} from './main-function/users';
+import {UserIndexType} from './user-index';
 import { DiscussionType } from './discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from './main-function/records';
@@ -27,9 +28,12 @@ export interface StateType {
   announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
+  studyprogrammes?: StudyprogrammeTypes,
   messages?: MessagesType,
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
+  organizationWorkspaces?: WorkspacesType,
+  organizationUsers?: UsersType,
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,

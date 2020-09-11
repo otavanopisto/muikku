@@ -1,8 +1,5 @@
 import * as React from "react";
-import { HTMLtoReactComponent, guidGenerator } from "~/util/modifiers";
-import $ from '~/lib/jquery';
-import Toolbar, { MathFieldCommandType } from './toolbar';
-import equals = require("deep-equal");
+import { MathFieldCommandType } from './toolbar';
 import { toSVG, loadMathJax, getMQInterface } from "~/lib/mathjax";
 import loadingImage from './loading-image';
 import warningImage from './warning-image';
@@ -104,8 +101,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
 
     if (nextProps.value === this.value){
-      //console.log("change denied");
+      // console.log("change denied");
       return;
+    } else {
+      // console.log("change went through");
     }
 
     this.value = nextProps.value;
@@ -190,7 +189,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     return "<" + tag + extras + ">" + kids + "</" + tag + ">";
   }
   onBlurField(e: React.ChangeEvent<any> | Event){
-    //console.log("blur detected");
+    // console.log("blur detected");
 
     let actualExecution = ()=>{
       this.isBlurDelayed = false;
@@ -237,7 +236,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     setTimeout(actualExecution, TIMEOUT_FOR_BLUR_EVENT);
   }
   focus(avoidCancellingBlur?: boolean){
-    //console.log("forced focus event");
+    // console.log("forced focus event");
 
     if (!avoidCancellingBlur){
       //We want to cancel a possible blur if there's a blur event but the focus is forced back
@@ -559,7 +558,15 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.lastMouseedDownElement = e.target as HTMLElement;
   }
   render(){
-    return <div className={this.props.className} contentEditable={!this.props.readOnly} spellCheck={false} onFocus={this.onFocusField} ref="input" onBlur={this.onBlurField}
-       onInput={this.onChange} onMouseDown={this.checkTheFocus}/>
+    // console.log("RENDER");
+    return <div className={this.props.className}
+      contentEditable={!this.props.readOnly}
+      spellCheck={false}
+      onFocus={this.onFocusField}
+      ref="input"
+      onBlur={this.onBlurField}
+      onInput={this.onChange}
+      onMouseDown={this.checkTheFocus}
+    />
   }
 }

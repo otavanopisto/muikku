@@ -251,11 +251,13 @@ public class FlagTestsBase extends AbstractUITest {
       navigate("/guider", false);
 
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
-      click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
+      waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
+      waitUntilAnimationIsDone(".dialog--guider-edit-label");
+      sleep(1000);
       waitForPresentAndVisible(".button--guider-share-label");
-      click(".button--guider-share-label");
+      waitAndClick(".button--guider-share-label");
       waitForPresentAndVisible(".autocomplete--guider .env-dialog__input");
-      click(".autocomplete--guider .env-dialog__input");
+      waitAndClick(".autocomplete--guider .env-dialog__input");
       sendKeys(".autocomplete--guider .env-dialog__input", "test");
       waitForPresentAndVisible(".glyph--autocomplete-recipient");
       waitAndClick(".glyph--autocomplete-recipient");
@@ -314,14 +316,21 @@ public class FlagTestsBase extends AbstractUITest {
     flagStudent(student.getId(), flagId);
     try {
       navigate("/guider", false);
-
+      selectFinnishLocale();
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
-      click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
+      waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
+
+      waitUntilAnimationIsDone(".dialog--guider-edit-label");
+      sleep(1000);
 
       waitAndClick(".button--guider-remove-label");
       waitClassPresent(".button--guider-remove-label", "disabled");
-
-      waitAndClick(".button--standard-ok");
+      waitUntilAnimationIsDone(".button--guider-remove-label");
+      waitUntilAnimationIsDone(".icon-flag");
+      assertTextIgnoreCase(".button--guider-remove-label", "Poistetaan");
+      sleep(500);
+      waitForClickable(".dialog--guider-edit-label .dialog__footer .button--standard-ok");
+      waitAndClick(".dialog--guider-edit-label .dialog__footer .button--standard-ok");
       waitForNotVisible(".dialog--guider-edit-label");
       waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
