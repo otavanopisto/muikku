@@ -144,6 +144,11 @@ public final class RestClient {
     if (expectedResponse.getName().equals(Response.class.getName())) {
       return (T) result;
     }
+    
+    // Return 404 as null
+    if (result != null && result.getStatus() == Status.NOT_FOUND.getStatusCode()) {
+      return null;
+    }
 
     if (result != null && result.hasEntity() && isStatusCodeOK(result, restPath)) {
       return (T) result.readEntity(expectedResponse);
