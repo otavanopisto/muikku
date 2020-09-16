@@ -140,7 +140,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     if (!this.state.filteredGraphs.includes(Graph.WORKSPACE_VISIT)) {
       graphs.push({
         "id": "WORKSPACE_VISIT",
-        "balloonText": this.props.i18n.text.get("plugin.guider.visitsTitle") + " <b>[[WORKSPACE_VISIT]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.visitsLabel") + " <b>[[WORKSPACE_VISIT]]</b>",
         "fillAlphas": 0.7,
         "lineAlpha": 0.2,
         "lineColor": "#43cd80",
@@ -156,7 +156,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)) {
       graphs.push({
         "id": "MATERIAL_ASSIGNMENTDONE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsLabel") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ce01bd",
@@ -171,7 +171,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     if (!this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)) {
       graphs.push({
         "id": "MATERIAL_EXERCISEDONE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesLabel") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ff9900",

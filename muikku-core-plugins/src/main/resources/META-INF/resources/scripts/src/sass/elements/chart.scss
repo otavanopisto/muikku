@@ -121,16 +121,16 @@
   margin-right: 10px;
 
   input[type="checkbox"] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     align-items: center;
+    -moz-appearance: none;
+    -webkit-appearance: none;
     appearance: none;
     border: solid 2px;
     border-radius: 3px;
     display: flex;
     height: 1rem;
-    margin: 5px;
     justify-content: center;
+    margin: 5px;
     width: 1rem;
   }
 

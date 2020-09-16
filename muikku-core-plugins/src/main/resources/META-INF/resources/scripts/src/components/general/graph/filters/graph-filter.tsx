@@ -24,7 +24,7 @@ class GraphFilter extends React.Component<GraphFilterProps> {
         let ifChecked = !this.props.filteredGraphs.includes(graph);
         return <div className={"filter-item filter-item--" + graph} key={"w-" + graph}>
           <input type='checkbox' onClick={() => { this.props.handler(graph) }} defaultChecked={ifChecked} />
-          <span className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Title")}</span>
+          <span className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Label")}</span>
         </div>
       })}>
         <span className={"icon-filter filter__activator filter__activator--graph-filter" + modificator}></span>
@@ -40,7 +40,7 @@ class GraphFilter extends React.Component<GraphFilterProps> {
           let ifChecked = !this.props.filteredGraphs.includes(graph);
           return <div className={"filter-item filter-item--" + graph} key={"l-" + graph}>
             <input type='checkbox' onClick={() => { this.props.handler(graph) }} defaultChecked={ifChecked} />
-            <span className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Title")}</span>
+            <span className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Label")}</span>
           </div>
         })}
       </div>

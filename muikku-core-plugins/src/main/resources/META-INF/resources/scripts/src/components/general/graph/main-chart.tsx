@@ -265,7 +265,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)) {
       graphs.push({
         "id": "MATERIAL_ASSIGNMENTDONE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsLabel") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         "fillAlphas": 1,
         "lineAlpha": 0.2,
         "lineColor": "#ce01bd",
@@ -280,7 +280,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)) {
       graphs.push({
         "id": "MATERIAL_EXERCISEDONE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesLabel") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         "fillAlphas": 1,
         "lineAlpha": 0.2,
         "lineColor": "#ff9900",
@@ -295,7 +295,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.FORUM_NEWMESSAGE)) {
       graphs.push({
         "id": "FORUM_NEWMESSAGE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.discussionMessagesTitle") + " <b>[[FORUM_NEWMESSAGE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.discussion-messagesLabel") + " <b>[[FORUM_NEWMESSAGE]]</b>",
         "fillAlphas": 1,
         "lineAlpha": 0.2,
         "lineColor": "#62c3eb",
@@ -311,7 +311,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.SESSION_LOGGEDIN)) {
       graphs.push({
         "id": "SESSION_LOGGEDIN",
-        "balloonText": this.props.i18n.text.get("plugin.guider.loginsTitle") + " <b>[[SESSION_LOGGEDIN]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.loginsLabel") + " <b>[[SESSION_LOGGEDIN]]</b>",
         "bullet": "round",
         "bulletSize": 12,
         "fillAlphas": 0,
@@ -330,7 +330,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.WORKSPACE_VISIT)) {
       graphs.push({
         "id": "WORKSPACE_VISIT",
-        "balloonText": this.props.i18n.text.get("plugin.guider.visitsTitle") + " <b>[[WORKSPACE_VISIT]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.visitsLabel") + " <b>[[WORKSPACE_VISIT]]</b>",
         "bullet": "round",
         "bulletSize": 8,
         "fillAlphas": 0,
