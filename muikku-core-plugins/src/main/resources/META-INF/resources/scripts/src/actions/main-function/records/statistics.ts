@@ -1,5 +1,4 @@
 import actions from '../../base/notifications';
-import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import { AnyActionType, SpecificActionType } from '~/actions';
 import { StatisticsDataType, StatisticsStatusType } from '~/reducers/main-function/records/statistics';

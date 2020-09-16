@@ -23,7 +23,6 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
 
       /* Get user id */
       let pyramusId = getState().status.userSchoolDataIdentifier;
-      let id = getState().status.userId;
 
       /* We need completed courses from Eligibility */
       let eligibility: any = await promisify(mApi().records.studentMatriculationEligibility
@@ -36,6 +35,9 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       /* We need returned exercises and evaluated courses */
       let assignmentsDone: any = [];
       let coursesDone: any = [];
+
+      /* Students study time */
+      let studentsDetails: any = await promisify(mApi().user.students.read(pyramusId), 'callback')();
 
       /* Getting past the object with keys */
       let activityArrays: any = Object.keys(activityLogs).map(key => activityLogs[key]);
@@ -71,6 +73,7 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
           })
           )
         ]);
+
       }
 
       let graphData = {
@@ -84,7 +87,8 @@ let updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         activity: activityLogs.general.length,
         returnedExercises: assignmentsDone.length,
         coursesDone: coursesDone.length,
-        graphData: graphData
+        graphData: graphData,
+        studentsDetails: studentsDetails,
       }
 
       dispatch({

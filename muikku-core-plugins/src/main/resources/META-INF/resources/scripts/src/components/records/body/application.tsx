@@ -9,7 +9,6 @@ import Hops from './application/hops';
 import Summary from './application/summary';
 import YO from './application/yo';
 import {StateType} from '~/reducers';
-import Toolbar from './application/toolbar';
 
 interface StudiesApplicationProps {
   aside: React.ReactElement<any>,
