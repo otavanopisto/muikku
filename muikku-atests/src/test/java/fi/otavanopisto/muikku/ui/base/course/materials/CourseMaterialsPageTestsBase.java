@@ -485,6 +485,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
         selectOption(".material-page__selectfield", "2");
+        sleep(300);
         waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
 
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -526,9 +527,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+    MockCourseStudent courseStudent = new MockCourseStudent(2l, course1.getId(), student.getId());
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .addCourseStudent(course1.getId(), courseStudent)
       .build();
+    
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         
@@ -540,10 +544,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         try {
           mockBuilder.mockLogin(student);
           login();
-          
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__selectfield");
           selectOption(".material-page__selectfield", "2");
+          sleep(300);
           waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__selectfield");
@@ -598,6 +602,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__radiobutton-items-wrapper");
         waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
+        sleep(300);
         waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__radiobutton-items-wrapper");
@@ -638,9 +643,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
     CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), 7l);
+    MockCourseStudent courseStudent = new MockCourseStudent(4l, course1.getId(), student.getId());
     mockBuilder
       .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .addCourseStudent(course1.getId(), courseStudent)
       .build();
+
       try {
         WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
@@ -654,6 +662,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__radiobutton-items-wrapper");
           waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
+          sleep(300);
           waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__radiobutton-items-wrapper");
