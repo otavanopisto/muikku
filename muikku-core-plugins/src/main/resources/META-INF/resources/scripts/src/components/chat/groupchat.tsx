@@ -1,79 +1,56 @@
-  /*global converse */
+/*global converse */
 import * as React from 'react'
 import '~/sass/elements/chat.scss';
 import converse from '~/lib/converse';
-import mApi, { MApiError } from '~/lib/mApi';
-import promisify, { promisifyNewConstructor } from '~/util/promisify';
-import {ChatMessage} from './chatMessage';
+import mApi from '~/lib/mApi';
+import promisify from '~/util/promisify';
+import { ChatMessage } from './chatMessage';
+import { IChatOccupant, IAvailableChatRoomType } from './chat';
 
-interface Iprops{
-  chat?: any,
-  converse?: any,
-  orderNumber?: any,
-  showChatbox?: any,
-  chatObject?: any,
-  toggleJoinLeaveChatRoom?: any,
-  toggleJoinLeavePrivateChat?: any,
-  removeMessage?: any,
-  PyramusUserID?: any,
+interface Iprops {
+  chat: IAvailableChatRoomType,
+  converse: any,
+  toggleJoinLeaveChatRoom: (bareJID: string) => void,
+  toggleJoinLeavePrivateChat: (occupant: IChatOccupant) => void,
+  onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void,
+  pyramusUserID: string,
 }
 
 interface Istate {
-  BareJID?: string,
-  converse?: any,
-  RoomJID?: string,
-  RoomName?: string,
-  RoomDesc: any,
-  RoomConfig?: any,
-  groupMessages?: Object[],
-  availableMucRooms?: Object,
-  chatBox?: any,
-  openChatSettings?: Boolean,
-  isStudent?: Boolean,
-  PyramusUserID: string,
-  isRoomConfigSavedSuccesfully: string,
-  settingsInformBox:string,
+  bareJID: string,
+  groupMessages: Object[],
+  availableMucRooms: Object,
+  openChatSettings: boolean,
+  isStudent: boolean,
+  isLastRoomConfigSavedSuccesfully: boolean,
   showRoomInfo: boolean,
   minimized: boolean,
   minimizedChats: Object[],
   chatRoomType: string,
   chatRoomOccupants: any,
-  studentOccupants?: Object[],
-  staffOccupants?: Object[],
-  showOccupantsList?: boolean,
-  occupantsListOpened?: Object[],
-  RoomPersistency: boolean
-}
+  studentOccupants: Object[],
+  staffOccupants: Object[],
+  showOccupantsList: boolean,
+  occupantsListOpened: Object[],
 
-declare global {
-  interface Window {
-    MUIKKU_IS_STUDENT:boolean,
-    PROFILE_DATA: any,
-    MUIKKU_LOGGED_USER: string
-  }
+  roomNameField: string;
+  roomDescField: string;
+  roomPersistent: boolean;
 }
 
 export class Groupchat extends React.Component<Iprops, Istate> {
 
-  private myRef: any;
-  private messagesEnd: any;
+  private messagesEnd: React.RefObject<HTMLDivElement>;
 
-  constructor(props: any){
+  constructor(props: Iprops) {
     super(props);
     this.state = {
-      BareJID: window.MUIKKU_LOGGED_USER + "@dev.muikkuverkko.fi".toLowerCase(),
-      converse: this.props.converse,
-      RoomJID: "",
-      RoomName: "",
-      RoomConfig: [],
+      bareJID: window.MUIKKU_LOGGED_USER + "@dev.muikkuverkko.fi".toLowerCase(),
       groupMessages: [],
       availableMucRooms: [],
-      chatBox:null,
       openChatSettings: false,
       isStudent: false,
-      PyramusUserID: "",
-      isRoomConfigSavedSuccesfully: "",
-      settingsInformBox: "settingsInform-none",
+      isLastRoomConfigSavedSuccesfully: null,
       showRoomInfo: false,
       minimized: false,
       minimizedChats: [],
@@ -83,15 +60,18 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       staffOccupants: [],
       showOccupantsList: false,
       occupantsListOpened: [],
-      RoomDesc: "",
-      RoomPersistency: false
+
+      roomNameField: this.props.chat.roomName,
+      roomDescField: this.props.chat.roomDesc,
+      roomPersistent: this.props.chat.roomPersistent,
     }
-    this.myRef = null;
+    this.messagesEnd = React.createRef();
+
     this.sendMessageToChatRoom = this.sendMessageToChatRoom.bind(this);
     this.openMucConversation = this.openMucConversation.bind(this);
     this.toggleChatRoomSettings = this.toggleChatRoomSettings.bind(this);
-    this.setChatRoomConfiguration = this.setChatRoomConfiguration.bind(this);
-    this.sendChatRoomConfiguration = this.sendChatRoomConfiguration.bind(this);
+    this.setChatroomConfiguration = this.setChatroomConfiguration.bind(this);
+    this.sendChatroomConfiguration = this.sendChatroomConfiguration.bind(this);
     this.toggleMinimizeChats = this.toggleMinimizeChats.bind(this);
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
     this.getOccupants = this.getOccupants.bind(this);
@@ -99,9 +79,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
   // Polling for incoming messages in active chat rooms
-  async handleIncomingMessages( data: any ) {
-    if(data.chatbox !== undefined) {
-      if (data.chatbox.attributes.jid === this.state.RoomJID){
+  async handleIncomingMessages(data: any) {
+    if (data.chatbox !== undefined) {
+      if (data.chatbox.attributes.jid === this.props.chat.roomJID) {
         if (data.chatbox.messages.models.length > 0) {
           this.getMUCMessages(data.chatbox.messages.models[data.chatbox.messages.models.length - 1]);
         }
@@ -109,40 +89,32 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
   }
   // Open chat room window
-  async openMucConversation(RoomJID: string){
+  async openMucConversation(roomJID: string) {
 
-    const { Strophe, _, $pres } = converse.env;
+    const { _ } = converse.env;
 
     // We fetch openChats JIDs from sessionStorage
     let openChatsList = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
 
     // If roomJID is not part of that list we update the openChatsList
-    if (!openChatsList.includes(RoomJID)) {
-      openChatsList.push(RoomJID);
+    if (!openChatsList.includes(roomJID)) {
+      openChatsList.push(roomJID);
 
       // We update sessionStorage only if roomJID is not stored already.
       window.sessionStorage.setItem("openChats", JSON.stringify(openChatsList));
     }
 
-    this.setState({
-      PyramusUserID: this.props.PyramusUserID
-    });
-
-    let __this = this;
-
-    this.props.converse.api.rooms.open(RoomJID, _.extend(
+    this.props.converse.api.rooms.open(roomJID, _.extend(
       {
-        'jid': RoomJID,
+        'jid': roomJID,
         'maximize': true,
         'auto_configure': true,
-        'nick': __this.props.PyramusUserID,
+        'nick': this.props.pyramusUserID,
         'publicroom': true,
-      }), true).then(async(chat: any) => {
-        __this.setState({
-          chatBox: chat,
+      }), true).then(async (chat: any) => {
+        this.setState({
           groupMessages: [],
           chatRoomOccupants: chat.occupants,
-          RoomPersistency: chat.features.attributes.persistent
         });
         chat.listenTo(chat.occupants, 'add', this.getOccupants);
         chat.listenTo(chat.occupants, 'destroy', this.getOccupants);
@@ -150,11 +122,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       });
   }
   // Load chat room messages
-  async getMUCMessages(stanza: any){
+  async getMUCMessages(stanza: any) {
 
     if (stanza && stanza.attributes.type === "groupchat") {
       let message = stanza.attributes.message;
-      // Message sender JID, can be OccupantJID or BareJID -> We parse this later
+      // Message sender JID, can be OccupantJID or bareJID -> We parse this later
       let from = stanza.attributes.from;
       let senderClass = "";
       let user: any;
@@ -172,10 +144,10 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         // extract the resource part of it and pass it on.
         from = from.split("/").pop();
 
-        // Check if the sender's JID is from PYRAMUS user (applies top both OccupantJID and BareJID)
+        // Check if the sender's JID is from PYRAMUS user (applies top both OccupantJID and bareJID)
         if (from.startsWith("PYRAMUS-")) {
 
-          // Try to split the sender's JID in case we got BareJID so we can extract the local part of it.
+          // Try to split the sender's JID in case we got bareJID so we can extract the local part of it.
           // In case of OcucpantJID we don't do anything as it has been extracted previously already.
           from = from.split("@");
           from = from[0];
@@ -233,7 +205,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       if (message !== "") {
         let tempGroupMessages = new Array;
 
-        if (this.state.groupMessages.length !== 0){
+        if (this.state.groupMessages.length !== 0) {
           tempGroupMessages = [...this.state.groupMessages];
         }
 
@@ -244,11 +216,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
           deletedTime = stanza.attributes.dateTime;
         }
 
-        let i:any;
+        let i: any;
         for (i = 0; i < tempGroupMessages.length; i++) {
           let groupMessageId = tempGroupMessages[i].messageId;
           if (deleteId && groupMessageId === deleteId) {
-            tempGroupMessages[i] = {...tempGroupMessages[i], deleted: true, deletedTime: deletedTime}
+            tempGroupMessages[i] = { ...tempGroupMessages[i], deleted: true, deletedTime: deletedTime }
           }
         }
 
@@ -257,25 +229,25 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         this.setState({
           groupMessages: tempGroupMessages
         }, this.scrollToBottom.bind(this, "smooth"));
-          return;
+        return;
       }
     } else {
-        return;
+      return;
     }
   }
   // Set chat room message as removed
-  setMessageAsRemoved(data: any){
+  setMessageAsRemoved(data: any) {
     let text = data;
-    let chat = this.state.chatBox;
+    const chat = this.props.chat.chatObject;
 
     let spoiler_hint = "undefined";
 
     const attrs = chat.getOutgoingMessageAttributes("messageID=" + text.messageId, spoiler_hint);
 
     let today = new Date();
-    let date = today.getDate()+'.'+(today.getMonth()+1)+'.'+today.getFullYear();
+    let date = today.getDate() + '.' + (today.getMonth() + 1) + '.' + today.getFullYear();
     let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    let dateTime = date+' '+time;
+    let dateTime = date + ' ' + time;
 
     attrs.dateTime = dateTime;
 
@@ -298,11 +270,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.getMUCMessages(message);
   }
   // Send message to the chat room
-  sendMessageToChatRoom(event: any){
+  sendMessageToChatRoom(event: any) {
     event.preventDefault();
 
     let text = event.target.chatMessage.value;
-    let chat = this.state.chatBox;
+    let chat = this.props.chat.chatObject;
 
     var spoiler_hint = "undefined";
 
@@ -310,8 +282,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
     attrs.fullname = window.PROFILE_DATA.displayName;
     attrs.identifier = window.MUIKKU_LOGGED_USER;
-    attrs.from = this.state.BareJID;
-    attrs.to = this.state.RoomJID;
+    attrs.from = this.state.bareJID;
+    attrs.to = this.props.chat.roomJID;
     attrs.nick = chat.attributes.nick || window.PROFILE_DATA.displayName;
 
     let message = chat.messages.findWhere('correcting');
@@ -329,18 +301,17 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
     event.target.chatMessage.value = '';
 
-    if (text !== null || text !== ""){
+    if (text !== null || text !== "") {
       this.props.converse.api.send(chat.createMessageStanza(message));
     }
     this.scrollToBottom.bind(this, "smooth");
   }
   // Open chat room settings
-  toggleChatRoomSettings(){
+  toggleChatRoomSettings() {
     if (this.state.openChatSettings === false && window.MUIKKU_IS_STUDENT === false) {
       this.setState({
         openChatSettings: true,
-        settingsInformBox: "settingsInform-none",
-        isRoomConfigSavedSuccesfully: ""
+        isLastRoomConfigSavedSuccesfully: null,
       });
     } else {
       this.setState({
@@ -349,107 +320,92 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
   }
   // Set chat room configurations
-  setChatRoomConfiguration(event: any){
+  async setChatroomConfiguration(event: React.FormEvent) {
     event.preventDefault();
 
-    let RoomName = event.target.newRoomName.value;
-    let RoomDesc = event.target.newRoomDescription.value;
-    let RoomPersistency = event.target.persistent;
-
-    if (RoomPersistency && RoomPersistency.checked === true) {
-      RoomPersistency = 1;
-    } else {
-      RoomPersistency = 0;
-    }
-
-    this.setState({
-      RoomConfig: {
-        jid: this.state.RoomJID,
-        roomname: RoomName,
-        roomdesc: RoomDesc,
-        persistentroom: RoomPersistency,
-      }
-    });
+    let roomName = this.state.roomNameField;
+    let roomDesc = this.state.roomDescField;
+    let roomPersistency = this.state.roomPersistent;
 
     const { $build, _ } = converse.env;
 
-    this.getChatRoomConfiguration().then((stanza: any) => {
+    const stanza = await this.getChatroomConfiguration();
 
-      const newRoomConfig: any = [],
-      fields = stanza.querySelectorAll('field'),
-      RoomConfig = this.state.RoomConfig;
+    const newroomConfig: any = [];
+    const fields = stanza.querySelectorAll('field');
 
-      // Go through chat room configuration fields and update when necessary
-      _.each(fields, (field: any) => {
-        const fieldname = field.getAttribute('var').replace('muc#roomconfig_', ''),
+    // Go through chat room configuration fields and update when necessary
+    _.each(fields, (field: any) => {
+      const fieldname = field.getAttribute('var').replace('muc#roomConfig_', ''),
         type = field.getAttribute('type');
-        let value;
+      let value;
 
-        // Check if fieldname is part of RoomConfig in hand
-        if (fieldname in RoomConfig) {
-          switch (type) {
-            case 'boolean':
-              value = RoomConfig[fieldname] ? 1 : 0;
-              break;
-            case 'list-multi':
-              // TODO: we don't yet handle "list-multi" types
-              value = field.innerHTML;
-              break;
+      // // Check if fieldname is part of roomConfig in hand
+      // if (fieldname in roomConfig) {
+      //   switch (type) {
+      //     case 'boolean':
+      //       value = roomConfig[fieldname] ? 1 : 0;
+      //       break;
+      //     case 'list-multi':
+      //       // TODO: we don't yet handle "list-multi" types
+      //       value = field.innerHTML;
+      //       break;
 
-            default:
-              value = RoomConfig[fieldname];
-          }
-          field.innerHTML = $build('value').t(value);
-        }
-        // Set updated field values and pass them to sendChatRoomConfiguration()
-        newRoomConfig.push(field);
-        this.sendChatRoomConfiguration(newRoomConfig);
+      //     default:
+      //       value = roomConfig[fieldname];
+      //   }
+      //   field.innerHTML = $build('value').t(value);
+      // }
+      // Set updated field values and pass them to sendChatroomConfiguration()
+      newroomConfig.push(field);
+    });
 
-        // Update necessary chat room states
-        this.setState({
-          RoomName: RoomName,
-          RoomDesc: RoomDesc,
-          RoomPersistency: RoomPersistency,
-        });
-
-        return;
+    if (await this.sendChatroomConfiguration(newroomConfig)) {
+      // Update necessary chat room states
+      this.props.onUpdateChatRoomConfig({
+        roomName,
+        roomDesc,
+        roomPersistent: !!roomPersistency,
+        chatObject: this.props.chat.chatObject,
+        roomJID: this.props.chat.roomJID,
       });
-    }).catch(console.log);
+    };
   }
   // Send an IQ stanza with the groupchat configuration.
-  sendChatRoomConfiguration(RoomConfig: any=[]){
-    const { Strophe, $iq} = converse.env;
-    const iq = $iq({ to: this.state.RoomJID, type: "set"})
-    .c("query", {xmlns: Strophe.NS.MUC_OWNER})
-    .c("x", {xmlns: Strophe.NS.XFORM, type: "submit"});
+  async sendChatroomConfiguration(roomConfig: any = []) {
+    const { Strophe, $iq } = converse.env;
+    const iq = $iq({ to: this.props.chat.roomJID, type: "set" })
+      .c("query", { xmlns: Strophe.NS.MUC_OWNER })
+      .c("x", { xmlns: Strophe.NS.XFORM, type: "submit" });
 
-    RoomConfig.forEach((node: any) => iq.cnode(node).up());
+    roomConfig.forEach((node: any) => iq.cnode(node).up());
 
-    return this.props.converse.api.sendIQ(iq).then(() =>
+    try {
+      await this.props.converse.api.sendIQ(iq);
       this.setState({
-        isRoomConfigSavedSuccesfully: "Tallennettu onnistuneesti!",
-        settingsInformBox: "chat-notification chat-notification--success"
-      })
-    ).catch(() =>
+        isLastRoomConfigSavedSuccesfully: true,
+      });
+      return true;
+    } catch {
       this.setState({
-        isRoomConfigSavedSuccesfully: "Tallennettu onnistuneesti!",
-        settingsInformBox: "chat-notification chat-notification--failed"
-      })
-    );
+        isLastRoomConfigSavedSuccesfully: false,
+      });
+      return false;
+    }
   }
   // Send an IQ stanza to fetch the groupchat configuration data.
   // Returns a promise which resolves once the response IQ
   // has been received.
-  getChatRoomConfiguration(){
+  getChatroomConfiguration() {
     const { Strophe, $iq } = converse.env;
 
     return this.props.converse.api.sendIQ(
-      $iq({ 'to': this.state.RoomJID, 'type': "get"})
-      .c("query", {xmlns: Strophe.NS.MUC_OWNER})
+      $iq({ 'to': this.props.chat.roomJID, 'type': "get" })
+        .c("query", { xmlns: Strophe.NS.MUC_OWNER })
     );
   }
   // Chat room window minimizing toggle
-  toggleMinimizeChats(RoomJID: string){
+  toggleMinimizeChats(roomJID: string) {
     let minimizedRoomList = JSON.parse(window.sessionStorage.getItem("minimizedChats")) || [];
 
     // Check if chat room window is not mimimized and then mimimized it
@@ -459,8 +415,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       });
 
       // Update minimizedChats state and corresponding sessionStorage key
-      if (!minimizedRoomList.includes(RoomJID)) {
-        minimizedRoomList.push(RoomJID);
+      if (!minimizedRoomList.includes(roomJID)) {
+        minimizedRoomList.push(roomJID);
         this.setState({
           minimizedChats: minimizedRoomList
         });
@@ -473,19 +429,19 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       });
 
       // Update minimizedChats state and corresponding sessionStorage key
-      if (minimizedRoomList.includes(RoomJID)) {
-        const filteredRooms = minimizedRoomList.filter((item: any) => item !== RoomJID);
+      if (minimizedRoomList.includes(roomJID)) {
+        const filteredRooms = minimizedRoomList.filter((item: any) => item !== roomJID);
         this.setState({
           minimizedChats: filteredRooms
         });
         window.sessionStorage.setItem("minimizedChats", JSON.stringify(filteredRooms));
       }
       // Trigger openMucConversation() to load chat room messages
-      this.openMucConversation(RoomJID);
+      this.openMucConversation(roomJID);
     }
   }
-  async toggleOccupantsList(){
-    let room = await this.props.converse.api.rooms.get(this.state.RoomJID);
+  async toggleOccupantsList() {
+    let room = await this.props.converse.api.rooms.get(this.props.chat.roomJID);
 
     let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
 
@@ -499,7 +455,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
 
       let result = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
 
-      const filteredChats = result.filter(function(item: any) {
+      const filteredChats = result.filter(function (item: any) {
         return item !== room.attributes.jid;
       });
 
@@ -517,8 +473,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       window.sessionStorage.setItem("showOccupantsList", JSON.stringify(roomsWithOpenOccupantsList));
     }
   }
-  async getOccupants(){
-    let room = await this.props.converse.api.rooms.get(this.state.RoomJID);
+  async getOccupants() {
+    let room = await this.props.converse.api.rooms.get(this.props.chat.roomJID);
 
     if (room.occupants.models.length > 0) {
       let MuikkuUser: any;
@@ -527,37 +483,37 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let tempStudentOccupants = new Array;
       let tempStaffOccupants = new Array;
       for (let item of room.occupants.models) {
-        if (typeof item.attributes.from !== "undefined"){
-          if(typeof item.attributes.nick !== 'undefined'){
+        if (typeof item.attributes.from !== "undefined") {
+          if (typeof item.attributes.nick !== 'undefined') {
             if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
               chatSettings = (await promisify(mApi().chat.settings.read(item.attributes.nick), 'callback')());
-              MuikkuUser = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick,{}), 'callback')());
+              MuikkuUser = (await promisify(mApi().user.users.basicinfo.read(item.attributes.nick, {}), 'callback')());
               let MuikkuNickName: string = chatSettings.nick;
-              if (MuikkuNickName === ""){
+              if (MuikkuNickName === "") {
                 MuikkuNickName = MuikkuUser.firstName + " " + MuikkuUser.lastName;
               }
-              occupantData = { UserId: item.attributes.nick, MuikkuNickName: MuikkuNickName, firstName: MuikkuUser.firstName, lastName: MuikkuUser.lastName, status: item.attributes.show};
+              occupantData = { UserId: item.attributes.nick, MuikkuNickName: MuikkuNickName, firstName: MuikkuUser.firstName, lastName: MuikkuUser.lastName, status: item.attributes.show };
             } else {
               MuikkuUser = item.attributes.nick;
               let MuikkuNickName = item.attributes.nick;
-              occupantData = { UserId: item.attributes.nick, MuikkuNickName: MuikkuNickName, firstName: "", lastName: "", status: item.attributes.show};
+              occupantData = { UserId: item.attributes.nick, MuikkuNickName: MuikkuNickName, firstName: "", lastName: "", status: item.attributes.show };
             }
           }
 
-          if(typeof item.attributes.nick !== 'undefined'){
-            if(item.attributes.nick.startsWith("PYRAMUS-STAFF-")){
-              let isExists = tempStaffOccupants.some(function(curr :any) {
+          if (typeof item.attributes.nick !== 'undefined') {
+            if (item.attributes.nick.startsWith("PYRAMUS-STAFF-")) {
+              let isExists = tempStaffOccupants.some(function (curr: any) {
                 if (curr.UserId === occupantData.UserId) {
-                    return true;
+                  return true;
                 }
               });
               if (isExists !== true) {
                 tempStaffOccupants.push(occupantData);
               }
-            } else{
-              let isExists = tempStudentOccupants.some(function(curr :any) {
+            } else {
+              let isExists = tempStudentOccupants.some(function (curr: any) {
                 if (curr.UserId === occupantData.UserId) {
-                    return true;
+                  return true;
                 }
               });
               if (isExists !== true) {
@@ -576,13 +532,13 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
   }
   // Scroll selected view to the bottom
-  scrollToBottom(method: string = "smooth") {
-    if (this.messagesEnd){
-      this.messagesEnd.scrollIntoView({ behavior: method });
+  scrollToBottom(method: ScrollBehavior = "smooth") {
+    if (this.messagesEnd.current) {
+      this.messagesEnd.current.scrollIntoView({ behavior: method });
     }
   }
   onEnterPress(e: any) {
-    if(e.keyCode == 13 && e.shiftKey == false) {
+    if (e.keyCode == 13 && e.shiftKey == false) {
       e.preventDefault();
 
       return false;
@@ -590,8 +546,8 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   }
   // Check whether chat room is for workspace or environment level
   // Workspace gets chat room automatically via workspace management chat settings
-  isWorkspaceChatRoom(RoomJID: any){
-    if (RoomJID.startsWith("workspace-")){
+  isWorkspaceChatRoom(roomJID: any) {
+    if (roomJID.startsWith("workspace-")) {
       this.setState({
         chatRoomType: "workspace"
       });
@@ -603,44 +559,34 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       return;
     }
   }
-  componentDidMount(){
-    if (this.props.chat) {
-      this.setState({
-        RoomName: this.props.chat.RoomName,
-        RoomJID: this.props.chat.RoomJID,
-        isStudent: window.MUIKKU_IS_STUDENT,
-        RoomDesc: this.props.chat.RoomDesc
-      });
+  componentDidMount() {
+    var roomOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
 
-      var roomOccupantsFromSessionStorage = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
-
-      if (roomOccupantsFromSessionStorage) {
-        roomOccupantsFromSessionStorage.map((item: any) => {
-          if (item === this.props.chat.RoomJID){
-            this.setState({
-              showOccupantsList: true
-            });
-          }
-        })
-      }
-
-      this.isWorkspaceChatRoom(this.props.chat.RoomJID);
-
-      this.props.converse.api.waitUntil('chatBoxesFetched').then(async() => {
-        this.openMucConversation(this.props.chat.RoomJID);
-        this.state.converse.api.listen.on('chatRoomInitialized', (chatbox: any) => {
-          this.getMUCMessages(chatbox)
-        });
-
-        let chatRoom = await this.props.converse.api.rooms.get(this.state.RoomJID);
-
-        if(chatRoom){
-          chatRoom.listenTo(chatRoom.occupants, 'add', this.getOccupants);
-          chatRoom.listenTo(chatRoom.occupants, 'destroy', this.getOccupants);
+    if (roomOccupantsFromSessionStorage) {
+      roomOccupantsFromSessionStorage.map((item: any) => {
+        if (item === this.props.chat.roomJID) {
+          this.setState({
+            showOccupantsList: true
+          });
         }
+      })
+    }
+
+    this.isWorkspaceChatRoom(this.props.chat.roomJID);
+
+    this.props.converse.api.waitUntil('chatBoxesFetched').then(async () => {
+      this.openMucConversation(this.props.chat.roomJID);
+      this.props.converse.api.listen.on('chatRoomInitialized', (chatbox: any) => {
+        this.getMUCMessages(chatbox)
       });
 
-    }
+      let chatRoom = await this.props.converse.api.rooms.get(this.props.chat.roomJID);
+
+      if (chatRoom) {
+        chatRoom.listenTo(chatRoom.occupants, 'add', this.getOccupants);
+        chatRoom.listenTo(chatRoom.occupants, 'destroy', this.getOccupants);
+      }
+    });
 
 
     // Getting minimizedChats sessionStorage value and set it to coresponding state (minimizedChats)
@@ -661,7 +607,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       });
 
       minimizedChatsFromSessionStorage.map((item: any) => {
-        if (item === this.props.chat.RoomJID) {
+        if (item === this.props.chat.roomJID) {
           this.setState({
             minimized: true,
           });
@@ -672,82 +618,85 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.props.converse.api.listen.on('message', this.handleIncomingMessages);
     this.props.converse.api.listen.on('membersFetched', this.getOccupants);
   }
-  render(){
+  render() {
     let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";
 
-    return  (
+    return (
       <div className={`chat__panel-wrapper ${this.state.minimized ? "chat__panel-wrapper--reorder" : ""}`}>
 
         {this.state.minimized === true ? (
           <div className={`chat__minimized chat__minimized--${chatRoomTypeClassName}`}>
-            <div onClick={() => this.toggleMinimizeChats(this.state.RoomJID)} className="chat__minimized-title">{this.state.RoomName}</div>
-            <div onClick={() => this.props.toggleJoinLeaveChatRoom(this.state.RoomJID)} className="chat__button chat__button--close icon-cross"></div>
+            <div onClick={() => this.toggleMinimizeChats(this.props.chat.roomJID)} className="chat__minimized-title">{this.props.chat.roomName}</div>
+            <div onClick={() => this.props.toggleJoinLeaveChatRoom(this.props.chat.roomJID)} className="chat__button chat__button--close icon-cross"></div>
           </div>
         ) : (
-          <div className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
-            <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
-              <div className="chat__panel-header-title">{this.state.RoomName}</div>
-              <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-users"></div>
-              <div onClick={() => this.toggleMinimizeChats(this.state.RoomJID)} className="chat__button chat__button--minimize icon-minus"></div>
+            <div className={`chat__panel chat__panel--${chatRoomTypeClassName}`}>
+              <div className={`chat__panel-header chat__panel-header--${chatRoomTypeClassName}`}>
+                <div className="chat__panel-header-title">{this.props.chat.roomName}</div>
+                <div onClick={() => this.toggleOccupantsList()} className="chat__button chat__button--occupants icon-users"></div>
+                <div onClick={() => this.toggleMinimizeChats(this.props.chat.roomJID)} className="chat__button chat__button--minimize icon-minus"></div>
                 {(!this.state.isStudent) && <div onClick={() => this.toggleChatRoomSettings()} className="chat__button chat__button--room-settings icon-cogs"></div>}
-                <div onClick={() => this.props.toggleJoinLeaveChatRoom(this.state.RoomJID)} className="chat__button chat__button--close icon-cross"></div>
-            </div>
+                <div onClick={() => this.props.toggleJoinLeaveChatRoom(this.props.chat.roomJID)} className="chat__button chat__button--close icon-cross"></div>
+              </div>
 
-            {(this.state.openChatSettings === true) && <div className="chat__subpanel">
-              <div className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}>
-                <div className="chat__subpanel-title">Huoneen asetukset</div>
+              {(this.state.openChatSettings === true) && <div className="chat__subpanel">
+                <div className={`chat__subpanel-header chat__subpanel-header--room-settings-${chatRoomTypeClassName}`}>
+                  <div className="chat__subpanel-title">Huoneen asetukset</div>
                   <div onClick={() => this.toggleChatRoomSettings()} className="chat__button chat__button--close icon-cross"></div>
-              </div>
-              <div className="chat__subpanel-body">
-                  <form onSubmit={this.setChatRoomConfiguration}>
-                  <div className="chat__subpanel-row">
-                    <label className="chat__label">Huoneen nimi: </label>
-                    <input className="chat__textfield" name="newRoomName" defaultValue={this.state.RoomName} type="text"></input>
-                  </div>
-                  <div className="chat__subpanel-row">
-                    <label className="chat__label">Huoneen kuvaus: </label>
-                    <textarea className="chat__memofield" name="newRoomDescription" defaultValue={this.state.RoomDesc}></textarea>
-                  </div>
-                  {(!this.state.isStudent) && <div className="chat__subpanel-row">
-                    <label className="chat__label">Pysyvä huone: </label>
-                      <input className="chat__checkbox" defaultChecked={this.state.RoomPersistency} type="checkbox" name="persistent"></input>
-                  </div>}
-                  <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value="Tallenna"></input>
-                </form>
-              </div>
-
-              <div className={this.state.settingsInformBox}>
-                <p>{this.state.isRoomConfigSavedSuccesfully}</p>
-              </div>
-            </div>}
-
-            <div className="chat__panel-body chat__panel-body--chatroom">
-              <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`} ref={ (ref) => this.myRef=ref }>
-                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} setMessageAsRemoved={this.setMessageAsRemoved.bind(this)}
-                  groupMessage={groupMessage} />)}
-                <div className="chat__messages-last-message" ref={(el) => { this.messagesEnd = el; }}></div>
-              </div>
-              {this.state.showOccupantsList && <div className="chat__occupants-container">
-                <div className="chat__occupants-staff">
-                  {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
-                  {this.state.staffOccupants.map((staffOccupant: any, i: any) =>
-                    <div className="chat__occupants-item" onClick={() => this.props.toggleJoinLeavePrivateChat(staffOccupant)} key={i}>
-                    <span className={"chat__online-indicator chat__occupant-"+staffOccupant.status}></span>{staffOccupant.MuikkuNickName}</div>)}
                 </div>
-                <div className="chat__occupants-student">
-                  {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
-                  {this.state.studentOccupants.map((studentOccupant: any, i: any) =>
-                    <div className="chat__occupants-item" onClick={() => this.props.toggleJoinLeavePrivateChat(studentOccupant)} key={i}>
-                      <span className={"chat__online-indicator chat__occupant-" + studentOccupant.status}></span>{studentOccupant.MuikkuNickName}</div>)}
+                <div className="chat__subpanel-body">
+                  <form onSubmit={this.setChatroomConfiguration}>
+                    <div className="chat__subpanel-row">
+                      <label className="chat__label">Huoneen nimi: </label>
+                      <input className="chat__textfield" name="newroomName" defaultValue={this.props.chat.roomName} type="text"></input>
+                    </div>
+                    <div className="chat__subpanel-row">
+                      <label className="chat__label">Huoneen kuvaus: </label>
+                      <textarea className="chat__memofield" name="newroomDescription" defaultValue={this.props.chat.roomDesc}></textarea>
+                    </div>
+                    {(!this.state.isStudent) && <div className="chat__subpanel-row">
+                      <label className="chat__label">Pysyvä huone: </label>
+                      <input className="chat__checkbox" type="checkbox" name="persistent"></input>
+                    </div>}
+                    <input className={`chat__submit chat__submit--room-settings-${chatRoomTypeClassName}`} type="submit" value="Tallenna"></input>
+                  </form>
                 </div>
+
+                {this.state.isLastRoomConfigSavedSuccesfully !== null
+                  ? (
+                    <div>
+                      <p>{this.state.isLastRoomConfigSavedSuccesfully ? "SUCCESS" : "FAIL"}</p>
+                    </div>
+                  ) : null}
               </div>}
-            </div>
-              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={(e) => this.sendMessageToChatRoom(e)}>
-                <input name="chatRecipient" className="chat__muc-recipient" value={this.state.RoomJID} readOnly/>
-              <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
-              <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
-            </form>
-          </div>)
+
+              <div className="chat__panel-body chat__panel-body--chatroom">
+                <div className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}>
+                  {this.state.groupMessages.map((groupMessage: any, i: any) => <ChatMessage key={i} setMessageAsRemoved={this.setMessageAsRemoved.bind(this)}
+                    groupMessage={groupMessage} />)}
+                  <div className="chat__messages-last-message" ref={this.messagesEnd}></div>
+                </div>
+                {this.state.showOccupantsList && <div className="chat__occupants-container">
+                  <div className="chat__occupants-staff">
+                    {this.state.staffOccupants.length > 0 ? "Henkilökunta" : ""}
+                    {this.state.staffOccupants.map((staffOccupant: any, i: any) =>
+                      <div className="chat__occupants-item" onClick={this.props.toggleJoinLeavePrivateChat.bind(this, staffOccupant)} key={i}>
+                        <span className={"chat__online-indicator chat__occupant-" + staffOccupant.status}></span>{staffOccupant.MuikkuNickName}</div>)}
+                  </div>
+                  <div className="chat__occupants-student">
+                    {this.state.studentOccupants.length > 0 ? "Oppilaat" : ""}
+                    {this.state.studentOccupants.map((studentOccupant: any, i: any) =>
+                      <div className="chat__occupants-item" onClick={this.props.toggleJoinLeavePrivateChat.bind(this, studentOccupant)} key={i}>
+                        <span className={"chat__online-indicator chat__occupant-" + studentOccupant.status}></span>{studentOccupant.MuikkuNickName}</div>)}
+                  </div>
+                </div>}
+              </div>
+              <form className="chat__panel-footer chat__panel-footer--chatroom" onSubmit={this.sendMessageToChatRoom}>
+                <input name="chatRecipient" className="chat__muc-recipient" value={this.props.chat.roomJID} readOnly />
+                <textarea className="chat__memofield chat__memofield--muc-message" onKeyDown={this.onEnterPress} placeholder="Kirjoita viesti tähän..." name="chatMessage"></textarea>
+                <button className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${chatRoomTypeClassName}`} type="submit" value=""><span className="icon-arrow-right"></span></button>
+              </form>
+            </div>)
         }
       </div>
     );

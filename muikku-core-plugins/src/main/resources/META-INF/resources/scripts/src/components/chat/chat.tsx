@@ -2,7 +2,6 @@ import * as React from 'react'
 import '~/sass/elements/chat.scss';
 import { Groupchat } from './groupchat';
 import { RoomsList } from './roomslist';
-import converse from '~/lib/converse';
 import { PrivateMessages } from './privatemessages';
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify, { promisifyNewConstructor } from '~/util/promisify';
@@ -62,14 +61,15 @@ PyramusUserID
   A pre-defined pyramus-student-# or pyramus-staff-# user ide. This is the local part (user) in bareJID and fullJID and resource part (nick) in occupantBareJID variables.
 */
 
-interface IAvailableChatRoomType {
+export interface IAvailableChatRoomType {
   roomName: string,
   roomJID: string,
   roomDesc: string,
+  roomPersistent: boolean,
   chatObject: any,
 }
 
-interface IChatOccupant {
+export interface IChatOccupant {
   userId: string,
   muikkuNickName: string,
   status: string,
@@ -89,7 +89,6 @@ interface IChatState {
   roomsList: Object[],
   messages: Object[],
   availableMucRooms: IAvailableChatRoomType[],
-  chatBox: any,
   showChatButton: boolean,
   showControlBox: boolean,
   showNewRoomForm: boolean,
@@ -108,6 +107,7 @@ interface IChatState {
 
 export class Chat extends React.Component<{}, IChatState> {
 
+  private evtConverse: any = null;
   private converse: any = null;
 
   constructor(props: {}) {
@@ -119,7 +119,6 @@ export class Chat extends React.Component<{}, IChatState> {
       roomsList: [],
       messages: [],
       availableMucRooms: [],
-      chatBox: null,
       showChatButton: null,
       showControlBox: null,
       showNewRoomForm: false,
@@ -147,7 +146,10 @@ export class Chat extends React.Component<{}, IChatState> {
     this.updateRoomNameField = this.updateRoomNameField.bind(this);
     this.updateRoomDescField = this.updateRoomDescField.bind(this);
     this.toggleRoomPersistent = this.toggleRoomPersistent.bind(this);
+    this.toggleJoinLeavePrivateChat = this.toggleJoinLeavePrivateChat.bind(this);
     this.createAndJoinChatRoom = this.createAndJoinChatRoom.bind(this);
+    this.updateChatRoomConfig = this.updateChatRoomConfig.bind(this);
+    this.initializeConverse = this.initializeConverse.bind(this);
   }
 
   public updateRoomNameField(e: React.ChangeEvent<HTMLInputElement>) {
@@ -168,15 +170,23 @@ export class Chat extends React.Component<{}, IChatState> {
     });
   }
 
+  public updateChatRoomConfig(index: number, chat: IAvailableChatRoomType) {
+    const newRooms = [...this.state.availableMucRooms];
+    newRooms[index] = chat;
+    this.setState({
+      availableMucRooms: newRooms,
+    });
+  }
+
   // Notification handler for Received Private Messages.
   // Sets privateChatData and openChats states based on received notification.
   // Private chat window opens when openChats state has correct BareJID stored in it.
   // PrivateChatData state requires necessary occupant data for the private chat.
   async onConverseMessage(data: any) {
-    const converseUtils = converse.env.utils;
+    const converseUtils = this.evtConverse.env.utils;
     let type = data.stanza.getAttribute('type');
 
-    const { Strophe } = converse.env;
+    const { Strophe } = this.evtConverse.env;
     let from = data.stanza.getAttribute('from');
     let bareJIDOfSender = Strophe.getBareJidFromJid(from);
     const isSameUserAsLoggedInUser = bareJIDOfSender === this.converse.bare_jid;
@@ -305,7 +315,7 @@ export class Chat extends React.Component<{}, IChatState> {
       return;
     }
 
-    const { Strophe, $pres, _ } = converse.env;
+    const { Strophe, $pres, _ } = this.evtConverse.env;
 
     const occupantBareJID = roomJID + "/" + this.state.pyramusUserId;
 
@@ -335,6 +345,7 @@ export class Chat extends React.Component<{}, IChatState> {
         roomJID,
         roomName,
         roomDesc,
+        roomPersistent,
         chatObject: chat
       };
 
@@ -342,7 +353,6 @@ export class Chat extends React.Component<{}, IChatState> {
 
       this.setState({
         availableMucRooms: newAvailableMucRooms,
-        chatBox: chat,
         showNewRoomForm: false,
         roomPersistent: false,
         roomDescField: "",
@@ -355,7 +365,7 @@ export class Chat extends React.Component<{}, IChatState> {
   async getAvailableChatRooms(iq: XMLDocument) {
     // Handle the IQ stanza returned from the server, containing all its public groupchats.
     let availableChatRooms = iq.querySelectorAll('query item');
-    const { _ } = converse.env;
+    const { _ } = this.evtConverse.env;
 
     if (availableChatRooms.length) {
       const nodesArray = [].slice.call(availableChatRooms);
@@ -364,6 +374,8 @@ export class Chat extends React.Component<{}, IChatState> {
       await Promise.all(nodesArray.map(async (node: any) => {
         const roomName = node.attributes.name.nodeValue;
         const roomJID = node.attributes.jid.value;
+        // TODO check if this is correct
+        const roomPersistent = node.attributes.persistent.value;
 
         const fields = await this.converse.api.disco.getFields(roomJID);
         const roomDesc = _.get(fields.findWhere({ 'var': "muc#roominfo_description" }), 'attributes.value');
@@ -372,6 +384,7 @@ export class Chat extends React.Component<{}, IChatState> {
           roomName,
           roomJID,
           roomDesc,
+          roomPersistent,
           chatObject: null as any,
         }
 
@@ -468,16 +481,11 @@ export class Chat extends React.Component<{}, IChatState> {
     });
   }
   componentDidMount() {
-    var _this = this;
+    const script = document.createElement("script");
+    script.src = "/scripts/gui/conversejs/6.0.0/converse-headless.min.js";
+    document.head.appendChild(script);
 
-    converse.plugins.add("muikku-chat-ui", {
-
-      initialize: function () {
-        const initializedConverseInstance = this._converse;
-        _this.converse = initializedConverseInstance;
-        _this.onConverseInitialized();
-      },
-    });
+    window.addEventListener("converse-loaded", this.initializeConverse);
 
     // Lets get openChats from sessionStorage value and set it to coresponding state (openChats)
     // Includes both chat rooms and private chats
@@ -488,6 +496,19 @@ export class Chat extends React.Component<{}, IChatState> {
         openChatsJIDS: openChatsFromSessionStorage
       });
     }
+  }
+  initializeConverse(ev: CustomEvent) {
+    const _this = this;
+    this.evtConverse = (ev as any).converse;
+
+    this.evtConverse.plugins.add("muikku-chat-ui", {
+
+      initialize: function () {
+        const initializedConverseInstance = this._converse;
+        _this.converse = initializedConverseInstance;
+        _this.onConverseInitialized();
+      },
+    });
   }
   onConverseInitialized() {
     this.converse.on('connected', () => {
@@ -500,7 +521,7 @@ export class Chat extends React.Component<{}, IChatState> {
         ready: true,
       });
 
-      const { Strophe, $iq } = converse.env;
+      const { Strophe, $iq } = this.evtConverse.env;
       let from = window.MUIKKU_LOGGED_USER;
       const iq: any = $iq({
         'to': 'conference.dev.muikkuverkko.fi',
@@ -630,7 +651,15 @@ export class Chat extends React.Component<{}, IChatState> {
         {/* Chatrooms */}
         <div className="chat__chatrooms-container">
           {this.state.availableMucRooms.map((chat, i) => this.state.openChatsJIDS.includes(chat.roomJID) ?
-            <Groupchat key={i} toggleJoinLeavePrivateChat={this.toggleJoinLeavePrivateChat.bind(this)} toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} PyramusUserID={this.state.pyramusUserId} chatObject={this.state.chatBox} chat={chat} orderNumber={i} converse={this.converse} />
+            <Groupchat
+              key={i}
+              toggleJoinLeavePrivateChat={this.toggleJoinLeavePrivateChat}
+              toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom}
+              pyramusUserID={this.state.pyramusUserId}
+              chat={chat}
+              converse={this.converse}
+              onUpdateChatRoomConfig={this.updateChatRoomConfig.bind(this, i)}
+            />
             : null)}
 
           {this.state.privateChatData.map((privateChatData, i) => this.state.openChatsJIDS.includes(privateChatData.occupantBareJID) ?
