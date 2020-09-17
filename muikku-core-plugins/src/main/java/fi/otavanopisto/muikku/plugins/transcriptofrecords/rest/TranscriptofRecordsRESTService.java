@@ -262,7 +262,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       }
     }
     else {
-      // TODO Fallback functionality to retrieve old HOPS forms from Pyramus 
       User user = userController.findUserByIdentifier(userIdentifier);
       TranscriptofRecordsUserProperties userProperties = transcriptOfRecordsController.loadUserProperties(user);
       return new HopsRESTModel(
