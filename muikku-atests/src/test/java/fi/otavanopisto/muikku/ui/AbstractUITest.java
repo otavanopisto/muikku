@@ -696,7 +696,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void selectOption(String selector, String value){
     Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
-    assertSelectValue(selector, value);
+//    assertSelectValue(selector, value);
   }
   
   protected void selectFinnishLocale() {
