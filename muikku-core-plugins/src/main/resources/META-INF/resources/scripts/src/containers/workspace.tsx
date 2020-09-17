@@ -21,7 +21,7 @@ import WorkspaceManagementBody from '~/components/workspace/workspaceManagement'
 import WorkspaceUsersBody from '~/components/workspace/workspaceUsers';
 import WorkspacePermissionsBody from '~/components/workspace/workspacePermissions';
 
-import { Chat } from '../components/chat/chat';
+import Chat from '../components/chat/chat';
 
 import { RouteComponentProps } from 'react-router';
 import { setCurrentWorkspace, loadStaffMembersOfWorkspace, loadWholeWorkspaceMaterials,

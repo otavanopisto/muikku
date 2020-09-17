@@ -5,6 +5,8 @@ import { RoomsList } from './roomslist';
 import { PrivateMessages } from './privatemessages';
 import mApi, { MApiError } from '~/lib/mApi';
 import promisify, { promisifyNewConstructor } from '~/util/promisify';
+import { StateType } from '~/reducers';
+import { connect } from 'react-redux';
 
 /*
 VARIABLES:
@@ -96,7 +98,7 @@ interface IChatState {
   pyramusUserId: string,
   openRoomNumber: number,
   openChatsJIDS: string[],
-  selectedUserPresence: string,
+  selectedUserPresence: "online" | "offline" | "away",
   privateChatData: IPrivateChatData[],
   ready: boolean,
 
@@ -105,12 +107,18 @@ interface IChatState {
   roomPersistent: boolean;
 }
 
-export class Chat extends React.Component<{}, IChatState> {
+interface IChatProps {
+  currentLocale: string;
+}
+
+class Chat extends React.Component<IChatProps, IChatState> {
 
   private evtConverse: any = null;
   private converse: any = null;
+  private mucNickName: string;
+  private nick: string;
 
-  constructor(props: {}) {
+  constructor(props: IChatProps) {
     super(props);
 
     this.state = {
@@ -122,11 +130,11 @@ export class Chat extends React.Component<{}, IChatState> {
       showChatButton: null,
       showControlBox: null,
       showNewRoomForm: false,
-      isStudent: false,
+      isStudent: window.MUIKKU_IS_STUDENT,
       openRoomNumber: null,
       pyramusUserId: window.MUIKKU_LOGGED_USER,
       openChatsJIDS: [],
-      selectedUserPresence: null,
+      selectedUserPresence: "online",
       privateChatData: [],
       ready: false,
 
@@ -303,7 +311,7 @@ export class Chat extends React.Component<{}, IChatState> {
   // // TODO: Need to check if RoomName is mempty and show error notification
   async createAndJoinChatRoom(e: React.FormEvent) {
     event.preventDefault();
-  
+
     // We need to trim and replace white spaces so new room will be created succefully
     const roomJID = this.state.roomNameField.trim().replace(/\s+/g, '-') + '@conference.dev.muikkuverkko.fi';;
     const roomName = this.state.roomNameField;
@@ -329,7 +337,7 @@ export class Chat extends React.Component<{}, IChatState> {
 
     this.converse.api.user.status.set('online');
 
-    this.converse.api.rooms.open(roomJID, _.extend({
+    const chat = await this.converse.api.rooms.open(roomJID, _.extend({
       'nick': this.state.pyramusUserId,
       'maximize': true,
       'auto_configure': true,
@@ -339,25 +347,24 @@ export class Chat extends React.Component<{}, IChatState> {
         'roomname': roomName,
         'roomdesc': roomDesc
       }
-    }), true).then((chat: any) => {
+    }), true);
 
-      let newAvailableMucRoom: IAvailableChatRoomType = {
-        roomJID,
-        roomName,
-        roomDesc,
-        roomPersistent,
-        chatObject: chat
-      };
+    let newAvailableMucRoom: IAvailableChatRoomType = {
+      roomJID,
+      roomName,
+      roomDesc,
+      roomPersistent,
+      chatObject: chat
+    };
 
-      const newAvailableMucRooms = [...this.state.availableMucRooms, newAvailableMucRoom];
+    const newAvailableMucRooms = [...this.state.availableMucRooms, newAvailableMucRoom];
 
-      this.setState({
-        availableMucRooms: newAvailableMucRooms,
-        showNewRoomForm: false,
-        roomPersistent: false,
-        roomDescField: "",
-        roomNameField: "",
-      });
+    this.setState({
+      availableMucRooms: newAvailableMucRooms,
+      showNewRoomForm: false,
+      roomPersistent: false,
+      roomDescField: "",
+      roomNameField: "",
     });
   }
 
@@ -374,25 +381,28 @@ export class Chat extends React.Component<{}, IChatState> {
       await Promise.all(nodesArray.map(async (node: any) => {
         const roomName = node.attributes.name.nodeValue;
         const roomJID = node.attributes.jid.value;
-        // TODO check if this is correct
-        const roomPersistent = node.attributes.persistent.value;
 
-        const fields = await this.converse.api.disco.getFields(roomJID);
-        const roomDesc = _.get(fields.findWhere({ 'var': "muc#roominfo_description" }), 'attributes.value');
+        const chat = await this.converse.api.rooms.get(roomJID);
+        const roomDesc = chat.attributes.roomconfig.roomdesc;
+        const roomPersistent = chat.attributes.roomconfig.persistentroom;
 
         const newRoomToAdd = {
           roomName,
           roomJID,
           roomDesc,
           roomPersistent,
-          chatObject: null as any,
+          chatObject: chat,
         }
 
         availableMucRoomsList.push(newRoomToAdd);
       }));
+      this.setState({
+        availableMucRooms: availableMucRoomsList,
+      });
     } else {
 
     }
+
     return true;
   }
   // Toggle states for Control Box window opening/closing
@@ -481,25 +491,33 @@ export class Chat extends React.Component<{}, IChatState> {
     });
   }
   componentDidMount() {
-    const script = document.createElement("script");
-    script.src = "/scripts/gui/conversejs/6.0.0/converse-headless.min.js";
-    document.head.appendChild(script);
+    mApi().chat.status.read().callback((err: Error, result: { mucNickName: string, nick: string, enabled: boolean }) => {
+      if (result && result.enabled) {
+        this.mucNickName = result.mucNickName;
+        this.nick = result.nick;
 
-    window.addEventListener("converse-loaded", this.initializeConverse);
+        const script = document.createElement("script");
+        script.src = "//cdn.muikkuverkko.fi/libs/converse/6.0.0/converse-headless.js";
+        script.onload = this.initializeConverse;
+        document.head.appendChild(script);
 
-    // Lets get openChats from sessionStorage value and set it to coresponding state (openChats)
-    // Includes both chat rooms and private chats
-    let openChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("openChats"));
+        // window.addEventListener("converse-loaded", this.initializeConverse);
 
-    if (openChatsFromSessionStorage) {
-      this.setState({
-        openChatsJIDS: openChatsFromSessionStorage
-      });
-    }
+        // Lets get openChats from sessionStorage value and set it to coresponding state (openChats)
+        // Includes both chat rooms and private chats
+        let openChatsFromSessionStorage = JSON.parse(window.sessionStorage.getItem("openChats"));
+
+        if (openChatsFromSessionStorage) {
+          this.setState({
+            openChatsJIDS: openChatsFromSessionStorage
+          });
+        }
+      }
+    });
   }
-  initializeConverse(ev: CustomEvent) {
+  initializeConverse() { //ev: CustomEvent
     const _this = this;
-    this.evtConverse = (ev as any).converse;
+    this.evtConverse = (window as any).converse;
 
     this.evtConverse.plugins.add("muikku-chat-ui", {
 
@@ -509,18 +527,99 @@ export class Chat extends React.Component<{}, IChatState> {
         _this.onConverseInitialized();
       },
     });
+
+    this.evtConverse.initialize({
+      // * * * * * * * * * * * * * * *
+      // Thou shall not touch these
+      // * * * * * * * * * * * * * * *
+      muc_domain: "conference." + location.hostname,
+      authentication: "prebind",
+      prebind_url: "/rest/chat/prebind",
+      bosh_service_url: "/http-bind/",
+      default_domain: location.hostname,
+      auto_login: true,
+      auto_reconnect: true,
+      fullname: this.mucNickName,
+      nickname: this.nick,
+      i18n: this.props.currentLocale,
+      keepalive: true,
+      // This forces the use of nickname set in Muikku user's profile view
+      // This is default value but added here as a reminder not to touch this as Muikku Chat UI requires this setting for displaying nick names/real names.
+      muc_nickname_from_jid: false,
+      // * * * * * * * * * * * * * * *
+
+      // - - - - - - - - - - - - - - -
+      // Thou shall touch these
+      // - - - - - - - - - - - - - - -
+
+      // Prevents converse to create instant rooms automatically. This prevents converse to create instant rooms automatically based on local/sessionStorage information.
+      // If room is set as disabled via workspace settings and room gets deleted from openfore properly, converse added room back as an instant room.
+      muc_instant_rooms: false,
+      muc_respect_autojoin: false,
+
+      // Sets timeout when user is marked away automatically
+      auto_away: 300,
+
+      // Supported locales for converse. If Muikku has more langauges in future we need to update this.
+      locales: ["fi", "en"],
+
+      // Needs to be set to "info" when in production mode
+      loglevel: "debug",
+
+      // We try to archive every message, openfire needs to have archiving turned on with chat rooms also
+      message_archiving: "always",
+
+      // This defines the maximum amount of archived messages to be returned per query.
+      archived_messages_page_size: 50,
+
+      // Should be 0 if MAM (message_archiving: "always") is in use
+      muc_history_max_stanzas: 0,
+
+      // If you set this setting to true, then you will be notified of all messages received in a room.
+      //notify_all_room_messages: true,
+
+      // This allows students and teachers private messages between each other without adding recipient to contacts
+      allow_non_roster_messaging: true,
+
+      // We could set this to IndexedDB so we don't bump into 5MB limit of local storage (not very like to happen).
+      // IndexedDB is also async and might be more future proof.
+      persistent_store: "localStorage",
+      //persistent_store: "IndexedDB",
+
+      // How often converse pings in milliseconds
+      ping_interval: 45,
+
+      // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY.
+      // For production this option needs to be removed.
+      trusted: "false",
+
+      // Plugins that can be used
+      whitelisted_plugins: ["muikku-chat-ui"],
+      // - - - - - - - - - - - - - - -
+
+      blacklisted_plugins: ["converse-bookmarks"]
+    });
   }
   onConverseInitialized() {
-    this.converse.on('connected', () => {
-      this.converse.api.listen.on('message', this.onConverseMessage);
+    this.setState({
+      isConnectionOk: true,
+      ready: true,
+      showMaterial: true,
+    });
 
+    this.converse.on("disconnect", () => {
+      this.setState({
+        isConnectionOk: false,
+      });
+    });
+    this.converse.on("reconnected", () => {
       this.setState({
         isConnectionOk: true,
-        showMaterial: true,
-        isStudent: window.MUIKKU_IS_STUDENT,
-        ready: true,
       });
+    });
 
+    this.converse.on("connected", () => {
+      this.converse.api.listen.on('message', this.onConverseMessage);
       const { Strophe, $iq } = this.evtConverse.env;
       let from = window.MUIKKU_LOGGED_USER;
       const iq: any = $iq({
@@ -594,14 +693,14 @@ export class Chat extends React.Component<{}, IChatState> {
             <div className="chat__controlbox-rooms-heading">Kurssikohtaiset huoneet: </div>
             <div className="chat__controlbox-rooms-listing chat__controlbox-rooms-listing--workspace">
               {this.getWorkspaceMucRooms().length > 0 ?
-                this.getWorkspaceMucRooms().map((chat, i) => <RoomsList modifier="workspace" toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} key={i} chat={chat} orderNumber={i} converse={this.converse} />)
+                this.getWorkspaceMucRooms().map((chat, i) => <RoomsList modifier="workspace" toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} key={i} chat={chat} />)
                 : <div className="chat__controlbox-room  chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
             <div className="chat__controlbox-rooms-heading">Muut huoneet:</div>
             <div className="chat__controlbox-rooms-listing">
               {this.getNotWorkspaceMucRooms().length > 0 ?
-                this.getNotWorkspaceMucRooms().map((chat, i) => <RoomsList toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} key={i} chat={chat} orderNumber={i} converse={this.converse} />)
+                this.getNotWorkspaceMucRooms().map((chat, i) => <RoomsList toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom} key={i} chat={chat} />)
                 : <div className="chat__controlbox-room chat__controlbox-room--empty">Ei huoneita</div>}
             </div>
 
@@ -641,7 +740,7 @@ export class Chat extends React.Component<{}, IChatState> {
                       onChange={this.toggleRoomPersistent}
                     />
                   </div>}
-                  <input className="chat__submit chat__submit--new-room" type="submit" value="Lisää huone"/>
+                  <input className="chat__submit chat__submit--new-room" type="submit" value="Lisää huone" />
                 </form>
               </div>
             </div>}
@@ -657,6 +756,7 @@ export class Chat extends React.Component<{}, IChatState> {
               toggleJoinLeaveChatRoom={this.toggleJoinLeaveChatRoom}
               pyramusUserID={this.state.pyramusUserId}
               chat={chat}
+              evtConverse={this.evtConverse}
               converse={this.converse}
               onUpdateChatRoomConfig={this.updateChatRoomConfig.bind(this, i)}
             />
@@ -670,3 +770,18 @@ export class Chat extends React.Component<{}, IChatState> {
     );
   }
 }
+
+function mapStateToProps(state: StateType) {
+  return {
+    currentLocale: state.locales.current,
+  }
+};
+
+function mapDispatchToProps() {
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Chat);

@@ -1,7 +1,6 @@
 /*global converse */
 import * as React from 'react'
 import '~/sass/elements/chat.scss';
-import converse from '~/lib/converse';
 import mApi from '~/lib/mApi';
 import promisify from '~/util/promisify';
 import { ChatMessage } from './chatMessage';
@@ -10,6 +9,7 @@ import { IChatOccupant, IAvailableChatRoomType } from './chat';
 interface Iprops {
   chat: IAvailableChatRoomType,
   converse: any,
+  evtConverse: any,
   toggleJoinLeaveChatRoom: (bareJID: string) => void,
   toggleJoinLeavePrivateChat: (occupant: IChatOccupant) => void,
   onUpdateChatRoomConfig: (chat: IAvailableChatRoomType) => void,
@@ -74,7 +74,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     this.sendChatroomConfiguration = this.sendChatroomConfiguration.bind(this);
     this.toggleMinimizeChats = this.toggleMinimizeChats.bind(this);
     this.toggleOccupantsList = this.toggleOccupantsList.bind(this);
-    this.getOccupants = this.getOccupants.bind(this);
+    this.refreshChat = this.refreshChat.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
     this.handleIncomingMessages = this.handleIncomingMessages.bind(this);
   }
@@ -91,7 +91,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   // Open chat room window
   async openMucConversation(roomJID: string) {
 
-    const { _ } = converse.env;
+    const { _ } = this.props.evtConverse.env;
 
     // We fetch openChats JIDs from sessionStorage
     let openChatsList = JSON.parse(window.sessionStorage.getItem('openChats')) || [];
@@ -104,22 +104,28 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       window.sessionStorage.setItem("openChats", JSON.stringify(openChatsList));
     }
 
-    this.props.converse.api.rooms.open(roomJID, _.extend(
+    const chatObject = await this.props.converse.api.rooms.open(roomJID, _.extend(
       {
         'jid': roomJID,
         'maximize': true,
         'auto_configure': true,
         'nick': this.props.pyramusUserID,
         'publicroom': true,
-      }), true).then(async (chat: any) => {
-        this.setState({
-          groupMessages: [],
-          chatRoomOccupants: chat.occupants,
-        });
-        chat.listenTo(chat.occupants, 'add', this.getOccupants);
-        chat.listenTo(chat.occupants, 'destroy', this.getOccupants);
-        chat.messages.models.map((stanza: any) => this.getMUCMessages(stanza));
-      });
+      }), true);
+
+    this.setState({
+      groupMessages: [],
+      chatRoomOccupants: chatObject.occupants,
+    });
+    chatObject.listenTo(chatObject.occupants, 'add', this.refreshChat);
+    chatObject.listenTo(chatObject.occupants, 'destroy', this.refreshChat);
+
+    this.props.onUpdateChatRoomConfig({
+      ...this.props.chat,
+      chatObject,
+    });
+
+    chatObject.messages.models.map((stanza: any) => this.getMUCMessages(stanza));
   }
   // Load chat room messages
   async getMUCMessages(stanza: any) {
@@ -327,7 +333,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     let roomDesc = this.state.roomDescField;
     let roomPersistency = this.state.roomPersistent;
 
-    const { $build, _ } = converse.env;
+    const { $build, _ } = this.props.evtConverse.env;
 
     const stanza = await this.getChatroomConfiguration();
 
@@ -373,7 +379,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   }
   // Send an IQ stanza with the groupchat configuration.
   async sendChatroomConfiguration(roomConfig: any = []) {
-    const { Strophe, $iq } = converse.env;
+    const { Strophe, $iq } = this.props.evtConverse.env;
     const iq = $iq({ to: this.props.chat.roomJID, type: "set" })
       .c("query", { xmlns: Strophe.NS.MUC_OWNER })
       .c("x", { xmlns: Strophe.NS.XFORM, type: "submit" });
@@ -397,7 +403,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
   // Returns a promise which resolves once the response IQ
   // has been received.
   getChatroomConfiguration() {
-    const { Strophe, $iq } = converse.env;
+    const { Strophe, $iq } = this.props.evtConverse.env;
 
     return this.props.converse.api.sendIQ(
       $iq({ 'to': this.props.chat.roomJID, 'type': "get" })
@@ -441,13 +447,11 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
   }
   async toggleOccupantsList() {
-    let room = await this.props.converse.api.rooms.get(this.props.chat.roomJID);
-
     let roomsWithOpenOccupantsList = this.state.occupantsListOpened;
 
     if (this.state.showOccupantsList === true) {
 
-      const filteredRooms = roomsWithOpenOccupantsList.filter((item: any) => item !== room.attributes.jid);
+      const filteredRooms = roomsWithOpenOccupantsList.filter((item: any) => item !== this.props.chat.chatObject.attributes.jid);
       this.setState({
         showOccupantsList: false,
         occupantsListOpened: filteredRooms,
@@ -456,33 +460,38 @@ export class Groupchat extends React.Component<Iprops, Istate> {
       let result = JSON.parse(window.sessionStorage.getItem('showOccupantsList')) || [];
 
       const filteredChats = result.filter(function (item: any) {
-        return item !== room.attributes.jid;
+        return item !== this.props.chat.chatObject.attributes.jid;
       });
 
       window.sessionStorage.setItem("showOccupantsList", JSON.stringify(filteredChats));
 
-    } else if (!roomsWithOpenOccupantsList.includes(room.attributes.jid)) {
+    } else if (!roomsWithOpenOccupantsList.includes(this.props.chat.chatObject.attributes.jid)) {
 
-      roomsWithOpenOccupantsList.push(room.attributes.jid);
+      roomsWithOpenOccupantsList.push(this.props.chat.chatObject.attributes.jid);
 
       this.setState({
         occupantsListOpened: roomsWithOpenOccupantsList,
         showOccupantsList: true
       });
-      this.getOccupants();
+      this.refreshChat();
       window.sessionStorage.setItem("showOccupantsList", JSON.stringify(roomsWithOpenOccupantsList));
     }
   }
-  async getOccupants() {
-    let room = await this.props.converse.api.rooms.get(this.props.chat.roomJID);
+  async refreshChat() {
+    const chatObject = await this.props.converse.api.rooms.get(this.props.chat.roomJID);
 
-    if (room.occupants.models.length > 0) {
+    this.props.onUpdateChatRoomConfig({
+      ...this.props.chat,
+      chatObject,
+    });
+
+    if (this.props.chat.chatObject.occupants.models.length > 0) {
       let MuikkuUser: any;
       let occupantData: any;
       let chatSettings: any;
       let tempStudentOccupants = new Array;
       let tempStaffOccupants = new Array;
-      for (let item of room.occupants.models) {
+      for (let item of this.props.chat.chatObject.occupants.models) {
         if (typeof item.attributes.from !== "undefined") {
           if (typeof item.attributes.nick !== 'undefined') {
             if (item.attributes.nick.startsWith("PYRAMUS-STAFF-") || item.attributes.nick.startsWith("PYRAMUS-STUDENT-")) {
@@ -580,11 +589,9 @@ export class Groupchat extends React.Component<Iprops, Istate> {
         this.getMUCMessages(chatbox)
       });
 
-      let chatRoom = await this.props.converse.api.rooms.get(this.props.chat.roomJID);
-
-      if (chatRoom) {
-        chatRoom.listenTo(chatRoom.occupants, 'add', this.getOccupants);
-        chatRoom.listenTo(chatRoom.occupants, 'destroy', this.getOccupants);
+      if (this.props.chat.chatObject) {
+        this.props.chat.chatObject.listenTo(this.props.chat.chatObject.occupants, 'add', this.refreshChat);
+        this.props.chat.chatObject.listenTo(this.props.chat.chatObject.occupants, 'destroy', this.refreshChat);
       }
     });
 
@@ -616,7 +623,7 @@ export class Groupchat extends React.Component<Iprops, Istate> {
     }
 
     this.props.converse.api.listen.on('message', this.handleIncomingMessages);
-    this.props.converse.api.listen.on('membersFetched', this.getOccupants);
+    this.props.converse.api.listen.on('membersFetched', this.refreshChat);
   }
   render() {
     let chatRoomTypeClassName = this.state.chatRoomType === "workspace" ? "workspace" : "other";

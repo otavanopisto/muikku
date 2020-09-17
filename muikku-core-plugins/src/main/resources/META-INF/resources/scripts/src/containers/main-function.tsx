@@ -40,7 +40,7 @@ import { setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfR
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
 
-import { Chat } from '../components/chat/chat';
+import Chat from '../components/chat/chat';
 
 interface MainFunctionProps {
   store: Store<StateType>,
