@@ -485,8 +485,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
         selectOption(".material-page__selectfield", "2");
-        waitForPresentAndVisible(".material-page__field-answer-synchronizer--saved");
-
+        waitForVisible(".material-page__field-answer-synchronizer--saving");
+        waitForVisible(".material-page__field-answer-synchronizer--saved");
+        assertSelectValue(".material-page__selectfield", "2");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
         assertSelectedOption(".material-page__selectfield", "dos");
@@ -494,7 +495,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
-      
+ 
     } finally {
       mockBuilder.wiremockReset();
     }
