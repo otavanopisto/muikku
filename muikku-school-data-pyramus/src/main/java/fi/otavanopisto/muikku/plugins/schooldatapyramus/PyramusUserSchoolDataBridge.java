@@ -970,14 +970,14 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
     if (!StringUtils.equals(studentIdentifier.getDataSource(), getSchoolDataSource())) {
-      throw new SchoolDataBridgeInternalException(String.format("Could not evaluate stundent's matriculation eligibility from school data source %s", studentIdentifier.getDataSource()));
+      throw new SchoolDataBridgeInternalException(String.format("Could not evaluate students' matriculation eligibility from school data source %s", studentIdentifier.getDataSource()));
     }
     
     Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     if (pyramusStudentId != null) {
       fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility result = pyramusClient.get(String.format("/students/students/%d/matriculationEligibility?subjectCode=%s", pyramusStudentId, subjectCode), fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility.class);
       if (result == null) {
-        throw new SchoolDataBridgeInternalException(String.format("Could not resolve student's matriculation eligibility for user %s", studentIdentifier));
+        throw new SchoolDataBridgeInternalException(String.format("Could not resolve matriculation eligibility for student %s", studentIdentifier));
       }
       
       return new PyramusStudentMatriculationEligibility(result.getEligible(), result.getRequirePassingGrades(), result.getAcceptedCourseCount(), result.getAcceptedTransferCreditCount());

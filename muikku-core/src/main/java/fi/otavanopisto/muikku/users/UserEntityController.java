@@ -119,10 +119,12 @@ public class UserEntityController implements Serializable {
     return userEntityPropertyDAO.listByUserEntity(userEntity);
   }
   
-  public UserEntityProperty setUserEntityProperty(UserEntity userEntity, String key, String value) {
+  public void setUserEntityProperty(UserEntity userEntity, String key, String value) {
     UserEntityProperty userEntityProperty = getUserEntityPropertyByKey(userEntity, key);
     if (userEntityProperty == null) {
-      userEntityProperty = userEntityPropertyDAO.create(userEntity, key, value);
+      if (StringUtils.isNotEmpty(value)) {
+        userEntityPropertyDAO.create(userEntity, key, value);
+      }
     }
     else {
       if (StringUtils.isEmpty(value)) {
@@ -132,13 +134,14 @@ public class UserEntityController implements Serializable {
         userEntityPropertyDAO.updateValue(userEntityProperty, value);
       }
     }
-    return userEntityProperty;
   }
 
-  public UserIdentifierProperty setUserIdentifierProperty(String identifier, String key, String value) {
+  public void setUserIdentifierProperty(String identifier, String key, String value) {
     UserIdentifierProperty userIdentifierProperty = getUserIdentifierPropertyByKey(identifier, key);
     if (userIdentifierProperty == null) {
-      userIdentifierProperty = userIdentifierPropertyDAO.create(identifier, key, value);
+      if (StringUtils.isNotEmpty(value)) {
+        userIdentifierPropertyDAO.create(identifier, key, value);
+      }
     }
     else {
       if (StringUtils.isEmpty(value)) {
@@ -148,7 +151,6 @@ public class UserEntityController implements Serializable {
         userIdentifierPropertyDAO.updateValue(userIdentifierProperty, value);
       }
     }
-    return userIdentifierProperty;
   }
 
   public UserEntity findUserEntityByUser(User user) {
