@@ -185,7 +185,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     User student = userController.findUserByIdentifier(studentIdentifier);
     
-    // TODO Refactor hops.enabled from Pyramus to Muikku?
     if (!transcriptOfRecordsController.shouldShowStudies(student)) {
       VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
@@ -343,7 +342,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
     User user = userController.findUserByIdentifier(userIdentifier);
 
-    // TODO Refactor hops.enabled from Pyramus to Muikku?
     if (!transcriptOfRecordsController.shouldShowStudies(user)) {
       return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
     }
