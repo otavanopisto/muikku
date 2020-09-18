@@ -86,7 +86,7 @@
 .link--privacy-policy {
   color: $color-default;
   text-align: center;
-  text-transform: uppercase;
+  //text-transform: uppercase;
   white-space: normal;
 
   &:hover,
@@ -103,7 +103,8 @@
   border: 0;
 }
 
-.link--plagscan-privacy-policy {
+.link--plagscan-privacy-policy,
+.link--accessibility-statement {
   color: $color-default;
 
   &:hover,
