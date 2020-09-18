@@ -162,15 +162,6 @@ export default function guider(state: GuiderType = {
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP") {
     let obj: any = {};
     obj[action.payload.property] = action.payload.value;
-
-    //TODO remove or comment out, this is mocking code
-    //    if (action.payload.property === "vops"){
-    //      obj[action.payload.property] = vops;
-    //    } else if (action.payload.property === "hops"){
-    //      obj[action.payload.property] = hops;
-    //    }
-    //TODO
-
     return Object.assign({}, state, {
       currentStudent: Object.assign({}, state.currentStudent, obj)
     });

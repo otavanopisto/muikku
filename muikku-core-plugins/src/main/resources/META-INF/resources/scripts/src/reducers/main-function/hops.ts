@@ -5,7 +5,7 @@ export type HOPSStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export interface HOPSDataType {
   goalSecondarySchoolDegree: "yes" | "no" | "maybe",
   goalMatriculationExam: "yes" | "no" | "maybe",
-  vocationalYears: string,        // string wtf, but this shit is actually a number
+  vocationalYears: string,        // defined as a string, but this is actually a number
   goalJustMatriculationExam: "yes" | "no",  //yo
   justTransferCredits: string,    // disguised number
   transferCreditYears: string,    // disguised number
