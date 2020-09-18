@@ -485,8 +485,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
         selectOption(".material-page__selectfield", "2");
-        waitForVisible(".material-page__field-answer-synchronizer--saving");
-        waitForVisible(".material-page__field-answer-synchronizer--saved");
+        sleep(1000);
+        waitForNotVisible(".material-page__field-answer-synchronizer");
         assertSelectValue(".material-page__selectfield", "2");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".material-page__selectfield");
