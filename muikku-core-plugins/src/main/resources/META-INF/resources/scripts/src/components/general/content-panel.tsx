@@ -136,7 +136,11 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
 
         <div className="content-panel__body" ref="body">
           <div className="content-panel__content">
-            <div className={`content-panel__main-container loader-empty`}>{this.props.children}</div>
+
+            {/* Rendering the handle arrow for opening the ToC */}
+            {this.props.navigation && <div className="content-panel__navigation-open" onClick={this.openNavigation}><span className="icon-arrow-left"></span></div>}
+
+            {/* Rendering the ToC */}
             {this.props.navigation && <nav ref="menu-overlay"
              className={`content-panel__navigation ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
              onClick={this.closeNavigationByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
@@ -145,7 +149,8 @@ export default class ContentPanel extends React.Component<ContentPanelProps, Con
               }</div>
             </nav>}
 
-            {this.props.navigation && <div className="content-panel__navigation-open" onClick={this.openNavigation}><span className="icon-arrow-left"></span></div>}
+            {/* Rendering the content */}
+            <div className={`content-panel__main-container loader-empty`}>{this.props.children}</div>
           </div>
         </div>
       </div>
