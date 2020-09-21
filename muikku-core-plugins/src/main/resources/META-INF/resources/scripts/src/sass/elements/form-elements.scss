@@ -149,14 +149,6 @@
   @include form-element-toolbar;
 }
 
-.form-element--guider-toolbar {
-  @include form-element-toolbar;
-}
-
-.form-element--coursepicker-toolbar {
-  @include form-element-toolbar;
-}
-
 .form-element--workspace-toolbar {
   @include form-element-toolbar;
   width: 100%;
@@ -166,9 +158,16 @@
   }
 }
 
-.form-element--add-producer {
+.form-element__custom-element {
+  padding: 10px 0 0;
+}
+
+.form-element--guider-toolbar {
   @include form-element-toolbar;
-  width: 100%;
+}
+
+.form-element--coursepicker-toolbar {
+  @include form-element-toolbar;
 }
 
 .form-element--profile {
@@ -226,11 +225,6 @@
   width: 100%;
 }
 
-.form-element__input--forgotpassword {
-  font-size: $text-forgotpassword-font-size;
-  width: 100%;
-}
-
 .form-element__input--workspace-data,
 .form-element__input--guider-label-name,
 .form-element__input--communicator-label-name,
@@ -242,6 +236,14 @@
   width: 100%;
 }
 
+.form-element__input--forgotpassword {
+  font-size: $text-forgotpassword-font-size;
+  width: 100%;
+}
+
+.form-element__input--profile {
+  width: 100%;
+}
 
 .form-element__input--profile-wrong {
   color: $color-fatal;
@@ -290,33 +292,6 @@
   }
 }
 
-.form-element__input-decoration--add-material-producer {
-  background-color: $color-material-page-admin-panel-main-color;
-}
-
-.form-element__input--subpanel-search {
-  background-color: $color-default;
-  margin-right: -2px;
-  width: 100%;
-}
-
-.form-element__input-decoration--subpanel-search {
-  background-color: $color-main-function-input-field-decoration-background;
-  border-radius: 2px;
-  cursor: pointer;
-
-  &::before {
-    @include form-element-input-search-decoration;
-    color: $color-subpanel-search-icon;
-  }
-}
-
-.form-element__input--material-editor {
-  border: solid 2px lighten($color-material-page-admin-panel-main-color, 20%);
-  margin: 5px 0 0;
-  width: 100%;
-}
-
 .form-element__select {
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -350,6 +325,10 @@
 
 }
 
+.form-element__select--matriculation-exam {
+  margin-right: 5px;
+}
+
 .form-element__select--hops-selector {
   margin-left: 5px;
   margin-right: 5px;
@@ -359,10 +338,16 @@
 .form-element__select--main-action {
   display: inline-block;
   font-weight: 300;
+  height: 35px;
   min-width: 150px;
+  padding: 5px 25px 5px 5px;
   text-transform: uppercase;
   vertical-align: top;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+  }
 }
 
 .form-element__select--material-editor {
@@ -376,7 +361,8 @@
   height: 35px;
   margin-right: 20px;
   max-width: 200px;
-  padding: 5px 25px 5px 10px;
+  padding: 5px 25px 5px 5px;
+  text-transform: uppercase;
   vertical-align: top;
   width: 100%;
 
@@ -390,6 +376,9 @@
   width: 100%;
 }
 
+.form-element__textarea-container {
+  width: 100%;
+}
 
 .form-element__textarea {
   background-color: transparent;
@@ -411,6 +400,14 @@
   margin: 0;
 }
 
+.form-element__dropdown-selection-container {
+  padding: 3px 0 3px 10px;
+}
+
+.form-element__button-container {
+  padding: 10px;
+}
+
 .form-element__radio-option-container {
   align-items: center;
   display: flex;
@@ -426,6 +423,10 @@
   display: flex;
   margin-right: 10px;
   padding: 10px;
+
+  input {
+    margin-right: 5px;
+  }
 }
 
 .form-element__autocomplete-highlight {

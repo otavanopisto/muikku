@@ -806,7 +806,9 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     }
     
     if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_FINDWORKSPACE_USERSTATISTICS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     Long messageCount = forumController.countUserEntityWorkspaceMessages(workspaceEntity, userEntity);

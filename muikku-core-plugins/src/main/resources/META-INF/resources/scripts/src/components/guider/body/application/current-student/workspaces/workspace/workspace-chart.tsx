@@ -1,10 +1,10 @@
-import {i18nType} from "~/reducers/base/i18n";
+import { i18nType } from "~/reducers/base/i18n";
 import * as React from 'react';
-import {Dispatch} from 'redux';
-import {connect} from 'react-redux';
-import {StateType} from '~/reducers';
-import {WorkspaceType} from '~/reducers/workspaces';
-import GraphFilter from '../../filters/graph-filter';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { StateType } from '~/reducers';
+import { WorkspaceType } from '~/reducers/workspaces';
+import GraphFilter from '~/components/general/graph/filters/graph-filter';
 import '~/sass/elements/chart.scss';
 
 let AmCharts: any = null;
@@ -40,7 +40,7 @@ let zoomStartDate: Date = null;
 let zoomEndDate: Date = null;
 
 class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceStatisticsProps, CurrentStudentWorkspaceStatisticsState> {
-  constructor(props: CurrentStudentWorkspaceStatisticsProps){
+  constructor(props: CurrentStudentWorkspaceStatisticsProps) {
     super(props);
     this.GraphFilterHandler = this.GraphFilterHandler.bind(this);
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
@@ -49,66 +49,68 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
       amChartsLoaded: AmCharts !== null,
       filteredGraphs: []
     };
-    if (!this.state.amChartsLoaded){
+    if (!this.state.amChartsLoaded) {
       this.loadAmCharts();
     } else {
       AmCharts = require("@amcharts/amcharts3-react");
     }
   }
-  
-  loadAmCharts(){
+
+  loadAmCharts() {
     let amcharts = document.createElement('script');
     amcharts.src = "https://www.amcharts.com/lib/3/amcharts.js";
     amcharts.async = true;
-    amcharts.onload = ()=>{
+    amcharts.onload = () => {
       let serial = document.createElement('script');
       serial.src = "https://www.amcharts.com/lib/3/serial.js";
       serial.async = true;
-      serial.onload = ()=>{
+      serial.onload = () => {
         AmCharts = require("@amcharts/amcharts3-react");
-        this.setState({amChartsLoaded: true});
+        this.setState({ amChartsLoaded: true });
       };
       document.head.appendChild(serial);
     };
     document.head.appendChild(amcharts);
   }
-  
-  GraphFilterHandler(graph: Graph){
+
+  GraphFilterHandler(graph: Graph) {
     const filteredGraphs = this.state.filteredGraphs.slice();
     let index = filteredGraphs.indexOf(graph);
-    if (index > -1)
+    if (index > -1) {
       filteredGraphs.splice(index, 1);
-    else 
+    }
+    else {
       filteredGraphs.push(graph);
-    this.setState({filteredGraphs: filteredGraphs});
+    }
+    this.setState({ filteredGraphs: filteredGraphs });
   }
-  
-  zoomSaveHandler(e: any){
-    if (!ignoreZoomed){
+
+  zoomSaveHandler(e: any) {
+    if (!ignoreZoomed) {
       zoomStartDate = e.startDate;
       zoomEndDate = e.endDate;
     }
     ignoreZoomed = false;
   }
-  
-  zoomApplyHandler(e: any){
+
+  zoomApplyHandler(e: any) {
     if (zoomStartDate !== null && zoomEndDate !== null) {
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
     }
   }
-  
-  render(){
-    if (!this.state.amChartsLoaded){
+
+  render() {
+    if (!this.state.amChartsLoaded) {
       return null;
     }
-    
+
     //NOTE: The filtered data can be cut here. (Option 1)
     let chartDataMap = new Map<string, WorkspaceChartData>();
-    chartDataMap.set(new Date().toISOString().slice(0, 10), {"MATERIAL_ASSIGNMENTDONE": 0, "MATERIAL_EXERCISEDONE": 0, "WORKSPACE_VISIT": 0});
-    this.props.workspace.activityLogs.map((log)=>{
+    chartDataMap.set(new Date().toISOString().slice(0, 10), { "MATERIAL_ASSIGNMENTDONE": 0, "MATERIAL_EXERCISEDONE": 0, "WORKSPACE_VISIT": 0 });
+    this.props.workspace.activityLogs.map((log) => {
       let date = log.timestamp.slice(0, 10);
       let entry = chartDataMap.get(date) || {};
-      switch(log.type){
+      switch (log.type) {
         case "EVALUATION_REQUESTED":
         case "EVALUATION_GOTINCOMPLETED":
         case "EVALUATION_GOTFAILED":
@@ -117,28 +119,28 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
         case "MATERIAL_EXERCISEDONE":
         case "MATERIAL_ASSIGNMENTDONE":
           entry[log.type] = (entry[log.type] + 1) || 1;
-        break;
+          break;
         default:
           break;
       }
       chartDataMap.set(date, entry);
     });
-    
+
     //NOTE: Data can be filtered here also (Option 2)
-    let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b)=>{return a > b ? 1 : -1;});
+    let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) => { return a > b ? 1 : -1; });
     let data = new Array;
-    sortedKeys.forEach((key)=>{
+    sortedKeys.forEach((key) => {
       let value = chartDataMap.get(key);
-      data.push({"date": key, ...value});
+      data.push({ "date": key, ...value });
     });
-    
+
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
     let graphs = new Array;
-    
-    if (!this.state.filteredGraphs.includes(Graph.WORKSPACE_VISIT)){
+
+    if (!this.state.filteredGraphs.includes(Graph.WORKSPACE_VISIT)) {
       graphs.push({
         "id": "WORKSPACE_VISIT",
-        "balloonText": this.props.i18n.text.get("plugin.guider.visitsTitle") + " <b>[[WORKSPACE_VISIT]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.visitsLabel") + " <b>[[WORKSPACE_VISIT]]</b>",
         "fillAlphas": 0.7,
         "lineAlpha": 0.2,
         "lineColor": "#43cd80",
@@ -150,11 +152,11 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
         "valueField": "WORKSPACE_VISIT"
       });
     }
-    
-    if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)){
+
+    if (!this.state.filteredGraphs.includes(Graph.MATERIAL_ASSIGNMENTDONE)) {
       graphs.push({
         "id": "MATERIAL_ASSIGNMENTDONE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsLabel") + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ce01bd",
@@ -165,11 +167,11 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
         "valueField": "MATERIAL_ASSIGNMENTDONE"
       });
     }
-    
-    if (!this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)){
+
+    if (!this.state.filteredGraphs.includes(Graph.MATERIAL_EXERCISEDONE)) {
       graphs.push({
         "id": "MATERIAL_EXERCISEDONE",
-        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesLabel") + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ff9900",
@@ -181,14 +183,14 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
       });
     }
     let valueAxes = [{
-    "stackType": (graphs.length>1)? "regular": "none",
-    "unit": "",
-    "position": "left",
-    "title": "",
-    "integersOnly": true,
-    "minimum": 0
+      "stackType": (graphs.length > 1) ? "regular" : "none",
+      "unit": "",
+      "position": "left",
+      "title": "",
+      "integersOnly": true,
+      "minimum": 0
     }];
-    
+
     let config = {
       "theme": "none",
       "type": "serial",
@@ -223,18 +225,18 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
         "autoGridCount": true,
         "color": "#AAAAAA"
       },
-      "chartCursor": { 
+      "chartCursor": {
         "categoryBalloonDateFormat": "YYYY-MM-DD",
         "categoryBalloonColor": "#009FE3",
         "cursorColor": "#000"
       },
       "listeners": [{
-         "event": "zoomed",
-         "method": this.zoomSaveHandler
-         }, {
-         "event": "dataUpdated",
-         "method": this.zoomApplyHandler
-       }],
+        "event": "zoomed",
+        "method": this.zoomSaveHandler
+      }, {
+        "event": "dataUpdated",
+        "method": this.zoomApplyHandler
+      }],
       "valueAxes": valueAxes,
       "graphs": graphs,
       "dataProvider": data,
@@ -248,15 +250,15 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     return <div className="react-required-container">
       <div className="chart-legend">
         <div className="chart-legend-filter chart-legend-filter--graph-filter">
-          <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler} modificator="-list-only"/>
+          <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler} modificator="-list-only" />
         </div>
       </div>
-      <AmCharts.React className="chart chart--workspace-chart" options={config}/>
+      <AmCharts.React className="chart chart--workspace-chart" options={config} />
     </div>
   }
 }
 
-function mapStateToProps(state: StateType){
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n
   }

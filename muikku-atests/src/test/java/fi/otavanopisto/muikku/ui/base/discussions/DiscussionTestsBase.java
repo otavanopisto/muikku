@@ -51,8 +51,8 @@ public class DiscussionTestsBase extends AbstractUITest {
         sendKeys("input.env-dialog__input--new-discussion-thread-title", "Test title for discussion");
         addTextToCKEditor("Test text for discussion.");
         waitAndClick(".env-dialog__actions .button--dialog-execute");
-        waitForPresent("h3.application-list__header-title");
-        assertText("h3.application-list__header-title", "Test title for discussion");
+        waitForPresent("h3.application-list__title");
+        assertText("h3.application-list__title", "Test title for discussion");
         waitForPresent(".application-list__item-body article>p");
         assertTextIgnoreCase(".application-list__item-body article>p", "Test text for discussion.");
       }finally {
@@ -298,10 +298,10 @@ public class DiscussionTestsBase extends AbstractUITest {
           sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
-          waitForPresentAndVisible("h3.application-list__header-title");
+          waitForPresentAndVisible("h3.application-list__title");
           reloadCurrentPage();
-          waitForPresentAndVisible("h3.application-list__header-title");
-          assertText("h3.application-list__header-title", "Testinging");
+          waitForPresentAndVisible("h3.application-list__title");
+          assertText("h3.application-list__title", "Testinging");
           waitForPresent(".application-list__item-content-main .application-list__item-body article>p");
           assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body article>p", "Testing testing daa daaing");
           waitForPresent(".application-list__item-edited");
