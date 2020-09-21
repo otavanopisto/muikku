@@ -74,8 +74,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
           sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
+          waitForNotVisible(".material-page__field-answer-synchronizer");
           waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
-          waitForPresentAndVisible(".notification-queue__item--success");
+          waitForVisible(".notification-queue__item--success");
           sleep(500);
           
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -367,6 +368,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
         waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
+        waitForNotVisible(".material-page__field-answer-synchronizer");
         waitAndClick(".button--muikku-check-exercises");
         waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
         assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
@@ -432,6 +434,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
           waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
+          waitForNotVisible(".material-page__field-answer-synchronizer");
           waitAndClick(".button--muikku-check-exercises");
           waitUntilContentChanged(".button--muikku-check-exercises", "Palauta harjoitustehtävä");
           assertTextIgnoreCase(".button--muikku-check-exercises", "Harjoitustehtävä palautettu");
