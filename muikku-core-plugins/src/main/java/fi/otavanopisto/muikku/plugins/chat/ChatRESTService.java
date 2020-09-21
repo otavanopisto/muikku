@@ -10,12 +10,18 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -35,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -46,12 +53,17 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 import rocks.xmpp.core.XmppException;
+import rocks.xmpp.core.net.ChannelEncryption;
 import rocks.xmpp.core.session.XmppClient;
 import rocks.xmpp.core.session.XmppSessionConfiguration;
 import rocks.xmpp.extensions.httpbind.BoshConnection;
@@ -94,6 +106,16 @@ public class ChatRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
   
   @GET
   @Path("/prebind")
@@ -109,7 +131,7 @@ public class ChatRESTService extends PluginRESTService {
     if (loggedUserIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Logged user identifier not found").build();
     }
-    String userIdentifierString = loggedUserIdentifier.toId();
+    String userIdentifierString = StringUtils.lowerCase(loggedUserIdentifier.toId());
     
     // Do we ever need to resume an existing session? Re-using ChatPrebindParameters and incrementing rid doesn't work.
     
@@ -117,8 +139,8 @@ public class ChatRESTService extends PluginRESTService {
       XmppCredentials credentials = computeXmppCredentials(privateKey, now, userIdentifierString);
       BoshConnectionConfiguration connectionConfig = BoshConnectionConfiguration
           .builder()
-          .secure(true)
           .hostname(request.getServerName())
+          .channelEncryption(ChannelEncryption.DIRECT)
           .port(443)
           .path("/http-bind/")
           .build();
@@ -141,9 +163,10 @@ public class ChatRESTService extends PluginRESTService {
       chatPrebindParameters.setJid(credentials.getJid());
       chatPrebindParameters.setSid(sessionId);
       chatPrebindParameters.setRid(rid);
-
+      
       return Response.ok(chatPrebindParameters).build();
     } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException | XmppException ex) {
+      logger.log(Level.SEVERE, "Prebind failure", ex);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
     }
   }
@@ -292,6 +315,58 @@ public class ChatRESTService extends PluginRESTService {
     restModel.setChatStatus(workspaceChatSettings.getStatus());
     return restModel;
   }
+
+  @GET
+  @Path("/userInfo/{userIdentifier}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getUserInfo(@PathParam("userIdentifier") String identifierString) {
+    
+    // Payload validation 
+    
+    if (StringUtils.isEmpty(identifierString) || !StringUtils.startsWithIgnoreCase(identifierString, "pyramus-")) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString.toUpperCase());
+    if (identifier == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Find user
+    
+    SearchProvider searchProvider = getSearchProvider();
+    if (searchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    SearchResult result = searchProvider.searchUsers(
+        organizationEntityController.listUnarchived(),
+        null, // searchString 
+        null, // fields 
+        null, // roleArchetypeFilter 
+        null, //userGroupFilters 
+        null, //workspaceFilters 
+        Arrays.asList(identifier), 
+        true, // includeInactiveStudents
+        false, // includeHidden
+        false, // onlyDefaultUsers
+        0, 
+        1);
+    List<Map<String, Object>> results = result.getResults();
+    if (results == null || results.isEmpty()) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Return nick and name (latter for staff only)
+
+    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
+    boolean isStudent = roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
+    HashMap<String, String> senderInfo = new HashMap<>();
+    senderInfo.put("nick", userChatSettings == null ? null : userChatSettings.getNick());
+    if (!isStudent) {
+      senderInfo.put("name", String.format("%s %s", String.valueOf(results.get(0).get("firstName")), String.valueOf(results.get(0).get("lastName"))));
+    }
+    return Response.ok(senderInfo).build();
+  }
   
   @GET
   @Path("/settings/{userIdentifier}")
@@ -372,6 +447,15 @@ public class ChatRESTService extends PluginRESTService {
     }
 
     return Response.ok(usersByAffiliations).build();
+  }
+
+  private SearchProvider getSearchProvider() {
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      return searchProviderIterator.next();
+    } else {
+      return null;
+    }
   }
   
 }

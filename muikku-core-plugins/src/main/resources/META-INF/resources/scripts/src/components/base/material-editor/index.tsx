@@ -59,7 +59,7 @@ const CKEditorConfig = (
   entities_latin: false,
   entities_greek: false,
   language: locale,
-  language_list: ['fi:Suomi', 'en:Englanti', 'de:Saksa', 'fr:Ranska', 'it:Italia', 'ru:Venäjä', 'sv:Ruotsi'],
+  language_list: ['fi:Suomi', 'en:Englanti', 'sv:Ruotsi', 'de:Saksa', 'es:Espanja', 'ru:Venäjä', 'ja:Japani', 'fr:Ranska', 'it:Italia',  'la:Latina', 'el:Kreikka'],
   stylesSet : 'workspace-material-styles:' + contextPath + '/scripts/ckplugins/styles/workspace-material-styles.js',
   format_tags : 'p;h3;h4',
   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,

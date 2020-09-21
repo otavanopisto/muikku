@@ -370,6 +370,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
   // Getting available chat rooms to be listed in the control box
   async getAvailableChatRooms(iq: XMLDocument) {
+    
     // Handle the IQ stanza returned from the server, containing all its public groupchats.
     let availableChatRooms = iq.querySelectorAll('query item');
     const { _ } = this.evtConverse.env;
@@ -381,7 +382,8 @@ class Chat extends React.Component<IChatProps, IChatState> {
       await Promise.all(nodesArray.map(async (node: any) => {
         const roomName = node.attributes.name.nodeValue;
         const roomJID = node.attributes.jid.value;
-
+         // the only way converse.api.rooms.get will work is if the room has been opened (and joined (which we don't want))
+        await this.converse.api.rooms.open(roomJID);
         const chat = await this.converse.api.rooms.get(roomJID);
         const roomDesc = chat.attributes.roomconfig.roomdesc;
         const roomPersistent = chat.attributes.roomconfig.persistentroom;
@@ -399,11 +401,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
       this.setState({
         availableMucRooms: availableMucRoomsList,
       });
-    } else {
-
     }
-
-    return true;
   }
   // Toggle states for Control Box window opening/closing
   toggleControlBox() {
@@ -495,13 +493,19 @@ class Chat extends React.Component<IChatProps, IChatState> {
       if (result && result.enabled) {
         this.mucNickName = result.mucNickName;
         this.nick = result.nick;
+        
+        // 6.0.0 way
+        window.addEventListener('converse-loaded', () => this.initializeConverse());
+        
+        // 7.0.0 way
+        //var _this = this;
+        //window.addEventListener('converse-loaded', function(ev) {
+        //  _this.initializeConverse(ev);
+        //});
 
         const script = document.createElement("script");
-        script.src = "//cdn.muikkuverkko.fi/libs/converse/6.0.0/converse-headless.js";
-        script.onload = this.initializeConverse;
+        script.src = '/scripts/gui/conversejs/6.0.0/converse-headless.js';
         document.head.appendChild(script);
-
-        // window.addEventListener("converse-loaded", this.initializeConverse);
 
         // Lets get openChats from sessionStorage value and set it to coresponding state (openChats)
         // Includes both chat rooms and private chats
@@ -591,7 +595,7 @@ class Chat extends React.Component<IChatProps, IChatState> {
 
       // Force sessionStorage instead of localStorage or IndexedDB - FOR DEVELOPMENT ONLY.
       // For production this option needs to be removed.
-      trusted: "false",
+      trusted: false,
 
       // Plugins that can be used
       whitelisted_plugins: ["muikku-chat-ui"],
@@ -619,46 +623,54 @@ class Chat extends React.Component<IChatProps, IChatState> {
     });
 
     this.converse.on("connected", () => {
-      this.converse.api.listen.on('message', this.onConverseMessage);
-      const { Strophe, $iq } = this.evtConverse.env;
-      let from = window.MUIKKU_LOGGED_USER;
-      const iq: any = $iq({
-        'to': 'conference.dev.muikkuverkko.fi',
-        'from': from + "@dev.muikkuverkko.fi",
-        'type': "get"
-      }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
+      var _this = this;
+      Promise.all([
+        this.converse.api.waitUntil('pluginsInitialized')
+      ]).then(function() {
+        _this.converse.api.listen.on('message', _this.onConverseMessage);
+        const { Strophe, $iq } = _this.evtConverse.env;
+        
+        // Query all chat rooms from server
+        
+        let from = window.MUIKKU_LOGGED_USER;
+        const iq: any = $iq({
+          'to': 'conference.dev.muikkuverkko.fi',
+          'from': from + "@dev.muikkuverkko.fi",
+          'type': "get"
+        }).c("query", { xmlns: Strophe.NS.DISCO_ITEMS });
 
-      this.converse.api.sendIQ(iq)
-        .then((iq: XMLDocument) => this.getAvailableChatRooms(iq))
-        .catch((iq: any) => console.log(iq));
+        _this.converse.api.sendIQ(iq)
+          .then((iq: XMLDocument) => _this.getAvailableChatRooms(iq))
+          .catch((iq: any) => console.log(iq));
 
-      // Get showControlBox status from sessionStroage and set correcponding states
-      // We either show the control box or chat bubble button, if sessionStorage does not
-      // return value for the key then we have default state (chat bubble is visible then).
-      let chatControlBoxStatus = window.sessionStorage.getItem("showControlBox");
-      if (chatControlBoxStatus) {
-        if (chatControlBoxStatus === "opened") {
-          this.setState({
-            showControlBox: true,
-            showChatButton: false
-          });
+        // Get showControlBox status from sessionStroage and set correcponding states
+        // We either show the control box or chat bubble button, if sessionStorage does not
+        // return value for the key then we have default state (chat bubble is visible then).
+        let chatControlBoxStatus = window.sessionStorage.getItem("showControlBox");
+        if (chatControlBoxStatus) {
+          if (chatControlBoxStatus === "opened") {
+            _this.setState({
+              showControlBox: true,
+              showChatButton: false
+            });
+          } else {
+            _this.setState({
+              showControlBox: false,
+              showChatButton: true
+            });
+          }
         } else {
-          this.setState({
+          _this.setState({
             showControlBox: false,
             showChatButton: true
           });
         }
-      } else {
-        this.setState({
-          showControlBox: false,
-          showChatButton: true
-        });
-      }
 
-      // Fetch user presence status
-      const userPresence = this.converse.api.user.status.get();
-      this.setState({
-        selectedUserPresence: userPresence
+        // Fetch user presence status
+        const userPresence = _this.converse.api.user.status.get();
+        _this.setState({
+          selectedUserPresence: userPresence
+        });
       });
     });
   }
