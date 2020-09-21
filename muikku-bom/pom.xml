@@ -61,7 +61,7 @@
     <rest-assured.version>2.3.4</rest-assured.version>
 
     <!-- JSR310 -->
-    <jackson-datatype-jsr310.version>2.5.4</jackson-datatype-jsr310.version>
+    <jackson-datatype-jsr310.version>2.9.8</jackson-datatype-jsr310.version>
 
     <!-- ROME -->
     <rome.version>1.12.2</rome.version>
