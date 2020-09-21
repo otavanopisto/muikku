@@ -6,10 +6,8 @@ import { connect } from "react-redux";
 import {StateType} from '~/reducers';
 import Dropdown from '~/components/general/dropdown';
 import WorkspaceChart from './workspace/workspace-chart';
-
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
-
 import '~/sass/elements/course.scss';
 import '~/sass/elements/workspace-activity.scss';
 import { ApplicationListItem, ApplicationListItemHeader } from "~/components/general/application-list";
@@ -177,10 +175,10 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfJournalEntries" givenDateAttributeLocale="plugin.guider.user.details.lastJournalEntry" labelTranslationString="plugin.guider.journalEntriesLabel" conditionalAttribute="journalEntryCount"
               givenDateAttribute="lastJournalEntry" mainAttribute="studentActivity" {...this.props}/>
 
-            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfMessages" givenDateAttributeLocale="plugin.guider.user.details.lastMessage" labelTranslationString="plugin.guider.discussionMessagesLabel" conditionalAttribute="messageCount"
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfMessages" givenDateAttributeLocale="plugin.guider.user.details.lastMessage" labelTranslationString="plugin.guider.discussion-messagesLabel" conditionalAttribute="messageCount"
               givenDateAttribute="latestMessage" mainAttribute="forumStatistics" {...this.props}/>
 
-            <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.assignmentsTitle")}</h4>
+            <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.assignmentsLabel")}</h4>
 
             <CourseActivityRow labelTranslationString="plugin.guider.unansweredAssignmentsLabel" conditionalAttribute="evaluablesUnanswered"
               mainAttribute="studentActivity" {...this.props}/>
@@ -197,7 +195,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationPassed" givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationPassed" labelTranslationString="plugin.guider.passedAssingmentsLabel" conditionalAttribute="evaluablesPassed"
               givenDateAttribute="evaluablesPassedLastDate" mainAttribute="studentActivity" {...this.props}/>
 
-            <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.exercisesTitle")}</h4>
+            <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.exercisesLabel")}</h4>
 
             <CourseActivityRow labelTranslationString="plugin.guider.unansweredExercisesLabel" conditionalAttribute="exercisesUnanswered"
               mainAttribute="studentActivity" {...this.props}/>

@@ -69,6 +69,12 @@
   }
 }
 
+
+@mixin mainfunction-subpanel-title {
+  font-size: 1.1875rem;
+  font-weight: 400;
+}
+
 @mixin workspace-subpanel-title {
   font-size: 1.225rem;
   font-weight: 300;

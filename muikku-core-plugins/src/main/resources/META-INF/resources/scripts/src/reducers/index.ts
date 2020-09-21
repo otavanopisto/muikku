@@ -13,6 +13,8 @@ import {UsersType, StudyprogrammeTypes} from './main-function/users';
 import {UserIndexType} from './user-index';
 import { DiscussionType } from './discussion';
 import { GuiderType } from './main-function/guider';
+import { SummaryType } from './main-function/records/summary';
+import { YOType, SubjectEligibilitySubjectsType } from './main-function/records/yo';
 import { RecordsType } from './main-function/records';
 import { ErrorType } from './base/error';
 import { ProfileType } from './main-function/profile';
@@ -23,11 +25,14 @@ export interface StateType {
   locales: LocaleListType,
   status: StatusType,
   title: string,
-  credentials?: CredentialsType,
   websocket?: WebsocketStateType,
+  yo?: YOType,
+  eligibilitySubjects?: SubjectEligibilitySubjectsType,
+  credentials?: CredentialsType,
   announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
+  summary?: SummaryType,
   studyprogrammes?: StudyprogrammeTypes,
   messages?: MessagesType,
   userIndex?: UserIndexType,

@@ -242,4 +242,5 @@ public class PyramusMatriculationExamEnrollment
   public Long studentId;
   public String state;
   public List<MatriculationExamAttendance> attendances;
+
 }

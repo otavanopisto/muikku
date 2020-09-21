@@ -8,6 +8,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
@@ -34,6 +35,10 @@ public class MatriculationSchoolDataController {
 
   public Long getStudentId(SchoolDataIdentifier studentIdentifier) {
     return getMatriculationBridge().getStudentId(studentIdentifier);
+  }
+
+  public MatriculationEligibilities listEligibilities() {
+    return getMatriculationBridge().listEligibilities();
   }
   
   public List<MatriculationExam> listMatriculationExams(boolean onlyEligible) {
