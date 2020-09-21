@@ -51,12 +51,18 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
+import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder;
+import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder.TemplateRestrictionForCommunicatorMessage;
+
+
+
 
 @ApplicationScoped
 public class ElasticSearchProvider implements SearchProvider {
@@ -649,7 +655,83 @@ public class ElasticSearchProvider implements SearchProvider {
     
     return result;
   }
+  
+  @Override
+  public CommunicatorMessageSearchBuilder searchCommunicatorMessages() {
+    return new ElasticCommunicatorMessageSearchBuilder(this);
+  }
+  
+  
+  
+  
+  //-----------------------------------------------------------------------
+  
+  @Override
+  public SearchResult searchCommunicatorMessages(
+      String message,
+      long sender,
+      List<CommunicatorMessageRecipient> receiver, 
+      TemplateRestrictionForCommunicatorMessage templateRestriction,
+      int start, 
+      int maxResults, 
+      List<Sort> sorts) {
+    if (message != null && message.isEmpty()) {
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
+    }
+    
+    BoolQueryBuilder query = boolQuery();
+    
+    try {
+      
+      
+      switch (templateRestriction) {
+        case ONLY_COMMUNICATORMESSAGES:
+          query.must(termQuery("isTemplate", Boolean.FALSE));
+        break;
+        case ONLY_TEMPLATES:
+          query.must(termQuery("isTemplate", Boolean.TRUE));
+        break;
+        case LIST_ALL:
+          // No restrictions
+        break;
+      }
+      
+      SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes("CommunicatorMessage")
+        .setFrom(start)
+        .setSize(maxResults);
+      
+      if (sorts != null && !sorts.isEmpty()) {
+        for (Sort sort : sorts) {
+          requestBuilder.addSort(sort.getField(), SortOrder.valueOf(sort.getOrder().name()));
+        }
+      }
+      
+      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      SearchHit[] results = searchHits.getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSource();
+        hitSource.put("indexType", hit.getType());
+        searchResults.add(hitSource);
+      }
+      
+      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      return result;
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
+    }
+  }
+  
+  //------------------------------------------------------------------------
 
+  
+  
+  
   @Override
   public SearchResult searchUserGroups(String query, List<OrganizationEntity> organizations, int start, int maxResults) {
     try {

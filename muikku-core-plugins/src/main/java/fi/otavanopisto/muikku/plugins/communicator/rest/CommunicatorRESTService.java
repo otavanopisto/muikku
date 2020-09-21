@@ -3,12 +3,16 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -36,6 +40,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
@@ -56,6 +61,9 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -64,6 +72,7 @@ import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
+import fi.otavanopisto.muikku.search.CommunicatorMessageSearchBuilder.TemplateRestrictionForCommunicatorMessage;;
 
 @Path("/communicator")
 @RequestScoped
@@ -100,6 +109,10 @@ public class CommunicatorRESTService extends PluginRESTService {
   private TagController tagController;
   
   @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+  
+  @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
@@ -110,6 +123,11 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
+  
+  @Inject
+  private CommunicatorMessageIndexer communicatorMessageIndexer;
+  
+  
   
   @GET
   @Path ("/items")
@@ -260,6 +278,116 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       restModels.restThreadViewModel(receivedItems, olderThread, newerThread, restLabels)
     ).build();
+  }
+  
+  @GET
+  @Path ("/searchItems/")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response messageSearchFromInbox(
+	  @QueryParam("message") String message,
+	  @QueryParam("sender") Long sender,
+	  @QueryParam("receiver") List<CommunicatorMessageRecipient> receiver,
+     // @QueryParam("labelId") Long labelId,
+      @QueryParam("orderBy") List<String> orderBy,
+      @QueryParam("templates") @DefaultValue ("ONLY_WORKSPACES") TemplateRestrictionForCommunicatorMessage templateRestriction,
+      @QueryParam("onlyUnread") @DefaultValue ("false") Boolean onlyUnread,
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
+	UserEntity user = sessionController.getLoggedUserEntity();    
+	CommunicatorLabel label;
+	    
+	//if (labelId != null) {
+	//  label = communicatorController.findUserLabelById(labelId);
+	//  if (label == null)
+	//    return Response.status(Status.NOT_FOUND).build();
+	//}
+	//else
+   //   label = null;
+      
+    List<CommunicatorMessage> receivedItems;
+    
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      SearchProvider searchProvider = searchProviderIterator.next();
+      SearchResult searchResult = null;
+      
+      List<Sort> sorts = null;
+      
+      if (orderBy != null && orderBy.contains("alphabet")) {
+        sorts = new ArrayList<>();
+        sorts.add(new Sort("name.untouched", Sort.Order.ASC));
+      }
+      
+      searchResult = searchProvider.searchCommunicatorMessages()
+    		  .setTemplateRestriction(templateRestriction)
+    		  .setSorts(sorts)
+    		  .setMaxResults(maxResults)
+    		  .setFirstResult(firstResult)
+    		  .setReceiver(receiver)
+    		  .setSender(sender)
+    		  .setMessage(message)
+    	      .search();
+      
+      try {
+          List<Map<String, Object>> results = searchResult.getResults();
+      //    for (Map<String, Object> result : results) {
+     //       String searchMessage = (String) result.get("message");
+ //           if (StringUtils.isNotBlank(searchMessage)) {
+              //String[] id = searchId.split("/", 2);
+             // if (id.length == 2) {
+             //   String dataSource = id[1];
+             //   String identifier = id[0];
+    
+                
+              //  WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
+//                if (workspaceEntity != null) {
+//                  String name = (String) result.get("name");
+//                  String nameExtension = (String) result.get("nameExtension");
+//                  String description = (String) result.get("description");
+//                  boolean canSignup = getCanSignup(workspaceEntity);
+//                  boolean isCourseMember = getIsAlreadyOnWorkspace(workspaceEntity);
+//                  String educationTypeId = (String) result.get("educationTypeIdentifier");
+//                  String educationTypeName = null;
+//                  
+//                  if (StringUtils.isNotBlank(educationTypeId)) {
+//                    EducationType educationType = null;
+//                    SchoolDataIdentifier educationTypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+//                    if (educationTypeIdentifier == null) {
+//                      logger.severe(String.format("Malformatted educationTypeIdentifier %s", educationTypeId));
+//                    } else {
+//                      educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+//                    }
+//                    
+//                    if (educationType != null) {
+//                      educationTypeName = educationType.getName();
+//                    }
+//                  }
+//    
+//                  if (StringUtils.isNotBlank(name)) {
+//                    workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, canSignup, isCourseMember));
+//                  } else {
+//                    logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
+//                  }
+//                } else {
+//                  logger.severe(String.format("Search index contains workspace %s that does not exits on the school data system", workspaceIdentifier));
+//                }
+//             // }
+//            }
+//          }
+//        } finally {
+//          schoolDataBridgeSessionController.endSystemSession();
+//        }
+//      } else {
+//        return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+//      }
+//
+//      if (workspaces.isEmpty()) {
+//        // TODO: return 200 & empty list instead of 204
+//        return Response.noContent().build();
+//      }
+    }
+	
+	  
   }
   
   @DELETE
@@ -439,6 +567,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, userEntity, 
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
+    
+    communicatorMessageIndexer.indexMessage(message, userEntity); 
     
     sendNewMessageNotifications(message);
     

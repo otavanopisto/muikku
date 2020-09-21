@@ -25,10 +25,12 @@ import '~/sass/elements/glyph.scss';
 import '~/sass/elements/form-elements.scss';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
+import { promisify } from 'util';
+import mApi from '~/lib/mApi';
 
 interface CommunicatorToolbarProps {
   messages: MessagesType,
-  i18n: i18nType,
+  i18n: i18nType
 
   deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType,
   addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType,
@@ -58,12 +60,25 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     this.resetLabelFilter = this.resetLabelFilter.bind(this);
     this.toggleCurrentMessageReadStatus = this.toggleCurrentMessageReadStatus.bind(this);
+	this.searchFromMessages = this.searchFromMessages.bind(this);
 
     this.state = {
       labelFilter: "",
       isCurrentRead: true
     }
   }
+
+  async searchFromMessages(e: any){
+	let searchString = e.target[0].value;
+	let sender = 
+	alert(searchString);
+	let testi =  await promisify(mApi().communicator.searchItems.read({
+		  message: searchString,
+          firstResult: 0,
+          maxResults: 50
+	}))();
+  }
+
   loadMessage(messageId: number){
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
@@ -167,6 +182,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
               </Dropdown>
             {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`${this.state.isCurrentRead ? "envelope-open" : "envelope-alt"}`}
               onClick={this.props.messages.toolbarLock ? null : this.toggleCurrentMessageReadStatus}/> : null}
+			
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
             <ButtonPill buttonModifiers="next-page" icon="arrow-left"
@@ -231,7 +247,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`${this.props.messages.selectedThreads.length >= 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "envelope-open" : "envelope-alt"}`}
         disabled={this.props.messages.selectedThreads.length < 1}
         onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadsReadStatus.bind(null, this.props.messages.selectedThreads)}/> : null}
-    </ApplicationPanelToolbar>
+    
+	  <div>
+		<form onSubmit={this.searchFromMessages}>
+		  <input type="text" placeholder="Etsi viesteistä"/>
+		  <input type="submit" value="Etsi"/>
+		</form>
+	  </div>
+  	</ApplicationPanelToolbar>
   }
 }
 
